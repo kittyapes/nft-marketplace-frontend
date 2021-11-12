@@ -24,3 +24,20 @@ pnpm dev
 
 - SvelteKit
 - TailwindCSS
+
+## Tailwind Configuration
+
+### Colors
+
+The following colors are used in the Tailwind CSS configuration.
+
+- `color-black`
+- `color-red`
+- `color-blue`
+- `color-purple`
+
+A gradient color like the one in the designs can be achieved like this.
+
+```html
+<div class="h-10 bg-gradient-to-r from-color-purple to-color-blue" />
+```
