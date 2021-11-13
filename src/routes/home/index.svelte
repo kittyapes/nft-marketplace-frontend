@@ -1,7 +1,10 @@
 <script lang="ts">
+	import { fetchFeaturedArtists } from '$lib/api/featuredArtists';
+
 	import { fetchTopCollections, TopCollection } from '$lib/api/topCollections';
 	import Button from '$lib/components/Button.svelte';
 	import CollectionCard from '$lib/components/CollectionCard.svelte';
+	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 
 	const topCollectionsPromise = fetchTopCollections();
 	let cards: TopCollection[];
@@ -24,7 +27,8 @@
 	</div>
 </div>
 
-<div class="px-8 container mx-auto mt-32">
+<!-- Top collections -->
+<div class="px-8 container mx-auto mt-28">
 	<h2>Top Collections</h2>
 	<div class="line" />
 
@@ -34,6 +38,22 @@
 		{:then collections}
 			{#each collections as collection}
 				<CollectionCard title={collection.title} img={collection.img} />
+			{/each}
+		{/await}
+	</div>
+</div>
+
+<!-- Featured artists -->
+<div class="px-8 container mx-auto mt-28">
+	<h2>Featured artists</h2>
+	<div class="line" />
+
+	<div class="flex flex-wrap gap-4">
+		{#await fetchFeaturedArtists()}
+			Loading...
+		{:then artists}
+			{#each artists as artist}
+				<FeaturedArtistCard {...artist} />
 			{/each}
 		{/await}
 	</div>
