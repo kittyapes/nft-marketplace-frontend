@@ -9,6 +9,7 @@
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import LatestDropSection from '$lib/sections/LatestDropSection.svelte';
+	import StartStakingSection from '$lib/sections/StartStakingSection.svelte';
 
 	const topCollectionsPromise = fetchTopCollections();
 	let cards: TopCollection[];
@@ -86,6 +87,16 @@
 
 	<LatestDropSection />
 </div>
+
+<!-- Start staking -->
+<div class="px-8 container mx-auto mt-28">
+	<h2>Start staking</h2>
+	<div class="line" />
+
+	<StartStakingSection />
+</div>
+
+<div class="mt-32" />
 
 <style>
 	#overview-container {
