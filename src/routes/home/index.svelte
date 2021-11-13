@@ -1,0 +1,58 @@
+<script lang="ts">
+	import { fetchTopCollections, TopCollection } from '$lib/api/topCollections';
+	import Button from '$lib/components/Button.svelte';
+	import CollectionCard from '$lib/components/CollectionCard.svelte';
+
+	const topCollectionsPromise = fetchTopCollections();
+	let cards: TopCollection[];
+</script>
+
+<div id="overview-container" class="relative">
+	<div class="absolute top-0 left-0 w-full h-full grid place-items-center">
+		<div class="container px-8">
+			<h1 class="uppercase text-white font-semibold text-7xl">Hinata<br />Marketplace</h1>
+
+			<div class="text-white py-6 px-1 text-lg">
+				Platform where you can create, buy and sell nfts
+			</div>
+
+			<div class="flex gap-x-4 mt-6">
+				<Button>Explore Market</Button>
+				<Button>Create</Button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="px-8 container mx-auto mt-32">
+	<h2>Top Collections</h2>
+	<div class="line" />
+
+	<div class="flex flex-wrap gap-4">
+		{#await fetchTopCollections()}
+			Loading...
+		{:then collections}
+			{#each collections as collection}
+				<CollectionCard title={collection.title} img={collection.img} />
+			{/each}
+		{/await}
+	</div>
+</div>
+
+<style>
+	#overview-container {
+		@apply overflow-hidden max-w-[100vw];
+	}
+
+	#overview-container::before {
+		content: url('/img/graphics/home-bg.png');
+	}
+
+	h2 {
+		@apply text-4xl font-normal;
+	}
+
+	div.line {
+		@apply border-b border-black border-opacity-10 my-8;
+	}
+</style>
