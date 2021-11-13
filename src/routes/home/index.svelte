@@ -8,6 +8,7 @@
 	import CollectionCard from '$lib/components/CollectionCard.svelte';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
+	import LatestDropSection from '$lib/sections/LatestDropSection.svelte';
 
 	const topCollectionsPromise = fetchTopCollections();
 	let cards: TopCollection[];
@@ -78,6 +79,14 @@
 	</div>
 </div>
 
+<!-- Latest drop -->
+<div class="px-8 container mx-auto mt-28">
+	<h2>Latest drop</h2>
+	<div class="line" />
+
+	<LatestDropSection />
+</div>
+
 <style>
 	#overview-container {
 		@apply overflow-hidden max-w-[100vw];
@@ -88,7 +97,7 @@
 	}
 
 	h2 {
-		@apply text-4xl font-normal;
+		@apply text-4xl font-normal uppercase;
 	}
 
 	div.line {
