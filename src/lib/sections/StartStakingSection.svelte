@@ -1,5 +1,5 @@
 <div class="flex">
-	<div id="left-pane" class="w-1/2 pl-16 flex flex-col justify-center mt-8">
+	<div id="left-pane" class="w-1/2 flex flex-col justify-center mt-8">
 		<div>01</div>
 		<p>
 			Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate
