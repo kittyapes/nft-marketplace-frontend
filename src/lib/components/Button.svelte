@@ -10,12 +10,12 @@
 	.square {
 		@apply bg-white uppercase font-semibold px-8 py-4;
 		border-radius: 0;
-		width: var(--width, 200px);
+		width: var(--width, 220px);
 	}
 
 	.rounded-black {
 		@apply bg-color-black uppercase font-semibold px-8 py-4 text-white;
 		border-radius: var(--border-radius, 9999px);
-		width: var(--width, 200px);
+		width: var(--width, 220px);
 	}
 </style>
