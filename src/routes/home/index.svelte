@@ -1,21 +1,18 @@
 <script lang="ts">
 	import { fetchNfts } from '$lib/api/exploreMarket';
-
 	import { fetchFeaturedArtists } from '$lib/api/featuredArtists';
-
-	import { fetchTopCollections, TopCollection } from '$lib/api/topCollections';
+	import { fetchTopCollections } from '$lib/api/topCollections';
 	import Button from '$lib/components/Button.svelte';
 	import CollectionCard from '$lib/components/CollectionCard.svelte';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import LatestDropSection from '$lib/sections/LatestDropSection.svelte';
 	import StartStakingSection from '$lib/sections/StartStakingSection.svelte';
-
-	const topCollectionsPromise = fetchTopCollections();
-	let cards: TopCollection[];
 </script>
 
-<div id="overview-container" class="relative">
+<div class="relative overflow-hidden max-w-[100vw]">
+	<img src="/img/graphics/home-bg.png" alt="" class="bg-cover w-full" />
+
 	<div class="absolute top-0 left-0 w-full h-full grid place-items-center">
 		<div class="container px-8">
 			<h1 class="uppercase text-white font-semibold text-7xl">Hinata<br />Marketplace</h1>
@@ -99,14 +96,6 @@
 <div class="mt-32" />
 
 <style>
-	#overview-container {
-		@apply overflow-hidden max-w-[100vw];
-	}
-
-	#overview-container::before {
-		content: url('/img/graphics/home-bg.png');
-	}
-
 	h2 {
 		@apply text-4xl font-normal uppercase;
 	}
