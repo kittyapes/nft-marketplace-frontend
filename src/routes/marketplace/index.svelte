@@ -2,13 +2,15 @@
 	import Card from '$lib/components/marketplace/Card.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
+
+	let sidebarOpen;
 </script>
 
-<div class="w-full min-h-screen h-full flex">
-	<Sidebar />
+<div class="w-full min-h-screen h-full flex flex-row">
+	<Sidebar bind:isOpen={sidebarOpen} />
 
-	<div class="p-11 w-full ml-72">
-		<div class="w-full flex flex-row gap-5 text-xs ">
+	<div class="p-11 w-full ml-72 transform transition-all duration-200" class:ml-24={!sidebarOpen}>
+		<div class="w-full flex flex-row gap-5 text-xs">
 			<button class="text-color-purple font-bold underline">MARKET</button>
 			<div class="w-px h-10 bg-gray-300" />
 
