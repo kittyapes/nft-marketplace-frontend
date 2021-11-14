@@ -1,5 +1,6 @@
 <script>
 	import Card from '$lib/components/marketplace/Card.svelte';
+	import Dropdown from '$lib/components/Dropdown.svelte';
 </script>
 
 <div class="w-full min-h-screen h-full flex">
@@ -27,6 +28,14 @@
 		</div>
 
 		<div class="w-full h-px bg-gray-400 mt-7" />
+
+		<div class="w-full flex justify-between mt-3">
+			<div />
+
+			<div class="w-28">
+				<Dropdown />
+			</div>
+		</div>
 
 		<div class="flex flex-wrap mt-11 justify-center gap-6 cards">
 			<Card />
