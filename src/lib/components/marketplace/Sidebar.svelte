@@ -3,7 +3,9 @@
 	import Back from '../icons/back.icon.svelte';
 	import Filters from '../icons/filters.icon.svelte';
 
-	import StatusFilter from '$lib/components/marketplace/StatusFilter.svelte';
+	import StatusFilter from './StatusFilter.svelte';
+	import PriceFilter from './PriceFilter.svelte';
+	import CollectionsFilter from './CollectionsFilter.svelte';
 </script>
 
 <div class="w-72 h-screen fixed border-r border-gray-400 font-bold">
@@ -13,6 +15,8 @@
 	</div>
 
 	<SidebarItem title="Status" iconSrc="/marketplace/status.svg"><StatusFilter /></SidebarItem>
-	<SidebarItem title="Collections" iconSrc="/marketplace/collections.svg">sldkjf</SidebarItem>
-	<SidebarItem title="Price" iconSrc="/marketplace/price.svg">sldkjf</SidebarItem>
+	<SidebarItem title="Collections" iconSrc="/marketplace/collections.svg"
+		><CollectionsFilter /></SidebarItem
+	>
+	<SidebarItem title="Price" iconSrc="/marketplace/price.svg"><PriceFilter /></SidebarItem>
 </div>
