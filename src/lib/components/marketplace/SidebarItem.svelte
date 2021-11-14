@@ -1,5 +1,6 @@
 <script>
 	export let title = '';
+	export let iconSrc = '';
 
 	import { slide } from 'svelte/transition';
 
@@ -9,7 +10,10 @@
 
 <div>
 	<div class="px-11 py-6 border-b border-gray-400 uppercase flex justify-between items-center">
-		<div on:click={toggle} class="cursor-pointer">{title}</div>
+		<div on:click={toggle} class=" w-full cursor-pointer flex items-center gap-3">
+			<img src={iconSrc} alt="icon" />
+			{title}
+		</div>
 
 		<button on:click={toggle} aria-expanded={isOpen}
 			><svg
