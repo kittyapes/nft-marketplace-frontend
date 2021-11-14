@@ -1,16 +1,11 @@
 <script>
 	import Card from '$lib/components/marketplace/Card.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
+	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 </script>
 
 <div class="w-full min-h-screen h-full flex">
-	<div class="w-72 h-screen fixed border-r border-gray-400 font-bold">
-		<div class="p-11 border-b border-gray-400">FILTER</div>
-
-		<div class="px-11 py-6 border-b border-gray-400">STATUS</div>
-		<div class="px-11 py-6 border-b border-gray-400">COLLECTIONS</div>
-		<div class="px-11 py-6 border-b border-gray-400">PRICE</div>
-	</div>
+	<Sidebar />
 
 	<div class="p-11 w-full ml-72">
 		<div class="w-full flex flex-row gap-5 text-xs ">
@@ -32,7 +27,7 @@
 		<div class="w-full flex justify-between mt-3">
 			<div />
 
-			<div class="w-28">
+			<div class="w-36 ">
 				<Dropdown />
 			</div>
 		</div>
