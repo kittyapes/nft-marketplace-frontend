@@ -9,13 +9,13 @@
 	export let price: number;
 </script>
 
-<div class="w-56 rounded-2xl overflow-hidden border p-4">
+<div class="rounded-2xl overflow-hidden border p-4">
 	<div class="flex items-center gap-x-2 justify-end">
 		<Heart />
 		<div>{likeCount}</div>
 	</div>
 
-	<img src={img} alt="" class="w-48 h-48 object-cover rounded-lg mt-2" />
+	<img src={img} alt="" class="mx-auto w-48 h-48 object-cover rounded-lg mt-2" />
 
 	<div class="flex text-sm font-normal text-gray-600 mt-2">
 		<div class="flex-grow">{collection}</div>

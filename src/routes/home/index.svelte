@@ -34,7 +34,9 @@
 	<h2>Top Collections</h2>
 	<div class="line" />
 
-	<div class="flex flex-wrap gap-4">
+	<div
+		class="grid gap-4 justify-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 w-full"
+	>
 		{#await fetchTopCollections()}
 			Loading...
 		{:then collections}
@@ -50,7 +52,9 @@
 	<h2>Featured artists</h2>
 	<div class="line" />
 
-	<div class="flex flex-wrap gap-4">
+	<div
+		class="grid gap-4 justify-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 w-full"
+	>
 		{#await fetchFeaturedArtists()}
 			Loading...
 		{:then artists}
@@ -66,7 +70,9 @@
 	<h2>Explore market</h2>
 	<div class="line" />
 
-	<div class="flex flex-wrap gap-4">
+	<div
+		class="grid gap-4 justify-center grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 w-full"
+	>
 		{#await fetchNfts()}
 			Loading...
 		{:then artists}
