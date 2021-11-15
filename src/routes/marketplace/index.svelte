@@ -6,10 +6,15 @@
 	let sidebarOpen;
 </script>
 
-<div class="w-full min-h-screen h-full flex flex-row">
+<div class="w-full min-h-screen h-full flex flex-col md:flex-row">
 	<Sidebar bind:isOpen={sidebarOpen} />
 
-	<div class="p-11 w-full ml-72 transform transition-all duration-200" class:ml-24={!sidebarOpen}>
+	<div
+		class={`p-11 w-full ml-0 ${
+			!sidebarOpen ? 'md:ml-24' : 'md:ml-72'
+		} transform transition-all duration-200`}
+		class:ml-24={!sidebarOpen}
+	>
 		<div class="w-full flex flex-row gap-5 text-xs">
 			<button class="text-color-purple font-bold underline">MARKET</button>
 			<div class="w-px h-10 bg-gray-300" />

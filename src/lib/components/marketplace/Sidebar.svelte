@@ -1,6 +1,6 @@
 <script>
 	import SidebarItem from '$lib/components/marketplace/SidebarItem.svelte';
-	import Back from '../icons/back.icon.svelte';
+	import Arrow from '../icons/back.icon.svelte';
 	import Filters from '../icons/filters.icon.svelte';
 
 	import StatusFilter from './StatusFilter.svelte';
@@ -14,29 +14,40 @@
 </script>
 
 <div
-	class="w-72 h-screen fixed border-r border-gray-400 font-bold transition-all transform duration-200"
-	class:w-20={!isOpen}
+	class={`w-full ${
+		!isOpen ? 'md:w-20' : 'md:w-72'
+	} h-auto md:h-screen block md:fixed border-r border-gray-400 font-bold transition-all transform duration-200`}
 >
 	{#if isOpen}
 		<div class="p-11 border-b border-gray-400 flex justify-between">
-			<div class="flex flex-row items-center gap-3"><Filters /> FILTER</div>
-			<button on:click={toggle}><Back /></button>
+			<div class="flex flex-row items-center gap-3">
+				<Filters />
+				FILTER
+			</div>
+
+			<button on:click={toggle} class="rotate-90 md:rotate-0">
+				<Arrow />
+			</button>
 		</div>
 	{:else}
 		<div
-			class="py-11 px-5 border-b border-gray-400 flex flex-col items-center justify-center gap-3"
+			class="py-11 px-5 border-b border-gray-400 flex flex-row md:flex-col items-center justify-center gap-3"
 		>
 			<div class="text-sm">FILTERS</div>
-			<button on:click={toggle} class="rotate-180"><Back /></button>
+			<button on:click={toggle} class="-rotate-90 md:rotate-180">
+				<Arrow />
+			</button>
 		</div>
 	{/if}
 
 	{#if isOpen}
 		<div transition:slide={{ duration: 200 }}>
 			<SidebarItem title="Status" iconSrc="/marketplace/status.svg"><StatusFilter /></SidebarItem>
+
 			<SidebarItem title="Collections" iconSrc="/marketplace/collections.svg"
 				><CollectionsFilter /></SidebarItem
 			>
+
 			<SidebarItem title="Price" iconSrc="/marketplace/price.svg"><PriceFilter /></SidebarItem>
 		</div>
 	{/if}
