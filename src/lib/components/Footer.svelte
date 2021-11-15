@@ -4,30 +4,30 @@
 			<div><img src="/img/logo/footer-logo.svg" alt="" /></div>
 
 			<div class="grid grid-cols-2 gap-y-6 gap-x-8 ml-32 font-semibold h-[min-content]">
-				<a class="text-[#1D1D1D4D]">MARKETPLACE</a>
-				<a>ABOUT</a>
-				<a>STAKING</a>
-				<a>BLOG</a>
+				<a class="text-[#1D1D1D4D]" href="!#">MARKETPLACE</a>
+				<a href="!#">ABOUT</a>
+				<a href="!#">STAKING</a>
+				<a href="!#">BLOG</a>
 			</div>
 		</div>
 
 		<div class="grid grid-cols-2 gap-x-4">
 			<div class="perma-gray">Join our community:</div>
 			<div class="grid font-semibold gap-6">
-				<a>Discord</a>
-				<a>Twitter</a>
-				<a>Telegram</a>
-				<a class="doc-link mt-8">Terms & Conditions</a>
+				<a href="!#">Discord</a>
+				<a href="!#">Twitter</a>
+				<a href="!#">Telegram</a>
+				<a href="!#" class="doc-link mt-8">Terms & Conditions</a>
 			</div>
 		</div>
 
 		<div class="grid grid-cols-2 gap-x-4 ml-8">
 			<div class="perma-gray">Latest news:</div>
 			<div class="grid font-semibold gap-6">
-				<a>Reddit</a>
-				<a>Medium</a>
-				<a>Uniswap</a>
-				<a class="doc-link mt-8">Privacy Policy</a>
+				<a href="!#">Reddit</a>
+				<a href="!#">Medium</a>
+				<a href="!#">Uniswap</a>
+				<a href="!#" class="doc-link mt-8">Privacy Policy</a>
 			</div>
 		</div>
 	</div>
