@@ -33,6 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@apollo/client": "^3.4.17"
+		"@apollo/client": "^3.4.17",
+		"@tailwindcss/aspect-ratio": "^0.3.0"
 	}
 }

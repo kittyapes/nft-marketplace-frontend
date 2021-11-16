@@ -4,6 +4,7 @@ specifiers:
   '@apollo/client': ^3.4.17
   '@sveltejs/adapter-vercel': ^1.0.0-next.30
   '@sveltejs/kit': 1.0.0-next.180
+  '@tailwindcss/aspect-ratio': ^0.3.0
   '@typescript-eslint/eslint-plugin': ^4.31.1
   '@typescript-eslint/parser': ^4.31.1
   autoprefixer: ^10.3.7
@@ -24,6 +25,7 @@ specifiers:
 
 dependencies:
   '@apollo/client': 3.4.17
+  '@tailwindcss/aspect-ratio': 0.3.0_tailwindcss@2.2.19
 
 devDependencies:
   '@sveltejs/adapter-vercel': 1.0.0-next.31
@@ -216,6 +218,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@tailwindcss/aspect-ratio/0.3.0_tailwindcss@2.2.19:
+    resolution: {integrity: sha512-DMgWskNJR6FNPLbQ8Xoq/PKV/9DfNKh5dvKB+SM8x7lVl4+pnxlZ3Ns4+yGmurA/ze708HrnCG1tXk85HolJmw==}
+    peerDependencies:
+      tailwindcss: '>=2.0.0 || >=3.0.0-alpha.1'
+    dependencies:
+      tailwindcss: 2.2.19_0c54bdadaf9d9c9c6c134cb2c6c061a3
+    dev: false
 
   /@trysound/sax/0.2.0:
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
