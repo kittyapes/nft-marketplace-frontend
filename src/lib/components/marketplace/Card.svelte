@@ -14,7 +14,7 @@
 			1
 		</div>
 
-		<div class="aspect-w-1 aspect-h-1 ">
+		<div class="mt-2 aspect-w-1 aspect-h-1 ">
 			<img src={data.image} alt="ape" class="object-scale-down" />
 		</div>
 

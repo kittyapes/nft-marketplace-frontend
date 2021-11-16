@@ -16,7 +16,7 @@
 <div
 	class={`w-full ${
 		!isOpen ? 'md:w-20' : 'md:w-72'
-	} h-auto md:h-screen block md:fixed border-r border-gray-400 font-bold transition-all transform duration-200`}
+	} h-auto md:h-screen block md:fixed border-t md:border-r border-gray-400 font-bold transition-all transform duration-200`}
 >
 	{#if isOpen}
 		<div class="p-11 border-b border-gray-400 flex justify-between">

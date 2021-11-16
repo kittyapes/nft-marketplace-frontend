@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Card from '$lib/components/marketplace/Card.svelte';
 	import { query } from 'svelte-apollo';
 	import { gql } from '@apollo/client/core';
@@ -16,7 +16,7 @@
 		}
 	`;
 
-	const cards = query(GET_CARDS, {
+	const cards: any = query(GET_CARDS, {
 		variables: { numberToSkip: 0 }
 	});
 </script>
