@@ -4,11 +4,12 @@
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
 
-	import ApolloClient from 'apollo-boost';
+	import { ApolloClient, InMemoryCache, gql } from '@apollo/client/core';
 	import { setClient } from 'svelte-apollo';
 
 	const client = new ApolloClient({
-		uri: 'http://todos-graphql.herokuapp.com/graphql'
+		uri: 'https://api.thegraph.com/subgraphs/name/hysmagus/waifu',
+		cache: new InMemoryCache()
 	});
 
 	setClient(client);
