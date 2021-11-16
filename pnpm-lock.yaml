@@ -12,11 +12,13 @@ specifiers:
   eslint: ^7.32.0
   eslint-config-prettier: ^8.3.0
   eslint-plugin-svelte3: ^3.2.1
+  graphql: ^16.0.1
   postcss: ^8.3.9
   postcss-load-config: ^3.1.0
   prettier: ^2.4.1
   prettier-plugin-svelte: ^2.4.0
   svelte: ^3.42.6
+  svelte-apollo: ^0.4.0
   svelte-check: ^2.2.6
   svelte-preprocess: ^4.9.8
   tailwindcss: ^2.2.16
@@ -24,8 +26,10 @@ specifiers:
   typescript: ^4.4.3
 
 dependencies:
-  '@apollo/client': 3.4.17
+  '@apollo/client': 3.4.17_graphql@16.0.1
   '@tailwindcss/aspect-ratio': 0.3.0_tailwindcss@2.2.19
+  graphql: 16.0.1
+  svelte-apollo: 0.4.0_267751d662e972dd19b92c6ae196c9a3
 
 devDependencies:
   '@sveltejs/adapter-vercel': 1.0.0-next.31
@@ -50,7 +54,7 @@ devDependencies:
 
 packages:
 
-  /@apollo/client/3.4.17:
+  /@apollo/client/3.4.17_graphql@16.0.1:
     resolution: {integrity: sha512-MDt2rwMX1GqodiVEKJqmDmAz8xr0qJmq5PdWeIt0yDaT4GOkKYWZiWkyfhfv3raTk8PyJvbsNG9q2CqmUrlGfg==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0
@@ -62,11 +66,12 @@ packages:
       subscriptions-transport-ws:
         optional: true
     dependencies:
-      '@graphql-typed-document-node/core': 3.1.0
+      '@graphql-typed-document-node/core': 3.1.0_graphql@16.0.1
       '@wry/context': 0.6.1
       '@wry/equality': 0.5.2
       '@wry/trie': 0.3.1
-      graphql-tag: 2.12.6
+      graphql: 16.0.1
+      graphql-tag: 2.12.6_graphql@16.0.1
       hoist-non-react-statics: 3.3.2
       optimism: 0.16.1
       prop-types: 15.7.2
@@ -120,10 +125,12 @@ packages:
       - supports-color
     dev: true
 
-  /@graphql-typed-document-node/core/3.1.0:
+  /@graphql-typed-document-node/core/3.1.0_graphql@16.0.1:
     resolution: {integrity: sha512-wYn6r8zVZyQJ6rQaALBEln5B1pzxb9shV5Ef97kTvn6yVGrqyXVnDqnU24MXnFubR+rZjBY9NWuxX3FB2sTsjg==}
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
+    dependencies:
+      graphql: 16.0.1
     dev: false
 
   /@humanwhocodes/config-array/0.5.0:
@@ -1377,13 +1384,19 @@ packages:
     resolution: {integrity: sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==}
     dev: true
 
-  /graphql-tag/2.12.6:
+  /graphql-tag/2.12.6_graphql@16.0.1:
     resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
     engines: {node: '>=10'}
     peerDependencies:
       graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
+      graphql: 16.0.1
       tslib: 2.3.1
+    dev: false
+
+  /graphql/16.0.1:
+    resolution: {integrity: sha512-oPvCuu6dlLdiz8gZupJ47o1clgb72r1u8NDBcQYjcV6G/iEdmE11B1bBlkhXRvV0LisP/SXRFP7tT6AgaTjpzg==}
+    engines: {node: ^12.22.0 || ^14.16.0 || >=16.0.0}
     dev: false
 
   /has-flag/3.0.0:
@@ -2464,6 +2477,18 @@ packages:
     dependencies:
       has-flag: 4.0.0
     dev: true
+
+  /svelte-apollo/0.4.0_267751d662e972dd19b92c6ae196c9a3:
+    resolution: {integrity: sha512-VbianysptRx9wy6vQPd2lIRBVKV0XPtrSvqcMctihc5xGl1TVffNp8qsiSlqx2jnOlvOGUSK8xl4GW7C6bzSjw==}
+    peerDependencies:
+      '@apollo/client': ^3.2.0
+      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
+      svelte: ^3.0.0
+    dependencies:
+      '@apollo/client': 3.4.17_graphql@16.0.1
+      graphql: 16.0.1
+      svelte: 3.44.1
+    dev: false
 
   /svelte-check/2.2.8_12c78e77d52b6508fc8705d47f1a4eb4:
     resolution: {integrity: sha512-y8BmSf3v+jOoVwKY0K3wAiIt3hupLiUS4HYqXSZPXJZrChKddp+N8fyNeClsDChLt2sLUo6sOAhlnok/RJ+iIw==}

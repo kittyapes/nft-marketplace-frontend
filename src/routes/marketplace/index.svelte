@@ -2,6 +2,16 @@
 	import Card from '$lib/components/marketplace/Card.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
+	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
+
+	import ApolloClient from 'apollo-boost';
+	import { setClient } from 'svelte-apollo';
+
+	const client = new ApolloClient({
+		uri: 'http://todos-graphql.herokuapp.com/graphql'
+	});
+
+	setClient(client);
 
 	let sidebarOpen;
 </script>
@@ -13,7 +23,6 @@
 		class={`p-11 w-full ml-0 ${
 			!sidebarOpen ? 'md:ml-24' : 'md:ml-72'
 		} transform transition-all duration-200`}
-		class:ml-24={!sidebarOpen}
 	>
 		<div class="w-full flex flex-row gap-5 text-xs">
 			<button class="text-color-purple font-bold underline">MARKET</button>
@@ -39,17 +48,8 @@
 			</div>
 		</div>
 
-		<div class="flex flex-wrap mt-11 justify-center gap-6 cards">
-			<Card />
-			<Card />
-			<Card />
-			<Card />
-			<Card />
-			<Card />
-			<Card />
-			<Card />
-			<Card />
-			<Card />
+		<div>
+			<CardsSection />
 		</div>
 	</div>
 </div>
