@@ -5,10 +5,13 @@
 	export let uri = '';
 </script>
 
-{#await fetchNFTfromURI(uri)}
+{#await fetchNFTfromURI(uri.replace('radiant-falls-54169', 'databasewaifu'))}
 	<div class="w-56 h-80 rounded-xl border bg-gray-200" />
 {:then data}
-	<div class="w-56 min-h-80 rounded-xl border border-gray-400" transition:fade={{ duration: 500 }}>
+	<div
+		class="w-56 min-h-80 rounded-xl border border-gray-400 cursor-pointer transition-all hover:scale-105"
+		transition:fade={{ duration: 500 }}
+	>
 		<div class="w-full justify-end flex items-center gap-2 pt-3 px-3">
 			<img src="/marketplace/heart.svg" alt="heart" />
 			1
