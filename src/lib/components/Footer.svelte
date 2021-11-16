@@ -1,4 +1,4 @@
-<div class="border-t h-80 border-[#1D1D1D4D]">
+<div class="footer border-t h-80 border-[#1D1D1D4D]">
 	<div class="container mx-auto py-12 flex">
 		<div class="flex px-8 w-1/2">
 			<div><img src="/img/logo/footer-logo.svg" alt="" /></div>
