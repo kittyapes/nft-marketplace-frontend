@@ -16,7 +16,7 @@
 <div
 	class={`w-full ${
 		!isOpen ? 'md:w-20' : 'md:w-72'
-	} h-auto md:h-screen block md:fixed border-t md:border-r border-gray-400 font-bold transition-all transform duration-200`}
+	} h-auto md:h-screen block md:fixed border-t bg-white md:border-r border-gray-400 font-bold transition-all transform duration-200`}
 >
 	{#if isOpen}
 		<div class="p-11 border-b border-gray-400 flex justify-between">
@@ -44,9 +44,9 @@
 		<div transition:slide={{ duration: 200 }}>
 			<SidebarItem title="Status" iconSrc="/marketplace/status.svg"><StatusFilter /></SidebarItem>
 
-			<SidebarItem title="Collections" iconSrc="/marketplace/collections.svg"
-				><CollectionsFilter /></SidebarItem
-			>
+			<SidebarItem title="Collections" iconSrc="/marketplace/collections.svg">
+				<CollectionsFilter />
+			</SidebarItem>
 
 			<SidebarItem title="Price" iconSrc="/marketplace/price.svg"><PriceFilter /></SidebarItem>
 		</div>

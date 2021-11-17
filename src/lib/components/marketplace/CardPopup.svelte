@@ -16,7 +16,7 @@
 
 	<!-- Modal -->
 	<div
-		class="bg-white w-full lg:w-2/3  mx-auto rounded-xl shadow-xl z-50 flex flex-col md:flex-row overflow-y-hidden"
+		class="bg-white w-full lg:w-2/3  mx-auto rounded-xl shadow-xl z-50 flex flex-col md:flex-row overflow-y-scroll md:overflow-y-hidden"
 		style="height:640px"
 	>
 		<!-- NFT Image side-->
