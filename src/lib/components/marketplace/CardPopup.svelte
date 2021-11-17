@@ -15,7 +15,7 @@
 
 	<!-- Modal -->
 	<div
-		class="bg-white w-full lg:w-2/3  mx-auto rounded-xl shadow-xl z-50 overflow-y-auto flex flex-col md:flex-row basis"
+		class="bg-white w-full lg:w-2/3  mx-auto rounded-xl shadow-xl z-50 flex flex-col md:flex-row overflow-y-hidden"
 		style="height:640px"
 	>
 		<!-- NFT Image side-->
@@ -51,7 +51,7 @@
 			<div class="h-px w-full mt-1 bg-color-black bg-opacity-30" />
 
 			<!-- Selected Tab Content -->
-			<div>
+			<div class="py-5 h-full">
 				{#if tab == 0}
 					<CardInfoTab />
 				{:else if tab == 1}
