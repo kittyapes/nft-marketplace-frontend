@@ -5,7 +5,7 @@
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
 	import CardInfoPopup from '$lib/components/marketplace/CardPopup.svelte';
 
-	import { ApolloClient, InMemoryCache, gql } from '@apollo/client/core';
+	import { ApolloClient, InMemoryCache, gql } from '@apollo/client/core/core.cjs';
 	import { setClient } from 'svelte-apollo';
 	import { popupOpen } from '../../../stores/marketplace';
 
