@@ -3,6 +3,7 @@
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
+	import CardInfoPopup from '$lib/components/marketplace/CardPopup.svelte';
 
 	import { ApolloClient, InMemoryCache, gql } from '@apollo/client/core';
 	import { setClient } from 'svelte-apollo';
@@ -18,6 +19,7 @@
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row">
+	<CardInfoPopup />
 	<Sidebar bind:isOpen={sidebarOpen} />
 
 	<div
