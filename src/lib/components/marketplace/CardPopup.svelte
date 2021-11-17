@@ -1,5 +1,9 @@
 <script>
 	import TabSwitcher from './CardPopupTabSwitcher.svelte';
+	import CardInfoTab from './CardInfoTab.svelte';
+	import CardTradeTab from './CardTradeTab.svelte';
+	import CardHistoryTab from './CardHistoryTab.svelte';
+
 	import Popupclose from '../icons/popupclose.icon.svelte';
 
 	let tab = 0;
@@ -47,7 +51,15 @@
 			<div class="h-px w-full mt-1 bg-color-black bg-opacity-30" />
 
 			<!-- Selected Tab Content -->
-			<div>{tab}</div>
+			<div>
+				{#if tab == 0}
+					<CardInfoTab />
+				{:else if tab == 1}
+					<CardTradeTab />
+				{:else if tab == 2}
+					<CardHistoryTab />
+				{/if}
+			</div>
 		</div>
 	</div>
 </div>
