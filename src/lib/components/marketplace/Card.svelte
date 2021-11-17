@@ -1,6 +1,7 @@
 <script>
 	import { fetchNFTfromURI } from '$lib/api/getNFT';
 	import { fade } from 'svelte/transition';
+	import { popupOpen } from '../../../../stores/marketplace';
 
 	export let uri = '';
 </script>
@@ -11,6 +12,7 @@
 	<div
 		class="w-56 min-h-80 rounded-xl border border-gray-400 cursor-pointer transition-all hover:scale-105"
 		transition:fade={{ duration: 500 }}
+		on:click={() => popupOpen.set(true)}
 	>
 		<div class="w-full justify-end flex items-center gap-2 pt-3 px-3">
 			<img src="/marketplace/heart.svg" alt="heart" />

@@ -7,6 +7,7 @@
 
 	import { ApolloClient, InMemoryCache, gql } from '@apollo/client/core';
 	import { setClient } from 'svelte-apollo';
+	import { popupOpen } from '../../../stores/marketplace';
 
 	const client = new ApolloClient({
 		uri: 'https://api.thegraph.com/subgraphs/name/hysmagus/waifu',
@@ -19,7 +20,10 @@
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row">
-	<CardInfoPopup />
+	{#if $popupOpen}
+		<CardInfoPopup />
+	{/if}
+
 	<Sidebar bind:isOpen={sidebarOpen} />
 
 	<div

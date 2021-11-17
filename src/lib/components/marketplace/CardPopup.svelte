@@ -5,6 +5,7 @@
 	import CardHistoryTab from './CardHistoryTab.svelte';
 
 	import Popupclose from '../icons/popupclose.icon.svelte';
+	import { popupOpen } from '../../../../stores/marketplace';
 
 	let tab = 0;
 </script>
@@ -42,7 +43,7 @@
 				<TabSwitcher bind:selectedTab={tab} />
 
 				<!-- Close button-->
-				<button>
+				<button on:click={() => popupOpen.set(false)}>
 					<Popupclose />
 				</button>
 			</div>
