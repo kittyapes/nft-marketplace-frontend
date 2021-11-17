@@ -1,5 +1,5 @@
-<div class="flex flex-grow {$$props.class}">
-	<div class="container flex justify-around">
+<div class="flex-grow {$$props.class}">
+	<div class="container flex justify-around w-full mx-auto">
 		<slot />
 	</div>
 </div>

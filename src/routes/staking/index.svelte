@@ -9,10 +9,10 @@
 	});
 </script>
 
-<Container>
+<Container class="my-32">
 	<ConvertYourTokens />
 
-	<div class="flex-grow flex flex-col items-center justify-center mt-16">
+	<div class="max-w-xl flex flex-col items-center justify-center mt-8">
 		<div class="font-medium text-3xl text-center mb-6">
 			Connect your wallet <br /> to continue
 		</div>
