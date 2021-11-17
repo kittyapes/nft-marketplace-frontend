@@ -5,7 +5,7 @@
 	import CardHistoryTab from './CardHistoryTab.svelte';
 
 	import Popupclose from '../icons/popupclose.icon.svelte';
-	import { popupOpen } from '../../../../stores/marketplace';
+	import { popupOpen, selectedCard } from '../../../../stores/marketplace';
 
 	let tab = 0;
 </script>
@@ -24,14 +24,16 @@
 			<div class="m-10 text-center">
 				<div class=" w-72 h-72 flex items-center justify-center">
 					<img
-						src="https://databasewaifu.herokuapp.com/images/6"
+						src={$selectedCard.image}
 						class="max-w-full max-h-full shadow-xl rounded-xl"
 						alt="card artwork"
 					/>
 				</div>
 
 				<!-- NFT Name and ID-->
-				<div class="font-bold text-lg mt-4 opacity-70">Chillmelon #2234</div>
+				<div class="font-bold text-lg mt-4 opacity-70">
+					{$selectedCard.name} #{$selectedCard.id}
+				</div>
 			</div>
 		</div>
 

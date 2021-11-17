@@ -1,6 +1,7 @@
 <script>
 	import { fade } from 'svelte/transition';
 	import RoundedButton from '../RoundedButton.svelte';
+	import { selectedCard } from '../../../../stores/marketplace';
 </script>
 
 <div in:fade={{ duration: 300 }} class="h-full flex flex-col justify-between">
@@ -16,14 +17,14 @@
 				src="https://images.generated.photos/5Lc44DqxkR5Mhtm9SaQZgi8KBe6f0Lga7HkJAN54sGI/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92Ml8w/NTc4MDI3LmpwZw.jpg"
 			/>
 
-			<span class="text-color-purple">@WAIFUlover69</span>
+			<span class="text-color-purple">@{$selectedCard.artist}</span>
 		</div>
 
 		<!-- Edition -->
 		<div class="w-full flex gap-x-2 items-center mt-5">
 			<span class="text-sm text-color-black opacity-70">Edition:</span>
 
-			<span class="">18 of 35</span>
+			<span class="">{$selectedCard.supply} of {$selectedCard.maxSupply}</span>
 		</div>
 
 		<!-- External Link -->

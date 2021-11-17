@@ -4,6 +4,7 @@ export interface NftListing {
 	image: string;
 	artist: string;
 	price: string;
+	supply: number;
 }
 
 export async function fetchNFTfromURI(uri: string): Promise<NftListing> {
@@ -15,7 +16,8 @@ export async function fetchNFTfromURI(uri: string): Promise<NftListing> {
 				name: data.name,
 				image: data.image,
 				artist: data.artist,
-				price: data.price
+				price: data.price,
+				supply: parseInt(data.supply)
 			};
 		});
 }

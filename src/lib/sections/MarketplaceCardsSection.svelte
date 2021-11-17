@@ -26,7 +26,7 @@
 		Loading..
 	{:else if $cards.data}
 		{#each $cards.data.cards as _card}
-			<Card uri={_card.uri} />
+			<Card uri={_card.uri} maxSupply={_card.maxSupply} />
 		{/each}
 	{/if}
 </div>
