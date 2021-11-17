@@ -41,4 +41,9 @@
 	.rounded-gradient {
 		@apply bg-gradient-to-r from-color-purple to-color-blue uppercase font-semibold rounded-2xl text-white;
 	}
+
+	.rounded-gradient {
+		@apply rounded-full px-8 py-4 text-white font-semibold;
+		background: linear-gradient(90deg, #8e77f7 -32.32%, rgba(142, 119, 247, 0.05) 113.47%), #67d4f8;
+	}
 </style>
