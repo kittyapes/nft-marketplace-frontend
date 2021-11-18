@@ -33,9 +33,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@apollo/client": "^3.4.17",
 		"@tailwindcss/aspect-ratio": "^0.3.0",
 		"graphql": "^16.0.1",
-		"svelte-apollo": "^0.4.0"
+		"graphql-request": "^3.6.1"
 	}
 }

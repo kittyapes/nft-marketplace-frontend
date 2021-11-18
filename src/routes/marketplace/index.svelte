@@ -5,16 +5,7 @@
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
 	import CardInfoPopup from '$lib/components/marketplace/CardPopup.svelte';
 
-	import { ApolloClient, InMemoryCache, gql } from '@apollo/client/core/core.cjs';
-	import { setClient } from 'svelte-apollo';
 	import { popupOpen } from '../../../stores/marketplace';
-
-	const client = new ApolloClient({
-		uri: 'https://api.thegraph.com/subgraphs/name/hysmagus/waifu',
-		cache: new InMemoryCache()
-	});
-
-	setClient(client);
 
 	let sidebarOpen;
 </script>
