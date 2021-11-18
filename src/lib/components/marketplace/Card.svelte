@@ -1,7 +1,12 @@
 <script>
 	import { fetchNFTfromURI } from '$lib/api/getNFT';
 	import { fade } from 'svelte/transition';
-	import { popupOpen, selectedCard, statusFilters } from '../../../../stores/marketplace';
+	import {
+		popupOpen,
+		selectedCard,
+		statusFilters,
+		priceFilters
+	} from '../../../../stores/marketplace';
 	import StatusFilter from './StatusFilter.svelte';
 
 	export let uri = '';
@@ -32,6 +37,22 @@
 	// 		});
 	// 	});
 	// }
+
+	$: {
+		data.then((res) => {
+			if (
+				$priceFilters.min < $priceFilters.max &&
+				$priceFilters.min != 0 &&
+				$priceFilters.max != 0
+			) {
+				if (parseInt(res.price) < $priceFilters.min || parseInt(res.price) > $priceFilters.max) {
+					hidden = true;
+				} else {
+					hidden = false;
+				}
+			}
+		});
+	}
 </script>
 
 {#await data}

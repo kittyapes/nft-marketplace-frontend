@@ -7,3 +7,4 @@ export const selectedCard = writable<any>(); // TODO add types
 
 // Filters
 export const statusFilters = writable<any>(CARD_STATUSES);
+export const priceFilters = writable<{ min: number; max: number }>({ min: 0, max: 0 });

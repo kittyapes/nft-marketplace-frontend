@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Card from '$lib/components/marketplace/Card.svelte';
-	import { selectedCard, statusFilters } from '../../../stores/marketplace';
 	import { onMount } from 'svelte';
 	import { request, gql } from 'graphql-request';
 

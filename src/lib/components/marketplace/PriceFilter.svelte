@@ -1,5 +1,16 @@
 <script>
 	import Dollar from '../icons/dollar.icon.svelte';
+	import { priceFilters } from '../../../../stores/marketplace';
+
+	let min;
+	let max;
+
+	const updateValues = () => {
+		priceFilters.set({
+			min: min || 0,
+			max: max || 0
+		});
+	};
 </script>
 
 <div>
@@ -46,13 +57,19 @@
 
 	<div class="w-full flex justify-between items-center gap-3 mt-4">
 		<input
+			type="number"
 			class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4"
 			placeholder="MIN"
+			bind:value={min}
+			on:keyup={updateValues}
 		/>
 		TO
 		<input
+			type="number"
 			class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4"
 			placeholder="MAX"
+			bind:value={max}
+			on:keyup={updateValues}
 		/>
 	</div>
 </div>
