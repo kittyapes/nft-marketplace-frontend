@@ -1,3 +1,4 @@
+import { CARD_STATUSES } from '../../ts/constants/marketplace';
 export interface NftListing {
 	id: string;
 	name: string;
@@ -5,6 +6,7 @@ export interface NftListing {
 	artist: string;
 	price: string;
 	supply: number;
+	status: string;
 }
 
 export async function fetchNFTfromURI(uri: string): Promise<NftListing> {
@@ -16,8 +18,11 @@ export async function fetchNFTfromURI(uri: string): Promise<NftListing> {
 				name: data.name,
 				image: data.image,
 				artist: data.artist,
-				price: data.price,
-				supply: parseInt(data.supply)
+				// TODO: IMPORTANT: temporarily adding a random value as cost as a placeholder
+				price: data.price || Math.abs(Math.floor(Math.random() * (10 - 1000 + 1) + 10)),
+				supply: parseInt(data.supply),
+				// TODO: IMPORTANT: Randomly adding a status for filters
+				status: CARD_STATUSES[Math.floor(Math.random() * CARD_STATUSES.length)]
 			};
 		});
 }

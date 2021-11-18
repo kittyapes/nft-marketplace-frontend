@@ -5,7 +5,7 @@
 
 	const GET_CARDS = gql`
 		query ($numberToSkip: Int!) {
-			cards(first: 12, skip: $numberToSkip, orderBy: isAvailable, orderDirection: desc) {
+			cards(first: 30, skip: $numberToSkip, orderBy: isAvailable, orderDirection: desc) {
 				id
 				amount
 				totalSupply
