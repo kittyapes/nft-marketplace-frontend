@@ -1,8 +1,16 @@
 <script>
+	import { statusFilters } from '../../../../stores/marketplace';
+	export let id;
 	let selected = false;
 
 	let updateSelected = () => {
-		selected = !selected;
+		if (!selected) {
+			$statusFilters[id].selected = true;
+			selected = true;
+		} else {
+			$statusFilters[id].selected = false;
+			selected = false;
+		}
 	};
 </script>
 

@@ -22,7 +22,7 @@
 			!sidebarOpen ? 'md:ml-24' : 'md:ml-72'
 		} transform transition-all duration-200`}
 	>
-		<div class="w-full flex flex-row gap-5 text-xs">
+		<div class="w-full flex flex-row gap-5 text-xs z-0">
 			<button class="text-color-purple font-bold underline">MARKET</button>
 			<div class="w-px h-10 bg-gray-300" />
 

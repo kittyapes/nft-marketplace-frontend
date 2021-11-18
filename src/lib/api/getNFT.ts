@@ -22,7 +22,7 @@ export async function fetchNFTfromURI(uri: string): Promise<NftListing> {
 				price: data.price || Math.abs(Math.floor(Math.random() * (10 - 1000 + 1) + 10)),
 				supply: parseInt(data.supply),
 				// TODO: IMPORTANT: Randomly adding a status for filters
-				status: CARD_STATUSES[Math.floor(Math.random() * CARD_STATUSES.length)]
+				status: CARD_STATUSES[Math.floor(Math.random() * CARD_STATUSES.length)]['status']
 			};
 		});
 }

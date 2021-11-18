@@ -1,24 +1,46 @@
 <script>
 	import { fetchNFTfromURI } from '$lib/api/getNFT';
 	import { fade } from 'svelte/transition';
-	import { popupOpen, selectedCard } from '../../../../stores/marketplace';
+	import { popupOpen, selectedCard, statusFilters } from '../../../../stores/marketplace';
+	import StatusFilter from './StatusFilter.svelte';
 
 	export let uri = '';
 	export let maxSupply = 0;
+
+	let hidden = false;
+
+	let data = fetchNFTfromURI(uri.replace('radiant-falls-54169', 'databasewaifu'));
 
 	let openPopup = (_data) => {
 		popupOpen.set(true);
 		selectedCard.set({ ..._data, maxSupply });
 		console.log($selectedCard);
 	};
+
+	// brain.exe stopped working
+	// $: {
+	// 	data.then((res) => {
+	// 		statusFilters.subscribe((el) => {
+	// 			for (let idx in el) {
+	// 				if (el[idx].status == res.status && el[idx].selected) {
+	// 					hidden = false;
+	// 					break;
+	// 				} else {
+	// 					hidden = true;
+	// 				}
+	// 			}
+	// 		});
+	// 	});
+	// }
 </script>
 
-{#await fetchNFTfromURI(uri.replace('radiant-falls-54169', 'databasewaifu'))}
+{#await data}
 	<div class="w-56 h-80 rounded-xl border bg-gray-200" />
 {:then data}
 	<div
 		class="w-56 min-h-80 rounded-xl border border-gray-400 cursor-pointer transition-all hover:scale-105"
 		transition:fade={{ duration: 500 }}
+		class:hidden
 		on:click={() => openPopup(data)}
 	>
 		<div class="w-full justify-end flex items-center gap-2 pt-3 px-3">
