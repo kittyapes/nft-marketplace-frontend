@@ -2,8 +2,6 @@
 	import { fade } from 'svelte/transition';
 	import CardTradeRow from './CardTradeRow.svelte';
 	import RoundedButton from '../RoundedButton.svelte';
-
-	import { selectedCard } from '../../../../stores/marketplace';
 </script>
 
 <div class="w-full h-full flex flex-col" in:fade={{ duration: 300 }}>
