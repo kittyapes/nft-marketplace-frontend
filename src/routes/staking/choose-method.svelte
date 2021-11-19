@@ -4,6 +4,20 @@
 	import ConvertYourTokens from './_lib/ConvertYourTokens.svelte';
 	import Pill from './_lib/Pill.svelte';
 	import Button from '$lib/components/Button.svelte';
+
+	let selectedMode = 'migrate';
+
+	function selectMode(mode) {
+		selectedMode = mode;
+	}
+
+	const getVariant = (selectedMode, mode) => (mode === selectedMode ? 'selected' : 'default');
+
+	const modes = [
+		['unstake', 'Unstake'],
+		['migrate', 'Migrate to Hinata'],
+		['convert', 'Convert']
+	];
 </script>
 
 <Container class="my-32">
@@ -19,9 +33,13 @@
 		</p>
 
 		<div class="flex mt-8 gap-8">
-			<Circle text="Unstake" />
-			<Circle text="Migrate to Hinata" variant="selected" />
-			<Circle text="Convert" />
+			{#each modes as [mode, label]}
+				<Circle
+					text={label}
+					variant={getVariant(selectedMode, mode)}
+					on:click={() => selectMode(mode)}
+				/>
+			{/each}
 		</div>
 
 		<div class="separator mt-12" />
