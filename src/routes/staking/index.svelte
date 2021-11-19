@@ -1,5 +1,7 @@
 <script>
 	import Button from '$lib/components/Button.svelte';
+	import ConnectWalletPopup from '$lib/components/ConnectWalletPopup.svelte';
+	import Modal from '$lib/components/Modal.svelte';
 	import { setLayoutOptions } from '$lib/utils/layout';
 	import Container from './_lib/Container.svelte';
 	import ConvertYourTokens from './_lib/ConvertYourTokens.svelte';
@@ -7,6 +9,8 @@
 	setLayoutOptions({
 		slotType: 'flex'
 	});
+
+	let showWalletPopup = false;
 </script>
 
 <Container class="my-32">
@@ -16,6 +20,13 @@
 		<div class="font-medium text-3xl text-center mb-6">
 			Connect your wallet <br /> to continue
 		</div>
-		<Button variant="rounded-black">Connect Wallet</Button>
+		<Button variant="rounded-black" on:click={() => (showWalletPopup = true)}>Connect Wallet</Button
+		>
 	</div>
 </Container>
+
+{#if showWalletPopup}
+	<Modal on:close={() => (showWalletPopup = false)}>
+		<ConnectWalletPopup />
+	</Modal>
+{/if}
