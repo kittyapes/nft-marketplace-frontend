@@ -16,7 +16,7 @@
 		</div>
 	</div>
 
-	<div>
+	<div class="pr-2">
 		<Externallink />
 	</div>
 </div>
