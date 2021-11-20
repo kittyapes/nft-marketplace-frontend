@@ -4,7 +4,7 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import { setLayoutOptions } from '$lib/utils/layout';
 	import Container from './_lib/Container.svelte';
-	import ConvertYourTokens from './_lib/ConvertYourTokens.svelte';
+	import LeftPane from './_lib/LeftPane.svelte';
 
 	setLayoutOptions({
 		slotType: 'flex'
@@ -14,7 +14,7 @@
 </script>
 
 <Container class="my-32">
-	<ConvertYourTokens />
+	<LeftPane />
 
 	<div class="max-w-xl flex flex-col items-center justify-center mt-8">
 		<div class="font-medium text-3xl text-center mb-6">

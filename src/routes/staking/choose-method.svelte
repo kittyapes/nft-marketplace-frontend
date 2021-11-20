@@ -1,8 +1,7 @@
 <script>
 	import Container from './_lib/Container.svelte';
-	import ConvertYourTokens from './_lib/ConvertYourTokens.svelte';
-	import EarnYourNfts from './_lib/EarnYourNfts.svelte';
 	import HinataStepOne from './_lib/HinataStepOne.svelte';
+	import LeftPane from './_lib/LeftPane.svelte';
 	import Pill from './_lib/Pill.svelte';
 	import V1StepOne from './_lib/V1StepOne.svelte';
 
@@ -10,11 +9,7 @@
 </script>
 
 <Container class="my-32">
-	{#if mode === 'v1'}
-		<ConvertYourTokens />
-	{:else}
-		<EarnYourNfts />
-	{/if}
+	<LeftPane variant={(mode === 'v1' && 'convert-your-tokens') || 'earn-your-nfts'} />
 
 	<div class="flex-grow flex flex-col items-center max-w-xl">
 		<Pill bind:mode />
