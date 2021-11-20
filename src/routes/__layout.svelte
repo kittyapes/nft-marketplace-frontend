@@ -4,6 +4,10 @@
 	import '../app.css';
 </script>
 
+<svelte:head>
+	<title>Hinata</title>
+</svelte:head>
+
 <Nav />
 <slot />
 <Footer />

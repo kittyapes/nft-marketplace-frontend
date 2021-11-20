@@ -36,5 +36,6 @@
 		"@tailwindcss/aspect-ratio": "^0.3.0",
 		"graphql": "^16.0.1",
 		"graphql-request": "^3.6.1"
-	}
+	},
+	"private": true
 }
