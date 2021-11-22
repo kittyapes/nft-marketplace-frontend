@@ -1,9 +1,18 @@
 <div class="w-full flex h-auto">
 	<div class="w-1/3 flex items-center justify-center">
 		<div class="w-80 h-80 bg-gray-100 m-4 p-6">
-			<div class="w-full h-full flex items-center justify-center flex-col ">
-				RANDOM
-				<div class="text-9xl text-color-purple">?</div>
+			<div class="w-full h-full flex items-center justify-center flex-col">
+				<div
+					class="mt-2 pt-1 pb-3 px-3 border-color-black border border-opacity-30 rounded-lg w-44 flex flex-col items-center"
+				>
+					<div class="text-xs mb-1 font-bold text-color-black">RANDOM</div>
+
+					<div
+						class="w-full h-52 bg-gray-200 rounded-lg flex items-center justify-center text-9xl text-color-purple"
+					>
+						?
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
