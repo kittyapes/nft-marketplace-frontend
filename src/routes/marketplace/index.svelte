@@ -1,5 +1,6 @@
 <script>
 	import Card from '$lib/components/marketplace/Card.svelte';
+	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
@@ -22,19 +23,7 @@
 			!sidebarOpen ? 'md:ml-24' : 'md:ml-72'
 		} transform transition-all duration-200`}
 	>
-		<div class="w-full flex flex-row gap-5 text-xs z-0">
-			<button class="text-color-purple font-bold underline">MARKET</button>
-			<div class="w-px h-10 bg-gray-300" />
-
-			<button class="font-bold">DROPS</button>
-			<div class="w-px h-10 bg-gray-300" />
-
-			<button class="font-bold">POWAH</button>
-			<div class="w-px h-10 bg-gray-300" />
-
-			<button class="font-bold">PHYSICAL NFT</button>
-			<div class="w-px h-10 bg-gray-300" />
-		</div>
+		<MainTabs tab={0} />
 
 		<div class="w-full h-px bg-gray-400 mt-7" />
 
