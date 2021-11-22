@@ -1,7 +1,6 @@
 <script>
-	import Card from '$lib/components/marketplace/Card.svelte';
 	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
-	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
+	import Sidebar from '$lib/components/drops/DropsSidebar.svelte';
 	import DropsSection from '$lib/sections/MarketplaceDropsSection.svelte';
 	import CardInfoPopup from '$lib/components/marketplace/CardPopup.svelte';
 
