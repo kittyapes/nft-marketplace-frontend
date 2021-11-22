@@ -4,7 +4,7 @@
 			<div class="w-full h-full flex items-center justify-center flex-col">
 				<div class="mt-2 w-full h-full aspect-w-1">
 					<img
-						src="https://databasewaifu.herokuapp.com/images/15"
+						src="https://hinatawaifu.mypinata.cloud/ipfs/QmcE7yeyCnaMr4dQwXE8kELnUGBqhN1ALDvynhZYRnBwbC/12.gif"
 						alt="ape"
 						class="object-scale-down"
 					/>

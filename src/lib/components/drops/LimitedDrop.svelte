@@ -4,7 +4,7 @@
 			<div class="w-full h-full flex items-center justify-center flex-col">
 				<div class="mt-2 w-full h-full aspect-w-1">
 					<img
-						src="https://databasewaifu.herokuapp.com/images/15"
+						src="https://hinatawaifu.mypinata.cloud/ipfs/QmcE7yeyCnaMr4dQwXE8kELnUGBqhN1ALDvynhZYRnBwbC/7.gif"
 						alt="ape"
 						class="object-scale-down"
 					/>
@@ -15,7 +15,7 @@
 
 	<!-- Content-->
 	<div class="flex-grow m-4 pl-4 border-l-2">
-		<div class="text-xs uppercase font-bold text-color-black opacity-70">AUCTION</div>
+		<div class="text-xs uppercase font-bold text-color-black opacity-70">Limited Edition</div>
 		<div class="text-lg mt-1 font-bold text-color-black">The Pirate</div>
 
 		<div class="text-xs opacity-70 mt-6 text-color-black">CREATED BY</div>
@@ -28,25 +28,25 @@
 			<span>@WAIFULover69</span>
 		</div>
 
-		<div class="text-xs opacity-70 mt-6 text-color-black">AUCTION ENDS IN</div>
+		<div class="text-xs opacity-70 mt-6 text-color-black">DROP ENDS IN</div>
 		<div class="text-base mt-1 font-bold text-color-black">1DAY 16H 4M 33S</div>
 
 		<div class="mt-4 w-full border-b-2" />
 
-		<div class="text-xs opacity-70 mt-2 text-color-black">INITIAL PRICE</div>
+		<div class="text-xs opacity-70 mt-2 text-color-black uppercase">Copies Remaining</div>
 		<div class="text-base font-bold text-color-black">2.1 Ξ</div>
 
 		<div class="mt-3 flex flex-row">
 			<div
 				class="w-36 border border-black rounded-full flex items-center justify-center p-2 text-sm m-px"
 			>
-				BID
+				CLAIM
 			</div>
 
 			<div
 				class="w-36 border rounded-full text-white  flex items-center justify-center p-2 text-sm -ml-9 bg-gradient-to-r from-color-purple to-color-blue"
 			>
-				$5500 | 2.1 Ξ
+				350 WAIFU
 			</div>
 		</div>
 	</div>
