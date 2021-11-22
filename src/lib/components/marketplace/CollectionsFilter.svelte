@@ -1,5 +1,5 @@
 <script>
-	import Search from '../icons/search.icon.svelte';
+	import Search from '$lib/icons//search.icon.svelte';
 </script>
 
 <div class="relative text-gray-600 focus-within:text-gray-400">
