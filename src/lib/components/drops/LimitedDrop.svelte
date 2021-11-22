@@ -1,4 +1,5 @@
 <div class="w-full flex h-auto">
+	<!-- Image -->
 	<div class="w-1/3 flex items-center justify-center">
 		<div class="w-80 h-80 bg-gray-100 m-4 p-6">
 			<div class="w-full h-full flex items-center justify-center flex-col">
