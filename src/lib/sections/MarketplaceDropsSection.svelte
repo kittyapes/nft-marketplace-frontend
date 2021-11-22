@@ -1,7 +1,11 @@
 <script>
-	import Drop from '$lib/components/drops/Drop.svelte';
+	import QueueDrop from '$lib/components/drops/QueueDrop.svelte';
+	import AuctionDrop from '$lib/components/drops/AuctionDrop.svelte';
 </script>
 
 <div class="w-full">
-	<Drop />
+	<QueueDrop />
+
+	<div class="w-full h-1 border-b-2" />
+	<AuctionDrop />
 </div>
