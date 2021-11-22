@@ -1,3 +1,9 @@
+<script>
+	export let name = '';
+	export let description = '';
+	export let timeLeft = '';
+</script>
+
 <div class="w-full flex h-auto bg-gray-50 ">
 	<div class="w-1/3 flex items-center justify-center">
 		<div class="w-80 h-80 relative">
@@ -44,15 +50,14 @@
 
 	<!-- Content-->
 	<div class="flex-grow m-4 pl-4 border-l-2 flex flex-col justify-center">
-		<div class="text-xs uppercase font-bold text-color-black opacity-70">waifu series 15</div>
+		<div class="text-xs uppercase font-bold text-color-black opacity-70">{name}</div>
 		<div class="mt-4 w-1/2 text-color-black text-sm">
-			The next batch of NFTs will include four original animated artworks available to DAO members
-			only.
+			{description}
 		</div>
 
 		<div class="flex items-baseline gap-3 mt-8">
 			<div class="text-xs opacity-70 text-color-black uppercase">Dropping Soon</div>
-			<div class="font-bold text-color-black">5H 6M 22S</div>
+			<div class="font-bold text-color-black">{timeLeft}</div>
 		</div>
 
 		<div class="mt-3 flex flex-row">
