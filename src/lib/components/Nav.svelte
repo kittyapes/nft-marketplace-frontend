@@ -1,6 +1,6 @@
-<script>
+<!-- <script>
 	import Search from './Search.svelte';
-</script>
+</script> -->
 
 <div class="px-8 flex gap-x-8 items-center h-16">
 	<!-- Logo -->
@@ -8,30 +8,30 @@
 		<img src="/img/logo/logo.svg" alt="Hinata logo." />
 	</a>
 
-	<Search />
+	<!-- <Search /> -->
 
 	<!-- Flex filler -->
 	<div class="flex-grow" />
 
 	<!-- Marketplace -->
-	<a
+	<!-- <a
 		id="marketplace-link"
 		href="/marketplace"
 		class="relative text-md uppercase font-semibold bg-gradient-to-r bg-clip-text text-transparent from-color-purple to-color-blue"
 	>
 		Marketplace
-	</a>
+	</a> -->
 
 	<!-- Staking -->
-	<a href="/staking" class="relative text-md uppercase font-semibold">Staking</a>
+	<!-- <a href="/staking" class="relative text-md uppercase font-semibold">Staking</a> -->
 
 	<!-- Create -->
-	<a
+	<!-- <a
 		href="/create"
 		class="relative text-md uppercase font-semibold bg-gradient-to-r from-color-purple to-color-blue text-white h-full px-16 grid place-items-center"
 	>
 		Create
-	</a>
+	</a> -->
 
 	<!-- Profile -->
 	<a href="/profile" class="relative text-md font-semibold whitespace-nowrap">Your Name</a>
