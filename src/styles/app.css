@@ -13,5 +13,9 @@ body {
 	height: 100%;
 }
 
+.transition-btn {
+	@apply transition duration-200 transform active:scale-95;
+}
+
 @tailwind components;
 @tailwind utilities;

@@ -2,23 +2,18 @@
 	export let variant: 'square' | 'rounded-black' | 'rounded-outline' = 'square';
 </script>
 
-<button class={variant} on:click>
+<button class="{variant} transition-btn" on:click>
 	<slot />
 </button>
 
 <style>
 	button {
-		@apply transition duration-200;
 		width: var(--width, 220px);
 		border-radius: var(--border-radius, 9999px);
 		padding-top: var(--py, 1rem);
 		padding-bottom: var(--py, 1rem);
 		padding-left: var(--px, 2rem);
 		padding-right: var(--px, 2rem);
-	}
-
-	button:active {
-		@apply transform scale-95;
 	}
 
 	.square {
