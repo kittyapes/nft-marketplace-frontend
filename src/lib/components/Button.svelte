@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let variant: 'square' | 'rounded-black' | 'rounded-outline' = 'square';
+	export let variant: 'square' | 'rounded-black' | 'rounded-outline' | 'rounded-shadow' = 'square';
 </script>
 
 <button class="{variant} transition-btn" on:click>
@@ -26,5 +26,10 @@
 
 	.rounded-outline {
 		@apply border-2 border-color-black uppercase font-semibold;
+	}
+
+	.rounded-shadow {
+		@apply bg-white uppercase font-semibold text-color-black;
+		box-shadow: 0px 2px 10px rgba(122, 122, 122, 0.2);
 	}
 </style>
