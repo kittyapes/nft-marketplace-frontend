@@ -1,9 +1,11 @@
 <script>
 	import RoundedButton from '../RoundedButton.svelte';
+	import { fade } from 'svelte/transition';
 </script>
 
 <div
 	class="w-full max-w-3xl m-auto bg-black bg-opacity-5 container border-4 border-black px-4 border-opacity-20 mt-12 py-11 rounded-2xl"
+	in:fade
 >
 	<div class="w-full max-w-md m-auto text-left">
 		<div class="text-4xl text-color-black font-bold">Claim your tokens</div>

@@ -3,7 +3,7 @@
 	import ConnectWalletBanner from '$lib/components/airdrop/ConnectWalletBanner.svelte';
 	import AirdropDistributionSection from '$lib/sections/AirdropDistributionSection.svelte';
 
-	let walletConnected = true;
+	let walletConnected = false;
 </script>
 
 <div class="w-full min-h-full px-6">
@@ -42,7 +42,7 @@
 		{#if walletConnected}
 			<ClaimTokens />
 		{:else}
-			<ConnectWalletBanner />
+			<ConnectWalletBanner bind:walletConnected />
 		{/if}
 
 		<!-- Token Distribution -->
