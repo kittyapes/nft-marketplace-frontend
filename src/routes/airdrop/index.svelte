@@ -2,6 +2,7 @@
 	import ClaimTokens from '$lib/components/airdrop/ClaimTokens.svelte';
 	import ConnectWalletBanner from '$lib/components/airdrop/ConnectWalletBanner.svelte';
 	import AirdropDistributionSection from '$lib/sections/AirdropDistributionSection.svelte';
+	import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
 
 	let walletConnected = false;
 </script>
@@ -32,6 +33,8 @@
 				Platform usage claims will begin once the app is open to all.
 			</span>
 		</div>
+
+		<PlatformUsage />
 
 		<div class="w-full mt-28 font-bold text-5xl">Community Airdrop</div>
 

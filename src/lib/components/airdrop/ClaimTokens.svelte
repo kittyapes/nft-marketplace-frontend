@@ -1,6 +1,7 @@
 <script>
 	import RoundedButton from '../RoundedButton.svelte';
 	import { fade } from 'svelte/transition';
+	import LockupPeriod from './LockupPeriod.svelte';
 </script>
 
 <div
@@ -63,11 +64,7 @@
 		<div class="flex gap-6 mt-7 items-center">
 			<div class="uppercase text-left">lockup period</div>
 
-			<div class="bg-white rounded-lg flex font-bold">
-				<div class="py-2 px-5 border-r-2">3MO</div>
-				<div class="py-2 px-5 border-r-2 text-color-blue">1YR</div>
-				<div class="py-2 px-5">2YR</div>
-			</div>
+			<LockupPeriod />
 		</div>
 
 		<div class="mt-7">
