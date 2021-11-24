@@ -28,6 +28,6 @@
 	</div>
 
 	<div class="w-1/3 absolute z-0 top-12 left-2/4 pl-8">
-		<img src="/img/graphics/airdrop-waifu.png" />
+		<img src="/img/graphics/airdrop-waifu.png" alt="waifu" />
 	</div>
 </div>
