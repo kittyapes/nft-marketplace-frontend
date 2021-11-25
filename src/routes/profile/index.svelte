@@ -1,8 +1,12 @@
 <script>
 	import Button from '$lib/components/Button.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
+	import TabButton from '$lib/components/TabButton.svelte';
 	import Copy from '$lib/icons/copy.svelte';
 	import VerifiedBadge from '$lib/icons/verified-badge.svelte';
+
+	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES', 'HIDDEN'];
+	let selectedTab = 'CREATED NFTS';
 </script>
 
 <div class="h-72 bg-[#D8D8D8]" />
@@ -55,6 +59,14 @@
 		</div>
 	</div>
 </div>
+
+<div class="container mx-auto px-32 mt-8 flex space-x-8">
+	{#each tabs as tab}
+		<TabButton on:click={() => (selectedTab = tab)} selected={selectedTab === tab}>{tab}</TabButton>
+	{/each}
+</div>
+
+<div class="h-px bg-black opacity-30" />
 
 <style>
 	.use-x-separators {
