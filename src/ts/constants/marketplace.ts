@@ -12,3 +12,18 @@ export const CARD_STATUSES = [
 		selected: false
 	}
 ];
+
+export const DROP_STATUSES = [
+	{
+		status: 'Newest',
+		selected: false
+	},
+	{
+		status: 'Oldest',
+		selected: false
+	},
+	{
+		status: 'Ending Soon',
+		selected: false
+	}
+];
