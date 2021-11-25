@@ -71,7 +71,13 @@
 
 <div class="h-px bg-black opacity-30" />
 
-<NftList promise={fetchCreatedNfts()} />
+{#if selectedTab === 'CREATED NFTS'}
+	<NftList promise={fetchCreatedNfts()} />
+{/if}
+
+{#if selectedTab === 'COLLECTED NFTS'}
+	<NftList promise={fetchCreatedNfts()} />
+{/if}
 
 <style>
 	.use-x-separators {

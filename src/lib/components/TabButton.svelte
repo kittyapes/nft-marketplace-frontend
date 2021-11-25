@@ -2,17 +2,13 @@
 	export let selected;
 </script>
 
-<button on:click class:selected>
+<button on:click class:selected class:gradient-text={selected}>
 	<slot />
 </button>
 
 <style>
 	button {
 		@apply relative font-bold h-10;
-	}
-
-	button.selected {
-		@apply bg-gradient-to-r from-color-purple to-color-blue text-transparent bg-clip-text;
 	}
 
 	button::after {

@@ -17,5 +17,9 @@ body {
 	@apply transition duration-200 transform active:scale-95;
 }
 
+.gradient-text {
+	@apply bg-gradient-to-r from-color-purple to-color-blue text-transparent bg-clip-text;
+}
+
 @tailwind components;
 @tailwind utilities;
