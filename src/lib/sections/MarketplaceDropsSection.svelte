@@ -4,6 +4,7 @@
 	import LimitedDrop from '$lib/components/drops/LimitedDrop.svelte';
 	import RandomDrop from '$lib/components/drops/RandomDrop.svelte';
 	import SeriesDrop from '$lib/components/drops/SeriesDrop.svelte';
+	import WaifuDrop from '$lib/components/drops/WaifuDrop.svelte';
 </script>
 
 <div class="w-full">
@@ -12,6 +13,40 @@
 		description="The next batch of NFTs will include four original animated artworks available to DAO members only."
 		timeLeft="5H 6M 22S"
 	/>
+
+	<WaifuDrop
+		image="https://hinatawaifu.mypinata.cloud/ipfs/QmcE7yeyCnaMr4dQwXE8kELnUGBqhN1ALDvynhZYRnBwbC/9.gif"
+		creatorAvatar="https://images.generated.photos/5Lc44DqxkR5Mhtm9SaQZgi8KBe6f0Lga7HkJAN54sGI/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92Ml8w/NTc4MDI3LmpwZw.jpg"
+		creatorUsername="Jun Yun"
+		name="Doge to the Moon"
+		supply={18}
+		totalSupply={35}
+		claimed={18}
+		copies={17}
+		cardType="heilroom"
+		dropType="Limited Edition"
+		price="200 WAIFU + 15 Hi"
+		description="Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. "
+	/>
+
+	<div class="w-full h-1 border-b-2" />
+
+	<WaifuDrop
+		image="https://hinatawaifu.mypinata.cloud/ipfs/QmcE7yeyCnaMr4dQwXE8kELnUGBqhN1ALDvynhZYRnBwbC/6.gif"
+		creatorAvatar="https://images.generated.photos/5Lc44DqxkR5Mhtm9SaQZgi8KBe6f0Lga7HkJAN54sGI/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92Ml8w/NTc4MDI3LmpwZw.jpg"
+		creatorUsername="Jun Yun"
+		name="Bitcoin Santa"
+		supply={18}
+		totalSupply={35}
+		claimed={18}
+		copies={17}
+		cardType="legendary"
+		dropType="Limited Edition"
+		price="200 WAIFU + 15 Hi"
+		description="Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. "
+	/>
+
+	<div class="w-full h-1 border-b-2" />
 
 	<RandomDrop name="Gacha" series="Metagen Mechas" generation="1" copiesAvailable="500" />
 	<div class="w-full h-1 border-b-2" />
@@ -24,6 +59,7 @@
 		currentPosition="402"
 		price="500"
 	/>
+
 	<div class="w-full h-1 border-b-2" />
 
 	<AuctionDrop
