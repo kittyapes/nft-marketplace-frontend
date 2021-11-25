@@ -1,5 +1,8 @@
 <script>
+	import { fetchCreatedNfts } from '$lib/api/fetchCreatedNfts';
+
 	import Button from '$lib/components/Button.svelte';
+	import NftList from '$lib/components/NftList.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import Copy from '$lib/icons/copy.svelte';
@@ -67,6 +70,8 @@
 </div>
 
 <div class="h-px bg-black opacity-30" />
+
+<NftList promise={fetchCreatedNfts()} />
 
 <style>
 	.use-x-separators {
