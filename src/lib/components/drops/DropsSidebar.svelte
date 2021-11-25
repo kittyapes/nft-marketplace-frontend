@@ -3,9 +3,8 @@
 	import Arrow from '$lib/icons/back.icon.svelte';
 	import Filters from '$lib/icons/filters.icon.svelte';
 
-	import StatusFilter from './StatusFilter.svelte';
-	import PriceFilter from './PriceFilter.svelte';
-	import CollectionsFilter from './CollectionsFilter.svelte';
+	import StatusFilter from '../drops/StatusFilter.svelte';
+	import SortByFilter from './SortByFilter.svelte';
 
 	import { slide } from 'svelte/transition';
 
@@ -42,13 +41,9 @@
 
 	{#if isOpen}
 		<div transition:slide={{ duration: 200 }}>
-			<SidebarItem title="Status" iconSrc="/marketplace/status.svg"><StatusFilter /></SidebarItem>
+			<SidebarItem title="Sort By" iconSrc="/marketplace/status.svg"><StatusFilter /></SidebarItem>
 
-			<SidebarItem title="Collections" iconSrc="/marketplace/collections.svg">
-				<CollectionsFilter />
-			</SidebarItem>
-
-			<SidebarItem title="Price" iconSrc="/marketplace/price.svg"><PriceFilter /></SidebarItem>
+			<SidebarItem title="Status" iconSrc="/marketplace/sort.svg"><SortByFilter /></SidebarItem>
 		</div>
 	{/if}
 </div>

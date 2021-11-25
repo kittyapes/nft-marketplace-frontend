@@ -1,9 +1,7 @@
 <script>
-	import Card from '$lib/components/marketplace/Card.svelte';
 	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
-	import Dropdown from '$lib/components/Dropdown.svelte';
-	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
-	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
+	import Sidebar from '$lib/components/drops/DropsSidebar.svelte';
+	import DropsSection from '$lib/sections/MarketplaceDropsSection.svelte';
 	import CardInfoPopup from '$lib/components/marketplace/CardPopup.svelte';
 
 	import { popupOpen } from '../../../stores/marketplace';
@@ -23,20 +21,16 @@
 			!sidebarOpen ? 'md:ml-24' : 'md:ml-72'
 		} transform transition-all duration-200`}
 	>
-		<MainTabs tab={0} />
+		<MainTabs tab={1} />
 
 		<div class="w-full h-px bg-gray-400 mt-7" />
 
 		<div class="w-full flex justify-between mt-3">
-			<div />
-
-			<div class="w-36 ">
-				<Dropdown />
-			</div>
+			<!-- Active filters -->
 		</div>
 
 		<div>
-			<CardsSection />
+			<DropsSection />
 		</div>
 	</div>
 </div>

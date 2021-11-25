@@ -4,7 +4,7 @@
 	import CardTradeTab from './CardTradeTab.svelte';
 	import CardHistoryTab from './CardHistoryTab.svelte';
 
-	import Popupclose from '../icons/popupclose.icon.svelte';
+	import Popupclose from '$lib/icons/popupclose.icon.svelte';
 	import { popupOpen, selectedCard } from '../../../../stores/marketplace';
 
 	let tab = 0;

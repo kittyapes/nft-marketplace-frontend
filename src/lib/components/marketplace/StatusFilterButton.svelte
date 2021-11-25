@@ -5,10 +5,8 @@
 
 	let updateSelected = () => {
 		if (!selected) {
-			$statusFilters[id].selected = true;
 			selected = true;
 		} else {
-			$statusFilters[id].selected = false;
 			selected = false;
 		}
 	};

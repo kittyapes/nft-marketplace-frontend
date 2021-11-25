@@ -1,7 +1,7 @@
 <script>
-	import History from '../icons/history.icon.svelte';
-	import Info from '../icons/info.icon.svelte';
-	import Trade from '../icons/trade.icon.svelte';
+	import History from '$lib/icons/history.icon.svelte';
+	import Info from '$lib/icons/info.icon.svelte';
+	import Trade from '$lib/icons/trade.icon.svelte';
 
 	export let selectedTab = 0;
 </script>
