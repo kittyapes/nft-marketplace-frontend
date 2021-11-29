@@ -5,7 +5,7 @@
 	import CardHistoryTab from './CardHistoryTab.svelte';
 
 	import Popupclose from '$lib/icons/popupclose.icon.svelte';
-	import { popupOpen, selectedCard } from '../../../../stores/marketplace';
+	import { popupOpen, selectedCard } from '$stores/marketplace';
 
 	let tab = 0;
 </script>

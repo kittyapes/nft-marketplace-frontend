@@ -1,12 +1,11 @@
 <script>
-	import Card from '$lib/components/marketplace/Card.svelte';
 	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
 	import CardInfoPopup from '$lib/components/marketplace/CardPopup.svelte';
 
-	import { popupOpen } from '../../../stores/marketplace';
+	import { popupOpen } from '$stores/marketplace';
 
 	let sidebarOpen;
 </script>

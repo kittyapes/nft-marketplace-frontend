@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { fetchNfts } from '$lib/api/exploreMarket';
-	import { fetchFeaturedArtists } from '$lib/api/featuredArtists';
-	import { fetchTopCollections } from '$lib/api/topCollections';
+	import { fetchNfts } from '$utils/api/exploreMarket';
+	import { fetchFeaturedArtists } from '$utils/api/featuredArtists';
+	import { fetchTopCollections } from '$utils/api/topCollections';
 	import Button from '$lib/components/Button.svelte';
 	import CollectionCard from '$lib/components/CollectionCard.svelte';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
