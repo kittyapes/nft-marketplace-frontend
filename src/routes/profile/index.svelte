@@ -2,7 +2,9 @@
 	import { fetchCreatedNfts } from '$lib/api/fetchCreatedNfts';
 
 	import Button from '$lib/components/Button.svelte';
+	import Modal from '$lib/components/Modal.svelte';
 	import NftList from '$lib/components/NftList.svelte';
+	import NftPopup from '$lib/components/NftPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import Copy from '$lib/icons/copy.svelte';
@@ -79,6 +81,9 @@
 	<NftList promise={fetchCreatedNfts()} />
 {/if}
 
+<!-- <Modal>
+	<NftPopup on:close={() => console.log('close popup')} />
+</Modal> -->
 <style>
 	.use-x-separators {
 		@apply relative;

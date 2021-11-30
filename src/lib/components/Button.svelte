@@ -1,8 +1,13 @@
 <script lang="ts">
-	export let variant: 'square' | 'rounded-black' | 'rounded-outline' | 'rounded-shadow' = 'square';
+	export let variant:
+		| 'square'
+		| 'rounded-black'
+		| 'rounded-outline'
+		| 'rounded-shadow'
+		| 'rounded-gradient' = 'square';
 </script>
 
-<button class="{variant} transition-btn" on:click>
+<button class="{variant} {$$props.class} transition-btn" on:click>
 	<slot />
 </button>
 
@@ -31,5 +36,9 @@
 	.rounded-shadow {
 		@apply bg-white uppercase font-semibold text-color-black;
 		box-shadow: 0px 2px 10px rgba(122, 122, 122, 0.2);
+	}
+
+	.rounded-gradient {
+		@apply bg-gradient-to-r from-color-purple to-color-blue uppercase font-semibold rounded-2xl text-white;
 	}
 </style>
