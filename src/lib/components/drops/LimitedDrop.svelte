@@ -29,9 +29,11 @@
 		<div class="text-lg mt-1 font-bold text-color-black">{name}</div>
 
 		<div class="text-xs opacity-70 mt-6 text-color-black">CREATED BY</div>
-		<div class="text-base mt-1 font-bold flex items-center gap-2 text-color-purple">
+		<div class="text-base mt-1 font-bold flex items-center gap-2 ">
 			<img src={creatorAvatar} alt="avatar" class="w-6 h-6 rounded-full" />
-			<span>@{creatorUsername}</span>
+			<span class="text-transparent bg-clip-text bg-gradient-to-r from-color-purple to-color-blue">
+				@{creatorUsername}
+			</span>
 		</div>
 
 		<div class="text-xs opacity-70 mt-6 text-color-black">DROP ENDS IN</div>

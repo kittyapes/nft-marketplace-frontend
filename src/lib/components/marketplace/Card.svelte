@@ -1,13 +1,7 @@
 <script>
-	import { fetchNFTfromURI } from '$lib/api/getNFT';
+	import { fetchNFTfromURI } from '$utils/api/getNFT';
 	import { fade } from 'svelte/transition';
-	import {
-		popupOpen,
-		selectedCard,
-		statusFilters,
-		priceFilters
-	} from '../../../../stores/marketplace';
-	import StatusFilter from './StatusFilter.svelte';
+	import { popupOpen, selectedCard, priceFilters } from '$stores/marketplace';
 
 	export let uri = '';
 	export let maxSupply = 0;

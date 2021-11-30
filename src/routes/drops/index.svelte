@@ -4,7 +4,7 @@
 	import DropsSection from '$lib/sections/MarketplaceDropsSection.svelte';
 	import CardInfoPopup from '$lib/components/marketplace/CardPopup.svelte';
 
-	import { popupOpen } from '../../../stores/marketplace';
+	import { popupOpen } from '$stores/marketplace';
 
 	let sidebarOpen;
 </script>

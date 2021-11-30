@@ -1,5 +1,4 @@
 <script>
-	import { statusFilters } from '../../../../stores/marketplace';
 	export let id;
 	let selected = false;
 
