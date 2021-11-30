@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { CARD_STATUSES } from '../../src/ts/constants/marketplace';
+import { CARD_STATUSES } from '$constants/marketplace';
 
 // popup
 export const popupOpen = writable<boolean>(false);
