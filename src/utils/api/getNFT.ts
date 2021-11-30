@@ -1,4 +1,4 @@
-import { CARD_STATUSES } from '../../ts/constants/marketplace';
+import { CARD_STATUSES } from '$constants/marketplace';
 export interface NftListing {
 	id: string;
 	name: string;
