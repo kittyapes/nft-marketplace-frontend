@@ -2,7 +2,7 @@
 	import Search from './Search.svelte';
 </script> -->
 
-<div class="flex items-center h-16 px-8 gap-x-8">
+<div class="flex items-center h-16 px-8 gap-x-8 fixed w-full z-50 bg-white drop-shadow-lg">
 	<!-- Logo -->
 	<a href="/home">
 		<img src="/img/logo/logo.svg" alt="Hinata logo." />
