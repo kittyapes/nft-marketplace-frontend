@@ -49,7 +49,7 @@
 		{/if}
 
 		<!-- Token Distribution -->
-		<div class="h-screen">
+		<div class="h-screen mb-52">
 			<AirdropDistributionSection />
 		</div>
 	</div>
