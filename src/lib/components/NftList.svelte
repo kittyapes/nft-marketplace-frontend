@@ -6,7 +6,7 @@
 </script>
 
 <div
-	class="grid gap-4 justify-center grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 w-full"
+	class="grid gap-4 p-8 justify-center grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 w-full"
 >
 	{#await promise}
 		Loading...
