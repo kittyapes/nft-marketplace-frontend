@@ -1,6 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
-	import Disconnect from '$lib/icons/disconnect.svelte';
+	import Disconnect from '$icons/disconnect.svelte';
 	import { slide } from 'svelte/transition';
 	import Button from './Button.svelte';
 </script>

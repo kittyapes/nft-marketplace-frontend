@@ -7,8 +7,8 @@
 	import NftPopup from '$lib/components/NftPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
-	import Copy from '$lib/icons/copy.svelte';
-	import VerifiedBadge from '$lib/icons/verified-badge.svelte';
+	import VerifiedBadge from '$icons/verified-badge.svelte';
+	import Copy from '$icons/copy.svelte';
 
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES', 'HIDDEN'];
 	let selectedTab = 'CREATED NFTS';
