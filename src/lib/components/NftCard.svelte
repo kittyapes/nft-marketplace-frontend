@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { NftData } from '$lib/data/nft';
-	import Eth from '$icons/eth.icon.svelte';
+	import Eth from '$icons/eth.svelte';
 	import Heart from '$icons/heart.svelte';
 	import ThreeDots from '$icons/three-dots.svelte';
 
