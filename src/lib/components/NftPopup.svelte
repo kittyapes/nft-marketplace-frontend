@@ -1,9 +1,11 @@
 <script lang="ts">
+	import CloseButton from '$icons/close-button.svelte';
+	import Fullscreen from '$icons/fullscreen.svelte';
+	import Share from '$icons/share.svelte';
 	import type { NftData } from '$lib/data/nft';
 	import { createEventDispatcher } from 'svelte';
 	import Button from './Button.svelte';
 	import Separator from './Separator.svelte';
-	import Svg from './Svg.svelte';
 	import TextInput from './TextInput.svelte';
 
 	const dispatch = createEventDispatcher();
@@ -29,11 +31,11 @@
 		<div class="mt-4 font-semibold text-xl">{data.name}</div>
 		<div class="flex mt-4 space-x-4">
 			<button>
-				<Svg name="fullscreen" />
+				<Fullscreen />
 			</button>
 
 			<button>
-				<Svg name="share" />
+				<Share />
 			</button>
 		</div>
 	</div>
@@ -49,7 +51,7 @@
 		<Separator class="mt-6" />
 
 		<button class="absolute top-4 right-4 transition-btn" on:click={handleClose}>
-			<Svg name="close-button" />
+			<CloseButton />
 		</button>
 	</div>
 </div>
