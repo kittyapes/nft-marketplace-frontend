@@ -2,7 +2,7 @@
 	import RoundedButton from '../RoundedButton.svelte';
 	import LockupPeriod from './LockupPeriod.svelte';
 	import { fade } from 'svelte/transition';
-	import Eth from '$lib/icons/eth.icon.svelte';
+	import Eth from '$icons/eth.svelte';
 
 	export let walletConnected = false;
 
