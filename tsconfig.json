@@ -25,6 +25,8 @@
 		"paths": {
 			"$lib": ["src/lib"],
 			"$lib/*": ["src/lib/*"],
+			"$icons": ["src/icons"],
+			"$icons/*": ["src/icons/*"],
 			"$styles": ["src/styles"],
 			"$styles/*": ["src/styles/*"],
 			"$stores": ["src/stores"],
