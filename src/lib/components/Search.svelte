@@ -1,5 +1,5 @@
 <script>
-	import Search from '$lib/icons/search.icon.svelte';
+	import Search from '$icons/search.svelte';
 </script>
 
 <div class="flex py-2 px-4 items-center gap-x-4 border border-black border-opacity-30 rounded-md">

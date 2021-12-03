@@ -1,6 +1,6 @@
 import type { NftData } from '$lib/data/nft';
 
-export async function fetchNfts(): Promise<NftData[]> {
+export async function fetchCreatedNfts(): Promise<NftData[]> {
 	return Array(20)
 		.fill(0)
 		.map((_, i) => ({

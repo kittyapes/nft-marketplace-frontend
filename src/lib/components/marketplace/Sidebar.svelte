@@ -1,7 +1,7 @@
 <script>
 	import SidebarItem from '$lib/components/marketplace/SidebarItem.svelte';
-	import Arrow from '$lib/icons/back.icon.svelte';
-	import Filters from '$lib/icons/filters.icon.svelte';
+	import Arrow from '$icons/back_.svelte';
+	import Filters from '$icons/filters.svelte';
 
 	import StatusFilter from './StatusFilter.svelte';
 	import PriceFilter from './PriceFilter.svelte';

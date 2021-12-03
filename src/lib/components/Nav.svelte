@@ -1,6 +1,9 @@
-<!-- <script>
-	import Search from './Search.svelte';
-</script> -->
+<script>
+	// import Search from './Search.svelte';
+	import ProfilePopup from './ProfilePopup.svelte';
+
+	let displayProfilePopup = false;
+</script>
 
 <div class="flex items-center h-16 px-8 gap-x-8 fixed w-full z-50 bg-white drop-shadow-lg">
 	<!-- Logo -->
@@ -34,13 +37,24 @@
 	</a> -->
 
 	<!-- Profile -->
-	<a href="/profile" class="relative font-semibold text-md whitespace-nowrap">Your Name</a>
+	<div class="relative">
+		<button
+			class="text-md font-semibold whitespace-nowrap transition-btn"
+			on:click={() => (displayProfilePopup = !displayProfilePopup)}
+		>
+			Your Name
+		</button>
+
+		{#if displayProfilePopup}
+			<ProfilePopup />
+		{/if}
+	</div>
 </div>
 
-<style>
-	/* #marketplace-link::after {
+<!-- <style>
+	#marketplace-link::after {
 		@apply absolute h-px w-full bg-gradient-to-r from-color-purple to-color-blue;
 		@apply left-0 bottom-0;
 		content: '';
-	} */
-</style>
+	}
+</style> -->

@@ -5,7 +5,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import CollectionCard from '$lib/components/CollectionCard.svelte';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
-	import NftCard from '$lib/components/NftCard.svelte';
+	import NftList from '$lib/components/NftList.svelte';
 	import LatestDropSection from '$lib/sections/LatestDropSection.svelte';
 	import StartStakingSection from '$lib/sections/StartStakingSection.svelte';
 </script>
@@ -70,17 +70,7 @@
 	<h2>Explore market</h2>
 	<div class="line" />
 
-	<div
-		class="grid gap-4 justify-center grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 w-full"
-	>
-		{#await fetchNfts()}
-			Loading...
-		{:then artists}
-			{#each artists as artist}
-				<NftCard {...artist} />
-			{/each}
-		{/await}
-	</div>
+	<NftList promise={fetchNfts()} />
 </div>
 
 <!-- Latest drop -->
