@@ -1,11 +1,10 @@
 <script>
-	import TabSwitcher from './CardPopupTabSwitcher.svelte';
-	import CardInfoTab from './CardInfoTab.svelte';
-	import CardTradeTab from './CardTradeTab.svelte';
-	import CardHistoryTab from './CardHistoryTab.svelte';
-
-	import Popupclose from '$lib/icons/popupclose.icon.svelte';
+	import CloseButton from '$icons/close-button.svelte';
 	import { popupOpen, selectedCard } from '$stores/marketplace';
+	import CardHistoryTab from './CardHistoryTab.svelte';
+	import CardInfoTab from './CardInfoTab.svelte';
+	import TabSwitcher from './CardPopupTabSwitcher.svelte';
+	import CardTradeTab from './CardTradeTab.svelte';
 
 	let tab = 0;
 </script>
@@ -46,7 +45,7 @@
 
 				<!-- Close button-->
 				<button on:click={() => popupOpen.set(false)}>
-					<Popupclose />
+					<CloseButton />
 				</button>
 			</div>
 

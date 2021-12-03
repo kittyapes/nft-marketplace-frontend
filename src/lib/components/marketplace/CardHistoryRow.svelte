@@ -1,5 +1,5 @@
 <script>
-	import Externallink from '$lib/icons/externallink.icon.svelte';
+	import Externallink from '$icons/external-link.svelte';
 	export let idx = 0;
 </script>
 
