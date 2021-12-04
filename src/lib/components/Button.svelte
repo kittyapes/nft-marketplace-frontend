@@ -5,13 +5,15 @@
 		| 'rounded-outline'
 		| 'rounded-shadow'
 		| 'rounded-gradient' = 'square';
+
+	export let stretch: boolean = false;
 </script>
 
-<button class="{variant} {$$props.class} transition-btn" on:click>
+<button class="{variant} {$$props.class} transition-btn" on:click class:stretch>
 	<slot />
 </button>
 
-<style>
+<style lang="postcss">
 	button {
 		width: var(--width, 220px);
 		border-radius: var(--border-radius, 9999px);
@@ -40,5 +42,9 @@
 
 	.rounded-gradient {
 		@apply bg-gradient-to-r from-color-purple to-color-blue uppercase font-semibold rounded-2xl text-white;
+	}
+
+	.stretch {
+		@apply w-full;
 	}
 </style>

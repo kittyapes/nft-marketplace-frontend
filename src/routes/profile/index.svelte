@@ -9,6 +9,7 @@
 	import TabButton from '$lib/components/TabButton.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import Copy from '$icons/copy.svelte';
+	import { goto } from '$app/navigation';
 
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES', 'HIDDEN'];
 	let selectedTab = 'CREATED NFTS';
@@ -38,7 +39,13 @@
 				</div>
 			</Button>
 
-			<Button variant="rounded-shadow" --py="0.5rem" --px="1.5rem" --width="10rem">
+			<Button
+				variant="rounded-shadow"
+				--py="0.5rem"
+				--px="1.5rem"
+				--width="10rem"
+				on:click={() => goto('/profile/edit')}
+			>
 				Edit Profile
 			</Button>
 		</div>
@@ -75,16 +82,16 @@
 
 {#if selectedTab === 'CREATED NFTS'}
 	<NftList promise={fetchCreatedNfts()} />
-{/if}
-
-{#if selectedTab === 'COLLECTED NFTS'}
+{:else if selectedTab === 'COLLECTED NFTS'}
 	<NftList promise={fetchCreatedNfts()} />
+{:else}
+	<div class="h-24" />
 {/if}
 
 <!-- <Modal>
 	<NftPopup on:close={() => console.log('close popup')} />
 </Modal> -->
-<style>
+<style lang="postcss">
 	.use-x-separators {
 		@apply relative;
 	}
