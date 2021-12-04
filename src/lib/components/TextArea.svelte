@@ -7,7 +7,15 @@
 </script>
 
 <div>
-	<textarea id="" rows="10" class="w-full" {placeholder} class:outline bind:value />
+	<textarea
+		id=""
+		rows="10"
+		class="w-full"
+		{placeholder}
+		maxlength={maxChars}
+		class:outline
+		bind:value
+	/>
 
 	{#if maxChars}
 		<div class="text-right text-xs font-semibold">{value.length}/{maxChars}</div>
