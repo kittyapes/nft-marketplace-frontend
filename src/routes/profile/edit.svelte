@@ -22,7 +22,7 @@
 			<TextInput grayOutline placeholder="example@email.com" />
 
 			<div>Add your bio</div>
-			<TextArea blackOutline placeholder="Enter your short bio" maxChars={200} />
+			<TextArea outline placeholder="Enter your short bio" maxChars={200} />
 
 			<div>Upload a <br /> profile image</div>
 			<DragDropImage />
