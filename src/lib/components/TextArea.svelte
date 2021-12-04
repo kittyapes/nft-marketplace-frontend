@@ -17,16 +17,13 @@
 <style>
 	textarea {
 		@apply rounded-md py-2 px-4 text-sm;
-		@apply transition-all duration-200;
+		@apply duration-200;
+		transition-property: outline-color;
 	}
 
 	textarea::placeholder {
 		@apply text-black opacity-40;
 		@apply transition-all duration-200;
-	}
-
-	textarea:focus::placeholder {
-		/* @apply opacity-10; */
 	}
 
 	.outline {
