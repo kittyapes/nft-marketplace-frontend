@@ -13,7 +13,7 @@
 	<slot />
 </button>
 
-<style>
+<style lang="postcss">
 	button {
 		width: var(--width, 220px);
 		border-radius: var(--border-radius, 9999px);
