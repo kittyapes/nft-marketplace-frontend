@@ -3,7 +3,7 @@
 	export let maxChars: number = 0;
 	export let value: string = '';
 
-	export let outline: boolean = falsoutlinoutline;
+	export let outline: boolean = false;
 </script>
 
 <div>
