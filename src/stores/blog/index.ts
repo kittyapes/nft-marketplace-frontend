@@ -1,6 +1,7 @@
 import { readable } from 'svelte/store';
 import axios from 'axios';
-import dayjs from "dayjs"
+import dayjs from 'dayjs';
+import { browser } from '$app/env';
 
 export interface BlogPost {
 	title: string;
@@ -19,8 +20,12 @@ const FETCH_URL =
 	'https://api.rss2json.com/v1/api.json?rss_url=https://hinatafoundation.medium.com/feed';
 
 export const blogPosts = readable<BlogPost[]>([], (set) => {
+	if (!browser) {
+		return;
+	}
+
 	function formatPostData(post: BlogPost) {
-		post.pubDate = dayjs(post.pubDate).format("D MMMM, YYYY");
+		post.pubDate = dayjs(post.pubDate).format('D MMMM, YYYY');
 
 		return post;
 	}

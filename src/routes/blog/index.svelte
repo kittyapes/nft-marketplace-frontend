@@ -2,6 +2,8 @@
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
 	import Separator from '$lib/components/Separator.svelte';
 	import { blogPosts } from '$stores/blog';
+
+	$: posts = ($blogPosts.length && $blogPosts) || Array(3).fill(0);
 </script>
 
 <main class="container x-auto px-32">
@@ -9,10 +11,10 @@
 
 	<Separator class="mt-8" />
 
-	{#each $blogPosts as data}
-		<BlogPostPreview {data} />
+	{#each posts as data}
+		<BlogPostPreview {data} skeleton={!data} />
 
-		<Separator />
+		<Separator class={!data && '!bg-gray-100'} />
 	{/each}
 
 	<div class="mt-32" />
