@@ -42,7 +42,10 @@
 	"dependencies": {
 		"@tailwindcss/aspect-ratio": "^0.3.0",
 		"authereum": "^0.1.14",
+		"axios": "^0.24.0",
 		"buffer": "^6.0.3",
+		"dayjs": "^1.10.7",
+		"ethers": "^5.5.2",
 		"graphql": "^16.0.1",
 		"graphql-request": "^3.6.1",
 		"walletlink": "^2.2.10",
