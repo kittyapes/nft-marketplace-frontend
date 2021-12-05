@@ -1,8 +1,24 @@
 <script>
 	// import Search from './Search.svelte';
 	import ProfilePopup from './ProfilePopup.svelte';
+	import { connectToWallet } from '$utils/wallet/connectWallet';
+	import { appSigner } from '$stores/wallet';
+	import { onMount } from 'svelte';
 
 	let displayProfilePopup = false;
+
+	const closeModalIfNotInElement = (e) => {
+		// Element parent includes the connectButton/Profile
+		if (!e.target.closest('#profileButtonParent')) {
+			displayProfilePopup = false;
+		} else {
+			console.log('Inside Profile BTN');
+		}
+	};
+
+	onMount(() => {
+		window.addEventListener('click', closeModalIfNotInElement);
+	});
 </script>
 
 <div class="flex items-center h-16 px-8 gap-x-8 fixed w-full z-50 bg-white drop-shadow-lg">
@@ -39,7 +55,9 @@
 	<!-- Profile -->
 	<div class="relative">
 		<button
+			id="profileButtonParent"
 			class="text-md font-semibold whitespace-nowrap transition-btn"
+			class:hidden={!$appSigner}
 			on:click={() => (displayProfilePopup = !displayProfilePopup)}
 		>
 			Your Name
@@ -48,6 +66,13 @@
 		{#if displayProfilePopup}
 			<ProfilePopup />
 		{/if}
+		<button
+			on:click={async () => await connectToWallet()}
+			class="rounded-3xl text-white bg-black px-9 py-3 uppercase text-sm font-semibold"
+			class:hidden={$appSigner}
+		>
+			Connect To Wallet
+		</button>
 	</div>
 </div>
 
