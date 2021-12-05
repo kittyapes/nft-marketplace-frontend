@@ -1,0 +1,23 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 info pnpm": {
+    "err": {
+      "name": "Error",
+      "message": "not found: ainstall",
+      "code": "ENOENT",
+      "stack": "Error: not found: ainstall\n    at getNotFoundError (/home/gicharu/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:41182:51)\n    at Function.whichSync [as sync] (/home/gicharu/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:41259:13)\n    at getCommandAbsolutePathSync (/home/gicharu/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:42824:44)\n    at default_1 (/home/gicharu/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:42833:32)\n    at /home/gicharu/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:178720:39"
+    }
+  },
+  "2 error pnpm": {
+    "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+    "prefix": "/home/gicharu/IDS/projects/hinata-marketplace-svelte",
+    "err": {
+      "name": "pnpm",
+      "message": "not found: ainstall",
+      "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+      "stack": "Error: not found: ainstall\n    at getNotFoundError (/home/gicharu/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:41182:51)\n    at Function.whichSync [as sync] (/home/gicharu/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:41259:13)\n    at getCommandAbsolutePathSync (/home/gicharu/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:42824:44)\n    at default_1 (/home/gicharu/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:42833:32)\n    at /home/gicharu/.nvm/versions/node/v16.13.1/lib/node_modules/pnpm/dist/pnpm.cjs:178720:39"
+    }
+  }
+}

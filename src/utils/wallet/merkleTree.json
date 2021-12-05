@@ -1,0 +1,602 @@
+{
+  "0x24A90Fa19449Bf0a6Ca1b7DF37147973b98B5B39": {
+    "index": 1,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x49f1322806a3708d798971a324be7d648f7df6773465835b1d54682c5bb9edff"
+  },
+  "0x23e0F866DB66A3Cc167633C430c16756AAF69Ee1": {
+    "index": 2,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x4a2b6ff710010924a056ac3b7addc4da017c29ee9f4168094dcba1acc2fb5fb4"
+  },
+  "0x4d0646D2A4E939F698aE97cf01D75D1a99181616": {
+    "index": 3,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x0c13d25fb06d49504a8bfb2e6024cdee6f8b96aadc0b486b93ca9c8ac11c5df6"
+  },
+  "0xA8581a29DF94C9DFB2edF6Ee65D8C483BC5Af21B": {
+    "index": 4,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x5c67671b1e63ddc14a4c196c3c5a8568cbf5e6d344b8a11ded442e35edda91d8"
+  },
+  "0x7F7a4B43698562c505551AD851419Fc62bE1cb95": {
+    "index": 5,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x6101d6ef3de746aa4cdfeb47548ce9b133fd267090348ba404439e9c5dc2fca7"
+  },
+  "0x7e163970F2A09d6092721D4d2C19E1Fe33177DDD": {
+    "index": 6,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x764377bf4d924d66b1bf49676ac1f5c35b47aa47cf337b8d40a0a2b6a81ae7f9"
+  },
+  "0xA40243b864D96A313CC6F5c41AC95F5d44FeE415": {
+    "index": 7,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x67a0eda91700cc7ccd6a9aea9b5fbb5f6607d03c425368de2d5e904f8bc46c21"
+  },
+  "0x9D08eF210b77bAFb2b6857f5A126E1b7b26B94B7": {
+    "index": 8,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xbe61c004421b61d2532733914ccdc35dbc2e27e16f13a695a8e897ef337a12d1"
+  },
+  "0x5835fA50b9d0cf4dc33E43de15a3957AFf19763C": {
+    "index": 9,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xcd357e6a4cadf51d06ea1dd8eef91d132275ce6f667ba6ed88744ad4eafbb540"
+  },
+  "0x9eeDA3a0fCB04A091f159149345ACA6ce8d1E5Df": {
+    "index": 10,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xee1401888ff1c0e90272379c9e841c377a17055f6654d1a7c6d96e28fc1705b1"
+  },
+  "0x075aA118b7872a2a13c7a81C9Ef6E257f0f6e848": {
+    "index": 11,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x1d5b4eb37b1ac8a6a873b49d9af028e1575da078187f68e9b8acc753ba5dc43c"
+  },
+  "0x30687134e38522f3AFA724efAe5627A4683e678A": {
+    "index": 12,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xe0355a85928f4e61a0d427fc0b9abe911004af4793b3c49ee4603214b57c7c0c"
+  },
+  "0xC7fedeb8CB19F7cF26D00D94B6128f0753440641": {
+    "index": 13,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xf825e87e2ff39249cfa6dee1a085001a1bc22eb8107d6373f85bf521e4b8a600"
+  },
+  "0x983402961bd570a7f1A7ac7F1aE5480da0A97dCB": {
+    "index": 14,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x5838c586847f6278762da21492684b4099dbc32f92967e9a56a6e33c1dfc94d0"
+  },
+  "0xCe69b6049b89342Aaa991A20ae898EbF228c1C33": {
+    "index": 15,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xe25c61608ee741ccede5734ab165a68dc9d68759633df6145c82c096d72aeafa"
+  },
+  "0xc6DD1376a2e8E608697B96F4E9E9bC86b78CD40c": {
+    "index": 16,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x59a8446e83dfeb180cd8462fc7fcaeafa36bdfa95a5b10f415aafecd0861acb7"
+  },
+  "0xCA21E0736cA305D8Ea33fE60AE9563111CfC946F": {
+    "index": 17,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x35bfaa947ca49ac365603fc991adb52739c4fa87cbabf5c852541d4c509dd49a"
+  },
+  "0xb494920ed572A170EE52FCF5cC0350c977a6325b": {
+    "index": 18,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xff4f080087858f813507102ae7bbcbc2aa2e1f93c9ca12a457dad7117aa4a8f7"
+  },
+  "0x14070dca6066e5c639508B21B6cb5e200df4790d": {
+    "index": 19,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x2a1df5ae22031040a6aa6ca8da2dcc1eca032751441d4ec8876769e0fb088b01"
+  },
+  "0x40570DB52283D3fd4A5f5c238e2FA85242Bd58b4": {
+    "index": 20,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x36b4b064dad58c6ac3dbd90be3980c44b4a541715ee66d5bb3f8e98f0bb1b4b6"
+  },
+  "0x015d3254ec9E4EA700CC73A81B32a6E885256D64": {
+    "index": 21,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x16a9c35899409b0f36ec349d855af5bde1f25c1dd2116c088247fef470e0dead"
+  },
+  "0x6d9179674c08d3893Cbe6e431BC1d9982b13064B": {
+    "index": 22,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xf908d17f409b4b701c523a61fd5fa08d4ffcc3e749c8f0434ea5c7da6b61a1eb"
+  },
+  "0x710aDcF806Ca7f6e7471EeA15fde8aa23983224e": {
+    "index": 23,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x58ed2f09cd51911a271f5b4acefdf3f0df597ffdf1adf85b47a813eee0196c78"
+  },
+  "0xA6D14E29CE59a6F1848f1cB98C3E847bf1abd831": {
+    "index": 24,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x8704c3e7bafcdb87bf0b497f943f06f16479e81387cd05777326beeb1a78acac"
+  },
+  "0xe93372ec072505228c7Aa0A406205edAa8cFF998": {
+    "index": 25,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x40d2c72aec71cb9c8c064706d1ece713310a91a91b56aca85be729b4d77c5596"
+  },
+  "0xb7c445Bce757463077f210c057Bae737746b13C4": {
+    "index": 26,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x22f4cf29ba775fcbf28904e4d0f4701116e24f87be00163325b484f3541d36fa"
+  },
+  "0x2AEe58806e97720eFc855C828709dE22BF24587d": {
+    "index": 27,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x58ba650cc4677858633e3cc028caac6b7a4f5522dc1537116b09d68785f133b2"
+  },
+  "0x73576192cb68354c8B5Fe33fE8F94a66eD946ACf": {
+    "index": 28,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x0281353fd2c3a8f2dc0b3cbe2957d818b7d7c9c788b2429a4a37fd13272b17a9"
+  },
+  "0x6ac7f99c297a1Aa6a11527D697B3d7793C3464a6": {
+    "index": 29,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x7fa097e7540f93081496ba0ed58768be184e4124bf3912b0181a2cc671e06f31"
+  },
+  "0x7Dfc6987568ba0e365aC2A93E8e25DAbBD679a4D": {
+    "index": 30,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x39c4a385618b06d4a2cec77d96e644a8f0443c223c2e71296813d05cf903f394"
+  },
+  "0xd4Ec584594Ae327438515637899994EdEc874e0E": {
+    "index": 31,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xc6ea3161e99d5453e0788c10f5d367206a514d7e026228742998340ee282382f"
+  },
+  "0xCe0ddb79bC1f95a8ED9Be5774f10081380523114": {
+    "index": 32,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xc1081cb950b06a64206a246c55b8f17677203aa7ee80dee059a2762709a5fc49"
+  },
+  "0x2d56F2DefabC983620DD1eD8b2201211263fA8E9": {
+    "index": 33,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x1b918dc76bcba1ccb9a15564e2f9f16622f86cf744ba626fac6784d099067b87"
+  },
+  "0x4fFA7480268FD514e64FCd6a1c96dA5eEF6D80d5": {
+    "index": 34,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x319b22675d363e22d839881475ae5ca99193b99b3b800b2890eaa6b32fee3255"
+  },
+  "0x1a94E5DA6c4e8f1A47937D58659e6324A9B3FA2E": {
+    "index": 35,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x7ef7838c2090c0ff4352c3e2fc196d4fcec597759fbaac58c7eaac0dfc1ac00a"
+  },
+  "0x5fa1b6b9A623Ee58A43Fc267187AE9f2DAd7c1bf": {
+    "index": 36,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xa0e3d10490db1da533a4e9e9886c5e2779b4db1366e06e2eb5b4fe7b16ee13bb"
+  },
+  "0x5930a92941539cA7B7577DF84bcAE97456b7Bebc": {
+    "index": 37,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xaf11512ed0d5960770061bd8ce8b9829fa878684ffdde1b406e313e4c229cf3f"
+  },
+  "0x2218F934ad58177a9f17FA3fbd7Ea366DDc6472e": {
+    "index": 38,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xf9b6321f9be963f9035cb272152943aa0f2db1070324d193e2664479ff6a3147"
+  },
+  "0x7edbEb49FB99B99554B2EdFE0377a90dbA857Da2": {
+    "index": 39,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x9a7e190726b492e17c6e562690e6d5116715bf1c8daf8db8108dee40340b0914"
+  },
+  "0xa7E3D6c1A5A9eF32C0Cb5aa7ed8fdF69e43C2bc7": {
+    "index": 40,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x8970605a3ce2f2a5eaf7d14e811c9b3302f1df9a296e8a2419b7d548e96db250"
+  },
+  "0x6c7EC65784112796779E3aFaa1db4Ce7c66D20af": {
+    "index": 41,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x197acc7d645519c9acb7890515949a6f09a450d06dd044b0db43f11de6fdeeb1"
+  },
+  "0x423501a936bAcb8A2253F1a5E30d74391Fc66461": {
+    "index": 42,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x8c55f02dc8f8a002ace9db951a89d317b7ad2001d3db4d4a47b588c818ecf636"
+  },
+  "0xB67f47bf05aFA1Bc9E3BdD328C8dd170bA63Dbd3": {
+    "index": 43,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x8a2bd3b3ba77d18185cfb04980fd87e70b214f85f0e6655469de31663d7aa24b"
+  },
+  "0x19c8da96038A857aFe336740BD7Ca49f21eaa160": {
+    "index": 44,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x6ff035681af35afac2db911c5d22ceac95e5d691dc4ec9a12cf313b1cb973653"
+  },
+  "0x3C0175C66953c67fE99d158C196bE0be98341ac7": {
+    "index": 45,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x0959ff35db7900d567d35b71fb78e0d5d263a9e5ba73e63c309ffe54cdac7110"
+  },
+  "0xE2C27847B88Fb817641620820c62D5172315b70D": {
+    "index": 46,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x5bdc95e453391a8fde25bb7e6dfcc24fe0cb73148b452f92c8c99ba4621a8a04"
+  },
+  "0xF82Ed1f20c57625CCF0966F0606c65D1648f19b4": {
+    "index": 47,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x11550f4198ef8989e71da08293197f96023b85af9c423477f1a21e05091b17cc"
+  },
+  "0xf044a1900f585e0e3B06BdF2a287E6Fc4b5977cB": {
+    "index": 48,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x9ec97e9c06ab7bcc7a432b39412ddc5079d3e37b6f236222cc8bb28e02baf412"
+  },
+  "0x00E8e05918342E6F7AaA726c213D7404af6cDFF8": {
+    "index": 49,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x341961a9bc1440c392c352aaf2ee88e2dc839559fbfcf19d1e4f7dffcc935a23"
+  },
+  "0xa1c5B1b3fbb6388b1286646cA0840dad38DA3a4a": {
+    "index": 50,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x747740d6d7cc128e7dd99ec0f17f1c8b82bb718313a12fbe936d11c4292e1952"
+  },
+  "0x6dCffef09F1baa94596E64CE91C7091b126483Ee": {
+    "index": 51,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x879a1f76277a6e5209dd55230636a05fd55275042ccd15333e3b9a85aca39159"
+  },
+  "0x7709DaED82D5FC0dFeEdA98877135a61b7102aE6": {
+    "index": 52,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x108f4a0d9a35034b866b470fda82e0a1182b52b34614506759ea7190df9909a1"
+  },
+  "0x7F3E4B0e7b4c0E9c49ba04a0Fd31bc85dfB52822": {
+    "index": 53,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xcac09db712c11bb3882340f5eae9c84bfb1ddd75f5a55f0248cbec2453768c05"
+  },
+  "0xE373a549C37a535Dc4B9Ce34261355d76462c6fF": {
+    "index": 54,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xda585f313c06ae431cf2731577d18543aae960c45526c085ebf8b276b2f5e484"
+  },
+  "0xcb57BE7F287c12CFC3e163E3bff1806690406bbb": {
+    "index": 55,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xddec5127aeac2e470eba2248d9b195f5dc4e7b5c20fc1de67cd6a6bee352926a"
+  },
+  "0xef27D81084794868a622748e54a8E04bD85329FA": {
+    "index": 56,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x97c3ee58f4e71474a6eeb64fc8d710ddaf14ca36b3673116f3bc6b97622f995b"
+  },
+  "0x11087527e0Af64cEF352bb4906DB0aAB5E01D0A2": {
+    "index": 57,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x95c74f053b2e5d333bf7051953f9f050e681b94dfb8f17d5a1d7464f9311b974"
+  },
+  "0x1501DBA73423fAEBA9Fb45eF3d36c45e3EcB12Ca": {
+    "index": 58,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x5777fd56e53b2f02d9b76787f64c0e5f962c98a486c2ce0cbee05ed54c691350"
+  },
+  "0xCCbC94e76d186c61101D6F138775F4fE483e1c65": {
+    "index": 59,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x38581dfd8b1eac92b1fda05469f16251647f54f1902eb80aa95157de160c534e"
+  },
+  "0xcE725bbe91a3D60648f6527eD7A12d170E85e5FE": {
+    "index": 60,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xeaa08f00e06dc784791803511be140bde924a6b115d7ebe3ab15cab99835abbc"
+  },
+  "0x55aAb6a5276A428Be7C754574E79a3fa54285018": {
+    "index": 61,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xc81629cbc4d01521fee6e982f73fd855c4d1ad03aff2d62109fd587211fe7d6e"
+  },
+  "0xd730C7744290d4fdFEebA8000c38e55E4ad91e31": {
+    "index": 62,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xe31d760776eafc772a0b87707828b678b41180fb2d9e4e3f48559d9a02ceb28f"
+  },
+  "0xC17f025682AFd33162700d28DA8527A191dc9326": {
+    "index": 63,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xd1e10f5d445e9526a953a0aba5590e633d2870d002af30b95f3e3b72320f2e1b"
+  },
+  "0x9879F7Ab303197b34AbBE50DBf45DC3eEBd259d8": {
+    "index": 64,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x78d530f9ddeb3b5cc027fd70061e662297c9ad45ec5c8650236be5aa8c55a384"
+  },
+  "0x2fb1C5243e7F1F700381aba82FE64640aE87d77D": {
+    "index": 65,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x52490097fe44342cbebf6031032b4ca9af341bc3afd67f3a30aa9277b300d308"
+  },
+  "0xD29d57ad6AE6BB85aBeD4Be0BaF3206498B5D3C4": {
+    "index": 66,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x85b9418c3469e2e33be650979134352af975fd9593f0515e62a66c1d716b6ce4"
+  },
+  "0xa3594227b2Bf90D75721d388b37Ab76D2b5E5174": {
+    "index": 67,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x1959d148c32db687e56d9a14a0887901d11c13a81be644d1543c2f98e94d7166"
+  },
+  "0xf226A0B55329bDb607CB55d22154b9A7C98Cc561": {
+    "index": 68,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xdb18c7e274fd94173a9c9c5da160bfb70966b5c38c826d5b82b2015e836ce72e"
+  },
+  "0x62833708fc4ED48207a8f98a4d53eec8b3E8dA1a": {
+    "index": 69,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x87934a5a95612c943653db2a07c714c7e5609944af2ccb8fdff47a98341db48c"
+  },
+  "0x1FFdDe1e64C820D8bA75C16bC16A29505FbB233a": {
+    "index": 70,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xa92965bbab017e2a69a65fac469fc360a222d246cb0a74cde3058b1d7dd94769"
+  },
+  "0x99F40487fE97A481e4c0706721BB6F2aB44713fE": {
+    "index": 71,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x697166d90cd84450521690e94995f95543def563acb931a415dea5d5a363df5a"
+  },
+  "0xc9Fac61F78e41BdCdea04c1A07729668681A6b06": {
+    "index": 72,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x697e68576ffac9a0e23c04ccf1db1bd9f59e123cab020509d6256e794740b91a"
+  },
+  "0x1259cc5ff7fE52fc1F5cfDDbf82EBb60d02F5C8C": {
+    "index": 73,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x3ee8ef0f67512f6a6775f13e1650d6303901efb088b273b52b64f41ba4bbb862"
+  },
+  "0xdD73D5CA7A08b01902C845Ce3ecE867A999D084a": {
+    "index": 74,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x4a940bc6253e2d9f2a2308af576c52c6d64ce5e0505e30c10a3aa398a33cb24d"
+  },
+  "0xC6a984e791Da7244a5Ebb16Bc7DB6720B3E58F22": {
+    "index": 75,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xe5b1c75e0c0ef0f501f6d323e795761a6008e4590065ef6b753ca4a4ecd3d2c0"
+  },
+  "0x35481E0dF89CA059aC8b9EC0a64Ba7ee5fa68E4d": {
+    "index": 76,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x59e3e6bf985a7484dcf714401806bba8516a925cb7ef199728c0c2348180c013"
+  },
+  "0x7B7caA7463EF1c3513424d0DE40b7338be7b7965": {
+    "index": 77,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x74cbae271ac44e2b8577a3025a4db9fc87bd7003aac1c37936c956dfc2495fa8"
+  },
+  "0x377D20c9273Cb4a984bd73678745ab15550145f8": {
+    "index": 78,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x261e7c2ec58828cd7c9cb8ed0b6c28b4bd817f4c2d2e3ae2ba208c8bf47c3ca5"
+  },
+  "0xcb39862380300556Fe60132054023eb0daAC95ec": {
+    "index": 79,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xeba60c15557720965515b7e49293683d3724c98ecc58ec2cdeb37d25d8e55b53"
+  },
+  "0x59B835cd4F0b04726772EfdC79E4B0B8443e196d": {
+    "index": 80,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xb5a209272f8c09ccad4b3802fea9119f14a16405cecba9ab21710b7e423450b2"
+  },
+  "0x665c8fDF6df06DE2ab7B592870FcEb52D5d8E9a6": {
+    "index": 81,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x8e6186b89ca408fec5e86fb2646d5142b884356812fc9877807127e5e6909747"
+  },
+  "0x9577a4EC584cdf1245cc06b2C522866e335b4462": {
+    "index": 82,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x36923f3f63a5baca5559d5cf6007ae85bd8de898c4c447752988f685393ce6ff"
+  },
+  "0x1C8F1c280E2b8Ed1e149150d9a2F3Ef7FD23045E": {
+    "index": 83,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x852f42be22f9c0c961763deb2900ddc23d5690b9665ed313db11fb00d4cb4be3"
+  },
+  "0xea4C09275C26DAbDeb1c343dA107E7d5B80a6249": {
+    "index": 84,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x3f13e1ce3530a2deb064b958227790928d0936baf4b23bc5f7ef12b9b12f67b3"
+  },
+  "0x6F6182b46c9dB3f38AEC13F12a5e65DF367F08B5": {
+    "index": 85,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x9794a28c56af06da663055a6f6fd578134a48d37566d82d19c03e7d0f843531f"
+  },
+  "0x2E899B6b79b442BdE4b1D3e696A68Cc9EabbE082": {
+    "index": 86,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x30d5f32b996c4cf24d4b3068bd7872e2d59a5d891336956ce1119dab3da635fe"
+  },
+  "0xeA2DA3ea7F451ab907BbE55909DFf0eb70aaf5c3": {
+    "index": 87,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xd5f951b2ba337799378d02afcdd98f41ef82ed2843ad921d3d0842b4865880d2"
+  },
+  "0xE09a4eE859AD8B7e612DF6aAB37a7e6F363a3ED2": {
+    "index": 88,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x3fbafdbcd2a1009d2744da0ca529ad9fc5ad7c628f3bff8ab9dcc9483ef91c44"
+  },
+  "0x2e6FeC555AF7F087E9FDE5E1964B9C56D411B825": {
+    "index": 89,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xeeb59853817cf86571ce89cd992669b5c7e6aa5d3a0b279726464b6bc8dfd766"
+  },
+  "0x735b82044e16dB7F00b33e80FA6663Bad17F23F6": {
+    "index": 90,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x60f90e4939c566077cd507b361a8050b98e2c2121fddf0a6b2e578a97adcbb3c"
+  },
+  "0x27034e0AdaCA101e16c3cf9397a3Af9d8af77098": {
+    "index": 91,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xd165a52dcfaf1daba70cfe4155da59c984b82cf7d7bc493fc4a87439c518495d"
+  },
+  "0xec9A420Da2F2E958fFB7fC23b2bC9ecc89a93D62": {
+    "index": 92,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xb43e68829864805644272ef260add9e5796e1aef725bef72b3baa6434bac1f89"
+  },
+  "0x809a0e20382fDf7119c84dcaceeb270d1651E2fF": {
+    "index": 93,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x22c6299a96d39ab8c006b08adae8e780b753805b5211f5d62208c9e7501b89b9"
+  },
+  "0x644Adf49bc40e409D51fCCD5aEBcfE2B334e9B77": {
+    "index": 94,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x4a6cb2cb1ad1b2d40b17fff3150bc61930366f97142efe8f60adca121c6a7c41"
+  },
+  "0x23f05EAeeeaBB613de8EAF42f2329E8Ab4d5954A": {
+    "index": 95,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xaced14a2d2a4a37779b07700cdbb90e470bce0f87f85f4b9dddcb2b7ff170ea3"
+  },
+  "0xBd3347483567f9169e28ee22BBA173D518FbcC8e": {
+    "index": 96,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xba7130cc6b12cf09a7d23bed5393784df273e52e669b7a435df136303b6641de"
+  },
+  "0x7385D90d79B86Fc0223DA56b61da27eE812f13f5": {
+    "index": 97,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xf192eb318aa392c493a7899bc25c8f415c9e7c0a46a4c989df6fb4c2105d2dc4"
+  },
+  "0xe8afeDFCc82989B09bB22cF6229355542CA0f098": {
+    "index": 98,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0x8a9678e123c7139e4b4366c51f5f4f4ec572c7b5ddc634c6a61233c824e4d199"
+  },
+  "0xA0EF980D7667655fF57D36bA18F3dB5DB6906Ce0": {
+    "index": 99,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xc5d0d2871fc038d6bc8ed62b8ab0d504967ad9c0c1f3fbf967471011bc628948"
+  },
+  "0x80ddEa37b9e0EC182ea85C89C950EedA7c60D454": {
+    "index": 100,
+    "earnings": "1000",
+    "reasons": "voter",
+    "pvk": "0xc64332600e7bff7bd269e6810bcf4b3eacbc28922bbfd3ea7b6a217bd30c8db3"
+  }
+}

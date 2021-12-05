@@ -1,7 +1,9 @@
 import preprocess from 'svelte-preprocess';
 import adapter from '@sveltejs/adapter-vercel';
 import path from 'path';
+import { Buffer } from 'buffer'
 
+globalThis.Buffer = Buffer
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	// Consult https://github.com/sveltejs/svelte-preprocess
@@ -23,9 +25,12 @@ const config = {
 					$styles: path.resolve('./src/styles'),
 					$utils: path.resolve('./src/utils'),
 					$constants: path.resolve('./src/constants'),
-					$icons: path.resolve('./src/icons')
+					$icons: path.resolve('./src/icons'),
 				}
-			}
+			},
+			define: {
+				'process.env': process.env
+			},
 		}
 	}
 };
