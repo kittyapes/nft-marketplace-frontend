@@ -62,11 +62,11 @@
 			"$constants/*": [
 				"src/constants/*"
 			],
-			"icons": [
-				"src/icons"
+			"$contracts": [
+				"src/contracts"
 			],
-			"icons/*": [
-				"src/icons/*"
+			"$contracts/*": [
+				"src/contracts/*"
 			]
 		}
 	},

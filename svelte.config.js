@@ -26,6 +26,7 @@ const config = {
 					$utils: path.resolve('./src/utils'),
 					$constants: path.resolve('./src/constants'),
 					$icons: path.resolve('./src/icons'),
+					$contracts: path.resolve('./src/contracts'),
 				}
 			},
 			define: {

@@ -11,8 +11,6 @@
 		// Element parent includes the connectButton/Profile
 		if (!e.target.closest('#profileButtonParent')) {
 			displayProfilePopup = false;
-		} else {
-			console.log('Inside Profile BTN');
 		}
 	};
 

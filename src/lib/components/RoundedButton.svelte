@@ -3,7 +3,8 @@
 </script>
 
 <button
-	class={`w-full rounded-full bg-gradient-to-r ${bgColor} text-xs uppercase flex items-center justify-center p-4 text-white`}
+	on:click
+	class={`w-full rounded-full bg-gradient-to-r ${bgColor} text-xs uppercase flex items-center justify-center p-4 text-white ${$$props.class}`}
 >
 	<slot />
 </button>
