@@ -7,7 +7,6 @@
 	import { appSigner, userClaimsObject } from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import claimAirdropTokens from '$utils/wallet/claimAirdropTokens';
-	import { formatEther } from 'ethers/lib/utils';
 
 	const connectWallet = async () => {
 		await connectToWallet();
