@@ -43,12 +43,12 @@
 	<!-- <a href="/staking" class="relative font-semibold uppercase text-md">Staking</a> -->
 
 	<!-- Create -->
-	<!-- <a
-		href="/create"
+	<a
+		href="/airdrop"
 		class="relative grid h-full px-16 font-semibold text-white uppercase text-md bg-gradient-to-r from-color-purple to-color-blue place-items-center"
 	>
-		Create
-	</a> -->
+		Airdrop
+	</a>
 
 	<!-- Profile -->
 	<div class="relative">
