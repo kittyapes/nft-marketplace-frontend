@@ -53,7 +53,8 @@
 			</span>
 		</div>
 
-		<PlatformUsage />
+		<!-- Removed at Hinata-179 -->
+		<!-- <PlatformUsage /> -->
 
 		<div class="w-full mt-28 font-bold text-5xl">Community Airdrop</div>
 
