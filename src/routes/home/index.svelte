@@ -1,102 +1,36 @@
 <script lang="ts">
-	import { fetchNfts } from '$utils/api/exploreMarket';
-	import { fetchFeaturedArtists } from '$utils/api/featuredArtists';
-	import { fetchTopCollections } from '$utils/api/topCollections';
 	import Button from '$lib/components/Button.svelte';
-	import CollectionCard from '$lib/components/CollectionCard.svelte';
-	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
-	import NftList from '$lib/components/NftList.svelte';
-	import LatestDropSection from '$lib/sections/LatestDropSection.svelte';
-	import StartStakingSection from '$lib/sections/StartStakingSection.svelte';
 </script>
 
-<div class="relative overflow-hidden max-w-[100vw]">
-	<img src="/img/graphics/home-bg.png" alt="" class="bg-cover w-full" />
-
-	<div class="absolute top-0 left-0 w-full h-full grid place-items-center">
+<div class="showcase">
+	<div class="absolute top-1/4 -translate-y-1/4 left-0 w-full grid place-items-center">
 		<div class="container px-8">
 			<h1 class="uppercase text-white font-semibold text-7xl">Hinata<br />Marketplace</h1>
 
-			<div class="text-white py-6 px-1 text-lg">
-				Platform where you can create, buy and sell nfts
+			<div class="text-white py-6 px-1 text-lg w-1/2">
+				The Hinata platform features curated collections and artists of anime, manga, and all
+				variety of illustrated work, including Art Blocks, Bored Ape Yacht Club, and more
 			</div>
 
 			<div class="flex gap-x-4 mt-6">
-				<Button>Explore Market</Button>
-				<Button>Create</Button>
+				<Button class="flex flex-col justify-center items-center">
+					<span class="inline-block">Markets</span>
+					<span class="inline-block">(Coming Soon)</span>
+				</Button>
+				<Button class="flex flex-col justify-center items-center">
+					<span class="inline-block">Create</span>
+					<span class="inline-block">(Coming Soon)</span>
+				</Button>
 			</div>
 		</div>
 	</div>
 </div>
 
-<!-- Top collections -->
-<div class="px-8 container mx-auto mt-28">
-	<h2>Top Collections</h2>
-	<div class="line" />
-
-	<div
-		class="grid gap-4 justify-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 w-full"
-	>
-		{#await fetchTopCollections()}
-			Loading...
-		{:then collections}
-			{#each collections as collection}
-				<CollectionCard title={collection.title} img={collection.img} />
-			{/each}
-		{/await}
-	</div>
-</div>
-
-<!-- Featured artists -->
-<div class="px-8 container mx-auto mt-28">
-	<h2>Featured artists</h2>
-	<div class="line" />
-
-	<div
-		class="grid gap-4 justify-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 w-full"
-	>
-		{#await fetchFeaturedArtists()}
-			Loading...
-		{:then artists}
-			{#each artists as artist}
-				<FeaturedArtistCard {...artist} />
-			{/each}
-		{/await}
-	</div>
-</div>
-
-<!-- Explore market -->
-<div class="px-8 container mx-auto mt-28">
-	<h2>Explore market</h2>
-	<div class="line" />
-
-	<NftList promise={fetchNfts()} />
-</div>
-
-<!-- Latest drop -->
-<div class="px-8 container mx-auto mt-28">
-	<h2>Latest drop</h2>
-	<div class="line" />
-
-	<LatestDropSection />
-</div>
-
-<!-- Start staking -->
-<div class="px-8 container mx-auto mt-28">
-	<h2>Start staking</h2>
-	<div class="line" />
-
-	<StartStakingSection />
-</div>
-
-<div class="mt-32" />
-
-<style>
-	h2 {
-		@apply text-4xl font-normal uppercase;
-	}
-
-	div.line {
-		@apply border-b border-black border-opacity-10 my-8;
+<style lang="postcss">
+	.showcase {
+		@apply max-w-[100vw] h-screen max-h-[1920px];
+		@apply relative overflow-hidden bg-cover bg-center bg-no-repeat;
+		background-image: url('/img/graphics/home-bg.png');
+		height: calc(100vh - theme('padding.16'));
 	}
 </style>
