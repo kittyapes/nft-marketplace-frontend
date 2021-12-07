@@ -38,7 +38,21 @@
 			Claims Portal
 		</div>
 
-		<div class="w-full mt-20 font-bold text-5xl">Platform Usage</div>
+		<!-- Community Airdrop Section -->
+		<div class="w-full mt-20 font-bold text-5xl">Community Airdrop</div>
+
+		<div class="text-lg font-bold mt-12">
+			The Hinata community airdrop snapshot was taken on xxxx
+		</div>
+
+		{#if walletConnected}
+			<ClaimTokens />
+		{:else}
+			<ConnectWalletBanner />
+		{/if}
+
+		<!-- Platform Usage -->
+		<div class="w-full mt-28 font-bold text-5xl">Platform Usage</div>
 
 		<div class="w-full max-w-3xl m-auto mt-16 text-color-black">
 			Tokens are distributed among active users on the Hinata Platform. If you made a sale or a
@@ -55,18 +69,6 @@
 
 		<!-- Removed at Hinata-179 -->
 		<!-- <PlatformUsage /> -->
-
-		<div class="w-full mt-28 font-bold text-5xl">Community Airdrop</div>
-
-		<div class="text-lg font-bold mt-12">
-			The Hinata community airdrop snapshot was taken on xxxx
-		</div>
-
-		{#if walletConnected}
-			<ClaimTokens />
-		{:else}
-			<ConnectWalletBanner />
-		{/if}
 
 		<!-- Token Distribution -->
 		<div class="h-screen mb-52">
