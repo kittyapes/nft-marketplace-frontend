@@ -14,6 +14,7 @@ export interface BlogPost {
 	content: string;
 	enclosure: string;
 	categories: string;
+	segment: string;
 }
 
 const FETCH_URL =
@@ -26,6 +27,7 @@ export const blogPosts = readable<BlogPost[]>([], (set) => {
 
 	function formatPostData(post: BlogPost) {
 		post.pubDate = dayjs(post.pubDate).format('D MMMM, YYYY');
+		post.segment = getSegmentFromTitle(post.title);
 
 		return post;
 	}
@@ -42,3 +44,15 @@ export const blogPosts = readable<BlogPost[]>([], (set) => {
 
 	axios(FETCH_URL).then(handleMediumRes);
 });
+
+export function getSegmentFromTitle(title: string) {
+	if (!title) {
+		return '';
+	}
+
+	return title
+		.toLocaleLowerCase()
+		.replace(/[^\w\s]|_/g, '')
+		.replace(/\s+/g, ' ')
+		.replace(/ /g, '-');
+}

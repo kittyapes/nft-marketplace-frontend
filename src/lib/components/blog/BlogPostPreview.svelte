@@ -11,7 +11,7 @@
 	{#if !skeleton}
 		<a
 			class="flex h-full overflow-hidden hover:bg-gray-50 transition duration-100 cursor-pointer"
-			href={data.link}
+			href={'/blog/' + data.segment}
 			in:fade
 		>
 			<div class="py-8 flex-shrink-0 h-full">
