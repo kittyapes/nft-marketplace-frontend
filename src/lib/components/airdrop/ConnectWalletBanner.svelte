@@ -4,7 +4,11 @@
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 
 	const connectWallet = async () => {
-		await connectToWallet();
+		try {
+			await connectToWallet();
+		} catch (err) {
+			console.log(err);
+		}
 	};
 </script>
 

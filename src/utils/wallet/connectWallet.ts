@@ -1,10 +1,11 @@
-import { metamaskLogo } from "$constants/walletIcons";
+import { coinbaseLogo, metamaskLogo } from "$constants/walletIcons";
 import { appProvider, appSigner, web3ModalInstance } from "$stores/wallet";
 import { ethers } from "ethers";
 import { get } from "svelte/store";
 import Web3Modal from "web3modal";
 
 const infuraId = '456e115b04624699aa0e776f6f2ee65c';
+const appName = 'Hinata Marketplace';
 
 // Check if Metamask is Installed
 const isMetaMaskInstalled = () => {
@@ -76,6 +77,31 @@ export const initWeb3ModalInstance = () => {
     // Authereum
     authereum: {
       package: (window as any).Authereum.default // required
+    },
+
+    // Coinbase or other WalletLink Wallets
+    'custom-coinbase': {
+      display: {
+        logo: coinbaseLogo,
+        name: 'Coinbase',
+        description: 'Scan with WalletLink to connect',
+      },
+      options: {
+        appName: appName, // Your app name
+        networkUrl: `https://mainnet.infura.io/v3/${infuraId}`,
+        chainId: 1,
+        network: 'mainnet',
+      },
+      package: (window as any).WalletLink.default,
+      connector: async (_, options) => {
+        const { appName, networkUrl, chainId } = options;
+        const walletLink = new (window as any).WalletLink.default({
+          appName
+        });
+        const provider = walletLink.makeWeb3Provider(networkUrl, chainId);
+        await provider.enable();
+        return provider;
+      },
     },
   }
 

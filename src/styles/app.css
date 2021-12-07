@@ -23,3 +23,7 @@ body {
 
 @tailwind components;
 @tailwind utilities;
+
+#WEB3_CONNECT_MODAL_ID {
+	@apply z-[1000];
+}
