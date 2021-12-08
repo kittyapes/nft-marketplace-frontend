@@ -1,3 +1,7 @@
+<script>
+	import { socials } from '$constants/socials';
+</script>
+
 <div class="border-t h-80 border-[#1D1D1D4D]">
 	<div class="container mx-auto py-12 flex justify-between">
 		<div class="flex flex-col px-8 w-1/4">
@@ -11,27 +15,28 @@
 			<div class="grid grid-cols-2 gap-x-4">
 				<div class="perma-gray">Join our community:</div>
 				<div class="grid font-semibold gap-2">
-					<a href="!#">Twitter</a>
-					<a href="!#">Discord</a>
-					<a href="!#">Telegram</a>
-					<a href="!#">Reddit</a>
-					<a href="!#">Medium</a>
+					<a href={socials.twitter}>Twitter</a>
+					<a href={socials.discord}>Discord</a>
+					<a href={socials.telegram}>Telegram</a>
+					<a href={socials.reddit}>Reddit</a>
+					<a href={socials.medium}>Medium</a>
 				</div>
 			</div>
 
 			<div class="grid grid-cols-2 gap-x-4 ml-8">
 				<div class="perma-gray">Company:</div>
 				<div class="grid font-semibold gap-2">
-					<a href="!#">About</a>
-					<a href="!#">Careers</a>
+					<!-- <a href="!#">About</a> -->
+					<a href={socials.careers}>Careers</a>
 				</div>
 			</div>
 
 			<div class="grid grid-cols-2 gap-x-4 ml-8">
 				<div class="perma-gray">Trade $HiNATA:</div>
 				<div class="grid font-semibold gap-2">
-					<a href="!#">Sushi</a>
-					<a href="!#">AscendEx</a>
+					<!-- <a href="!#">Sushi</a> -->
+					<!-- <a href="!#">AscendEx</a> -->
+					<div class="text-gray-500">Coming soon!</div>
 				</div>
 			</div>
 		</div>
