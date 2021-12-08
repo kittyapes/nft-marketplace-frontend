@@ -15,11 +15,11 @@
 			<div class="grid grid-cols-2 gap-x-4">
 				<div class="perma-gray">Join our community:</div>
 				<div class="grid font-semibold gap-2">
-					<a href={socials.twitter}>Twitter</a>
-					<a href={socials.discord}>Discord</a>
-					<a href={socials.telegram}>Telegram</a>
-					<a href={socials.reddit}>Reddit</a>
-					<a href={socials.medium}>Medium</a>
+					<a href={socials.twitter} target="_blank">Twitter</a>
+					<a href={socials.discord} target="_blank">Discord</a>
+					<a href={socials.telegram} target="_blank">Telegram</a>
+					<a href={socials.reddit} target="_blank">Reddit</a>
+					<a href={socials.medium} target="_blank">Medium</a>
 				</div>
 			</div>
 
@@ -27,7 +27,7 @@
 				<div class="perma-gray">Company:</div>
 				<div class="grid font-semibold gap-2">
 					<!-- <a href="!#">About</a> -->
-					<a href={socials.careers}>Careers</a>
+					<a href={socials.careers} target="_blank">Careers</a>
 				</div>
 			</div>
 
