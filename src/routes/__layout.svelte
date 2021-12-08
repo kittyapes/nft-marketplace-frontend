@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import { refreshConnection } from '$utils/wallet/connectWallet';
 	import Toast from '$lib/components/toast/index.svelte';
+	import PopupManager from '$utils/popup/PopupManager.svelte';
 
 	onMount(async () => {
 		// Keep connection live as long as cachedProvider is present (even after reloads)
@@ -22,3 +23,5 @@
 </div>
 <Footer />
 <Toast />
+
+<PopupManager />
