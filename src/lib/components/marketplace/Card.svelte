@@ -14,7 +14,7 @@
 	let openPopup = (_data) => {
 		selectedCard.set({ ..._data, maxSupply });
 		popupOpen.set(true);
-		goto(`/marketplace/${_data['id']}`);
+		goto(`/marketplace/${_data['id']}`, { noscroll: true });
 	};
 
 	// brain.exe stopped working
