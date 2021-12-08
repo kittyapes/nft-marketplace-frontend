@@ -6,8 +6,8 @@
 	$: posts = ($blogPosts.length && $blogPosts) || Array(3).fill(0);
 </script>
 
-<main class="container x-auto px-32">
-	<h1 class="text-8xl mt-16">BLOG</h1>
+<main class="container mx-auto max-w-4xl">
+	<h1 class="text-2xl sm:text-3xl md:text-8xl mt-16">BLOG</h1>
 
 	<Separator class="mt-8" />
 
