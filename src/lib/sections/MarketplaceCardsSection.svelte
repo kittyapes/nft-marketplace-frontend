@@ -23,7 +23,7 @@
 		allCards = await request('https://api.thegraph.com/subgraphs/name/hysmagus/waifu', GET_CARDS, {
 			numberToSkip: 0
 		});
-
+		console.log(allCards);
 		filteredCards = allCards;
 	});
 </script>

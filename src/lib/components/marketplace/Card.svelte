@@ -2,6 +2,7 @@
 	import { fetchNFTfromURI } from '$utils/api/getNFT';
 	import { fade } from 'svelte/transition';
 	import { popupOpen, selectedCard, priceFilters } from '$stores/marketplace';
+	import { goto } from '$app/navigation';
 
 	export let uri = '';
 	export let maxSupply = 0;
@@ -11,9 +12,9 @@
 	let data = fetchNFTfromURI(uri.replace('radiant-falls-54169', 'databasewaifu'));
 
 	let openPopup = (_data) => {
-		popupOpen.set(true);
 		selectedCard.set({ ..._data, maxSupply });
-		console.log($selectedCard);
+		popupOpen.set(true);
+		goto(`/marketplace/${_data['id']}`);
 	};
 
 	// brain.exe stopped working
