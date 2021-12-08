@@ -6,12 +6,15 @@
 	import TabSwitcher from './CardPopupTabSwitcher.svelte';
 	import CardTradeTab from './CardTradeTab.svelte';
 	import { goto } from '$app/navigation';
+	import { browser } from '$app/env';
 
 	let tab = 0;
 </script>
 
-<div class="z-50 fixed w-full h-full top-0 left-0 flex items-center justify-center p-8 lg:p-0">
-	{console.log('Image', $selectedCard.image)}
+<div
+	class="z-50 fixed w-full h-full top-0 left-0 flex items-center justify-center p-8 lg:p-0"
+	class:hidden={!browser}
+>
 	<!-- Dark overlay -->
 	<div class="fixed w-full h-full bg-gray-900 opacity-50" />
 
