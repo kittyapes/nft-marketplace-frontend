@@ -16,8 +16,6 @@
 			let uri = `https://databasewaifu.herokuapp.com/api/token/${$page.params.id}`;
 			let data = fetchNFTfromURI(uri.replace('radiant-falls-54169', 'databasewaifu'));
 			data.then((resolvedData) => {
-				console.log(resolvedData);
-
 				selectedCard.set({ ...resolvedData, maxSupply: 0 });
 				popupOpen.set(true);
 			});
