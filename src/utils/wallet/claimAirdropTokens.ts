@@ -1,7 +1,7 @@
 import { appSigner } from "$stores/wallet"
 import { get } from "svelte/store"
 import { claimToken } from "./distributeAirdrop";
-import { success, failure } from '$utils/toast'
+import { success, error } from '$utils/toast'
 
 const claimAirdropTokens = async () => {
   const signer = get(appSigner);
@@ -13,7 +13,7 @@ const claimAirdropTokens = async () => {
   if (result.status === 'success') {
     success(result.message)
   } else {
-    failure(result.message);
+    error(result.message);
   }
 
 }

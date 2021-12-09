@@ -2,7 +2,7 @@
 	import ClaimTokens from '$lib/components/airdrop/ClaimTokens.svelte';
 	import ConnectWalletBanner from '$lib/components/airdrop/ConnectWalletBanner.svelte';
 	import AirdropDistributionSection from '$lib/sections/AirdropDistributionSection.svelte';
-	import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
+	// import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
 	import { appSigner, userClaimsObject } from '$stores/wallet';
 	import { userCanClaim } from '$utils/wallet/distributeAirdrop';
 
@@ -16,8 +16,17 @@
 		})
 			.then((res) => res.json())
 			.then(async (resData) => {
-				if (await userCanClaim(userAddress)) {
-					userClaimsObject.set(resData);
+				if (resData) {
+					// Check if user has claimed
+					const hasClaimed = await userCanClaim(userAddress);
+
+					// Update Store
+					userClaimsObject.set({
+						...resData,
+						hasClaimed
+					});
+				} else {
+					userClaimsObject.set(null);
 				}
 			})
 			.catch((err) => console.log(err));

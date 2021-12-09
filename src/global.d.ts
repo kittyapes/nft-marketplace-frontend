@@ -6,5 +6,7 @@ interface ClaimObject {
     amount: string;
     index: number;
     proof: string[];
+    address: string;
+    hasClaimed: boolean;
   }
 }
