@@ -34,7 +34,7 @@
 			<div class="grid grid-cols-2 gap-x-4 ml-8">
 				<div class="perma-gray">Trade $HiNATA:</div>
 				<div class="grid font-semibold gap-2">
-					<!-- <a href="!#">Sushi</a> -->
+					<!-- <a href="!#">Uniswap</a> -->
 					<!-- <a href="!#">AscendEx</a> -->
 					<div class="text-gray-500">Coming soon!</div>
 				</div>
