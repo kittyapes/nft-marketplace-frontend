@@ -17,7 +17,7 @@
 </svelte:head>
 
 <Nav />
-<div class="pt-16 container px-4 md:px-16 mx-auto">
+<div class="pt-16 mx-auto">
 	<slot />
 </div>
 <Footer />
