@@ -1,5 +1,6 @@
 import { coinbaseLogo, metamaskLogo } from "$constants/walletIcons";
-import { appProvider, appSigner, web3ModalInstance } from "$stores/wallet";
+import { appProvider, appSigner, currentUserAddress, web3ModalInstance } from "$stores/wallet";
+import { warning } from "$utils/toast";
 import { ethers } from "ethers";
 import { get } from "svelte/store";
 import Web3Modal from "web3modal";
@@ -119,18 +120,22 @@ export const initWeb3ModalInstance = () => {
 
 // Set the provider
 const setProvider = async (provider: ethers.providers.ExternalProvider) => {
+
   const ethersProvider = new ethers.providers.Web3Provider(provider);
-  ethersProvider.on('connect', (e) => console.log(Object.keys(e)));
+
+
+  // Commit values to store
   appProvider.set(ethersProvider ? ethersProvider : null);
   appSigner.set(ethersProvider ? ethersProvider.getSigner() : null);
-  const userAddress = ethersProvider ? await ethersProvider.getSigner().getAddress() : '';
+  const userAddress = ethersProvider ? await ethersProvider.getSigner().getAddress() : null;
+  currentUserAddress.set(userAddress);
 
   // Initialize wallet events
   initProviderEvents(ethersProvider);
 
   console.log(
     'WALLET CONNECTED.\n BALANCE: ',
-    ethers.utils.formatEther(
+    userAddress && ethers.utils.formatEther(
       await ethersProvider.getBalance(userAddress)
     )
   );
@@ -169,31 +174,33 @@ export const connectToWallet = async () => {
   return;
 }
 
+
 // Subscribe to Wallet Events
-const initProviderEvents = (provider: ethers.providers.Web3Provider) => {
-  // Subscribe to Account Change Event
-  provider.on('accountsChanged', (accounts: string[]) => {
-    console.log('ACCOUNTS CHANGED');
-    console.log(accounts);
-  });
+export const initProviderEvents = (provider: ethers.providers.Web3Provider) => {
 
-  // Subscribe to chainId change
-  provider.on('chainChanged', (chainId: number) => {
-    console.log('CHAIN CHANGED');
-    console.log(chainId);
-  });
+  let pollStatus = null
+  pollStatus = setInterval(async () => {
 
-  // Subscribe to provider connection
-  provider.on('connect', (info: { chainId: number }) => {
-    console.log('CONNECTED');
-    console.log(info);
-  });
+    // Check for network change
+    try {
+      // If this function fails its likely the network changed
+      const networkName = (await provider.getNetwork()).name;
+    } catch (err) {
+      clearInterval(pollStatus);
+      await refreshConnection();
+    }
 
-  // Subscribe to provider disconnection
-  provider.on('disconnect', (error: { code: number; message: string }) => {
-    console.log('DISCONNECTED');
-    console.log(error);
-  });
+    // Check account change
+    const newAccount = await provider.getSigner().getAddress();
+
+    if (get(currentUserAddress) !== newAccount) {
+      warning('Account Changed. Fetching New Account Details...')
+      clearInterval(pollStatus);
+      await refreshConnection();
+    }
+
+
+  }, 1000);
 }
 
 export const refreshConnection = async () => {

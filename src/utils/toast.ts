@@ -16,7 +16,7 @@ export const warning = m => toast.push(m, {
   }
 })
 
-export const failure = m => toast.push(m, {
+export const error = m => toast.push(m, {
   theme: {
     '--toastBackground': '#F87171',
     '--toastColor': 'white',

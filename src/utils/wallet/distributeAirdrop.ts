@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import distributorAbi from '$contracts/merkleDistributor/distributorAbi.json';
+import merkleTree from '$contracts/merkleDistributor/merkleTree.json'
 import { appProvider, appSigner, userClaimsObject } from '$stores/wallet';
 import { get } from 'svelte/store';
 import { merkleDistributorContractAddress } from '$constants/contractAddresses';
@@ -34,10 +35,31 @@ export const userCanClaim = async (userAddress: string) => {
   const distributorContract = new ethers.Contract(merkleDistributorContractAddress, distributorAbi, get(appProvider));
 
   // Check if the airdrop tokens have been claimed or not
-  let isClaimed = await distributorContract.isClaimed(userAddress);
+  try {
+    let isClaimed = await distributorContract.isClaimed(userAddress);
 
-  console.log("IS CLAIMED: ", isClaimed)
+    // User cannot claim if they had already claimed
+    return !isClaimed;
+  } catch (err) {
+    console.log(err);
+    return true;
+  }
+}
 
-  // User cannot claim if they had already claimed
-  return !isClaimed;
+export const findUserInMerkleTree = (userAddress: string) => {
+  const userAddressesList = Object.keys(merkleTree.claims);
+
+  // Address in the merkle tree (with its capitalization)
+  const addressInList = userAddressesList.find(el => el.toLowerCase() === userAddress.toLowerCase());
+  if (addressInList) {
+    return {
+      merkleRoot: merkleTree.merkleRoot,
+      user: {
+        address: addressInList,
+        ...merkleTree.claims[addressInList]
+      }
+    }
+  } else {
+    return null;
+  }
 }

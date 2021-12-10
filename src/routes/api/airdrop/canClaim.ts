@@ -1,15 +1,4 @@
-import merkleTree from '$contracts/merkleDistributor/merkleTree.json'
-
-const findUserInMerkleTree = (userAddress: string) => {
-  const userAddressesList = Object.keys(merkleTree.claims);
-  const addressInList = userAddressesList.find(el => el.toLowerCase() === userAddress.toLowerCase());
-
-  if (addressInList) {
-    return merkleTree.claims[addressInList]
-  } else {
-    return null;
-  }
-}
+import { findUserInMerkleTree } from '$utils/wallet/distributeAirdrop';
 
 // Check if the user is on the list
 export const post = async (req) => {
@@ -22,15 +11,11 @@ export const post = async (req) => {
   }
 
   // Find the address in the merkle tree
-  const userObject = findUserInMerkleTree(userAddress)
-
+  const userObject = findUserInMerkleTree(userAddress);
 
   if (userObject) {
     return {
-      body: {
-        merkleRoot: merkleTree.merkleRoot,
-        user: userObject
-      }
+      body: userObject
     }
   } else {
     return {

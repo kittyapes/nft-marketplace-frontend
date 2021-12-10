@@ -5,6 +5,23 @@
 	import { userClaimsObject, userHinataBalance } from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import claimAirdropTokens from '$utils/wallet/claimAirdropTokens';
+
+	let hasClaimed = false;
+	let claimAmount = '0';
+
+	const updateValues = (claims) => {
+		if (claims) {
+			hasClaimed = claims.user.hasClaimed;
+
+			if (hasClaimed) {
+				claimAmount = '0';
+			} else {
+				claimAmount = ethers.utils.formatEther(claims.user.amount);
+			}
+		}
+	};
+
+	$: updateValues($userClaimsObject);
 </script>
 
 <div
@@ -23,17 +40,21 @@
 
 		<div class="w-full flex flex-col gap-4 mt-5">
 			<div class="w-96 flex justify-between items-center mx-auto">
-				<span class="font-bold tracking-wider w-3/5"
-					>{$userClaimsObject ? ethers.utils.formatEther($userClaimsObject.user.amount) : 0} HINATA TOKENS</span
-				>
+				<span class="font-bold tracking-wider w-3/5">{claimAmount} HINATA TOKENS</span>
 				<div class="w-36">
 					<RoundedButton
 						on:click={claimAirdropTokens}
 						bgColor="from-color-purple to-color-blue"
-						disabled={!$userClaimsObject ||
-							parseFloat(ethers.utils.formatEther($userClaimsObject?.user.amount)) <= 0}
-						>CLAIM</RoundedButton
+						disabled={!$userClaimsObject?.user.hasClaimed || parseFloat(claimAmount) <= 0}
 					>
+						{#if hasClaimed}
+							Already Claimed
+						{:else if !hasClaimed && parseFloat(claimAmount) > 0}
+							Claim
+						{:else}
+							Not Eligible
+						{/if}
+					</RoundedButton>
 				</div>
 			</div>
 
