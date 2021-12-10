@@ -31,15 +31,16 @@ export const claimToken = async (userAddress: string) => {
   }
 }
 
-export const userCanClaim = async (userAddress: string) => {
+export const userAlreadyClaimed = async (userAddress: string) => {
   const distributorContract = new ethers.Contract(merkleDistributorContractAddress, distributorAbi, get(appProvider));
 
   // Check if the airdrop tokens have been claimed or not
   try {
     let isClaimed = await distributorContract.isClaimed(userAddress);
+    console.log('IS CLAIMED: ', isClaimed);
 
     // User cannot claim if they had already claimed
-    return !isClaimed;
+    return isClaimed;
   } catch (err) {
     console.log(err);
     return true;
