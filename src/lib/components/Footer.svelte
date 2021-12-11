@@ -46,9 +46,9 @@
 	<div class="container mx-auto flex items-center justify-center text-xs relative mt-8">
 		<a href="!#" class="doc-link">&copy; 2021 Hinata Foundation</a>
 		<div class="tos flex justify-center items-center w-auto absolute right-0">
-			<a href="!#" class="doc-link">Terms & Conditions</a>
+			<a href="/terms-and-conditions" class="doc-link">Terms & Conditions</a>
 			<div class="w-[2px] h-4 bg-black mx-2 bg-opacity-50" />
-			<a href="!#" class="doc-link">Privacy Policy</a>
+			<a href="/privacy-policy" class="doc-link">Privacy Policy</a>
 		</div>
 	</div>
 </div>
