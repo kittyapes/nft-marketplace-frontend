@@ -86,6 +86,7 @@
 {#await fetch(jsonUrl).then((res) => res.json())}
 	<div class="font-semibold text-center py-32 text-lg">Loading document...</div>
 {:then doc}
+	<!-- Desktop Menu -->
 	<div id="menu-container" class="hidden lg:block" in:fade>
 		<h1>{menuTitle}</h1>
 
@@ -103,10 +104,12 @@
 		</ul>
 	</div>
 
+	<!-- Mobile title -->
 	<h1 class="px-8 mt-8 mb-8 font-semibold text-lg lg:hidden">{menuTitle}</h1>
 
 	<div class="max-w-4xl mx-auto px-4 lg:px-0 lg:pr-16 lg:ml-[30rem] lg:mt-40 mb-32" in:fade>
 		{#each doc.terms as section, index}
+			<!-- Desktop title -->
 			<h2
 				id="{titleToHash(section.title, true)}-section-title"
 				class="section-title hidden lg:block"
@@ -115,6 +118,7 @@
 				{section.title}
 			</h2>
 
+			<!-- Mobile title and dropdown -->
 			<input
 				type="checkbox"
 				id="{titleToHash(section.title, true)}-section-title-mobile"
@@ -131,6 +135,7 @@
 				</div>
 			</label>
 
+			<!-- Mobile and Desktop content -->
 			<div class="lg:contents section-markup px-8 lg:px-0">
 				{@html section.markup}
 			</div>
@@ -143,13 +148,19 @@
 {/await}
 
 <style>
+	/* Mobile and Desktop content */
+	.section-markup {
+		@apply leading-9;
+	}
+
+	/* Desktop title */
 	.section-title {
 		font-size: 1.5rem;
 		font-weight: bold;
 		margin-bottom: 1rem;
 	}
 
-	/* Menu Title */
+	/* Desktop Menu Title */
 	#menu-container h1 {
 		@apply text-xl font-bold;
 	}
@@ -162,6 +173,7 @@
 		opacity: 0.8;
 	}
 
+	/* Desktop section title */
 	.section-title {
 		@apply font-semibold text-3xl mt-24 mb-12 first:mt-0;
 	}
@@ -174,10 +186,7 @@
 		opacity: 0.8;
 	}
 
-	.section-markup {
-		@apply leading-9;
-	}
-
+	/* Desktop meny container */
 	#menu-container {
 		@apply fixed m-16 max-w-xs;
 	}
@@ -186,7 +195,7 @@
 		@apply grid gap-y-4 mt-8;
 	}
 
-	/* Section link */
+	/* Desktop Section link */
 	.section-link {
 		@apply font-semibold pl-12 relative;
 	}
@@ -206,7 +215,7 @@
 		@apply opacity-100;
 	}
 
-	/* Mobile section input */
+	/* Mobile section dropdown input */
 	input.mobile-section {
 		@apply hidden;
 	}
