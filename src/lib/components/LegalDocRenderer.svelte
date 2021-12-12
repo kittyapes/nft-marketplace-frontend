@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/env';
+	import { onMount, tick } from 'svelte';
 
 	export let jsonUrl: string;
 	export let menuTitle: string;
@@ -13,7 +14,7 @@
 	}
 
 	function titleToHash(title: string, omitHash: boolean = false): string {
-		return (omitHash ? '' : '#') + title.toLowerCase().replace(/\s/g, '-');
+		return (omitHash ? '' : '#') + title.toLowerCase().replace(/\s/g, '-').replace(/\?/g, '');
 	}
 
 	let currentHash = browser && window.location.hash;
@@ -27,7 +28,7 @@
 	let scrollY;
 	let titles: HTMLElement[] = [];
 
-	function refreshHash(_) {
+	function refreshSectionHighlight(_) {
 		if (!titles.length) {
 			return;
 		}
@@ -50,7 +51,21 @@
 		}
 	}
 
-	$: refreshHash(scrollY);
+	$: refreshSectionHighlight(scrollY);
+
+	async function scrollToHash() {
+		await tick();
+
+		if (currentHash) {
+			const target = document.querySelector(currentHash);
+
+			console.log(currentHash, target);
+
+			if (target) {
+				target.scrollIntoView();
+			}
+		}
+	}
 </script>
 
 <svelte:window bind:scrollY />
@@ -86,6 +101,8 @@
 			</div>
 		{/each}
 	</div>
+
+	{scrollToHash()}
 {:catch}
 	Error loading document.
 {/await}
