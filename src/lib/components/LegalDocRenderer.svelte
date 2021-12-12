@@ -40,8 +40,8 @@
 		for (const [index, title] of titles.entries()) {
 			const rect = title.getBoundingClientRect();
 
-			if (rect.top < 0) {
-				visibleTitleIndex = index + 1;
+			if (rect.top < window.innerHeight / 2) {
+				visibleTitleIndex = index;
 			}
 		}
 
@@ -64,8 +64,8 @@
 			blockSectionRefreshFromScroll = false;
 		}, 1000);
 
-		if (currentHash) {
-			const target = document.querySelector(currentHash + '-section-title');
+		if (sectionHash) {
+			const target = document.querySelector(sectionHash + '-section-title');
 
 			if (target) {
 				target.scrollIntoView();
