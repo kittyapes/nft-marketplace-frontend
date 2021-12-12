@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { browser } from '$app/env';
+	import DropdownArrow from '$icons/dropdown-arrow.svelte';
 	import { tick } from 'svelte';
+	import { fade } from 'svelte/transition';
 
 	export let jsonUrl: string;
 	export let menuTitle: string;
@@ -19,13 +21,15 @@
 
 	let currentHash = browser && window.location.hash;
 
+	// Used when the user clicks on a section link
 	function updateHash(event, hash: string) {
 		event?.preventDefault();
 		currentHash = hash;
 		window.location.hash = hash;
 	}
 
-	let scrollY;
+	// Updating the highlighted section when the user scrolls
+	let scrollY: number;
 	let titles: HTMLElement[] = [];
 
 	let blockSectionRefreshFromScroll = false;
@@ -55,7 +59,12 @@
 
 	$: refreshSectionHighlight(scrollY);
 
+	// Scroll to a section without interfering with the scroll handler
 	async function scrollToSection(sectionHash: string) {
+		if (!sectionHash) {
+			return;
+		}
+
 		await tick();
 
 		blockSectionRefreshFromScroll = true;
@@ -64,12 +73,10 @@
 			blockSectionRefreshFromScroll = false;
 		}, 1000);
 
-		if (sectionHash) {
-			const target = document.querySelector(sectionHash + '-section-title');
+		const target = document.querySelector(sectionHash + '-section-title');
 
-			if (target) {
-				target.scrollIntoView({ block: 'center' });
-			}
+		if (target) {
+			target.scrollIntoView({ block: 'center' });
 		}
 	}
 </script>
@@ -77,9 +84,9 @@
 <svelte:window bind:scrollY />
 
 {#await fetch(jsonUrl).then((res) => res.json())}
-	Loading document...
+	<div class="font-semibold text-center py-32 text-lg">Loading document...</div>
 {:then doc}
-	<div id="menu-container">
+	<div id="menu-container" class="hidden lg:block" in:fade>
 		<h1>{menuTitle}</h1>
 
 		<ul id="section-links-container">
@@ -96,23 +103,41 @@
 		</ul>
 	</div>
 
-	<div class="max-w-4xl mx-auto p-4 ml-[30rem] mt-40 mb-32">
+	<h1 class="px-8 mt-8 mb-8 font-semibold text-lg lg:hidden">{menuTitle}</h1>
+
+	<div class="max-w-4xl mx-auto px-4 lg:px-0 lg:pr-16 lg:ml-[30rem] lg:mt-40 mb-32" in:fade>
 		{#each doc.terms as section, index}
 			<h2
 				id="{titleToHash(section.title, true)}-section-title"
-				class="section-title"
+				class="section-title hidden lg:block"
 				bind:this={titles[index]}
 			>
 				{section.title}
 			</h2>
 
-			<div class="contents section-markup">
+			<input
+				type="checkbox"
+				id="{titleToHash(section.title, true)}-section-title-mobile"
+				class="mobile-section"
+			/>
+			<label
+				for="{titleToHash(section.title, true)}-section-title-mobile"
+				class="mobile-section lg:!hidden"
+			>
+				{section.title}
+
+				<div class="dropdown-arrow">
+					<DropdownArrow />
+				</div>
+			</label>
+
+			<div class="lg:contents section-markup px-8 lg:px-0">
 				{@html section.markup}
 			</div>
 		{/each}
 	</div>
 
-	{scrollToSection(currentHash)}
+	{scrollToSection(currentHash) && ''}
 {:catch}
 	Error loading document.
 {/await}
@@ -125,11 +150,11 @@
 	}
 
 	/* Menu Title */
-	h1 {
+	#menu-container h1 {
 		@apply text-xl font-bold;
 	}
 
-	h1::after {
+	#menu-container h1::after {
 		@apply mt-8 w-full block;
 		content: '';
 		height: 1px;
@@ -179,5 +204,54 @@
 
 	.section-link.highlight::after {
 		@apply opacity-100;
+	}
+
+	/* Mobile section input */
+	input.mobile-section {
+		@apply hidden;
+	}
+
+	/* Mobile section label */
+	label.mobile-section {
+		@apply font-bold relative pl-8 text-lg opacity-60 my-4 flex items-center pr-8;
+		color: #0c1011;
+	}
+
+	input.mobile-section:checked + label.mobile-section {
+	}
+
+	label.mobile-section::before {
+		@apply grid place-items-center absolute left-0 top-0;
+		content: url('/svg/radio-button.svg');
+	}
+
+	label.mobile-section::after {
+		@apply grid place-items-center absolute left-0 top-0 opacity-0;
+		content: url('/svg/selected-radio-button.svg');
+	}
+
+	input.mobile-section:checked + label.mobile-section::after {
+		@apply opacity-100;
+		@apply transition-opacity duration-300;
+	}
+
+	/* Mobile section markup */
+	input.mobile-section + label + div.section-markup {
+		@apply transition-opacity duration-300 opacity-0 h-0 overflow-hidden;
+	}
+
+	input.mobile-section:checked + label + div.section-markup {
+		@apply opacity-100;
+		height: max-content;
+	}
+
+	/* Mobile dropdown icon */
+	label.mobile-section > .dropdown-arrow {
+		@apply absolute right-0 top-2 bottom-0 grid place-items-center;
+		@apply transition-transform duration-300;
+	}
+
+	input.mobile-section:checked + label > .dropdown-arrow {
+		@apply rotate-180;
 	}
 </style>
