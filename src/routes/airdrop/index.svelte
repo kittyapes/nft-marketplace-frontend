@@ -1,10 +1,38 @@
-<script>
+<script lang="ts">
 	import ClaimTokens from '$lib/components/airdrop/ClaimTokens.svelte';
 	import ConnectWalletBanner from '$lib/components/airdrop/ConnectWalletBanner.svelte';
 	import AirdropDistributionSection from '$lib/sections/AirdropDistributionSection.svelte';
-	import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
+	// import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
+	import { appSigner, userClaimsObject } from '$stores/wallet';
+	import { userCanClaim } from '$utils/wallet/distributeAirdrop';
 
-	let walletConnected = false;
+	$: walletConnected = !!$appSigner;
+
+	// Check For eligibility
+	const checkForClaimEligibility = async (userAddress: string) => {
+		fetch('/api/airdrop/canClaim', {
+			method: 'POST',
+			body: JSON.stringify({ userAddress })
+		})
+			.then((res) => res.json())
+			.then(async (resData) => {
+				if (resData) {
+					// Check if user has claimed
+					const hasClaimed = await userCanClaim(userAddress);
+
+					// Update Store
+					userClaimsObject.set({
+						...resData,
+						hasClaimed
+					});
+				} else {
+					userClaimsObject.set(null);
+				}
+			})
+			.catch((err) => console.log(err));
+	};
+
+	$: (async (signer) => signer && checkForClaimEligibility(await signer.getAddress()))($appSigner);
 </script>
 
 <div class="w-full min-h-full px-6">
@@ -19,7 +47,21 @@
 			Claims Portal
 		</div>
 
-		<div class="w-full mt-20 font-bold text-5xl">Platform Usage</div>
+		<!-- Community Airdrop Section -->
+		<div class="w-full mt-20 font-bold text-5xl">Community Airdrop</div>
+
+		<div class="text-lg font-bold mt-12">
+			The Hinata community airdrop snapshot was taken on xxxx
+		</div>
+
+		{#if walletConnected}
+			<ClaimTokens />
+		{:else}
+			<ConnectWalletBanner />
+		{/if}
+
+		<!-- Platform Usage -->
+		<div class="w-full mt-28 font-bold text-5xl">Platform Usage</div>
 
 		<div class="w-full max-w-3xl m-auto mt-16 text-color-black">
 			Tokens are distributed among active users on the Hinata Platform. If you made a sale or a
@@ -34,22 +76,11 @@
 			</span>
 		</div>
 
-		<PlatformUsage />
-
-		<div class="w-full mt-28 font-bold text-5xl">Community Airdrop</div>
-
-		<div class="text-lg font-bold mt-12">
-			The Hinata community airdrop snapshot was taken on xxxx
-		</div>
-
-		{#if walletConnected}
-			<ClaimTokens />
-		{:else}
-			<ConnectWalletBanner bind:walletConnected />
-		{/if}
+		<!-- Removed at Hinata-179 -->
+		<!-- <PlatformUsage /> -->
 
 		<!-- Token Distribution -->
-		<div class="h-screen">
+		<div class="h-screen mb-52">
 			<AirdropDistributionSection />
 		</div>
 	</div>

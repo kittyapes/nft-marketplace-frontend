@@ -1,6 +1,6 @@
 <script>
 	import StatusFilterButton from '../marketplace/StatusFilterButton.svelte';
-	import { DROP_STATUSES } from '../../../ts/constants/marketplace';
+	import { DROP_STATUSES } from '$constants/marketplace';
 </script>
 
 <div class="flex flex-wrap gap-2">

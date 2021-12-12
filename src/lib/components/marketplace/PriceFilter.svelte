@@ -1,5 +1,5 @@
 <script>
-	import Dollar from '$lib/icons/dollar.icon.svelte';
+	import Dollar from '$icons/dollar.svelte';
 	import { priceFilters } from '$stores/marketplace';
 
 	let min;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import VerifiedCreator from '$lib/icons/verified-creator.icon.svelte';
+	import VerifiedCreator from '$icons/verified-creator.svelte';
 
 	export let title: string;
 	export let description: string;

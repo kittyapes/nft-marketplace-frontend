@@ -3,6 +3,10 @@
 /* Write your global styles here, in PostCSS syntax */
 @tailwind base;
 
+html {
+	scroll-behavior: smooth;
+}
+
 body {
 	font-family: 'Open Sans', sans-serif;
 }
@@ -13,5 +17,17 @@ body {
 	height: 100%;
 }
 
+.transition-btn {
+	@apply transition duration-200 transform active:scale-95;
+}
+
+.gradient-text {
+	@apply bg-gradient-to-r from-color-purple to-color-blue text-transparent bg-clip-text;
+}
+
 @tailwind components;
 @tailwind utilities;
+
+#WEB3_CONNECT_MODAL_ID {
+	@apply z-[1000];
+}

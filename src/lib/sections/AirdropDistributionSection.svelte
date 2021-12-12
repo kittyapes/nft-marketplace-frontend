@@ -7,10 +7,10 @@
 <div class="flex flex-col relative">
 	<div class="w-full max-w-4xl mx-auto mt-24 text-left flex overflow-hidden relative">
 		<!-- Vertical Line-->
-		<div class="absolute h-full  left-8 z-0 my-6  border-dashed border-blue-500 border-l-2" />
+		<div class="absolute h-full  left-8 z-[-1] my-6  border-dashed border-blue-500 border-l-2" />
 
 		<!-- Steps -->
-		<div class="z-20 flex flex-col gap-12">
+		<div class="flex flex-col gap-12">
 			<!-- Step 1-->
 			<DistributionStep step={1}
 				>A portion of the 41,250 $HiNATA distributed every week</DistributionStep

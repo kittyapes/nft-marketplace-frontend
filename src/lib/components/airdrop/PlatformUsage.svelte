@@ -2,12 +2,14 @@
 	import RoundedButton from '../RoundedButton.svelte';
 	import LockupPeriod from './LockupPeriod.svelte';
 	import { fade } from 'svelte/transition';
-	import Eth from '$lib/icons/eth.icon.svelte';
+	import Eth from '$icons/eth.svelte';
+	import { connectToWallet } from '$utils/wallet/connectWallet';
+	import { appSigner, userClaimsObject } from '$stores/wallet';
+	import { ethers } from 'ethers';
+	import claimAirdropTokens from '$utils/wallet/claimAirdropTokens';
 
-	export let walletConnected = false;
-
-	const connectWallet = () => {
-		walletConnected = true;
+	const connectWallet = async () => {
+		await connectToWallet();
 	};
 </script>
 
@@ -33,9 +35,23 @@
 			class="w-full h-full p-11 flex flex-col text-left border-r-2 border-black border-opacity-20"
 		>
 			<div class="text-2xl opacity-60 font-bold">Claim</div>
-			<div class="text-2xl font-bold flex items-center gap-3 mt-3">14,203 HiNATA</div>
-			<div class="w-28 mt-7">
-				<RoundedButton bgColor="from-color-purple to-color-blue">CLAIM</RoundedButton>
+			<div class="text-2xl font-bold flex items-center gap-3 mt-3">
+				{$userClaimsObject ? ethers.utils.formatEther($userClaimsObject.user.amount) : 0} HiNATA
+			</div>
+			<div class="mt-7">
+				{#if $appSigner}
+					<RoundedButton
+						bgColor="from-color-purple to-color-blue w-28"
+						on:click={claimAirdropTokens}
+						disabled={!$userClaimsObject ||
+							parseFloat(ethers.utils.formatEther($userClaimsObject?.user.amount)) <= 0}
+						>Claim</RoundedButton
+					>
+				{:else}
+					<RoundedButton class="whitespace-nowrap w-44" on:click={connectWallet}
+						>Connect To Wallet</RoundedButton
+					>
+				{/if}
 			</div>
 		</div>
 
@@ -49,7 +65,7 @@
 
 			<div class="text-left mt-4">Stake your HINATA to the DAO</div>
 
-			<div class="w-28 mt-2">
+			<div class="w-28 mt-2" class:hidden={!$appSigner}>
 				<RoundedButton bgColor="from-color-purple to-color-blue">STAKE</RoundedButton>
 			</div>
 		</div>

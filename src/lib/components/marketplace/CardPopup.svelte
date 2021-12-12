@@ -1,16 +1,20 @@
 <script>
-	import TabSwitcher from './CardPopupTabSwitcher.svelte';
-	import CardInfoTab from './CardInfoTab.svelte';
-	import CardTradeTab from './CardTradeTab.svelte';
-	import CardHistoryTab from './CardHistoryTab.svelte';
-
-	import Popupclose from '$lib/icons/popupclose.icon.svelte';
+	import CloseButton from '$icons/close-button.svelte';
 	import { popupOpen, selectedCard } from '$stores/marketplace';
+	import CardHistoryTab from './CardHistoryTab.svelte';
+	import CardInfoTab from './CardInfoTab.svelte';
+	import TabSwitcher from './CardPopupTabSwitcher.svelte';
+	import CardTradeTab from './CardTradeTab.svelte';
+	import { goto } from '$app/navigation';
+	import { browser } from '$app/env';
 
 	let tab = 0;
 </script>
 
-<div class="z-50 fixed w-full h-full top-0 left-0 flex items-center justify-center p-8 lg:p-0">
+<div
+	class="z-50 fixed w-full h-full top-0 left-0 flex items-center justify-center p-8 lg:p-0"
+	class:hidden={!browser}
+>
 	<!-- Dark overlay -->
 	<div class="fixed w-full h-full bg-gray-900 opacity-50" />
 
@@ -45,8 +49,13 @@
 				<TabSwitcher bind:selectedTab={tab} />
 
 				<!-- Close button-->
-				<button on:click={() => popupOpen.set(false)}>
-					<Popupclose />
+				<button
+					on:click={() => {
+						popupOpen.set(false);
+						goto('/marketplace/cards');
+					}}
+				>
+					<CloseButton />
 				</button>
 			</div>
 

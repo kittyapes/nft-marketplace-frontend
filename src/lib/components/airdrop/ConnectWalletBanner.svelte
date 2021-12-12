@@ -1,11 +1,14 @@
 <script>
 	import RoundedButton from '../RoundedButton.svelte';
 	import { fade } from 'svelte/transition';
+	import { connectToWallet } from '$utils/wallet/connectWallet';
 
-	export let walletConnected = false;
-
-	const connectWallet = () => {
-		walletConnected = true;
+	const connectWallet = async () => {
+		try {
+			await connectToWallet();
+		} catch (err) {
+			console.log(err);
+		}
 	};
 </script>
 
