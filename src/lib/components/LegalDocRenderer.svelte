@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/env';
-	import { onMount, tick } from 'svelte';
+	import { tick } from 'svelte';
 
 	export let jsonUrl: string;
 	export let menuTitle: string;
@@ -28,8 +28,10 @@
 	let scrollY;
 	let titles: HTMLElement[] = [];
 
+	let blockSectionRefreshFromScroll = false;
+
 	function refreshSectionHighlight(_) {
-		if (!titles.length) {
+		if (!titles.length || blockSectionRefreshFromScroll) {
 			return;
 		}
 
@@ -53,13 +55,17 @@
 
 	$: refreshSectionHighlight(scrollY);
 
-	async function scrollToHash() {
+	async function scrollToSection(sectionHash: string) {
 		await tick();
 
-		if (currentHash) {
-			const target = document.querySelector(currentHash);
+		blockSectionRefreshFromScroll = true;
 
-			console.log(currentHash, target);
+		setTimeout(() => {
+			blockSectionRefreshFromScroll = false;
+		}, 1000);
+
+		if (currentHash) {
+			const target = document.querySelector(currentHash + '-section-title');
 
 			if (target) {
 				target.scrollIntoView();
@@ -92,7 +98,11 @@
 
 	<div class="max-w-4xl mx-auto p-4 ml-[30rem] mt-40 mb-32">
 		{#each doc.terms as section, index}
-			<h2 id={titleToHash(section.title, true)} class="section-title" bind:this={titles[index]}>
+			<h2
+				id="{titleToHash(section.title, true)}-section-title"
+				class="section-title"
+				bind:this={titles[index]}
+			>
 				{section.title}
 			</h2>
 
@@ -102,7 +112,7 @@
 		{/each}
 	</div>
 
-	{scrollToHash()}
+	{scrollToSection(currentHash)}
 {:catch}
 	Error loading document.
 {/await}
