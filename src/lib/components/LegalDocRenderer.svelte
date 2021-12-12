@@ -68,7 +68,7 @@
 			const target = document.querySelector(sectionHash + '-section-title');
 
 			if (target) {
-				target.scrollIntoView();
+				target.scrollIntoView({ block: 'center' });
 			}
 		}
 	}
