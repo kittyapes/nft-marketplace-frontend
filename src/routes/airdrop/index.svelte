@@ -14,9 +14,9 @@
 	$: walletConnected = !!$appSigner;
 
 	// Check For eligibility
-	$: (async (signer) => browser && signer && checkForClaimEligibility(await signer.getAddress()))(
-		$appSigner
-	);
+	$: (async (signer) => {
+		return browser && signer && checkForClaimEligibility(await signer.getAddress());
+	})($appSigner);
 
 	// Display eligibility popup when eligible
 	userClaimsObject.subscribe(async (claimObject) => {

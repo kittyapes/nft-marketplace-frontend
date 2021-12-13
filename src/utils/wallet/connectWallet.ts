@@ -1,9 +1,16 @@
+import { notifyError } from '$utils/toast';
 import { coinbaseLogo, metamaskLogo } from '$constants/walletIcons';
-import { appProvider, appSigner, currentUserAddress, web3ModalInstance } from '$stores/wallet';
-import { warning } from '$utils/toast';
+import {
+	appProvider,
+	appSigner,
+	currentUserAddress,
+	userClaimsObject,
+	web3ModalInstance
+} from '$stores/wallet';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import Web3Modal from 'web3modal';
+import { setPopup } from '$utils/popup';
 
 const infuraId = '456e115b04624699aa0e776f6f2ee65c';
 const appName = 'Hinata Marketplace';
@@ -127,9 +134,6 @@ const setProvider = async (provider: ethers.providers.ExternalProvider) => {
 	const userAddress = ethersProvider ? await ethersProvider.getSigner().getAddress() : null;
 	currentUserAddress.set(userAddress);
 
-	// Initialize wallet events
-	initProviderEvents(ethersProvider);
-
 	// console.log(
 	//   'WALLET CONNECTED.\n BALANCE: ',
 	//   userAddress && ethers.utils.formatEther(
@@ -165,6 +169,9 @@ export const connectToWallet = async () => {
 	// Connect to wallet
 	const provider: ethers.providers.ExternalProvider = await web3Modal.connect();
 
+	// Init Provider Events
+	initProviderEvents(provider);
+
 	// Add provider to store
 	setProvider(provider);
 
@@ -172,30 +179,41 @@ export const connectToWallet = async () => {
 };
 
 // Subscribe to Wallet Events
-export const initProviderEvents = (provider: ethers.providers.Web3Provider) => {
-	let pollStatus = null;
-	pollStatus = setInterval(async () => {
-		// Check for network change
-		try {
-			// If this function fails its likely the network changed
-			const networkName = (await provider.getNetwork()).name;
-		} catch (err) {
-			clearInterval(pollStatus);
-			await refreshConnection();
-		}
+export const initProviderEvents = (provider: any) => {
+	// Subscribe to accounts change
+	provider.on('accountsChanged', async (accounts: string[]) => {
+		console.log('Account Changed: ', accounts);
 
-		// Check account change
-		const newAccount = await provider.getSigner().getAddress();
+		await refreshConnection();
+	});
 
-		if (get(currentUserAddress) !== newAccount) {
-			warning('Account Changed. Fetching New Account Details...');
-			clearInterval(pollStatus);
-			await refreshConnection();
-		}
-	}, 1000);
+	// Subscribe to chainId change
+	provider.on('chainChanged', async (chainId: number) => {
+		console.log('Chain Changed: ', chainId);
+
+		await refreshConnection();
+	});
+
+	// Subscribe to provider connection
+	provider.on('connect', (info: { chainId: number }) => {
+		console.log('Connect: ', info);
+	});
+
+	// Subscribe to provider disconnection
+	provider.on('disconnect', (error: { code: number; message: string }) => {
+		console.log('Disconnect', error);
+
+		notifyError('Wallet Disconnected');
+	});
 };
 
 export const refreshConnection = async () => {
+	// Reset App State
+	appSigner.set(null);
+	appProvider.set(null);
+	setPopup(null, null);
+	userClaimsObject.set(null);
+
 	const web3Modal = get(web3ModalInstance) || initWeb3ModalInstance();
 
 	// If user has a cached provider prompt for connection
@@ -204,6 +222,9 @@ export const refreshConnection = async () => {
 		const provider: ethers.providers.ExternalProvider = await web3Modal.connectTo(
 			web3Modal.cachedProvider
 		);
+
+		// Init Provider events
+		initProviderEvents(provider);
 
 		// Add provider to store
 		setProvider(provider);
