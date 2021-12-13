@@ -79,6 +79,8 @@
 			target.scrollIntoView({ block: 'center' });
 		}
 	}
+
+	$: hideMenu = browser && scrollY > document.body.clientHeight - 1100;
 </script>
 
 <svelte:window bind:scrollY />
@@ -87,7 +89,7 @@
 	<div class="font-semibold text-center py-32 text-lg">Loading document...</div>
 {:then doc}
 	<!-- Desktop Menu -->
-	<div id="menu-container" class="hidden lg:block" in:fade>
+	<div id="menu-container" class="hidden lg:block" class:hide={hideMenu} in:fade>
 		<h1>{menuTitle}</h1>
 
 		<ul id="section-links-container">
@@ -158,6 +160,15 @@
 		font-size: 1.5rem;
 		font-weight: bold;
 		margin-bottom: 1rem;
+	}
+
+	/* Menu container */
+	#menu-container {
+		@apply transition-transform duration-300;
+	}
+
+	#menu-container.hide {
+		@apply -translate-y-1/2;
 	}
 
 	/* Desktop Menu Title */
