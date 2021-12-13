@@ -5,6 +5,7 @@
 <button
 	on:click
 	class={`w-full rounded-full bg-gradient-to-r ${bgColor} text-xs uppercase flex items-center justify-center p-4 text-white ${$$props.class}`}
+	disabled={$$props.disabled}
 >
 	<slot />
 </button>

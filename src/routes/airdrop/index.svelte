@@ -1,38 +1,18 @@
 <script lang="ts">
+	import { browser } from '$app/env';
+
 	import ClaimTokens from '$lib/components/airdrop/ClaimTokens.svelte';
 	import ConnectWalletBanner from '$lib/components/airdrop/ConnectWalletBanner.svelte';
 	import AirdropDistributionSection from '$lib/sections/AirdropDistributionSection.svelte';
-	// import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
-	import { appSigner, userClaimsObject } from '$stores/wallet';
-	import { userCanClaim } from '$utils/wallet/distributeAirdrop';
+	import { appSigner } from '$stores/wallet';
+	import { checkForClaimEligibility } from '$utils/wallet/distributeAirdrop';
 
 	$: walletConnected = !!$appSigner;
 
 	// Check For eligibility
-	const checkForClaimEligibility = async (userAddress: string) => {
-		fetch('/api/airdrop/canClaim', {
-			method: 'POST',
-			body: JSON.stringify({ userAddress })
-		})
-			.then((res) => res.json())
-			.then(async (resData) => {
-				if (resData) {
-					// Check if user has claimed
-					const hasClaimed = await userCanClaim(userAddress);
-
-					// Update Store
-					userClaimsObject.set({
-						...resData,
-						hasClaimed
-					});
-				} else {
-					userClaimsObject.set(null);
-				}
-			})
-			.catch((err) => console.log(err));
-	};
-
-	$: (async (signer) => signer && checkForClaimEligibility(await signer.getAddress()))($appSigner);
+	$: (async (signer) => browser && signer && checkForClaimEligibility(await signer.getAddress()))(
+		$appSigner
+	);
 </script>
 
 <div class="w-full min-h-full px-6">
