@@ -4,8 +4,12 @@
 	import ClaimTokens from '$lib/components/airdrop/ClaimTokens.svelte';
 	import ConnectWalletBanner from '$lib/components/airdrop/ConnectWalletBanner.svelte';
 	import AirdropDistributionSection from '$lib/sections/AirdropDistributionSection.svelte';
-	import { appSigner } from '$stores/wallet';
 	import { checkForClaimEligibility } from '$utils/wallet/distributeAirdrop';
+	// import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
+	import { appSigner, userClaimsObject } from '$stores/wallet';
+	import { setPopup } from '$utils/popup';
+	import EligibilityPopup from '$lib/components/airdrop/EligibilityPopup.svelte';
+	import { airdropOnePopupOptions } from '$constants/airdrops';
 
 	$: walletConnected = !!$appSigner;
 
@@ -13,6 +17,15 @@
 	$: (async (signer) => browser && signer && checkForClaimEligibility(await signer.getAddress()))(
 		$appSigner
 	);
+
+	// Display eligibility popup when eligible
+	userClaimsObject.subscribe(async (claimObject) => {
+		let options;
+
+		options = claimObject?.user && !claimObject?.user?.hasClaimed ? airdropOnePopupOptions : null;
+
+		options && setPopup(EligibilityPopup, { props: { options } });
+	});
 </script>
 
 <div class="w-full min-h-full px-6">

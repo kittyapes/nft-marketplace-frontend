@@ -3,9 +3,9 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import Nav from '$lib/components/Nav.svelte';
 	import { onMount } from 'svelte';
-	import { refreshConnection, initProviderEvents } from '$utils/wallet/connectWallet';
+	import { refreshConnection } from '$utils/wallet/connectWallet';
 	import Toast from '$lib/components/toast/index.svelte';
-	import { appProvider } from '$stores/wallet';
+	import PopupManager from '$utils/popup/PopupManager.svelte';
 
 	onMount(async () => {
 		// Keep connection live as long as cachedProvider is present (even after reloads)
@@ -23,3 +23,5 @@
 </div>
 <Footer />
 <Toast />
+
+<PopupManager />
