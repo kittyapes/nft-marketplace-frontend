@@ -7,7 +7,7 @@
 <div>
 	<a {href}>
 		<div class="px-5 py-6 border-b border-gray-400 uppercase flex justify-between items-center">
-			<div class=" w-full cursor-pointer flex items-center gap-4">
+			<div class=" w-full cursor-pointer flex items-center text-sm gap-4">
 				<img src={iconSrc} alt="icon" />
 				{title}
 			</div>
