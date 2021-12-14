@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import RoundedButton from '../RoundedButton.svelte';
 	import { fade } from 'svelte/transition';
 	import LockupPeriod from './LockupPeriod.svelte';
@@ -9,7 +9,7 @@
 	let hasClaimed = false;
 	let claimAmount = '0';
 
-	const updateValues = (claims) => {
+	const updateValues = (claims: ClaimsObject) => {
 		if (claims) {
 			hasClaimed = claims.user.hasClaimed;
 
@@ -45,7 +45,7 @@
 					<RoundedButton
 						on:click={claimAirdropTokens}
 						bgColor="from-color-purple to-color-blue"
-						disabled={!$userClaimsObject?.user.hasClaimed || parseFloat(claimAmount) <= 0}
+						disabled={hasClaimed || parseFloat(claimAmount) <= 0}
 					>
 						{#if hasClaimed}
 							Already Claimed
