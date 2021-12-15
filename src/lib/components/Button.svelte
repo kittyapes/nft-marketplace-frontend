@@ -41,7 +41,7 @@
 	}
 
 	.rounded-gradient {
-		@apply bg-gradient-to-r from-color-purple to-color-blue uppercase font-semibold rounded-2xl text-white;
+		@apply bg-gradient-to-r from-color-purple to-color-blue uppercase font-semibold rounded-full text-white;
 	}
 
 	.stretch {
