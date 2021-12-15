@@ -4,13 +4,14 @@
 	import TextInput from '$lib/components/TextInput.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import AdminVerificationQueueSection from '$lib/sections/AdminVerificationQueueSection.svelte';
+	import AdminVerifiedCreatorsSection from '$lib/sections/AdminVerifiedCreatorsSection.svelte';
 </script>
 
-<div class="w-full min-h-screen h-full flex flex-col md:flex-row">
+<div class="w-full min-h-screen h-full flex flex-col md:flex-row overflow-x-hidden">
 	<AdminSidebar />
 
 	<!-- Page Content -->
-	<div class="px-20 py-16 w-full">
+	<div class="px-20 py-16 w-full overflow-x-auto">
 		<div class="text-4xl uppercase font-bold">User management</div>
 
 		<!-- Add verified Creator -->
@@ -49,5 +50,8 @@
 
 		<!-- Verification Queue -->
 		<AdminVerificationQueueSection />
+
+		<!-- Verified Creators -->
+		<AdminVerifiedCreatorsSection />
 	</div>
 </div>

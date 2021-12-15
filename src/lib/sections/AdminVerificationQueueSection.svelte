@@ -26,15 +26,18 @@
 			{#each QUEUE_ROWS as row}
 				<tr class="h-20 border-b border-color-black border-opacity-30">
 					<td class="px-2"><Checkbox /> </td>
+
 					<td class="px-2">
 						<div class="flex items-center gap-4">
 							<Person />
 							{row.username}
 						</div>
 					</td>
+
 					<td class="px-2 max-w-full whitespace-nowrap">
 						<EthAddress address={row.address} />
 					</td>
+
 					<td class="px-4 w-28 whitespace-nowrap">{row.date}</td>
 				</tr>
 			{/each}
