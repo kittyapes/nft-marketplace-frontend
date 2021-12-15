@@ -2,32 +2,40 @@
 	import Button from '$lib/components/Button.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
+	import Person from '$icons/person.svelte';
 
-	const QUEUE_ROWS = Array(5)
+	let usernames = ['Username', 'LongerUsername', 'Shrt'];
+
+	const QUEUE_ROWS = Array(10)
 		.fill(0)
 		.map((_) => ({
-			username: 'Username',
+			username: usernames[Math.floor(Math.random() * usernames.length)],
 			address: '0x3468C6dE9662C2877vd10184B4228e5711b89D42',
-			date: '12-01-21 02:21:34 '
+			date: '12-01-21 02:21:34'
 		}));
-
-	console.log(QUEUE_ROWS);
 </script>
 
 <div class="mt-12">
-	<div class="uppercase text-lg font-bold">Verification Queue</div>
+	<div class="flex justify-between">
+		<div class="uppercase text-lg font-bold">Verification Queue</div>
+		<div class="uppercase text-lg font-bold">Date added</div>
+	</div>
 
-	<div class="max-h-96 overflow-y-scroll  mt-5">
-		<table class="w-full  border-solid border table-auto">
+	<div class="max-h-96 overflow-y-auto overflow-x-auto mt-5">
+		<table class="w-full table-auto border-t border-color-black border-opacity-30">
 			{#each QUEUE_ROWS as row}
-				<tr class="h-20 ">
+				<tr class="h-20 border-b border-color-black border-opacity-30">
 					<td class="px-2"><Checkbox /> </td>
-					<td class="px-2">*</td>
-					<td class="px-2">{row.username}</td>
+					<td class="px-2">
+						<div class="flex items-center gap-4">
+							<Person />
+							{row.username}
+						</div>
+					</td>
 					<td class="px-2 max-w-full whitespace-nowrap">
 						<EthAddress address={row.address} />
 					</td>
-					<td class="px-2 w-28 whitespace-nowrap">{row.date}</td>
+					<td class="px-4 w-28 whitespace-nowrap">{row.date}</td>
 				</tr>
 			{/each}
 		</table>
