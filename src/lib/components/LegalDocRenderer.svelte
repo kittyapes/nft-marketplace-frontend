@@ -81,7 +81,6 @@
 	}
 
 	let menuHeight = 0;
-	$: console.log(menuHeight);
 	$: translateMenuPx = browser
 		? Math.min(0, document.body.clientHeight - menuHeight - scrollY - 600)
 		: 0;
