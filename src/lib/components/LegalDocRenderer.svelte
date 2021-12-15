@@ -80,7 +80,7 @@
 		}
 	}
 
-	$: hideMenu = browser && scrollY > document.body.clientHeight - 1100;
+	$: translateMenuPx = browser ? Math.min(0, document.body.clientHeight - 1100 - scrollY) : 0;
 </script>
 
 <svelte:window bind:scrollY />
@@ -89,7 +89,12 @@
 	<div class="font-semibold text-center py-32 text-lg">Loading document...</div>
 {:then doc}
 	<!-- Desktop Menu -->
-	<div id="menu-container" class="hidden lg:block" class:hide={hideMenu} in:fade>
+	<div
+		id="menu-container"
+		class="hidden lg:block"
+		style="--translate-px: {translateMenuPx}px"
+		in:fade
+	>
 		<h1>{menuTitle}</h1>
 
 		<ul id="section-links-container">
@@ -164,11 +169,7 @@
 
 	/* Menu container */
 	#menu-container {
-		@apply transition-transform duration-300;
-	}
-
-	#menu-container.hide {
-		@apply -translate-y-1/2;
+		transform: translateY(var(--translate-px));
 	}
 
 	/* Desktop Menu Title */
