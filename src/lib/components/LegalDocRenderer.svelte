@@ -80,7 +80,11 @@
 		}
 	}
 
-	$: translateMenuPx = browser ? Math.min(0, document.body.clientHeight - 1100 - scrollY) : 0;
+	let menuHeight = 0;
+	$: console.log(menuHeight);
+	$: translateMenuPx = browser
+		? Math.min(0, document.body.clientHeight - menuHeight - scrollY - 600)
+		: 0;
 </script>
 
 <svelte:window bind:scrollY />
@@ -94,6 +98,7 @@
 		class="hidden lg:block"
 		style="--translate-px: {translateMenuPx}px"
 		in:fade
+		bind:clientHeight={menuHeight}
 	>
 		<h1>{menuTitle}</h1>
 
