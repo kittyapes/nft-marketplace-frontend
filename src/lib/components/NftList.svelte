@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { NftData } from '$lib/data/nft';
 	import NftCard from './NftCard.svelte';
 
 	export let promise: Promise<NftData[]>;
