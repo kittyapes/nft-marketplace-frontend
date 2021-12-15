@@ -1,5 +1,5 @@
 <script>
-	import { fetchCreatedNfts } from '$lib/api/fetchCreatedNfts';
+	import { fetchCreatedNfts } from '$utils/api/fetchCreatedNfts';
 
 	import Button from '$lib/components/Button.svelte';
 	import Modal from '$lib/components/Modal.svelte';
