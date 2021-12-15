@@ -7,7 +7,6 @@
 	const dispatch = createEventDispatcher();
 
 	const handleClose = () => {
-		console.log('sdkfj');
 		dispatch('close');
 	};
 </script>
@@ -18,7 +17,7 @@
 
 	<!-- Modal -->
 	<div class="bg-white w-full max-w-lg h-60 mx-auto rounded-xl shadow-xl z-50 relative">
-		<div class="px-24 py-6">
+		<div class="px-32 py-6">
 			<div class="text-2xl font-bold text-color-black uppercase">Promote user to</div>
 
 			<div class="w-auto mt-6 inline-grid grid-cols-2 grid-rows-2 gap-y-4 gap-x-3">
