@@ -28,14 +28,27 @@
 		</div>
 
 		<div class="w-full flex items-center mt-12 justify-between">
-			<div class="flex items-center gap-3">
-				Automatic Batch Processing
-				<Checkbox />
+			<div class="flex items-center gap-3 flex-col lg:flex-row flex-wrap">
+				<div class="flex items-center gap-3">
+					Automatic Batch Processing
+					<Checkbox />
+				</div>
+
+				<div>
+					<span class="pr-1">Process Every</span>
+					<select class="border h-10 rounded-md">
+						<option>Monday</option>
+						<option>Tuesday</option>
+						<option>Wednesday</option>
+						<option>Thursday</option>
+						<option>Friday</option>
+						<option>Saturday</option>
+						<option>Sunday</option>
+					</select>
+				</div>
 
 				<div class="">
-					<Button variant="rounded-outline" class="ml-7 text-xs" stretch>
-						Force processing now
-					</Button>
+					<Button variant="rounded-outline" class="text-xs" stretch>Force processing now</Button>
 				</div>
 			</div>
 
