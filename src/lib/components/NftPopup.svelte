@@ -2,7 +2,6 @@
 	import CloseButton from '$icons/close-button.svelte';
 	import Fullscreen from '$icons/fullscreen.svelte';
 	import Share from '$icons/share.svelte';
-	import type { NftData } from '$lib/data/nft';
 	import { createEventDispatcher } from 'svelte';
 	import Button from './Button.svelte';
 	import Separator from './Separator.svelte';
