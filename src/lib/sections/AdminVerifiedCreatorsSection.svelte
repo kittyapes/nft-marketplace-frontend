@@ -5,8 +5,10 @@
 	import TextInput from '$lib/components/TextInput.svelte';
 	import Person from '$icons/person.svelte';
 	import PromoteUser from '$lib/components/admin/PromoteUser.svelte';
+	import RevokeVerified from '$lib/components/admin/RevokeVerified.svelte';
 
 	let promotePopupOpen = false;
+	let revokePopupOpen = false;
 
 	// TODO Remove this
 	let usernames = ['Username', 'KindaLongerUsername', 'Shrt'];
@@ -25,6 +27,10 @@
 <div class="mt-32">
 	{#if promotePopupOpen}
 		<PromoteUser on:close={() => (promotePopupOpen = false)} />
+	{/if}
+
+	{#if revokePopupOpen}
+		<RevokeVerified on:close={() => (revokePopupOpen = false)} />
 	{/if}
 
 	<div class="uppercase text-lg font-bold">Verified Creators</div>
@@ -51,7 +57,7 @@
 		</div>
 	</div>
 
-	<div class="max-h-96 overflow-y-auto overflow-x-auto mt-5">
+	<div class="max-h-[900px] overflow-y-auto overflow-x-auto mt-5">
 		<table class="w-full table table-auto border-t border-color-black border-opacity-30">
 			{#each QUEUE_ROWS as row}
 				<tr class="h-20 border-b border-color-black border-opacity-30">
@@ -69,7 +75,15 @@
 					<td class="px-6">
 						<div class="flex items-center gap-3">
 							{#if row.active}
-								<Button variant="rounded-gradient" class="!w-40 text-xs">Inactivate</Button>
+								<Button
+									variant="rounded-gradient"
+									class="!w-40 text-xs"
+									on:click={() => {
+										revokePopupOpen = true;
+									}}
+								>
+									Inactivate
+								</Button>
 								<Button
 									class="text-transparent bg-clip-text bg-gradient-to-br from-color-purple to-color-blue font-bold"
 									on:click={() => {
