@@ -22,18 +22,14 @@
 				<a href={socials.discord} target="_blank">Discord</a>
 				<a href={socials.twitter} target="_blank">Twitter</a>
 				<a href={socials.telegram} target="_blank">Telegram</a>
-				<!-- <a href={socials.reddit} target="_blank">Reddit</a> -->
-				<!-- <a href={socials.medium} target="_blank">Medium</a> -->
 			</div>
 		</div>
 
 		<div class="grid xl:grid-cols-2 gap-x-4 ml-8">
 			<div class="perma-gray whitespace-nowrap">Latest news:</div>
 			<div class="grid font-semibold gap-2 grid-rows-3">
-				<!-- <a href="!#">About</a> -->
 				<a href={socials.reddit} target="_blank">Reddit</a>
 				<a href={socials.medium} target="_blank">Medium</a>
-				<!-- <a href={socials.careers} target="_blank">Careers</a> -->
 			</div>
 		</div>
 	</div>
