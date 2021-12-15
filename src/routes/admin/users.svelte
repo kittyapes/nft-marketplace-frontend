@@ -6,8 +6,6 @@
 	import AdminVerificationQueueSection from '$lib/sections/AdminVerificationQueueSection.svelte';
 	import AdminVerifiedCreatorsSection from '$lib/sections/AdminVerifiedCreatorsSection.svelte';
 	import PromoteUser from '$lib/components/admin/PromoteUser.svelte';
-
-	let promotePopupOpen = true;
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row overflow-x-hidden">
@@ -15,10 +13,6 @@
 
 	<!-- Page Content -->
 	<div class="px-20 py-16 w-full overflow-x-auto">
-		{#if promotePopupOpen}
-			<PromoteUser on:close={() => (promotePopupOpen = false)} />
-		{/if}
-
 		<div class="text-4xl uppercase font-bold">User management</div>
 
 		<!-- Add verified Creator -->

@@ -4,6 +4,9 @@
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
 	import Person from '$icons/person.svelte';
+	import PromoteUser from '$lib/components/admin/PromoteUser.svelte';
+
+	let promotePopupOpen = false;
 
 	// TODO Remove this
 	let usernames = ['Username', 'KindaLongerUsername', 'Shrt'];
@@ -20,6 +23,10 @@
 </script>
 
 <div class="mt-32">
+	{#if promotePopupOpen}
+		<PromoteUser on:close={() => (promotePopupOpen = false)} />
+	{/if}
+
 	<div class="uppercase text-lg font-bold">Verified Creators</div>
 
 	<div class="mt-7 flex">
@@ -63,20 +70,23 @@
 						<div class="flex items-center gap-3">
 							{#if row.active}
 								<Button variant="rounded-gradient" class="!w-40 text-xs">Inactivate</Button>
-								<div
+								<Button
 									class="text-transparent bg-clip-text bg-gradient-to-br from-color-purple to-color-blue font-bold"
+									on:click={() => {
+										promotePopupOpen = true;
+									}}
 								>
 									PROMOTE
-								</div>
+								</Button>
 							{:else}
 								<Button variant="rounded-outline" class="!w-40 text-xs opacity-50">
 									Inactivate
 								</Button>
-								<div
+								<Button
 									class="text-transparent bg-clip-text bg-gradient-to-br from-color-purple to-color-blue font-bold"
 								>
 									REACTIVATE
-								</div>
+								</Button>
 							{/if}
 						</div>
 					</td>
