@@ -3,9 +3,8 @@
 	import Button from '$lib/components/Button.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
-	import AdminVerificationQueueSection from '$lib/sections/AdminVerificationQueueSection.svelte';
-	import AdminVerifiedCreatorsSection from '$lib/sections/AdminVerifiedCreatorsSection.svelte';
-	import PromoteUser from '$lib/components/admin/PromoteUser.svelte';
+	import VerificationQueueSection from '$lib/sections/admin/VerificationQueueSection.svelte';
+	import VerifiedCreatorsSection from '$lib/sections/admin/VerifiedCreatorsSection.svelte';
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row overflow-x-hidden">
@@ -63,9 +62,15 @@
 		</div>
 
 		<!-- Verification Queue -->
-		<AdminVerificationQueueSection />
+		<VerificationQueueSection />
 
 		<!-- Verified Creators -->
-		<AdminVerifiedCreatorsSection />
+		<VerifiedCreatorsSection />
+
+		<!-- Add verified Creator -->
+		<div class="uppercase text-lg font-bold mt-12">Administators</div>
+		<a href="/admin/users/add-admin">
+			<Button variant="rounded-outline" class="w-60 mt-4 text-xs ">Add Administrator</Button></a
+		>
 	</div>
 </div>
