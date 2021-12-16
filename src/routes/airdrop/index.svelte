@@ -44,7 +44,7 @@
 		<div class="w-full mt-20 font-bold text-5xl">Community Airdrop</div>
 
 		<div class="text-lg font-bold mt-12">
-			The Hinata community airdrop snapshot was taken on xxxx
+			The Hinata community airdrop snapshot was taken on December 8th, 2021 at 00:00 UTC
 		</div>
 
 		{#if walletConnected}

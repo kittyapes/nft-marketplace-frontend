@@ -149,6 +149,10 @@ export const disconnectWallet = () => {
 	// Clear the cached provider
 	get(web3ModalInstance) && get(web3ModalInstance).clearCachedProvider();
 
+	// Clear Local Storage
+	localStorage.removeItem('walletconnect');
+	localStorage.removeItem('loglevel:torus.js');
+
 	// Reset App Store
 	appSigner.set(null);
 	web3ModalInstance.set(null);
@@ -204,6 +208,7 @@ export const initProviderEvents = (provider: any) => {
 		console.log('Disconnect', error);
 
 		notifyError('Wallet Disconnected');
+		disconnectWallet();
 	});
 };
 
