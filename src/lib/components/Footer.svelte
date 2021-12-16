@@ -44,7 +44,7 @@
 
 	<!-- Copyright -->
 	<div class="container mx-auto flex items-center justify-center text-xs relative mt-8">
-		<a href="!#" class="doc-link">Hinata Foundation &copy; 2012 - 2021</a>
+		<span class="doc-link">Hinata Foundation &copy; 2012 - 2021</span>
 		<div class="tos flex justify-center items-center w-auto absolute right-0">
 			<a href="/terms-and-conditions" class="doc-link">Terms & Conditions</a>
 			<div class="w-[2px] h-4 bg-black mx-2 bg-opacity-50" />
