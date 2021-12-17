@@ -5,6 +5,7 @@
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import VerificationQueueSection from '$lib/sections/admin/VerificationQueueSection.svelte';
 	import VerifiedCreatorsSection from '$lib/sections/admin/VerifiedCreatorsSection.svelte';
+	import AdministratorsSection from '$lib/sections/admin/AdministratorsSection.svelte';
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row overflow-x-hidden">
@@ -67,10 +68,7 @@
 		<!-- Verified Creators -->
 		<VerifiedCreatorsSection />
 
-		<!-- Add verified Creator -->
-		<div class="uppercase text-lg font-bold mt-12">Administators</div>
-		<a href="/admin/users/add-admin">
-			<Button variant="rounded-outline" class="w-60 mt-4 text-xs ">Add Administrator</Button></a
-		>
+		<!-- Administrators -->
+		<AdministratorsSection />
 	</div>
 </div>

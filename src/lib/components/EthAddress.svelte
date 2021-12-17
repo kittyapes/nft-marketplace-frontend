@@ -17,7 +17,7 @@
 	$: address = concat ? concatAddress(address) : address;
 </script>
 
-<div class="flex items-center gap-6">
+<div class="flex items-center gap-6 {$$props.class}">
 	<span class="text-color-blue font-bold">{address} </span>
 	<button on:click={copyToClipboard}>
 		<Copy />
