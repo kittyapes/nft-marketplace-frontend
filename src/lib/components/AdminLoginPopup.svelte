@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CloseButton from '$icons/close-button.svelte';
 	import Loader from '$icons/loader.svelte';
 	import { login, requestLogin } from '$lib/api/login';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
@@ -6,6 +7,7 @@
 	import { closePopup } from '$utils/popup';
 	import Button from './Button.svelte';
 	import Modal from './Modal.svelte';
+	import Popup from './Popup.svelte';
 
 	type State = 'prompt' | 'loading' | 'confirm' | 'success' | 'error';
 	let state: State = 'prompt';
@@ -44,7 +46,7 @@
 </script>
 
 <Modal>
-	<div class="bg-white rounded-2xl w-[500px] h-[220px] flex flex-col items-center pt-6">
+	<Popup closeButton class="w-[500px] h-[220px] flex flex-col items-center">
 		{#if state === 'prompt'}
 			<div class="title">You need to be signed in to <br /> perform this action</div>
 			<Button gradient class="rounded-full mt-8 mx-auto block" on:click={onSignIn}>Sign In</Button>
@@ -78,7 +80,7 @@
 				<Button gradient rounded on:click={onSignIn}>Try again</Button>
 			</div>
 		{/if}
-	</div>
+	</Popup>
 </Modal>
 
 <style>
