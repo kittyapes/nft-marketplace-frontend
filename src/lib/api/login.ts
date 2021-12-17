@@ -10,5 +10,7 @@ export async function requestLogin(address: string) {
 export async function login(address: string, signature: string) {
 	const res = await axios.post(api + '/v1/login', { wallet: address, signature });
 
-	console.log(res.data);
+	console.log(res);
+
+	return res.data.data.token.token as string;
 }
