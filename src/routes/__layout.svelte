@@ -19,7 +19,7 @@
 		await refreshConnection();
 	});
 
-	$: pathIsProtected($page.path) && browser && setPopup(SignMessagePopup);
+	$: $page.path !== '/' && pathIsProtected($page.path) && browser && setPopup(SignMessagePopup);
 </script>
 
 <svelte:head>
