@@ -12,12 +12,7 @@
 	transition:slide
 >
 	<div class="grid gap-2">
-		<Button
-			variant="rounded-outline"
-			--width="100%"
-			--py="0.5rem"
-			on:click={() => goto('/profile')}
-		>
+		<Button rounded outline class="!w-full !py-2" on:click={() => goto('/profile')}>
 			My Profile
 		</Button>
 		<!-- <Button variant="rounded-outline" --width="100%" --py="0.5rem">My Collections</Button> -->
