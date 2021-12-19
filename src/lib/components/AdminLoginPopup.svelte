@@ -1,7 +1,6 @@
 <script lang="ts">
-	import CloseButton from '$icons/close-button.svelte';
 	import Loader from '$icons/loader.svelte';
-	import { login, requestLogin } from '$lib/api/login';
+	import { login, requestLogin } from '$utils/api/login';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
 	import { setAuthToken } from '$utils/api';
 	import { closePopup } from '$utils/popup';

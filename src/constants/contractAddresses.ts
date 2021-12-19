@@ -1,1 +1,1 @@
-export const merkleDistributorContractAddress = "0x87E9920E4eEb2553d9121C6c96EDE8b546534C5b"
+export const merkleDistributorContractAddress = '0x115cC92Ad95eB02e613bF0543586E18168c50c49';

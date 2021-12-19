@@ -79,6 +79,11 @@
 			target.scrollIntoView({ block: 'center' });
 		}
 	}
+
+	let menuHeight = 0;
+	$: translateMenuPx = browser
+		? Math.min(0, document.body.clientHeight - menuHeight - scrollY - 600)
+		: 0;
 </script>
 
 <svelte:window bind:scrollY />
@@ -87,7 +92,13 @@
 	<div class="font-semibold text-center py-32 text-lg">Loading document...</div>
 {:then doc}
 	<!-- Desktop Menu -->
-	<div id="menu-container" class="hidden lg:block" in:fade>
+	<div
+		id="menu-container"
+		class="hidden lg:block"
+		style="--translate-px: {translateMenuPx}px"
+		in:fade
+		bind:clientHeight={menuHeight}
+	>
 		<h1>{menuTitle}</h1>
 
 		<ul id="section-links-container">
@@ -158,6 +169,11 @@
 		font-size: 1.5rem;
 		font-weight: bold;
 		margin-bottom: 1rem;
+	}
+
+	/* Menu container */
+	#menu-container {
+		transform: translateY(var(--translate-px));
 	}
 
 	/* Desktop Menu Title */

@@ -15,8 +15,8 @@
 			<div class="grid grid-cols-2 gap-x-4">
 				<div class="perma-gray">Join our community:</div>
 				<div class="grid font-semibold gap-2">
-					<a href={socials.twitter} target="_blank">Twitter</a>
 					<a href={socials.discord} target="_blank">Discord</a>
+					<a href={socials.twitter} target="_blank">Twitter</a>
 					<a href={socials.telegram} target="_blank">Telegram</a>
 					<a href={socials.reddit} target="_blank">Reddit</a>
 					<a href={socials.medium} target="_blank">Medium</a>
@@ -44,7 +44,7 @@
 
 	<!-- Copyright -->
 	<div class="container mx-auto flex items-center justify-center text-xs relative mt-8">
-		<div class="doc-link">&copy; 2021 Hinata Foundation</div>
+		<span class="doc-link">Hinata Foundation &copy; 2012 - 2021</span>
 		<div class="tos flex justify-center items-center w-auto absolute right-0">
 			<a href="/terms-and-conditions" class="doc-link">Terms & Conditions</a>
 			<div class="w-[2px] h-4 bg-black mx-2 bg-opacity-50" />
@@ -57,7 +57,6 @@
 	.perma-gray {
 		color: #1d1d1d99;
 	}
-
 	.doc-link {
 		color: #1d1d1d99;
 		font-weight: 400;
