@@ -6,6 +6,9 @@
 	import Button from './Button.svelte';
 	import Modal from './Modal.svelte';
 	import Popup from './Popup.svelte';
+	import { goto } from '$app/navigation';
+	import pathIsProtected from '$utils/pathIsProtected';
+	import { page } from '$app/stores';
 
 	type State = 'prompt' | 'loading' | 'confirm' | 'success' | 'error';
 	let state: State = 'prompt';
@@ -35,10 +38,14 @@
 	async function onError() {
 		state = 'error';
 	}
+
+	function onClose() {
+		pathIsProtected($page.path) && goto('/home');
+	}
 </script>
 
 <Modal>
-	<Popup closeButton class="w-[500px] h-[220px] flex flex-col items-center">
+	<Popup closeButton class="w-[500px] h-[220px] flex flex-col items-center" on:close={onClose}>
 		{#if state === 'prompt'}
 			<div class="title">You need to be signed in to <br /> perform this action</div>
 			<Button gradient class="rounded-full mt-8 mx-auto block" on:click={onSignIn}>Sign In</Button>
