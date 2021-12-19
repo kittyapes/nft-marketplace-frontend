@@ -9,7 +9,7 @@
 
 	// Login Popup
 	import { browser } from '$app/env';
-	import SignMessagePopup from '$lib/components/AdminLoginPopup.svelte';
+	import AdminLoginPopup from '$lib/components/AdminLoginPopup.svelte';
 	import { setPopup } from '$utils/popup';
 	import { page } from '$app/stores';
 	import pathIsProtected from '$utils/pathIsProtected';
@@ -19,7 +19,7 @@
 		await refreshConnection();
 	});
 
-	$: $page.path !== '/' && pathIsProtected($page.path) && browser && setPopup(SignMessagePopup);
+	$: pathIsProtected($page.path) && browser && setPopup(AdminLoginPopup);
 </script>
 
 <svelte:head>
