@@ -13,13 +13,14 @@
 	import { setPopup } from '$utils/popup';
 	import { page } from '$app/stores';
 	import pathIsProtected from '$utils/pathIsProtected';
+	import { isAuthExpired } from '$utils/api';
 
 	onMount(async () => {
 		// Keep connection live as long as cachedProvider is present (even after reloads)
 		await refreshConnection();
 	});
 
-	$: pathIsProtected($page.path) && browser && setPopup(AdminLoginPopup);
+	$: pathIsProtected($page.path) && browser && isAuthExpired() && setPopup(AdminLoginPopup);
 </script>
 
 <svelte:head>

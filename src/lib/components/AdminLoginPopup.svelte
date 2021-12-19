@@ -2,7 +2,6 @@
 	import Loader from '$icons/loader.svelte';
 	import { login, requestLogin } from '$utils/api/login';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
-	import { setAuthToken } from '$utils/api';
 	import { closePopup } from '$utils/popup';
 	import Button from './Button.svelte';
 	import Modal from './Modal.svelte';
@@ -30,13 +29,7 @@
 
 		const signature = await $appSigner.signMessage(message).catch(onError);
 
-		signature && login($currentUserAddress, signature).then(onSignSuccess, onError);
-	}
-
-	async function onSignSuccess(token: string) {
-		state = 'success';
-
-		setAuthToken(token);
+		signature && login($currentUserAddress, signature).then(() => (state = 'success'), onError);
 	}
 
 	async function onError() {
