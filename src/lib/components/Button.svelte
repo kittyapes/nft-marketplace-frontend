@@ -34,11 +34,11 @@
 	}
 
 	.rounded-black {
-		@apply bg-color-black uppercase font-semibold text-white;
+		@apply bg-color-black uppercase font-semibold text-white rounded-full;
 	}
 
 	.rounded-shadow {
-		@apply bg-white uppercase font-semibold text-color-black;
+		@apply bg-white uppercase font-semibold text-color-black rounded-full;
 		box-shadow: 0px 2px 10px rgba(122, 122, 122, 0.2);
 	}
 
@@ -47,7 +47,7 @@
 	}
 
 	.outline {
-		@apply border-2 border-color-black;
+		@apply border-2 border-color-black rounded-full;
 	}
 
 	.rounded {
