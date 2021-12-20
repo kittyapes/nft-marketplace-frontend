@@ -40,6 +40,7 @@
 	}
 
 	function onClose() {
+		closePopup();
 		pathIsProtected($page.path) && goto('javascript:history.back()');
 	}
 </script>
@@ -75,7 +76,7 @@
 			<div class="title">Sign this message</div>
 			<div class="text-sm mt-8 font-bold">Signing Failed!</div>
 			<div class="mt-6 gap-x-8 flex scale-75">
-				<Button variant="rounded-outline" rounded on:click={closePopup}>Cancel</Button>
+				<Button variant="rounded-outline" rounded on:click={onClose}>Cancel</Button>
 				<Button gradient rounded on:click={onSignIn}>Try again</Button>
 			</div>
 		{/if}
