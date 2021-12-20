@@ -11,7 +11,7 @@
 	import { browser } from '$app/env';
 	import AdminLoginPopup from '$lib/components/AdminLoginPopup.svelte';
 	import { setPopup } from '$utils/popup';
-	import { navigating, page } from '$app/stores';
+	import { page } from '$app/stores';
 	import pathIsProtected from '$utils/pathIsProtected';
 	import { isAuthExpired } from '$utils/api';
 

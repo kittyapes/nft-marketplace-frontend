@@ -40,7 +40,7 @@
 	}
 
 	function onClose() {
-		pathIsProtected($page.path) && goto('/home');
+		pathIsProtected($page.path) && goto('javascript:history.back()');
 	}
 </script>
 
