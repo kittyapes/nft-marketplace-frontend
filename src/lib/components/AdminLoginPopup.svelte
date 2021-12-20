@@ -2,11 +2,13 @@
 	import Loader from '$icons/loader.svelte';
 	import { login, requestLogin } from '$utils/api/login';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
-	import { setAuthToken } from '$utils/api';
 	import { closePopup } from '$utils/popup';
 	import Button from './Button.svelte';
 	import Modal from './Modal.svelte';
 	import Popup from './Popup.svelte';
+	import { goto } from '$app/navigation';
+	import pathIsProtected from '$utils/pathIsProtected';
+	import { page } from '$app/stores';
 
 	type State = 'prompt' | 'loading' | 'confirm' | 'success' | 'error';
 	let state: State = 'prompt';
@@ -30,22 +32,20 @@
 
 		const signature = await $appSigner.signMessage(message).catch(onError);
 
-		signature && login($currentUserAddress, signature).then(onSignSuccess, onError);
-	}
-
-	async function onSignSuccess(token: string) {
-		state = 'success';
-
-		setAuthToken(token);
+		signature && login($currentUserAddress, signature).then(() => (state = 'success'), onError);
 	}
 
 	async function onError() {
 		state = 'error';
 	}
+
+	function onClose() {
+		pathIsProtected($page.path) && goto('javascript:history.back()');
+	}
 </script>
 
 <Modal>
-	<Popup closeButton class="w-[500px] h-[220px] flex flex-col items-center">
+	<Popup closeButton class="w-[500px] h-[220px] flex flex-col items-center" on:close={onClose}>
 		{#if state === 'prompt'}
 			<div class="title">You need to be signed in to <br /> perform this action</div>
 			<Button gradient class="rounded-full mt-8 mx-auto block" on:click={onSignIn}>Sign In</Button>
