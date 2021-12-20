@@ -5,12 +5,11 @@
 	import { goto } from '$app/navigation';
 
 	export let metadata;
-	export let maxSupply = 0;
 
 	let hidden = false;
 
 	let openPopup = (_data) => {
-		selectedCard.set({ ..._data, maxSupply });
+		selectedCard.set({ ..._data });
 		popupOpen.set(true);
 		goto(`/marketplace/${_data['id']}`, { noscroll: true });
 	};
