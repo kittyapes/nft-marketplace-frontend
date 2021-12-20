@@ -1,5 +1,4 @@
 <script>
-	import { fetchNFTfromURI } from '$utils/api/getNFT';
 	import { fade } from 'svelte/transition';
 	import { popupOpen, selectedCard, priceFilters } from '$stores/marketplace';
 	import { goto } from '$app/navigation';

@@ -1,28 +1,53 @@
 import { CARD_STATUSES } from '$constants/marketplace';
+import { ethers } from 'ethers';
+import axios from 'axios';
+
 export interface NftListing {
-	id: string;
-	name: string;
-	image: string;
+	amount: string;
+	animation_url: string;
 	artist: string;
-	price: string;
-	supply: number;
-	status: string;
+	batch: string;
+	categories: string;
+	categoryIndex: string;
+	creationDate: string;
+	generation: string;
+	id: string;
+	image: string;
+	maxSupply: string;
+	name: string;
+	totalSupply: string;
+	uri: string;
 }
 
-export async function fetchNFTfromURI(uri: string): Promise<NftListing> {
-	return fetch(uri)
-		.then((response) => response.json())
-		.then((data) => {
+export async function fetchAllMetadata(_cards: Array<any>): Promise<NftListing> {
+	return Promise.all(
+		_cards.cards.map(async (card) => {
+			let uri = card.uri.replace('radiant-falls-54169', 'databasewaifu');
+			let amount = ethers.utils.formatEther(card.amount);
+
+			const response: any = await axios.get(uri).catch((error) => console.log(error.message));
+
+			if (response['headers']['content-length'] == '0') return;
+
+			let { name, id, generation, image, animation_url, categories, categoryIndex, batch, artist } =
+				response.data;
+
 			return {
-				id: data.id,
-				name: data.name,
-				image: data.image,
-				artist: data.artist,
-				// TODO: IMPORTANT: temporarily adding a random value as cost as a placeholder
-				price: data.price || Math.abs(Math.floor(Math.random() * (10 - 1000 + 1) + 10)),
-				supply: parseInt(data.supply),
-				// TODO: IMPORTANT: Randomly adding a status for filters
-				status: CARD_STATUSES[Math.floor(Math.random() * CARD_STATUSES.length)]['status']
+				...card,
+				amount,
+				uri,
+				id,
+				name,
+				image,
+				animation_url,
+				generation,
+				categories,
+				categoryIndex,
+				batch,
+				artist
 			};
-		});
+		})
+	).then((data) => {
+		return data;
+	});
 }
