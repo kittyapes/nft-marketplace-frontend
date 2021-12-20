@@ -52,7 +52,7 @@
 				<button
 					on:click={() => {
 						popupOpen.set(false);
-						goto('/marketplace/cards');
+						goto('/marketplace/cards', { noscroll: true });
 					}}
 				>
 					<CloseButton />
