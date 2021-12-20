@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Card from '$lib/components/marketplace/Card.svelte';
 	import axios from 'axios';
+	import { ethers } from 'ethers';
 	import { onMount } from 'svelte';
 	import { request, gql } from 'graphql-request';
 
@@ -35,7 +36,9 @@
 		return Promise.all(
 			_cards.cards.map(async (card) => {
 				let uri = card.uri.replace('radiant-falls-54169', 'databasewaifu');
-				const response = await axios.get(uri).catch((error) => console.log(error.message));
+				let amount = ethers.utils.formatEther(card.amount);
+
+				const response: any = await axios.get(uri).catch((error) => console.log(error.message));
 
 				if (response['headers']['content-length'] == '0') return;
 
@@ -53,6 +56,7 @@
 
 				return {
 					...card,
+					amount,
 					uri,
 					id,
 					name,
@@ -66,7 +70,6 @@
 				};
 			})
 		).then((data) => {
-			//console.log(data);
 			return data;
 		});
 	};

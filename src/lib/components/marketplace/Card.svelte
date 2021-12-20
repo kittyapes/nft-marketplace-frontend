@@ -8,49 +8,12 @@
 	export let maxSupply = 0;
 
 	let hidden = false;
-	let data;
-
-	// if (metadata) {
-	// 	data = fetchNFTfromURI(metadata?.uri.replace('radiant-falls-54169', 'databasewaifu'));
-	// }
 
 	let openPopup = (_data) => {
 		selectedCard.set({ ..._data, maxSupply });
 		popupOpen.set(true);
 		goto(`/marketplace/${_data['id']}`, { noscroll: true });
 	};
-
-	// brain.exe stopped working
-	// $: {
-	// 	data.then((res) => {
-	// 		statusFilters.subscribe((el) => {
-	// 			for (let idx in el) {
-	// 				if (el[idx].status == res.status && el[idx].selected) {
-	// 					hidden = false;
-	// 					break;
-	// 				} else {
-	// 					hidden = true;
-	// 				}
-	// 			}
-	// 		});
-	// 	});
-	// }
-
-	// $: {
-	// 	data.then((res) => {
-	// 		if (
-	// 			$priceFilters.min < $priceFilters.max &&
-	// 			$priceFilters.min != 0 &&
-	// 			$priceFilters.max != 0
-	// 		) {
-	// 			if (parseInt(res.price) < $priceFilters.min || parseInt(res.price) > $priceFilters.max) {
-	// 				hidden = true;
-	// 			} else {
-	// 				hidden = false;
-	// 			}
-	// 		}
-	// 	});
-	// }
 </script>
 
 {#if metadata}
@@ -78,7 +41,7 @@
 			<div class="tracking-tight leading-tight">{metadata.name} #{metadata.id}</div>
 			<div class="flex gap-1 items-center justify-center flex-shrink-0">
 				<img src="/marketplace/ethereum-logo.svg" alt="eth" />
-				{metadata.price}
+				{metadata.amount}
 			</div>
 		</div>
 	</div>
