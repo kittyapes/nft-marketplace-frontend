@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Card from '$lib/components/marketplace/Card.svelte';
+	import axios from 'axios';
 	import { onMount } from 'svelte';
 	import { request, gql } from 'graphql-request';
 
@@ -16,21 +17,65 @@
 		}
 	`;
 
-	let allCards;
-	let filteredCards: Array<object>;
+	let oldCards;
+	let allCards = [];
 
 	onMount(async () => {
-		allCards = await request('https://api.thegraph.com/subgraphs/name/hysmagus/waifu', GET_CARDS, {
+		oldCards = await request('https://api.thegraph.com/subgraphs/name/hysmagus/waifu', GET_CARDS, {
 			numberToSkip: 0
 		});
-		filteredCards = allCards;
+
+		getCardMetadata(oldCards).then((data) => {
+			allCards = data;
+			console.log(allCards);
+		});
 	});
+
+	const getCardMetadata: any = async (_cards) => {
+		return Promise.all(
+			_cards.cards.map(async (card) => {
+				let uri = card.uri.replace('radiant-falls-54169', 'databasewaifu');
+				const response = await axios.get(uri).catch((error) => console.log(error.message));
+
+				if (response['headers']['content-length'] == '0') return;
+
+				let {
+					name,
+					id,
+					generation,
+					image,
+					animation_url,
+					categories,
+					categoryIndex,
+					batch,
+					artist
+				} = response.data;
+
+				return {
+					...card,
+					uri,
+					id,
+					name,
+					image,
+					animation_url,
+					generation,
+					categories,
+					categoryIndex,
+					batch,
+					artist
+				};
+			})
+		).then((data) => {
+			//console.log(data);
+			return data;
+		});
+	};
 </script>
 
 <div class="flex flex-wrap mt-11 justify-center gap-6 cards">
-	{#if filteredCards}
-		{#each filteredCards.cards as _card}
-			<Card uri={_card.uri} maxSupply={_card.maxSupply} />
+	{#if allCards}
+		{#each allCards as _card}
+			<Card metadata={_card} />
 		{/each}
 	{:else}
 		Loading...
