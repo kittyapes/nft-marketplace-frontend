@@ -1,15 +1,12 @@
 <script>
-	import { fetchCreatedNfts } from '$utils/api/fetchCreatedNfts';
-
+	import { goto } from '$app/navigation';
+	import Copy from '$icons/copy.svelte';
+	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import Modal from '$lib/components/Modal.svelte';
 	import NftList from '$lib/components/NftList.svelte';
-	import NftPopup from '$lib/components/NftPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
-	import VerifiedBadge from '$icons/verified-badge.svelte';
-	import Copy from '$icons/copy.svelte';
-	import { goto } from '$app/navigation';
+	import { fetchCreatedNfts } from '$utils/api/fetchCreatedNfts';
 
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES', 'HIDDEN'];
 	let selectedTab = 'CREATED NFTS';
