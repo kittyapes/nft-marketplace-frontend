@@ -1,7 +1,7 @@
-import { CARD_STATUSES } from '$constants/marketplace';
 import { ethers } from 'ethers';
 import axios from 'axios';
-
+import { request } from 'graphql-request';
+import { GET_SINGLE_CARD } from '../../../graphql/marketplace';
 export interface NftListing {
 	amount: string;
 	animation_url: string;
@@ -50,4 +50,40 @@ export async function fetchAllMetadata(_cards: Array<any>): Promise<NftListing> 
 	).then((data) => {
 		return data;
 	});
+}
+
+export async function fetchMetadataFromUri(tokenId: number, uri: string): Promise<NftListing> {
+	let cardResponse = await request(
+		'https://api.thegraph.com/subgraphs/name/hysmagus/waifu',
+		GET_SINGLE_CARD,
+		{
+			id: `0x${tokenId.toString(16)}`
+		}
+	);
+
+	const card = await cardResponse.card;
+
+	let amount = ethers.utils.formatEther(card.amount);
+
+	const response: any = await axios.get(uri).catch((error) => console.log(error.message));
+
+	if (response['headers']['content-length'] == '0') return;
+
+	let { name, id, generation, image, animation_url, categories, categoryIndex, batch, artist } =
+		response.data;
+
+	return {
+		...card,
+		amount,
+		uri,
+		id,
+		name,
+		image,
+		animation_url,
+		generation,
+		categories,
+		categoryIndex,
+		batch,
+		artist
+	};
 }

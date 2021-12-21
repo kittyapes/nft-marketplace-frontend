@@ -2,8 +2,6 @@
 	import { fade } from 'svelte/transition';
 	import RoundedButton from '../RoundedButton.svelte';
 	import { selectedCard } from '$stores/marketplace';
-
-	console.log($selectedCard);
 </script>
 
 <div in:fade={{ duration: 300 }} class="h-full flex flex-col justify-between">

@@ -14,8 +14,8 @@ export const GET_ALL_CARDS = gql`
 	`;
 
 export const GET_SINGLE_CARD = gql`
-	query ($id: Int!) {
-		card(id: "0x1")
+	query ($id: String!) {
+		card(id: $id)
 			{
 				id
 				amount
@@ -24,4 +24,5 @@ export const GET_SINGLE_CARD = gql`
 				uri
 				creationDate
 			}
+		}
 	`;
