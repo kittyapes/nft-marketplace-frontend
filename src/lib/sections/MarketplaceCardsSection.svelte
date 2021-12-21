@@ -26,7 +26,7 @@
 		});
 	});
 
-	// Silters
+	// Price filter (min, max)
 	$: {
 		filteredCards = allCards;
 		if (
@@ -37,7 +37,6 @@
 		) {
 			filteredCards = filteredCards.filter((_card) => {
 				return (
-					// Check Price filter (min, max)
 					parseFloat(_card?.amount) >= $priceFilters.min &&
 					parseFloat(_card?.amount) <= $priceFilters.max
 				);
@@ -47,6 +46,7 @@
 		}
 	}
 
+	// Status Filter
 	$: {
 		filteredCards = allCards;
 		if (allCards && $statusFilters.size > 0) {

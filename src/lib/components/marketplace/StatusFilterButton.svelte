@@ -1,7 +1,6 @@
 <script>
 	import { statusFilters } from '$stores/marketplace';
 
-	export let id;
 	export let value;
 	let selected = $statusFilters.has(value);
 

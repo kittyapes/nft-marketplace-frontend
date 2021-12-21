@@ -4,7 +4,7 @@
 </script>
 
 <div class="flex flex-wrap gap-2">
-	{#each CARD_STATUSES as st, i}
-		<StatusFilterButton id={i} value={st.status} />
+	{#each CARD_STATUSES as st}
+		<StatusFilterButton value={st.status} />
 	{/each}
 </div>

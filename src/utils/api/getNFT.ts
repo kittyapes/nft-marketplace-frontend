@@ -25,8 +25,8 @@ export interface NftListing {
 export async function fetchAllMetadata(_cards: Array<Object>): Promise<NftListing> {
 	return Promise.all(
 		_cards.cards.map(async (card) => {
-			let uri = card.uri.replace('radiant-falls-54169', 'databasewaifu');
-			let amount = ethers.utils.formatEther(card.amount);
+			let uri = card?.uri?.replace('radiant-falls-54169', 'databasewaifu');
+			let amount = ethers.utils.formatEther(card?.amount);
 
 			const response: any = await axios.get(uri).catch((error) => console.log(error.message));
 

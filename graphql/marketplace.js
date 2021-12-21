@@ -2,7 +2,7 @@ import { gql } from 'graphql-request';
 
 export const GET_ALL_CARDS = gql`
 		query ($numberToSkip: Int!) {
-			cards(first: 15, skip: $numberToSkip, orderBy: isAvailable, orderDirection: desc) {
+			cards(first: 25, skip: $numberToSkip, orderBy: isAvailable, orderDirection: desc) {
 				id
 				amount
 				totalSupply
