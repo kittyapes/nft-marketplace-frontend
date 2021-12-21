@@ -41,7 +41,12 @@
 
 	<div class="flex items-center pt-20">
 		<span class="font-semibold text-xl mr-2">{profileData?.username}</span>
-		<VerifiedBadge />
+
+		{#if profileData?.status === 'AWAITING_VERIFIED' || profileData?.status === 'VERIFIED'}
+			<div class:grayscale={profileData?.status === 'AWAITING_VERIFIED'}>
+				<VerifiedBadge />
+			</div>
+		{/if}
 	</div>
 
 	<div class="flex mt-8">
