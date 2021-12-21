@@ -2,6 +2,8 @@ import { ethers } from 'ethers';
 import axios from 'axios';
 import { request } from 'graphql-request';
 import { GET_SINGLE_CARD } from '../../../graphql/marketplace';
+import { CARD_STATUSES } from '$constants/marketplace';
+
 export interface NftListing {
 	amount: string;
 	animation_url: string;
@@ -17,6 +19,7 @@ export interface NftListing {
 	name: string;
 	totalSupply: string;
 	uri: string;
+	status: string;
 }
 
 export async function fetchAllMetadata(_cards: Array<Object>): Promise<NftListing> {
@@ -44,7 +47,9 @@ export async function fetchAllMetadata(_cards: Array<Object>): Promise<NftListin
 				categories,
 				categoryIndex,
 				batch,
-				artist
+				artist,
+				// TODO: remove later
+				status: CARD_STATUSES[Math.floor(Math.random() * CARD_STATUSES.length)]['status']
 			};
 		})
 	).then((data) => {

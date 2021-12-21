@@ -4,7 +4,7 @@
 	import { request } from 'graphql-request';
 	import { GET_ALL_CARDS } from '../../../graphql/marketplace';
 	import { fetchAllMetadata } from '$utils/api/getNFT';
-	import { priceFilters } from '$stores/marketplace';
+	import { priceFilters, statusFilters } from '$stores/marketplace';
 
 	let oldCards;
 	let allCards;
@@ -22,10 +22,11 @@
 		fetchAllMetadata(oldCards).then((data) => {
 			allCards = data;
 			filteredCards = data;
+			console.log(filteredCards);
 		});
 	});
 
-	// Price Filter
+	// Silters
 	$: {
 		filteredCards = allCards;
 		if (
@@ -36,12 +37,22 @@
 		) {
 			filteredCards = filteredCards.filter((_card) => {
 				return (
+					// Check Price filter (min, max)
 					parseFloat(_card?.amount) >= $priceFilters.min &&
 					parseFloat(_card?.amount) <= $priceFilters.max
 				);
 			});
 		} else {
 			filteredCards = allCards;
+		}
+	}
+
+	$: {
+		filteredCards = allCards;
+		if (allCards && $statusFilters.size > 0) {
+			filteredCards = filteredCards.filter((_card) => {
+				return $statusFilters.has(_card?.status);
+			});
 		}
 	}
 </script>

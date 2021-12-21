@@ -1,12 +1,20 @@
 <script>
+	import { statusFilters } from '$stores/marketplace';
+
 	export let id;
-	let selected = false;
+	export let value;
+	let selected = $statusFilters.has(value);
 
 	let updateSelected = () => {
 		if (!selected) {
 			selected = true;
+			statusFilters.update((val) => val.add(value));
 		} else {
 			selected = false;
+			statusFilters.update((val) => {
+				val.delete(value);
+				return val;
+			});
 		}
 	};
 </script>
@@ -17,5 +25,5 @@
 	class:bg-color-blue={selected}
 	on:click={updateSelected}
 >
-	<slot />
+	{value}
 </button>
