@@ -17,7 +17,6 @@
 			let data = fetchMetadataFromUri(parseInt($page.params.id), uri);
 			data
 				.then((resolvedData) => {
-					console.log(resolvedData);
 					selectedCard.set(resolvedData);
 					popupOpen.set(true);
 				})

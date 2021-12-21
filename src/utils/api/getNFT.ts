@@ -19,7 +19,7 @@ export interface NftListing {
 	uri: string;
 }
 
-export async function fetchAllMetadata(_cards: Array<any>): Promise<NftListing> {
+export async function fetchAllMetadata(_cards: Array<Object>): Promise<NftListing> {
 	return Promise.all(
 		_cards.cards.map(async (card) => {
 			let uri = card.uri.replace('radiant-falls-54169', 'databasewaifu');
