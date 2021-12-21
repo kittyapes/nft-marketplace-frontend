@@ -68,7 +68,7 @@ export async function fetchMetadataFromUri(tokenId: number, uri: string): Promis
 
 	const card = await cardResponse.card;
 
-	let amount = ethers.utils.formatEther(card.amount);
+	let amount = ethers.utils.formatEther(card?.amount || 0);
 
 	const response: any = await axios.get(uri).catch((error) => console.log(error.message));
 
