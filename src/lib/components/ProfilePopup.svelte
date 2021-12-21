@@ -1,6 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 	import Disconnect from '$icons/disconnect.svelte';
+	import { currentUserAddress } from '$stores/wallet';
 	import { disconnectWallet } from '$utils/wallet/connectWallet';
 	import { slide } from 'svelte/transition';
 	import Button from './Button.svelte';
@@ -12,7 +13,12 @@
 	transition:slide
 >
 	<div class="grid gap-2">
-		<Button rounded outline class="!w-full !py-2" on:click={() => goto('/profile')}>
+		<Button
+			rounded
+			outline
+			class="!w-full !py-2"
+			on:click={() => goto(`/profile/${$currentUserAddress}`)}
+		>
 			My Profile
 		</Button>
 		<!-- <Button variant="rounded-outline" --width="100%" --py="0.5rem">My Collections</Button> -->
