@@ -49,7 +49,7 @@
 			</div>
 		</div>
 
-		<Button variant="rounded-black" stretch class="mt-8">Save changes</Button>
+		<Button rounded variant="rounded-black" stretch class="mt-8">Save changes</Button>
 
 		<div class="text-lg uppercase mt-6">* This field is mandatory</div>
 	</div>

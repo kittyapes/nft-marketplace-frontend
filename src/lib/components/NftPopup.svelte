@@ -2,7 +2,6 @@
 	import CloseButton from '$icons/close-button.svelte';
 	import Fullscreen from '$icons/fullscreen.svelte';
 	import Share from '$icons/share.svelte';
-	import type { NftData } from '$lib/data/nft';
 	import { createEventDispatcher } from 'svelte';
 	import Button from './Button.svelte';
 	import Separator from './Separator.svelte';
@@ -47,7 +46,7 @@
 			Wallet Address or ENS Name
 		</div>
 		<TextInput outline placeholder="example: 0xB45X... or hinata.eth" class="mt-2 mb-2 w-full" />
-		<Button variant="rounded-gradient" class="!w-full mt-3" --py="0.75rem">Send</Button>
+		<Button gradient class="!w-full mt-3" --py="0.75rem">Send</Button>
 		<Separator class="mt-6" />
 
 		<button class="absolute top-4 right-4 transition-btn" on:click={handleClose}>

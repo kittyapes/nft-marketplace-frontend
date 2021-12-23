@@ -1,29 +1,31 @@
 <script lang="ts">
+	import { browser } from '$app/env';
+
 	import ClaimTokens from '$lib/components/airdrop/ClaimTokens.svelte';
 	import ConnectWalletBanner from '$lib/components/airdrop/ConnectWalletBanner.svelte';
 	import AirdropDistributionSection from '$lib/sections/AirdropDistributionSection.svelte';
-	import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
+	import { checkForClaimEligibility } from '$utils/wallet/distributeAirdrop';
+	// import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
 	import { appSigner, userClaimsObject } from '$stores/wallet';
-	import { userCanClaim } from '$utils/wallet/distributeAirdrop';
+	import { setPopup } from '$utils/popup';
+	import EligibilityPopup from '$lib/components/airdrop/EligibilityPopup.svelte';
+	import { airdropOnePopupOptions } from '$constants/airdrops';
 
 	$: walletConnected = !!$appSigner;
 
 	// Check For eligibility
-	const checkForClaimEligibility = async (userAddress: string) => {
-		fetch('/api/airdrop/canClaim', {
-			method: 'POST',
-			body: JSON.stringify({ userAddress })
-		})
-			.then((res) => res.json())
-			.then(async (resData) => {
-				if (await userCanClaim(userAddress)) {
-					userClaimsObject.set(resData);
-				}
-			})
-			.catch((err) => console.log(err));
-	};
+	$: (async (signer) => {
+		return browser && signer && checkForClaimEligibility(await signer.getAddress());
+	})($appSigner);
 
-	$: (async (signer) => signer && checkForClaimEligibility(await signer.getAddress()))($appSigner);
+	// Display eligibility popup when eligible
+	userClaimsObject.subscribe(async (claimObject) => {
+		let options;
+
+		options = claimObject?.user && !claimObject?.user?.hasClaimed ? airdropOnePopupOptions : null;
+
+		options && setPopup(EligibilityPopup, { props: { options } });
+	});
 </script>
 
 <div class="w-full min-h-full px-6">
@@ -42,7 +44,7 @@
 		<div class="w-full mt-20 font-bold text-5xl">Community Airdrop</div>
 
 		<div class="text-lg font-bold mt-12">
-			The Hinata community airdrop snapshot was taken on xxxx
+			The Hinata community airdrop snapshot was taken on December 8th, 2021 at 00:00 UTC
 		</div>
 
 		{#if walletConnected}

@@ -3,6 +3,10 @@
 /* Write your global styles here, in PostCSS syntax */
 @tailwind base;
 
+html {
+	scroll-behavior: smooth;
+}
+
 body {
 	font-family: 'Open Sans', sans-serif;
 }
