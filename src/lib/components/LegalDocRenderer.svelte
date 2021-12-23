@@ -171,11 +171,6 @@
 		margin-bottom: 1rem;
 	}
 
-	/* Menu container */
-	#menu-container {
-		transform: translateY(var(--translate-px));
-	}
-
 	/* Desktop Menu Title */
 	#menu-container h1 {
 		@apply text-xl font-bold;
@@ -202,9 +197,11 @@
 		opacity: 0.8;
 	}
 
-	/* Desktop meny container */
+	/* Desktop menu container */
 	#menu-container {
-		@apply fixed m-16 max-w-xs;
+		@apply fixed m-16 max-w-xs overflow-y-auto scrollbar-hide;
+		transform: translateY(var(--translate-px));
+		max-height: calc(100vh - 8rem);
 	}
 
 	#section-links-container {
