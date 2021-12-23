@@ -5,10 +5,12 @@
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import NftList from '$lib/components/NftList.svelte';
+	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { fetchCreatedNfts } from '$utils/api/fetchCreatedNfts';
+	import { isAdmin } from '$utils/api/login';
 	import { fetchProfileData, ProfileData } from '$utils/api/profile';
 	import { onMount } from 'svelte';
 
@@ -120,6 +122,10 @@
 		<div class="h-24" />
 	{/if}
 </div>
+
+{#if $isAdmin && profileData}
+	<AdminTools {profileData} />
+{/if}
 
 <!-- <Modal>
 	<NftPopup on:close={() => console.log('close popup')} />
