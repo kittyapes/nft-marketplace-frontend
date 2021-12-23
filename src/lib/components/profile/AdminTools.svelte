@@ -1,16 +1,27 @@
 <script lang="ts">
 	import { inactivateProfile, ProfileData, promoteProfile } from '$utils/api/profile';
+	import { notifyError } from '$utils/toast';
 
 	export let profileData: ProfileData;
 
 	async function onProfilePromote() {
-		await promoteProfile(profileData.address);
+		try {
+			await promoteProfile(profileData.address);
+		} catch (e) {
+			notifyError(e.message);
+			return;
+		}
 
 		window.location.reload();
 	}
 
 	async function onProfileInactivate() {
-		await inactivateProfile(profileData.address);
+		try {
+			await inactivateProfile(profileData.address);
+		} catch (e) {
+			notifyError(e.message);
+			return;
+		}
 
 		window.location.reload();
 	}
