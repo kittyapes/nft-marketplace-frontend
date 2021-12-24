@@ -1,10 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
-	import TextInput from '$lib/components/TextInput.svelte';
 	import Person from '$icons/person.svelte';
-	import PromoteUser from '$lib/components/admin/PromoteUser.svelte';
-	import RevokeVerified from '$lib/components/admin/RevokeVerified.svelte';
 	import { goto } from '$app/navigation';
 	import ModifyAdmin from '$lib/components/admin/ModifyAdmin.svelte';
 

@@ -2,7 +2,6 @@
 	import CloseButtonIcon from '$icons/close-button.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import Button from '../Button.svelte';
-	import Checkbox from '../Checkbox.svelte';
 
 	const dispatch = createEventDispatcher();
 
