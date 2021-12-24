@@ -1,5 +1,5 @@
 <script>
-	import CloseButton from '$icons/close-button.svelte';
+	import CloseButtonIcon from '$icons/close-button.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import Button from '../Button.svelte';
 	import Checkbox from '../Checkbox.svelte';
@@ -37,7 +37,7 @@
 		</div>
 
 		<div class="absolute top-0 right-0 mt-4 mr-5">
-			<button on:click={handleClose}><CloseButton /></button>
+			<button on:click={handleClose}><CloseButtonIcon /></button>
 		</div>
 	</div>
 </div>

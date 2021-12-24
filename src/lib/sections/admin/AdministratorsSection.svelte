@@ -56,15 +56,14 @@
 
 					<td class="px-4 w-28 whitespace-nowrap">
 						<Button
-							variant="rounded-gradient"
 							class="!w-40 text-xs"
 							on:click={() => {
 								modifyAdminOpen = true;
 							}}
 						>
 							Modify
-						</Button></td
-					>
+						</Button>
+					</td>
 				</tr>
 			{/each}
 		</table>

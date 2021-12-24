@@ -1,6 +1,6 @@
 <script>
 	import SidebarItem from '$lib/components/admin/AdminSidebarItem.svelte';
-	import Filters from '$icons/filters.svelte';
+	import FiltersIcon from '$icons/filters.svelte';
 </script>
 
 <div
@@ -8,7 +8,7 @@
 >
 	<div class="py-4 px-5 border-b border-gray-400 flex justify-between">
 		<div class="flex flex-row items-center gap-3 uppercase text-sm">
-			<Filters />
+			<FiltersIcon />
 			Admin Dashboard
 		</div>
 	</div>
