@@ -26,7 +26,7 @@
 			</div>
 
 			<div class="flex gap-4 mt-8 justify-center">
-				<Button variant="rounded-gradient" class="!w-32 h-10 !py-2">Okay</Button>
+				<Button class="!w-32 h-10 !py-2" gradient rounded>Okay</Button>
 				<Button variant="rounded-outline" class="!w-32 h-10 !py-2" on:click={handleClose}>
 					Cancel
 				</Button>

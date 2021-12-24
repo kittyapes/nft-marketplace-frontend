@@ -57,6 +57,8 @@
 							on:click={() => {
 								modifyAdminOpen = true;
 							}}
+							gradient
+							rounded
 						>
 							Modify
 						</Button>

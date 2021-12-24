@@ -45,7 +45,7 @@
 	</div>
 
 	<div class="flex gap-5 mt-5">
-		<Button variant="rounded-gradient" class="text-xs">Approve</Button>
-		<Button variant="rounded-gradient" class="text-xs">Reject</Button>
+		<Button class="text-xs" gradient rounded>Approve</Button>
+		<Button class="text-xs" gradient rounded>Reject</Button>
 	</div>
 </div>

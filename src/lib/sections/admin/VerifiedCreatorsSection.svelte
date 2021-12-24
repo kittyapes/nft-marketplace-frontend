@@ -44,7 +44,7 @@
 		<div class="flex gap-4">
 			<Button variant="rounded-outline" class="!w-36 text-xs opacity-40">active</Button>
 			<Button variant="rounded-outline" class="!w-36 text-xs opacity-40">inactive</Button>
-			<Button variant="rounded-gradient" class="!w-24 text-xs">All</Button>
+			<Button class="!w-24 text-xs" rounded gradient>All</Button>
 		</div>
 
 		<div>
@@ -75,11 +75,12 @@
 						<div class="flex items-center gap-3">
 							{#if row.active}
 								<Button
-									variant="rounded-gradient"
 									class="!w-40 text-xs"
 									on:click={() => {
 										revokePopupOpen = true;
 									}}
+									rounded
+									gradient
 								>
 									Inactivate
 								</Button>
