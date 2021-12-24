@@ -34,6 +34,7 @@
 		"svelte": "^3.42.6",
 		"svelte-check": "^2.2.6",
 		"svelte-preprocess": "^4.9.8",
+		"tailwind-scrollbar-hide": "^1.1.7",
 		"tailwindcss": "^2.2.16",
 		"tslib": "^2.3.1",
 		"typescript": "^4.4.3"
@@ -42,9 +43,11 @@
 	"dependencies": {
 		"@tailwindcss/aspect-ratio": "^0.3.0",
 		"authereum": "^0.1.14",
+		"axios": "^0.24.0",
 		"buffer": "^6.0.3",
 		"graphql": "^16.0.1",
 		"graphql-request": "^3.6.1",
+		"jwt-decode": "^3.1.2",
 		"walletlink": "^2.2.10",
 		"web3": "^1.6.1",
 		"web3modal": "^1.9.4"

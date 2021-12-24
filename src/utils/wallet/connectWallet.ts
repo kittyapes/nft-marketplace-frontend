@@ -216,7 +216,7 @@ export const refreshConnection = async () => {
 	// Reset App State
 	appSigner.set(null);
 	appProvider.set(null);
-	setPopup(null, null);
+	// setPopup(null, null);
 	userClaimsObject.set(null);
 
 	const web3Modal = get(web3ModalInstance) || initWeb3ModalInstance();

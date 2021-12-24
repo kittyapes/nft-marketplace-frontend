@@ -13,11 +13,12 @@
 			</div>
 
 			<div class="flex gap-x-4 mt-6">
-				<Button class="flex flex-col justify-center items-center">
+				<Button class="flex flex-col justify-center items-center bg-white font-semibold">
 					<span class="inline-block">Markets</span>
 					<span class="inline-block">(Coming Soon)</span>
 				</Button>
-				<Button class="flex flex-col justify-center items-center">
+
+				<Button class="flex flex-col justify-center items-center bg-white font-semibold">
 					<span class="inline-block">Create</span>
 					<span class="inline-block">(Coming Soon)</span>
 				</Button>

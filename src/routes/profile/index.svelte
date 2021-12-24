@@ -32,7 +32,7 @@
 	<div class="flex mt-8">
 		<!-- Buttons -->
 		<div class="flex flex-col gap-3 h-[min-content] w-72 pt-10">
-			<Button variant="rounded-shadow" --py="0.5rem" --px="1.5rem" --width="10rem">
+			<Button variant="rounded-shadow" rounded --py="0.5rem" --px="1.5rem" --width="10rem">
 				<div class="flex items-center">
 					<div class="flex-grow font-normal">03x...9144</div>
 					<Copy />
@@ -41,6 +41,7 @@
 
 			<Button
 				variant="rounded-shadow"
+				rounded
 				--py="0.5rem"
 				--px="1.5rem"
 				--width="10rem"
