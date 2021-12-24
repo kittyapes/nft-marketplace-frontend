@@ -2,7 +2,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
-	import Person from '$icons/person.svelte';
+	import PersonIcon from '$icons/person.svelte';
 	import PromoteUser from '$lib/components/admin/PromoteUser.svelte';
 	import RevokeVerified from '$lib/components/admin/RevokeVerified.svelte';
 
@@ -62,7 +62,7 @@
 				<tr class="h-20 border-b border-color-black border-opacity-30">
 					<td class="px-4">
 						<div class="flex items-center gap-4">
-							<Person />
+							<PersonIcon />
 							{row.username}
 						</div>
 					</td>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
-	import Person from '$icons/person.svelte';
+	import PersonIcon from '$icons/person.svelte';
 	import { goto } from '$app/navigation';
 	import ModifyAdmin from '$lib/components/admin/ModifyAdmin.svelte';
 
@@ -42,7 +42,7 @@
 				<tr class="h-20 border-b border-color-black border-opacity-30">
 					<td class="px-4">
 						<div class="flex items-center gap-4">
-							<Person />
+							<PersonIcon />
 							<EthAddress address={row.address} concat />
 						</div>
 					</td>

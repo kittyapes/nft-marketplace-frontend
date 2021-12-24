@@ -3,11 +3,8 @@
 	import Button from '$lib/components/Button.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
-	import VerificationQueueSection from '$lib/sections/admin/VerificationQueueSection.svelte';
-	import VerifiedCreatorsSection from '$lib/sections/admin/VerifiedCreatorsSection.svelte';
 	import Separator from '$lib/components/Separator.svelte';
-	import Dropdown from '$lib/components/Dropdown.svelte';
-	import Back from '$icons/back_.svelte';
+	import BackIcon from '$icons/back_.svelte';
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row overflow-x-hidden">
@@ -18,7 +15,7 @@
 		<div class="text-4xl uppercase font-bold">User management</div>
 
 		<a class="mt-12 flex gap-4 items-center text-lg" href="/admin/users">
-			<Back />
+			<BackIcon />
 			BACK
 		</a>
 

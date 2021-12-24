@@ -2,7 +2,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
-	import Person from '$icons/person.svelte';
+	import PersonIcon from '$icons/person.svelte';
 
 	let usernames = ['Username', 'LongerUsername', 'Shrt'];
 
@@ -29,7 +29,7 @@
 
 					<td class="px-2">
 						<div class="flex items-center gap-4">
-							<Person />
+							<PersonIcon />
 							{row.username}
 						</div>
 					</td>
