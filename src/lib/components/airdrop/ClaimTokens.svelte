@@ -1,5 +1,6 @@
 <script lang="ts">
 	import RoundedButton from '../RoundedButton.svelte';
+	import Button from '../Button.svelte';
 	import { fade } from 'svelte/transition';
 	import LockupPeriod from './LockupPeriod.svelte';
 	import { userClaimsObject, userHinataBalance } from '$stores/wallet';
