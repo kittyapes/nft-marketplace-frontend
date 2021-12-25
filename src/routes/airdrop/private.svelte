@@ -1,5 +1,5 @@
 <script>
-	import RoundedButton from '$lib/components/RoundedButton.svelte';
+	import Button from '$lib/components/Button.svelte';
 </script>
 
 <div class="w-full px-6 min-h-screen">
@@ -39,11 +39,11 @@
 					<div class="font-bold text-xl self self-center">29D, 4H, 17M</div>
 
 					<div class="uppercase font-bold self-center">0 HINATA TOKENS</div>
-					<div><RoundedButton bgColor="from-color-purple to-color-blue">CLAIM</RoundedButton></div>
+					<div><Button gradient rounded>CLAIM</Button></div>
 
 					<div class="uppercase font-bold self-center">0 HINATA TOKENS</div>
 					<div>
-						<RoundedButton bgColor="from-gray-300 to-transparent">Escrowed</RoundedButton>
+						<Button rounded class="bg-gradient-to-r from-gray-300 to-transparent">Escrowed</Button>
 					</div>
 				</div>
 			</div>
@@ -63,11 +63,11 @@
 			<div class="w-auto p-14">
 				<div class="w-full grid grid-cols-2 grid-rows-3 mt-7 gap-x-14 gap-y-6">
 					<div class="uppercase font-bold self-center">0 HINATA TOKENS</div>
-					<div><RoundedButton bgColor="from-color-purple to-color-blue">CLAIM</RoundedButton></div>
+					<div><Button rounded gradient>CLAIM</Button></div>
 
 					<div class="uppercase font-bold self-center">0 HINATA TOKENS</div>
 					<div>
-						<RoundedButton bgColor="from-gray-300 to-transparent">Escrowed</RoundedButton>
+						<Button rounded class="bg-gradient-to-r from-gray-300 to-transparent">Escrowed</Button>
 					</div>
 				</div>
 			</div>
