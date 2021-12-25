@@ -26,19 +26,17 @@
 		});
 	});
 
-	// Status Filter
 	$: {
 		filteredCards = allCards;
+
+		// Status filter
 		if (allCards && $statusFilters.size > 0) {
 			filteredCards = filteredCards.filter((_card) => {
 				return $statusFilters.has(_card?.status);
 			});
 		}
-	}
 
-	// Price filter (min, max)
-	$: {
-		filteredCards = allCards;
+		// Price filter
 		if (
 			allCards &&
 			$priceFilters.min < $priceFilters.max &&
@@ -51,8 +49,6 @@
 					parseFloat(_card?.amount) <= $priceFilters.max
 				);
 			});
-		} else {
-			filteredCards = allCards;
 		}
 	}
 </script>
