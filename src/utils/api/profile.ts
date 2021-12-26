@@ -16,7 +16,7 @@ export interface ProfileData {
 	imageUrl: string;
 	loginHistories: LoginHistoryEntry[];
 	nickname: string;
-	status: 'USER' | 'AWAITING_VERIFIED' | 'VERIFIED';
+	status: 'USER' | 'AWAITING_VERIFIED' | 'VERIFIED' | 'AWAITING_INACTIVATED';
 	updatedAt: string;
 	username: string;
 	_id: string;

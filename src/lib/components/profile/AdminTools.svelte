@@ -25,10 +25,12 @@
 
 		window.location.reload();
 	}
+
+	$: userStatus = profileData?.status;
 </script>
 
 <div class="px-32 py-24 flex gap-x-2 items-center">
-	{#if profileData?.status === 'USER'}
+	{#if userStatus === 'USER' || userStatus === 'AWAITING_INACTIVATED'}
 		<button
 			on:click={onProfilePromote}
 			class="uppercase font-medium shadow px-4 py-2 rounded-full bg-gradient-to-r from-color-purple to-color-blue text-white transition-btn"
