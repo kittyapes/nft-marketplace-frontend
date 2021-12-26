@@ -1,8 +1,15 @@
 <script lang="ts">
 	import { inactivateProfile, ProfileData, promoteProfile } from '$utils/api/profile';
 	import { notifyError } from '$utils/toast';
+	import { createEventDispatcher } from 'svelte';
 
 	export let profileData: ProfileData;
+
+	const dispatch = createEventDispatcher();
+
+	function requestDataUpdate() {
+		dispatch('requestDataUpdate');
+	}
 
 	async function onProfilePromote() {
 		try {
@@ -12,7 +19,7 @@
 			return;
 		}
 
-		window.location.reload();
+		requestDataUpdate();
 	}
 
 	async function onProfileInactivate() {
@@ -23,7 +30,7 @@
 			return;
 		}
 
-		window.location.reload();
+		requestDataUpdate();
 	}
 
 	$: userStatus = profileData?.status;

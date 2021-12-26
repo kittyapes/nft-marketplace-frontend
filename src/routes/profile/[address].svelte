@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { browser } from '$app/env';
+
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Copy from '$icons/copy.svelte';
@@ -13,19 +15,20 @@
 	import { isAdmin } from '$utils/api/login';
 	import { fetchProfileData, ProfileData } from '$utils/api/profile';
 	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES', 'HIDDEN'];
 	let selectedTab = 'CREATED NFTS';
 
 	const { address } = $page.params;
 
-	let profileData: ProfileData;
+	const profileData = writable<ProfileData>();
 
-	onMount(async () => {
-		profileData = await fetchProfileData(address);
+	function fetchData() {
+		fetchProfileData(address).then(profileData.set);
+	}
 
-		console.log(profileData);
-	});
+	browser && fetchData();
 
 	function shortenAddress(address: string) {
 		return address.substring(0, 3) + '...' + address.substring(address.length - 4);
@@ -42,10 +45,10 @@
 	/>
 
 	<div class="flex items-center pt-20">
-		<span class="font-semibold text-xl mr-2">{profileData?.username}</span>
+		<span class="font-semibold text-xl mr-2">{$profileData?.username}</span>
 
-		{#if profileData?.status === 'AWAITING_VERIFIED' || profileData?.status === 'VERIFIED'}
-			<div class:grayscale={profileData?.status === 'AWAITING_VERIFIED'}>
+		{#if $profileData?.status === 'AWAITING_VERIFIED' || $profileData?.status === 'VERIFIED'}
+			<div class:grayscale={$profileData?.status === 'AWAITING_VERIFIED'}>
 				<VerifiedBadge />
 			</div>
 		{/if}
@@ -81,7 +84,7 @@
 		<div class="px-16 max-w-[600px]">
 			<div class="font-bold text-[#757575]">BIO</div>
 			<p class="mt-4 font-semibold use-x-separators h-32">
-				{profileData?.bio || 'No bio provided.'}
+				{$profileData?.bio || 'No bio provided.'}
 			</p>
 		</div>
 
@@ -124,7 +127,7 @@
 </div>
 
 {#if $isAdmin && profileData}
-	<AdminTools {profileData} />
+	<AdminTools profileData={$profileData} on:requestDataUpdate={fetchData} />
 {/if}
 
 <!-- <Modal>
