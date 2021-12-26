@@ -1,7 +1,7 @@
 <script>
 	import { fade } from 'svelte/transition';
 	import CardHistoryRow from './CardHistoryRow.svelte';
-	import RoundedButton from '../RoundedButton.svelte';
+	import Button from '../Button.svelte';
 </script>
 
 <div class="w-full h-full flex flex-col" in:fade={{ duration: 300 }}>
@@ -25,8 +25,7 @@
 			</div>
 
 			<div class="w-full mt-3 flex flex-row p-2">
-				<RoundedButton bgColor="from-color-purple to-color-blue">view blockchain data</RoundedButton
-				>
+				<Button rounded gradient stretch>view blockchain data</Button>
 			</div>
 		</div>
 	</div>

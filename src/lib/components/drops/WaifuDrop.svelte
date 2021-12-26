@@ -1,5 +1,5 @@
 <script>
-	import RoundedButton from '../RoundedButton.svelte';
+	import Button from '../Button.svelte';
 
 	export let image = '';
 	export let name = '';
@@ -67,7 +67,7 @@
 			<div class="font-bold text-color-black text-lg uppercase">{dropType}</div>
 
 			<div class="max-w-xs mt-6">
-				<RoundedButton bgColor="from-color-purple to-color-blue">{price}</RoundedButton>
+				<Button gradient rounded>{price}</Button>
 			</div>
 		</div>
 	</div>

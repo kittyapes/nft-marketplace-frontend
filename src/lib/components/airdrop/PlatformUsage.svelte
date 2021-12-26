@@ -1,5 +1,4 @@
 <script>
-	import RoundedButton from '../RoundedButton.svelte';
 	import LockupPeriod from './LockupPeriod.svelte';
 	import { fade } from 'svelte/transition';
 	import Eth from '$icons/eth.svelte';
@@ -7,6 +6,7 @@
 	import { appSigner, userClaimsObject } from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import claimAirdropTokens from '$utils/wallet/claimAirdropTokens';
+	import Button from '../Button.svelte';
 
 	const connectWallet = async () => {
 		await connectToWallet();
@@ -40,17 +40,19 @@
 			</div>
 			<div class="mt-7">
 				{#if $appSigner}
-					<RoundedButton
-						bgColor="from-color-purple to-color-blue w-28"
+					<Button
+						gradient
+						rounded
 						on:click={claimAirdropTokens}
 						disabled={!$userClaimsObject ||
 							parseFloat(ethers.utils.formatEther($userClaimsObject?.user.amount)) <= 0}
-						>Claim</RoundedButton
 					>
+						Claim
+					</Button>
 				{:else}
-					<RoundedButton class="whitespace-nowrap w-44" on:click={connectWallet}
-						>Connect To Wallet</RoundedButton
-					>
+					<Button gradient rounded class="whitespace-nowrap w-44" on:click={connectWallet}>
+						Connect To Wallet
+					</Button>
 				{/if}
 			</div>
 		</div>
@@ -66,7 +68,7 @@
 			<div class="text-left mt-4">Stake your HINATA to the DAO</div>
 
 			<div class="w-28 mt-2" class:hidden={!$appSigner}>
-				<RoundedButton bgColor="from-color-purple to-color-blue">STAKE</RoundedButton>
+				<Button gradient rounded>STAKE</Button>
 			</div>
 		</div>
 	</div>

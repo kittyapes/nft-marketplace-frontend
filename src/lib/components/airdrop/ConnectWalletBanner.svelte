@@ -1,5 +1,5 @@
 <script>
-	import RoundedButton from '../RoundedButton.svelte';
+	import Button from '../Button.svelte';
 	import { fade } from 'svelte/transition';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 
@@ -22,9 +22,7 @@
 		Connect your wallet to check your eligibility
 
 		<div class="flex-grow-0" on:click={connectWallet}>
-			<RoundedButton bgColor="from-color-purple to-color-blue">
-				<div class="px-8">Connect Wallet</div>
-			</RoundedButton>
+			<Button gradient rounded>Connect Wallet</Button>
 		</div>
 	</div>
 </div>

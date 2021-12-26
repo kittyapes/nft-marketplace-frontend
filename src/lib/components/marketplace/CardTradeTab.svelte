@@ -1,7 +1,7 @@
 <script>
 	import { fade } from 'svelte/transition';
 	import CardTradeRow from './CardTradeRow.svelte';
-	import RoundedButton from '../RoundedButton.svelte';
+	import Button from '../Button.svelte';
 </script>
 
 <div class="w-full h-full flex flex-col" in:fade={{ duration: 300 }}>
@@ -24,12 +24,12 @@
 				</div>
 			</div>
 
-			<div class="w-full mt-3 flex flex-row">
-				<div class="w-1/2 p-2">
-					<RoundedButton bgColor="from-color-purple to-color-blue">Sell</RoundedButton>
+			<div class="w-full mt-3 flex flex-row gap-4">
+				<div class="w-1/2 ">
+					<Button gradient rounded>Sell</Button>
 				</div>
-				<div class="w-1/2 p-2">
-					<RoundedButton>List for sale</RoundedButton>
+				<div class="w-1/2 ">
+					<Button variant="rounded-black">List for sale</Button>
 				</div>
 			</div>
 		</div>
