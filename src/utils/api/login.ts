@@ -1,11 +1,14 @@
+import { browser } from '$app/env';
 import { api } from '$constants/api';
 import { isJwtExpired } from '$utils/jwt';
 import axios from 'axios';
 import { writable } from 'svelte/store';
 import { getAuthToken, setAuthToken } from '.';
 
-// TODO: init this wil null when the API is update to return user's role
-export const isAdmin = writable<boolean>(getAuthToken() !== null && !isJwtExpired(getAuthToken()));
+// TODO: init this wil null when the API is updated to return user's role
+export const isAdmin = writable<boolean>(
+	browser && getAuthToken() !== null && !isJwtExpired(getAuthToken())
+);
 
 /**
  * Retrieve a message from the API that can be signed by the wallet provider
