@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { browser } from '$app/env';
-
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Copy from '$icons/copy.svelte';
@@ -8,13 +7,11 @@
 	import Button from '$lib/components/Button.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
-	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { fetchCreatedNfts } from '$utils/api/fetchCreatedNfts';
 	import { isAdmin } from '$utils/api/login';
 	import { fetchProfileData, ProfileData } from '$utils/api/profile';
-	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES', 'HIDDEN'];
