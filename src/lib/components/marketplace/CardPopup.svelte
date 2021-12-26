@@ -28,7 +28,7 @@
 			<div class="m-10 text-center">
 				<div class=" w-72 h-72 flex items-center justify-center">
 					<img
-						src={$selectedCard.image}
+						src={$selectedCard?.image}
 						class="max-w-full max-h-full shadow-xl rounded-xl"
 						alt="card artwork"
 					/>
@@ -36,7 +36,7 @@
 
 				<!-- NFT Name and ID-->
 				<div class="font-bold text-lg mt-4 opacity-70">
-					{$selectedCard.name} #{$selectedCard.id}
+					{$selectedCard?.name} #{$selectedCard?.id}
 				</div>
 			</div>
 		</div>
@@ -52,7 +52,7 @@
 				<button
 					on:click={() => {
 						popupOpen.set(false);
-						goto('/marketplace/cards');
+						goto('/marketplace/cards', { noscroll: true });
 					}}
 				>
 					<CloseButton />

@@ -1,6 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import RoundedButton from '../RoundedButton.svelte';
+	import Button from '../Button.svelte';
 	import { selectedCard } from '$stores/marketplace';
 </script>
 
@@ -17,14 +17,14 @@
 				src="https://images.generated.photos/5Lc44DqxkR5Mhtm9SaQZgi8KBe6f0Lga7HkJAN54sGI/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92Ml8w/NTc4MDI3LmpwZw.jpg"
 			/>
 
-			<span class="text-color-purple">@{$selectedCard.artist}</span>
+			<span class="text-color-purple">@{$selectedCard?.artist}</span>
 		</div>
 
 		<!-- Edition -->
 		<div class="w-full flex gap-x-2 items-center mt-5">
 			<span class="text-sm text-color-black opacity-70">Edition:</span>
 
-			<span class="">{$selectedCard.supply} of {$selectedCard.maxSupply}</span>
+			<span class="">{$selectedCard?.totalSupply} of {$selectedCard?.maxSupply}</span>
 		</div>
 
 		<!-- External Link -->
@@ -59,12 +59,12 @@
 			</div>
 		</div>
 
-		<div class="w-full mt-3 flex flex-row">
-			<div class="w-1/2 p-2">
-				<RoundedButton bgColor="from-color-purple to-color-blue">Sell</RoundedButton>
+		<div class="w-full mt-3 flex flex-row gap-4">
+			<div class="w-1/2">
+				<Button gradient rounded>Sell</Button>
 			</div>
-			<div class="w-1/2 p-2">
-				<RoundedButton>List for sale</RoundedButton>
+			<div class="w-1/2">
+				<Button variant="rounded-black">List for sale</Button>
 			</div>
 		</div>
 	</div>

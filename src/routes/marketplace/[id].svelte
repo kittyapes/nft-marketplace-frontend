@@ -7,17 +7,17 @@
 
 	import { page } from '$app/stores';
 	import { popupOpen, selectedCard } from '$stores/marketplace';
-	import { fetchNFTfromURI } from '$utils/api/getNFT';
+	import { fetchMetadataFromUri } from '$utils/api/getNFT';
 
 	let sidebarOpen;
 
 	$: {
 		if ($page.params.id !== 'cards' && !$selectedCard) {
 			let uri = `https://databasewaifu.herokuapp.com/api/token/${$page.params.id}`;
-			let data = fetchNFTfromURI(uri.replace('radiant-falls-54169', 'databasewaifu'));
+			let data = fetchMetadataFromUri(parseInt($page.params.id), uri);
 			data
 				.then((resolvedData) => {
-					selectedCard.set({ ...resolvedData, maxSupply: 0 });
+					selectedCard.set(resolvedData);
 					popupOpen.set(true);
 				})
 				.catch((err) => console.log(err));
