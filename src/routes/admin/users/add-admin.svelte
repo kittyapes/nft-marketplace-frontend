@@ -5,6 +5,7 @@
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Separator from '$lib/components/Separator.svelte';
 	import BackIcon from '$icons/back_.svelte';
+	import { permissions } from '$constants/admin';
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row overflow-x-hidden">
@@ -39,11 +40,9 @@
 
 			<div class="text-xs font-bold uppercase mt-9">permissions</div>
 			<div class=" max-w-sm grid grid-cols-2 grid-rows-3 gap-4 mt-8">
-				<Checkbox label="Add Accounts" />
-				<Checkbox label="Remove Accounts" />
-				<Checkbox label="Ban Accounts" />
-				<Checkbox label="Mint NFT's" />
-				<Checkbox class="col-span-2" label="Verify Creators" />
+				{#each permissions as permission}
+					<Checkbox label={permission} />
+				{/each}
 			</div>
 
 			<Button variant="rounded-black" class=" mt-16" stretch>Save Changes</Button>
