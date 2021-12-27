@@ -3,11 +3,10 @@
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
 	import PersonIcon from '$icons/person.svelte';
-	import PromoteUser from '$lib/components/admin/PromoteUser.svelte';
-	import RevokeVerified from '$lib/components/admin/RevokeVerified.svelte';
+	import ChangeCreatorStatusPopup from '$lib/components/admin/ChangeCreatorStatusPopup.svelte';
 
 	let promotePopupOpen = false;
-	let revokePopupOpen = false;
+	let inactivatePopupOpen = false;
 
 	// TODO Remove this
 	let usernames = ['Username', 'KindaLongerUsername', 'Shrt'];
@@ -25,11 +24,11 @@
 
 <div class="mt-32">
 	{#if promotePopupOpen}
-		<PromoteUser on:close={() => (promotePopupOpen = false)} />
+		<ChangeCreatorStatusPopup variant="promote" on:close={() => (promotePopupOpen = false)} />
 	{/if}
 
-	{#if revokePopupOpen}
-		<RevokeVerified on:close={() => (revokePopupOpen = false)} />
+	{#if inactivatePopupOpen}
+		<ChangeCreatorStatusPopup variant="inactivate" on:close={() => (inactivatePopupOpen = false)} />
 	{/if}
 
 	<div class="uppercase text-lg font-bold">Verified Creators</div>
@@ -77,7 +76,7 @@
 								<Button
 									class="!w-40 text-xs"
 									on:click={() => {
-										revokePopupOpen = true;
+										inactivatePopupOpen = true;
 									}}
 									rounded
 									gradient
