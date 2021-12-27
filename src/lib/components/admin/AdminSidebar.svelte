@@ -3,10 +3,8 @@
 	import FiltersIcon from '$icons/filters.svelte';
 </script>
 
-<div
-	class="w-72 h-auto md:h-screen border-t bg-white md:border-r border-gray-400 font-bold flex-shrink-0"
->
-	<div class="py-4 px-5 border-b border-gray-400 flex justify-between">
+<div class="w-72 h-auto md:h-screen bg-white md:border-r border-gray-400 font-bold flex-shrink-0">
+	<div class="py-6 px-5 border-b border-gray-400 flex justify-between">
 		<div class="flex flex-row items-center gap-3 uppercase text-sm">
 			<FiltersIcon />
 			Admin Dashboard
