@@ -1,10 +1,11 @@
 <script>
 	import CloseButtonIcon from '$icons/close-button.svelte';
 	import { createEventDispatcher } from 'svelte';
-	import Button from '../Button.svelte';
-	import Checkbox from '../Checkbox.svelte';
-	import EthAddress from '../EthAddress.svelte';
-	import TextInput from '../TextInput.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Checkbox from '$lib/components/Checkbox.svelte';
+	import EthAddress from '$lib/components/EthAddress.svelte';
+	import TextInput from '$lib/components/TextInput.svelte';
+	import { permissions } from '$constants/admin';
 
 	const dispatch = createEventDispatcher();
 
@@ -33,14 +34,14 @@
 				<div class=" font-bold uppercase">Edit Username</div>
 				<TextInput grayOutline placeholder="" class="col-span-2" />
 
-				<div class=" font-bold uppercase ">Address</div>
+				<div class="font-bold uppercase">Address</div>
 				<EthAddress
 					class="col-span-2"
 					address="0x3468C6dE9662C2877vd10184B4228e5711b89D42"
 					concat
 				/>
 
-				<div class=" font-bold uppercase   ">Admin Type</div>
+				<div class="font-bold uppercase">Admin Type</div>
 				<div class="col-span-2">
 					<select class="w-full border p-2 rounded-lg">
 						<option>Admin</option>
@@ -48,13 +49,11 @@
 					</select>
 				</div>
 
-				<div class=" font-bold uppercase">Permissions</div>
-				<div class=" max-w-sm grid grid-cols-2 grid-rows-3 gap-4 col-span-2">
-					<Checkbox label="Add Accounts" />
-					<Checkbox label="Remove Accounts" />
-					<Checkbox label="Ban Accounts" />
-					<Checkbox label="Mint NFT's" />
-					<Checkbox class="col-span-2" label="Verify Creators" />
+				<div class="font-bold uppercase">Permissions</div>
+				<div class="max-w-sm grid grid-cols-2 grid-rows-3 gap-4 col-span-2">
+					{#each permissions as permission}
+						<Checkbox label={permission} />
+					{/each}
 				</div>
 			</div>
 
