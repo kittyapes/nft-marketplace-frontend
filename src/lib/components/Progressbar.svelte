@@ -9,7 +9,9 @@
 
 <style>
 	div::after {
-		@apply block absolute top-0 bottom-0 bg-gradient-to-r from-color-purple to-color-blue rounded-full;
+		@apply block absolute top-0 bottom-0
+		bg-gradient-to-r from-color-purple to-color-blue rounded-full
+		transition-all duration-300;
 		content: '';
 		width: var(--after-width);
 	}
