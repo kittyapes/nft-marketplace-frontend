@@ -47,7 +47,13 @@
 	/>
 
 	<div class="flex items-center pt-20">
-		<span class="font-semibold text-xl mr-2">{$profileData?.username}</span>
+		<span class="font-semibold text-xl mr-2">
+			{#if $profileData?.username}
+				{$profileData?.username}
+			{:else}
+				<span class="opacity-50 font-bold">No username</span>
+			{/if}
+		</span>
 
 		{#if $profileData?.status === 'AWAITING_VERIFIED' || $profileData?.status === 'VERIFIED'}
 			<div class:grayscale={$profileData?.status === 'AWAITING_VERIFIED'}>
