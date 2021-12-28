@@ -109,7 +109,11 @@
 		<div class="px-16 max-w-[600px]">
 			<div class="font-bold text-[#757575]">BIO</div>
 			<p class="mt-4 font-semibold use-x-separators h-32">
-				{$profileData?.bio || 'No bio provided.'}
+				{#if $profileData?.bio}
+					{$profileData?.bio}
+				{:else}
+					<span class="opacity-50 font-bold">No bio</span>
+				{/if}
 			</p>
 		</div>
 
@@ -118,7 +122,7 @@
 			<div class="font-bold text-[#757575] whitespace-nowrap">SOCIAL LINKS</div>
 
 			<div class="flex space-x-2 mt-4">
-				<div class="font-semibold whitespace-nowrap">No social links.</div>
+				<div class="font-bold whitespace-nowrap opacity-50">No social links.</div>
 				<!-- <SocialButton social="twitter" href="#" />
 				<SocialButton social="facebook" href="#" />
 				<SocialButton social="instagram" href="#" /> -->
