@@ -2,7 +2,7 @@
 	import AnalyticsIcon from '$icons/analytics.svelte';
 	import UserManageIcon from '$icons/user-manage.svelte';
 	import CreateIcon from '$icons/create.svelte';
-	import RightArrowIcon from '../RightArrow.svelte';
+	import RightArrowIcon from '$icons/rightArrow.svelte';
 
 	export let title = '';
 	export let href = '';
