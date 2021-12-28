@@ -8,9 +8,11 @@
 	import { slide } from 'svelte/transition';
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import { writable } from 'svelte/store';
-	import { EditableProfileData, updateProfile } from '$utils/api/profile';
+	import { EditableProfileData, fetchProfileData, updateProfile } from '$utils/api/profile';
 	import { currentUserAddress } from '$stores/wallet';
 	import { notifyError } from '$utils/toast';
+	import { browser } from '$app/env';
+	import { local } from 'web3modal';
 
 	let profileCompletionProgress = 0;
 
@@ -28,12 +30,39 @@
 	$: usernameTaken = $localDataStore.username;
 
 	async function onSave() {
+		if (!$localDataStore.username) {
+			notifyError('Username is required.');
+			return;
+		}
+
 		try {
 			updateProfile($currentUserAddress, $localDataStore).then(console.log);
 		} catch (ex) {
 			notifyError(ex.message);
 		}
 	}
+
+	async function fetchAndDisplayProfile() {
+		try {
+			const data = await fetchProfileData($currentUserAddress);
+			console.log(data);
+
+			localDataStore.set({
+				username: data.username,
+				email: data.email,
+				bio: data.bio,
+				socials: {
+					instagram: '',
+					facebook: '',
+					twitter: ''
+				}
+			});
+		} catch (ex) {
+			notifyError(ex.message);
+		}
+	}
+
+	$: browser && $currentUserAddress && fetchAndDisplayProfile();
 </script>
 
 <div class="bg-[#f2f2f2] py-16">
@@ -101,17 +130,27 @@
 			<div id="socials-container" class="grid gap-y-3">
 				<div>
 					<Instagram />
-					<input type="text" class="input input-gray-outline" placeholder="Instagram link" />
+					<input
+						type="text"
+						class="input input-gray-outline"
+						placeholder="Instagram link"
+						disabled
+					/>
 				</div>
 
 				<div>
 					<Facebook />
-					<input type="text" class="input input-gray-outline" placeholder="Facebook link" />
+					<input
+						type="text"
+						class="input input-gray-outline"
+						placeholder="Facebook link"
+						disabled
+					/>
 				</div>
 
 				<div>
 					<Twitter />
-					<input type="text" class="input input-gray-outline" placeholder="Twitter link" />
+					<input type="text" class="input input-gray-outline" placeholder="Twitter link" disabled />
 				</div>
 			</div>
 		</div>

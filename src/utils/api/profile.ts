@@ -26,8 +26,17 @@ export interface ProfileData {
 }
 
 export async function fetchProfileData(address: string) {
-	const res = await (await fetch(api + '/v1/accounts/' + address)).json();
-	const data = res.data as ProfileData;
+	// Testing only
+	address = '0x16a73f3A64EcA79E117258e66dFd7071Cc8312A9';
+
+	const res = await fetch(api + '/v1/accounts/' + address);
+
+	if (!res.ok) {
+		throw new Error(res.statusText);
+	}
+
+	const json = await res.json();
+	const data = json.data as ProfileData;
 	return data;
 }
 
