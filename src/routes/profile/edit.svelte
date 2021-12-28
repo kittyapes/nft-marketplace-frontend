@@ -110,10 +110,20 @@
 				</div>
 
 				<div>Add your email</div>
-				<input type="text" class="input input-gray-outline" placeholder="example@email.com" />
+				<input
+					type="text"
+					class="input input-gray-outline"
+					placeholder="example@email.com"
+					bind:value={$localDataStore.email}
+				/>
 
 				<div>Add your bio</div>
-				<TextArea outline placeholder="Enter your short bio" maxChars={200} />
+				<TextArea
+					outline
+					placeholder="Enter your short bio"
+					maxChars={200}
+					bind:value={$localDataStore.bio}
+				/>
 
 				<div>Upload a <br /> profile image</div>
 				<DragDropImage />
