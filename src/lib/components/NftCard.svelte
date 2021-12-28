@@ -12,7 +12,8 @@
 
 <div class="rounded-2xl overflow-hidden border p-4 relative">
 	<div class="flex items-center gap-x-2">
-		{#if data.ownedByUser}
+		<!-- Remove && false to show options -->
+		{#if data.ownedByUser && false}
 			<button on:click={toggleDots}>
 				<ThreeDots />
 			</button>

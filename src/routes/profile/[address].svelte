@@ -99,11 +99,7 @@
 	</div>
 </div>
 
-<div class="grid place-items-center text-2xl py-64 opacity-40 font-bold uppercase">
-	More coming soon...
-</div>
-
-<div class="hidden">
+<div>
 	<div class="container mx-auto px-32 mt-8 flex space-x-8">
 		{#each tabs as tab}
 			<TabButton on:click={() => (selectedTab = tab)} selected={selectedTab === tab}
