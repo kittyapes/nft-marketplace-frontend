@@ -12,9 +12,6 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import { notifyError } from '$utils/toast';
 	import { browser } from '$app/env';
-	import { local } from 'web3modal';
-
-	let profileCompletionProgress = 0;
 
 	const localDataStore = writable<EditableProfileData>({
 		username: '',
@@ -63,6 +60,10 @@
 	}
 
 	$: browser && $currentUserAddress && fetchAndDisplayProfile();
+	$: profileCompletionProgress =
+		($localDataStore.username ? 1 : 0) * 25 +
+		($localDataStore.email ? 1 : 0) * 25 +
+		($localDataStore.bio ? 1 : 0) * 25;
 </script>
 
 <div class="bg-[#f2f2f2] py-16">
