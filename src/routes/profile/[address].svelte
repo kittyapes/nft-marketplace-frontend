@@ -40,11 +40,28 @@
 <div class="h-72 bg-[#D8D8D8]" />
 
 <div class="mx-auto px-32 relative">
-	<img
-		src="https://picsum.photos/id/237/200/200"
-		class="rounded-full border-white border-4 w-32 absolute top-0 transform -translate-y-1/2"
-		alt="Profile avatar."
-	/>
+	<div
+		class="border-white border-4 w-32 h-32 absolute top-0 transform -translate-y-1/2 rounded-full bg-white
+		grid place-items-center"
+	>
+		{#if false}
+			<img src="https://picsum.photos/id/237/200/200" class="rounded-full " alt="Profile avatar." />
+		{:else}
+			<svg
+				class="h-24 w-24 text-color-purple"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="1"
+					d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+				/>
+			</svg>
+		{/if}
+	</div>
 
 	<div class="flex items-center pt-20">
 		<span class="font-semibold text-xl mr-2">
