@@ -78,7 +78,5 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 
 	console.log(signature);
 
-	return await axios
-		.put(api + '/v1/accounts/' + address, formData, getAxiosConfig())
-		.then((res) => res.data);
+	const res = await axios.put(api + '/v1/accounts/' + address, formData, getAxiosConfig());
 }

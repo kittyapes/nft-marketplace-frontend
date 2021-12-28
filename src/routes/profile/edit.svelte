@@ -33,9 +33,9 @@
 		}
 
 		try {
-			updateProfile($currentUserAddress, $localDataStore).then(console.log);
-		} catch (ex) {
-			notifyError(ex.message);
+			await updateProfile($currentUserAddress, $localDataStore);
+		} catch (err) {
+			notifyError('Could not save new profile data.');
 		}
 	}
 
