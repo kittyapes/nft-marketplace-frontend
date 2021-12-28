@@ -14,7 +14,7 @@
 	import { fetchProfileData, ProfileData } from '$utils/api/profile';
 	import { writable } from 'svelte/store';
 
-	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES', 'HIDDEN'];
+	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	let selectedTab = 'CREATED NFTS';
 
 	const { address } = $page.params;
@@ -102,9 +102,9 @@
 <div>
 	<div class="container mx-auto px-32 mt-8 flex space-x-8">
 		{#each tabs as tab}
-			<TabButton on:click={() => (selectedTab = tab)} selected={selectedTab === tab}
-				>{tab}</TabButton
-			>
+			<TabButton on:click={() => (selectedTab = tab)} selected={selectedTab === tab}>
+				{tab}
+			</TabButton>
 		{/each}
 	</div>
 
