@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import Instagram from '$icons/socials/instagram.svelte';
@@ -7,11 +7,33 @@
 	import Button from '$lib/components/Button.svelte';
 	import { slide } from 'svelte/transition';
 	import Progressbar from '$lib/components/Progressbar.svelte';
+	import { writable } from 'svelte/store';
+	import { EditableProfileData, updateProfile } from '$utils/api/profile';
+	import { currentUserAddress } from '$stores/wallet';
+	import { notifyError } from '$utils/toast';
 
-	let usernameValue = '';
-	let profileCompletionProgress = 100;
+	let profileCompletionProgress = 0;
 
-	$: usernameTaken = usernameValue;
+	const localDataStore = writable<EditableProfileData>({
+		username: '',
+		email: '',
+		bio: '',
+		socials: {
+			instagram: '',
+			facebook: '',
+			twitter: ''
+		}
+	});
+
+	$: usernameTaken = $localDataStore.username;
+
+	async function onSave() {
+		try {
+			updateProfile($currentUserAddress, $localDataStore).then(console.log);
+		} catch (ex) {
+			notifyError(ex.message);
+		}
+	}
 </script>
 
 <div class="bg-[#f2f2f2] py-16">
@@ -53,7 +75,7 @@
 					type="text"
 					class="input input-gray-outline"
 					placeholder="Username"
-					bind:value={usernameValue}
+					bind:value={$localDataStore.username}
 				/>
 
 				{#if usernameTaken}
@@ -94,7 +116,9 @@
 			</div>
 		</div>
 
-		<Button rounded variant="rounded-black" stretch class="mt-12">Save changes</Button>
+		<Button rounded variant="rounded-black" stretch class="mt-12" on:click={onSave}>
+			Save changes
+		</Button>
 	</div>
 </div>
 
