@@ -30,6 +30,11 @@
 	function shortenAddress(address: string) {
 		return address.substring(0, 3) + '...' + address.substring(address.length - 4);
 	}
+
+	// Temporary
+	const emptyListPromise = new Promise<NftData[]>((resolve) => {
+		resolve([]);
+	});
 </script>
 
 <div class="h-72 bg-[#D8D8D8]" />
@@ -111,11 +116,13 @@
 	<div class="h-px bg-black opacity-30" />
 
 	{#if selectedTab === 'CREATED NFTS'}
-		<NftList promise={fetchCreatedNfts()} />
+		<NftList promise={emptyListPromise} />
 	{:else if selectedTab === 'COLLECTED NFTS'}
-		<NftList promise={fetchCreatedNfts()} />
-	{:else}
-		<div class="h-24" />
+		<NftList promise={emptyListPromise} />
+	{:else if selectedTab === 'ACTIVITY'}
+		<NftList promise={emptyListPromise} />
+	{:else if selectedTab === 'FAVORITES'}
+		<NftList promise={emptyListPromise} />
 	{/if}
 </div>
 
