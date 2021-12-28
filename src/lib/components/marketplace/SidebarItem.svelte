@@ -3,6 +3,7 @@
 	import StatusIcon from '$icons/status.svelte';
 	import PriceIcon from '$icons/price.svelte';
 	import CollectionsIcon from '$icons/collections.svelte';
+	import SortIcon from '$icons/sort.svelte';
 
 	import RightArrowIcon from '$icons/RightArrow.svelte';
 
@@ -26,6 +27,10 @@
 
 			{#if icon == 'price'}
 				<PriceIcon />
+			{/if}
+
+			{#if icon == 'sort'}
+				<SortIcon />
 			{/if}
 
 			{title}
