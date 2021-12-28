@@ -3,7 +3,9 @@ import { coinbaseLogo, metamaskLogo } from '$constants/walletIcons';
 import {
 	appProvider,
 	appSigner,
+	connectionDetails,
 	currentUserAddress,
+	externalProvider,
 	userClaimsObject,
 	web3ModalInstance
 } from '$stores/wallet';
@@ -132,6 +134,7 @@ const setProvider = async (provider: ethers.providers.ExternalProvider) => {
 	appSigner.set(ethersProvider ? ethersProvider.getSigner() : null);
 	const userAddress = ethersProvider ? await ethersProvider.getSigner().getAddress() : null;
 	currentUserAddress.set(userAddress);
+	connectionDetails.set(await ethersProvider.getNetwork());
 
 	// console.log(
 	//   'WALLET CONNECTED.\n BALANCE: ',
@@ -147,6 +150,7 @@ const setProvider = async (provider: ethers.providers.ExternalProvider) => {
 export const disconnectWallet = () => {
 	// Clear the cached provider
 	get(web3ModalInstance) && get(web3ModalInstance).clearCachedProvider();
+	deregisterEvents();
 
 	// Clear Local Storage
 	localStorage.removeItem('walletconnect');
@@ -172,13 +176,30 @@ export const connectToWallet = async () => {
 	// Connect to wallet
 	const provider: ethers.providers.ExternalProvider = await web3Modal.connect();
 
-	// Init Provider Events
-	initProviderEvents(provider);
+	if (await isAllowedNetworks(provider)) {
+		// Init Provider Events
+		initProviderEvents(provider);
 
-	// Add provider to store
-	setProvider(provider);
+		// Add provider to store
+		setProvider(provider);
+		return;
+	} else {
+		notifyError('You can only connect to mainnet or Rinkeby Test Network');
+		return;
+	}
+};
 
-	return;
+const isAllowedNetworks = async (provider: ethers.providers.ExternalProvider) => {
+	const ethersProvider = new ethers.providers.Web3Provider(provider);
+	const chainId = (await ethersProvider.getNetwork()).chainId;
+
+	if (chainId === 1 || chainId === 4) {
+		console.log(chainId);
+		// only allow rinkeby or mainnet
+		return true;
+	} else {
+		return false;
+	}
 };
 
 // Subscribe to Wallet Events
@@ -186,29 +207,41 @@ export const initProviderEvents = (provider: any) => {
 	// Subscribe to accounts change
 	provider.on('accountsChanged', async (accounts: string[]) => {
 		console.log('Account Changed: ', accounts);
-
+		deregisterEvents();
 		await refreshConnection();
 	});
 
 	// Subscribe to chainId change
 	provider.on('chainChanged', async (chainId: number) => {
 		console.log('Chain Changed: ', chainId);
-
+		deregisterEvents();
 		await refreshConnection();
 	});
 
 	// Subscribe to provider connection
 	provider.on('connect', (info: { chainId: number }) => {
 		console.log('Connect: ', info);
+		deregisterEvents();
 	});
 
 	// Subscribe to provider disconnection
 	provider.on('disconnect', (error: { code: number; message: string }) => {
 		console.log('Disconnect', error);
 
-		notifyError('Wallet Disconnected');
+		if (isAllowedNetworks(provider)) {
+			notifyError('Wallet Disconnected');
+		} else {
+			notifyError('You can only connect to mainnet or Rinkeby Test Network');
+		}
+
 		disconnectWallet();
 	});
+
+	externalProvider.set(provider);
+};
+
+export const deregisterEvents = () => {
+	return get(externalProvider).removeAllListeners();
 };
 
 export const refreshConnection = async () => {
@@ -227,10 +260,18 @@ export const refreshConnection = async () => {
 			web3Modal.cachedProvider
 		);
 
-		// Init Provider events
-		initProviderEvents(provider);
+		if (await isAllowedNetworks(provider)) {
+			// Init Provider Events
+			initProviderEvents(provider);
 
-		// Add provider to store
-		setProvider(provider);
+			// Add provider to store
+			setProvider(provider);
+			console.log(get(appProvider));
+			return;
+		} else {
+			console.log('Hey 2');
+			notifyError('You can only connect to mainnet or Rinkeby Test Network');
+			return;
+		}
 	}
 };
