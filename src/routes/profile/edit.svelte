@@ -123,21 +123,21 @@
 					bind:value={$localDataStore.email}
 				/>
 
-				<div>Add your bio</div>
+				<!-- <div>Add your bio</div>
 				<TextArea
 					outline
 					placeholder="Enter your short bio"
 					maxChars={200}
 					bind:value={$localDataStore.bio}
-				/>
+				/> -->
 
-				<div>Upload a <br /> profile image</div>
+				<!-- <div>Upload a <br /> profile image</div>
 				<DragDropImage />
 
 				<div>Upload a <br /> background image</div>
-				<DragDropImage />
+				<DragDropImage /> -->
 
-				<div>Social links</div>
+				<!-- <div>Social links</div>
 				<div id="socials-container" class="grid gap-y-3">
 					<div>
 						<Instagram />
@@ -168,7 +168,7 @@
 							disabled
 						/>
 					</div>
-				</div>
+				</div> -->
 			</div>
 
 			<Button rounded variant="rounded-black" stretch class="mt-12" on:click={onSave}>
