@@ -66,8 +66,8 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	const message = data.email + data.username + requestTime;
 	const signature = await get(appSigner).signMessage(message);
 
-	formData.append('email', data.email);
-	formData.append('username', data.username);
+	data.email && formData.append('email', data.email);
+	data.username && formData.append('username', data.username);
 	formData.append('request_time', requestTime);
 	formData.append('signature', signature);
 
