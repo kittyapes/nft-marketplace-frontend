@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import axios from 'axios';
 import { request } from 'graphql-request';
-import { GET_SINGLE_CARD } from '../../../graphql/marketplace';
+import { GET_SINGLE_CARD } from '$utils/api/graphql/marketplace';
 import { CARD_STATUSES } from '$constants/marketplace';
 
 export interface NftListing {
