@@ -10,7 +10,7 @@
 	import { writable } from 'svelte/store';
 	import { EditableProfileData, fetchProfileData, updateProfile } from '$utils/api/profile';
 	import { currentUserAddress } from '$stores/wallet';
-	import { notifyError } from '$utils/toast';
+	import { notifyError, notifySuccess } from '$utils/toast';
 	import { browser } from '$app/env';
 	import Loader from '$icons/loader.svelte';
 
@@ -28,6 +28,7 @@
 
 		try {
 			await updateProfile($currentUserAddress, $localDataStore);
+			notifySuccess('Profile updated successfully.');
 		} catch (err) {
 			notifyError('Could not save new profile data.');
 		}

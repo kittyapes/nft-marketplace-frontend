@@ -26,9 +26,6 @@ export interface ProfileData {
 }
 
 export async function fetchProfileData(address: string) {
-	// Testing only
-	address = '0x16a73f3A64EcA79E117258e66dFd7071Cc8312A9';
-
 	const res = await axios.get(api + '/v1/accounts/' + address);
 	const data = res.data.data as ProfileData;
 
@@ -66,12 +63,15 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	const message = data.email + data.username + requestTime;
 	const signature = await get(appSigner).signMessage(message);
 
-	data.email && formData.append('email', data.email);
-	data.username && formData.append('username', data.username);
+	formData.append('nickname', '');
+	formData.append('email', data.email);
+	formData.append('username', data.username);
 	formData.append('request_time', requestTime);
 	formData.append('signature', signature);
 
 	console.log(signature);
 
-	const res = await axios.put(api + '/v1/accounts/' + address, formData, getAxiosConfig());
+	const res = await axios.put(api + '/v1/accounts/' + address, formData);
+
+	console.log(res);
 }
