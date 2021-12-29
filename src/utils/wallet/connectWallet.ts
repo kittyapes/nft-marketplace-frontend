@@ -1,4 +1,4 @@
-import { notifyError } from '$utils/toast';
+import { notifyError, notifySuccess } from '$utils/toast';
 import { coinbaseLogo, metamaskLogo } from '$constants/walletIcons';
 import {
 	appProvider,
@@ -12,6 +12,7 @@ import {
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import Web3Modal from 'web3modal';
+import { loginServerNotify } from '$utils/api/login';
 
 const infuraId = '456e115b04624699aa0e776f6f2ee65c';
 const appName = 'Hinata Marketplace';
@@ -273,5 +274,23 @@ export const refreshConnection = async () => {
 			notifyError('You can only connect to mainnet or Rinkeby Test Network');
 			return;
 		}
+	}
+};
+
+export const onWalletConnectAction = async () => {
+	await connectToWallet();
+
+	// Notifying the server that the user has connected to a wallet,
+	// creating a user profile for that address on the backend.
+	const currentAddress = get(currentUserAddress);
+
+	try {
+		await loginServerNotify(currentAddress);
+
+		notifySuccess('Successfully connected to your profile.');
+	} catch {
+		notifyError('Failed to connect to your profile.');
+
+		disconnectWallet();
 	}
 };

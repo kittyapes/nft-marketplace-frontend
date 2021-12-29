@@ -1,9 +1,10 @@
 <script>
 	// import Search from './Search.svelte';
 	import ProfilePopup from './ProfilePopup.svelte';
-	import { connectToWallet } from '$utils/wallet/connectWallet';
-	import { appSigner } from '$stores/wallet';
+	import { connectToWallet, onWalletConnectAction } from '$utils/wallet/connectWallet';
+	import { appSigner, currentUserAddress } from '$stores/wallet';
 	import { onMount } from 'svelte';
+	import { loginServerNotify } from '$utils/api/login';
 
 	let displayProfilePopup = false;
 
@@ -65,7 +66,7 @@
 			<ProfilePopup />
 		{/if}
 		<button
-			on:click={async () => await connectToWallet()}
+			on:click={onWalletConnectAction}
 			class="rounded-3xl text-white bg-black px-9 py-3 uppercase text-sm font-semibold"
 			class:hidden={$appSigner}
 		>
