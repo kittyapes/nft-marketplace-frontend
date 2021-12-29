@@ -23,7 +23,8 @@
 
 	let firstTimeUser = false;
 
-	$: usernameTaken = $localDataStore?.username;
+	// $: usernameTaken = $localDataStore?.username;
+	$: usernameTaken = false;
 
 	let isSaving = false;
 
