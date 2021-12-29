@@ -1,18 +1,19 @@
 <script lang="ts">
-	import DragDropImage from '$lib/components/DragDropImage.svelte';
-	import TextArea from '$lib/components/TextArea.svelte';
-	import Instagram from '$icons/socials/instagram.svelte';
-	import Facebook from '$icons/socials/facebook.svelte';
-	import Twitter from '$icons/socials/twitter.svelte';
+	// import DragDropImage from '$lib/components/DragDropImage.svelte';
+	// import TextArea from '$lib/components/TextArea.svelte';
+	// import Instagram from '$icons/socials/instagram.svelte';
+	// import Facebook from '$icons/socials/facebook.svelte';
+	// import Twitter from '$icons/socials/twitter.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { fade, slide } from 'svelte/transition';
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import { writable } from 'svelte/store';
 	import { EditableProfileData, fetchProfileData, updateProfile } from '$utils/api/profile';
-	import { currentUserAddress } from '$stores/wallet';
+	import { appProvider, appSigner, currentUserAddress } from '$stores/wallet';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { browser } from '$app/env';
 	import Loader from '$icons/loader.svelte';
+	import { goto } from '$app/navigation';
 
 	const localDataStore = writable<EditableProfileData>(null);
 
@@ -63,6 +64,16 @@
 		($localDataStore.username ? 1 : 0) * 25 +
 			($localDataStore.email ? 1 : 0) * 25 +
 			($localDataStore.bio ? 1 : 0) * 25;
+
+	// Go to home if the user's wallet isn't connected,
+	// this is a temporary solution, we will solve this better
+	// in the future globally
+	browser &&
+		setTimeout(() => {
+			if (!$currentUserAddress) {
+				goto('/');
+			}
+		}, 3000);
 </script>
 
 {#if $localDataStore}
