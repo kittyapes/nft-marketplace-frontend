@@ -14,7 +14,7 @@
 	import { fetchProfileData, ProfileData } from '$utils/api/profile';
 	import { writable } from 'svelte/store';
 
-	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES', 'HIDDEN'];
+	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	let selectedTab = 'CREATED NFTS';
 
 	const { address } = $page.params;
@@ -30,19 +30,47 @@
 	function shortenAddress(address: string) {
 		return address.substring(0, 3) + '...' + address.substring(address.length - 4);
 	}
+
+	// Temporary
+	const emptyListPromise = new Promise<NftData[]>((resolve) => {
+		resolve([]);
+	});
 </script>
 
 <div class="h-72 bg-[#D8D8D8]" />
 
 <div class="mx-auto px-32 relative">
-	<img
-		src="https://picsum.photos/id/237/200/200"
-		class="rounded-full border-white border-4 w-32 absolute top-0 transform -translate-y-1/2"
-		alt="Profile avatar."
-	/>
+	<div
+		class="border-white border-4 w-32 h-32 absolute top-0 transform -translate-y-1/2 rounded-full bg-white
+		grid place-items-center"
+	>
+		{#if false}
+			<img src="https://picsum.photos/id/237/200/200" class="rounded-full " alt="Profile avatar." />
+		{:else}
+			<svg
+				class="h-24 w-24 text-color-purple"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="1"
+					d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+				/>
+			</svg>
+		{/if}
+	</div>
 
 	<div class="flex items-center pt-20">
-		<span class="font-semibold text-xl mr-2">{$profileData?.username}</span>
+		<span class="font-semibold text-xl mr-2">
+			{#if $profileData?.username}
+				{$profileData?.username}
+			{:else}
+				<span class="opacity-50 font-bold">No username</span>
+			{/if}
+		</span>
 
 		{#if $profileData?.status === 'AWAITING_VERIFIED' || $profileData?.status === 'VERIFIED'}
 			<div class:grayscale={$profileData?.status === 'AWAITING_VERIFIED'}>
@@ -81,7 +109,11 @@
 		<div class="px-16 max-w-[600px]">
 			<div class="font-bold text-[#757575]">BIO</div>
 			<p class="mt-4 font-semibold use-x-separators h-32">
-				{$profileData?.bio || 'No bio provided.'}
+				{#if $profileData?.bio}
+					{$profileData?.bio}
+				{:else}
+					<span class="opacity-50 font-bold">No bio</span>
+				{/if}
 			</p>
 		</div>
 
@@ -90,7 +122,7 @@
 			<div class="font-bold text-[#757575] whitespace-nowrap">SOCIAL LINKS</div>
 
 			<div class="flex space-x-2 mt-4">
-				<div class="font-semibold whitespace-nowrap">No social links.</div>
+				<div class="font-bold whitespace-nowrap opacity-50">No social links.</div>
 				<!-- <SocialButton social="twitter" href="#" />
 				<SocialButton social="facebook" href="#" />
 				<SocialButton social="instagram" href="#" /> -->
@@ -99,27 +131,25 @@
 	</div>
 </div>
 
-<div class="grid place-items-center text-2xl py-64 opacity-40 font-bold uppercase">
-	More coming soon...
-</div>
-
-<div class="hidden">
+<div>
 	<div class="container mx-auto px-32 mt-8 flex space-x-8">
 		{#each tabs as tab}
-			<TabButton on:click={() => (selectedTab = tab)} selected={selectedTab === tab}
-				>{tab}</TabButton
-			>
+			<TabButton on:click={() => (selectedTab = tab)} selected={selectedTab === tab}>
+				{tab}
+			</TabButton>
 		{/each}
 	</div>
 
 	<div class="h-px bg-black opacity-30" />
 
 	{#if selectedTab === 'CREATED NFTS'}
-		<NftList promise={fetchCreatedNfts()} />
+		<NftList promise={emptyListPromise} />
 	{:else if selectedTab === 'COLLECTED NFTS'}
-		<NftList promise={fetchCreatedNfts()} />
-	{:else}
-		<div class="h-24" />
+		<NftList promise={emptyListPromise} />
+	{:else if selectedTab === 'ACTIVITY'}
+		<NftList promise={emptyListPromise} />
+	{:else if selectedTab === 'FAVORITES'}
+		<NftList promise={emptyListPromise} />
 	{/if}
 </div>
 
