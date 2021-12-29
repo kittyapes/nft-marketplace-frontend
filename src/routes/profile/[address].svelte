@@ -37,7 +37,7 @@
 	});
 </script>
 
-<div class="h-72 bg-[#D8D8D8]" />
+<div class="h-72 bg-color-gray-light" />
 
 <div class="mx-auto px-32 relative">
 	<div
@@ -107,7 +107,7 @@
 
 		<!-- Bio -->
 		<div class="px-16 max-w-[600px]">
-			<div class="font-bold text-[#757575]">BIO</div>
+			<div class="font-bold text-color-gray-dark">BIO</div>
 			<p class="mt-4 font-semibold use-x-separators h-32">
 				{#if $profileData?.bio}
 					{$profileData?.bio}
@@ -119,7 +119,7 @@
 
 		<!-- Social links -->
 		<div class="px-16">
-			<div class="font-bold text-[#757575] whitespace-nowrap">SOCIAL LINKS</div>
+			<div class="font-bold text-color-gray-dark whitespace-nowrap">SOCIAL LINKS</div>
 
 			<div class="flex space-x-2 mt-4">
 				<div class="font-bold whitespace-nowrap opacity-50">No social links.</div>

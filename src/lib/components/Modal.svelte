@@ -15,7 +15,7 @@
 </script>
 
 <div
-	class="grid place-items-center fixed top-0 w-screen h-screen bg-[#1D1D1DB2] z-20"
+	class="grid place-items-center fixed top-0 w-screen h-screen bg-color-gray-dark z-20"
 	on:click={close}
 	bind:this={overlay}
 	transition:fade={{ duration: 200, easing: expoOut }}

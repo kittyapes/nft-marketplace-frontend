@@ -8,7 +8,7 @@
 	import Button from '$lib/components/Button.svelte';
 </script>
 
-<div class="bg-[#f2f2f2] py-16">
+<div class="bg-color-gray-lighter py-16">
 	<div class="max-w-4xl mx-auto py-16 bg-white px-16">
 		<h1 class="uppercase text-center text-5xl font-semibold">
 			Edit Your <span class="gradient-text">Profile</span>

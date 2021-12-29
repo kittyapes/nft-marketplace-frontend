@@ -2,7 +2,7 @@
 	import { socials } from '$constants/socials';
 </script>
 
-<div class="border-t h-80 border-[#1D1D1D4D]">
+<div class="border-t h-80 border-color-gray-light">
 	<div class="container mx-auto py-12 flex justify-between">
 		<div class="flex flex-col px-8 w-1/4">
 			<div class="h-12">
