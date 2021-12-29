@@ -16,6 +16,8 @@
 
 	const localDataStore = writable<EditableProfileData>(null);
 
+	let firstTimeUser = false;
+
 	$: usernameTaken = $localDataStore?.username;
 
 	async function onSave() {
@@ -46,6 +48,10 @@
 					twitter: ''
 				}
 			});
+
+			if (!data.username) {
+				firstTimeUser = true;
+			}
 		} catch (ex) {
 			notifyError(ex.message);
 		}
@@ -63,7 +69,7 @@
 	<div class="bg-[#f2f2f2] py-16" in:fade>
 		<div class="max-w-4xl mx-auto py-16 bg-white px-16">
 			<h1 class="uppercase text-center text-5xl font-semibold">
-				Edit Your <span class="gradient-text">Profile</span>
+				{firstTimeUser ? 'Setup' : 'Edit'} Your <span class="gradient-text">Profile</span>
 			</h1>
 
 			<div class="font-bold text-sm text-center mt-4">
