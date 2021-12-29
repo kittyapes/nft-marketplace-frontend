@@ -1,6 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import { popupOpen, selectedCard, priceFilters } from '$stores/marketplace';
+	import { popupOpen, selectedCard } from '$stores/marketplace';
 	import { goto } from '$app/navigation';
 	import EthIcon from '$icons/eth.svelte';
 	import HeartIcon from '$icons/heart.svelte';
