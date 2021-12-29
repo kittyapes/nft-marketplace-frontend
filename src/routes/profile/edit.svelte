@@ -37,7 +37,6 @@
 	async function fetchAndDisplayProfile() {
 		try {
 			const data = await fetchProfileData($currentUserAddress);
-			console.log(data);
 
 			localDataStore.set({
 				username: data.username,
@@ -50,7 +49,7 @@
 				}
 			});
 
-			if (!data.username) {
+			if (data.username.includes('great_gatsby')) {
 				firstTimeUser = true;
 			}
 		} catch (ex) {
