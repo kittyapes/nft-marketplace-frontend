@@ -69,9 +69,5 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	formData.append('request_time', requestTime);
 	formData.append('signature', signature);
 
-	console.log(signature);
-
-	const res = await axios.put(api + '/v1/accounts/' + address, formData);
-
-	console.log(res);
+	await axios.put(api + '/v1/accounts/' + address, formData);
 }

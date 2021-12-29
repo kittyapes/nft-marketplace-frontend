@@ -18,7 +18,7 @@ body {
 	height: 100%;
 }
 
-.transition-btn {
+.transition-btn:not(:disabled) {
 	@apply transition duration-200 transform active:scale-95;
 }
 

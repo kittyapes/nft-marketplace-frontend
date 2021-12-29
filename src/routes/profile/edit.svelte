@@ -9,19 +9,29 @@
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import { writable } from 'svelte/store';
 	import { EditableProfileData, fetchProfileData, updateProfile } from '$utils/api/profile';
-	import { appProvider, appSigner, currentUserAddress } from '$stores/wallet';
+	import { currentUserAddress } from '$stores/wallet';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { browser } from '$app/env';
 	import Loader from '$icons/loader.svelte';
 	import { goto } from '$app/navigation';
+	import { cloneDeep } from 'lodash-es';
 
+	const fetchedDataStore = writable<EditableProfileData>(null);
 	const localDataStore = writable<EditableProfileData>(null);
+
+	$: dataChanged = JSON.stringify($fetchedDataStore) != JSON.stringify($localDataStore);
 
 	let firstTimeUser = false;
 
 	$: usernameTaken = $localDataStore?.username;
 
+	let isSaving = false;
+
 	async function onSave() {
+		if (isSaving) return;
+
+		isSaving = true;
+
 		if (!$localDataStore.username) {
 			notifyError('Username is required.');
 			return;
@@ -30,6 +40,12 @@
 		try {
 			await updateProfile($currentUserAddress, $localDataStore);
 			notifySuccess('Profile updated successfully.');
+
+			fetchAndDisplayProfile()
+				.catch(() => notifyError('Failed to fetch new profile data.'))
+				.then(() => {
+					isSaving = false;
+				});
 		} catch (err) {
 			notifyError('Could not save new profile data.');
 		}
@@ -39,7 +55,7 @@
 		try {
 			const data = await fetchProfileData($currentUserAddress);
 
-			localDataStore.set({
+			const localData = {
 				username: data.username,
 				email: data.email,
 				bio: data.bio,
@@ -48,7 +64,10 @@
 					facebook: '',
 					twitter: ''
 				}
-			});
+			};
+
+			fetchedDataStore.set(cloneDeep(localData));
+			localDataStore.set(localData);
 
 			if (data.username.includes('great_gatsby')) {
 				firstTimeUser = true;
@@ -182,7 +201,14 @@
 				</div> -->
 			</div>
 
-			<Button rounded variant="rounded-black" stretch class="mt-12" on:click={onSave}>
+			<Button
+				rounded
+				variant="rounded-black"
+				stretch
+				class="mt-12"
+				on:click={onSave}
+				disabled={isSaving || !dataChanged}
+			>
 				Save changes
 			</Button>
 		</div>
@@ -194,24 +220,22 @@
 {/if}
 
 <style>
-	#form-container > div {
+	/* Keep commented rules */
+
+	/* #form-container > div {
 		@apply uppercase text-lg font-medium;
-	}
+	} */
 
 	#form-container input {
 		@apply w-full;
 		min-height: 3rem;
 	}
 
-	#socials-container > div {
+	/* #socials-container > div {
 		@apply flex gap-x-3 items-center;
-	}
+	} */
 
-	#socials-container > div > :global(input) {
-		@apply flex-grow;
-	}
-
-	#socials-container > div > :global(svg) {
+	/* #socials-container > div > :global(svg) {
 		@apply h-12;
-	}
+	} */
 </style>
