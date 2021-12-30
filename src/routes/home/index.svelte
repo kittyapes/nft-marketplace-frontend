@@ -6,7 +6,7 @@
 	class="
 		relative
 		max-w-[100vw] h-[760px]
-		overflow-hidden bg-cover bg-[center_top_-200px] bg-no-repeat bg-[#194665]
+		overflow-hidden bg-cover bg-[center_top_-400px] bg-no-repeat bg-[#194665]
 		bg-[url('/img/graphics/home-bg.640.png')]
 		sm:bg-[url('/img/graphics/home-bg.768.png')]
 		md:bg-[url('/img/graphics/home-bg.1024.png')]
