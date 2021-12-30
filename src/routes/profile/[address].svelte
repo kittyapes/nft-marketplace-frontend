@@ -8,7 +8,6 @@
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
-	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { fetchCreatedNfts } from '$utils/api/fetchCreatedNfts';
 	import { isAdmin } from '$utils/api/login';
@@ -20,15 +19,10 @@
 
 	const { address } = $page.params;
 
-	const localProfileData = writable<ProfileData>();
+	const profileData = writable<ProfileData>();
 
 	function fetchData() {
-		if (address === $currentUserAddress) {
-			localProfileData.set($profileData);
-			return;
-		}
-
-		fetchProfileData(address).then(localProfileData.set);
+		fetchProfileData(address).then(profileData.set);
 	}
 
 	browser && fetchData();
@@ -71,15 +65,15 @@
 
 	<div class="flex items-center pt-20">
 		<span class="font-semibold text-xl mr-2">
-			{#if $localProfileData?.username}
-				{$localProfileData?.username}
+			{#if $profileData?.username}
+				{$profileData?.username}
 			{:else}
 				<span class="opacity-50 font-bold">No username</span>
 			{/if}
 		</span>
 
-		{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
-			<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED'}>
+		{#if $profileData?.status === 'AWAITING_VERIFIED' || $profileData?.status === 'VERIFIED'}
+			<div class:grayscale={$profileData?.status === 'AWAITING_VERIFIED'}>
 				<VerifiedBadge />
 			</div>
 		{/if}
@@ -115,8 +109,8 @@
 		<div class="px-16 max-w-[600px]">
 			<div class="font-bold text-color-gray-dark">BIO</div>
 			<p class="mt-4 font-semibold use-x-separators h-32">
-				{#if $localProfileData?.bio}
-					{$localProfileData?.bio}
+				{#if $profileData?.bio}
+					{$profileData?.bio}
 				{:else}
 					<span class="opacity-50 font-bold">No bio</span>
 				{/if}
@@ -159,8 +153,8 @@
 	{/if}
 </div>
 
-{#if $isAdmin && localProfileData}
-	<AdminTools profileData={$localProfileData} on:requestDataUpdate={fetchData} />
+{#if $isAdmin && profileData}
+	<AdminTools profileData={$profileData} on:requestDataUpdate={fetchData} />
 {/if}
 
 <!-- <Modal>
