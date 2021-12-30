@@ -2,7 +2,19 @@
 	import Button from '$lib/components/Button.svelte';
 </script>
 
-<div class="showcase">
+<div
+	class="
+		relative
+		max-w-[100vw] h-[760px]
+		overflow-hidden bg-cover bg-[center_top_-200px] bg-no-repeat bg-[#194665]
+		bg-[url('/img/graphics/home-bg.640.png')]
+		sm:bg-[url('/img/graphics/home-bg.768.png')]
+		md:bg-[url('/img/graphics/home-bg.1024.png')]
+		lg:bg-[url('/img/graphics/home-bg.1280.png')]
+		xl:bg-[url('/img/graphics/home-bg.1920.png')]
+		2xl:bg-[url('/img/graphics/home-bg.4k.png')]
+	"
+>
 	<div class="absolute top-1/4 -translate-y-1/4 left-0 w-full grid place-items-center">
 		<div class="container px-8">
 			<h1 class="uppercase text-white font-semibold text-7xl">Hinata<br />Marketplace</h1>
@@ -26,12 +38,3 @@
 		</div>
 	</div>
 </div>
-
-<style lang="postcss">
-	.showcase {
-		@apply max-w-[100vw] h-screen max-h-[1920px];
-		@apply relative overflow-hidden bg-cover bg-center bg-no-repeat;
-		background-image: url('/img/graphics/home-bg.png');
-		height: calc(100vh - theme('padding.16'));
-	}
-</style>
