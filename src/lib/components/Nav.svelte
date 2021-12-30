@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 	import { profileData } from '$stores/user';
 	import { fade } from 'svelte/transition';
+	import UserCircle from '$icons/user-circle.svelte';
 
 	let displayProfilePopup = false;
 	let showProfileButton = false;
@@ -58,13 +59,18 @@
 		{#if showProfileButton}
 			<button
 				id="profileButtonParent"
-				class="text-md font-semibold whitespace-nowrap transition-btn w-52"
+				class="text-md font-semibold whitespace-nowrap transition-btn w-52
+				flex items-center"
 				class:hidden={!$appSigner}
 				on:click={() => (displayProfilePopup = !displayProfilePopup)}
 			>
 				{#if $profileData?.username}
-					<div in:fade>
+					<div class="flex-grow" in:fade>
 						{$profileData?.username}
+					</div>
+
+					<div class="text-color-purple" in:fade>
+						<UserCircle />
 					</div>
 				{/if}
 			</button>
