@@ -4,8 +4,11 @@
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { appSigner } from '$stores/wallet';
 	import { onMount } from 'svelte';
+	import { profileData } from '$stores/user';
+	import { fade } from 'svelte/transition';
 
 	let displayProfilePopup = false;
+	let showProfileButton = false;
 
 	const closeModalIfNotInElement = (e) => {
 		// Element parent includes the connectButton/Profile
@@ -52,25 +55,36 @@
 
 	<!-- Profile -->
 	<div class="relative">
-		<button
-			id="profileButtonParent"
-			class="text-md font-semibold whitespace-nowrap transition-btn"
-			class:hidden={!$appSigner}
-			on:click={() => (displayProfilePopup = !displayProfilePopup)}
-		>
-			Your Name
-		</button>
+		{#if showProfileButton}
+			<button
+				id="profileButtonParent"
+				class="text-md font-semibold whitespace-nowrap transition-btn w-52"
+				class:hidden={!$appSigner}
+				on:click={() => (displayProfilePopup = !displayProfilePopup)}
+			>
+				{#if $profileData?.username}
+					<div in:fade>
+						{$profileData?.username}
+					</div>
+				{/if}
+			</button>
+		{/if}
 
 		{#if displayProfilePopup}
 			<ProfilePopup />
 		{/if}
-		<button
-			on:click={async () => await connectToWallet()}
-			class="rounded-3xl text-white bg-black px-9 py-3 uppercase text-sm font-semibold"
-			class:hidden={$appSigner}
-		>
-			Connect To Wallet
-		</button>
+
+		{#if !$appSigner}
+			<button
+				on:click={async () => await connectToWallet()}
+				class="rounded-3xl text-white bg-black py-3 uppercase text-sm font-semibold w-52"
+				out:fade
+				on:outrostart={() => (showProfileButton = false)}
+				on:outroend={() => (showProfileButton = true)}
+			>
+				Connect Wallet
+			</button>
+		{/if}
 	</div>
 </div>
 
