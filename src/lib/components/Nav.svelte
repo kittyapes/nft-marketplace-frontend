@@ -21,6 +21,10 @@
 	onMount(() => {
 		window.addEventListener('click', closeModalIfNotInElement);
 	});
+
+	$: displayedUsername = $profileData?.username.includes('great_gatsby')
+		? 'Guest User'
+		: $profileData?.username;
 </script>
 
 <div class="flex items-center h-16 px-8 gap-x-8 fixed w-full z-10 bg-white drop-shadow-lg">
