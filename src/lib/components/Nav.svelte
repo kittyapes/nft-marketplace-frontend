@@ -27,7 +27,7 @@
 		: $profileData?.username;
 </script>
 
-<div class="flex items-center h-16 px-8 gap-x-8 fixed w-full z-10 bg-white drop-shadow-lg">
+<div class="flex items-center h-16 pl-8 gap-x-8 fixed w-full z-10 bg-white drop-shadow-lg">
 	<!-- Logo -->
 	<a href="/home">
 		<img src="/img/logo/logo.svg" alt="Hinata logo." />
@@ -59,18 +59,18 @@
 	</a>
 
 	<!-- Profile -->
-	<div class="relative">
+	<div class="relative h-full flex items-center pr-4">
 		{#if showProfileButton}
 			<button
 				id="profileButtonParent"
-				class="text-md font-semibold whitespace-nowrap transition-btn w-52
+				class="text-md font-semibold whitespace-nowrap transition-btn w-52 h-full
 				flex items-center"
 				class:hidden={!$appSigner}
 				on:click={() => (displayProfilePopup = !displayProfilePopup)}
 			>
 				{#if $profileData?.username}
 					<div class="flex-grow" in:fade>
-						{$profileData?.username}
+						{displayedUsername}
 					</div>
 
 					<div class="text-color-purple" in:fade>
