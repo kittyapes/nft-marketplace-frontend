@@ -6,7 +6,7 @@ import {
 	connectionDetails,
 	currentUserAddress,
 	externalProvider,
-	userClaimsObject,
+	userClaimsArray,
 	web3ModalInstance
 } from '$stores/wallet';
 import { ethers } from 'ethers';
@@ -194,7 +194,6 @@ const isAllowedNetworks = async (provider: ethers.providers.ExternalProvider) =>
 	const chainId = (await ethersProvider.getNetwork()).chainId;
 
 	if (chainId === 1 || chainId === 4) {
-		console.log(chainId);
 		// only allow rinkeby or mainnet
 		return true;
 	} else {
@@ -249,7 +248,7 @@ export const refreshConnection = async () => {
 	appSigner.set(null);
 	appProvider.set(null);
 	// setPopup(null, null);
-	userClaimsObject.set(null);
+	userClaimsArray.set(null);
 
 	const web3Modal = get(web3ModalInstance) || initWeb3ModalInstance();
 
@@ -266,7 +265,6 @@ export const refreshConnection = async () => {
 
 			// Add provider to store
 			setProvider(provider);
-			console.log(get(appProvider));
 			return;
 		} else {
 			console.log('Hey 2');
