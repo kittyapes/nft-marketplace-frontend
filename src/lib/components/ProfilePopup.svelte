@@ -24,7 +24,7 @@
 		<!-- <Button variant="rounded-outline" --width="100%" --py="0.5rem">My Collections</Button> -->
 	</div>
 
-	<div class="h-px bg-[#1D1D1D33] my-3" />
+	<div class="h-px bg-color-gray-light my-3" />
 
 	<button class="flex w-full transition-btn" on:click={disconnectWallet}>
 		<span class="uppercase flex-grow text-left font-semibold">Disconnect</span>
