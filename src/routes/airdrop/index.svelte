@@ -4,25 +4,25 @@
 	import ClaimTokens from '$lib/components/airdrop/ClaimTokens.svelte';
 	import ConnectWalletBanner from '$lib/components/airdrop/ConnectWalletBanner.svelte';
 	import AirdropDistributionSection from '$lib/sections/AirdropDistributionSection.svelte';
+	import { checkForClaimEligibility } from '$utils/wallet/distributeAirdrop';
 	// import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
-	import { appSigner, userClaimsArray } from '$stores/wallet';
+	import { appSigner, userClaimsObject } from '$stores/wallet';
 	import { setPopup } from '$utils/popup';
 	import EligibilityPopup from '$lib/components/airdrop/EligibilityPopup.svelte';
 	import { airdropOnePopupOptions } from '$constants/airdrops';
-	import { checkClaimEligibility } from '$utils/wallet/airdropDistribution';
 
 	$: walletConnected = !!$appSigner;
 
 	// Check For eligibility
 	$: (async (signer) => {
-		return browser && signer && checkClaimEligibility(await signer.getAddress());
+		return browser && signer && checkForClaimEligibility(await signer.getAddress());
 	})($appSigner);
 
 	// Display eligibility popup when eligible
-	userClaimsArray.subscribe(async (claimsArr) => {
+	userClaimsObject.subscribe(async (claimObject) => {
 		let options;
 
-		options = claimsArr?.length > 0 ? airdropOnePopupOptions : null;
+		options = claimObject?.user && !claimObject?.user?.hasClaimed ? airdropOnePopupOptions : null;
 
 		options && setPopup(EligibilityPopup, { props: { options } });
 	});

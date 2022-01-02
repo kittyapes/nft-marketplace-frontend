@@ -8,6 +8,5 @@ export const externalProvider = writable<ethers.providers.JsonRpcProvider>(null)
 export const connectionDetails = writable<ethers.providers.Network>(null);
 export const appSigner = writable<ethers.Signer>(null);
 export const userHinataBalance = writable<number>(0);
-export const userClaimsArray = writable<ClaimsObject[]>(null);
+export const userClaimsObject = writable<ClaimsObject>(null);
 export const currentUserAddress = writable<string>(null);
-export const merkleContractIsActive = writable<boolean>(false);
