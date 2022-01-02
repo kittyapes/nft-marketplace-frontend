@@ -1,5 +1,5 @@
 <script>
-	import Dollar from '$icons/dollar.svelte';
+	import Eth from '$icons/eth.svelte';
 	import { priceFilters } from '$stores/marketplace';
 
 	let min;
@@ -11,6 +11,8 @@
 			max: max || 0
 		});
 	};
+
+	updateValues();
 </script>
 
 <div>
@@ -19,8 +21,8 @@
 			class="text-black rounded-md border-black border w-full text-sm px-4 py-2.5 text-center flex items-center justify-between"
 		>
 			<div class="flex items-center gap-3">
-				<Dollar />
-				USD
+				<Eth />
+				ETH
 			</div>
 			<div class="">
 				<svg
@@ -39,17 +41,6 @@
 				</svg>
 			</div>
 		</button>
-
-		<!-- <div
-			class="bg-white text-base z-50 list-none divide-y divide-gray-100 rounded shadow mb-4"
-			id="dropdown"
-		>
-			<ul class="py-1" aria-labelledby="dropdown">
-				<li class="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">USD</li>
-
-				<li class="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">ETH</li>
-			</ul>
-		</div> -->
 	</div>
 
 	<div class="w-full flex justify-between items-center gap-3 mt-4">

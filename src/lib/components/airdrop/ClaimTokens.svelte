@@ -1,5 +1,5 @@
 <script lang="ts">
-	import RoundedButton from '../RoundedButton.svelte';
+	import Button from '../Button.svelte';
 	import { fade } from 'svelte/transition';
 	import LockupPeriod from './LockupPeriod.svelte';
 	import { userClaimsObject, userHinataBalance } from '$stores/wallet';
@@ -42,9 +42,10 @@
 			<div class="w-96 flex justify-between items-center mx-auto">
 				<span class="font-bold tracking-wider w-3/5">{claimAmount} HINATA TOKENS</span>
 				<div class="w-36">
-					<RoundedButton
+					<Button
+						gradient
+						rounded
 						on:click={claimAirdropTokens}
-						bgColor="from-color-purple to-color-blue"
 						disabled={hasClaimed || parseFloat(claimAmount) <= 0}
 					>
 						{#if hasClaimed}
@@ -54,16 +55,14 @@
 						{:else}
 							Not Eligible
 						{/if}
-					</RoundedButton>
+					</Button>
 				</div>
 			</div>
 
 			<div class="w-96 flex justify-between items-center mx-auto">
 				<span class="font-bold tracking-wider w-3/5">14,204 HINATA TOKENS</span>
 				<div class="w-36">
-					<RoundedButton bgColor="from-gray-300 to-transparent" class="text-black"
-						>Escrowed</RoundedButton
-					>
+					<Button rounded class="bg-gradient-to-r from-gray-300 to-transparent">Escrowed</Button>
 				</div>
 			</div>
 
@@ -84,9 +83,7 @@
 			<div class="w-96 flex items-center justify-between mx-auto">
 				<span class="font-bold tracking-wider w-3/5">{$userHinataBalance} HINATA TOKENS</span>
 				<div class="flex-grow-0 w-36">
-					<RoundedButton bgColor="from-color-purple to-color-blue">
-						<div class="px-6">STAKE</div>
-					</RoundedButton>
+					<Button rounded gradient>STAKE</Button>
 				</div>
 			</div>
 		</div>

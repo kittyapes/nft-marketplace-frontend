@@ -10,7 +10,6 @@ import {
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import Web3Modal from 'web3modal';
-import { setPopup } from '$utils/popup';
 
 const infuraId = '456e115b04624699aa0e776f6f2ee65c';
 const appName = 'Hinata Marketplace';

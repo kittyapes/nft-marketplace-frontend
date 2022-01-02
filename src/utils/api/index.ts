@@ -17,3 +17,15 @@ export function isAuthExpired() {
 
 	return isJwtExpired(token);
 }
+
+export function getAxiosConfig() {
+	const token = getAuthToken();
+
+	if (!token) return {};
+
+	return {
+		headers: {
+			Authorization: `Bearer ${token}`
+		}
+	};
+}
