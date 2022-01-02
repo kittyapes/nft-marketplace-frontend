@@ -3,6 +3,7 @@
 interface ClaimsObject {
 	merkleRoot: string;
 	user: {
+		rootIndex: number;
 		amount: string;
 		index: number;
 		proof: string[];

@@ -9,7 +9,7 @@
 
 <div
 	id="container"
-	class="absolute bg-white w-72 top-20 right-4 rounded-2xl z-10 overflow-hidden px-4 py-4"
+	class="absolute bg-white w-72 top-12 right-0 rounded-2xl z-10 overflow-hidden px-4 py-4"
 	transition:slide
 >
 	<div class="grid gap-2">
