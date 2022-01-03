@@ -54,7 +54,7 @@
 						gradient
 						rounded
 						on:click={() =>
-							!(!$merkleContractIsActive || hasClaimed || claimAmount <= 0) && claimAirdropTokens}
+							!(!$merkleContractIsActive || hasClaimed || claimAmount <= 0) && claimAirdropTokens()}
 						disabled={!$merkleContractIsActive || hasClaimed || claimAmount <= 0}
 					>
 						{#if $merkleContractIsActive}

@@ -20,9 +20,12 @@
 
 	// Display eligibility popup when eligible
 	userClaimsArray.subscribe(async (claimsArr) => {
-		let options;
+		let options = null;
+		let hasNotClaimed =
+			$userClaimsArray?.filter((claimsObj) => !claimsObj.user.hasClaimed).length ===
+				$userClaimsArray?.length && $userClaimsArray?.length > 0;
 
-		options = claimsArr?.length > 0 ? airdropOnePopupOptions : null;
+		options = hasNotClaimed ? airdropOnePopupOptions : null;
 
 		options && setPopup(EligibilityPopup, { props: { options } });
 	});

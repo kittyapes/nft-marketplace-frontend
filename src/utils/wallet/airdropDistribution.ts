@@ -1,6 +1,13 @@
+import { HinataTokenAddress } from '$constants/contractAddresses';
 import { getDistributorContract } from '$contracts/contracts';
 import merkleTree from '$contracts/merkleDistributor/merkleTree.json';
-import { appProvider, appSigner, merkleContractIsActive, userClaimsArray } from '$stores/wallet';
+import {
+	appProvider,
+	appSigner,
+	currentUserAddress,
+	merkleContractIsActive,
+	userClaimsArray
+} from '$stores/wallet';
 import { notifyError, notifySuccess } from '$utils/toast';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
@@ -9,72 +16,97 @@ import { get } from 'svelte/store';
 export const checkClaimEligibility = async (userAddress: string) => {
 	try {
 		const distributorContract = getDistributorContract(get(appProvider));
+		// Get total number of merkle trees
+		const numberOfMerkleTrees = +ethers.utils.formatUnits(
+			await distributorContract.treeNumber(),
+			0
+		);
 
-		// Check Contract Active Time
+		// Make sure that this is not past the contract active duration
 		const deployTime = +ethers.utils.formatUnits(await distributorContract.deployTime(), 0);
 		const contractActiveDuration = +ethers.utils.formatUnits(
 			await distributorContract.contractActiveDuration(),
 			0
 		);
-		const milliSecondsSinceUtc = new Date().getUTCMilliseconds();
 
-		const contractIsInactive = milliSecondsSinceUtc < deployTime + contractActiveDuration;
+		const blockTimestamp = (
+			await get(appProvider).getBlock(await get(appProvider).getBlockNumber())
+		).timestamp;
 
-		merkleContractIsActive.set(!contractIsInactive);
+		const contractIsActive = blockTimestamp < deployTime + contractActiveDuration;
 
-		if (!contractIsInactive) {
-			// Address might have different capitalization
-			const addressArr = Object.keys(merkleTree.claims);
+		merkleContractIsActive.set(contractIsActive);
 
-			let userClaimInfo: { amount: string; index: number; proof: string[] } = null;
-			let merkleUserAddress = userAddress;
+		// If past, show that claim period has past
+		const claimInfoArr: ClaimsObject[] = [];
 
-			addressArr.map((addr) => {
-				if (addr.toLowerCase() === userAddress.toLowerCase()) {
-					userClaimInfo = merkleTree.claims[addr];
-					merkleUserAddress = addr;
-				}
-			});
+		if (contractIsActive) {
+			// Get their claim times to ensure its already past and then check what the user can claim
+			// Get the cliffs (after this time, one can claim)
+			for (
+				let currentClaimIndex = 0;
+				currentClaimIndex < numberOfMerkleTrees;
+				currentClaimIndex++
+			) {
+				const cliffTime =
+					+ethers.utils.formatUnits(await distributorContract.cliffs(currentClaimIndex), 0) * 1000;
 
-			// 0, 1, 2
-			// Get the amounts for each time the user claims from the merkle trees
-			const claimInfoArr: ClaimsObject[] = [];
+				const treeIsClaimable = blockTimestamp >= deployTime + cliffTime;
 
-			for (let currentClaimIndex = 0; ; currentClaimIndex++) {
-				try {
-					await distributorContract.merkleRoots(currentClaimIndex);
-					const isClaimed = await distributorContract.isClaimed(
-						userClaimInfo.index,
-						currentClaimIndex
-					);
-					if (!isClaimed) {
-						claimInfoArr.push({
-							merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
-							user: {
-								...userClaimInfo,
-								rootIndex: currentClaimIndex,
-								address: merkleUserAddress,
-								hasClaimed: false
-							}
-						});
-					} else {
-						claimInfoArr.push({
-							merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
-							user: {
-								...userClaimInfo,
-								rootIndex: currentClaimIndex,
-								address: merkleUserAddress,
-								hasClaimed: true
-							}
-						});
+				if (treeIsClaimable) {
+					// If not, check the amounts the user can claim from the merkle trees
+					// Find user in relevant tree
+					const tree = (
+						await import(`../../contracts/merkleDistributor/tree_${currentClaimIndex}.json`)
+					).default;
+					// Address might have different capitalization
+					const addressArr = Object.keys(tree.claims);
+
+					let userClaimInfo: { amount: string; index: number; proof: string[] } = null;
+					let merkleUserAddress = userAddress;
+
+					addressArr.map((addr) => {
+						if (addr.toLowerCase() === userAddress.toLowerCase()) {
+							userClaimInfo = tree.claims[addr];
+							merkleUserAddress = addr;
+						}
+					});
+
+					try {
+						await distributorContract.merkleRoots(currentClaimIndex);
+						const isClaimed = await distributorContract.isClaimed(
+							userClaimInfo.index,
+							currentClaimIndex
+						);
+						if (!isClaimed) {
+							claimInfoArr.push({
+								merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
+								user: {
+									...userClaimInfo,
+									rootIndex: currentClaimIndex,
+									address: merkleUserAddress,
+									hasClaimed: false
+								}
+							});
+						} else {
+							claimInfoArr.push({
+								merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
+								user: {
+									...userClaimInfo,
+									rootIndex: currentClaimIndex,
+									address: merkleUserAddress,
+									hasClaimed: true
+								}
+							});
+						}
+					} catch (err) {
+						console.log(err);
+						break;
 					}
-				} catch (err) {
-					console.log(err);
-					break;
 				}
 			}
 
-			// User has not claimed for the most recent claim cliff
+			// Send this data to the svelte store for processing
 			console.log('USER CLAIM INFO: ', claimInfoArr);
 
 			userClaimsArray.set(claimInfoArr);
@@ -117,6 +149,21 @@ export const claimAirdropTokens = async () => {
 		await txt.wait(1);
 
 		notifySuccess('Successfully Claimed Airdrop');
+
+		// Allow the user to add token to wallet
+		// const params = {
+		// 	type: 'ERC20',
+		// 	options: {
+		// 		address: HinataTokenAddress,
+		// 		symbol: 'HiNATA',
+		// 		decimals: 18,
+		// 		image: 'https://rinkeby.etherscan.io/images/main/empty-token.png'
+		// 	}
+		// };
+
+		// await get(appProvider).send('wallet_watchAsset', [params]);
+
+		await checkClaimEligibility(get(currentUserAddress));
 
 		return true;
 	} catch (error) {

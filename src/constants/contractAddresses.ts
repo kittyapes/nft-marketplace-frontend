@@ -1,1 +1,2 @@
-export const merkleDistributorContractAddress = '0x455b7561090C3Be22f132F8b8f5ffF8834d8130b';
+export const merkleDistributorContractAddress = '0xCEe5A745aBc2cfF65A022f68aE5253B1768Df825';
+export const HinataTokenAddress = '0x1AA88B44d0D650fc059275a804A60F538d363d12';
