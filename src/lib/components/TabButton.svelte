@@ -6,7 +6,7 @@
 	<slot />
 </button>
 
-<style>
+<style lang="postcss">
 	button {
 		@apply relative font-bold h-10 whitespace-nowrap;
 	}

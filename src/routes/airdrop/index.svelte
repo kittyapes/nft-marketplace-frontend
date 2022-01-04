@@ -21,7 +21,7 @@
 	$: (async (address) => address && checkClaimEligibility(address))($currentUserAddress);
 
 	// Display eligibility popup when eligible
-	userClaimsArray.subscribe(async (claimsArr) => {
+	userClaimsArray.subscribe(async (_claimsArr) => {
 		let options = null;
 		let hasNotClaimed =
 			$userClaimsArray?.filter((claimsObj) => !claimsObj.user.hasClaimed).length ===

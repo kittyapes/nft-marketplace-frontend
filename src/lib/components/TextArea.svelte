@@ -22,7 +22,7 @@
 	{/if}
 </div>
 
-<style>
+<style lang="postcss">
 	textarea {
 		@apply rounded-md py-2 px-4 text-sm;
 		@apply duration-200;

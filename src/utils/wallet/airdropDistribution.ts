@@ -13,7 +13,7 @@ import { notifyError, notifySuccess } from '$utils/toast';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 
-const getUTCSeconds = () => {
+export const getUTCSeconds = () => {
 	const x = new Date();
 	const UTCseconds = (x.getTime() + x.getTimezoneOffset() * 60 * 1000) / 1000;
 	return UTCseconds;

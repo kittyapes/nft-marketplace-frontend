@@ -158,7 +158,7 @@
 	Error loading document.
 {/await}
 
-<style>
+<style lang='postcss'>
 	/* Mobile and Desktop content */
 	.section-markup {
 		@apply leading-9;
