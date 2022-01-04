@@ -31,7 +31,8 @@ const config = {
 				'process.env': process.env
 			},
 			optimizeDeps: {
-				entries: ['jwt-decode']
+				entries: ['jwt-decode'],
+				exclude: ['@zerodevx/svelte-toast']
 			}
 		}
 	}

@@ -1,11 +1,13 @@
 <script>
+	import { goto } from '$app/navigation';
+
 	import { socials } from '$constants/socials';
 </script>
 
 <div class="border-t h-80 border-color-gray-light">
 	<div class="container mx-auto py-12 flex justify-between">
 		<div class="flex flex-col px-8 w-1/4">
-			<div class="h-12">
+			<div class="h-12" on:click={() => goto('/')}>
 				<img src="/img/logo/logo.svg" class="h-full" alt="Hinata Logo" />
 			</div>
 			<div class="text-sm mt-3">The home of anime Web 3.0 content.</div>
