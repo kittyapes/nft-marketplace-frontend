@@ -1,1 +1,14 @@
-export const merkleDistributorContractAddress = '0x115cC92Ad95eB02e613bF0543586E18168c50c49';
+export const merkleDistributorContractAddress = '0x911E12efcbE3A52Ab5B1605Ce342C70e0295E12a';
+export const HinataTokenAddress = '0x1AA88B44d0D650fc059275a804A60F538d363d12';
+
+/*
+- staking - vesting contract
+- timer for when its time to claim tokens
+- add token to wallet once claimed
+- private page (seed, private, community, etc.)
+- private connect wallet
+- airdrop popup data
+
+-deploy command 
+"0x35aa120DD186A51eaDa0C2bCA73fD051bE1A23b2", ["0x86131f0d7bd027f69ccf0ea26dceb0d37fb3c40879c7350ef4001f3c1ee66f5d", "0xe382d43d1a2e635fd09813be5b9e15be20f3c6265e01a7ff2008031e14d82d74", "0xe382d43d1a2e635fd09813be5b9e15be20f3c6265e01a7ff2008031e14d82d74", "0xe382d43d1a2e635fd09813be5b9e15be20f3c6265e01a7ff2008031e14d82d74", "0xe382d43d1a2e635fd09813be5b9e15be20f3c6265e01a7ff2008031e14d82d74", "0xe382d43d1a2e635fd09813be5b9e15be20f3c6265e01a7ff2008031e14d82d74", "0xc0e32210419e13b4323959ee1c17e18bcbe18412b990c47c18bfabbf46f7d02b"], [600, 1200, 1800, 2400, 3000, 3600], 100, "0x443B3Cca68C21377465f57B3BA4060941E70f91A", 108000
+*/

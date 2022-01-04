@@ -2,9 +2,9 @@
 	import Card from '$lib/components/marketplace/Card.svelte';
 	import { onMount } from 'svelte';
 	import { request } from 'graphql-request';
-	import { GET_ALL_CARDS } from '../../../graphql/marketplace';
 	import { fetchAllMetadata } from '$utils/api/getNFT';
 	import { priceFilters, statusFilters } from '$stores/marketplace';
+import { GET_ALL_CARDS } from '$utils/graphql/marketplace';
 
 	let oldCards;
 	let allCards;

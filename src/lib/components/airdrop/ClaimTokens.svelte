@@ -2,26 +2,30 @@
 	import Button from '../Button.svelte';
 	import { fade } from 'svelte/transition';
 	import LockupPeriod from './LockupPeriod.svelte';
-	import { userClaimsObject, userHinataBalance } from '$stores/wallet';
+	import { merkleContractIsActive, userClaimsArray, userHinataBalance } from '$stores/wallet';
 	import { ethers } from 'ethers';
-	import claimAirdropTokens from '$utils/wallet/claimAirdropTokens';
+	import { claimAirdropTokens } from '$utils/wallet/airdropDistribution';
 
+	let claimAmount = 0;
 	let hasClaimed = false;
-	let claimAmount = '0';
-
-	const updateValues = (claims: ClaimsObject) => {
+	const updateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
-			hasClaimed = claims.user.hasClaimed;
-
+			hasClaimed =
+				$userClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
+				$userClaimsArray?.length;
 			if (hasClaimed) {
-				claimAmount = '0';
+				claimAmount = 0;
 			} else {
-				claimAmount = ethers.utils.formatEther(claims.user.amount);
+				claimAmount = 0;
+				$userClaimsArray.map((claimsObj) => {
+					if (!claimsObj.user.hasClaimed) {
+						claimAmount += +ethers.utils.formatEther(claimsObj.user.amount);
+					}
+				});
 			}
 		}
 	};
-
-	$: updateValues($userClaimsObject);
+	$: updateValues($userClaimsArray);
 </script>
 
 <div
@@ -45,15 +49,20 @@
 					<Button
 						gradient
 						rounded
-						on:click={claimAirdropTokens}
-						disabled={hasClaimed || parseFloat(claimAmount) <= 0}
+						on:click={() =>
+							!(!$merkleContractIsActive || hasClaimed || claimAmount <= 0) && claimAirdropTokens()}
+						disabled={!$merkleContractIsActive || hasClaimed || claimAmount <= 0}
 					>
-						{#if hasClaimed}
-							Already Claimed
-						{:else if !hasClaimed && parseFloat(claimAmount) > 0}
-							Claim
+						{#if $merkleContractIsActive}
+							{#if hasClaimed}
+								Already Claimed
+							{:else if !hasClaimed && claimAmount > 0}
+								Claim
+							{:else}
+								Not Eligible
+							{/if}
 						{:else}
-							Not Eligible
+							<span class:text-xs={!$merkleContractIsActive}> Claim Window Passed </span>
 						{/if}
 					</Button>
 				</div>

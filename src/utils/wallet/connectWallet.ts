@@ -1,4 +1,4 @@
-import { notifyError, notifySuccess } from '$utils/toast';
+import { notifyError } from '$utils/toast';
 import { coinbaseLogo, metamaskLogo } from '$constants/walletIcons';
 import {
 	appProvider,
@@ -6,13 +6,12 @@ import {
 	connectionDetails,
 	currentUserAddress,
 	externalProvider,
-	userClaimsObject,
+	userClaimsArray,
 	web3ModalInstance
 } from '$stores/wallet';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import Web3Modal from 'web3modal';
-import { loginServerNotify } from '$utils/api/login';
 
 const infuraId = '456e115b04624699aa0e776f6f2ee65c';
 const appName = 'Hinata Marketplace';
@@ -193,9 +192,9 @@ export const connectToWallet = async () => {
 const isAllowedNetworks = async (provider: ethers.providers.ExternalProvider) => {
 	const ethersProvider = new ethers.providers.Web3Provider(provider);
 	const chainId = (await ethersProvider.getNetwork()).chainId;
+	console.log(chainId);
 
-	if (chainId === 1 || chainId === 4) {
-		console.log(chainId);
+	if (chainId === 1 || chainId === 4 || chainId === 31337) {
 		// only allow rinkeby or mainnet
 		return true;
 	} else {
@@ -213,8 +212,8 @@ export const initProviderEvents = (provider: any) => {
 	});
 
 	// Subscribe to chainId change
-	provider.on('chainChanged', async (chainId: number) => {
-		console.log('Chain Changed: ', chainId);
+	provider.on('chainChanged', async (_chainId: number) => {
+		// console.log('Chain Changed: ', chainId);
 		deregisterEvents();
 		await refreshConnection();
 	});
@@ -250,7 +249,7 @@ export const refreshConnection = async () => {
 	appSigner.set(null);
 	appProvider.set(null);
 	// setPopup(null, null);
-	userClaimsObject.set(null);
+	userClaimsArray.set(null);
 
 	const web3Modal = get(web3ModalInstance) || initWeb3ModalInstance();
 
@@ -267,30 +266,11 @@ export const refreshConnection = async () => {
 
 			// Add provider to store
 			setProvider(provider);
-			console.log(get(appProvider));
 			return;
 		} else {
 			console.log('Hey 2');
 			notifyError('You can only connect to mainnet or Rinkeby Test Network');
 			return;
 		}
-	}
-};
-
-export const onWalletConnectAction = async () => {
-	await connectToWallet();
-
-	// Notifying the server that the user has connected to a wallet,
-	// creating a user profile for that address on the backend.
-	const currentAddress = get(currentUserAddress);
-
-	try {
-		await loginServerNotify(currentAddress);
-
-		notifySuccess('Successfully connected to your profile.');
-	} catch {
-		notifyError('Failed to connect to your profile.');
-
-		disconnectWallet();
 	}
 };

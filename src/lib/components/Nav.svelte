@@ -1,10 +1,9 @@
 <script>
 	// import Search from './Search.svelte';
 	import ProfilePopup from './ProfilePopup.svelte';
-	import { connectToWallet, onWalletConnectAction } from '$utils/wallet/connectWallet';
-	import { appSigner, currentUserAddress } from '$stores/wallet';
+	import { connectToWallet } from '$utils/wallet/connectWallet';
+	import { appSigner } from '$stores/wallet';
 	import { onMount } from 'svelte';
-	import { loginServerNotify } from '$utils/api/login';
 	import { profileData } from '$stores/user';
 	import { fade } from 'svelte/transition';
 	import UserCircle from '$icons/user-circle.svelte';
@@ -30,7 +29,7 @@
 
 <div class="flex items-center h-16 pl-8 gap-x-8 fixed w-full z-10 bg-white drop-shadow-lg">
 	<!-- Logo -->
-	<a href="/home">
+	<a href="/">
 		<img src="/img/logo/logo.svg" alt="Hinata logo." />
 	</a>
 
