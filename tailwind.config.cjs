@@ -1,7 +1,6 @@
 const config = {
 	mode: 'jit',
-	purge: ['./src/**/*.{html,js,svelte,ts}'],
-
+	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
 		extend: {
 			colors: {
@@ -17,8 +16,12 @@ const config = {
 				'color-purple': '#868BF7',
 				'color-blue': '#6CC7F8',
 				'color-pink': {
-					'dark': '#A95ABC'
+					dark: '#A95ABC'
 				}
+			},
+			screens: {
+				'2k': '2048px',
+				'4k': '3840px'
 			}
 		}
 	},
