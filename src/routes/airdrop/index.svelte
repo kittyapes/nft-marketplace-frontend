@@ -5,7 +5,7 @@
 	import ConnectWalletBanner from '$lib/components/airdrop/ConnectWalletBanner.svelte';
 	import AirdropDistributionSection from '$lib/sections/AirdropDistributionSection.svelte';
 	// import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
-	import { appSigner, userClaimsArray } from '$stores/wallet';
+	import { appSigner, currentUserAddress, userClaimsArray } from '$stores/wallet';
 	import { setPopup } from '$utils/popup';
 	import EligibilityPopup from '$lib/components/airdrop/EligibilityPopup.svelte';
 	import { airdropOnePopupOptions } from '$constants/airdrops';
@@ -17,6 +17,8 @@
 	$: (async (signer) => {
 		return browser && signer && checkClaimEligibility(await signer.getAddress());
 	})($appSigner);
+
+	$: (async (address) => address && checkClaimEligibility(address))($currentUserAddress);
 
 	// Display eligibility popup when eligible
 	userClaimsArray.subscribe(async (claimsArr) => {

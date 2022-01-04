@@ -1,12 +1,13 @@
 import { HinataTokenAddress } from '$constants/contractAddresses';
 import { getDistributorContract } from '$contracts/contracts';
-import merkleTree from '$contracts/merkleDistributor/merkleTree.json';
 import {
 	appProvider,
 	appSigner,
 	currentUserAddress,
+	externalProvider,
 	merkleContractIsActive,
-	userClaimsArray
+	userClaimsArray,
+	web3ModalInstance
 } from '$stores/wallet';
 import { notifyError, notifySuccess } from '$utils/toast';
 import { ethers } from 'ethers';
@@ -48,8 +49,13 @@ export const checkClaimEligibility = async (userAddress: string) => {
 				currentClaimIndex < numberOfMerkleTrees;
 				currentClaimIndex++
 			) {
-				const cliffTime =
-					+ethers.utils.formatUnits(await distributorContract.cliffs(currentClaimIndex), 0) * 1000;
+				const cliffTime = +ethers.utils.formatUnits(
+					await distributorContract.cliffs(currentClaimIndex),
+					0
+				);
+
+				const millisecondsUntilCliff = blockTimestamp - deployTime + cliffTime;
+				let reCheckFunc = null;
 
 				const treeIsClaimable = blockTimestamp >= deployTime + cliffTime;
 
@@ -78,6 +84,7 @@ export const checkClaimEligibility = async (userAddress: string) => {
 							userClaimInfo.index,
 							currentClaimIndex
 						);
+
 						if (!isClaimed) {
 							claimInfoArr.push({
 								merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
@@ -89,20 +96,26 @@ export const checkClaimEligibility = async (userAddress: string) => {
 								}
 							});
 						} else {
-							claimInfoArr.push({
-								merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
-								user: {
-									...userClaimInfo,
-									rootIndex: currentClaimIndex,
-									address: merkleUserAddress,
-									hasClaimed: true
-								}
-							});
+							// Commented out as there is no need to get the array if we are not claiming tokens
+							// claimInfoArr.push({
+							// 	merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
+							// 	user: {
+							// 		...userClaimInfo,
+							// 		rootIndex: currentClaimIndex,
+							// 		address: merkleUserAddress,
+							// 		hasClaimed: true
+							// 	}
+							// });
 						}
 					} catch (err) {
 						console.log(err);
 						break;
 					}
+				} else {
+					reCheckFunc = setTimeout(
+						() => checkClaimEligibility(userAddress) && clearTimeout(reCheckFunc),
+						millisecondsUntilCliff * 1000
+					);
 				}
 			}
 
@@ -122,10 +135,7 @@ export const checkClaimEligibility = async (userAddress: string) => {
 	}
 };
 
-// Check if the user is eligible
-
 // Claim for the user passing the merkle roots and proof arrays
-
 export const claimAirdropTokens = async () => {
 	try {
 		const distributorContract = getDistributorContract(get(appSigner));
@@ -151,17 +161,7 @@ export const claimAirdropTokens = async () => {
 		notifySuccess('Successfully Claimed Airdrop');
 
 		// Allow the user to add token to wallet
-		// const params = {
-		// 	type: 'ERC20',
-		// 	options: {
-		// 		address: HinataTokenAddress,
-		// 		symbol: 'HiNATA',
-		// 		decimals: 18,
-		// 		image: 'https://rinkeby.etherscan.io/images/main/empty-token.png'
-		// 	}
-		// };
-
-		// await get(appProvider).send('wallet_watchAsset', [params]);
+		await addHinataTokenToWallet();
 
 		await checkClaimEligibility(get(currentUserAddress));
 
@@ -170,5 +170,20 @@ export const claimAirdropTokens = async () => {
 		console.log(error);
 		notifyError(error.message || JSON.stringify(error));
 		return false;
+	}
+};
+
+export const addHinataTokenToWallet = async () => {
+	if (get(web3ModalInstance).cachedProvider === 'custom-metamask') {
+		const params = {
+			type: 'ERC20',
+			options: {
+				address: HinataTokenAddress,
+				symbol: 'HiNATA',
+				decimals: 18,
+				image: 'https://rinkeby.etherscan.io/images/main/empty-token.png'
+			}
+		};
+		await (get(externalProvider) as any).request({ method: 'wallet_watchAsset', params });
 	}
 };

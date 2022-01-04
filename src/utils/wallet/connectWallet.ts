@@ -212,7 +212,7 @@ export const initProviderEvents = (provider: any) => {
 
 	// Subscribe to chainId change
 	provider.on('chainChanged', async (chainId: number) => {
-		console.log('Chain Changed: ', chainId);
+		// console.log('Chain Changed: ', chainId);
 		deregisterEvents();
 		await refreshConnection();
 	});
