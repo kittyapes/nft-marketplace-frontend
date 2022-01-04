@@ -7,9 +7,9 @@
 	// import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
 	import { appSigner, userClaimsArray } from '$stores/wallet';
 	import { setPopup } from '$utils/popup';
-	import EligibilityPopup from '$lib/components/airdrop/EligibilityPopup.svelte';
-	import { airdropOnePopupOptions } from '$constants/airdrops';
 	import { checkClaimEligibility } from '$utils/wallet/airdropDistribution';
+	import AirdropPopup from '$lib/components/airdrop/AirdropPopup.svelte';
+	import type { AirdropPopupOptions } from '$constants/airdrops';
 
 	$: walletConnected = !!$appSigner;
 
@@ -25,9 +25,17 @@
 			$userClaimsArray?.filter((claimsObj) => !claimsObj.user.hasClaimed).length ===
 				$userClaimsArray?.length && $userClaimsArray?.length > 0;
 
-		options = hasNotClaimed ? airdropOnePopupOptions : null;
+		options =
+			hasNotClaimed || true
+				? ({
+						eligibleOne: true,
+						eligibleTwo: true,
+						valueOne: 100000,
+						valueTwo: 20000
+				  } as AirdropPopupOptions)
+				: null;
 
-		options && setPopup(EligibilityPopup, { props: { options } });
+		options && setPopup(AirdropPopup, { props: { options } });
 	});
 </script>
 
