@@ -67,6 +67,12 @@
 			],
 			"$contracts/*": [
 				"src/contracts/*"
+			],
+			"$actions": [
+				"src/actions"
+			],
+			"$actions/*": [
+				"src/actions/*"
 			]
 		}
 	},

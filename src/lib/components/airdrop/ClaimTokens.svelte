@@ -10,18 +10,15 @@
 
 	let claimAmount = 0;
 	let hasClaimed = false;
-
 	const updateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
 			hasClaimed =
 				$userClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
 				$userClaimsArray?.length;
-
 			if (hasClaimed) {
 				claimAmount = 0;
 			} else {
 				claimAmount = 0;
-
 				$userClaimsArray.map((claimsObj) => {
 					if (!claimsObj.user.hasClaimed) {
 						claimAmount += +ethers.utils.formatEther(claimsObj.user.amount);
@@ -30,7 +27,6 @@
 			}
 		}
 	};
-
 	$: updateValues($userClaimsArray);
 
 	const stakeDurationOptions = [{ label: '3MO' }, { label: '1YR' }, { label: '2YR' }];

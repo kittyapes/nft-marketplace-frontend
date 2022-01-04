@@ -30,7 +30,7 @@
 	</div>
 </div>
 
-<style>
+<style lang="postcss">
 	#left-pane {
 		@apply grid justify-start;
 		grid-template-columns: 4rem auto;
