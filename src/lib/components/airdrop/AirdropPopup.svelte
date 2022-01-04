@@ -10,6 +10,10 @@
 
 	// @ts-ignore
 	$: totalValue = options.eligibleOne * options.valueOne + options.eligibleTwo * options.valueTwo;
+
+	function toCommas(x) {
+		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+	}
 </script>
 
 <div id="container" class="bg-white rounded-2xl w-[400px]">
@@ -24,7 +28,7 @@
 				<ThemedCheck />
 			{/if}
 		</div>
-		<div class="font-bold text-color-black">{options.valueOne} HiNATA</div>
+		<div class="font-bold text-color-black mt-1">{toCommas(options.valueOne)} HiNATA</div>
 
 		<div class="flex items-center mt-6">
 			<div class="mr-4">Community Airdrop 2</div>
@@ -32,14 +36,14 @@
 				<ThemedCheck />
 			{/if}
 		</div>
-		<div class="font-bold text-color-black">{options.valueTwo} HiNATA</div>
+		<div class="font-bold text-color-black mt-1">{toCommas(options.valueTwo)} HiNATA</div>
 	</div>
 
 	<div class="h-px bg-black opacity-20" />
 
 	<div class="p-8 px-16">
 		<div class="font-bold text-[#807070]">Total Airdrop</div>
-		<div class="font-bold text-color-black">{totalValue} HiNATA</div>
+		<div class="font-bold text-color-black mt-1">{toCommas(totalValue)} HiNATA</div>
 	</div>
 </div>
 
