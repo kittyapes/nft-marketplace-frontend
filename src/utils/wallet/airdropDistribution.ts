@@ -67,7 +67,6 @@ export const checkClaimEligibility = async (userAddress: string) => {
 				const treeIsClaimable = blockTimestamp >= deployTime + cliffTime;
 
 				if (treeIsClaimable) {
-					console.log('Tree is claimable');
 					// If not, check the amounts the user can claim from the merkle trees
 					// Find user in relevant tree
 					const tree = (
