@@ -36,10 +36,9 @@
 	const stakeDurationOptions = [{ label: '3MO' }, { label: '1YR' }, { label: '2YR' }];
 
 	let stakeDurationHovered = false;
-	let canClaim = false;
 </script>
 
-{#if canClaim}
+{#if claimAmount > 0}
 	<div
 		class="w-full max-w-5xl m-auto bg-black bg-opacity-5 container border-4 border-black px-4 border-opacity-20 mt-12 py-11 rounded-2xl"
 		in:fade
