@@ -104,15 +104,15 @@ export const checkClaimEligibility = async (userAddress: string) => {
 							});
 						} else {
 							// Commented out as there is no need to get the array if we are not claiming tokens
-							// claimInfoArr.push({
-							// 	merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
-							// 	user: {
-							// 		...userClaimInfo,
-							// 		rootIndex: currentClaimIndex,
-							// 		address: merkleUserAddress,
-							// 		hasClaimed: true
-							// 	}
-							// });
+							claimInfoArr.push({
+								merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
+								user: {
+									...userClaimInfo,
+									rootIndex: currentClaimIndex,
+									address: merkleUserAddress,
+									hasClaimed: true
+								}
+							});
 						}
 					} catch (err) {
 						console.log(err);
@@ -120,6 +120,7 @@ export const checkClaimEligibility = async (userAddress: string) => {
 					}
 				} else if (timeToNextClaimInSeconds > 0) {
 					// checkClaimEligibility(userAddress) && clearTimeout(reCheckFunc)
+					console.log(timeToNextClaimInSeconds * 1000);
 					reCheckFunc = setTimeout(
 						() => checkClaimEligibility(userAddress) && clearTimeout(reCheckFunc),
 						timeToNextClaimInSeconds * 1000

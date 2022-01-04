@@ -34,7 +34,7 @@
 	let stakeDurationHovered = false;
 </script>
 
-{#if claimAmount > 0}
+{#if claimAmount > 0 || $userClaimsArray?.length > 0}
 	<div
 		class="w-full max-w-5xl m-auto bg-black bg-opacity-5 container border-4 border-black px-4 border-opacity-20 mt-12 py-11 rounded-2xl"
 		in:fade
@@ -47,11 +47,11 @@
 				submitting a transaction which will pull them to your wallet
 			</div>
 
-			<div class="font-bold uppercase mt-7">YOU WILL RECIEVE...</div>
+			<div class="font-bold uppercase mt-7">YOU WILL RECEIVE...</div>
 
 			<div class="w-full flex flex-col gap-4 mt-5">
 				<div class="w-96 flex justify-between items-center mx-auto">
-					<span class="font-bold tracking-wider w-3/5">{claimAmount} HINATA TOKENS</span>
+					<span class="font-bold tracking-wider w-3/5">{claimAmount} HiNATA TOKENS</span>
 					<div class="w-36">
 						<Button
 							gradient
@@ -77,7 +77,7 @@
 				</div>
 
 				<div class="w-96 flex justify-between items-center mx-auto">
-					<span class="font-bold tracking-wider w-3/5">14,204 HINATA TOKENS</span>
+					<span class="font-bold tracking-wider w-3/5">14,204 HiNATA TOKENS</span>
 					<div class="w-36">
 						<Button
 							rounded
@@ -102,7 +102,9 @@
 			<div class="font-bold uppercase">Your wallet balance</div>
 
 			<div class="grid grid-cols-2 place-items-center">
-				<div class="font-semibold w-full pl-8">14,203 HINATA TOKENS</div>
+				<div class="font-semibold w-full pl-8">
+					{$userHinataBalance.noExponents()} HiNATA TOKENS
+				</div>
 				<Button rounded gradient>Stake</Button>
 			</div>
 
@@ -140,7 +142,7 @@
 			<div class="font-bold uppercase">Your value balance</div>
 
 			<div class="grid grid-cols-2 place-items-center">
-				<div class="font-semibold w-full pl-8">14,203 HINATA TOKENS</div>
+				<div class="font-semibold w-full pl-8">14,203 HiNATA TOKENS</div>
 				<Button
 					rounded
 					class="bg-gradient-to-r from-gray-300 to-transparent font-semibold text-[#777575]"
