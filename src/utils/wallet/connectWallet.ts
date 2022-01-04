@@ -12,6 +12,7 @@ import {
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import Web3Modal from 'web3modal';
+import { loginServerNotify } from '$utils/api/login';
 
 const infuraId = '456e115b04624699aa0e776f6f2ee65c';
 const appName = 'Hinata Marketplace';
@@ -142,6 +143,7 @@ const setProvider = async (provider: ethers.providers.ExternalProvider) => {
 	//     await ethersProvider.getBalance(userAddress)
 	//   )
 	// );
+	userAddress && loginServerNotify(userAddress);
 
 	return ethersProvider;
 };
