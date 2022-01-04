@@ -8,5 +8,5 @@
 	>
 		<span class="text-2xl text-white font-bold">{step}</span>
 	</div>
-	<div class="font-bold"><slot /></div>
+	<div><slot /></div>
 </div>

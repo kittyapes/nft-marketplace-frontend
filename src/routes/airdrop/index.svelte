@@ -40,7 +40,7 @@
 		<div
 			class="text-7xl uppercase font-bold text-transparent bg-clip-text bg-gradient-to-r from-color-purple to-color-blue"
 		>
-			Claims Portal
+			Token portal
 		</div>
 
 		<!-- Community Airdrop Section -->
@@ -68,7 +68,7 @@
 			class="w-full max-w-3xl m-auto bg-black bg-opacity-5 border-4 border-black border-opacity-20 mt-12 py-11 px-7 rounded-2xl"
 		>
 			<span class="text-lg font-bold text-color-black ">
-				Platform usage claims will begin once the app is open to all.
+				Platform usage claims will begin once the app is live.
 			</span>
 		</div>
 
