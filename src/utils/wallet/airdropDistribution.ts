@@ -13,6 +13,12 @@ import { notifyError, notifySuccess } from '$utils/toast';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 
+const getUTCSeconds = () => {
+	const x = new Date();
+	const UTCseconds = (x.getTime() + x.getTimezoneOffset() * 60 * 1000) / 1000;
+	return UTCseconds;
+};
+
 // Check the time since deploy to determine if the user can claim for the current cliff
 export const checkClaimEligibility = async (userAddress: string) => {
 	try {
@@ -30,6 +36,7 @@ export const checkClaimEligibility = async (userAddress: string) => {
 			0
 		);
 
+		// const blockTimestamp = getUTCSeconds();
 		const blockTimestamp = (
 			await get(appProvider).getBlock(await get(appProvider).getBlockNumber())
 		).timestamp;
@@ -54,12 +61,13 @@ export const checkClaimEligibility = async (userAddress: string) => {
 					0
 				);
 
-				const millisecondsUntilCliff = blockTimestamp - deployTime + cliffTime;
+				const timeToNextClaimInSeconds = deployTime + cliffTime - blockTimestamp;
 				let reCheckFunc = null;
 
 				const treeIsClaimable = blockTimestamp >= deployTime + cliffTime;
 
 				if (treeIsClaimable) {
+					console.log('Tree is claimable');
 					// If not, check the amounts the user can claim from the merkle trees
 					// Find user in relevant tree
 					const tree = (
@@ -111,11 +119,15 @@ export const checkClaimEligibility = async (userAddress: string) => {
 						console.log(err);
 						break;
 					}
-				} else {
+				} else if (timeToNextClaimInSeconds > 0) {
+					// checkClaimEligibility(userAddress) && clearTimeout(reCheckFunc)
 					reCheckFunc = setTimeout(
 						() => checkClaimEligibility(userAddress) && clearTimeout(reCheckFunc),
-						millisecondsUntilCliff * 1000
+						timeToNextClaimInSeconds * 1000
 					);
+				} else {
+					console.log('Clear timeout');
+					reCheckFunc && clearTimeout(reCheckFunc);
 				}
 			}
 

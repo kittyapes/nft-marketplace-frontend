@@ -192,8 +192,9 @@ export const connectToWallet = async () => {
 const isAllowedNetworks = async (provider: ethers.providers.ExternalProvider) => {
 	const ethersProvider = new ethers.providers.Web3Provider(provider);
 	const chainId = (await ethersProvider.getNetwork()).chainId;
+	console.log(chainId);
 
-	if (chainId === 1 || chainId === 4) {
+	if (chainId === 1 || chainId === 4 || chainId === 31337) {
 		// only allow rinkeby or mainnet
 		return true;
 	} else {
