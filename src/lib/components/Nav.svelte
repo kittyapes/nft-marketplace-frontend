@@ -68,15 +68,18 @@
 				class:hidden={!$appSigner}
 				on:click={() => (displayProfilePopup = !displayProfilePopup)}
 			>
-				{#if $profileData?.username}
-					<div class="flex-grow" in:fade>
+				<div class="flex-grow" in:fade>
+					{#if $profileData?.username}
 						{displayedUsername}
-					</div>
+					{:else}
+						Guest User
+					{/if}
+				</div>
 
-					<div class="text-color-purple" in:fade>
-						<UserCircle />
-					</div>
-				{/if}
+				<!-- This should be either the user's profile image if they have one or this svg image -->
+				<div class="text-color-purple" in:fade>
+					<UserCircle />
+				</div>
 			</button>
 		{/if}
 

@@ -220,7 +220,7 @@
 	</div>
 {/if}
 
-<style>
+<style lang="postcss">
 	/* Keep commented rules */
 
 	/* #form-container > div {
