@@ -1,5 +1,4 @@
 <script>
-	import LockupPeriod from './LockupPeriod.svelte';
 	import { fade } from 'svelte/transition';
 	import Eth from '$icons/eth.svelte';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
@@ -53,7 +52,8 @@
 
 			<div class="uppercase text-left my-5">lockup period</div>
 
-			<LockupPeriod />
+			<!-- <LockupPeriod /> -->
+			<!-- Use HorizontalOptionSwitcher instead -->
 
 			<div class="text-left mt-4">Stake your HINATA to the DAO</div>
 

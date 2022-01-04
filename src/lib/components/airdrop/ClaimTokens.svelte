@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Button from '../Button.svelte';
 	import { fade } from 'svelte/transition';
-	import LockupPeriod from './LockupPeriod.svelte';
 	import { merkleContractIsActive, userClaimsArray, userHinataBalance } from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import { claimAirdropTokens } from '$utils/wallet/airdropDistribution';
