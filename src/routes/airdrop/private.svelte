@@ -2,7 +2,9 @@
 	import GridOptionContainer from '$lib/components/airdrop/investors/GridOptionContainer.svelte';
 	import GridOptionSplit from '$lib/components/airdrop/investors/GridOptionSplit.svelte';
 	import Button from '$lib/components/Button.svelte';
+	import Hint from '$lib/components/Hint.svelte';
 	import HorizontailOptionSwitcher from '$lib/components/HorizontailOptionSwitcher.svelte';
+	import { fade } from 'svelte/transition';
 
 	const splitOptions = [
 		{
@@ -29,6 +31,8 @@
 	];
 
 	const stakeDurationOptions = [{ label: '3MO' }, { label: '1YR' }, { label: '2YR' }];
+
+	let stakeDurationHovered = false;
 </script>
 
 <div class="w-full px-6 min-h-screen">
@@ -89,13 +93,30 @@
 
 			<div class="flex mt-8 items-center gap-x-14">
 				<div class="uppercase font-bold">Lockup period</div>
-				<HorizontailOptionSwitcher options={stakeDurationOptions} defaultOptionIndex={1} />
+				<div
+					on:mouseenter={() => (stakeDurationHovered = true)}
+					on:mouseleave={() => (stakeDurationHovered = false)}
+				>
+					<HorizontailOptionSwitcher options={stakeDurationOptions} defaultOptionIndex={1} />
+				</div>
 			</div>
 
 			<p class="mt-8">
 				Deposit your tokens to the vault to earn governance rewards and become a DAO member
 			</p>
 		</GridOptionContainer>
+
+		{#if stakeDurationHovered}
+			<div
+				class="w-0 translate-y-[-260px] translate-x-[470px]"
+				transition:fade|local={{ duration: 100 }}
+			>
+				<Hint>
+					Lock your HiNATA for longer for better rewards!
+					<a href="./private" class="font-bold"> READ MORE </a>
+				</Hint>
+			</div>
+		{/if}
 
 		<!-- Vault claim section -->
 		<GridOptionContainer title="Vault" hinataValue="14,203">
