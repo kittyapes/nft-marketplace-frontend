@@ -1,5 +1,4 @@
 <script>
-	import Dollar from '$icons/dollar.svelte';
 	import Eth from '$icons/eth.svelte';
 	import { priceFilters } from '$stores/marketplace';
 

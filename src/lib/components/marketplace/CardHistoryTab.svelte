@@ -6,7 +6,7 @@
 
 <div class="w-full h-full flex flex-col" in:fade={{ duration: 300 }}>
 	<div class="flex-grow h-auto flex-shrink overflow-y-scroll">
-		{#each Array(20).fill(0) as el, i}
+		{#each Array(20).fill(0) as _el, i}
 			<CardHistoryRow idx={i} />
 		{/each}
 	</div>

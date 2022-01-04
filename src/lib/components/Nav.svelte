@@ -29,7 +29,7 @@
 
 <div class="flex items-center h-16 pl-8 gap-x-8 fixed w-full z-10 bg-white drop-shadow-lg">
 	<!-- Logo -->
-	<a href="/home">
+	<a href="/">
 		<img src="/img/logo/logo.svg" alt="Hinata logo." />
 	</a>
 
