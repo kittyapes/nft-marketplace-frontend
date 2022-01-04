@@ -5,7 +5,8 @@ import axios from 'axios';
 import { writable } from 'svelte/store';
 import { getAuthToken, setAuthToken } from '.';
 // import hash from "jshashes"
-import sha256 from 'crypto-js/sha256';
+// import sha256 from 'crypto-js/sha256';
+import sha256 from 'js-sha256';
 
 // TODO: init this wil null when the API is updated to return user's role
 export const isAdmin = writable<boolean>(
@@ -50,9 +51,11 @@ export async function loginServerNotify(address: string) {
 		checksum: null
 	};
 
-	data.checksum = sha256(data.device_info + data.upload_time + data.address)
-		.toString()
-		.substr(32);
+	const hash = sha256.create();
+
+	hash.update(data.device_info + data.upload_time + data.address);
+
+	data.checksum = hash.hex().substr(32);
 
 	await axios.post(api + '/v1/accounts/login', data);
 }
