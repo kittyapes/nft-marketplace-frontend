@@ -51,7 +51,7 @@
 
 			<div class="w-full flex flex-col gap-4 mt-5">
 				<div class="w-96 flex justify-between items-center mx-auto">
-					<span class="font-bold tracking-wider w-3/5">{claimAmount} HiNATA TOKENS</span>
+					<span class="font-bold tracking-wider w-3/5">{claimAmount.toFixed(2)} HiNATA TOKENS</span>
 					<div class="w-36">
 						<Button
 							gradient
