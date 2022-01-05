@@ -51,7 +51,7 @@
 						? ({
 								eligibleOne: true,
 								eligibleTwo: false,
-								valueOne: claimAmount.noExponents(),
+								valueOne: +claimAmount.toFixed(2),
 								valueTwo: 20000
 						  } as AirdropPopupOptions)
 						: null;

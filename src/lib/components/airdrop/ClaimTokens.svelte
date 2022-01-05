@@ -103,7 +103,7 @@
 
 			<div class="grid grid-cols-2 place-items-center">
 				<div class="font-semibold w-full pl-8">
-					{$userHinataBalance.noExponents()} HiNATA TOKENS
+					{$userHinataBalance.toFixed(2)} HiNATA TOKENS
 				</div>
 				<Button rounded gradient>Stake</Button>
 			</div>
