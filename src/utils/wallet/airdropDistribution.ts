@@ -156,9 +156,15 @@ export const claimAirdropTokens = async () => {
 		// params: AccIndex, accAddress, rootIndexes[], amounts[], merkleProofs[]
 		const userIndex = get(userClaimsArray)[0].user.index;
 		const accAddress = get(userClaimsArray)[0].user.address;
-		const rootIndexes = get(userClaimsArray).map((claimsObj) => claimsObj.user.rootIndex);
-		const amounts = get(userClaimsArray).map((claimsObj) => claimsObj.user.amount);
-		const merkleProofs = get(userClaimsArray).map((claimsObj) => claimsObj.user.proof);
+		const rootIndexes = get(userClaimsArray)
+			.filter((claimsObj) => !claimsObj.user.hasClaimed)
+			.map((claimsObj) => claimsObj.user.rootIndex);
+		const amounts = get(userClaimsArray)
+			.filter((claimsObj) => !claimsObj.user.hasClaimed)
+			.map((claimsObj) => claimsObj.user.amount);
+		const merkleProofs = get(userClaimsArray)
+			.filter((claimsObj) => !claimsObj.user.hasClaimed)
+			.map((claimsObj) => claimsObj.user.proof);
 
 		const txt = await distributorContract.claim(
 			userIndex,
