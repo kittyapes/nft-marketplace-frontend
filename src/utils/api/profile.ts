@@ -3,6 +3,7 @@ import { appSigner } from '$stores/wallet';
 import axios from 'axios';
 import { get } from 'svelte/store';
 import { getAxiosConfig } from '.';
+import sha512 from 'hash.js/lib/hash/sha/512';
 
 export interface LoginHistoryEntry {
 	address: string;
@@ -23,6 +24,9 @@ export interface ProfileData {
 	username: string;
 	_id: string;
 	bio: string;
+	instagram: string;
+	facebook: string;
+	twitter: string;
 }
 
 export async function fetchProfileData(address: string) {
@@ -45,14 +49,27 @@ export async function inactivateProfile(address: string) {
 }
 
 export interface EditableProfileData {
+	profileImage: string | Blob;
 	username: string;
 	email: string;
 	bio: string;
-	socials: {
-		instagram: string;
-		facebook: string;
-		twitter: string;
-	};
+	instagram: string;
+	facebook: string;
+	twitter: string;
+}
+
+function readFileAsync(file) {
+	return new Promise((resolve, reject) => {
+		let reader = new FileReader();
+
+		reader.onload = () => {
+			resolve(reader.result);
+		};
+
+		reader.onerror = reject;
+
+		reader.readAsArrayBuffer(file);
+	});
 }
 
 export async function updateProfile(address: string, data: Partial<EditableProfileData>) {
@@ -60,13 +77,31 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 
 	const requestTime = Date.now().toString();
 
-	const message = data.email + data.username + requestTime;
+	// const profileImageData = await readFileAsync(data.profileImage);
+	// console.log(profileImageData);
+	// const profileImageDigest = await crypto.subtle.digest('SHA-512', profileImageData);
+	// const hashArray = Array.from(new Uint8Array(profileImageDigest));
+	// const hashHex = hashArray
+	// .map((b) => b.toString(16).padStart(2, '0'))
+	// .join('')
+	// .substring(8);
+
+	const message =
+		data.email + data.username + requestTime + data.facebook + data.instagram + data.twitter;
 	const signature = await get(appSigner).signMessage(message);
+
+	// console.log(profileImageData);
+
+	// console.log('digest', hashHex);
 
 	formData.append('nickname', '');
 	formData.append('email', data.email);
 	formData.append('username', data.username);
 	formData.append('request_time', requestTime);
+	// formData.append('image', data.profileImage, 'image');
+	formData.append('facebook', data.facebook);
+	formData.append('instagram', data.instagram);
+	formData.append('twitter', data.twitter);
 	formData.append('signature', signature);
 
 	await axios.put(api + '/v1/accounts/' + address, formData);

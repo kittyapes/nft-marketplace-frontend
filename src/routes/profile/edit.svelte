@@ -1,9 +1,9 @@
 <script lang="ts">
-	// import DragDropImage from '$lib/components/DragDropImage.svelte';
+	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	// import TextArea from '$lib/components/TextArea.svelte';
-	// import Instagram from '$icons/socials/instagram.svelte';
-	// import Facebook from '$icons/socials/facebook.svelte';
-	// import Twitter from '$icons/socials/twitter.svelte';
+	import Instagram from '$icons/socials/instagram.svelte';
+	import Facebook from '$icons/socials/facebook.svelte';
+	import Twitter from '$icons/socials/twitter.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { fade, slide } from 'svelte/transition';
 	import Progressbar from '$lib/components/Progressbar.svelte';
@@ -49,6 +49,7 @@
 				});
 		} catch (err) {
 			notifyError('Could not save new profile data.');
+			console.error(err);
 		}
 	}
 
@@ -60,12 +61,10 @@
 				username: data.username,
 				email: data.email,
 				bio: data.bio,
-				socials: {
-					instagram: '',
-					facebook: '',
-					twitter: ''
-				}
-			};
+				instagram: data.instagram,
+				facebook: data.facebook,
+				twitter: data.twitter
+			} as EditableProfileData;
 
 			fetchedDataStore.set(cloneDeep(localData));
 			localDataStore.set(localData);
@@ -162,13 +161,13 @@
 					bind:value={$localDataStore.bio}
 				/> -->
 
-				<!-- <div>Upload a <br /> profile image</div>
-				<DragDropImage />
+				<!-- <div>Upload a <br /> profile image</div> -->
+				<!-- <DragDropImage bind:blob={$localDataStore.profileImage} /> -->
 
-				<div>Upload a <br /> background image</div>
+				<!-- <div>Upload a <br /> background image</div>
 				<DragDropImage /> -->
 
-				<!-- <div>Social links</div>
+				<div>Social links</div>
 				<div id="socials-container" class="grid gap-y-3">
 					<div>
 						<Instagram />
@@ -176,7 +175,7 @@
 							type="text"
 							class="input input-gray-outline"
 							placeholder="Instagram link"
-							disabled
+							bind:value={$localDataStore.instagram}
 						/>
 					</div>
 
@@ -186,7 +185,7 @@
 							type="text"
 							class="input input-gray-outline"
 							placeholder="Facebook link"
-							disabled
+							bind:value={$localDataStore.facebook}
 						/>
 					</div>
 
@@ -196,10 +195,10 @@
 							type="text"
 							class="input input-gray-outline"
 							placeholder="Twitter link"
-							disabled
+							bind:value={$localDataStore.twitter}
 						/>
 					</div>
-				</div> -->
+				</div>
 			</div>
 
 			<Button
@@ -223,20 +222,20 @@
 <style lang="postcss">
 	/* Keep commented rules */
 
-	/* #form-container > div {
+	#form-container > div {
 		@apply uppercase text-lg font-medium;
-	} */
+	}
 
 	#form-container input {
 		@apply w-full;
 		min-height: 3rem;
 	}
 
-	/* #socials-container > div {
+	#socials-container > div {
 		@apply flex gap-x-3 items-center;
-	} */
+	}
 
-	/* #socials-container > div > :global(svg) {
+	#socials-container > div > :global(svg) {
 		@apply h-12;
-	} */
+	}
 </style>
