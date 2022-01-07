@@ -1,9 +1,14 @@
 <script lang="ts">
 	import Button from '../Button.svelte';
 	import { fade } from 'svelte/transition';
-	import { merkleContractIsActive, userClaimsArray, userHinataBalance } from '$stores/wallet';
+	import {
+		airdropEscrowedTokens,
+		merkleContractIsActive,
+		userClaimsArray,
+		userHinataBalance
+	} from '$stores/wallet';
 	import { ethers } from 'ethers';
-	import { claimAirdropTokens } from '$utils/wallet/airdropDistribution';
+	import { claimAirdropTokens } from '$utils/contracts/airdropDistribution';
 	import HorizontailOptionSwitcher from '../HorizontailOptionSwitcher.svelte';
 	import Hint from '../Hint.svelte';
 	import ThemedCross from '$icons/themed-cross.svelte';
@@ -77,7 +82,9 @@
 				</div>
 
 				<div class="w-96 flex justify-between items-center mx-auto">
-					<span class="font-bold tracking-wider w-3/5">14,204 HiNATA TOKENS</span>
+					<span class="font-bold tracking-wider w-3/5"
+						>{$airdropEscrowedTokens.toFixed(2)} HiNATA TOKENS</span
+					>
 					<div class="w-36">
 						<Button
 							rounded

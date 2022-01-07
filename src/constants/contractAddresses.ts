@@ -1,5 +1,6 @@
 export const merkleDistributorContractAddress = '0x911E12efcbE3A52Ab5B1605Ce342C70e0295E12a';
 export const HinataTokenAddress = '0x1AA88B44d0D650fc059275a804A60F538d363d12';
+export const publicMerkleDistributorLockContract = '0x35CaaBA865BD019dc738eCB96Ec7D0a7Ab349015';
 
 /*
 - staking - vesting contract

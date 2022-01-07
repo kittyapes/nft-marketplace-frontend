@@ -1,5 +1,5 @@
 import { HinataTokenAddress } from '$constants/contractAddresses';
-import { getDistributorContract } from '$contracts/contracts';
+import { getDistributorContract } from '$utils/contracts/generalContractCalls';
 import {
 	appProvider,
 	appSigner,
@@ -37,9 +37,9 @@ export const checkClaimEligibility = async (userAddress: string) => {
 		);
 
 		// const blockTimestamp = getUTCSeconds();
-		const blockTimestamp = (
-			await get(appProvider).getBlock(await get(appProvider).getBlockNumber())
-		).timestamp;
+		const blockTimestamp =
+			(await get(appProvider).getBlock(await get(appProvider).getBlockNumber()))?.timestamp ||
+			getUTCSeconds();
 
 		const contractIsActive = blockTimestamp < deployTime + contractActiveDuration;
 
@@ -70,8 +70,11 @@ export const checkClaimEligibility = async (userAddress: string) => {
 					// If not, check the amounts the user can claim from the merkle trees
 					// Find user in relevant tree
 					const tree = (
-						await import(`../../contracts/merkleDistributor/tree_${currentClaimIndex}.json`)
+						await import(
+							`../../constants/contracts/merkleDistributor/tree_${currentClaimIndex}.json`
+						)
 					).default;
+
 					// Address might have different capitalization
 					const addressArr = Object.keys(tree.claims);
 
@@ -85,38 +88,40 @@ export const checkClaimEligibility = async (userAddress: string) => {
 						}
 					});
 
-					try {
-						await distributorContract.merkleRoots(currentClaimIndex);
-						const isClaimed = await distributorContract.isClaimed(
-							userClaimInfo.index,
-							currentClaimIndex
-						);
+					if (userClaimInfo) {
+						try {
+							await distributorContract.merkleRoots(currentClaimIndex);
+							const isClaimed = await distributorContract.isClaimed(
+								userClaimInfo.index,
+								currentClaimIndex
+							);
 
-						if (!isClaimed) {
-							claimInfoArr.push({
-								merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
-								user: {
-									...userClaimInfo,
-									rootIndex: currentClaimIndex,
-									address: merkleUserAddress,
-									hasClaimed: false
-								}
-							});
-						} else {
-							// Commented out as there is no need to get the array if we are not claiming tokens
-							claimInfoArr.push({
-								merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
-								user: {
-									...userClaimInfo,
-									rootIndex: currentClaimIndex,
-									address: merkleUserAddress,
-									hasClaimed: true
-								}
-							});
+							if (!isClaimed) {
+								claimInfoArr.push({
+									merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
+									user: {
+										...userClaimInfo,
+										rootIndex: currentClaimIndex,
+										address: merkleUserAddress,
+										hasClaimed: false
+									}
+								});
+							} else {
+								// Commented out as there is no need to get the array if we are not claiming tokens
+								claimInfoArr.push({
+									merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
+									user: {
+										...userClaimInfo,
+										rootIndex: currentClaimIndex,
+										address: merkleUserAddress,
+										hasClaimed: true
+									}
+								});
+							}
+						} catch (err) {
+							console.log(err);
+							break;
 						}
-					} catch (err) {
-						console.log(err);
-						break;
 					}
 				} else if (timeToNextClaimInSeconds > 0) {
 					// checkClaimEligibility(userAddress) && clearTimeout(reCheckFunc)

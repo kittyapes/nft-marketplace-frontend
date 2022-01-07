@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { HinataTokenAddress, merkleDistributorContractAddress } from '$constants/contractAddresses';
-import distributorAbi from '$contracts/merkleDistributor/distributorAbi.json';
-import HinataTokenABI from '$contracts/abis/hinataToken.json';
+import distributorAbi from '$constants/contracts/merkleDistributor/distributorAbi.json';
+import HinataTokenABI from '$constants/contracts/abis/hinataToken.json';
 
 export const getDistributorContract = (
 	providerOrSigner: ethers.providers.Provider | ethers.Signer

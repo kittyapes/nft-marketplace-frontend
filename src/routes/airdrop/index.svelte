@@ -6,7 +6,7 @@
 	import AirdropDistributionSection from '$lib/sections/AirdropDistributionSection.svelte';
 	// import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
-	import { checkClaimEligibility } from '$utils/wallet/airdropDistribution';
+	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
 
 	$: walletConnected = !!$appSigner;
 
