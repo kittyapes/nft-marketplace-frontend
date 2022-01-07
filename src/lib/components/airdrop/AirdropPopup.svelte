@@ -51,14 +51,4 @@
 	#container {
 		border: 3px solid #00000029;
 	}
-
-	.gray-text {
-		@apply text-lg font-bold;
-		color: #807070;
-	}
-
-	.black-text {
-		@apply text-lg font-bold;
-		color: #232323;
-	}
 </style>
