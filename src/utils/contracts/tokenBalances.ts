@@ -1,4 +1,4 @@
-import { getHinataTokenContract } from '$contracts/contracts';
+import { getHinataTokenContract } from '$utils/contracts/generalContractCalls';
 import { appProvider, userHinataBalance } from '$stores/wallet';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';

@@ -20,7 +20,7 @@
 	import type { AirdropPopupOptions } from '$constants/airdrops';
 	import { currentUserAddress, userClaimsArray } from '$stores/wallet';
 	import { ethers } from 'ethers';
-	import { getAllTokenBalances } from '$utils/wallet/tokenBalances';
+	import { getAllTokenBalances } from '$utils/contracts/tokenBalances';
 
 	onMount(async () => {
 		// Keep connection live as long as cachedProvider is present (even after reloads)
