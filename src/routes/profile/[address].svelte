@@ -13,6 +13,7 @@
 	import { fetchCreatedNfts } from '$utils/api/fetchCreatedNfts';
 	import { isAdmin } from '$utils/api/login';
 	import { fetchProfileData, ProfileData } from '$utils/api/profile';
+	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
@@ -22,16 +23,16 @@
 
 	const localProfileData = writable<ProfileData>();
 
-	function fetchData() {
+	async function fetchData() {
 		if (address === $currentUserAddress) {
-			localProfileData.set($profileData);
+			profileData.subscribe(localProfileData.set);
 			return;
 		}
 
-		fetchProfileData(address).then(localProfileData.set);
+		$localProfileData = await fetchProfileData(address);
 	}
 
-	browser && fetchData();
+	onMount(fetchData);
 
 	function shortenAddress(address: string) {
 		return address.substring(0, 3) + '...' + address.substring(address.length - 4);
