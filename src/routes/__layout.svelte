@@ -18,7 +18,7 @@
 	import { setPopup } from '$utils/popup';
 	import AirdropPopup from '$lib/components/airdrop/AirdropPopup.svelte';
 	import type { AirdropPopupOptions } from '$constants/airdrops';
-	import { currentUserAddress, userClaimsArray } from '$stores/wallet';
+	import { currentUserAddress, publicClaimsArray } from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import { getAllTokenBalances } from '$utils/contracts/tokenBalances';
 
@@ -32,13 +32,13 @@
 	const updateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
 			hasClaimed =
-				$userClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
-				$userClaimsArray?.length;
+				$publicClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
+				$publicClaimsArray?.length;
 			if (hasClaimed) {
 				claimAmount = 0;
 			} else {
 				claimAmount = 0;
-				$userClaimsArray.map((claimsObj) => {
+				$publicClaimsArray.map((claimsObj) => {
 					if (!claimsObj.user.hasClaimed) {
 						claimAmount += +ethers.utils.formatEther(claimsObj.user.amount);
 					}
@@ -61,7 +61,7 @@
 		}
 	};
 
-	$: updateValues($userClaimsArray);
+	$: updateValues($publicClaimsArray);
 
 	$: pathIsProtected($page.path) && browser && isAuthExpired() && setPopup(AdminLoginPopup);
 

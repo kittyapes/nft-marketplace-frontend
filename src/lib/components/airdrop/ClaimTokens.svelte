@@ -2,44 +2,61 @@
 	import Button from '../Button.svelte';
 	import { fade } from 'svelte/transition';
 	import {
-		airdropEscrowedTokens,
-		merkleContractIsActive,
-		userClaimsArray,
-		userHinataBalance
+		publicAirdropTokens,
+		publicMerkleContractIsActive,
+		publicClaimsArray,
+		userHinataBalance,
+		publicEscrowUnlock,
+		isAirdropClaiming
 	} from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import { claimAirdropTokens } from '$utils/contracts/airdropDistribution';
 	import HorizontailOptionSwitcher from '../HorizontailOptionSwitcher.svelte';
 	import Hint from '../Hint.svelte';
 	import ThemedCross from '$icons/themed-cross.svelte';
+	import daysFromNow from '$utils/daysFromNow';
 
-	let claimAmount = 0;
-	let hasClaimed = false;
-	const updateValues = (claims: ClaimsObject[]) => {
+	let publicClaimAmount = 0;
+	let publicEscrowed = 0;
+	let publicHasClaimed = false;
+	const publicUpdateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
-			hasClaimed =
-				$userClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
-				$userClaimsArray?.length;
-			if (hasClaimed) {
-				claimAmount = 0;
+			publicHasClaimed =
+				$publicClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
+				$publicClaimsArray?.length;
+			if (publicHasClaimed) {
+				publicClaimAmount = 0;
+				publicEscrowed = 0;
 			} else {
-				claimAmount = 0;
-				$userClaimsArray.map((claimsObj) => {
-					if (!claimsObj.user.hasClaimed) {
-						claimAmount += +ethers.utils.formatEther(claimsObj.user.amount);
+				publicClaimAmount = 0;
+				$publicClaimsArray.map((claimsObj) => {
+					if (!claimsObj.user.hasClaimed && claimsObj.nextClaimDuration <= 0) {
+						publicClaimAmount += +ethers.utils.formatEther(claimsObj.user.amount);
+					} else if (!claimsObj.user.hasClaimed && claimsObj.nextClaimDuration > 0) {
+						// Remaining escrowed tokens
+						publicEscrowed += +ethers.utils.formatEther(claimsObj.user.amount);
 					}
 				});
 			}
 		}
 	};
-	$: updateValues($userClaimsArray);
+
+	$: publicUpdateValues($publicClaimsArray);
+	$: parsedPublicEscrowUnlockDate = ((dateObj: {
+		days: number;
+		hours: number;
+		minutes: number;
+		seconds: number;
+	}) => {
+		return dateObj ? `${dateObj.days}D ${dateObj.hours}H ${dateObj.minutes}M` : 'N/A';
+	})(daysFromNow($publicEscrowUnlock));
 
 	const stakeDurationOptions = [{ label: '3MO' }, { label: '1YR' }, { label: '2YR' }];
 
 	let stakeDurationHovered = false;
 </script>
 
-{#if claimAmount > 0 || $userClaimsArray?.length > 0}
+{#if publicClaimAmount > 0 || $userHinataBalance > 0 || publicEscrowed > 0 || $publicClaimsArray?.length > 0}
 	<div
 		class="w-full max-w-5xl m-auto bg-black bg-opacity-5 container border-4 border-black px-4 border-opacity-20 mt-12 py-11 rounded-2xl"
 		in:fade
@@ -56,20 +73,25 @@
 
 			<div class="w-full flex flex-col gap-4 mt-5">
 				<div class="w-96 flex justify-between items-center mx-auto">
-					<span class="font-bold tracking-wider w-3/5">{claimAmount.toFixed(2)} HiNATA TOKENS</span>
+					<span class="font-bold tracking-wider w-3/5"
+						>{publicClaimAmount.toFixed(2)} HiNATA TOKENS</span
+					>
 					<div class="w-36">
 						<Button
 							gradient
 							rounded
 							on:click={() =>
-								!(!$merkleContractIsActive || hasClaimed || claimAmount <= 0) &&
-								claimAirdropTokens()}
-							disabled={!$merkleContractIsActive || hasClaimed || claimAmount <= 0}
+								!(!$publicMerkleContractIsActive || publicHasClaimed || publicClaimAmount <= 0) &&
+								claimAirdropTokens('public')}
+							disabled={$isAirdropClaiming ||
+								!$publicMerkleContractIsActive ||
+								publicHasClaimed ||
+								publicClaimAmount <= 0}
 						>
-							{#if $merkleContractIsActive}
-								{#if hasClaimed}
+							{#if $publicMerkleContractIsActive}
+								{#if publicHasClaimed}
 									Already Claimed
-								{:else if !hasClaimed && claimAmount > 0}
+								{:else if !publicHasClaimed && publicClaimAmount > 0}
 									Claim
 								{:else}
 									Not Eligible
@@ -83,7 +105,7 @@
 
 				<div class="w-96 flex justify-between items-center mx-auto">
 					<span class="font-bold tracking-wider w-3/5"
-						>{$airdropEscrowedTokens.toFixed(2)} HiNATA TOKENS</span
+						>{publicEscrowed.toFixed(2)} HiNATA TOKENS</span
 					>
 					<div class="w-36">
 						<Button
@@ -97,7 +119,9 @@
 
 				<div class="w-96 flex justify-between items-center mx-auto mt-4">
 					<div class="font-semibold text-sm uppercase">Escrow is Unlocked In...</div>
-					<div class="text-xl font-bold w-36">29D, 4H, 17M</div>
+					<div class="text-xl font-bold w-36">
+						{parsedPublicEscrowUnlockDate}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -149,7 +173,7 @@
 			<div class="font-bold uppercase">Your value balance</div>
 
 			<div class="grid grid-cols-2 place-items-center">
-				<div class="font-semibold w-full pl-8">14,203 HiNATA TOKENS</div>
+				<div class="font-semibold w-full pl-8 text-red-400">14,203 HiNATA TOKENS</div>
 				<Button
 					rounded
 					class="bg-gradient-to-r from-gray-300 to-transparent font-semibold text-[#777575]"
@@ -160,7 +184,7 @@
 
 			<div class="grid grid-cols-2 place-items-center mt-4">
 				<div />
-				<div class="uppercase">17.2933921 Waifu</div>
+				<div class="uppercase text-red-400">17.2933921 Waifu</div>
 			</div>
 
 			<p class="mt-8">

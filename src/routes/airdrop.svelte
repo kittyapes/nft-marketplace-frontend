@@ -10,12 +10,12 @@
 
 	$: walletConnected = !!$appSigner;
 
-	// Check For eligibility
+	// // Check For eligibility
 	$: (async (signer) => {
-		return browser && signer && checkClaimEligibility(await signer.getAddress());
+		return browser && signer && checkClaimEligibility('public', await signer.getAddress());
 	})($appSigner);
 
-	$: (async (address) => address && checkClaimEligibility(address))($currentUserAddress);
+	$: (async (address) => address && checkClaimEligibility('public', address))($currentUserAddress);
 </script>
 
 <div class="w-full min-h-full px-6">

@@ -1,13 +1,27 @@
-import { HinataTokenAddress } from '$constants/contractAddresses';
+import {
+	HinataTokenAddress,
+	idoMerkleDistributorLockContract,
+	privateVestingMerkleDistributorLockContract,
+	publicMerkleDistributorLockContract,
+	seedVestingMerkleDistributorLockContract
+} from '$constants/contractAddresses';
 import { getDistributorContract } from '$utils/contracts/generalContractCalls';
 import {
 	appProvider,
 	appSigner,
 	currentUserAddress,
 	externalProvider,
-	merkleContractIsActive,
-	userClaimsArray,
-	web3ModalInstance
+	publicMerkleContractIsActive,
+	privateClaimsArray,
+	seedClaimsArray,
+	publicClaimsArray,
+	web3ModalInstance,
+	publicEscrowUnlock,
+	seedEscrowUnlock,
+	privateEscrowUnlock,
+	seedMerkleContractIsActive,
+	privateMerkleContractIsActive,
+	isAirdropClaiming
 } from '$stores/wallet';
 import { notifyError, notifySuccess } from '$utils/toast';
 import { ethers } from 'ethers';
@@ -19,10 +33,43 @@ export const getUTCSeconds = () => {
 	return UTCseconds;
 };
 
+const getDistributorAddress = (airdropType: 'public' | 'private' | 'ido' | 'seed') => {
+	let distributorAddress = '';
+	switch (airdropType) {
+		case 'public':
+			distributorAddress = publicMerkleDistributorLockContract;
+			break;
+
+		case 'private':
+			distributorAddress = privateVestingMerkleDistributorLockContract;
+			break;
+
+		case 'ido':
+			distributorAddress = idoMerkleDistributorLockContract;
+			break;
+
+		case 'seed':
+			distributorAddress = seedVestingMerkleDistributorLockContract;
+			break;
+
+		default:
+			distributorAddress = publicMerkleDistributorLockContract;
+			break;
+	}
+
+	return distributorAddress;
+};
+
 // Check the time since deploy to determine if the user can claim for the current cliff
-export const checkClaimEligibility = async (userAddress: string) => {
+export const checkClaimEligibility = async (
+	airdropType: 'public' | 'private' | 'ido' | 'seed',
+	userAddress: string
+) => {
 	try {
-		const distributorContract = getDistributorContract(get(appProvider));
+		const distributorAddress = getDistributorAddress(airdropType);
+
+		const distributorContract = getDistributorContract(distributorAddress, get(appProvider));
+
 		// Get total number of merkle trees
 		const numberOfMerkleTrees = +ethers.utils.formatUnits(
 			await distributorContract.treeNumber(),
@@ -43,12 +90,10 @@ export const checkClaimEligibility = async (userAddress: string) => {
 
 		const contractIsActive = blockTimestamp < deployTime + contractActiveDuration;
 
-		merkleContractIsActive.set(contractIsActive);
-
 		// If past, show that claim period has past
 		const claimInfoArr: ClaimsObject[] = [];
 
-		if (contractIsActive) {
+		if (contractIsActive && numberOfMerkleTrees > 0) {
 			// Get their claim times to ensure its already past and then check what the user can claim
 			// Get the cliffs (after this time, one can claim)
 			for (
@@ -71,127 +116,174 @@ export const checkClaimEligibility = async (userAddress: string) => {
 					// Find user in relevant tree
 					const tree = (
 						await import(
-							`../../constants/contracts/merkleDistributor/tree_${currentClaimIndex}.json`
+							`../../constants/contracts/merkleDistributor/${airdropType}/tree_${currentClaimIndex}.json`
 						)
 					).default;
 
-					// Address might have different capitalization
-					const addressArr = Object.keys(tree.claims);
+					if (tree) {
+						// Address might have different capitalization
+						const addressArr = Object.keys(tree.claims);
 
-					let userClaimInfo: { amount: string; index: number; proof: string[] } = null;
-					let merkleUserAddress = userAddress;
+						let userClaimInfo: { amount: string; index: number; proof: string[] } = null;
+						let merkleUserAddress = userAddress;
 
-					addressArr.map((addr) => {
-						if (addr.toLowerCase() === userAddress.toLowerCase()) {
-							userClaimInfo = tree.claims[addr];
-							merkleUserAddress = addr;
-						}
-					});
-
-					if (userClaimInfo) {
-						try {
-							await distributorContract.merkleRoots(currentClaimIndex);
-							const isClaimed = await distributorContract.isClaimed(
-								userClaimInfo.index,
-								currentClaimIndex
-							);
-
-							if (!isClaimed) {
-								claimInfoArr.push({
-									merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
-									user: {
-										...userClaimInfo,
-										rootIndex: currentClaimIndex,
-										address: merkleUserAddress,
-										hasClaimed: false
-									}
-								});
-							} else {
-								// Commented out as there is no need to get the array if we are not claiming tokens
-								claimInfoArr.push({
-									merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
-									user: {
-										...userClaimInfo,
-										rootIndex: currentClaimIndex,
-										address: merkleUserAddress,
-										hasClaimed: true
-									}
-								});
+						addressArr.map((addr) => {
+							if (addr.toLowerCase() === userAddress.toLowerCase()) {
+								userClaimInfo = tree.claims[addr];
+								merkleUserAddress = addr;
 							}
-						} catch (err) {
-							console.log(err);
-							break;
+						});
+
+						if (userClaimInfo) {
+							try {
+								await distributorContract.merkleRoots(currentClaimIndex);
+								const isClaimed = await distributorContract.isClaimed(
+									userClaimInfo.index,
+									currentClaimIndex
+								);
+
+								if (!isClaimed) {
+									claimInfoArr.push({
+										merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
+										user: {
+											...userClaimInfo,
+											rootIndex: currentClaimIndex,
+											address: merkleUserAddress,
+											hasClaimed: false
+										},
+										nextClaimDuration: timeToNextClaimInSeconds * 1000
+									});
+								} else {
+									// Commented out as there is no need to get the array if we are not claiming tokens
+									claimInfoArr.push({
+										merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
+										user: {
+											...userClaimInfo,
+											rootIndex: currentClaimIndex,
+											address: merkleUserAddress,
+											hasClaimed: true
+										},
+										nextClaimDuration: timeToNextClaimInSeconds * 1000
+									});
+								}
+							} catch (err) {
+								break;
+							}
 						}
 					}
 				} else if (timeToNextClaimInSeconds > 0) {
 					// checkClaimEligibility(userAddress) && clearTimeout(reCheckFunc)
-					console.log(timeToNextClaimInSeconds * 1000);
 					reCheckFunc = setTimeout(
-						() => checkClaimEligibility(userAddress) && clearTimeout(reCheckFunc),
+						() => checkClaimEligibility(airdropType, userAddress) && clearTimeout(reCheckFunc),
 						timeToNextClaimInSeconds * 1000
 					);
+
+					if (airdropType === 'public') {
+						publicEscrowUnlock.set(
+							get(publicEscrowUnlock) < timeToNextClaimInSeconds * 1000
+								? timeToNextClaimInSeconds * 1000
+								: get(publicEscrowUnlock)
+						);
+					} else if (airdropType === 'seed') {
+						seedEscrowUnlock.set(
+							get(seedEscrowUnlock) < timeToNextClaimInSeconds * 1000
+								? timeToNextClaimInSeconds * 1000
+								: get(seedEscrowUnlock)
+						);
+					} else if (airdropType === 'private') {
+						privateEscrowUnlock.set(
+							get(privateEscrowUnlock) < timeToNextClaimInSeconds * 1000
+								? timeToNextClaimInSeconds * 1000
+								: get(privateEscrowUnlock)
+						);
+					}
 				} else {
-					console.log('Clear timeout');
 					reCheckFunc && clearTimeout(reCheckFunc);
 				}
 			}
 
 			// Send this data to the svelte store for processing
-			console.log('USER CLAIM INFO: ', claimInfoArr);
-
-			userClaimsArray.set(claimInfoArr);
+			if (airdropType === 'public') {
+				publicClaimsArray.set(claimInfoArr);
+				publicMerkleContractIsActive.set(contractIsActive);
+			} else if (airdropType === 'seed') {
+				seedMerkleContractIsActive.set(contractIsActive);
+				seedClaimsArray.set(claimInfoArr);
+			} else if (airdropType === 'private') {
+				privateMerkleContractIsActive.set(contractIsActive);
+				privateClaimsArray.set(claimInfoArr);
+			}
+			console.log(airdropType, claimInfoArr);
 
 			return claimInfoArr;
 		}
 	} catch (err) {
-		console.log(err);
+		console.log(airdropType, err);
 
-		userClaimsArray.set(null);
+		publicClaimsArray.set(null);
 
 		return null;
 	}
 };
 
 // Claim for the user passing the merkle roots and proof arrays
-export const claimAirdropTokens = async () => {
+export const claimAirdropTokens = async (airdropType: 'public' | 'private' | 'seed') => {
+	isAirdropClaiming.set(true);
+
 	try {
-		const distributorContract = getDistributorContract(get(appSigner));
+		const distributorAddress = getDistributorAddress(airdropType);
+
+		const distributorContract = getDistributorContract(distributorAddress, get(appSigner));
 
 		// We assume the user's index and root index is the same across all merkle trees
 		// params: AccIndex, accAddress, rootIndexes[], amounts[], merkleProofs[]
-		const userIndex = get(userClaimsArray)[0].user.index;
-		const accAddress = get(userClaimsArray)[0].user.address;
-		const rootIndexes = get(userClaimsArray)
-			.filter((claimsObj) => !claimsObj.user.hasClaimed)
-			.map((claimsObj) => claimsObj.user.rootIndex);
-		const amounts = get(userClaimsArray)
-			.filter((claimsObj) => !claimsObj.user.hasClaimed)
-			.map((claimsObj) => claimsObj.user.amount);
-		const merkleProofs = get(userClaimsArray)
-			.filter((claimsObj) => !claimsObj.user.hasClaimed)
-			.map((claimsObj) => claimsObj.user.proof);
 
-		const txt = await distributorContract.claim(
-			userIndex,
-			accAddress,
-			rootIndexes,
-			amounts,
-			merkleProofs
-		);
+		const claimsArray =
+			airdropType === 'public'
+				? get(publicClaimsArray)
+				: airdropType === 'private'
+				? get(privateClaimsArray)
+				: airdropType === 'seed'
+				? get(seedClaimsArray)
+				: [];
 
-		await txt.wait(1);
+		if (claimsArray.length > 0) {
+			const userIndex = claimsArray[0].user.index;
+			const accAddress = claimsArray[0].user.address;
+			const rootIndexes = claimsArray
+				.filter((claimsObj) => !claimsObj.user.hasClaimed)
+				.map((claimsObj) => claimsObj.user.rootIndex);
+			const amounts = claimsArray
+				.filter((claimsObj) => !claimsObj.user.hasClaimed)
+				.map((claimsObj) => claimsObj.user.amount);
+			const merkleProofs = claimsArray
+				.filter((claimsObj) => !claimsObj.user.hasClaimed)
+				.map((claimsObj) => claimsObj.user.proof);
 
-		notifySuccess('Successfully Claimed Airdrop');
+			const txt = await distributorContract.claim(
+				userIndex,
+				accAddress,
+				rootIndexes,
+				amounts,
+				merkleProofs
+			);
 
-		// Allow the user to add token to wallet
-		await addHinataTokenToWallet();
+			await txt.wait(1);
 
-		await checkClaimEligibility(get(currentUserAddress));
+			notifySuccess('Successfully Claimed Airdrop');
 
-		return true;
+			// Allow the user to add token to wallet
+			await addHinataTokenToWallet();
+
+			await checkClaimEligibility(airdropType, get(currentUserAddress));
+
+			isAirdropClaiming.set(false);
+			return true;
+		}
 	} catch (error) {
 		console.log(error);
 		notifyError(error.message || JSON.stringify(error));
+		isAirdropClaiming.set(false);
 		return false;
 	}
 };

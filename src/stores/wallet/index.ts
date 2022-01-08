@@ -10,8 +10,23 @@ export const appSigner = writable<ethers.Signer>(null);
 export const userHinataBalance = writable<number>(0);
 export const currentUserAddress = writable<string>(null);
 
+// Airdrop is claiming
+export const isAirdropClaiming = writable<boolean>(false);
+
 // Airdrop
-export const timeTillNextClaim = writable<number>(0);
-export const airdropEscrowedTokens = writable<number>(0);
-export const userClaimsArray = writable<ClaimsObject[]>(null);
-export const merkleContractIsActive = writable<boolean>(false);
+export const publicEscrowUnlock = writable<number>(0);
+export const publicAirdropTokens = writable<number>(0);
+export const publicClaimsArray = writable<ClaimsObject[]>(null);
+export const publicMerkleContractIsActive = writable<boolean>(false);
+
+// Seed
+export const seedEscrowUnlock = writable<number>(0);
+export const seedAirdropTokens = writable<number>(0);
+export const seedClaimsArray = writable<ClaimsObject[]>(null);
+export const seedMerkleContractIsActive = writable<boolean>(false);
+
+// Private
+export const privateEscrowUnlock = writable<number>(0);
+export const privateAirdropTokens = writable<number>(0);
+export const privateClaimsArray = writable<ClaimsObject[]>(null);
+export const privateMerkleContractIsActive = writable<boolean>(false);
