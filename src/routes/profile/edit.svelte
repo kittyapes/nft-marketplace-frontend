@@ -63,8 +63,10 @@
 				bio: data.bio,
 				instagram: data.instagram,
 				facebook: data.facebook,
-				twitter: data.twitter
-			} as EditableProfileData;
+				twitter: data.twitter,
+				imageUrl: data.imageUrl,
+				coverUrl: data.coverUrl
+			};
 
 			fetchedDataStore.set(cloneDeep(localData));
 			localDataStore.set(localData);
@@ -162,7 +164,10 @@
 				/> -->
 
 				<!-- <div>Upload a <br /> profile image</div> -->
-				<!-- <DragDropImage bind:blob={$localDataStore.profileImage} /> -->
+				<!-- <DragDropImage
+					bind:blob={$localDataStore.profileImage}
+					currentImgUrl={$fetchedDataStore.coverUrl}
+				/> -->
 
 				<!-- <div>Upload a <br /> background image</div>
 				<DragDropImage /> -->
