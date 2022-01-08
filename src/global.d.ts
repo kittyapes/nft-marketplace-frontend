@@ -16,6 +16,7 @@ interface ClaimsObject {
 		address: string;
 		hasClaimed: boolean;
 	};
+	nextClaimDuration: number; // In Milliseconds
 }
 
 interface NftData {

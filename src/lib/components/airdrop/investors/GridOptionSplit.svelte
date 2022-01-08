@@ -2,17 +2,16 @@
 	import Button from '$lib/components/Button.svelte';
 
 	export let title: string,
-		hinataValue: string,
 		nextEscrowUnlock: string,
-		claimTokensValue: string,
-		escrowTokensValue: string;
+		claimTokensValue: number,
+		escrowTokensValue: number;
 </script>
 
 <div class="flex flex-row border-b-2 border-color-black border-opacity-10">
 	<!-- Left Box -->
 	<div class="w-2/5 p-14 text-color-black text-2xl border-r-2 border-color-black border-opacity-10">
 		<div class="mt-6">{title}</div>
-		<div class="ml-6 font-bold">{hinataValue} HiNATA</div>
+		<div class="ml-6 font-bold">{claimTokensValue + escrowTokensValue} HiNATA</div>
 	</div>
 
 	<!-- Rright box -->
