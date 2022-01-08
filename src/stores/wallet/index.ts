@@ -10,6 +10,9 @@ export const appSigner = writable<ethers.Signer>(null);
 export const userHinataBalance = writable<number>(0);
 export const currentUserAddress = writable<string>(null);
 
+// Airdrop is claiming
+export const isAirdropClaiming = writable<boolean>(false);
+
 // Airdrop
 export const publicEscrowUnlock = writable<number>(0);
 export const publicAirdropTokens = writable<number>(0);

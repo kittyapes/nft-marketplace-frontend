@@ -1,10 +1,15 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
+	import { isAirdropClaiming } from '$stores/wallet';
+	import { claimAirdropTokens } from '$utils/contracts/airdropDistribution';
 
 	export let title: string,
 		nextEscrowUnlock: string,
 		claimTokensValue: number,
-		escrowTokensValue: number;
+		escrowTokensValue: number,
+		airdropType: 'public' | 'seed' | 'private',
+		airdropHasClaimed: boolean,
+		contractActive: boolean;
 </script>
 
 <div class="flex flex-row border-b-2 border-color-black border-opacity-10">
@@ -21,11 +26,25 @@
 			<div class="font-bold text-xl self self-center">{nextEscrowUnlock}</div>
 
 			<div class="uppercase font-bold self-center">{claimTokensValue} HINATA TOKENS</div>
-			<div><Button gradient rounded>CLAIM</Button></div>
+			<div>
+				<Button
+					gradient
+					rounded
+					on:click={() =>
+						!(!contractActive || airdropHasClaimed || claimTokensValue <= 0) &&
+						claimAirdropTokens(airdropType)}
+					disabled={$isAirdropClaiming ||
+						!contractActive ||
+						airdropHasClaimed ||
+						claimTokensValue <= 0}>CLAIM</Button
+				>
+			</div>
 
 			<div class="uppercase font-semibold self-center">{escrowTokensValue} HINATA TOKENS</div>
 			<div>
-				<Button rounded class="bg-gradient-to-r from-gray-300 to-transparent">Escrowed</Button>
+				<Button rounded class="bg-gradient-to-r from-gray-300 to-transparent" disabled
+					>Escrowed</Button
+				>
 			</div>
 		</div>
 	</div>

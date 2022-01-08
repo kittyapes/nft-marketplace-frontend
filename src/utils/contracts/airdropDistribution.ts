@@ -20,7 +20,8 @@ import {
 	seedEscrowUnlock,
 	privateEscrowUnlock,
 	seedMerkleContractIsActive,
-	privateMerkleContractIsActive
+	privateMerkleContractIsActive,
+	isAirdropClaiming
 } from '$stores/wallet';
 import { notifyError, notifySuccess } from '$utils/toast';
 import { ethers } from 'ethers';
@@ -119,54 +120,55 @@ export const checkClaimEligibility = async (
 						)
 					).default;
 
-					// Address might have different capitalization
-					const addressArr = Object.keys(tree.claims);
+					if (tree) {
+						// Address might have different capitalization
+						const addressArr = Object.keys(tree.claims);
 
-					let userClaimInfo: { amount: string; index: number; proof: string[] } = null;
-					let merkleUserAddress = userAddress;
+						let userClaimInfo: { amount: string; index: number; proof: string[] } = null;
+						let merkleUserAddress = userAddress;
 
-					addressArr.map((addr) => {
-						if (addr.toLowerCase() === userAddress.toLowerCase()) {
-							userClaimInfo = tree.claims[addr];
-							merkleUserAddress = addr;
-						}
-					});
-
-					if (userClaimInfo) {
-						try {
-							await distributorContract.merkleRoots(currentClaimIndex);
-							const isClaimed = await distributorContract.isClaimed(
-								userClaimInfo.index,
-								currentClaimIndex
-							);
-
-							if (!isClaimed) {
-								claimInfoArr.push({
-									merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
-									user: {
-										...userClaimInfo,
-										rootIndex: currentClaimIndex,
-										address: merkleUserAddress,
-										hasClaimed: false
-									},
-									nextClaimDuration: timeToNextClaimInSeconds * 1000
-								});
-							} else {
-								// Commented out as there is no need to get the array if we are not claiming tokens
-								claimInfoArr.push({
-									merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
-									user: {
-										...userClaimInfo,
-										rootIndex: currentClaimIndex,
-										address: merkleUserAddress,
-										hasClaimed: true
-									},
-									nextClaimDuration: timeToNextClaimInSeconds * 1000
-								});
+						addressArr.map((addr) => {
+							if (addr.toLowerCase() === userAddress.toLowerCase()) {
+								userClaimInfo = tree.claims[addr];
+								merkleUserAddress = addr;
 							}
-						} catch (err) {
-							console.log(err);
-							break;
+						});
+
+						if (userClaimInfo) {
+							try {
+								await distributorContract.merkleRoots(currentClaimIndex);
+								const isClaimed = await distributorContract.isClaimed(
+									userClaimInfo.index,
+									currentClaimIndex
+								);
+
+								if (!isClaimed) {
+									claimInfoArr.push({
+										merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
+										user: {
+											...userClaimInfo,
+											rootIndex: currentClaimIndex,
+											address: merkleUserAddress,
+											hasClaimed: false
+										},
+										nextClaimDuration: timeToNextClaimInSeconds * 1000
+									});
+								} else {
+									// Commented out as there is no need to get the array if we are not claiming tokens
+									claimInfoArr.push({
+										merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
+										user: {
+											...userClaimInfo,
+											rootIndex: currentClaimIndex,
+											address: merkleUserAddress,
+											hasClaimed: true
+										},
+										nextClaimDuration: timeToNextClaimInSeconds * 1000
+									});
+								}
+							} catch (err) {
+								break;
+							}
 						}
 					}
 				} else if (timeToNextClaimInSeconds > 0) {
@@ -177,24 +179,18 @@ export const checkClaimEligibility = async (
 					);
 
 					if (airdropType === 'public') {
-						publicMerkleContractIsActive.set(contractIsActive);
-						publicClaimsArray.set(claimInfoArr);
 						publicEscrowUnlock.set(
 							get(publicEscrowUnlock) < timeToNextClaimInSeconds * 1000
 								? timeToNextClaimInSeconds * 1000
 								: get(publicEscrowUnlock)
 						);
 					} else if (airdropType === 'seed') {
-						seedMerkleContractIsActive.set(contractIsActive);
-						seedClaimsArray.set(claimInfoArr);
 						seedEscrowUnlock.set(
 							get(seedEscrowUnlock) < timeToNextClaimInSeconds * 1000
 								? timeToNextClaimInSeconds * 1000
 								: get(seedEscrowUnlock)
 						);
 					} else if (airdropType === 'private') {
-						privateMerkleContractIsActive.set(contractIsActive);
-						privateClaimsArray.set(claimInfoArr);
 						privateEscrowUnlock.set(
 							get(privateEscrowUnlock) < timeToNextClaimInSeconds * 1000
 								? timeToNextClaimInSeconds * 1000
@@ -209,17 +205,20 @@ export const checkClaimEligibility = async (
 			// Send this data to the svelte store for processing
 			if (airdropType === 'public') {
 				publicClaimsArray.set(claimInfoArr);
+				publicMerkleContractIsActive.set(contractIsActive);
 			} else if (airdropType === 'seed') {
+				seedMerkleContractIsActive.set(contractIsActive);
 				seedClaimsArray.set(claimInfoArr);
 			} else if (airdropType === 'private') {
+				privateMerkleContractIsActive.set(contractIsActive);
 				privateClaimsArray.set(claimInfoArr);
 			}
-			console.log(claimInfoArr);
+			console.log(airdropType, claimInfoArr);
 
 			return claimInfoArr;
 		}
 	} catch (err) {
-		console.log(err);
+		console.log(airdropType, err);
 
 		publicClaimsArray.set(null);
 
@@ -228,7 +227,9 @@ export const checkClaimEligibility = async (
 };
 
 // Claim for the user passing the merkle roots and proof arrays
-export const claimAirdropTokens = async (airdropType: 'public' | 'private' | 'ido' | 'seed') => {
+export const claimAirdropTokens = async (airdropType: 'public' | 'private' | 'seed') => {
+	isAirdropClaiming.set(true);
+
 	try {
 		const distributorAddress = getDistributorAddress(airdropType);
 
@@ -236,39 +237,53 @@ export const claimAirdropTokens = async (airdropType: 'public' | 'private' | 'id
 
 		// We assume the user's index and root index is the same across all merkle trees
 		// params: AccIndex, accAddress, rootIndexes[], amounts[], merkleProofs[]
-		const userIndex = get(publicClaimsArray)[0].user.index;
-		const accAddress = get(publicClaimsArray)[0].user.address;
-		const rootIndexes = get(publicClaimsArray)
-			.filter((claimsObj) => !claimsObj.user.hasClaimed)
-			.map((claimsObj) => claimsObj.user.rootIndex);
-		const amounts = get(publicClaimsArray)
-			.filter((claimsObj) => !claimsObj.user.hasClaimed)
-			.map((claimsObj) => claimsObj.user.amount);
-		const merkleProofs = get(publicClaimsArray)
-			.filter((claimsObj) => !claimsObj.user.hasClaimed)
-			.map((claimsObj) => claimsObj.user.proof);
 
-		const txt = await distributorContract.claim(
-			userIndex,
-			accAddress,
-			rootIndexes,
-			amounts,
-			merkleProofs
-		);
+		const claimsArray =
+			airdropType === 'public'
+				? get(publicClaimsArray)
+				: airdropType === 'private'
+				? get(privateClaimsArray)
+				: airdropType === 'seed'
+				? get(seedClaimsArray)
+				: [];
 
-		await txt.wait(1);
+		if (claimsArray.length > 0) {
+			const userIndex = claimsArray[0].user.index;
+			const accAddress = claimsArray[0].user.address;
+			const rootIndexes = claimsArray
+				.filter((claimsObj) => !claimsObj.user.hasClaimed)
+				.map((claimsObj) => claimsObj.user.rootIndex);
+			const amounts = claimsArray
+				.filter((claimsObj) => !claimsObj.user.hasClaimed)
+				.map((claimsObj) => claimsObj.user.amount);
+			const merkleProofs = claimsArray
+				.filter((claimsObj) => !claimsObj.user.hasClaimed)
+				.map((claimsObj) => claimsObj.user.proof);
 
-		notifySuccess('Successfully Claimed Airdrop');
+			const txt = await distributorContract.claim(
+				userIndex,
+				accAddress,
+				rootIndexes,
+				amounts,
+				merkleProofs
+			);
 
-		// Allow the user to add token to wallet
-		await addHinataTokenToWallet();
+			await txt.wait(1);
 
-		await checkClaimEligibility(airdropType, get(currentUserAddress));
+			notifySuccess('Successfully Claimed Airdrop');
 
-		return true;
+			// Allow the user to add token to wallet
+			await addHinataTokenToWallet();
+
+			await checkClaimEligibility(airdropType, get(currentUserAddress));
+
+			isAirdropClaiming.set(false);
+			return true;
+		}
 	} catch (error) {
 		console.log(error);
 		notifyError(error.message || JSON.stringify(error));
+		isAirdropClaiming.set(false);
 		return false;
 	}
 };

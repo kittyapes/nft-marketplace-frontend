@@ -6,7 +6,8 @@
 		publicMerkleContractIsActive,
 		publicClaimsArray,
 		userHinataBalance,
-		publicEscrowUnlock
+		publicEscrowUnlock,
+		isAirdropClaiming
 	} from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import { claimAirdropTokens } from '$utils/contracts/airdropDistribution';
@@ -47,7 +48,7 @@
 		minutes: number;
 		seconds: number;
 	}) => {
-		return `${dateObj.days}D ${dateObj.hours}H ${dateObj.minutes}M`;
+		return dateObj ? `${dateObj.days}D ${dateObj.hours}H ${dateObj.minutes}M` : 'N/A';
 	})(daysFromNow($publicEscrowUnlock));
 
 	const stakeDurationOptions = [{ label: '3MO' }, { label: '1YR' }, { label: '2YR' }];
@@ -55,7 +56,7 @@
 	let stakeDurationHovered = false;
 </script>
 
-{#if publicClaimAmount > 0 || $publicClaimsArray?.length > 0}
+{#if publicClaimAmount > 0 || $userHinataBalance > 0 || publicEscrowed > 0 || $publicClaimsArray?.length > 0}
 	<div
 		class="w-full max-w-5xl m-auto bg-black bg-opacity-5 container border-4 border-black px-4 border-opacity-20 mt-12 py-11 rounded-2xl"
 		in:fade
@@ -82,7 +83,8 @@
 							on:click={() =>
 								!(!$publicMerkleContractIsActive || publicHasClaimed || publicClaimAmount <= 0) &&
 								claimAirdropTokens('public')}
-							disabled={!$publicMerkleContractIsActive ||
+							disabled={$isAirdropClaiming ||
+								!$publicMerkleContractIsActive ||
 								publicHasClaimed ||
 								publicClaimAmount <= 0}
 						>
@@ -103,7 +105,7 @@
 
 				<div class="w-96 flex justify-between items-center mx-auto">
 					<span class="font-bold tracking-wider w-3/5"
-						>{$publicAirdropTokens.toFixed(2)} HiNATA TOKENS</span
+						>{publicEscrowed.toFixed(2)} HiNATA TOKENS</span
 					>
 					<div class="w-36">
 						<Button
@@ -117,7 +119,7 @@
 
 				<div class="w-96 flex justify-between items-center mx-auto mt-4">
 					<div class="font-semibold text-sm uppercase">Escrow is Unlocked In...</div>
-					<div class="text-xl font-bold w-36 text-red-400">
+					<div class="text-xl font-bold w-36">
 						{parsedPublicEscrowUnlockDate}
 					</div>
 				</div>

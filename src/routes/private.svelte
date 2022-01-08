@@ -15,7 +15,10 @@
 		publicEscrowUnlock,
 		appSigner,
 		currentUserAddress,
-		userHinataBalance
+		userHinataBalance,
+		seedMerkleContractIsActive,
+		privateMerkleContractIsActive,
+		publicMerkleContractIsActive
 	} from '$stores/wallet';
 	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
 	import daysFromNow from '$utils/daysFromNow';
@@ -137,27 +140,36 @@
 			title: 'Seed',
 			nextEscrowUnlock: parsedSeedEscrowUnlockDate,
 			claimTokensValue: seedClaimAmt,
-			escrowTokensValue: seedEscrowed
+			escrowTokensValue: seedEscrowed,
+			airdropType: 'seed',
+			airdropHasClaimed: seedHasClaimed,
+			contractActive: $seedMerkleContractIsActive
 		},
 		{
 			title: 'Private',
 			nextEscrowUnlock: parsedPrivateEscrowUnlockDate,
 			claimTokensValue: privateClaimAmt,
-			escrowTokensValue: privateEscrowed
+			escrowTokensValue: privateEscrowed,
+			airdropType: 'private',
+			airdropHasClaimed: privateHasClaimed,
+			contractActive: $privateMerkleContractIsActive
 		},
 		{
 			title: 'Public',
 			nextEscrowUnlock: parsedPublicEscrowUnlockDate,
 			claimTokensValue: publicClaimAmount,
-			escrowTokensValue: publicEscrowed
+			escrowTokensValue: publicEscrowed,
+			airdropType: 'public',
+			airdropHasClaimed: publicHasClaimed,
+			contractActive: $publicMerkleContractIsActive
 		}
 	];
 
 	// Check For eligibility
 	// Fetch for all
 	const fetchAll = (userAddress: string) => {
-		['public', 'seed', 'private'].map((_item) => {
-			checkClaimEligibility('public', userAddress);
+		['seed', 'public', 'private'].map((item: 'public' | 'seed' | 'private') => {
+			checkClaimEligibility(item, userAddress);
 		});
 	};
 
