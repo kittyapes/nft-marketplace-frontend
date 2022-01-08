@@ -7,12 +7,13 @@
 	import Button from '$lib/components/Button.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
+	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
-	import { fetchCreatedNfts } from '$utils/api/fetchCreatedNfts';
 	import { isAdmin } from '$utils/api/login';
 	import { fetchProfileData, ProfileData } from '$utils/api/profile';
+	import { getFacebookUrl, getInstagramUrl, getTwitterUrl } from '$utils/profile';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -42,6 +43,14 @@
 	const emptyListPromise = new Promise<NftData[]>((resolve) => {
 		resolve([]);
 	});
+
+	$: socialLinks = {
+		twitter: getTwitterUrl($localProfileData?.twitter),
+		facebook: getFacebookUrl($localProfileData?.facebook),
+		instagram: getInstagramUrl($localProfileData?.instagram)
+	};
+
+	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
 </script>
 
 <div class="h-72 bg-color-gray-light" />
@@ -129,10 +138,15 @@
 			<div class="font-bold text-color-gray-dark whitespace-nowrap">SOCIAL LINKS</div>
 
 			<div class="flex space-x-2 mt-4">
-				<div class="font-bold whitespace-nowrap opacity-50">No social links.</div>
-				<!-- <SocialButton social="twitter" href="#" />
-				<SocialButton social="facebook" href="#" />
-				<SocialButton social="instagram" href="#" /> -->
+				{#if areSocialLinks}
+					{#each Object.entries(socialLinks) as [key, link]}
+						{#if link}
+							<SocialButton social={key} href={link} />
+						{/if}
+					{/each}
+				{:else}
+					<div class="font-bold whitespace-nowrap opacity-50">No social links.</div>
+				{/if}
 			</div>
 		</div>
 	</div>

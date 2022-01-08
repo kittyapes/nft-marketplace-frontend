@@ -3,7 +3,8 @@ import { appSigner } from '$stores/wallet';
 import axios from 'axios';
 import { get } from 'svelte/store';
 import { getAxiosConfig } from '.';
-import sha512 from 'hash.js/lib/hash/sha/512';
+
+const optionalProfileFields = ['twitter', 'instagram', 'facebook'];
 
 export interface LoginHistoryEntry {
 	address: string;
@@ -32,6 +33,11 @@ export interface ProfileData {
 export async function fetchProfileData(address: string) {
 	const res = await axios.get(api + '/v1/accounts/' + address);
 	const data = res.data.data as ProfileData;
+
+	// We are using _ to set a "not present" value for optional fields
+	for (let key of optionalProfileFields) {
+		data[key] = data[key] !== '_' ? data[key] : null;
+	}
 
 	return data;
 }
@@ -85,6 +91,14 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	// .map((b) => b.toString(16).padStart(2, '0'))
 	// .join('')
 	// .substring(8);
+
+	// We are setting fields which do not have a value to _, because
+	// if we wanted to remove a value for a field and set it to "",
+	// the backend would ignore it. We are then handling this and not displaying
+	// the fields when the value for them is _.
+	for (let key of optionalProfileFields) {
+		data[key] = data[key] || '_';
+	}
 
 	const message =
 		data.email + data.username + requestTime + data.facebook + data.instagram + data.twitter;
