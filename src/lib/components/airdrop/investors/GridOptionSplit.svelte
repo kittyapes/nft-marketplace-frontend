@@ -16,7 +16,9 @@
 	<!-- Left Box -->
 	<div class="w-2/5 p-14 text-color-black text-2xl border-r-2 border-color-black border-opacity-10">
 		<div class="mt-6">{title}</div>
-		<div class="ml-6 font-bold">{claimTokensValue + escrowTokensValue} HiNATA</div>
+		<div class="ml-6 font-bold">
+			{(+(claimTokensValue + escrowTokensValue).toFixed(2)).noExponents()} HiNATA
+		</div>
 	</div>
 
 	<!-- Rright box -->
@@ -25,7 +27,9 @@
 			<div class="uppercase font-semibold text-xs self-center">Next escrow unlock is...</div>
 			<div class="font-bold text-xl self self-center">{nextEscrowUnlock}</div>
 
-			<div class="uppercase font-bold self-center">{claimTokensValue} HINATA TOKENS</div>
+			<div class="uppercase font-bold self-center">
+				{(+claimTokensValue.toFixed(2)).noExponents()} HINATA TOKENS
+			</div>
 			<div>
 				<Button
 					gradient
@@ -40,7 +44,9 @@
 				>
 			</div>
 
-			<div class="uppercase font-semibold self-center">{escrowTokensValue} HINATA TOKENS</div>
+			<div class="uppercase font-semibold self-center">
+				{(+escrowTokensValue.toFixed(2)).noExponents()} HINATA TOKENS
+			</div>
 			<div>
 				<Button rounded class="bg-gradient-to-r from-gray-300 to-transparent" disabled
 					>Escrowed</Button

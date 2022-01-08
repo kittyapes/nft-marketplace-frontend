@@ -234,10 +234,13 @@
 		{/each}
 
 		<!-- Wallet staking section -->
-		<GridOptionContainer title="Wallet" hinataValue={$userHinataBalance.toFixed(2)}>
+		<GridOptionContainer
+			title="Wallet"
+			hinataValue={(+$userHinataBalance.toFixed(2)).noExponents()}
+		>
 			<div class="grid grid-cols-2 place-items-center gap-x-14">
 				<div style="font-weight: 450;" class="w-full pl-4">
-					{$userHinataBalance.toFixed(2)} HINATA TOKENS
+					{(+$userHinataBalance.toFixed(2)).noExponents()} HINATA TOKENS
 				</div>
 				<Button gradient rounded>Stake</Button>
 			</div>
