@@ -16,6 +16,13 @@
 	import { goto } from '$app/navigation';
 	import { cloneDeep } from 'lodash-es';
 
+	const progressbarPoints = [
+		{ at: 25, label: 'Email' },
+		{ at: 50, label: 'Bio' },
+		{ at: 75, label: 'Profile Image' },
+		{ at: 100, label: 'Background Image', dot: false }
+	];
+
 	const fetchedDataStore = writable<EditableProfileData>(null);
 	const localDataStore = writable<EditableProfileData>(null);
 
@@ -108,7 +115,9 @@
 				Profile completion progress: <span class="gradient-text">{profileCompletionProgress}%</span>
 			</div>
 
-			<Progressbar class="mt-2" value={profileCompletionProgress} />
+			<div class="w-4/5 mx-auto">
+				<Progressbar class="mt-2" value={profileCompletionProgress} points={progressbarPoints} />
+			</div>
 
 			{#if profileCompletionProgress === 100}
 				<div class="px-16 mt-4">
@@ -123,10 +132,12 @@
 					</button>
 				</div>
 			{:else}
-				<div class="font-bold gradient-text text-right mt-1 brightness-[90%]">Free NFT</div>
+				<div class="w-4/5 mx-auto flex justify-end">
+					<div class="font-bold gradient-text -translate-y-12">Free NFT</div>
+				</div>
 			{/if}
 
-			<div id="form-container" class="grid grid-cols-2 gap-y-6 mt-8">
+			<div id="form-container" class="grid grid-cols-2 gap-y-6 mt-12">
 				<div>
 					<div>Add your username</div>
 					<div class="text-sm -mt-1">(Mandatory)</div>
@@ -163,11 +174,11 @@
 					bind:value={$localDataStore.bio}
 				/> -->
 
-				<!-- <div>Upload a <br /> profile image</div> -->
-				<!-- <DragDropImage
+				<div>Upload a <br /> profile image</div>
+				<DragDropImage
 					bind:blob={$localDataStore.profileImage}
 					currentImgUrl={$fetchedDataStore.coverUrl}
-				/> -->
+				/>
 
 				<!-- <div>Upload a <br /> background image</div>
 				<DragDropImage /> -->
