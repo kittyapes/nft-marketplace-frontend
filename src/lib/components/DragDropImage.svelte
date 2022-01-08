@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/env';
+	import { acceptedImages } from '$constants';
 	import { fade } from 'svelte/transition';
 
 	export let text = 'Drag and drop an image here, or click to browse';
@@ -65,7 +66,7 @@
 	{/if}
 </button>
 
-<input type="file" class="hidden" bind:this={fileInput} bind:files />
+<input type="file" accept={acceptedImages} class="hidden" bind:this={fileInput} bind:files />
 
 <style>
 	#container {
