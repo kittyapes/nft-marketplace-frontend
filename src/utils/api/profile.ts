@@ -63,6 +63,8 @@ export interface EditableProfileData {
 	instagram: string;
 	facebook: string;
 	twitter: string;
+	imageUrl: string;
+	coverUrl: string;
 }
 
 function readFileAsync(file) {
