@@ -18,6 +18,7 @@ export interface ProfileData {
 	createdAt: string;
 	email: string;
 	imageUrl: string;
+	coverUrl: string;
 	loginHistories: LoginHistoryEntry[];
 	nickname: string;
 	status: 'USER' | 'AWAITING_VERIFIED' | 'VERIFIED' | 'AWAITING_INACTIVATED';

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Copy from '$icons/copy.svelte';
@@ -54,7 +53,11 @@
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
 </script>
 
-<div class="h-72 bg-color-gray-light" />
+<div class="h-72 bg-color-gray-light">
+	{#if $localProfileData?.coverUrl}
+		<img src={$localProfileData?.coverUrl} alt="User cover." class="h-full w-full object-cover" />
+	{/if}
+</div>
 
 <div class="mx-auto px-32 relative">
 	<div
