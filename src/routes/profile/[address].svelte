@@ -120,7 +120,7 @@
 				{#if $localProfileData?.bio}
 					{$localProfileData?.bio}
 				{:else}
-					<span class="opacity-50 font-bold">No bio</span>
+					<span class="opacity-50 font-bold">No bio.</span>
 				{/if}
 			</p>
 		</div>
