@@ -30,3 +30,6 @@ export const privateEscrowUnlock = writable<number>(0);
 export const privateAirdropTokens = writable<number>(0);
 export const privateClaimsArray = writable<ClaimsObject[]>(null);
 export const privateMerkleContractIsActive = writable<boolean>(false);
+
+// Welcome NFT
+export const welcomeNftClaimed = writable(true);

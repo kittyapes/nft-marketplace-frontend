@@ -9,13 +9,15 @@
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import { writable } from 'svelte/store';
 	import { EditableProfileData, ProfileData, updateProfile } from '$utils/api/profile';
-	import { currentUserAddress } from '$stores/wallet';
+	import { currentUserAddress, welcomeNftClaimed } from '$stores/wallet';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { browser } from '$app/env';
 	import Loader from '$icons/loader.svelte';
 	import { goto } from '$app/navigation';
 	import { cloneDeep } from 'lodash-es';
 	import { profileData, refreshProfileData } from '$stores/user';
+	import { setPopup } from '$utils/popup';
+	import FreeNftPopup from '$lib/components/profile/FreeNFTPopup.svelte';
 
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
@@ -107,6 +109,14 @@
 				goto('/');
 			}
 		}, 3000);
+
+	async function handleNftClaim() {
+		if (dataChanged) {
+			await onSave();
+		}
+
+		setPopup(FreeNftPopup);
+	}
 </script>
 
 {#if $localDataStore}
@@ -141,10 +151,11 @@
 						class="transition-btn
 						bg-gradient-to-r from-color-purple to-color-blue
 						text-white rounded-3xl font-semibold uppercase text-lg w-full
-						py-6 block"
-						on:click={onSave}
+						py-6 block disabled:opacity-50"
+						on:click={handleNftClaim}
 						in:fade|local={{ delay: 300 }}
 						out:fade|local
+						disabled={isSaving || $welcomeNftClaimed}
 					>
 						Claim your NFT
 					</button>

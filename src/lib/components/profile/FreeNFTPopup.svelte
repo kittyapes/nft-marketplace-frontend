@@ -18,22 +18,25 @@
 	}
 
 	let minting = false;
+	let minted = false;
 
 	async function onMint() {
 		minting = true;
 
 		const nftData = data;
 
-		// Web3 stuff here
-
 		try {
-			// await ....
+			// Web3 stuff here
+			// await .... mint(nftData. ...)
+			// And please set welcomeNftClaimed (in stores/wallet)
+			// Update this store walue on wallet connect.
 		} catch (err) {
 			console.error(err);
 			return notifyError('Failed minting your NFT.');
 		}
 
 		minting = false;
+		minted = true;
 		notifySuccess('Successfully minted your NFT!');
 	}
 
@@ -88,7 +91,7 @@
 			class="bg-gradient-to-r from-color-purple to-color-blue w-full py-4 rounded-3xl text-white uppercase mt-8
             transition-btn disabled:opacity-30"
 			on:click={onMint}
-			disabled={minting}
+			disabled={minting || minted}
 		>
 			Mint Now
 		</button>
