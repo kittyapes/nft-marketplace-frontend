@@ -131,25 +131,34 @@
 				<Progressbar class="mt-2" value={profileCompletionProgress} points={progressbarPoints} />
 			</div>
 
+			<div class="relative w-full">
+				{#if profileCompletionProgress !== 100}
+					<div
+						class="absolute font-bold gradient-text -translate-y-12 translate-x-[-100%] right-0"
+						transition:fade|local
+					>
+						Free NFT
+					</div>
+				{/if}
+			</div>
+
 			{#if profileCompletionProgress === 100}
-				<div class="px-16 mt-16">
+				<div class="px-16 mt-16" in:slide|local out:slide|local={{ delay: 300 }}>
 					<button
 						class="transition-btn
 						bg-gradient-to-r from-color-purple to-color-blue
 						text-white rounded-3xl font-semibold uppercase text-lg w-full
 						py-6 block"
 						on:click={onSave}
+						in:fade|local={{ delay: 300 }}
+						out:fade|local
 					>
 						Claim your NFT
 					</button>
 				</div>
-			{:else}
-				<div class="w-4/5 mx-auto flex justify-end">
-					<div class="font-bold gradient-text -translate-y-12">Free NFT</div>
-				</div>
 			{/if}
 
-			<div id="form-container" class="grid gap-y-6 mt-12">
+			<div id="form-container" class="grid gap-y-6 mt-16">
 				<div class="grid grid-cols-2">
 					<div>
 						<div class="input-label">Add your username</div>
