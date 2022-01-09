@@ -88,6 +88,8 @@ export const checkClaimEligibility = async (
 			(await get(appProvider).getBlock(await get(appProvider).getBlockNumber()))?.timestamp ||
 			getUTCSeconds();
 
+		console.log(`CURRENT BLOCK TIMESTAMP: ${blockTimestamp}`);
+
 		const contractIsActive = blockTimestamp < deployTime + contractActiveDuration;
 
 		// If past, show that claim period has past
@@ -111,67 +113,68 @@ export const checkClaimEligibility = async (
 
 				const treeIsClaimable = blockTimestamp >= deployTime + cliffTime;
 
-				if (treeIsClaimable) {
-					// If not, check the amounts the user can claim from the merkle trees
-					// Find user in relevant tree
-					const tree = (
-						await import(
-							`../../constants/contracts/merkleDistributor/${airdropType}/tree_${currentClaimIndex}.json`
-						)
-					).default;
+				// if (treeIsClaimable) {
+				// If not, check the amounts the user can claim from the merkle trees
+				// Find user in relevant tree
+				const tree = (
+					await import(
+						`../../constants/contracts/merkleDistributor/${airdropType}/tree_${currentClaimIndex}.json`
+					)
+				).default;
 
-					if (tree) {
-						// Address might have different capitalization
-						const addressArr = Object.keys(tree.claims);
+				if (tree) {
+					// Address might have different capitalization
+					const addressArr = Object.keys(tree.claims);
 
-						let userClaimInfo: { amount: string; index: number; proof: string[] } = null;
-						let merkleUserAddress = userAddress;
+					let userClaimInfo: { amount: string; index: number; proof: string[] } = null;
+					let merkleUserAddress = userAddress;
 
-						addressArr.map((addr) => {
-							if (addr.toLowerCase() === userAddress.toLowerCase()) {
-								userClaimInfo = tree.claims[addr];
-								merkleUserAddress = addr;
+					addressArr.map((addr) => {
+						if (addr.toLowerCase() === userAddress.toLowerCase()) {
+							userClaimInfo = tree.claims[addr];
+							merkleUserAddress = addr;
+						}
+					});
+
+					if (userClaimInfo) {
+						try {
+							await distributorContract.merkleRoots(currentClaimIndex);
+							const isClaimed = await distributorContract.isClaimed(
+								userClaimInfo.index,
+								currentClaimIndex
+							);
+
+							if (!isClaimed) {
+								claimInfoArr.push({
+									merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
+									user: {
+										...userClaimInfo,
+										rootIndex: currentClaimIndex,
+										address: merkleUserAddress,
+										hasClaimed: false
+									},
+									nextClaimDuration: timeToNextClaimInSeconds * 1000
+								});
+							} else {
+								// Commented out as there is no need to get the array if we are not claiming tokens
+								claimInfoArr.push({
+									merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
+									user: {
+										...userClaimInfo,
+										rootIndex: currentClaimIndex,
+										address: merkleUserAddress,
+										hasClaimed: true
+									},
+									nextClaimDuration: timeToNextClaimInSeconds * 1000
+								});
 							}
-						});
-
-						if (userClaimInfo) {
-							try {
-								await distributorContract.merkleRoots(currentClaimIndex);
-								const isClaimed = await distributorContract.isClaimed(
-									userClaimInfo.index,
-									currentClaimIndex
-								);
-
-								if (!isClaimed) {
-									claimInfoArr.push({
-										merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
-										user: {
-											...userClaimInfo,
-											rootIndex: currentClaimIndex,
-											address: merkleUserAddress,
-											hasClaimed: false
-										},
-										nextClaimDuration: timeToNextClaimInSeconds * 1000
-									});
-								} else {
-									// Commented out as there is no need to get the array if we are not claiming tokens
-									claimInfoArr.push({
-										merkleRoot: await distributorContract.merkleRoots(currentClaimIndex),
-										user: {
-											...userClaimInfo,
-											rootIndex: currentClaimIndex,
-											address: merkleUserAddress,
-											hasClaimed: true
-										},
-										nextClaimDuration: timeToNextClaimInSeconds * 1000
-									});
-								}
-							} catch (err) {
-								break;
-							}
+						} catch (err) {
+							break;
 						}
 					}
-				} else if (timeToNextClaimInSeconds > 0) {
+				}
+				// } else
+				if (timeToNextClaimInSeconds > 0) {
 					// checkClaimEligibility(userAddress) && clearTimeout(reCheckFunc)
 					reCheckFunc = setTimeout(
 						() => checkClaimEligibility(airdropType, userAddress) && clearTimeout(reCheckFunc),
@@ -251,13 +254,13 @@ export const claimAirdropTokens = async (airdropType: 'public' | 'private' | 'se
 			const userIndex = claimsArray[0].user.index;
 			const accAddress = claimsArray[0].user.address;
 			const rootIndexes = claimsArray
-				.filter((claimsObj) => !claimsObj.user.hasClaimed)
+				.filter((claimsObj) => !claimsObj.user.hasClaimed && claimsObj.nextClaimDuration <= 0)
 				.map((claimsObj) => claimsObj.user.rootIndex);
 			const amounts = claimsArray
-				.filter((claimsObj) => !claimsObj.user.hasClaimed)
+				.filter((claimsObj) => !claimsObj.user.hasClaimed && claimsObj.nextClaimDuration <= 0)
 				.map((claimsObj) => claimsObj.user.amount);
 			const merkleProofs = claimsArray
-				.filter((claimsObj) => !claimsObj.user.hasClaimed)
+				.filter((claimsObj) => !claimsObj.user.hasClaimed && claimsObj.nextClaimDuration <= 0)
 				.map((claimsObj) => claimsObj.user.proof);
 
 			const txt = await distributorContract.claim(

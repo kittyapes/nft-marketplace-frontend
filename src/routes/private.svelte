@@ -135,6 +135,7 @@
 		return dateObj ? `${dateObj.days}D ${dateObj.hours}H ${dateObj.minutes}M` : 'N/A';
 	})(daysFromNow($privateEscrowUnlock));
 
+	let splitOptions: PrivatePageSplitOptions[];
 	$: splitOptions = [
 		{
 			title: 'Seed',
@@ -236,11 +237,11 @@
 		<!-- Wallet staking section -->
 		<GridOptionContainer
 			title="Wallet"
-			hinataValue={(+$userHinataBalance.toFixed(2)).noExponents()}
+			hinataValue={parseFloat($userHinataBalance.toFixed(2)).toString()}
 		>
 			<div class="grid grid-cols-2 place-items-center gap-x-14">
 				<div style="font-weight: 450;" class="w-full pl-4">
-					{(+$userHinataBalance.toFixed(2)).noExponents()} HINATA TOKENS
+					{parseFloat($userHinataBalance.toFixed(2))} HINATA TOKENS
 				</div>
 				<Button gradient rounded>Stake</Button>
 			</div>

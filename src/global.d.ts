@@ -27,3 +27,13 @@ interface NftData {
 	likes: number;
 	ownedByUser: boolean;
 }
+
+interface PrivatePageSplitOptions {
+	title: string;
+	nextEscrowUnlock: string;
+	claimTokensValue: number;
+	escrowTokensValue: number;
+	airdropType: 'seed' | 'private' | 'public';
+	airdropHasClaimed: boolean;
+	contractActive: boolean;
+}

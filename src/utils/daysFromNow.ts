@@ -1,7 +1,7 @@
-export default (future_date_milliseconds: number) => {
+export default (milliSecondsToFutureDate: number) => {
 	// get total seconds between the times
-	if (future_date_milliseconds > 0) {
-		let delta = Math.abs(future_date_milliseconds - Date.now()) / 1000;
+	if (milliSecondsToFutureDate > 0) {
+		let delta = milliSecondsToFutureDate / 1000;
 
 		// calculate (and subtract) whole days
 		const days = Math.floor(delta / 86400);

@@ -17,7 +17,7 @@
 	<div class="w-2/5 p-14 text-color-black text-2xl border-r-2 border-color-black border-opacity-10">
 		<div class="mt-6">{title}</div>
 		<div class="ml-6 font-bold">
-			{(+(claimTokensValue + escrowTokensValue).toFixed(2)).noExponents()} HiNATA
+			{parseFloat((claimTokensValue + escrowTokensValue).toFixed(2))} HiNATA
 		</div>
 	</div>
 
@@ -28,7 +28,7 @@
 			<div class="font-bold text-xl self self-center">{nextEscrowUnlock}</div>
 
 			<div class="uppercase font-bold self-center">
-				{(+claimTokensValue.toFixed(2)).noExponents()} HINATA TOKENS
+				{parseFloat(claimTokensValue.toFixed(2))} HINATA TOKENS
 			</div>
 			<div>
 				<Button
@@ -45,7 +45,7 @@
 			</div>
 
 			<div class="uppercase font-semibold self-center">
-				{(+escrowTokensValue.toFixed(2)).noExponents()} HINATA TOKENS
+				{parseFloat(escrowTokensValue.toFixed(2))} HINATA TOKENS
 			</div>
 			<div>
 				<Button rounded class="bg-gradient-to-r from-gray-300 to-transparent" disabled
