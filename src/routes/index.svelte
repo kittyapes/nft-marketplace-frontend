@@ -1,5 +1,6 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
+	import { links } from '$constants/links';
+	import { socials } from '$constants/socials';
 </script>
 
 <div
@@ -19,23 +20,29 @@
 >
 	<div class="absolute top-1/4 -translate-y-1/4 left-0 w-full grid place-items-center">
 		<div class="px-8">
-			<h1 class="uppercase text-white font-semibold text-7xl">Hinata<br />Marketplace</h1>
+			<h1 class="uppercase text-white font-bold text-7xl">Hinata<br />Marketplace</h1>
 
-			<div class="text-white py-6 px-1 text-lg w-1/2">
+			<div class="text-white py-6 px-1 text-lg w-1/2 font-semibold">
 				The Hinata platform features curated collections and artists of anime, manga, and all
 				variety of illustrated work, including Art Blocks, Bored Ape Yacht Club, and more
 			</div>
 
-			<div class="flex gap-x-4 mt-6">
-				<Button class="flex flex-col justify-center items-center bg-white font-semibold">
-					<span class="inline-block">Markets</span>
-					<span class="inline-block">(Coming Soon)</span>
-				</Button>
+			<div class="flex gap-x-4 mt-6 h-16 uppercase font-semibold">
+				<a
+					class="flex flex-col justify-center items-center bg-white w-48"
+					href={socials.twitter}
+					target="_blank"
+				>
+					Follow Us
+				</a>
 
-				<Button class="flex flex-col justify-center items-center bg-white font-semibold">
-					<span class="inline-block">Create</span>
-					<span class="inline-block">(Coming Soon)</span>
-				</Button>
+				<a
+					class="flex flex-col justify-center items-center bg-white w-48"
+					href={links.snapshot}
+					target="_blank"
+				>
+					Our Dao
+				</a>
 			</div>
 		</div>
 	</div>
