@@ -52,6 +52,7 @@
 	};
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
+	$: firstTimeUser = $profileData?.username.includes('great_gatsby');
 </script>
 
 <div class="h-72 bg-color-gray-light">
@@ -92,7 +93,7 @@
 	<div class="flex mt-8">
 		<!-- Buttons -->
 		<div class="flex flex-col gap-3 h-[min-content] w-72 pt-10">
-			<Button variant="rounded-shadow" rounded --py="0.5rem" --px="1.5rem" --width="10rem">
+			<Button variant="rounded-shadow" rounded --py="0.5rem" --px="1.5rem" --width="11rem">
 				<div class="flex items-center">
 					<div class="flex-grow font-norma">
 						{shortenAddress(address)}
@@ -108,10 +109,10 @@
 						rounded
 						--py="0.5rem"
 						--px="1.5rem"
-						--width="10rem"
+						--width="11rem"
 						on:click={() => goto('/profile/edit')}
 					>
-						Edit Profile
+						{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}
 					</Button>
 				</div>
 			{/if}
