@@ -76,8 +76,6 @@
 				coverImage: null
 			} as EditableProfileData;
 
-			console.log(localData);
-
 			fetchedDataStore.set(cloneDeep(localData));
 			localDataStore.set(localData);
 
