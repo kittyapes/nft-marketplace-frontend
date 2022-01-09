@@ -81,7 +81,7 @@
 	</div>
 
 	<div class="flex items-center pt-20">
-		<span class="font-semibold text-xl mr-2">
+		<span class="font-semibold text-xl mr-2 text-center w-32">
 			{#if $localProfileData?.username}
 				{$localProfileData?.username}
 			{:else}
