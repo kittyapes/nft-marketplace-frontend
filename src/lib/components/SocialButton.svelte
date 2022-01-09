@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let social: 'twitter' | 'facebook' | 'instagram';
+	export let social: 'twitter' | 'facebook' | 'instagram' | any;
 	export let href: string;
 
 	const socials = {
@@ -15,6 +15,6 @@
 	};
 </script>
 
-<a {href} class="transition-btn">
+<a {href} target="_blank" class="transition-btn">
 	{@html socials[social].svg}
 </a>

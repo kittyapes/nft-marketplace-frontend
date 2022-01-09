@@ -7,7 +7,7 @@
 	viewBox="0 0 50 50"
 	style="enable-background:new 0 0 50 50;"
 	xml:space="preserve"
-	class="animate-spin text-color-purple h-12 mx-auto my-6"
+	class="animate-spin text-color-purple h-12 mx-auto my-6 {$$props.class}"
 >
 	<path
 		fill="currentColor"

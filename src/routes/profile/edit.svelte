@@ -1,20 +1,28 @@
 <script lang="ts">
-	// import DragDropImage from '$lib/components/DragDropImage.svelte';
-	// import TextArea from '$lib/components/TextArea.svelte';
-	// import Instagram from '$icons/socials/instagram.svelte';
-	// import Facebook from '$icons/socials/facebook.svelte';
-	// import Twitter from '$icons/socials/twitter.svelte';
+	import DragDropImage from '$lib/components/DragDropImage.svelte';
+	import TextArea from '$lib/components/TextArea.svelte';
+	import Instagram from '$icons/socials/instagram.svelte';
+	import Facebook from '$icons/socials/facebook.svelte';
+	import Twitter from '$icons/socials/twitter.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { fade, slide } from 'svelte/transition';
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import { writable } from 'svelte/store';
-	import { EditableProfileData, fetchProfileData, updateProfile } from '$utils/api/profile';
+	import { EditableProfileData, ProfileData, updateProfile } from '$utils/api/profile';
 	import { currentUserAddress } from '$stores/wallet';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { browser } from '$app/env';
 	import Loader from '$icons/loader.svelte';
 	import { goto } from '$app/navigation';
 	import { cloneDeep } from 'lodash-es';
+	import { profileData, refreshProfileData } from '$stores/user';
+
+	const progressbarPoints = [
+		{ at: 25, label: 'Email' },
+		{ at: 50, label: 'Bio' },
+		{ at: 75, label: 'Profile Image' },
+		{ at: 100, label: 'Background Image', dot: false }
+	];
 
 	const fetchedDataStore = writable<EditableProfileData>(null);
 	const localDataStore = writable<EditableProfileData>(null);
@@ -42,30 +50,31 @@
 			await updateProfile($currentUserAddress, $localDataStore);
 			notifySuccess('Profile updated successfully.');
 
-			fetchAndDisplayProfile()
+			refreshProfileData()
 				.catch(() => notifyError('Failed to fetch new profile data.'))
 				.then(() => {
 					isSaving = false;
 				});
 		} catch (err) {
 			notifyError('Could not save new profile data.');
+			console.error(err);
 		}
 	}
 
-	async function fetchAndDisplayProfile() {
+	async function useProfileData(data: ProfileData) {
 		try {
-			const data = await fetchProfileData($currentUserAddress);
-
 			const localData = {
 				username: data.username,
 				email: data.email,
 				bio: data.bio,
-				socials: {
-					instagram: '',
-					facebook: '',
-					twitter: ''
-				}
-			};
+				instagram: data.instagram,
+				facebook: data.facebook,
+				twitter: data.twitter,
+				imageUrl: data.imageUrl,
+				coverUrl: data.coverUrl,
+				profileImage: null,
+				coverImage: null
+			} as EditableProfileData;
 
 			fetchedDataStore.set(cloneDeep(localData));
 			localDataStore.set(localData);
@@ -73,17 +82,21 @@
 			if (data.username.includes('great_gatsby')) {
 				firstTimeUser = true;
 			}
+
+			isProfileImage = !!($localDataStore?.profileImage || $localDataStore?.imageUrl);
+			isCoverImage = !!($localDataStore?.coverImage || $localDataStore?.coverUrl);
 		} catch (ex) {
 			notifyError(ex.message);
 		}
 	}
 
-	$: browser && $currentUserAddress && fetchAndDisplayProfile();
+	let isProfileImage = false;
+	let isCoverImage = false;
+
+	$: browser && $profileData && useProfileData($profileData);
 	$: profileCompletionProgress =
-		$localDataStore &&
-		($localDataStore.username ? 1 : 0) * 25 +
-			($localDataStore.email ? 1 : 0) * 25 +
-			($localDataStore.bio ? 1 : 0) * 25;
+		[$localDataStore?.email, $localDataStore?.bio, isProfileImage, isCoverImage].filter((v) => !!v)
+			.length * 25;
 
 	// Go to home if the user's wallet isn't connected,
 	// this is a temporary solution, we will solve this better
@@ -107,106 +120,166 @@
 				Profile completion progress: <span class="gradient-text">{profileCompletionProgress}%</span>
 			</div>
 
-			<Progressbar class="mt-2" value={profileCompletionProgress} />
+			<div class="w-4/5 mx-auto">
+				<Progressbar class="mt-2" value={profileCompletionProgress} points={progressbarPoints} />
+			</div>
+
+			<div class="relative w-full">
+				{#if profileCompletionProgress !== 100}
+					<div
+						class="absolute font-bold gradient-text -translate-y-12 translate-x-[-100%] right-0"
+						transition:fade|local
+					>
+						Free NFT
+					</div>
+				{/if}
+			</div>
 
 			{#if profileCompletionProgress === 100}
-				<div class="px-16 mt-4">
+				<div class="px-16 mt-16" in:slide|local out:slide|local={{ delay: 300 }}>
 					<button
 						class="transition-btn
-				bg-gradient-to-r from-color-purple to-color-blue
-				text-white rounded-3xl font-semibold uppercase text-lg w-full
-				py-6 block
-				"
+						bg-gradient-to-r from-color-purple to-color-blue
+						text-white rounded-3xl font-semibold uppercase text-lg w-full
+						py-6 block"
+						on:click={onSave}
+						in:fade|local={{ delay: 300 }}
+						out:fade|local
 					>
 						Claim your NFT
 					</button>
 				</div>
-			{:else}
-				<div class="font-bold gradient-text text-right mt-1 brightness-[90%]">Free NFT</div>
 			{/if}
 
-			<div id="form-container" class="grid grid-cols-2 gap-y-6 mt-8">
-				<div>
-					<div>Add your username</div>
-					<div class="text-sm -mt-1">(Mandatory)</div>
-				</div>
+			<div id="form-container" class="grid gap-y-6 mt-16">
+				<div class="grid grid-cols-2">
+					<div>
+						<div class="input-label">Add your username</div>
+						<div class="text-sm -mt-1 uppercase">(Mandatory)</div>
+					</div>
 
-				<div class="w-full">
 					<input
 						type="text"
 						class="input input-gray-outline"
 						placeholder="Username"
 						bind:value={$localDataStore.username}
 					/>
-
-					{#if usernameTaken}
-						<div class="text-xs text-red-500 mt-2 ml-1" transition:slide|local>
-							Username already taken
-						</div>
-					{/if}
 				</div>
 
-				<div>Add your email</div>
-				<input
-					type="text"
-					class="input input-gray-outline"
-					placeholder="example@email.com"
-					bind:value={$localDataStore.email}
-				/>
+				{#if usernameTaken}
+					<div
+						class="text-xs w-1/2 ml-auto text-red-500 font-semibold -mt-4 uppercase"
+						transition:slide|local
+					>
+						Username already taken
+					</div>
+				{/if}
 
-				<!-- <div>Add your bio</div>
-				<TextArea
-					outline
-					placeholder="Enter your short bio"
-					maxChars={200}
-					bind:value={$localDataStore.bio}
-				/> -->
+				<div class="grid grid-cols-2 items-stretch">
+					<div
+						class="input-label gradient-text brightness-0
+						transition flex items-center"
+						class:brightness-100={$localDataStore.email}
+					>
+						Add your email
+					</div>
+					<input
+						type="text"
+						class="input input-gray-outline"
+						placeholder="example@email.com"
+						bind:value={$localDataStore.email}
+					/>
+				</div>
 
-				<!-- <div>Upload a <br /> profile image</div>
-				<DragDropImage />
+				<div class="grid grid-cols-2">
+					<div
+						class="input-label gradient-text brightness-0 transition"
+						class:brightness-100={$localDataStore.bio}
+					>
+						Add your bio
+					</div>
+					<TextArea
+						outline
+						placeholder="Enter your short bio"
+						maxChars={200}
+						bind:value={$localDataStore.bio}
+					/>
+				</div>
 
-				<div>Upload a <br /> background image</div>
-				<DragDropImage /> -->
+				<div class="grid grid-cols-2">
+					<div
+						class="input-label gradient-text brightness-0 transition"
+						class:brightness-100={isProfileImage}
+					>
+						Upload a <br /> profile image
+					</div>
+					<DragDropImage
+						bind:blob={$localDataStore.profileImage}
+						currentImgUrl={$fetchedDataStore.imageUrl}
+					/>
+				</div>
 
-				<!-- <div>Social links</div>
-				<div id="socials-container" class="grid gap-y-3">
-					<div>
-						<Instagram />
-						<input
-							type="text"
-							class="input input-gray-outline"
-							placeholder="Instagram link"
-							disabled
-						/>
+				<div class="grid grid-cols-2">
+					<div class="input-label gradient-text brightness-0" class:brightness-100={isCoverImage}>
+						Upload a <br /> background image
+					</div>
+					<DragDropImage
+						bind:blob={$localDataStore.coverImage}
+						currentImgUrl={$fetchedDataStore.coverUrl}
+					/>
+				</div>
+
+				<div class="grid grid-cols-2">
+					<div id="socials-container" class="grid gap-y-3 peer">
+						<div>
+							<Instagram />
+							<input
+								type="text"
+								class="input input-gray-outline"
+								placeholder="Instagram link"
+								bind:value={$localDataStore.instagram}
+							/>
+						</div>
+
+						<div>
+							<Facebook />
+							<input
+								type="text"
+								class="input input-gray-outline"
+								placeholder="Facebook link"
+								bind:value={$localDataStore.facebook}
+							/>
+						</div>
+
+						<div>
+							<Twitter />
+							<input
+								type="text"
+								class="input input-gray-outline"
+								placeholder="Twitter link"
+								bind:value={$localDataStore.twitter}
+							/>
+						</div>
 					</div>
 
-					<div>
-						<Facebook />
-						<input
-							type="text"
-							class="input input-gray-outline"
-							placeholder="Facebook link"
-							disabled
-						/>
+					<div
+						class="input-label gradient-text brightness-0 peer-focus-within:brightness-100
+						order-first transition"
+					>
+						Social links
 					</div>
+				</div>
+			</div>
 
-					<div>
-						<Twitter />
-						<input
-							type="text"
-							class="input input-gray-outline"
-							placeholder="Twitter link"
-							disabled
-						/>
-					</div>
-				</div> -->
+			<div class="flex items-center opacity-0 mt-12 transition" class:opacity-100={isSaving}>
+				<Loader class="w-6 h-6 mx-0" />
+				<div class="font-semibold ml-4 uppercase">Saving changes...</div>
 			</div>
 
 			<Button
 				rounded
 				variant="rounded-black"
 				stretch
-				class="mt-12"
 				on:click={onSave}
 				disabled={isSaving || !dataChanged}
 			>
@@ -221,22 +294,20 @@
 {/if}
 
 <style lang="postcss">
-	/* Keep commented rules */
-
-	/* #form-container > div {
+	.input-label {
 		@apply uppercase text-lg font-medium;
-	} */
+	}
 
 	#form-container input {
 		@apply w-full;
 		min-height: 3rem;
 	}
 
-	/* #socials-container > div {
+	#socials-container > div {
 		@apply flex gap-x-3 items-center;
-	} */
+	}
 
-	/* #socials-container > div > :global(svg) {
+	#socials-container > div > :global(svg) {
 		@apply h-12;
-	} */
+	}
 </style>
