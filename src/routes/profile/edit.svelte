@@ -8,12 +8,7 @@
 	import { fade, slide } from 'svelte/transition';
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import { writable } from 'svelte/store';
-	import {
-		EditableProfileData,
-		fetchProfileData,
-		ProfileData,
-		updateProfile
-	} from '$utils/api/profile';
+	import { EditableProfileData, ProfileData, updateProfile } from '$utils/api/profile';
 	import { currentUserAddress } from '$stores/wallet';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { browser } from '$app/env';
@@ -278,11 +273,15 @@
 				</div>
 			</div>
 
+			<div class="flex items-center opacity-0 mt-12 transition" class:opacity-100={isSaving}>
+				<Loader class="w-6 h-6 mx-0" />
+				<div class="font-semibold ml-4 uppercase">Saving changes...</div>
+			</div>
+
 			<Button
 				rounded
 				variant="rounded-black"
 				stretch
-				class="mt-12"
 				on:click={onSave}
 				disabled={isSaving || !dataChanged}
 			>
@@ -297,8 +296,6 @@
 {/if}
 
 <style lang="postcss">
-	/* Keep commented rules */
-
 	.input-label {
 		@apply uppercase text-lg font-medium;
 	}
