@@ -81,25 +81,29 @@
 				coverImage: null
 			} as EditableProfileData;
 
+			console.log(localData);
+
 			fetchedDataStore.set(cloneDeep(localData));
 			localDataStore.set(localData);
 
 			if (data.username.includes('great_gatsby')) {
 				firstTimeUser = true;
 			}
+
+			isProfileImage = !!($localDataStore?.profileImage || $localDataStore?.imageUrl);
+			isCoverImage = !!($localDataStore?.coverImage || $localDataStore?.coverUrl);
 		} catch (ex) {
 			notifyError(ex.message);
 		}
 	}
 
+	let isProfileImage = false;
+	let isCoverImage = false;
+
 	$: browser && $profileData && useProfileData($profileData);
 	$: profileCompletionProgress =
-		[
-			$localDataStore?.email,
-			$localDataStore?.bio,
-			$localDataStore?.profileImage,
-			$localDataStore?.coverImage
-		].filter((v) => !!v).length * 25;
+		[$localDataStore?.email, $localDataStore?.bio, isProfileImage, isCoverImage].filter((v) => !!v)
+			.length * 25;
 
 	// Go to home if the user's wallet isn't connected,
 	// this is a temporary solution, we will solve this better
@@ -203,7 +207,7 @@
 				<div class="grid grid-cols-2">
 					<div
 						class="input-label gradient-text brightness-0 transition"
-						class:brightness-100={$localDataStore.profileImage}
+						class:brightness-100={isProfileImage}
 					>
 						Upload a <br /> profile image
 					</div>
@@ -214,10 +218,7 @@
 				</div>
 
 				<div class="grid grid-cols-2">
-					<div
-						class="input-label gradient-text brightness-0"
-						class:brightness-100={$localDataStore.coverImage}
-					>
+					<div class="input-label gradient-text brightness-0" class:brightness-100={isCoverImage}>
 						Upload a <br /> background image
 					</div>
 					<DragDropImage
