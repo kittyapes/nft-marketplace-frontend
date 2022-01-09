@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let value: number;
-	export let points: { at: number; label: string; dot: boolean }[] = [];
+	export let points: { at: number; label: string; dot?: boolean }[] = [];
 </script>
 
 <div class="relative">

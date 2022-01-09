@@ -56,7 +56,8 @@ export async function inactivateProfile(address: string) {
 }
 
 export interface EditableProfileData {
-	profileImage: string | Blob;
+	profileImage: Blob;
+	coverImage: Blob;
 	username: string;
 	email: string;
 	bio: string;

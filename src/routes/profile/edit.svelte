@@ -1,6 +1,6 @@
 <script lang="ts">
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
-	// import TextArea from '$lib/components/TextArea.svelte';
+	import TextArea from '$lib/components/TextArea.svelte';
 	import Instagram from '$icons/socials/instagram.svelte';
 	import Facebook from '$icons/socials/facebook.svelte';
 	import Twitter from '$icons/socials/twitter.svelte';
@@ -72,8 +72,10 @@
 				facebook: data.facebook,
 				twitter: data.twitter,
 				imageUrl: data.imageUrl,
-				coverUrl: data.coverUrl
-			};
+				coverUrl: data.coverUrl,
+				profileImage: null,
+				coverImage: null
+			} as EditableProfileData;
 
 			fetchedDataStore.set(cloneDeep(localData));
 			localDataStore.set(localData);
@@ -88,10 +90,12 @@
 
 	$: browser && $currentUserAddress && fetchAndDisplayProfile();
 	$: profileCompletionProgress =
-		$localDataStore &&
-		($localDataStore.username ? 1 : 0) * 25 +
-			($localDataStore.email ? 1 : 0) * 25 +
-			($localDataStore.bio ? 1 : 0) * 25;
+		[
+			$localDataStore?.email,
+			$localDataStore?.bio,
+			$localDataStore?.profileImage,
+			$localDataStore?.coverImage
+		].filter((v) => !!v).length * 25;
 
 	// Go to home if the user's wallet isn't connected,
 	// this is a temporary solution, we will solve this better
@@ -120,13 +124,13 @@
 			</div>
 
 			{#if profileCompletionProgress === 100}
-				<div class="px-16 mt-4">
+				<div class="px-16 mt-16">
 					<button
 						class="transition-btn
-				bg-gradient-to-r from-color-purple to-color-blue
-				text-white rounded-3xl font-semibold uppercase text-lg w-full
-				py-6 block
-				"
+						bg-gradient-to-r from-color-purple to-color-blue
+						text-white rounded-3xl font-semibold uppercase text-lg w-full
+						py-6 block"
+						on:click={onSave}
 					>
 						Claim your NFT
 					</button>
@@ -137,82 +141,125 @@
 				</div>
 			{/if}
 
-			<div id="form-container" class="grid grid-cols-2 gap-y-6 mt-12">
-				<div>
-					<div>Add your username</div>
-					<div class="text-sm -mt-1">(Mandatory)</div>
-				</div>
+			<div id="form-container" class="grid gap-y-6 mt-12">
+				<div class="grid grid-cols-2">
+					<div>
+						<div class="input-label">Add your username</div>
+						<div class="text-sm -mt-1 uppercase">(Mandatory)</div>
+					</div>
 
-				<div class="w-full">
 					<input
 						type="text"
 						class="input input-gray-outline"
 						placeholder="Username"
 						bind:value={$localDataStore.username}
 					/>
-
-					{#if usernameTaken}
-						<div class="text-xs text-red-500 mt-2 ml-1" transition:slide|local>
-							Username already taken
-						</div>
-					{/if}
 				</div>
 
-				<div>Add your email</div>
-				<input
-					type="text"
-					class="input input-gray-outline"
-					placeholder="example@email.com"
-					bind:value={$localDataStore.email}
-				/>
+				{#if usernameTaken}
+					<div
+						class="text-xs w-1/2 ml-auto text-red-500 font-semibold -mt-4 uppercase"
+						transition:slide|local
+					>
+						Username already taken
+					</div>
+				{/if}
 
-				<!-- <div>Add your bio</div>
-				<TextArea
-					outline
-					placeholder="Enter your short bio"
-					maxChars={200}
-					bind:value={$localDataStore.bio}
-				/> -->
+				<div class="grid grid-cols-2 items-stretch">
+					<div
+						class="input-label gradient-text brightness-0
+						transition flex items-center"
+						class:brightness-100={$localDataStore.email}
+					>
+						Add your email
+					</div>
+					<input
+						type="text"
+						class="input input-gray-outline"
+						placeholder="example@email.com"
+						bind:value={$localDataStore.email}
+					/>
+				</div>
 
-				<div>Upload a <br /> profile image</div>
-				<DragDropImage
-					bind:blob={$localDataStore.profileImage}
-					currentImgUrl={$fetchedDataStore.coverUrl}
-				/>
+				<div class="grid grid-cols-2">
+					<div
+						class="input-label gradient-text brightness-0 transition"
+						class:brightness-100={$localDataStore.bio}
+					>
+						Add your bio
+					</div>
+					<TextArea
+						outline
+						placeholder="Enter your short bio"
+						maxChars={200}
+						bind:value={$localDataStore.bio}
+					/>
+				</div>
 
-				<!-- <div>Upload a <br /> background image</div>
-				<DragDropImage /> -->
+				<div class="grid grid-cols-2">
+					<div
+						class="input-label gradient-text brightness-0 transition"
+						class:brightness-100={$localDataStore.profileImage}
+					>
+						Upload a <br /> profile image
+					</div>
+					<DragDropImage
+						bind:blob={$localDataStore.profileImage}
+						currentImgUrl={$fetchedDataStore.imageUrl}
+					/>
+				</div>
 
-				<div>Social links</div>
-				<div id="socials-container" class="grid gap-y-3">
-					<div>
-						<Instagram />
-						<input
-							type="text"
-							class="input input-gray-outline"
-							placeholder="Instagram link"
-							bind:value={$localDataStore.instagram}
-						/>
+				<div class="grid grid-cols-2">
+					<div
+						class="input-label gradient-text brightness-0"
+						class:brightness-100={$localDataStore.coverImage}
+					>
+						Upload a <br /> background image
+					</div>
+					<DragDropImage
+						bind:blob={$localDataStore.coverImage}
+						currentImgUrl={$fetchedDataStore.imageUrl}
+					/>
+				</div>
+
+				<div class="grid grid-cols-2">
+					<div id="socials-container" class="grid gap-y-3 peer">
+						<div>
+							<Instagram />
+							<input
+								type="text"
+								class="input input-gray-outline"
+								placeholder="Instagram link"
+								bind:value={$localDataStore.instagram}
+							/>
+						</div>
+
+						<div>
+							<Facebook />
+							<input
+								type="text"
+								class="input input-gray-outline"
+								placeholder="Facebook link"
+								bind:value={$localDataStore.facebook}
+							/>
+						</div>
+
+						<div>
+							<Twitter />
+							<input
+								type="text"
+								class="input input-gray-outline"
+								placeholder="Twitter link"
+								bind:value={$localDataStore.twitter}
+							/>
+						</div>
 					</div>
 
-					<div>
-						<Facebook />
-						<input
-							type="text"
-							class="input input-gray-outline"
-							placeholder="Facebook link"
-							bind:value={$localDataStore.facebook}
-						/>
-					</div>
-
-					<div>
-						<Twitter />
-						<input
-							type="text"
-							class="input input-gray-outline"
-							placeholder="Twitter link"
-							bind:value={$localDataStore.twitter}
-						/>
+					<div
+						class="input-label gradient-text brightness-0 peer-focus-within:brightness-100
+						order-first transition"
+					>
+						Social links
 					</div>
 				</div>
 			</div>
@@ -238,7 +285,7 @@
 <style lang="postcss">
 	/* Keep commented rules */
 
-	#form-container > div {
+	.input-label {
 		@apply uppercase text-lg font-medium;
 	}
 
