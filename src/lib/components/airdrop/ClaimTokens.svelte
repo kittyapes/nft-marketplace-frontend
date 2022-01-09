@@ -56,7 +56,7 @@
 	let stakeDurationHovered = false;
 </script>
 
-{#if publicClaimAmount > 0 || $userHinataBalance > 0 || publicEscrowed > 0 || $publicClaimsArray?.length > 0}
+{#if $userHinataBalance > 0 || publicClaimAmount > 0 || publicEscrowed > 0 || $publicClaimsArray?.length > 0}
 	<div
 		class="w-full max-w-5xl m-auto bg-black bg-opacity-5 container border-4 border-black px-4 border-opacity-20 mt-12 py-11 rounded-2xl"
 		in:fade
@@ -157,7 +157,7 @@
 						>
 							<Hint>
 								Lock your HiNATA for longer for better rewards!
-								<a href="./private" class="font-bold"> READ MORE </a>
+								<a href="/private" class="font-bold"> READ MORE </a>
 							</Hint>
 						</div>
 					{/if}
@@ -194,12 +194,14 @@
 
 			<p class="mt-8">
 				Use your governance rewards to create proposals and vote at
-				<a href="https://snapshot.org/#/hinatadao.eth" class="font-semibold">
+				<a href="https://snapshot.org/#/hinatadao.eth" target="_blank" class="font-semibold">
 					https://snapshot.org/#/hinatadao.eth
 				</a>
 				as well as claim exclusive NFTs on
-				<a href="https://www.hinata.io/drops" class="font-semibold">https://www.hinata.io/drops</a>.
-				<a href="./airdrop" class="font-bold">READ MORE</a>
+				<a href="https://www.hinata.io/drops" target="_blank" class="font-semibold"
+					>https://www.hinata.io/drops</a
+				>.
+				<a href="/airdrop" class="font-bold">READ MORE</a>
 			</p>
 		</div>
 	</div>

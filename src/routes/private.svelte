@@ -268,7 +268,7 @@
 			>
 				<Hint>
 					Lock your HiNATA for longer for better rewards!
-					<a href="./private" class="font-bold"> READ MORE </a>
+					<a href="/private" class="font-bold"> READ MORE </a>
 				</Hint>
 			</div>
 		{/if}
@@ -289,7 +289,7 @@
 				<a href="https://www.hinata.io/drops" class="font-semibold">
 					https://www.hinata.io/drops
 				</a>.
-				<a href="./private" class="font-bold">READ MORE</a>
+				<a href="/private" class="font-bold">READ MORE</a>
 			</p>
 		</GridOptionContainer>
 	</div>
