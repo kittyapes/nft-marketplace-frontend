@@ -46,7 +46,6 @@ TODOS
 
 - contract events (update balances after each event)
 - fetch all nfts on user wallet (potential approaches - use moralis or subgraph for nfts not on the hinata marketplace)
-- ensure links open on new page
 - have airdrop popup show relevant data
 - ensure users that can access private page have access to it
 - implement staking contract (using total amount of user's balance)

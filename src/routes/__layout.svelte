@@ -27,6 +27,7 @@
 		await refreshConnection();
 	});
 
+	// Airdrop Popup
 	let claimAmount = 0;
 	let hasClaimed = false;
 	const updateValues = (claims: ClaimsObject[]) => {

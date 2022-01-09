@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/env';
+	import { goto } from '$app/navigation';
 
 	import GridOptionContainer from '$lib/components/airdrop/investors/GridOptionContainer.svelte';
 	import GridOptionSplit from '$lib/components/airdrop/investors/GridOptionSplit.svelte';
@@ -22,8 +23,29 @@
 	} from '$stores/wallet';
 	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
 	import daysFromNow from '$utils/daysFromNow';
+	import axios from 'axios';
 	import { ethers } from 'ethers';
+	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+
+	// Access to private route
+	const checkAccessibilityOfRoute = (userAddress: string) => {
+		userAddress &&
+			axios
+				.get(`/api/private-access?address=${userAddress}`)
+				.then((res) => {
+					if (!res.data.canAccess) {
+						browser && goto('/');
+					}
+				})
+				.catch((_err) => {
+					browser && goto('/');
+				});
+	};
+
+	$: browser && checkAccessibilityOfRoute($currentUserAddress);
+
+	onMount(() => checkAccessibilityOfRoute($currentUserAddress));
 
 	// Quick and dirty
 	// Private
