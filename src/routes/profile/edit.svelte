@@ -60,6 +60,7 @@
 		} catch (err) {
 			notifyError('Could not save new profile data.');
 			console.error(err);
+			isSaving = false;
 		}
 	}
 
