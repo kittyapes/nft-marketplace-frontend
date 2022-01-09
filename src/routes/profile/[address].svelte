@@ -16,6 +16,7 @@
 	import { getFacebookUrl, getInstagramUrl, getTwitterUrl } from '$utils/profile';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import { fade } from 'svelte/transition';
 
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	let selectedTab = 'CREATED NFTS';
@@ -60,12 +61,13 @@
 </div>
 
 <div class="mx-auto px-32 relative">
+	<!-- Profile image -->
 	<div
 		class="border-white border-4 w-32 h-32 absolute top-0 transform -translate-y-1/2 rounded-full bg-white
 		grid place-items-center shadow"
 	>
 		{#if $localProfileData?.imageUrl}
-			<img src={$localProfileData?.imageUrl} class="rounded-full " alt="User avatar." />
+			<img src={$localProfileData?.imageUrl} class="rounded-full h-full" alt="User avatar." />
 		{:else}
 			<GuestUserAvatar />
 		{/if}
@@ -100,23 +102,27 @@
 			</Button>
 
 			{#if address === $currentUserAddress}
-				<Button
-					variant="rounded-shadow"
-					rounded
-					--py="0.5rem"
-					--px="1.5rem"
-					--width="10rem"
-					on:click={() => goto('/profile/edit')}
-				>
-					Edit Profile
-				</Button>
+				<div in:fade|local>
+					<Button
+						variant="rounded-shadow"
+						rounded
+						--py="0.5rem"
+						--px="1.5rem"
+						--width="10rem"
+						on:click={() => goto('/profile/edit')}
+					>
+						Edit Profile
+					</Button>
+				</div>
 			{/if}
 		</div>
 
 		<!-- Bio -->
-		<div class="px-16 max-w-[600px]">
-			<div class="font-bold text-color-gray-dark">BIO</div>
-			<p class="mt-4 font-semibold use-x-separators h-32">
+		<div class="max-w-[600px] flex-grow">
+			<div class="font-bold text-color-gray-dark pl-16">BIO</div>
+			<p
+				class="mt-4 font-semibold h-32 break-words border-l border-r border-opacity-30 border-black px-16"
+			>
 				{#if $localProfileData?.bio}
 					{$localProfileData?.bio}
 				{:else}
@@ -126,7 +132,7 @@
 		</div>
 
 		<!-- Social links -->
-		<div class="px-16">
+		<div class="px-16 w-48 overflow-hidden">
 			<div class="font-bold text-color-gray-dark whitespace-nowrap">SOCIAL LINKS</div>
 
 			<div class="flex space-x-2 mt-4">
@@ -145,7 +151,7 @@
 </div>
 
 <div>
-	<div class="container mx-auto px-32 mt-8 flex space-x-8">
+	<div class="container mx-auto px-32 mt-16 flex space-x-8">
 		{#each tabs as tab}
 			<TabButton on:click={() => (selectedTab = tab)} selected={selectedTab === tab}>
 				{tab}
@@ -173,18 +179,3 @@
 <!-- <Modal>
 	<NftPopup on:close={() => console.log('close popup')} />
 </Modal> -->
-<style lang="postcss">
-	.use-x-separators {
-		@apply relative;
-	}
-
-	.use-x-separators::before {
-		@apply bg-black opacity-30 w-px absolute left-[-4rem] top-0 h-full bottom-0 my-auto;
-		content: '';
-	}
-
-	.use-x-separators::after {
-		@apply bg-black opacity-30 w-px absolute right-[-4rem] top-0 h-full bottom-0 my-auto;
-		content: '';
-	}
-</style>
