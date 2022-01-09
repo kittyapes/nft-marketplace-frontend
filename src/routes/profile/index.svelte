@@ -1,6 +1,12 @@
 <script>
+	import { browser } from '$app/env';
+
 	import { goto } from '$app/navigation';
 	import { currentUserAddress } from '$stores/wallet';
 
-	$: $currentUserAddress && goto('/profile/' + $currentUserAddress);
+	const noWalletConnectedFix = () => {
+		return browser && goto('/');
+	};
+
+	$: $currentUserAddress ? goto('/profile/' + $currentUserAddress) : noWalletConnectedFix();
 </script>
