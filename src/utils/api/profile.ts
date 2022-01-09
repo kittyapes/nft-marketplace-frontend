@@ -104,8 +104,15 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 		data[key] = data[key] || '_';
 	}
 
-	const message =
-		data.email + data.username + requestTime + data.facebook + data.instagram + data.twitter;
+	const message = [
+		data.email,
+		data.bio,
+		data.username,
+		requestTime,
+		data.facebook,
+		data.instagram,
+		data.twitter
+	].join('');
 	const signature = await get(appSigner).signMessage(message);
 
 	// console.log(profileImageData);
@@ -114,6 +121,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 
 	formData.append('nickname', '');
 	formData.append('email', data.email);
+	formData.append('bio', data.bio);
 	formData.append('username', data.username);
 	formData.append('request_time', requestTime);
 	// formData.append('image', data.profileImage, 'image');
