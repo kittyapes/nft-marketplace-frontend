@@ -82,24 +82,23 @@ function readFileAsync(file) {
 	});
 }
 
+async function hashImage(address: string, file: Blob) {
+	const formData = new FormData();
+	formData.append('image', file);
+
+	const res = await axios.post(api + '/v1/accounts/' + address + '/hashImage', formData);
+
+	return res.data.data;
+}
+
 export async function updateProfile(address: string, data: Partial<EditableProfileData>) {
 	const formData = new FormData();
 
 	const requestTime = Date.now().toString();
 
-	// const profileImageData = await readFileAsync(data.profileImage);
-	// console.log(profileImageData);
-	// const profileImageDigest = await crypto.subtle.digest('SHA-512', profileImageData);
-	// const hashArray = Array.from(new Uint8Array(profileImageDigest));
-	// const hashHex = hashArray
-	// .map((b) => b.toString(16).padStart(2, '0'))
-	// .join('')
-	// .substring(8);
+	const profileImageHash = data.profileImage && (await hashImage(address, data.profileImage));
+	const coverImageHash = data.coverImage && (await hashImage(address, data.coverImage));
 
-	// We are setting fields which do not have a value to _, because
-	// if we wanted to remove a value for a field and set it to "",
-	// the backend would ignore it. We are then handling this and not displaying
-	// the fields when the value for them is _.
 	for (let key of optionalProfileFields) {
 		data[key] = data[key] || '_';
 	}
@@ -109,22 +108,22 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 		data.bio,
 		data.username,
 		requestTime,
+		profileImageHash || '',
+		coverImageHash || '',
 		data.facebook,
 		data.instagram,
 		data.twitter
 	].join('');
+
 	const signature = await get(appSigner).signMessage(message);
-
-	// console.log(profileImageData);
-
-	// console.log('digest', hashHex);
 
 	formData.append('nickname', '');
 	formData.append('email', data.email);
 	formData.append('bio', data.bio);
 	formData.append('username', data.username);
 	formData.append('request_time', requestTime);
-	// formData.append('image', data.profileImage, 'image');
+	data.profileImage && formData.append('image', data.profileImage);
+	data.coverImage && formData.append('cover', data.coverImage);
 	formData.append('facebook', data.facebook);
 	formData.append('instagram', data.instagram);
 	formData.append('twitter', data.twitter);

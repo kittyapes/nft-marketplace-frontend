@@ -222,7 +222,7 @@
 					</div>
 					<DragDropImage
 						bind:blob={$localDataStore.coverImage}
-						currentImgUrl={$fetchedDataStore.imageUrl}
+						currentImgUrl={$fetchedDataStore.coverUrl}
 					/>
 				</div>
 
