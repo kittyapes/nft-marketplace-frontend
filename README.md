@@ -56,3 +56,5 @@ TODOS
 - read waifu rewards balance from staking contract
 - prevent access to private page for users without balances in respective contracfts/wallets
 - home page links updates
+- lockup period popup cannot be clicked readme
+- fix for users spamming the button

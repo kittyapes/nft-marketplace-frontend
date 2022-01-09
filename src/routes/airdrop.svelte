@@ -6,16 +6,16 @@
 	import AirdropDistributionSection from '$lib/sections/AirdropDistributionSection.svelte';
 	// import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
-	import { checkClaimEligibility } from '$utils/wallet/airdropDistribution';
+	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
 
 	$: walletConnected = !!$appSigner;
 
-	// Check For eligibility
+	// // Check For eligibility
 	$: (async (signer) => {
-		return browser && signer && checkClaimEligibility(await signer.getAddress());
+		return browser && signer && checkClaimEligibility('public', await signer.getAddress());
 	})($appSigner);
 
-	$: (async (address) => address && checkClaimEligibility(address))($currentUserAddress);
+	$: (async (address) => address && checkClaimEligibility('public', address))($currentUserAddress);
 </script>
 
 <div class="w-full min-h-full px-6">

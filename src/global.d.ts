@@ -16,6 +16,7 @@ interface ClaimsObject {
 		address: string;
 		hasClaimed: boolean;
 	};
+	nextClaimDuration: number; // In Milliseconds
 }
 
 interface NftData {
@@ -25,4 +26,14 @@ interface NftData {
 	priceEth: number;
 	likes: number;
 	ownedByUser: boolean;
+}
+
+interface PrivatePageSplitOptions {
+	title: string;
+	nextEscrowUnlock: string;
+	claimTokensValue: number;
+	escrowTokensValue: number;
+	airdropType: 'seed' | 'private' | 'public';
+	airdropHasClaimed: boolean;
+	contractActive: boolean;
 }
