@@ -1,12 +1,14 @@
 import { currentUserAddress } from '$stores/wallet';
 import { fetchProfileData, type ProfileData } from '$utils/api/profile';
-import { derived } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 
-export const profileData = derived<any, ProfileData>(
-	[currentUserAddress],
-	([$currentUserAddress], set) => {
-        if (!$currentUserAddress) return;
+export const profileData = writable<ProfileData>(null);
 
-		fetchProfileData($currentUserAddress).then(set);
-	}
-);
+currentUserAddress.subscribe(address => {
+	address && refreshProfileData()
+})
+
+export async function refreshProfileData() {
+	const newProfileData = await fetchProfileData(get(currentUserAddress));
+	profileData.set(newProfileData);
+}

@@ -76,9 +76,19 @@
 					{/if}
 				</div>
 
-				<!-- This should be either the user's profile image if they have one or this svg image -->
-				<div class="text-color-purple" in:fade>
-					<UserCircle />
+				<!-- Profile image or guest user icon -->
+				<div class="w-6 h-6">
+					{#if $profileData?.imageUrl}
+						<img
+							src={$profileData.imageUrl}
+							alt="Current account avatar."
+							class="w-full h-full object-cover rounded-full"
+						/>
+					{:else}
+						<div class="text-color-purple" in:fade>
+							<UserCircle />
+						</div>
+					{/if}
 				</div>
 			</button>
 		{/if}

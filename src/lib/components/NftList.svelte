@@ -5,7 +5,7 @@
 </script>
 
 {#await promise}
-	Loading...
+	<div class="placeholder">Loading...</div>
 {:then nfts}
 	{#if nfts.length}
 		<div
@@ -16,6 +16,12 @@
 			{/each}
 		</div>
 	{:else}
-		<div class="p-36 font-semibold text-lg opacity-60">Nothing to see here, move along.</div>
+		<div class="placeholder">Nothing to see here, move along.</div>
 	{/if}
 {/await}
+
+<style>
+	.placeholder {
+		@apply p-36 font-semibold text-lg opacity-60;
+	}
+</style>
