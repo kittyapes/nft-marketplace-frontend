@@ -5,18 +5,14 @@
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import Modal from '$lib/components/Modal.svelte';
 	import NftList from '$lib/components/NftList.svelte';
-	import NftPopup from '$lib/components/NftPopup.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
-	import FreeNftPopup from '$lib/components/profile/FreeNFTPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { isAdmin } from '$utils/api/login';
 	import { fetchProfileData, ProfileData } from '$utils/api/profile';
-	import { closePopup } from '$utils/popup';
 	import { getFacebookUrl, getInstagramUrl, getTwitterUrl } from '$utils/profile';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -181,22 +177,6 @@
 	<AdminTools profileData={$localProfileData} on:requestDataUpdate={fetchData} />
 {/if}
 
-<Modal>
-	<FreeNftPopup on:close={closePopup} />
-</Modal>
-
-<style lang="postcss">
-	.use-x-separators {
-		@apply relative;
-	}
-
-	.use-x-separators::before {
-		@apply bg-black opacity-30 w-px absolute left-[-4rem] top-0 h-full bottom-0 my-auto;
-		content: '';
-	}
-
-	.use-x-separators::after {
-		@apply bg-black opacity-30 w-px absolute right-[-4rem] top-0 h-full bottom-0 my-auto;
-		content: '';
-	}
-</style>
+<!-- <Modal>
+	<NftPopup on:close={() => console.log('close popup')} />
+</Modal> -->
