@@ -5,7 +5,9 @@
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import Button from '$lib/components/Button.svelte';
+	import Modal from '$lib/components/Modal.svelte';
 	import NftList from '$lib/components/NftList.svelte';
+	import NftPopup from '$lib/components/NftPopup.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
