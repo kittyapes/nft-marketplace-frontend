@@ -14,8 +14,7 @@
 >
 	<div class="grid gap-2">
 		<Button
-			rounded
-			outline
+			variant="rounded-outline"
 			class="!w-full !py-2"
 			on:click={() => goto(`/profile/${$currentUserAddress}`)}
 		>
