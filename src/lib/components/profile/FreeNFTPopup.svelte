@@ -8,12 +8,9 @@
 	import { welcomeNfts } from '$constants/nfts';
 	import { clone } from 'lodash';
 	import { notifyError, notifySuccess } from '$utils/toast';
+	import { closePopup } from '$utils/popup';
 
 	const dispatch = createEventDispatcher();
-
-	function handleClose() {
-		dispatch('close');
-	}
 
 	function cycle() {
 		nfts.unshift(nfts.pop());
@@ -96,7 +93,7 @@
 			Mint Now
 		</button>
 
-		<button class="absolute top-4 right-4 transition-btn" on:click={handleClose}>
+		<button class="absolute top-4 right-4 transition-btn" on:click={closePopup}>
 			<CloseButton />
 		</button>
 	</div>
