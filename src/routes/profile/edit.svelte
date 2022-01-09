@@ -8,13 +8,19 @@
 	import { fade, slide } from 'svelte/transition';
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import { writable } from 'svelte/store';
-	import { EditableProfileData, fetchProfileData, updateProfile } from '$utils/api/profile';
+	import {
+		EditableProfileData,
+		fetchProfileData,
+		ProfileData,
+		updateProfile
+	} from '$utils/api/profile';
 	import { currentUserAddress } from '$stores/wallet';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { browser } from '$app/env';
 	import Loader from '$icons/loader.svelte';
 	import { goto } from '$app/navigation';
 	import { cloneDeep } from 'lodash-es';
+	import { profileData, refreshProfileData } from '$stores/user';
 
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
@@ -49,7 +55,7 @@
 			await updateProfile($currentUserAddress, $localDataStore);
 			notifySuccess('Profile updated successfully.');
 
-			fetchAndDisplayProfile()
+			refreshProfileData()
 				.catch(() => notifyError('Failed to fetch new profile data.'))
 				.then(() => {
 					isSaving = false;
@@ -60,10 +66,8 @@
 		}
 	}
 
-	async function fetchAndDisplayProfile() {
+	async function useProfileData(data: ProfileData) {
 		try {
-			const data = await fetchProfileData($currentUserAddress);
-
 			const localData = {
 				username: data.username,
 				email: data.email,
@@ -88,7 +92,7 @@
 		}
 	}
 
-	$: browser && $currentUserAddress && fetchAndDisplayProfile();
+	$: browser && $profileData && useProfileData($profileData);
 	$: profileCompletionProgress =
 		[
 			$localDataStore?.email,
