@@ -50,7 +50,7 @@
 	}
 
 	.outline {
-		@apply border-2 border-color-black rounded-full;
+		@apply border-2 border-color-black rounded-full outline-none;
 	}
 
 	.rounded {

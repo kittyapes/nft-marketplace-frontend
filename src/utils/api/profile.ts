@@ -4,6 +4,8 @@ import axios from 'axios';
 import { get } from 'svelte/store';
 import { getAxiosConfig } from '.';
 
+const optionalProfileFields = ['twitter', 'instagram', 'facebook'];
+
 export interface LoginHistoryEntry {
 	address: string;
 	checksum: string;
@@ -16,6 +18,7 @@ export interface ProfileData {
 	createdAt: string;
 	email: string;
 	imageUrl: string;
+	coverUrl: string;
 	loginHistories: LoginHistoryEntry[];
 	nickname: string;
 	status: 'USER' | 'AWAITING_VERIFIED' | 'VERIFIED' | 'AWAITING_INACTIVATED';
@@ -23,11 +26,19 @@ export interface ProfileData {
 	username: string;
 	_id: string;
 	bio: string;
+	instagram: string;
+	facebook: string;
+	twitter: string;
 }
 
 export async function fetchProfileData(address: string) {
 	const res = await axios.get(api + '/v1/accounts/' + address);
 	const data = res.data.data as ProfileData;
+
+	// We are using _ to set a "not present" value for optional fields
+	for (let key of optionalProfileFields) {
+		data[key] = data[key] !== '_' ? data[key] : null;
+	}
 
 	return data;
 }
@@ -45,14 +56,39 @@ export async function inactivateProfile(address: string) {
 }
 
 export interface EditableProfileData {
+	profileImage: Blob;
+	coverImage: Blob;
 	username: string;
 	email: string;
 	bio: string;
-	socials: {
-		instagram: string;
-		facebook: string;
-		twitter: string;
-	};
+	instagram: string;
+	facebook: string;
+	twitter: string;
+	imageUrl: string;
+	coverUrl: string;
+}
+
+function readFileAsync(file) {
+	return new Promise((resolve, reject) => {
+		let reader = new FileReader();
+
+		reader.onload = () => {
+			resolve(reader.result);
+		};
+
+		reader.onerror = reject;
+
+		reader.readAsArrayBuffer(file);
+	});
+}
+
+async function hashImage(address: string, file: Blob) {
+	const formData = new FormData();
+	formData.append('image', file);
+
+	const res = await axios.post(api + '/v1/accounts/' + address + '/hashImage', formData);
+
+	return res.data.data;
 }
 
 export async function updateProfile(address: string, data: Partial<EditableProfileData>) {
@@ -60,13 +96,37 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 
 	const requestTime = Date.now().toString();
 
-	const message = data.email + data.username + requestTime;
+	const profileImageHash = data.profileImage && (await hashImage(address, data.profileImage));
+	const coverImageHash = data.coverImage && (await hashImage(address, data.coverImage));
+
+	for (let key of optionalProfileFields) {
+		data[key] = data[key] || '_';
+	}
+
+	const message = [
+		data.email,
+		data.bio,
+		data.username,
+		requestTime,
+		profileImageHash || '',
+		coverImageHash || '',
+		data.facebook,
+		data.instagram,
+		data.twitter
+	].join('');
+
 	const signature = await get(appSigner).signMessage(message);
 
 	formData.append('nickname', '');
 	formData.append('email', data.email);
+	formData.append('bio', data.bio);
 	formData.append('username', data.username);
 	formData.append('request_time', requestTime);
+	data.profileImage && formData.append('image', data.profileImage);
+	data.coverImage && formData.append('cover', data.coverImage);
+	formData.append('facebook', data.facebook);
+	formData.append('instagram', data.instagram);
+	formData.append('twitter', data.twitter);
 	formData.append('signature', signature);
 
 	await axios.put(api + '/v1/accounts/' + address, formData);
