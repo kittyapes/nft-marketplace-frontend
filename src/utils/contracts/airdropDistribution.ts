@@ -21,7 +21,10 @@ import {
 	privateEscrowUnlock,
 	seedMerkleContractIsActive,
 	privateMerkleContractIsActive,
-	isAirdropClaiming
+	isAirdropClaiming,
+	idoEscrowUnlock,
+	idoMerkleContractIsActive,
+	idoClaimsArray
 } from '$stores/wallet';
 import { notifyError, notifySuccess } from '$utils/toast';
 import { ethers } from 'ethers';
@@ -33,10 +36,10 @@ export const getUTCSeconds = () => {
 	return UTCseconds;
 };
 
-const getDistributorAddress = (airdropType: 'public' | 'private' | 'ido' | 'seed') => {
+const getDistributorAddress = (airdropType: 'community' | 'private' | 'ido' | 'seed') => {
 	let distributorAddress = '';
 	switch (airdropType) {
-		case 'public':
+		case 'community':
 			distributorAddress = communityMerkleDistributorLockContract;
 			break;
 
@@ -62,7 +65,7 @@ const getDistributorAddress = (airdropType: 'public' | 'private' | 'ido' | 'seed
 
 // Check the time since deploy to determine if the user can claim for the current cliff
 export const checkClaimEligibility = async (
-	airdropType: 'public' | 'private' | 'ido' | 'seed',
+	airdropType: 'community' | 'private' | 'ido' | 'seed',
 	userAddress: string
 ) => {
 	try {
@@ -181,7 +184,7 @@ export const checkClaimEligibility = async (
 						timeToNextClaimInSeconds * 1000
 					);
 
-					if (airdropType === 'public') {
+					if (airdropType === 'community') {
 						communityEscrowUnlock.set(
 							get(communityEscrowUnlock) < timeToNextClaimInSeconds * 1000
 								? timeToNextClaimInSeconds * 1000
@@ -199,6 +202,12 @@ export const checkClaimEligibility = async (
 								? timeToNextClaimInSeconds * 1000
 								: get(privateEscrowUnlock)
 						);
+					} else if (airdropType === 'ido') {
+						idoEscrowUnlock.set(
+							get(idoEscrowUnlock) < timeToNextClaimInSeconds * 1000
+								? timeToNextClaimInSeconds * 1000
+								: get(idoEscrowUnlock)
+						);
 					}
 				} else {
 					reCheckFunc && clearTimeout(reCheckFunc);
@@ -206,7 +215,7 @@ export const checkClaimEligibility = async (
 			}
 
 			// Send this data to the svelte store for processing
-			if (airdropType === 'public') {
+			if (airdropType === 'community') {
 				communityClaimsArray.set(claimInfoArr);
 				communityMerkleContractIsActive.set(contractIsActive);
 			} else if (airdropType === 'seed') {
@@ -215,6 +224,9 @@ export const checkClaimEligibility = async (
 			} else if (airdropType === 'private') {
 				privateMerkleContractIsActive.set(contractIsActive);
 				privateClaimsArray.set(claimInfoArr);
+			} else if (airdropType === 'ido') {
+				idoMerkleContractIsActive.set(contractIsActive);
+				idoClaimsArray.set(claimInfoArr);
 			}
 			console.log(airdropType, claimInfoArr);
 
@@ -230,7 +242,7 @@ export const checkClaimEligibility = async (
 };
 
 // Claim for the user passing the merkle roots and proof arrays
-export const claimAirdropTokens = async (airdropType: 'public' | 'private' | 'seed') => {
+export const claimAirdropTokens = async (airdropType: 'community' | 'ido' | 'private' | 'seed') => {
 	isAirdropClaiming.set(true);
 
 	try {
@@ -242,10 +254,12 @@ export const claimAirdropTokens = async (airdropType: 'public' | 'private' | 'se
 		// params: AccIndex, accAddress, rootIndexes[], amounts[], merkleProofs[]
 
 		const claimsArray =
-			airdropType === 'public'
+			airdropType === 'community'
 				? get(communityClaimsArray)
 				: airdropType === 'private'
 				? get(privateClaimsArray)
+				: airdropType === 'ido'
+				? get(idoClaimsArray)
 				: airdropType === 'seed'
 				? get(seedClaimsArray)
 				: [];
