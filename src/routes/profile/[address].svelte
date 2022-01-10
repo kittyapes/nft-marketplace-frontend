@@ -5,9 +5,7 @@
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import Modal from '$lib/components/Modal.svelte';
 	import NftList from '$lib/components/NftList.svelte';
-	import NftPopup from '$lib/components/NftPopup.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import FreeNftPopup from '$lib/components/profile/FreeNFTPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
@@ -21,6 +19,7 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
+	import copyTextToClipboard from '$utils/copyTextToClipboard';
 
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	let selectedTab = 'CREATED NFTS';
@@ -99,7 +98,7 @@
 	<div class="flex mt-8">
 		<!-- Buttons -->
 		<div class="flex flex-col gap-3 h-[min-content] w-72 pt-10">
-			<Button variant="rounded-shadow" rounded --py="0.5rem" --px="1.5rem" --width="11rem">
+			<Button variant="rounded-shadow" rounded --py="0.5rem" --px="1.5rem" --width="11rem" on:click={() => copyTextToClipboard(address)}>
 				<div class="flex items-center">
 					<div class="flex-grow font-norma">
 						{shortenAddress(address)}
