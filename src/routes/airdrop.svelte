@@ -3,10 +3,12 @@
 
 	import ClaimTokens from '$lib/components/airdrop/ClaimTokens.svelte';
 	import ConnectWalletBanner from '$lib/components/airdrop/ConnectWalletBanner.svelte';
+	import ProceedStakePopup from '$lib/components/airdrop/ProceedStakePopup.svelte';
 	import AirdropDistributionSection from '$lib/sections/AirdropDistributionSection.svelte';
 	// import PlatformUsage from '$lib/components/airdrop/PlatformUsage.svelte';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
 	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
+	import { setPopup } from '$utils/popup';
 
 	$: walletConnected = !!$appSigner;
 
@@ -16,6 +18,9 @@
 	})($appSigner);
 
 	$: (async (address) => address && checkClaimEligibility('public', address))($currentUserAddress);
+
+	// USAGE
+	// setPopup(ProceedStakePopup, { props: { numberOfHinata: 40, duration: '40 days' } });
 </script>
 
 <div class="w-full min-h-full px-6">
