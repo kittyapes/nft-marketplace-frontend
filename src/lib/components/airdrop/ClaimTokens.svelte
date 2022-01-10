@@ -15,6 +15,7 @@
 	import Hint from '../Hint.svelte';
 	import ThemedCross from '$icons/themed-cross.svelte';
 	import daysFromNow from '$utils/daysFromNow';
+	import { stakeTokens } from '$utils/contracts/staking';
 
 	let publicClaimAmount = 0;
 	let publicEscrowed = 0;
@@ -51,7 +52,13 @@
 		return dateObj ? `${dateObj.days}D ${dateObj.hours}H ${dateObj.minutes}M` : 'N/A';
 	})(daysFromNow($publicEscrowUnlock));
 
-	const stakeDurationOptions = [{ label: '3MO' }, { label: '1YR' }, { label: '2YR' }];
+	const stakeDurationOptions = [
+		{ label: '3MO', duration: 7776000 },
+		{ label: '1YR', duration: 31104000 },
+		{ label: '2YR', duration: 62208000 }
+	];
+
+	let selectedDuration = stakeDurationOptions[1];
 
 	let stakeDurationHovered = false;
 </script>
@@ -139,7 +146,7 @@
 				<Button
 					rounded
 					gradient
-					on:click={() => alert('Implement Staking Capabilities')}
+					on:click={() => stakeTokens($userHinataBalance, selectedDuration.duration)}
 					disabled={$userHinataBalance <= 0}>Stake</Button
 				>
 			</div>
@@ -162,7 +169,12 @@
 						</div>
 					{/if}
 
-					<HorizontailOptionSwitcher options={stakeDurationOptions} defaultOptionIndex={1} />
+					<HorizontailOptionSwitcher
+						on:StakeDurationUpdated={(e) => (selectedDuration = e.detail)}
+						selected={selectedDuration}
+						options={stakeDurationOptions}
+						defaultOptionIndex={1}
+					/>
 				</div>
 			</div>
 

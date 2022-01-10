@@ -22,6 +22,7 @@
 		publicMerkleContractIsActive
 	} from '$stores/wallet';
 	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
+	import { stakeTokens } from '$utils/contracts/staking';
 	import daysFromNow from '$utils/daysFromNow';
 	import axios from 'axios';
 	import { ethers } from 'ethers';
@@ -202,7 +203,13 @@
 
 	$: (async (address) => address && fetchAll(address))($currentUserAddress);
 
-	const stakeDurationOptions = [{ label: '3MO' }, { label: '1YR' }, { label: '2YR' }];
+	const stakeDurationOptions = [
+		{ label: '3MO', duration: 7776000 },
+		{ label: '1YR', duration: 31104000 },
+		{ label: '2YR', duration: 62208000 }
+	];
+
+	let selectedDuration = stakeDurationOptions[1];
 
 	let stakeDurationHovered = false;
 </script>
@@ -265,7 +272,12 @@
 				<div style="font-weight: 450;" class="w-full pl-4">
 					{parseFloat($userHinataBalance.toFixed(2))} HINATA TOKENS
 				</div>
-				<Button gradient rounded>Stake</Button>
+				<Button
+					gradient
+					rounded
+					on:click={() => stakeTokens($userHinataBalance, selectedDuration.duration)}
+					disabled={$userHinataBalance <= 0}>Stake</Button
+				>
 			</div>
 
 			<div class="flex mt-8 items-center gap-x-14">
@@ -274,7 +286,12 @@
 					on:mouseenter={() => (stakeDurationHovered = true)}
 					on:mouseleave={() => (stakeDurationHovered = false)}
 				>
-					<HorizontailOptionSwitcher options={stakeDurationOptions} defaultOptionIndex={1} />
+					<HorizontailOptionSwitcher
+						on:StakeDurationUpdated={(e) => (selectedDuration = e.detail)}
+						selected={selectedDuration}
+						options={stakeDurationOptions}
+						defaultOptionIndex={1}
+					/>
 				</div>
 			</div>
 
