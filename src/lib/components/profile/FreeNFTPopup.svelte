@@ -83,9 +83,9 @@
 		</div>
 
 		<div class="text-sm text-center mt-8">
-			As a welcoming gift, please accept this free NFT from us to you!
+			Thanks for signing up! Choose your free NFT in either portrait or landscape.
 		</div>
-		<div class="text-xs opacity-70 mt-1">You pay the gas fee</div>
+		<!-- <div class="text-xs opacity-70 mt-1">You pay the gas fee</div> -->
 
 		<button
 			class="bg-gradient-to-r from-color-purple to-color-blue w-full py-4 rounded-3xl text-white uppercase mt-8
