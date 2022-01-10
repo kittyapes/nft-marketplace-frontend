@@ -51,3 +51,4 @@ TODOS
 - implement staking contract (using total amount of user's balance)
 - read waifu rewards balance from staking contract
 - prevent access to private page for users without balances in respective contracts/wallets
+- reenable private page access
