@@ -2,7 +2,7 @@ import {
 	HinataTokenAddress,
 	idoMerkleDistributorLockContract,
 	privateVestingMerkleDistributorLockContract,
-	publicMerkleDistributorLockContract,
+	communityMerkleDistributorLockContract,
 	seedVestingMerkleDistributorLockContract
 } from '$constants/contractAddresses';
 import { getDistributorContract } from '$utils/contracts/generalContractCalls';
@@ -37,7 +37,7 @@ const getDistributorAddress = (airdropType: 'public' | 'private' | 'ido' | 'seed
 	let distributorAddress = '';
 	switch (airdropType) {
 		case 'public':
-			distributorAddress = publicMerkleDistributorLockContract;
+			distributorAddress = communityMerkleDistributorLockContract;
 			break;
 
 		case 'private':
@@ -53,7 +53,7 @@ const getDistributorAddress = (airdropType: 'public' | 'private' | 'ido' | 'seed
 			break;
 
 		default:
-			distributorAddress = publicMerkleDistributorLockContract;
+			distributorAddress = communityMerkleDistributorLockContract;
 			break;
 	}
 
