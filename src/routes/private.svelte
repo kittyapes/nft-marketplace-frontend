@@ -10,16 +10,16 @@
 	import {
 		privateClaimsArray,
 		seedClaimsArray,
-		publicClaimsArray,
+		communityClaimsArray,
 		seedEscrowUnlock,
 		privateEscrowUnlock,
-		publicEscrowUnlock,
+		communityEscrowUnlock,
 		appSigner,
 		currentUserAddress,
 		userHinataBalance,
 		seedMerkleContractIsActive,
 		privateMerkleContractIsActive,
-		publicMerkleContractIsActive,
+		communityMerkleContractIsActive,
 		stakingWaifuRewards,
 		stakedHinataBalance
 	} from '$stores/wallet';
@@ -115,14 +115,14 @@
 	const publicUpdateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
 			publicHasClaimed =
-				$publicClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
-				$publicClaimsArray?.length;
+				$communityClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
+				$communityClaimsArray?.length;
 			if (publicHasClaimed) {
 				publicClaimAmount = 0;
 				publicEscrowed = 0;
 			} else {
 				publicClaimAmount = 0;
-				$publicClaimsArray.map((claimsObj) => {
+				$communityClaimsArray.map((claimsObj) => {
 					if (!claimsObj.user.hasClaimed && claimsObj.nextClaimDuration <= 0) {
 						publicClaimAmount += +ethers.utils.formatEther(claimsObj.user.amount);
 					} else if (!claimsObj.user.hasClaimed && claimsObj.nextClaimDuration > 0) {
@@ -133,7 +133,7 @@
 			}
 		}
 	};
-	$: publicUpdateValues($publicClaimsArray);
+	$: publicUpdateValues($communityClaimsArray);
 
 	$: parsedPublicEscrowUnlockDate = ((dateObj: {
 		days: number;
@@ -142,7 +142,7 @@
 		seconds: number;
 	}) => {
 		return dateObj ? `${dateObj.days}D ${dateObj.hours}H ${dateObj.minutes}M` : 'N/A';
-	})(daysFromNow($publicEscrowUnlock));
+	})(daysFromNow($communityEscrowUnlock));
 
 	$: parsedSeedEscrowUnlockDate = ((dateObj: {
 		days: number;
@@ -189,7 +189,7 @@
 			escrowTokensValue: publicEscrowed,
 			airdropType: 'public',
 			airdropHasClaimed: publicHasClaimed,
-			contractActive: $publicMerkleContractIsActive
+			contractActive: $communityMerkleContractIsActive
 		}
 	];
 

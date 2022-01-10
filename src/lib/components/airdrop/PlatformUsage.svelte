@@ -2,7 +2,7 @@
 	import { fade } from 'svelte/transition';
 	import Eth from '$icons/eth.svelte';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
-	import { appSigner, publicClaimsArray } from '$stores/wallet';
+	import { appSigner, communityClaimsArray } from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import Button from '../Button.svelte';
 

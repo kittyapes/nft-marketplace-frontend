@@ -6,7 +6,7 @@ import {
 	connectionDetails,
 	currentUserAddress,
 	externalProvider,
-	publicClaimsArray,
+	communityClaimsArray,
 	web3ModalInstance
 } from '$stores/wallet';
 import { ethers } from 'ethers';
@@ -251,7 +251,7 @@ export const refreshConnection = async () => {
 	appSigner.set(null);
 	appProvider.set(null);
 	// setPopup(null, null);
-	publicClaimsArray.set(null);
+	communityClaimsArray.set(null);
 
 	const web3Modal = get(web3ModalInstance) || initWeb3ModalInstance();
 

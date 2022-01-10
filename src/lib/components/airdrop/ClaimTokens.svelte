@@ -2,10 +2,10 @@
 	import Button from '../Button.svelte';
 	import { fade } from 'svelte/transition';
 	import {
-		publicMerkleContractIsActive,
-		publicClaimsArray,
+		communityMerkleContractIsActive,
+		communityClaimsArray,
 		userHinataBalance,
-		publicEscrowUnlock,
+		communityEscrowUnlock,
 		isAirdropClaiming,
 		stakedHinataBalance,
 		stakingWaifuRewards
@@ -26,14 +26,14 @@
 	const publicUpdateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
 			publicHasClaimed =
-				$publicClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
-				$publicClaimsArray?.length;
+				$communityClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
+				$communityClaimsArray?.length;
 			if (publicHasClaimed) {
 				publicClaimAmount = 0;
 				publicEscrowed = 0;
 			} else {
 				publicClaimAmount = 0;
-				$publicClaimsArray.map((claimsObj) => {
+				$communityClaimsArray.map((claimsObj) => {
 					if (!claimsObj.user.hasClaimed && claimsObj.nextClaimDuration <= 0) {
 						publicClaimAmount += +ethers.utils.formatEther(claimsObj.user.amount);
 					} else if (!claimsObj.user.hasClaimed && claimsObj.nextClaimDuration > 0) {
@@ -45,7 +45,7 @@
 		}
 	};
 
-	$: publicUpdateValues($publicClaimsArray);
+	$: publicUpdateValues($communityClaimsArray);
 	$: parsedPublicEscrowUnlockDate = ((dateObj: {
 		days: number;
 		hours: number;
@@ -53,7 +53,7 @@
 		seconds: number;
 	}) => {
 		return dateObj ? `${dateObj.days}D ${dateObj.hours}H ${dateObj.minutes}M` : 'N/A';
-	})(daysFromNow($publicEscrowUnlock));
+	})(daysFromNow($communityEscrowUnlock));
 
 	const stakeAllTokens = () => {
 		setPopup(ProceedStakePopup, {
@@ -85,7 +85,7 @@
 	let stakeDurationHovered = false;
 </script>
 
-{#if $userHinataBalance > 0 || publicClaimAmount > 0 || publicEscrowed > 0 || $publicClaimsArray?.length > 0}
+{#if $userHinataBalance > 0 || publicClaimAmount > 0 || publicEscrowed > 0 || $communityClaimsArray?.length > 0}
 	<div
 		class="w-full max-w-5xl m-auto bg-black bg-opacity-5 container border-4 border-black px-4 border-opacity-20 mt-12 py-11 rounded-2xl"
 		in:fade
@@ -110,14 +110,17 @@
 							gradient
 							rounded
 							on:click={() =>
-								!(!$publicMerkleContractIsActive || publicHasClaimed || publicClaimAmount <= 0) &&
-								claimAirdropTokens('public')}
+								!(
+									!$communityMerkleContractIsActive ||
+									publicHasClaimed ||
+									publicClaimAmount <= 0
+								) && claimAirdropTokens('public')}
 							disabled={$isAirdropClaiming ||
-								!$publicMerkleContractIsActive ||
+								!$communityMerkleContractIsActive ||
 								publicHasClaimed ||
 								publicClaimAmount <= 0}
 						>
-							{#if $publicMerkleContractIsActive}
+							{#if $communityMerkleContractIsActive}
 								{#if publicHasClaimed}
 									Already Claimed
 								{:else if !publicHasClaimed && publicClaimAmount > 0}

@@ -11,12 +11,12 @@ import {
 	appSigner,
 	currentUserAddress,
 	externalProvider,
-	publicMerkleContractIsActive,
+	communityMerkleContractIsActive,
 	privateClaimsArray,
 	seedClaimsArray,
-	publicClaimsArray,
+	communityClaimsArray,
 	web3ModalInstance,
-	publicEscrowUnlock,
+	communityEscrowUnlock,
 	seedEscrowUnlock,
 	privateEscrowUnlock,
 	seedMerkleContractIsActive,
@@ -182,10 +182,10 @@ export const checkClaimEligibility = async (
 					);
 
 					if (airdropType === 'public') {
-						publicEscrowUnlock.set(
-							get(publicEscrowUnlock) < timeToNextClaimInSeconds * 1000
+						communityEscrowUnlock.set(
+							get(communityEscrowUnlock) < timeToNextClaimInSeconds * 1000
 								? timeToNextClaimInSeconds * 1000
-								: get(publicEscrowUnlock)
+								: get(communityEscrowUnlock)
 						);
 					} else if (airdropType === 'seed') {
 						seedEscrowUnlock.set(
@@ -207,8 +207,8 @@ export const checkClaimEligibility = async (
 
 			// Send this data to the svelte store for processing
 			if (airdropType === 'public') {
-				publicClaimsArray.set(claimInfoArr);
-				publicMerkleContractIsActive.set(contractIsActive);
+				communityClaimsArray.set(claimInfoArr);
+				communityMerkleContractIsActive.set(contractIsActive);
 			} else if (airdropType === 'seed') {
 				seedMerkleContractIsActive.set(contractIsActive);
 				seedClaimsArray.set(claimInfoArr);
@@ -223,7 +223,7 @@ export const checkClaimEligibility = async (
 	} catch (err) {
 		console.log(airdropType, err);
 
-		publicClaimsArray.set(null);
+		communityClaimsArray.set(null);
 
 		return null;
 	}
@@ -243,7 +243,7 @@ export const claimAirdropTokens = async (airdropType: 'public' | 'private' | 'se
 
 		const claimsArray =
 			airdropType === 'public'
-				? get(publicClaimsArray)
+				? get(communityClaimsArray)
 				: airdropType === 'private'
 				? get(privateClaimsArray)
 				: airdropType === 'seed'

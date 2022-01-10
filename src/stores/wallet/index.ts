@@ -18,10 +18,16 @@ export const stakingWaifuRewards = writable<number>(0);
 export const isAirdropClaiming = writable<boolean>(false);
 
 // Airdrop
-export const publicEscrowUnlock = writable<number>(0);
-export const publicAirdropTokens = writable<number>(0);
-export const publicClaimsArray = writable<ClaimsObject[]>(null);
-export const publicMerkleContractIsActive = writable<boolean>(false);
+export const communityEscrowUnlock = writable<number>(0);
+export const communityAirdropTokens = writable<number>(0);
+export const communityClaimsArray = writable<ClaimsObject[]>(null);
+export const communityMerkleContractIsActive = writable<boolean>(false);
+
+// IDO/Public
+export const idoEscrowUnlock = writable<number>(0);
+export const idoAirdropTokens = writable<number>(0);
+export const idoClaimsArray = writable<ClaimsObject[]>(null);
+export const idoMerkleContractIsActive = writable<boolean>(false);
 
 // Seed
 export const seedEscrowUnlock = writable<number>(0);
