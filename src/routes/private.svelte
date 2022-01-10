@@ -38,7 +38,7 @@
 				.get(`/api/private-access?address=${userAddress}`)
 				.then((res) => {
 					if (!res.data.canAccess) {
-						browser && goto('/');
+						// browser && goto('/');
 					}
 				})
 				.catch((_err) => {
