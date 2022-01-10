@@ -6,7 +6,9 @@
 		publicClaimsArray,
 		userHinataBalance,
 		publicEscrowUnlock,
-		isAirdropClaiming
+		isAirdropClaiming,
+		stakedHinataBalance,
+		stakingWaifuRewards
 	} from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import { claimAirdropTokens } from '$utils/contracts/airdropDistribution';
@@ -14,9 +16,9 @@
 	import Hint from '../Hint.svelte';
 	import ThemedCross from '$icons/themed-cross.svelte';
 	import daysFromNow from '$utils/daysFromNow';
-	import { stakeTokens } from '$utils/contracts/staking';
+	import { claimWaifuRewards, stakeTokens } from '$utils/contracts/staking';
 	import { setPopup } from '$utils/popup';
-import ProceedStakePopup from './ProceedStakePopup.svelte';
+	import ProceedStakePopup from './ProceedStakePopup.svelte';
 
 	let publicClaimAmount = 0;
 	let publicEscrowed = 0;
@@ -63,10 +65,19 @@ import ProceedStakePopup from './ProceedStakePopup.svelte';
 		});
 	};
 
+	// use this for mainnet
+	/*
+	[
+			{ label: '3MO', duration: 7776000 },
+			{ label: '1YR', duration: 31104000 },
+			{ label: '2YR', duration: 62208000 }
+		];
+		*/
+
 	const stakeDurationOptions = [
-		{ label: '3MO', duration: 7776000 },
-		{ label: '1YR', duration: 31104000 },
-		{ label: '2YR', duration: 62208000 }
+		{ label: '15M', duration: 900 },
+		{ label: '30M', duration: 1800 },
+		{ label: '1H', duration: 3600 }
 	];
 
 	let selectedDuration = stakeDurationOptions[1];
@@ -195,13 +206,18 @@ import ProceedStakePopup from './ProceedStakePopup.svelte';
 		<div class="w-full h-px bg-black bg-opacity-20 mt-7" />
 
 		<div class="w-full pt-12 text-left pl-32 pr-16 max-w-3xl mx-auto">
-			<div class="font-bold uppercase">Your value balance</div>
+			<div class="font-bold uppercase">Your vault balance</div>
 
 			<div class="grid grid-cols-2 place-items-center">
-				<div class="font-semibold w-full pl-8 text-red-400">14,203 HiNATA TOKENS</div>
+				<div class="font-semibold w-full pl-8">
+					{parseFloat($stakedHinataBalance.toFixed(2))} HiNATA TOKENS
+				</div>
 				<Button
 					rounded
+					gradient
 					class="bg-gradient-to-r from-gray-300 to-transparent font-semibold text-[#777575]"
+					on:click={claimWaifuRewards}
+					disabled={$stakingWaifuRewards <= 0}
 				>
 					Claim
 				</Button>
@@ -209,7 +225,7 @@ import ProceedStakePopup from './ProceedStakePopup.svelte';
 
 			<div class="grid grid-cols-2 place-items-center mt-4">
 				<div />
-				<div class="uppercase text-red-400">17.2933921 Waifu</div>
+				<div class="uppercase">{parseFloat($stakingWaifuRewards.toFixed(2))} Waifu</div>
 			</div>
 
 			<p class="mt-8">

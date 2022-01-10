@@ -19,10 +19,12 @@
 		userHinataBalance,
 		seedMerkleContractIsActive,
 		privateMerkleContractIsActive,
-		publicMerkleContractIsActive
+		publicMerkleContractIsActive,
+		stakingWaifuRewards,
+		stakedHinataBalance
 	} from '$stores/wallet';
 	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
-	import { stakeTokens } from '$utils/contracts/staking';
+	import { claimWaifuRewards, stakeTokens } from '$utils/contracts/staking';
 	import daysFromNow from '$utils/daysFromNow';
 	import { setPopup } from '$utils/popup';
 	import axios from 'axios';
@@ -215,10 +217,19 @@
 		});
 	};
 
+	// use this for mainnet
+	/*
+	[
+			{ label: '3MO', duration: 7776000 },
+			{ label: '1YR', duration: 31104000 },
+			{ label: '2YR', duration: 62208000 }
+		];
+		*/
+
 	const stakeDurationOptions = [
-		{ label: '3MO', duration: 7776000 },
-		{ label: '1YR', duration: 31104000 },
-		{ label: '2YR', duration: 62208000 }
+		{ label: '15M', duration: 900 },
+		{ label: '30M', duration: 1800 },
+		{ label: '1H', duration: 3600 }
 	];
 
 	let selectedDuration = stakeDurationOptions[1];
@@ -322,10 +333,17 @@
 		{/if}
 
 		<!-- Vault claim section -->
-		<GridOptionContainer title="Vault" hinataValue="14,203">
+		<GridOptionContainer
+			title="Vault"
+			hinataValue={parseFloat($stakedHinataBalance.toFixed(2)).toString()}
+		>
 			<div class="grid grid-cols-2 place-items-center gap-x-14">
-				<div style="font-weight: 450;" class="w-full pl-4 text-red-400">19.2938433 WAIFU</div>
-				<Button gradient rounded>Claim</Button>
+				<div style="font-weight: 450;" class="w-full pl-4">
+					{parseFloat($stakingWaifuRewards.toFixed(2))} WAIFU
+				</div>
+				<Button gradient rounded on:click={claimWaifuRewards} disabled={$stakingWaifuRewards <= 0}
+					>Claim</Button
+				>
 			</div>
 
 			<p class="mt-8">

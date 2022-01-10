@@ -10,6 +10,10 @@ export const appSigner = writable<ethers.Signer>(null);
 export const userHinataBalance = writable<number>(0);
 export const currentUserAddress = writable<string>(null);
 
+// Staking
+export const stakedHinataBalance = writable<number>(0);
+export const stakingWaifuRewards = writable<number>(0);
+
 // Airdrop is claiming
 export const isAirdropClaiming = writable<boolean>(false);
 
