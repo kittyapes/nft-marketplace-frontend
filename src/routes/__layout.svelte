@@ -23,6 +23,14 @@
 	import { getAllTokenBalances } from '$utils/contracts/tokenBalances';
 
 	onMount(async () => {
+		// Check for whether user has access/has provided password
+		if (import.meta.env.VITE_IS_PROTECTED === 'true') {
+			console.log(import.meta.env.VITE_SITE_PASSWORD, $page.query);
+			if ($page.query.get('password') !== import.meta.env.VITE_SITE_PASSWORD) {
+				// return window.location.replace('https://hinata.foundation');
+			}
+		}
+
 		// Keep connection live as long as cachedProvider is present (even after reloads)
 		await refreshConnection();
 	});
