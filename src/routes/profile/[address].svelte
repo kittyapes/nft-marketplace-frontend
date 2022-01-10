@@ -7,10 +7,9 @@
 	import Button from '$lib/components/Button.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
-	import FreeNftPopup from '$lib/components/profile/FreeNFTPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
-	import { profileData } from '$stores/user';
+	import { profileCompletionProgress, profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { isAdmin } from '$utils/api/login';
 	import { fetchProfileData, ProfileData } from '$utils/api/profile';
@@ -20,6 +19,7 @@
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
+	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	let selectedTab = 'CREATED NFTS';
@@ -57,7 +57,10 @@
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
 	$: firstTimeUser = $profileData?.username.includes('great_gatsby');
 
-	setPopup(FreeNftPopup);
+	// Display profile completion popup when profile not completed
+	$: $profileCompletionProgress !== null &&
+		$profileCompletionProgress < 100 &&
+		setPopup(ProfileProgressPopup);
 </script>
 
 <div class="h-72 bg-color-gray-light">
@@ -98,7 +101,14 @@
 	<div class="flex mt-8">
 		<!-- Buttons -->
 		<div class="flex flex-col gap-3 h-[min-content] w-72 pt-10">
-			<Button variant="rounded-shadow" rounded --py="0.5rem" --px="1.5rem" --width="11rem" on:click={() => copyTextToClipboard(address)}>
+			<Button
+				variant="rounded-shadow"
+				rounded
+				--py="0.5rem"
+				--px="1.5rem"
+				--width="11rem"
+				on:click={() => copyTextToClipboard(address)}
+			>
 				<div class="flex items-center">
 					<div class="flex-grow font-norma">
 						{shortenAddress(address)}
