@@ -10,18 +10,18 @@
 	import {
 		privateClaimsArray,
 		seedClaimsArray,
-		communityClaimsArray,
 		seedEscrowUnlock,
 		privateEscrowUnlock,
-		communityEscrowUnlock,
 		appSigner,
 		currentUserAddress,
 		userHinataBalance,
 		seedMerkleContractIsActive,
 		privateMerkleContractIsActive,
-		communityMerkleContractIsActive,
+		idoMerkleContractIsActive,
 		stakingWaifuRewards,
-		stakedHinataBalance
+		stakedHinataBalance,
+		idoClaimsArray,
+		idoEscrowUnlock
 	} from '$stores/wallet';
 	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
 	import { claimWaifuRewards, stakeTokens } from '$utils/contracts/staking';
@@ -109,40 +109,41 @@
 
 	$: seedUpdateValues($seedClaimsArray);
 
-	let publicClaimAmount = 0;
-	let publicEscrowed = 0;
-	let publicHasClaimed = false;
-	const publicUpdateValues = (claims: ClaimsObject[]) => {
+	// IDO or Public Airdrop
+	let idoClaimAmount = 0;
+	let idoEscrowed = 0;
+	let idoPublicHasClaimed = false;
+	const idoUpdateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
-			publicHasClaimed =
-				$communityClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
-				$communityClaimsArray?.length;
-			if (publicHasClaimed) {
-				publicClaimAmount = 0;
-				publicEscrowed = 0;
+			idoPublicHasClaimed =
+				$idoClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
+				$idoClaimsArray?.length;
+			if (idoPublicHasClaimed) {
+				idoClaimAmount = 0;
+				idoEscrowed = 0;
 			} else {
-				publicClaimAmount = 0;
-				$communityClaimsArray.map((claimsObj) => {
+				idoClaimAmount = 0;
+				$idoClaimsArray.map((claimsObj) => {
 					if (!claimsObj.user.hasClaimed && claimsObj.nextClaimDuration <= 0) {
-						publicClaimAmount += +ethers.utils.formatEther(claimsObj.user.amount);
+						idoClaimAmount += +ethers.utils.formatEther(claimsObj.user.amount);
 					} else if (!claimsObj.user.hasClaimed && claimsObj.nextClaimDuration > 0) {
 						// Remaining escrowed tokens
-						publicEscrowed += +ethers.utils.formatEther(claimsObj.user.amount);
+						idoEscrowed += +ethers.utils.formatEther(claimsObj.user.amount);
 					}
 				});
 			}
 		}
 	};
-	$: publicUpdateValues($communityClaimsArray);
+	$: idoUpdateValues($idoClaimsArray);
 
-	$: parsedPublicEscrowUnlockDate = ((dateObj: {
+	$: parsedIdoEscrowUnlockDate = ((dateObj: {
 		days: number;
 		hours: number;
 		minutes: number;
 		seconds: number;
 	}) => {
 		return dateObj ? `${dateObj.days}D ${dateObj.hours}H ${dateObj.minutes}M` : 'N/A';
-	})(daysFromNow($communityEscrowUnlock));
+	})(daysFromNow($idoEscrowUnlock));
 
 	$: parsedSeedEscrowUnlockDate = ((dateObj: {
 		days: number;
@@ -184,19 +185,19 @@
 		},
 		{
 			title: 'Public',
-			nextEscrowUnlock: parsedPublicEscrowUnlockDate,
-			claimTokensValue: publicClaimAmount,
-			escrowTokensValue: publicEscrowed,
-			airdropType: 'public',
-			airdropHasClaimed: publicHasClaimed,
-			contractActive: $communityMerkleContractIsActive
+			nextEscrowUnlock: parsedIdoEscrowUnlockDate,
+			claimTokensValue: idoClaimAmount,
+			escrowTokensValue: idoEscrowed,
+			airdropType: 'ido',
+			airdropHasClaimed: idoPublicHasClaimed,
+			contractActive: $idoMerkleContractIsActive
 		}
 	];
 
 	// Check For eligibility
 	// Fetch for all
 	const fetchAll = (userAddress: string) => {
-		['seed', 'public', 'private'].map((item: 'public' | 'seed' | 'private') => {
+		['seed', 'ido', 'private'].map((item: 'ido' | 'seed' | 'private') => {
 			checkClaimEligibility(item, userAddress);
 		});
 	};

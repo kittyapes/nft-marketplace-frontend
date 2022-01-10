@@ -33,7 +33,7 @@ interface PrivatePageSplitOptions {
 	nextEscrowUnlock: string;
 	claimTokensValue: number;
 	escrowTokensValue: number;
-	airdropType: 'seed' | 'private' | 'ido' | 'community';
+	airdropType: 'seed' | 'private' | 'ido';
 	airdropHasClaimed: boolean;
 	contractActive: boolean;
 }

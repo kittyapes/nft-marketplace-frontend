@@ -14,10 +14,12 @@
 
 	// // Check For eligibility
 	$: (async (signer) => {
-		return browser && signer && checkClaimEligibility('public', await signer.getAddress());
+		return browser && signer && checkClaimEligibility('community', await signer.getAddress());
 	})($appSigner);
 
-	$: (async (address) => address && checkClaimEligibility('public', address))($currentUserAddress);
+	$: (async (address) => address && checkClaimEligibility('community', address))(
+		$currentUserAddress
+	);
 
 	// USAGE
 	// setPopup(ProceedStakePopup, { props: { numberOfHinata: 40, duration: '40 days' } });

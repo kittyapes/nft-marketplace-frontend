@@ -7,7 +7,7 @@
 		nextEscrowUnlock: string,
 		claimTokensValue: number,
 		escrowTokensValue: number,
-		airdropType: 'public' | 'seed' | 'private',
+		airdropType: 'ido' | 'seed' | 'private',
 		airdropHasClaimed: boolean,
 		contractActive: boolean;
 </script>

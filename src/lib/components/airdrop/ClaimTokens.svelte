@@ -20,33 +20,33 @@
 	import { setPopup } from '$utils/popup';
 	import ProceedStakePopup from './ProceedStakePopup.svelte';
 
-	let publicClaimAmount = 0;
-	let publicEscrowed = 0;
-	let publicHasClaimed = false;
-	const publicUpdateValues = (claims: ClaimsObject[]) => {
+	let communityClaimAmount = 0;
+	let communityEscrowed = 0;
+	let communityHasClaimed = false;
+	const communityUpdateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
-			publicHasClaimed =
+			communityHasClaimed =
 				$communityClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
 				$communityClaimsArray?.length;
-			if (publicHasClaimed) {
-				publicClaimAmount = 0;
-				publicEscrowed = 0;
+			if (communityHasClaimed) {
+				communityClaimAmount = 0;
+				communityEscrowed = 0;
 			} else {
-				publicClaimAmount = 0;
+				communityClaimAmount = 0;
 				$communityClaimsArray.map((claimsObj) => {
 					if (!claimsObj.user.hasClaimed && claimsObj.nextClaimDuration <= 0) {
-						publicClaimAmount += +ethers.utils.formatEther(claimsObj.user.amount);
+						communityClaimAmount += +ethers.utils.formatEther(claimsObj.user.amount);
 					} else if (!claimsObj.user.hasClaimed && claimsObj.nextClaimDuration > 0) {
 						// Remaining escrowed tokens
-						publicEscrowed += +ethers.utils.formatEther(claimsObj.user.amount);
+						communityEscrowed += +ethers.utils.formatEther(claimsObj.user.amount);
 					}
 				});
 			}
 		}
 	};
 
-	$: publicUpdateValues($communityClaimsArray);
-	$: parsedPublicEscrowUnlockDate = ((dateObj: {
+	$: communityUpdateValues($communityClaimsArray);
+	$: parsedCommunityEscrowUnlockDate = ((dateObj: {
 		days: number;
 		hours: number;
 		minutes: number;
@@ -85,7 +85,7 @@
 	let stakeDurationHovered = false;
 </script>
 
-{#if $userHinataBalance > 0 || publicClaimAmount > 0 || publicEscrowed > 0 || $communityClaimsArray?.length > 0}
+{#if $userHinataBalance > 0 || communityClaimAmount > 0 || communityEscrowed > 0 || $communityClaimsArray?.length > 0}
 	<div
 		class="w-full max-w-5xl m-auto bg-black bg-opacity-5 container border-4 border-black px-4 border-opacity-20 mt-12 py-11 rounded-2xl"
 		in:fade
@@ -103,7 +103,7 @@
 			<div class="w-full flex flex-col gap-4 mt-5">
 				<div class="w-96 flex justify-between items-center mx-auto">
 					<span class="font-bold tracking-wider w-3/5"
-						>{parseFloat(publicClaimAmount.toFixed(2))} HiNATA TOKENS</span
+						>{parseFloat(communityClaimAmount.toFixed(2))} HiNATA TOKENS</span
 					>
 					<div class="w-36">
 						<Button
@@ -112,18 +112,18 @@
 							on:click={() =>
 								!(
 									!$communityMerkleContractIsActive ||
-									publicHasClaimed ||
-									publicClaimAmount <= 0
-								) && claimAirdropTokens('public')}
+									communityHasClaimed ||
+									communityClaimAmount <= 0
+								) && claimAirdropTokens('community')}
 							disabled={$isAirdropClaiming ||
 								!$communityMerkleContractIsActive ||
-								publicHasClaimed ||
-								publicClaimAmount <= 0}
+								communityHasClaimed ||
+								communityClaimAmount <= 0}
 						>
 							{#if $communityMerkleContractIsActive}
-								{#if publicHasClaimed}
+								{#if communityHasClaimed}
 									Already Claimed
-								{:else if !publicHasClaimed && publicClaimAmount > 0}
+								{:else if !communityHasClaimed && communityClaimAmount > 0}
 									Claim
 								{:else}
 									Not Eligible
@@ -137,7 +137,7 @@
 
 				<div class="w-96 flex justify-between items-center mx-auto">
 					<span class="font-bold tracking-wider w-3/5"
-						>{parseFloat(publicEscrowed.toFixed(2))} HiNATA TOKENS</span
+						>{parseFloat(communityEscrowed.toFixed(2))} HiNATA TOKENS</span
 					>
 					<div class="w-36">
 						<Button
@@ -152,7 +152,7 @@
 				<div class="w-96 flex justify-between items-center mx-auto mt-4">
 					<div class="font-semibold text-sm uppercase">Escrow is Unlocked In...</div>
 					<div class="text-xl font-bold w-36">
-						{parsedPublicEscrowUnlockDate}
+						{parsedCommunityEscrowUnlockDate}
 					</div>
 				</div>
 			</div>
