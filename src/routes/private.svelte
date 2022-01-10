@@ -24,10 +24,12 @@
 	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
 	import { stakeTokens } from '$utils/contracts/staking';
 	import daysFromNow from '$utils/daysFromNow';
+	import { setPopup } from '$utils/popup';
 	import axios from 'axios';
 	import { ethers } from 'ethers';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import ProceedStakePopup from '$lib/components/airdrop/ProceedStakePopup.svelte';
 
 	// Access to private route
 	const checkAccessibilityOfRoute = (userAddress: string) => {
@@ -203,6 +205,16 @@
 
 	$: (async (address) => address && fetchAll(address))($currentUserAddress);
 
+	const stakeAllTokens = () => {
+		setPopup(ProceedStakePopup, {
+			props: {
+				numberOfHinata: $userHinataBalance,
+				duration: selectedDuration.label,
+				onContinue: () => stakeTokens($userHinataBalance, selectedDuration.duration)
+			}
+		});
+	};
+
 	const stakeDurationOptions = [
 		{ label: '3MO', duration: 7776000 },
 		{ label: '1YR', duration: 31104000 },
@@ -272,11 +284,8 @@
 				<div style="font-weight: 450;" class="w-full pl-4">
 					{parseFloat($userHinataBalance.toFixed(2))} HINATA TOKENS
 				</div>
-				<Button
-					gradient
-					rounded
-					on:click={() => stakeTokens($userHinataBalance, selectedDuration.duration)}
-					disabled={$userHinataBalance <= 0}>Stake</Button
+				<Button gradient rounded on:click={stakeAllTokens} disabled={$userHinataBalance <= 0}
+					>Stake</Button
 				>
 			</div>
 

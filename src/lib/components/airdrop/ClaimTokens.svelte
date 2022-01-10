@@ -2,7 +2,6 @@
 	import Button from '../Button.svelte';
 	import { fade } from 'svelte/transition';
 	import {
-		publicAirdropTokens,
 		publicMerkleContractIsActive,
 		publicClaimsArray,
 		userHinataBalance,
@@ -16,6 +15,8 @@
 	import ThemedCross from '$icons/themed-cross.svelte';
 	import daysFromNow from '$utils/daysFromNow';
 	import { stakeTokens } from '$utils/contracts/staking';
+	import { setPopup } from '$utils/popup';
+import ProceedStakePopup from './ProceedStakePopup.svelte';
 
 	let publicClaimAmount = 0;
 	let publicEscrowed = 0;
@@ -51,6 +52,16 @@
 	}) => {
 		return dateObj ? `${dateObj.days}D ${dateObj.hours}H ${dateObj.minutes}M` : 'N/A';
 	})(daysFromNow($publicEscrowUnlock));
+
+	const stakeAllTokens = () => {
+		setPopup(ProceedStakePopup, {
+			props: {
+				numberOfHinata: $userHinataBalance,
+				duration: selectedDuration.label,
+				onContinue: () => stakeTokens($userHinataBalance, selectedDuration.duration)
+			}
+		});
+	};
 
 	const stakeDurationOptions = [
 		{ label: '3MO', duration: 7776000 },
@@ -143,11 +154,8 @@
 				<div class="font-semibold w-full pl-8">
 					{parseFloat($userHinataBalance.toFixed(2))} HiNATA TOKENS
 				</div>
-				<Button
-					rounded
-					gradient
-					on:click={() => stakeTokens($userHinataBalance, selectedDuration.duration)}
-					disabled={$userHinataBalance <= 0}>Stake</Button
+				<Button rounded gradient on:click={stakeAllTokens} disabled={$userHinataBalance <= 0}
+					>Stake</Button
 				>
 			</div>
 

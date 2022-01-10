@@ -17,7 +17,12 @@
 </script>
 
 <div class="w-[600px] h-[260px] bg-white p-8 rounded-2xl">
-	<div class="font-bold text-lg uppercase text-center">
+	<div class="title">Stake Your Tokens</div>
+	<div class="text-md mt-8 font-bold text-center">
+		You are about to stake <span class="gradient-text">{numberOfHinata}</span> for
+		<span class="gradient-text">{duration}</span>
+	</div>
+	<!-- <div class="font-bold text-lg uppercase text-center">
 		You are about to <br /> stake
 		<span class="text-xl">
 			<span class="gradient-text">{numberOfHinata}</span>
@@ -25,7 +30,7 @@
 			<span class="gradient-text">{duration}</span>
 			.
 		</span>
-	</div>
+	</div> -->
 
 	<div class="flex gap-x-4 mt-16">
 		<button
@@ -43,3 +48,9 @@
 		</button>
 	</div>
 </div>
+
+<style>
+	.title {
+		@apply uppercase font-bold text-2xl text-center;
+	}
+</style>
