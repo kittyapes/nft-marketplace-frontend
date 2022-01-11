@@ -1,4 +1,6 @@
 <script lang="ts">
+	import daysFromNow from '$utils/daysFromNow';
+
 	import { closePopup } from '$utils/popup';
 
 	export let numberOfHinata: number;
@@ -16,23 +18,15 @@
 	}
 </script>
 
-<div class="w-[600px] h-[260px] bg-white p-8 rounded-2xl">
-	<div class="title">Stake Your Tokens</div>
-	<div class="text-md mt-8 font-bold text-center">
-		You are about to stake <span class="gradient-text">{numberOfHinata}</span> for
-		<span class="gradient-text">{duration}</span>
+<div class="w-[500px] h-[375px] bg-white p-8 rounded-2xl flex flex-col justify-evenly items-center">
+	<div class="text-md mt-8 font-medium text-center">
+		You are about to stake <span class="gradient-text">{numberOfHinata}</span> $HiNATA for
+		<span class="gradient-text">{daysFromNow(duration).days}</span>
+		days. You will not be able to access these funds until the lockup period ends.
 	</div>
-	<!-- <div class="font-bold text-lg uppercase text-center">
-		You are about to <br /> stake
-		<span class="text-xl">
-			<span class="gradient-text">{numberOfHinata}</span>
-			HINATA for
-			<span class="gradient-text">{duration}</span>
-			.
-		</span>
-	</div> -->
+	<div class="text-md mt-8 font-medium text-center">Are you sure you want to proceed?</div>
 
-	<div class="flex gap-x-4 mt-16">
+	<div class="flex gap-x-4 w-full border-t-2 pt-5">
 		<button
 			class="rounded-full py-4 w-1/2 mx-auto uppercase block border-2 border-black font-semibold transition-btn"
 			on:click={handleCancel}

@@ -59,7 +59,7 @@
 		setPopup(ProceedStakePopup, {
 			props: {
 				numberOfHinata: $userHinataBalance,
-				duration: selectedDuration.label,
+				duration: selectedDuration.duration,
 				onContinue: () => stakeTokens($userHinataBalance, selectedDuration.duration)
 			}
 		});
