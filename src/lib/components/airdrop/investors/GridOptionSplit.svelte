@@ -24,7 +24,7 @@
 	<!-- Rright box -->
 	<div class="w-auto p-14">
 		<div class="w-full grid grid-cols-2 grid-rows-3 mt-7 gap-x-14 gap-y-6">
-			<div class="uppercase font-semibold text-xs self-center">Next escrow unlock is...</div>
+			<div class="uppercase font-semibold text-xs self-center">Escrow unlock in...</div>
 			<div class="font-bold text-xl self self-center">{nextEscrowUnlock}</div>
 
 			<div class="uppercase font-bold self-center">
