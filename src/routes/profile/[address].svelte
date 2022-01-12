@@ -20,6 +20,7 @@
 	import { fade } from 'svelte/transition';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
+	import axios from 'axios';
 
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	let selectedTab = 'CREATED NFTS';
@@ -61,6 +62,19 @@
 	$: $profileCompletionProgress !== null &&
 		$profileCompletionProgress < 100 &&
 		setPopup(ProfileProgressPopup);
+
+	const getUserNfts = async (userAddress: string) => {
+		try {
+			const nftList = (await axios.get(`/api/nfts/user/${userAddress}`)).data;
+			console.log(nftList);
+			return nftList;
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
+	};
+
+	$: ((userAddress: string) => userAddress && getUserNfts(userAddress))($currentUserAddress);
 </script>
 
 <div class="h-72 bg-color-gray-light">
