@@ -24,11 +24,17 @@
 
 	onMount(async () => {
 		// Check for whether user has access/has provided password
-		if (import.meta.env.VITE_IS_PROTECTED === 'true') {
-			console.log(import.meta.env.VITE_SITE_PASSWORD, $page.query);
-			if ($page.query.get('password') !== import.meta.env.VITE_SITE_PASSWORD) {
-				// return window.location.replace('https://hinata.foundation');
+		if (import.meta.env.VITE_LOCK_SITE === 'true') {
+			console.log(import.meta.env.VITE_SITE_PASSWORD, import.meta.env.VITE_LOCK_SITE);
+
+			if (
+				localStorage.getItem('ewjbasdjasdjhewh') !== 'true' &&
+				prompt('Enter password to continue') !== import.meta.env.VITE_SITE_PASSWORD
+			) {
+				return window.location.replace('https://hinata.foundation');
 			}
+
+			localStorage.setItem('ewjbasdjasdjhewh', 'true');
 		}
 
 		// Keep connection live as long as cachedProvider is present (even after reloads)
