@@ -18,6 +18,10 @@
 	import { profileData, refreshProfileData } from '$stores/user';
 	import { setPopup } from '$utils/popup';
 	import FreeNftPopup from '$lib/components/profile/FreeNFTPopup.svelte';
+	import Web from '$icons/socials/web.svelte';
+	import Pixiv from '$icons/socials/pixiv.svelte';
+	import Deviantart from '$icons/socials/deviantart.svelte';
+	import Artstation from '$icons/socials/artstation.svelte';
 
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
@@ -76,7 +80,11 @@
 				imageUrl: data.imageUrl,
 				coverUrl: data.coverUrl,
 				profileImage: null,
-				coverImage: null
+				coverImage: null,
+				socialEmail: data.socialEmail,
+				pixiv: data.pixiv,
+				deviantart: data.deviantart,
+				artstation: data.artstation
 			} as EditableProfileData;
 
 			fetchedDataStore.set(cloneDeep(localData));
@@ -166,8 +174,8 @@
 			<div id="form-container" class="grid gap-y-6 mt-16">
 				<div class="grid grid-cols-2">
 					<div>
-						<div class="input-label">Add your username</div>
-						<div class="text-sm -mt-1 uppercase">(Mandatory)</div>
+						<div class="input-label">Username</div>
+						<div class="tagline uppercase">Mandatory</div>
 					</div>
 
 					<input
@@ -193,10 +201,10 @@
 						transition flex items-center"
 						class:brightness-100={$localDataStore.email}
 					>
-						Add your email
+						Email
 					</div>
 					<input
-						type="text"
+						type="email"
 						class="input input-gray-outline"
 						placeholder="example@email.com"
 						bind:value={$localDataStore.email}
@@ -208,7 +216,7 @@
 						class="input-label gradient-text brightness-0 transition"
 						class:brightness-100={$localDataStore.bio}
 					>
-						Add your bio
+						Bio
 					</div>
 					<TextArea
 						outline
@@ -223,22 +231,30 @@
 						class="input-label gradient-text brightness-0 transition"
 						class:brightness-100={isProfileImage}
 					>
-						Upload a <br /> profile image
+						PROFILE <br /> PICTURE
+						<div class="tagline">gif, png, jpg</div>
 					</div>
-					<DragDropImage
-						bind:blob={$localDataStore.profileImage}
-						currentImgUrl={$fetchedDataStore.imageUrl}
-					/>
+					<div class="flex w-full flex-col">
+						<DragDropImage
+							bind:blob={$localDataStore.profileImage}
+							currentImgUrl={$fetchedDataStore.imageUrl}
+						/>
+						<div class="tagline w-full mt-2 text-center">180x180 px</div>
+					</div>
 				</div>
 
 				<div class="grid grid-cols-2">
 					<div class="input-label gradient-text brightness-0" class:brightness-100={isCoverImage}>
-						Upload a <br /> background image
+						BANNER
+						<div class="tagline">png, jpg</div>
 					</div>
-					<DragDropImage
-						bind:blob={$localDataStore.coverImage}
-						currentImgUrl={$fetchedDataStore.coverUrl}
-					/>
+					<div class="flex w-full flex-col">
+						<DragDropImage
+							bind:blob={$localDataStore.coverImage}
+							currentImgUrl={$fetchedDataStore.coverUrl}
+						/>
+						<div class="tagline w-full mt-2 text-center">2550x290 px</div>
+					</div>
 				</div>
 
 				<div class="grid grid-cols-2">
@@ -272,6 +288,46 @@
 								bind:value={$localDataStore.twitter}
 							/>
 						</div>
+
+						<div>
+							<Web />
+							<input
+								type="email"
+								class="input input-gray-outline"
+								placeholder="Personal/Business Email"
+								bind:value={$localDataStore.socialEmail}
+							/>
+						</div>
+
+						<div>
+							<Pixiv />
+							<input
+								type="text"
+								class="input input-gray-outline"
+								placeholder="Pixiv link"
+								bind:value={$localDataStore.pixiv}
+							/>
+						</div>
+
+						<div>
+							<Deviantart />
+							<input
+								type="text"
+								class="input input-gray-outline"
+								placeholder="Deviantart link"
+								bind:value={$localDataStore.deviantart}
+							/>
+						</div>
+
+						<div>
+							<Artstation />
+							<input
+								type="text"
+								class="input input-gray-outline"
+								placeholder="Artstation link"
+								bind:value={$localDataStore.artstation}
+							/>
+						</div>
 					</div>
 
 					<div
@@ -279,6 +335,7 @@
 						order-first transition"
 					>
 						Social links
+						<div class="tagline gray-text">optional</div>
 					</div>
 				</div>
 			</div>
@@ -321,5 +378,13 @@
 
 	#socials-container > div > :global(svg) {
 		@apply h-12;
+	}
+
+	.tagline {
+		@apply text-color-gray-accent text-[10px] lowercase;
+	}
+
+	.gray-text {
+		color: #a9a8a8 !important;
 	}
 </style>

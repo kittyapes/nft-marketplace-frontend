@@ -45,7 +45,7 @@
 <button
 	id="container"
 	class="border-2 rounded-2xl border-dashed h-36 flex items-center justify-center overflow-hidden
-	select-none"
+	select-none {$$props.class}"
 	on:click={() => fileInput.click()}
 	on:drop={onDrop}
 	on:dragover={onDragOver}
@@ -68,7 +68,7 @@
 
 <input type="file" accept={acceptedImages} class="hidden" bind:this={fileInput} bind:files />
 
-<style>
+<style lang="postcss">
 	#container {
 		@apply transition duration-200;
 	}

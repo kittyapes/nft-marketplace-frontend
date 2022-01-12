@@ -29,6 +29,13 @@ export interface ProfileData {
 	instagram: string;
 	facebook: string;
 	twitter: string;
+
+
+	// new socials
+	socialEmail: string;
+	pixiv: string;
+	deviantart: string;
+	artstation: string;
 }
 
 export async function fetchProfileData(address: string) {
@@ -66,6 +73,12 @@ export interface EditableProfileData {
 	twitter: string;
 	imageUrl: string;
 	coverUrl: string;
+
+	// new socials
+	socialEmail: string;
+	pixiv: string;
+	deviantart: string;
+	artstation: string;
 }
 
 function readFileAsync(file) {
@@ -112,7 +125,11 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 		coverImageHash || '',
 		data.facebook,
 		data.instagram,
-		data.twitter
+		data.twitter,
+		data.socialEmail,
+		data.pixiv,
+		data.deviantart,
+		data.artstation
 	].join('');
 
 	const signature = await get(appSigner).signMessage(message);
@@ -127,6 +144,10 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	formData.append('facebook', data.facebook);
 	formData.append('instagram', data.instagram);
 	formData.append('twitter', data.twitter);
+	formData.append('socialEmail', data.socialEmail);
+	formData.append('pixiv', data.pixiv);
+	formData.append('deviantart', data.deviantart);
+	formData.append('artstation', data.artstation);
 	formData.append('signature', signature);
 
 	await axios.put(api + '/v1/accounts/' + address, formData);
