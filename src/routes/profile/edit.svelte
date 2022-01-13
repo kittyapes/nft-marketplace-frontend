@@ -101,8 +101,8 @@
 		}
 	}
 
-	let isProfileImage = false;
-	let isCoverImage = false;
+	$: isProfileImage = !!$localDataStore?.profileImage;
+	$: isCoverImage = !!$localDataStore?.coverImage;
 
 	$: browser && $profileData && useProfileData($profileData);
 	$: profileCompletionProgress =
