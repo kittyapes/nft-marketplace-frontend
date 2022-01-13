@@ -8,6 +8,8 @@
 		goto('/profile/edit');
 		closePopup();
 	}
+
+	$: progress = $profileCompletionProgress === null ? 'N/A' : $profileCompletionProgress;
 </script>
 
 <div class="w-[700px] h-[420px] bg-white rounded-3xl flex flex-col justify-center">
@@ -19,7 +21,7 @@
 
 	<div class="font-bold text-center mt-6 text-color-black">
 		Profile completion progress:
-		<span class="gradient-text"> {$profileCompletionProgress || 'N/A'}%</span>
+		<span class="gradient-text">{progress}%</span>
 	</div>
 
 	<div class="w-4/5 mx-auto mt-2">
