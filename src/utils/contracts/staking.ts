@@ -6,6 +6,7 @@ import {
 	stakingWaifuRewards
 } from '$stores/wallet';
 import daysFromNow from '$utils/daysFromNow';
+import { setPopup } from '$utils/popup';
 import { notifyError, notifySuccess } from '$utils/toast';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
@@ -16,17 +17,16 @@ export const stakeTokens = async (tokensToStake: number, durationLockUp: number)
 	try {
 		const stakingContract = getStakingContract(get(appSigner));
 
-		const txt = await stakingContract.stake(
-			ethers.utils.parseEther(tokensToStake.toString()),
-			ethers.utils.parseEther(durationLockUp.toString())
-		);
+		const txt = await stakingContract.stake(tokensToStake, durationLockUp);
 
-		txt.wait(1);
+		await txt.wait(1);
 
 		// Notify User
 		notifySuccess(
 			`Successfully staked ${tokensToStake} for ${daysFromNow(durationLockUp * 1000).days} days`
 		);
+
+		setPopup(null);
 
 		await getAllTokenBalances(get(currentUserAddress));
 
@@ -43,7 +43,9 @@ export const getTotalStakedTokens = async (userAddress: string) => {
 		const stakingContract = getStakingContract(get(appProvider));
 
 		const stakedHinataInEth = await stakingContract.getUsersTotalStaked(userAddress);
-		const stakedAmt = +ethers.utils.formatEther(stakedHinataInEth);
+		const stakedAmt = +ethers.utils.formatUnits(stakedHinataInEth, 0);
+
+		console.log(stakedAmt);
 
 		// Set to store
 		stakedHinataBalance.set(stakedAmt);
@@ -61,7 +63,7 @@ export const getTotalStakedRewardsBalance = async (userAddress: string) => {
 		const stakingContract = getStakingContract(get(appProvider));
 
 		const waifuRewardsBigNumber = await stakingContract.calculateRewards(userAddress);
-		const waifuRewardsAmt = +ethers.utils.formatEther(waifuRewardsBigNumber);
+		const waifuRewardsAmt = +ethers.utils.formatUnits(waifuRewardsBigNumber, 0);
 
 		// Set to store
 		stakingWaifuRewards.set(waifuRewardsAmt);

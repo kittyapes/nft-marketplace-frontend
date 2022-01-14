@@ -8,7 +8,8 @@
 		communityEscrowUnlock,
 		isAirdropClaiming,
 		stakedHinataBalance,
-		stakingWaifuRewards
+		stakingWaifuRewards,
+		hinataStakingAllowance
 	} from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import { claimAirdropTokens } from '$utils/contracts/airdropDistribution';
@@ -19,6 +20,7 @@
 	import { claimWaifuRewards, stakeTokens } from '$utils/contracts/staking';
 	import { setPopup } from '$utils/popup';
 	import ProceedStakePopup from './ProceedStakePopup.svelte';
+	import { increaseHinataAllowance } from '$utils/contracts/tokenBalances';
 
 	let communityClaimAmount = 0;
 	let communityEscrowed = 0;
@@ -75,14 +77,15 @@
 		*/
 
 	const stakeDurationOptions = [
-		{ label: '15M', duration: 900 },
-		{ label: '30M', duration: 1800 },
-		{ label: '1H', duration: 3600 }
+		{ label: '1H', duration: 3600 },
+		{ label: '2H', duration: 7200 },
+		{ label: '3H', duration: 10800 }
 	];
 
 	let selectedDuration = stakeDurationOptions[1];
 
 	let stakeDurationHovered = false;
+	$: stakingAllowance = $hinataStakingAllowance;
 </script>
 
 {#if $userHinataBalance > 0 || communityClaimAmount > 0 || communityEscrowed > 0 || $communityClaimsArray?.length > 0}
@@ -168,8 +171,11 @@
 				<div class="font-semibold w-full pl-8">
 					{parseFloat($userHinataBalance.toFixed(2))} HiNATA TOKENS
 				</div>
-				<Button rounded gradient on:click={stakeAllTokens} disabled={$userHinataBalance <= 0}
-					>Stake</Button
+				<Button
+					rounded
+					gradient
+					on:click={() => (stakingAllowance > 0 ? stakeAllTokens() : increaseHinataAllowance())}
+					disabled={$userHinataBalance <= 0}>{stakingAllowance > 0 ? 'Stake' : 'Approve'}</Button
 				>
 			</div>
 

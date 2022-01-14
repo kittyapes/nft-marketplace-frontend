@@ -21,7 +21,8 @@
 		stakingWaifuRewards,
 		stakedHinataBalance,
 		idoClaimsArray,
-		idoEscrowUnlock
+		idoEscrowUnlock,
+		hinataStakingAllowance
 	} from '$stores/wallet';
 	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
 	import { claimWaifuRewards, stakeTokens } from '$utils/contracts/staking';
@@ -32,6 +33,7 @@
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import ProceedStakePopup from '$lib/components/airdrop/ProceedStakePopup.svelte';
+	import { increaseHinataAllowance } from '$utils/contracts/tokenBalances';
 
 	// Access to private route
 	const checkAccessibilityOfRoute = (userAddress: string) => {
@@ -228,9 +230,9 @@
 		*/
 
 	const stakeDurationOptions = [
-		{ label: '15M', duration: 900 },
-		{ label: '30M', duration: 1800 },
-		{ label: '1H', duration: 3600 }
+		{ label: '1H', duration: 3600 },
+		{ label: '2H', duration: 7200 },
+		{ label: '3H', duration: 10800 }
 	];
 
 	let selectedDuration = stakeDurationOptions[1];
@@ -296,8 +298,13 @@
 				<div style="font-weight: 450;" class="w-full pl-4">
 					{parseFloat($userHinataBalance.toFixed(2))} HINATA TOKENS
 				</div>
-				<Button gradient rounded on:click={stakeAllTokens} disabled={$userHinataBalance <= 0}
-					>Stake</Button
+				<Button
+					gradient
+					rounded
+					on:click={() =>
+						$hinataStakingAllowance > 0 ? stakeAllTokens() : increaseHinataAllowance()}
+					disabled={$userHinataBalance <= 0}
+					>{$hinataStakingAllowance > 0 ? 'Stake' : 'Approve'}</Button
 				>
 			</div>
 
