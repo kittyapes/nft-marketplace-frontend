@@ -22,7 +22,8 @@
 		stakedHinataBalance,
 		idoClaimsArray,
 		idoEscrowUnlock,
-		hinataStakingAllowance
+		hinataStakingAllowance,
+		communityClaimsArray
 	} from '$stores/wallet';
 	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
 	import { claimWaifuRewards, stakeTokens } from '$utils/contracts/staking';
@@ -33,15 +34,29 @@
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import ProceedStakePopup from '$lib/components/airdrop/ProceedStakePopup.svelte';
-	import { increaseHinataAllowance } from '$utils/contracts/tokenBalances';
+	import { hinataTokensBalance, increaseHinataAllowance } from '$utils/contracts/tokenBalances';
+	import { notifyError } from '$utils/toast';
 
 	// Access to private route
 	const checkAccessibilityOfRoute = (userAddress: string) => {
+		const balanceAccess =
+			$userHinataBalance > 0 ||
+			seedClaimAmt > 0 ||
+			seedEscrowed > 0 ||
+			$communityClaimsArray?.length > 0 ||
+			$stakingWaifuRewards > 0 ||
+			$stakedHinataBalance > 0 ||
+			privateClaimAmt > 0 ||
+			privateEscrowed > 0 ||
+			idoClaimAmount > 0 ||
+			idoEscrowed > 0;
+
 		userAddress &&
 			axios
 				.get(`/api/private-access?address=${userAddress}`)
 				.then((res) => {
-					if (!res.data.canAccess) {
+					if (!res.data.canAccess && !balanceAccess) {
+						notifyError('You are not allowed to access this page');
 						// browser && goto('/');
 					}
 				})
@@ -215,7 +230,8 @@
 			props: {
 				numberOfHinata: $userHinataBalance,
 				duration: selectedDuration.duration,
-				onContinue: () => stakeTokens($userHinataBalance, selectedDuration.duration)
+				onContinue: async () =>
+					stakeTokens(await hinataTokensBalance($currentUserAddress), selectedDuration.duration)
 			}
 		});
 	};

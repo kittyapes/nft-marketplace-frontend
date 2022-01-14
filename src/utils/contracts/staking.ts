@@ -13,11 +13,11 @@ import { get } from 'svelte/store';
 import { getStakingContract } from './generalContractCalls';
 import { getAllTokenBalances } from './tokenBalances';
 
-export const stakeTokens = async (tokensToStake: number, durationLockUp: number) => {
+export const stakeTokens = async (tokensToStake: string, durationLockUp: number) => {
 	try {
 		const stakingContract = getStakingContract(get(appSigner));
 
-		const txt = await stakingContract.stake(tokensToStake, durationLockUp);
+		const txt = await stakingContract.stake(ethers.utils.parseEther(tokensToStake), durationLockUp);
 
 		await txt.wait(1);
 
@@ -43,9 +43,7 @@ export const getTotalStakedTokens = async (userAddress: string) => {
 		const stakingContract = getStakingContract(get(appProvider));
 
 		const stakedHinataInEth = await stakingContract.getUsersTotalStaked(userAddress);
-		const stakedAmt = +ethers.utils.formatUnits(stakedHinataInEth, 0);
-
-		console.log(stakedAmt);
+		const stakedAmt = +ethers.utils.formatEther(stakedHinataInEth);
 
 		// Set to store
 		stakedHinataBalance.set(stakedAmt);
@@ -63,8 +61,8 @@ export const getTotalStakedRewardsBalance = async (userAddress: string) => {
 		const stakingContract = getStakingContract(get(appProvider));
 
 		const waifuRewardsBigNumber = await stakingContract.calculateRewards(userAddress);
-		const waifuRewardsAmt = +ethers.utils.formatUnits(waifuRewardsBigNumber, 0);
-
+		const waifuRewardsAmt = +ethers.utils.formatEther(waifuRewardsBigNumber);
+		console.log(ethers.utils.formatEther(waifuRewardsBigNumber));
 		// Set to store
 		stakingWaifuRewards.set(waifuRewardsAmt);
 

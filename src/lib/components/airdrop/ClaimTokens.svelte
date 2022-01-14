@@ -9,7 +9,8 @@
 		isAirdropClaiming,
 		stakedHinataBalance,
 		stakingWaifuRewards,
-		hinataStakingAllowance
+		hinataStakingAllowance,
+		currentUserAddress
 	} from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import { claimAirdropTokens } from '$utils/contracts/airdropDistribution';
@@ -20,7 +21,7 @@
 	import { claimWaifuRewards, stakeTokens } from '$utils/contracts/staking';
 	import { setPopup } from '$utils/popup';
 	import ProceedStakePopup from './ProceedStakePopup.svelte';
-	import { increaseHinataAllowance } from '$utils/contracts/tokenBalances';
+	import { hinataTokensBalance, increaseHinataAllowance } from '$utils/contracts/tokenBalances';
 
 	let communityClaimAmount = 0;
 	let communityEscrowed = 0;
@@ -62,7 +63,8 @@
 			props: {
 				numberOfHinata: $userHinataBalance,
 				duration: selectedDuration.duration,
-				onContinue: () => stakeTokens($userHinataBalance, selectedDuration.duration)
+				onContinue: async () =>
+					stakeTokens(await hinataTokensBalance($currentUserAddress), selectedDuration.duration)
 			}
 		});
 	};
@@ -88,7 +90,7 @@
 	$: stakingAllowance = $hinataStakingAllowance;
 </script>
 
-{#if $userHinataBalance > 0 || communityClaimAmount > 0 || communityEscrowed > 0 || $communityClaimsArray?.length > 0}
+{#if $userHinataBalance > 0 || communityClaimAmount > 0 || communityEscrowed > 0 || $communityClaimsArray?.length > 0 || $stakingWaifuRewards > 0 || $stakedHinataBalance > 0}
 	<div
 		class="w-full max-w-5xl m-auto bg-black bg-opacity-5 container border-4 border-black px-4 border-opacity-20 mt-12 py-11 rounded-2xl"
 		in:fade

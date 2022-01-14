@@ -18,12 +18,12 @@ export const hinataTokensBalance = async (userAddress: string) => {
 		const hinataContract = getHinataTokenContract(get(appProvider));
 		const balanceBigNumber = await hinataContract.balanceOf(userAddress);
 
-		userHinataBalance.set(+ethers.utils.formatEther(balanceBigNumber));
+		userHinataBalance.set(parseFloat(ethers.utils.formatEther(balanceBigNumber)));
 
-		return +ethers.utils.formatEther(balanceBigNumber);
+		return ethers.utils.formatEther(balanceBigNumber);
 	} catch (error) {
 		console.log(error);
-		return 0;
+		return '0';
 	}
 };
 
