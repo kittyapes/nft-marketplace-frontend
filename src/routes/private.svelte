@@ -79,7 +79,7 @@
 		}
 	};
 
-	$: updatePrivateValues($seedClaimsArray);
+	$: updatePrivateValues($privateClaimsArray);
 
 	// Seed
 	let seedClaimAmt = 0;
