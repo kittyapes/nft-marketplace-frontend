@@ -171,7 +171,7 @@
 				</div>
 			{/if}
 
-			<div id="form-container" class="grid gap-y-6 mt-16">
+			<div id="form-container" class="grid gap-y-6 mt-20">
 				<div class="grid grid-cols-2">
 					<div>
 						<div class="input-label">Username</div>
