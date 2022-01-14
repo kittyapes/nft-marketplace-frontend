@@ -238,8 +238,9 @@
 						<DragDropImage
 							bind:blob={$localDataStore.profileImage}
 							currentImgUrl={$fetchedDataStore.imageUrl}
+							dimensions="180x180 px"
+							class="!w-48 !h-44"
 						/>
-						<div class="tagline w-full mt-2 text-center">180x180 px</div>
 					</div>
 				</div>
 
@@ -252,8 +253,9 @@
 						<DragDropImage
 							bind:blob={$localDataStore.coverImage}
 							currentImgUrl={$fetchedDataStore.coverUrl}
+							dimensions="2550x290 px"
+							class="!h-24 !px-12"
 						/>
-						<div class="tagline w-full mt-2 text-center">2550x290 px</div>
 					</div>
 				</div>
 
