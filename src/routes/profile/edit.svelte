@@ -58,6 +58,11 @@
 			return;
 		}
 
+		if ($localDataStore.email && !isEmail($localDataStore.email)) {
+			notifyError('Please enter a valid email');
+			return;
+		}
+
 		try {
 			await updateProfile($currentUserAddress, $localDataStore);
 			notifySuccess('Profile updated successfully.');

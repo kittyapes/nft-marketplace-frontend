@@ -25,8 +25,6 @@
 	onMount(async () => {
 		// Check for whether user has access/has provided password
 		if (import.meta.env.VITE_LOCK_SITE === 'true') {
-			console.log(import.meta.env.VITE_SITE_PASSWORD, import.meta.env.VITE_LOCK_SITE);
-
 			if (
 				localStorage.getItem('ewjbasdjasdjhewh') !== 'true' &&
 				prompt('Enter password to continue') !== import.meta.env.VITE_SITE_PASSWORD
