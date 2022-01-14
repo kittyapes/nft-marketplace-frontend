@@ -29,9 +29,8 @@ const isMetaMaskInstalled = () => {
 	return false;
 };
 
-// Initialize web3 Modal Instance
-export const initWeb3ModalInstance = () => {
-	const providerOptions = {
+const getProviderOptions = () => {
+	let providerOptions = {
 		// Replace Default Metamask Injected Wallet
 		'custom-metamask': {
 			display: {
@@ -68,28 +67,36 @@ export const initWeb3ModalInstance = () => {
 
 				return provider;
 			}
-		},
+		}
+	};
 
-		// WalletConnect
-		walletconnect: {
+	// WalletConnect
+	if ((window as any).WalletConnectProvider) {
+		providerOptions['walletconnect'] = {
 			package: (window as any).WalletConnectProvider.default, // required
 			options: {
 				infuraId: infuraId // required
 			}
-		},
+		};
+	}
 
-		// Torus
-		torus: {
+	// Torus
+	if ((window as any).Torus) {
+		providerOptions['torus'] = {
 			package: (window as any).Torus // required
-		},
+		};
+	}
 
+	if ((window as any).Authereum) {
 		// Authereum
-		authereum: {
+		providerOptions['authereum'] = {
 			package: (window as any).Authereum.default // required
-		},
+		};
+	}
 
+	if ((window as any).WalletLink) {
 		// Coinbase or other WalletLink Wallets
-		'custom-coinbase': {
+		providerOptions['custom-coinbase'] = {
 			display: {
 				logo: coinbaseLogo,
 				name: 'Coinbase',
@@ -111,8 +118,15 @@ export const initWeb3ModalInstance = () => {
 				await provider.enable();
 				return provider;
 			}
-		}
-	};
+		};
+	}
+
+	return providerOptions;
+};
+
+// Initialize web3 Modal Instance
+export const initWeb3ModalInstance = () => {
+	const providerOptions = getProviderOptions();
 
 	const web3Modal = new Web3Modal({
 		// Disabled the default injected Metamask (also launches other injected if enabled + present)
