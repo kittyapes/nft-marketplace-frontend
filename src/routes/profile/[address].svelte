@@ -83,7 +83,7 @@
 	{/if}
 </div>
 
-<div class="mx-auto px-32 relative">
+<div class="mx-auto px-32 max-w-screen-xl relative">
 	<!-- Profile image -->
 	<div
 		class="border-white border-4 w-32 h-32 absolute top-0 transform -translate-y-1/2 rounded-full bg-white
@@ -181,7 +181,7 @@
 </div>
 
 <div>
-	<div class="container mx-auto px-32 mt-16 flex space-x-8">
+	<div class="container mx-auto px-32 mt-16 flex space-x-8 max-w-screen-xl">
 		{#each tabs as tab}
 			<TabButton on:click={() => (selectedTab = tab)} selected={selectedTab === tab}>
 				{tab}
@@ -191,15 +191,17 @@
 
 	<div class="h-px bg-black opacity-30" />
 
-	{#if selectedTab === 'CREATED NFTS'}
-		<NftList promise={emptyListPromise} />
-	{:else if selectedTab === 'COLLECTED NFTS'}
-		<NftList promise={emptyListPromise} />
-	{:else if selectedTab === 'ACTIVITY'}
-		<NftList promise={emptyListPromise} />
-	{:else if selectedTab === 'FAVORITES'}
-		<NftList promise={emptyListPromise} />
-	{/if}
+	<div class="max-w-screen-xl mx-auto">
+		{#if selectedTab === 'CREATED NFTS'}
+			<NftList promise={emptyListPromise} />
+		{:else if selectedTab === 'COLLECTED NFTS'}
+			<NftList promise={emptyListPromise} />
+		{:else if selectedTab === 'ACTIVITY'}
+			<NftList promise={emptyListPromise} />
+		{:else if selectedTab === 'FAVORITES'}
+			<NftList promise={emptyListPromise} />
+		{/if}
+	</div>
 </div>
 
 {#if $isAdmin && localProfileData}
