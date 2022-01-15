@@ -118,7 +118,7 @@
 			{#if $localProfileData?.username}
 				{$localProfileData?.username}
 			{:else}
-				<span class="opacity-50 font-bold">No username</span>
+				<span class="opacity-50 font-bold whitespace-nowrap">No username</span>
 			{/if}
 		</span>
 
