@@ -20,12 +20,23 @@
 	import { fade } from 'svelte/transition';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
-	// import axios from 'axios';
 
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	let selectedTab = 'CREATED NFTS';
 
-	const { address } = $page.params;
+	$: address = $page.params.address;
+
+	let isUsersProfile = null;
+
+	// When the page is loaded, save whether the user is viewing their own profile.
+	// This is ran only once, when the page is loaded.
+	onMount(() => {
+		currentUserAddress.subscribe((userAddress) => {
+			if (userAddress && isUsersProfile === null) {
+				isUsersProfile = userAddress === address;
+			}
+		});
+	});
 
 	const localProfileData = writable<ProfileData>();
 
@@ -75,6 +86,12 @@
 	};
 
 	$: ((userAddress: string) => userAddress && getUserNfts(userAddress))($currentUserAddress);
+
+	// When the user is viewing their own profie, we should change the displayed
+	// profile when the user switches accounts in provider
+	currentUserAddress.subscribe(() => {
+		$currentUserAddress && isUsersProfile && goto('/profile/' + $currentUserAddress);
+	});
 </script>
 
 <div class="h-72 bg-color-gray-light">
