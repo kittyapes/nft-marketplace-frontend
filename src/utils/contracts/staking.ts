@@ -6,27 +6,27 @@ import {
 	stakingWaifuRewards
 } from '$stores/wallet';
 import daysFromNow from '$utils/daysFromNow';
+import { setPopup } from '$utils/popup';
 import { notifyError, notifySuccess } from '$utils/toast';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import { getStakingContract } from './generalContractCalls';
 import { getAllTokenBalances } from './tokenBalances';
 
-export const stakeTokens = async (tokensToStake: number, durationLockUp: number) => {
+export const stakeTokens = async (tokensToStake: string, durationLockUp: number) => {
 	try {
 		const stakingContract = getStakingContract(get(appSigner));
 
-		const txt = await stakingContract.stake(
-			ethers.utils.parseEther(tokensToStake.toString()),
-			ethers.utils.parseEther(durationLockUp.toString())
-		);
+		const txt = await stakingContract.stake(ethers.utils.parseEther(tokensToStake), durationLockUp);
 
-		txt.wait(1);
+		await txt.wait(1);
 
 		// Notify User
 		notifySuccess(
 			`Successfully staked ${tokensToStake} for ${daysFromNow(durationLockUp * 1000).days} days`
 		);
+
+		setPopup(null);
 
 		await getAllTokenBalances(get(currentUserAddress));
 
@@ -62,7 +62,7 @@ export const getTotalStakedRewardsBalance = async (userAddress: string) => {
 
 		const waifuRewardsBigNumber = await stakingContract.calculateRewards(userAddress);
 		const waifuRewardsAmt = +ethers.utils.formatEther(waifuRewardsBigNumber);
-
+		console.log(ethers.utils.formatEther(waifuRewardsBigNumber));
 		// Set to store
 		stakingWaifuRewards.set(waifuRewardsAmt);
 

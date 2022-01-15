@@ -13,6 +13,7 @@ export const currentUserAddress = writable<string>(null);
 // Staking
 export const stakedHinataBalance = writable<number>(0);
 export const stakingWaifuRewards = writable<number>(0);
+export const hinataStakingAllowance = writable<number>(0);
 
 // Airdrop is claiming
 export const isAirdropClaiming = writable<boolean>(false);

@@ -67,10 +67,13 @@
 				flex items-center"
 				class:hidden={!$appSigner}
 				on:click={() => (displayProfilePopup = !displayProfilePopup)}
+				title={displayedUsername && displayedUsername.length > 15 && displayedUsername}
 			>
 				<div class="flex-grow" in:fade>
 					{#if $profileData?.username}
-						{displayedUsername}
+						{displayedUsername && displayedUsername.length > 15
+							? `${displayedUsername.substring(0, 13)}...`
+							: displayedUsername}
 					{:else}
 						Guest User
 					{/if}

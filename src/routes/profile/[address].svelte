@@ -20,6 +20,7 @@
 	import { fade } from 'svelte/transition';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
+	import getUserNfts from '$utils/nfts/getUserNfts';
 
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	let selectedTab = 'CREATED NFTS';
@@ -74,18 +75,18 @@
 		$profileCompletionProgress < 100 &&
 		setPopup(ProfileProgressPopup);
 
-	const getUserNfts = async (userAddress: string) => {
+	const getCurrentUserNfts = async (userAddress: string) => {
 		try {
-			// const nftList = (await axios.get(`/api/nfts/user/${userAddress}`)).data;
-			// console.log(nftList);
-			// return nftList;
+			const nftList = await getUserNfts(userAddress);
+			console.log(nftList);
+			return nftList;
 		} catch (error) {
 			console.log(error);
 			return null;
 		}
 	};
 
-	$: ((userAddress: string) => userAddress && getUserNfts(userAddress))($currentUserAddress);
+	$: ((userAddress: string) => userAddress && getCurrentUserNfts(userAddress))($currentUserAddress);
 
 	// When the user is viewing their own profie, we should change the displayed
 	// profile when the user switches accounts in provider

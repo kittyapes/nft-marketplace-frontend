@@ -5,7 +5,7 @@ export const seedVestingMerkleDistributorLockContract =
 export const privateVestingMerkleDistributorLockContract =
 	'0xDa1bF624d0142E17EBF18c79a90d648D01e49F39';
 export const idoMerkleDistributorLockContract = '0x2016b695010039f7f7f5bEAAd21EDc17BDfBdfAF';
-export const stakingContract = '0xeFdd9CE1a71f7D6A9c9Fa5e3C2001A1eCE3aB64f';
+export const stakingContract = '0xd00c12872dc11A8EA5CBAbAe691111dc9936854e';
 
 /*
 - staking - vesting contract
