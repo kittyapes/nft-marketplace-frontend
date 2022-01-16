@@ -1,11 +1,9 @@
 export const initializeMoralis = () => {
-	(window as any).Moralis.initialize('cCiAcKPjQTry1uKou6Y8G84Zk8ZD2rz9ArOTEkGL');
+	(window as any).Moralis.initialize(import.meta.env.VITE_MORALIS_APP_ID);
 	(window as any).Moralis.start({
-		appId: 'cCiAcKPjQTry1uKou6Y8G84Zk8ZD2rz9ArOTEkGL',
-		serverUrl: 'https://f7ezk8y7qibj.usemoralis.com:2053/server'
+		appId: import.meta.env.VITE_MORALIS_APP_ID,
+		serverUrl: import.meta.env.VITE_MORALIS_SERVER_URL
 	});
-
-	console.log((window as any).Moralis);
 
 	return (window as any).Moralis;
 };
