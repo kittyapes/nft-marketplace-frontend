@@ -20,7 +20,7 @@
 			/>
 
 			<div
-				class="-translate-x-1/2 uppercase text-sm font-semibold text-center max-w-min
+				class="-translate-x-1/2 uppercase text-sm text-center max-w-min italic font-light
 					{value >= point.at ? 'gradient-text' : ''}"
 			>
 				{point.label}

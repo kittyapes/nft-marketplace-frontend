@@ -4,6 +4,7 @@
 	import { fade } from 'svelte/transition';
 
 	export let text = 'Drag and drop an image here, or click to browse';
+	export let dimensions: string;
 	export let blob: Blob | null = null;
 	export let currentImgUrl: string = null;
 
@@ -44,7 +45,7 @@
 
 <button
 	id="container"
-	class="border-2 rounded-2xl border-dashed h-36 flex items-center justify-center overflow-hidden
+	class="border-2 rounded-2xl border-dashed w-full mx-auto flex items-center justify-center overflow-hidden
 	select-none {$$props.class}"
 	on:click={() => fileInput.click()}
 	on:drop={onDrop}
@@ -61,10 +62,14 @@
 		/>
 	{:else}
 		<div class="text-center text-color-black opacity-50 text-sm px-12">
-			{text}
+			{@html text}
 		</div>
 	{/if}
 </button>
+
+<div class="text-xs text-center mt-2 text-color-gray-accent font-semibold">
+	{dimensions}
+</div>
 
 <input type="file" accept={acceptedImages} class="hidden" bind:this={fileInput} bind:files />
 

@@ -29,7 +29,7 @@
 
 			<div class="flex gap-x-4 mt-6 h-16 uppercase font-semibold">
 				<a
-					class="flex flex-col justify-center items-center bg-white w-48"
+					class="flex flex-col justify-center items-center bg-white w-48 transition-btn"
 					href={socials.twitter}
 					target="_blank"
 				>
@@ -37,7 +37,7 @@
 				</a>
 
 				<a
-					class="flex flex-col justify-center items-center bg-white w-48"
+					class="flex flex-col justify-center items-center bg-white w-48 transition-btn"
 					href={links.snapshot}
 					target="_blank"
 				>

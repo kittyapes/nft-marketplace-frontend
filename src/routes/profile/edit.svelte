@@ -112,8 +112,8 @@
 		}
 	}
 
-	let isProfileImage = false;
-	let isCoverImage = false;
+	$: isProfileImage = !!$localDataStore?.profileImage;
+	$: isCoverImage = !!$localDataStore?.coverImage;
 
 	$: browser && $profileData && useProfileData($profileData);
 	$: profileCompletionProgress =
@@ -182,11 +182,11 @@
 				</div>
 			{/if}
 
-			<div id="form-container" class="grid gap-y-6 mt-16">
+			<div id="form-container" class="grid gap-y-6 mt-20">
 				<div class="grid grid-cols-2">
 					<div>
 						<div class="input-label">Username</div>
-						<div class="tagline uppercase">Mandatory</div>
+						<div class="uppercase text-xs font-medium">Mandatory</div>
 					</div>
 
 					<input
@@ -246,37 +246,52 @@
 				</div>
 
 				<div class="grid grid-cols-2">
-					<div
-						class="input-label gradient-text brightness-0 transition"
-						class:brightness-100={isProfileImage}
-					>
-						PROFILE <br /> PICTURE
-						<div class="tagline">gif, png, jpg</div>
+					<div>
+						<div
+							class="input-label gradient-text brightness-0 transition"
+							class:brightness-100={isProfileImage}
+						>
+							PROFILE <br /> PICTURE
+						</div>
+						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
 					</div>
 					<div class="flex w-full flex-col">
 						<DragDropImage
 							bind:blob={$localDataStore.profileImage}
 							currentImgUrl={$fetchedDataStore.imageUrl}
+							dimensions="180x180 px"
+							class="!w-48 !h-44"
 						/>
-						<div class="tagline w-full mt-2 text-center">180x180 px</div>
 					</div>
 				</div>
 
 				<div class="grid grid-cols-2">
-					<div class="input-label gradient-text brightness-0" class:brightness-100={isCoverImage}>
-						BANNER
-						<div class="tagline">png, jpg</div>
+					<div>
+						<div class="input-label gradient-text brightness-0" class:brightness-100={isCoverImage}>
+							BANNER
+						</div>
+						<div class="text-xs text-[#A9A8A8]">png, jpeg</div>
 					</div>
 					<div class="flex w-full flex-col">
 						<DragDropImage
 							bind:blob={$localDataStore.coverImage}
 							currentImgUrl={$fetchedDataStore.coverUrl}
+							dimensions="2550x290 px"
+							class="!h-24 !px-12"
 						/>
-						<div class="tagline w-full mt-2 text-center">2550x290 px</div>
 					</div>
 				</div>
 
 				<div class="grid grid-cols-2">
+					<div>
+						<div
+							class="input-label gradient-text brightness-0 peer-focus-within:brightness-100 transition"
+						>
+							Social links
+						</div>
+						<div class="text-xs text-[#A9A8A8]">optional</div>
+					</div>
+
 					<div id="socials-container" class="grid gap-y-3 peer">
 						<div>
 							<Instagram />
@@ -348,18 +363,10 @@
 							/>
 						</div>
 					</div>
-
-					<div
-						class="input-label gradient-text brightness-0 peer-focus-within:brightness-100
-						order-first transition"
-					>
-						Social links
-						<div class="tagline gray-text">optional</div>
-					</div>
 				</div>
 			</div>
 
-			<div class="flex items-center opacity-0 mt-12 transition" class:opacity-100={isSaving}>
+			<div class="flex items-center opacity-0 transition" class:opacity-100={isSaving}>
 				<Loader class="w-6 h-6 mx-0" />
 				<div class="font-semibold ml-4 uppercase">Saving changes...</div>
 			</div>
@@ -370,6 +377,7 @@
 				stretch
 				on:click={onSave}
 				disabled={isSaving || !dataChanged}
+				class="!font-medium"
 			>
 				Save changes
 			</Button>
@@ -383,7 +391,7 @@
 
 <style lang="postcss">
 	.input-label {
-		@apply uppercase text-lg font-medium;
+		@apply uppercase text-xl font-medium;
 	}
 
 	#form-container input {
