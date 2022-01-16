@@ -1,5 +1,6 @@
 // In a node.js environment
 import { getMoralis } from '$utils/moralisFuncs';
+import axios from 'axios';
 
 export default async (address: string) => {
 	try {
@@ -36,6 +37,13 @@ export default async (address: string) => {
 
 		const options: Options = { chain: 'eth', address: address };
 		const ethereumNfts = await Moralis.Web3API.account.getNFTs(options);
+
+		// Parse the metadata object to get the nft image.
+		// That is metadata.animation_url or metadata.image. We need to try with other types of nfts from different collections to make sure we cover the data expected from the urls
+		ethereumNfts.result.map((item) => {
+			item.metadata = JSON.parse(item.metadata);
+			return item;
+		});
 
 		return ethereumNfts;
 	} catch (error) {
