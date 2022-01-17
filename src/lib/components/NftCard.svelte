@@ -32,7 +32,7 @@
 	</div>
 
 	<div
-		class="transition w-48 h-[18.5rem] mx-auto bg-gray-100 rounded-2xl overflow-hidden mt-2"
+		class="transition w-full h-[18.5rem] mx-auto bg-gray-100 rounded-2xl overflow-hidden mt-2"
 		class:animate-pulse={!imgLoaded}
 	>
 		<img
