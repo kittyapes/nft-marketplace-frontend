@@ -28,6 +28,17 @@ interface NftData {
 	ownedByUser: boolean;
 }
 
+interface TokenData {
+	id: string;
+	name: string;
+	image: string;
+	animation_url: string;
+	categories: string;
+	supply: number;
+	price: number;
+	artist: string;
+}
+
 interface PrivatePageSplitOptions {
 	title: string;
 	nextEscrowUnlock: string;

@@ -56,11 +56,6 @@
 		return address.substring(0, 3) + '...' + address.substring(address.length - 4);
 	}
 
-	// Temporary
-	const emptyListPromise = new Promise<NftData[]>((resolve) => {
-		resolve([]);
-	});
-
 	$: socialLinks = {
 		twitter: getTwitterUrl($localProfileData?.twitter),
 		facebook: getFacebookUrl($localProfileData?.facebook),
@@ -75,24 +70,17 @@
 		$profileCompletionProgress < 100 &&
 		setPopup(ProfileProgressPopup);
 
-	const getCurrentUserNfts = async (userAddress: string) => {
-		try {
-			const nftList = await getUserNfts(userAddress);
-			console.log(nftList);
-			return nftList;
-		} catch (error) {
-			console.log(error);
-			return null;
-		}
+	let createdNfts: [] = null;
+	const fetchCreatedNfts = async () => {
+		createdNfts = (await getUserNfts(address)).result;
 	};
-
-	$: ((userAddress: string) => userAddress && getCurrentUserNfts(userAddress))($currentUserAddress);
 
 	// When the user is viewing their own profie, we should change the displayed
 	// profile when the user switches accounts in provider
 	currentUserAddress.subscribe(() => {
 		$currentUserAddress && isUsersProfile && goto('/profile/' + $currentUserAddress);
 	});
+	onMount(fetchCreatedNfts);
 </script>
 
 <div class="h-72 bg-color-gray-light">
@@ -211,13 +199,13 @@
 
 	<div class="max-w-screen-xl mx-auto">
 		{#if selectedTab === 'CREATED NFTS'}
-			<NftList promise={emptyListPromise} />
+			<NftList data={createdNfts} />
 		{:else if selectedTab === 'COLLECTED NFTS'}
-			<NftList promise={emptyListPromise} />
+			<NftList data={[]} />
 		{:else if selectedTab === 'ACTIVITY'}
-			<NftList promise={emptyListPromise} />
+			<NftList data={[]} />
 		{:else if selectedTab === 'FAVORITES'}
-			<NftList promise={emptyListPromise} />
+			<NftList data={[]} />
 		{/if}
 	</div>
 </div>
