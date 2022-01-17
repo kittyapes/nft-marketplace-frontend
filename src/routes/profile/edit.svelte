@@ -22,6 +22,7 @@
 	import Pixiv from '$icons/socials/pixiv.svelte';
 	import Deviantart from '$icons/socials/deviantart.svelte';
 	import Artstation from '$icons/socials/artstation.svelte';
+	import { isEmail } from '$utils/validator/isEmail';
 
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
@@ -42,11 +43,7 @@
 
 	let isSaving = false;
 
-	const isEmail = (email: string) => {
-		return /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i.test(
-			email
-		);
-	};
+	$: console.log($localDataStore);
 
 	async function onSave() {
 		if (isSaving) return;
@@ -116,9 +113,23 @@
 	$: isCoverImage = !!$localDataStore?.coverImage;
 
 	$: browser && $profileData && useProfileData($profileData);
+
+	function isBioValid(bio: string) {
+		return bio && bio.trim().split(' ').length > 2;
+	}
+
+	// map, join, indexOf ensures that the progressbar cannot be filled
+	// in an incorrect order
 	$: profileCompletionProgress =
-		[$localDataStore?.email, $localDataStore?.bio, isProfileImage, isCoverImage].filter((v) => !!v)
-			.length * 25;
+		[
+			isEmail($localDataStore?.email),
+			isBioValid($localDataStore?.bio),
+			isProfileImage,
+			isCoverImage
+		]
+			.map((v) => (v ? 1 : 0))
+			.join('')
+			.indexOf('0') * 25;
 
 	// Go to home if the user's wallet isn't connected,
 	// this is a temporary solution, we will solve this better
@@ -210,7 +221,7 @@
 					<div
 						class="input-label gradient-text brightness-0
 						transition flex items-center"
-						class:brightness-100={$localDataStore.email}
+						class:brightness-100={isEmail($localDataStore.email)}
 					>
 						Email
 					</div>
@@ -233,7 +244,7 @@
 				<div class="grid grid-cols-2">
 					<div
 						class="input-label gradient-text brightness-0 transition"
-						class:brightness-100={$localDataStore.bio}
+						class:brightness-100={isBioValid($localDataStore.bio)}
 					>
 						Bio
 					</div>
@@ -405,14 +416,6 @@
 
 	#socials-container > div > :global(svg) {
 		@apply h-12;
-	}
-
-	.tagline {
-		@apply text-color-gray-accent text-[10px] lowercase;
-	}
-
-	.gray-text {
-		color: #a9a8a8 !important;
 	}
 
 	.error {
