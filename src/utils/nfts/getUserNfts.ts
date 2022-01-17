@@ -1,6 +1,5 @@
 // In a node.js environment
 import { getMoralis } from '$utils/moralisFuncs';
-import axios from 'axios';
 
 export default async (address: string) => {
 	try {
