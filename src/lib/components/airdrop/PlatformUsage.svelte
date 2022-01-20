@@ -1,11 +1,9 @@
 <script>
-	import LockupPeriod from './LockupPeriod.svelte';
 	import { fade } from 'svelte/transition';
 	import Eth from '$icons/eth.svelte';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
-	import { appSigner, userClaimsObject } from '$stores/wallet';
+	import { appSigner, communityClaimsArray } from '$stores/wallet';
 	import { ethers } from 'ethers';
-	import claimAirdropTokens from '$utils/wallet/claimAirdropTokens';
 	import Button from '../Button.svelte';
 
 	const connectWallet = async () => {
@@ -36,19 +34,11 @@
 		>
 			<div class="text-2xl opacity-60 font-bold">Claim</div>
 			<div class="text-2xl font-bold flex items-center gap-3 mt-3">
-				{$userClaimsObject ? ethers.utils.formatEther($userClaimsObject.user.amount) : 0} HiNATA
+				{0} HiNATA
 			</div>
 			<div class="mt-7">
 				{#if $appSigner}
-					<Button
-						gradient
-						rounded
-						on:click={claimAirdropTokens}
-						disabled={!$userClaimsObject ||
-							parseFloat(ethers.utils.formatEther($userClaimsObject?.user.amount)) <= 0}
-					>
-						Claim
-					</Button>
+					<Button gradient rounded>Claim</Button>
 				{:else}
 					<Button gradient rounded class="whitespace-nowrap w-44" on:click={connectWallet}>
 						Connect To Wallet
@@ -63,7 +53,8 @@
 
 			<div class="uppercase text-left my-5">lockup period</div>
 
-			<LockupPeriod />
+			<!-- <LockupPeriod /> -->
+			<!-- Use HorizontalOptionSwitcher instead -->
 
 			<div class="text-left mt-4">Stake your HINATA to the DAO</div>
 

@@ -13,7 +13,7 @@
 </script>
 
 <div
-	class="w-full max-w-3xl m-auto bg-black bg-opacity-5 border-4 border-black border-opacity-20 mt-12 py-11 px-7 rounded-2xl"
+	class="w-full max-w-5xl m-auto bg-black bg-opacity-5 border-4 border-black border-opacity-20 mt-12 py-11 px-7 rounded-2xl"
 	in:fade
 >
 	<div

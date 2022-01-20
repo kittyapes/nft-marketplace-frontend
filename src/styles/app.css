@@ -1,7 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+@import 'input.css';
 
 /* Write your global styles here, in PostCSS syntax */
 @tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 html {
 	scroll-behavior: smooth;
@@ -17,7 +20,7 @@ body {
 	height: 100%;
 }
 
-.transition-btn {
+.transition-btn:not(:disabled) {
 	@apply transition duration-200 transform active:scale-95;
 }
 
@@ -25,8 +28,6 @@ body {
 	@apply bg-gradient-to-r from-color-purple to-color-blue text-transparent bg-clip-text;
 }
 
-@tailwind components;
-@tailwind utilities;
 
 #WEB3_CONNECT_MODAL_ID {
 	@apply z-[1000];

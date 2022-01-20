@@ -25,7 +25,7 @@
 </script>
 
 <div class="bg-white rounded-3xl grid grid-cols-2 overflow-hidden w-[800px]">
-	<div class="bg-[#F2F2F2] flex flex-col items-center p-8">
+	<div class="bg-color-gray-lighter flex flex-col items-center p-8">
 		<img src={data.img} alt="" class="rounded-2xl w-84 h-84" />
 		<div class="mt-4 font-semibold text-xl">{data.name}</div>
 		<div class="flex mt-4 space-x-4">
@@ -42,7 +42,7 @@
 	<div class="flex flex-col items-center justify-center px-8 relative">
 		<div class="font-semibold uppercase mb-1">Transfer Your Nft</div>
 		<Separator />
-		<div class="uppercase text-sm text-left font-bold text-[#4B4B4B] w-full mt-8">
+		<div class="uppercase text-sm text-left font-bold text-color-gray-base w-full mt-8">
 			Wallet Address or ENS Name
 		</div>
 		<TextInput outline placeholder="example: 0xB45X... or hinata.eth" class="mt-2 mb-2 w-full" />

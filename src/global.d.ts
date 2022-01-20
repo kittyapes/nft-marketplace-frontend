@@ -1,14 +1,22 @@
 /// <reference types="@sveltejs/kit" />
 
+declare global {
+	interface Number {
+		noExponents: () => string;
+	}
+}
+
 interface ClaimsObject {
 	merkleRoot: string;
 	user: {
+		rootIndex: number;
 		amount: string;
 		index: number;
 		proof: string[];
 		address: string;
 		hasClaimed: boolean;
 	};
+	nextClaimDuration: number; // In Milliseconds
 }
 
 interface NftData {
@@ -19,6 +27,7 @@ interface NftData {
 	likes: number;
 	ownedByUser: boolean;
 }
+
 
 interface MarkeplaceNftListing {
 	amount: string;
@@ -46,10 +55,11 @@ interface LoginHistoryEntry {
 }
 
 interface ProfileData {
-	address: string;
+		address: string;
 	createdAt: string;
 	email: string;
 	imageUrl: string;
+	coverUrl: string;
 	loginHistories: LoginHistoryEntry[];
 	nickname: string;
 	status: 'USER' | 'AWAITING_VERIFIED' | 'VERIFIED' | 'AWAITING_INACTIVATED';
@@ -57,4 +67,35 @@ interface ProfileData {
 	username: string;
 	_id: string;
 	bio: string;
+	instagram: string;
+	facebook: string;
+	twitter: string;
+
+
+	// new socials
+	socialEmail: string;
+	pixiv: string;
+	deviantart: string;
+	artstation: string;
+}
+
+interface TokenData {
+	id: string;
+	name: string;
+	image: string;
+	animation_url: string;
+	categories: string;
+	supply: number;
+	price: number;
+	artist: string;
+}
+
+interface PrivatePageSplitOptions {
+	title: string;
+	nextEscrowUnlock: string;
+	claimTokensValue: number;
+	escrowTokensValue: number;
+	airdropType: 'seed' | 'private' | 'ido';
+	airdropHasClaimed: boolean;
+	contractActive: boolean;
 }

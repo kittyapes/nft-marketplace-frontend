@@ -18,11 +18,11 @@
 	/>
 
 	{#if maxChars}
-		<div class="text-right text-xs font-semibold">{value.length}/{maxChars}</div>
+		<div class="text-right text-xs font-semibold">{value?.length || 0}/{maxChars}</div>
 	{/if}
 </div>
 
-<style>
+<style lang="postcss">
 	textarea {
 		@apply rounded-md py-2 px-4 text-sm;
 		@apply duration-200;

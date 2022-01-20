@@ -10,17 +10,77 @@
 	// Login Popup
 	import { browser } from '$app/env';
 	import AdminLoginPopup from '$lib/components/AdminLoginPopup.svelte';
-	import { setPopup } from '$utils/popup';
 	import { page } from '$app/stores';
 	import pathIsProtected from '$utils/pathIsProtected';
 	import { isAuthExpired } from '$utils/api';
 
+	// Aidrop popup
+	import { setPopup } from '$utils/popup';
+	import AirdropPopup from '$lib/components/airdrop/AirdropPopup.svelte';
+	import type { AirdropPopupOptions } from '$constants/airdrops';
+	import { currentUserAddress, communityClaimsArray } from '$stores/wallet';
+	import { ethers } from 'ethers';
+	import { getAllTokenBalances } from '$utils/contracts/tokenBalances';
+
 	onMount(async () => {
+		// Check for whether user has access/has provided password
+		if (import.meta.env.VITE_LOCK_SITE === 'true') {
+			if (
+				localStorage.getItem('ewjbasdjasdjhewh') !== 'true' &&
+				prompt('Enter password to continue') !== import.meta.env.VITE_SITE_PASSWORD
+			) {
+				return window.location.replace('https://hinata.foundation');
+			}
+
+			localStorage.setItem('ewjbasdjasdjhewh', 'true');
+		}
+
 		// Keep connection live as long as cachedProvider is present (even after reloads)
 		await refreshConnection();
 	});
 
+	// Airdrop Popup
+	let claimAmount = 0;
+	let hasClaimed = false;
+	const updateValues = (claims: ClaimsObject[]) => {
+		if (claims) {
+			hasClaimed =
+				$communityClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
+				$communityClaimsArray?.length;
+			if (hasClaimed) {
+				claimAmount = 0;
+			} else {
+				claimAmount = 0;
+				$communityClaimsArray.map((claimsObj) => {
+					if (!claimsObj.user.hasClaimed) {
+						claimAmount += +ethers.utils.formatEther(claimsObj.user.amount);
+					}
+				});
+
+				let options = null;
+
+				options =
+					claimAmount > 0
+						? ({
+								eligibleOne: true,
+								eligibleTwo: false,
+								valueOne: +claimAmount.toFixed(2),
+								valueTwo: 20000
+						  } as AirdropPopupOptions)
+						: null;
+
+				options && setPopup(AirdropPopup, { props: { options } });
+			}
+		}
+	};
+
+	$: updateValues($communityClaimsArray);
+
 	$: pathIsProtected($page.path) && browser && isAuthExpired() && setPopup(AdminLoginPopup);
+
+	$: ((userAddress: string) => userAddress && getAllTokenBalances(userAddress))(
+		$currentUserAddress
+	);
 </script>
 
 <svelte:head>

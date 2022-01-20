@@ -2,10 +2,7 @@
 	"compilerOptions": {
 		"moduleResolution": "node",
 		"module": "es2020",
-		"lib": [
-			"es2020",
-			"DOM"
-		],
+		"lib": ["es2020", "DOM"],
 		"target": "es2020",
 		/**
 			svelte-preprocess cannot figure out whether you have a value or a type, so tell TypeScript
@@ -26,57 +23,24 @@
 		"allowJs": true,
 		"checkJs": true,
 		"paths": {
-			"$lib": [
-				"src/lib"
-			],
-			"$lib/*": [
-				"src/lib/*"
-			],
-			"$icons": [
-				"src/icons"
-			],
-			"$icons/*": [
-				"src/icons/*"
-			],
-			"$styles": [
-				"src/styles"
-			],
-			"$styles/*": [
-				"src/styles/*"
-			],
-			"$stores": [
-				"src/stores"
-			],
-			"$stores/*": [
-				"src/stores/*"
-			],
-			"$utils": [
-				"src/utils"
-			],
-			"$utils/*": [
-				"src/utils/*"
-			],
-			"$constants": [
-				"src/constants"
-			],
-			"$constants/*": [
-				"src/constants/*"
-			],
-			"$contracts": [
-				"src/contracts"
-			],
-			"$contracts/*": [
-				"src/contracts/*"
-			]
+			"$lib": ["src/lib"],
+			"$lib/*": ["src/lib/*"],
+			"$icons": ["src/icons"],
+			"$icons/*": ["src/icons/*"],
+			"$styles": ["src/styles"],
+			"$styles/*": ["src/styles/*"],
+			"$stores": ["src/stores"],
+			"$stores/*": ["src/stores/*"],
+			"$utils": ["src/utils"],
+			"$utils/*": ["src/utils/*"],
+			"$constants": ["src/constants"],
+			"$constants/*": ["src/constants/*"],
+			"$contracts": ["src/utils/contracts"],
+			"$contracts/*": ["src/utils/contracts/*"],
+			"$actions": ["src/actions"],
+			"$actions/*": ["src/actions/*"]
 		}
 	},
-	"include": [
-		"src/**/*.d.ts",
-		"src/**/*.js",
-		"src/**/*.ts",
-		"src/**/*.svelte"
-	],
-	"exclude": [
-		"src/pollyfill.js"
-	]
+	"include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.ts", "src/**/*.svelte"],
+	"exclude": ["src/pollyfill.js"]
 }

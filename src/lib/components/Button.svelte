@@ -6,16 +6,19 @@
 	export let uppercase: boolean = true;
 	export let outline: boolean = ['rounded-outline'].includes(variant);
 	export let rounded: boolean = false;
+	export let disabled: boolean = false;
 </script>
 
 <button
 	class="{variant} {$$props.class} transition-btn"
+	class:opacity-50={disabled}
 	on:click
 	class:stretch
 	class:gradient
 	class:uppercase
 	class:outline
 	class:rounded
+	{disabled}
 >
 	<slot />
 </button>
@@ -47,7 +50,7 @@
 	}
 
 	.outline {
-		@apply border-2 border-color-black rounded-full;
+		@apply border-2 border-color-black rounded-full outline-none;
 	}
 
 	.rounded {
