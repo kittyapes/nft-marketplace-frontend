@@ -281,7 +281,7 @@
 						<div class="input-label gradient-text brightness-0" class:brightness-100={isCoverImage}>
 							BANNER
 						</div>
-						<div class="text-xs text-[#A9A8A8]">png, jpeg</div>
+						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
 					</div>
 					<div class="flex w-full flex-col">
 						<DragDropImage
