@@ -24,10 +24,12 @@ function getHint(text: string) {
     `;
 }
 
-export function hoverHint(node: HTMLElement, options: { text: string }) {
+export function hoverHint(node: HTMLElement, options: { text: string; targetId: string }) {
 	const { text } = options;
 
-	node.innerHTML = getHint(text) + node.innerHTML;
+	const hintTarget = document.getElementById(options.targetId);
+
+	hintTarget.innerHTML = getHint(text);
 
 	node.style.setProperty('--hint-opacity', '0');
 
