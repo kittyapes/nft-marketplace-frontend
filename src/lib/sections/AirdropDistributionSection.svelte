@@ -4,7 +4,7 @@
 
 <div class="mt-20 font-bold text-5xl">How tokens are distributed</div>
 
-<div class="flex flex-col relative max-w-4xl mx-auto">
+<div class="flex flex-col relative">
 	<div class="w-full max-w-4xl mx-auto mt-24 text-left flex overflow-hidden relative">
 		<!-- Vertical Line-->
 		<div class="absolute h-full left-8 z-[-1] my-6 border-dashed border-blue-500 border-l-2" />
@@ -30,7 +30,7 @@
 		</div>
 	</div>
 
-	<div class="h-full absolute z-0 top-12 pl-8 right-0 translate-x-24">
+	<div class="h-full absolute z-0 top-12 right-32 pl-8">
 		<img src="/img/graphics/airdrop-waifu.png" alt="waifu" class="h-full" />
 	</div>
 </div>
