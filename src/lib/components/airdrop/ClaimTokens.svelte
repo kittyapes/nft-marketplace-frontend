@@ -15,13 +15,13 @@
 	import { ethers } from 'ethers';
 	import { claimAirdropTokens } from '$utils/contracts/airdropDistribution';
 	import HorizontailOptionSwitcher from '../HorizontailOptionSwitcher.svelte';
-	import Hint from '../Hint.svelte';
 	import ThemedCross from '$icons/themed-cross.svelte';
 	import daysFromNow from '$utils/daysFromNow';
 	import { claimWaifuRewards, stakeTokens } from '$utils/contracts/staking';
 	import { setPopup } from '$utils/popup';
 	import ProceedStakePopup from './ProceedStakePopup.svelte';
 	import { hinataTokensBalance, increaseHinataAllowance } from '$utils/contracts/tokenBalances';
+	import { hoverHint } from '$actions/hoverHint';
 
 	let communityClaimAmount = 0;
 	let communityEscrowed = 0;
@@ -86,11 +86,18 @@
 
 	let selectedDuration = stakeDurationOptions[1];
 
-	let stakeDurationHovered = false;
 	$: stakingAllowance = $hinataStakingAllowance;
+
+	$: claimEligible =
+		$userHinataBalance > 0 ||
+		communityClaimAmount > 0 ||
+		communityEscrowed > 0 ||
+		$communityClaimsArray?.length > 0 ||
+		$stakingWaifuRewards > 0 ||
+		$stakedHinataBalance > 0;
 </script>
 
-{#if $userHinataBalance > 0 || communityClaimAmount > 0 || communityEscrowed > 0 || $communityClaimsArray?.length > 0 || $stakingWaifuRewards > 0 || $stakedHinataBalance > 0}
+{#if claimEligible || true}
 	<div
 		class="w-full max-w-5xl m-auto bg-black bg-opacity-5 container border-4 border-black px-4 border-opacity-20 mt-12 py-11 rounded-2xl"
 		in:fade
@@ -184,21 +191,12 @@
 			<div class="grid grid-cols-2 place-items-center mt-16">
 				<div class="uppercase font-bold w-full">Lockup period</div>
 				<div
-					on:mouseenter={() => (stakeDurationHovered = true)}
-					on:mouseleave={() => (stakeDurationHovered = false)}
+					use:hoverHint={{
+						text: 'Lock your HiNATA for longer for better rewards!',
+						targetId: 'hint-target'
+					}}
 				>
-					{#if stakeDurationHovered}
-						<div
-							class="translate-x-[-75%] translate-y-[-50px]"
-							transition:fade|local={{ duration: 100 }}
-						>
-							<Hint>
-								Lock your HiNATA for longer for better rewards!
-								<a href="/private" class="font-bold"> READ MORE </a>
-							</Hint>
-						</div>
-					{/if}
-
+					<div id="hint-target" />
 					<HorizontailOptionSwitcher
 						on:StakeDurationUpdated={(e) => (selectedDuration = e.detail)}
 						selected={selectedDuration}

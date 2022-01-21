@@ -5,7 +5,6 @@
 	import GridOptionContainer from '$lib/components/airdrop/investors/GridOptionContainer.svelte';
 	import GridOptionSplit from '$lib/components/airdrop/investors/GridOptionSplit.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import Hint from '$lib/components/Hint.svelte';
 	import HorizontailOptionSwitcher from '$lib/components/HorizontailOptionSwitcher.svelte';
 	import {
 		privateClaimsArray,
@@ -32,10 +31,10 @@
 	import axios from 'axios';
 	import { ethers } from 'ethers';
 	import { onMount } from 'svelte';
-	import { fade } from 'svelte/transition';
 	import ProceedStakePopup from '$lib/components/airdrop/ProceedStakePopup.svelte';
 	import { hinataTokensBalance, increaseHinataAllowance } from '$utils/contracts/tokenBalances';
 	import { notifyError } from '$utils/toast';
+	import { hoverHint } from '$actions/hoverHint';
 
 	// Access to private route
 	const checkAccessibilityOfRoute = (userAddress: string) => {
@@ -252,8 +251,6 @@
 	];
 
 	let selectedDuration = stakeDurationOptions[1];
-
-	let stakeDurationHovered = false;
 </script>
 
 <div class="w-full px-6 min-h-screen">
@@ -327,9 +324,12 @@
 			<div class="flex mt-8 items-center gap-x-14">
 				<div class="uppercase font-bold">Lockup period</div>
 				<div
-					on:mouseenter={() => (stakeDurationHovered = true)}
-					on:mouseleave={() => (stakeDurationHovered = false)}
+					use:hoverHint={{
+						text: 'Lock your HiNATA for longer for better rewards!',
+						targetId: 'hint-target'
+					}}
 				>
+					<div id="hint-target" />
 					<HorizontailOptionSwitcher
 						on:StakeDurationUpdated={(e) => (selectedDuration = e.detail)}
 						selected={selectedDuration}
@@ -343,18 +343,6 @@
 				Deposit your tokens to the vault to earn governance rewards and become a DAO member
 			</p>
 		</GridOptionContainer>
-
-		{#if stakeDurationHovered}
-			<div
-				class="w-0 translate-y-[-260px] translate-x-[470px]"
-				transition:fade|local={{ duration: 100 }}
-			>
-				<Hint>
-					Lock your HiNATA for longer for better rewards!
-					<a href="/private" class="font-bold"> READ MORE </a>
-				</Hint>
-			</div>
-		{/if}
 
 		<!-- Vault claim section -->
 		<GridOptionContainer
