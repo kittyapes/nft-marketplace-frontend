@@ -6,12 +6,10 @@ const wedge = `
 `;
 
 function getHint(text: string) {
-	const translateY = 'calc(-100% + 6px)';
-
 	return `
         <div class="relative flex justify-center">
             <div class="transition absolute"
-                style="transform: translate(0, ${translateY}); opacity: var(--hint-opacity)">
+                style="transform: translateY(calc(-100% + 6px)); opacity: var(--hint-opacity)">
                 <div class="bg-white px-12 py-2 rounded-xl border-2 max-w-[600px] text-center whitespace-nowrap">
                     ${text}
                 </div>
