@@ -22,7 +22,8 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import getUserNfts from '$utils/nfts/getUserNfts';
 
-	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
+	// const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
+	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'FAVORITES'];
 	let selectedTab = 'CREATED NFTS';
 
 	$: address = $page.params.address;
