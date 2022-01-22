@@ -149,8 +149,6 @@
 
 		setPopup(FreeNftPopup);
 	}
-
-	setTimeout(() => ($localDataStore = null), 5000);
 </script>
 
 <LoadedContent loaded={$localDataStore}>
