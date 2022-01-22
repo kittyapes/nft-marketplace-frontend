@@ -7,8 +7,8 @@
 	export let compensateNavbar = true;
 
 	$: calculatedHeight = compensateNavbar
-		? `calc(${(browser && window?.innerHeight) || 0}px - 4rem)`
-		: `${browser && window.innerHeight}px`;
+		? `calc(${browser ? window.innerHeight + 'px' : '100vh'} - 4rem)`
+		: (browser && window.innerHeight + 'px') || '100vh';
 </script>
 
 <div class="relative" style="height: {calculatedHeight}">
