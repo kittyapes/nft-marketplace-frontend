@@ -23,6 +23,7 @@
 	import Deviantart from '$icons/socials/deviantart.svelte';
 	import Artstation from '$icons/socials/artstation.svelte';
 	import { isEmail } from '$utils/validator/isEmail';
+	import LoadedContent from '$lib/components/LoadedContent.svelte';
 
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
@@ -150,8 +151,8 @@
 	}
 </script>
 
-{#if $localDataStore}
-	<div class="bg-[#f2f2f2] py-16" in:fade>
+<LoadedContent loaded={$localDataStore}>
+	<div class="bg-[#f2f2f2] py-16">
 		<div class="max-w-4xl mx-auto py-16 bg-white px-16">
 			<h1 class="uppercase text-center text-5xl font-semibold">
 				{firstTimeUser ? 'Setup' : 'Edit'} Your <span class="gradient-text">Profile</span>
@@ -394,11 +395,7 @@
 			</Button>
 		</div>
 	</div>
-{:else}
-	<div class="py-64">
-		<Loader />
-	</div>
-{/if}
+</LoadedContent>
 
 <style lang="postcss">
 	.input-label {
