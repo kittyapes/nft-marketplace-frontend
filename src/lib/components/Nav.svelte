@@ -25,6 +25,8 @@
 	$: displayedUsername = $profileData?.username.includes('great_gatsby')
 		? 'Guest User'
 		: $profileData?.username;
+
+	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
 </script>
 
 <div class="flex items-center h-16 pl-8 gap-x-8 fixed w-full z-10 bg-white drop-shadow-lg">
@@ -67,7 +69,7 @@
 				flex items-center"
 				class:hidden={!$appSigner}
 				on:click={() => (displayProfilePopup = !displayProfilePopup)}
-				title={displayedUsername && displayedUsername.length > 15 && displayedUsername}
+				title={profileButtonTitle}
 			>
 				<div class="flex-grow" in:fade>
 					{#if $profileData?.username}
