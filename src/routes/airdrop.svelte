@@ -70,7 +70,7 @@
 		<!-- <PlatformUsage /> -->
 
 		<!-- Token Distribution -->
-		<div class="h-screen mb-52">
+		<div class="mb-52">
 			<AirdropDistributionSection />
 		</div>
 	</div>
