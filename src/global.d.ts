@@ -28,6 +28,7 @@ interface NftData {
 	ownedByUser: boolean;
 }
 
+// Data provided by databasewaifu.herokuapp.com
 interface TokenData {
 	id: string;
 	name: string;

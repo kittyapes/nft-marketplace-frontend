@@ -10,8 +10,8 @@
 	let dotsOpened = false;
 	let imgLoaded = false;
 
-	$: tokenName = tokenData.name.match(/(.+)\s\(?/)?.[1];
-	$: collectionName = tokenData.name.match(/\(.+\)/g)?.[0].replace(/\(|\)/g, '');
+	$: tokenName = tokenData?.name.match(/(.+)\s\(?/)?.[1];
+	$: collectionName = tokenData?.name.match(/\(.+\)/g)?.[0].replace(/\(|\)/g, '');
 
 	const toggleDots = () => (dotsOpened = !dotsOpened);
 </script>
