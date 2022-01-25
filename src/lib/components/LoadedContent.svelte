@@ -5,7 +5,7 @@
 	// This could also accept a promise in the future
 	export let loaded: any = true;
 
-	let loaderOut = false;
+	let loaderOut = !!loaded;
 	let contentOut = true;
 </script>
 
@@ -14,7 +14,7 @@
 		<!-- Cannot be local because it would break ¯\_(ツ)_/¯ -->
 		<div
 			transition:fade
-			on:introend={() => (contentOut = false)}
+			on:introstart={() => (contentOut = false)}
 			on:outroend={() => (contentOut = true)}
 		>
 			<slot />
@@ -22,8 +22,8 @@
 	{/if}
 {:else if contentOut}
 	<div
-		transition:fade|local
-		on:introend={() => (loaderOut = false)}
+		transition:fade
+		on:introstart={() => (loaderOut = false)}
 		on:outroend={() => (loaderOut = true)}
 	>
 		<LoaderScreen />
