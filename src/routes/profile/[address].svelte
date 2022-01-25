@@ -74,7 +74,7 @@
 
 	let createdNfts: [] = null;
 	const fetchCreatedNfts = async () => {
-		createdNfts = (await getUserNfts(address)).result;
+		createdNfts = (await getUserNfts(address)).result.filter((v) => v.token_uri);
 	};
 
 	// When the user is viewing their own profie, we should change the displayed
