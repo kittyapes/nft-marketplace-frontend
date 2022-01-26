@@ -6,7 +6,7 @@
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import ChevronRight from '$icons/chevron-right.svelte';
 	import { welcomeNfts } from '$constants/nfts';
-	import { clone } from 'lodash';
+	import { clone } from 'lodash-es';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { closePopup } from '$utils/popup';
 
