@@ -102,16 +102,13 @@
 			if (data.username.includes('great_gatsby')) {
 				firstTimeUser = true;
 			}
-
-			isProfileImage = !!($localDataStore?.profileImage || $localDataStore?.imageUrl);
-			isCoverImage = !!($localDataStore?.coverImage || $localDataStore?.coverUrl);
 		} catch (ex) {
 			notifyError(ex.message);
 		}
 	}
 
-	$: isProfileImage = !!$localDataStore?.profileImage;
-	$: isCoverImage = !!$localDataStore?.coverImage;
+	$: isProfileImage = $localDataStore?.profileImage || $localDataStore?.imageUrl;
+	$: isCoverImage = $localDataStore?.coverImage || $localDataStore?.coverUrl;
 
 	$: browser && $profileData && useProfileData($profileData);
 
