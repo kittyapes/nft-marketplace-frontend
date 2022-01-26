@@ -7,8 +7,13 @@
 	import Button from '$lib/components/Button.svelte';
 	import { fade, slide } from 'svelte/transition';
 	import Progressbar from '$lib/components/Progressbar.svelte';
-	import { writable } from 'svelte/store';
-	import { EditableProfileData, ProfileData, updateProfile } from '$utils/api/profile';
+	import { derived, writable } from 'svelte/store';
+	import {
+		checkUsernameAvailability,
+		EditableProfileData,
+		ProfileData,
+		updateProfile
+	} from '$utils/api/profile';
 	import { currentUserAddress, welcomeNftClaimed } from '$stores/wallet';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { browser } from '$app/env';
@@ -24,6 +29,7 @@
 	import Artstation from '$icons/socials/artstation.svelte';
 	import { isEmail } from '$utils/validator/isEmail';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
+	import { debounce } from 'lodash-es';
 
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
@@ -39,12 +45,7 @@
 
 	let firstTimeUser = false;
 
-	// $: usernameTaken = $localDataStore?.username;
-	$: usernameTaken = false;
-
 	let isSaving = false;
-
-	$: console.log($localDataStore);
 
 	async function onSave() {
 		if (isSaving) return;
@@ -149,6 +150,24 @@
 
 		setPopup(FreeNftPopup);
 	}
+
+	// Username availability check
+	const usernameAvailable = writable(null);
+	const usernameValue = derived(localDataStore, ($localDataStore) => $localDataStore?.username);
+
+	const debouncedCheckUsernameAvailability = debounce(async (username: string) => {
+		$usernameAvailable = await checkUsernameAvailability(username);
+	}, 500);
+
+	usernameValue.subscribe((username) => {
+		if (!browser || !username) {
+			$usernameAvailable = false;
+		}
+
+		debouncedCheckUsernameAvailability(username);
+	});
+
+	$: dataValid = $usernameAvailable;
 </script>
 
 <LoadedContent loaded={$localDataStore}>
@@ -201,22 +220,24 @@
 						<div class="uppercase text-xs font-medium">Mandatory</div>
 					</div>
 
-					<input
-						type="text"
-						class="input input-gray-outline"
-						placeholder="Username"
-						bind:value={$localDataStore.username}
-					/>
-				</div>
+					<div>
+						<input
+							type="text"
+							class="input input-gray-outline"
+							placeholder="Username"
+							bind:value={$localDataStore.username}
+						/>
 
-				{#if usernameTaken}
-					<div
-						class="text-xs w-1/2 ml-auto text-red-500 font-semibold -mt-4 uppercase"
-						transition:slide|local
-					>
-						Username already taken
+						{#if !$usernameAvailable}
+							<div
+								class="text-xs ml-auto text-red-500 font-semibold mt-2 uppercase"
+								transition:slide|local
+							>
+								Username already taken
+							</div>
+						{/if}
 					</div>
-				{/if}
+				</div>
 
 				<div class="grid grid-cols-2 items-stretch">
 					<div
@@ -388,7 +409,7 @@
 				variant="rounded-black"
 				stretch
 				on:click={onSave}
-				disabled={isSaving || !dataChanged}
+				disabled={isSaving || !dataChanged || !dataValid}
 				class="!font-medium"
 			>
 				Save changes
