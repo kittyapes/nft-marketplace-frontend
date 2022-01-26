@@ -126,7 +126,8 @@
 			isEmail($localDataStore?.email),
 			isBioValid($localDataStore?.bio),
 			isProfileImage,
-			isCoverImage
+			isCoverImage,
+			0
 		]
 			.map((v) => (v ? 1 : 0))
 			.join('')
