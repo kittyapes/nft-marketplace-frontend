@@ -4,14 +4,12 @@
 	import ThreeDots from '$icons/three-dots.svelte';
 	import { fade } from 'svelte/transition';
 
-	export let data: NftData;
 	export let tokenData: TokenData;
+
+	const tokenUriData = tokenData?.token_uri_data;
 
 	let dotsOpened = false;
 	let imgLoaded = false;
-
-	$: tokenName = tokenData?.name.match(/(.+)\s\(?/)?.[1];
-	$: collectionName = tokenData?.name.match(/\(.+\)/g)?.[0].replace(/\(|\)/g, '');
 
 	const toggleDots = () => (dotsOpened = !dotsOpened);
 </script>
@@ -19,7 +17,8 @@
 <div class="rounded-2xl overflow-hidden border p-4 relative" in:fade>
 	<div class="flex items-center gap-x-2">
 		<!-- Remove && false to show options -->
-		{#if data?.ownedByUser && false}
+		<!-- Owned by user -->
+		{#if false}
 			<button on:click={toggleDots}>
 				<ThreeDots />
 			</button>
@@ -28,7 +27,8 @@
 		<div class="flex-grow" />
 
 		<Heart />
-		<div class="font-medium">{data?.likes || 0}</div>
+		<!-- TODO Likes -->
+		<div class="font-medium select-none">{0}</div>
 	</div>
 
 	<div
@@ -36,7 +36,7 @@
 		class:animate-pulse={!imgLoaded}
 	>
 		<img
-			src={tokenData?.image}
+			src={$tokenUriData?.image || tokenData.metadata?.image}
 			alt=""
 			class="object-cover transition w-full h-full"
 			class:opacity-0={!imgLoaded}
@@ -45,17 +45,18 @@
 	</div>
 
 	<div class="flex text-sm font-medium text-gray-600 mt-2">
-		<div class="flex-grow">{collectionName || 'N/A'}</div>
+		<div class="flex-grow">{tokenData?.name || 'N/A'}</div>
 		<div>Price</div>
 	</div>
 
 	<div class="flex font-semibold mt-2 items-center">
-		<div class="flex-grow">{tokenName}</div>
+		<div class="flex-grow">{tokenData?.metadata?.name || $tokenUriData?.name || 'N/A'}</div>
 		<Eth />
-		<div class="ml-1">{tokenData?.price || 'N/A'}</div>
+		<div class="ml-1">{tokenData?.metadata?.price || 'N/A'}</div>
 	</div>
 
-	{#if dotsOpened && data?.ownedByUser}
+	<!-- TODO If owned by user -->
+	{#if dotsOpened && false}
 		<div id="popup" class="flex flex-col absolute bg-white font-bold rounded-md top-10">
 			<button class="gradient-text transition-btn">TRANSFER</button>
 			<button class="transition-btn">HIDE</button>
