@@ -2,6 +2,8 @@
 	import { fade } from 'svelte/transition';
 	import { popupOpen, selectedCard } from '$stores/marketplace';
 	import { goto } from '$app/navigation';
+	import EthIcon from '$icons/eth.svelte';
+	import HeartIcon from '$icons/heart.svelte';
 
 	export let metadata;
 
@@ -22,7 +24,7 @@
 		on:click={() => openPopup(metadata)}
 	>
 		<div class="w-full justify-end flex items-center gap-2 pt-3 px-3">
-			<img src="/marketplace/heart.svg" alt="heart" />
+			<HeartIcon />
 			1
 		</div>
 
@@ -38,7 +40,7 @@
 		<div class="w-full flex justify-between px-2 gap-2 font-bold mt-2 mb-6 flex-1">
 			<div class="tracking-tight leading-tight">{metadata.name} #{metadata.id}</div>
 			<div class="flex gap-1 items-center justify-center flex-shrink-0">
-				<img src="/marketplace/ethereum-logo.svg" alt="eth" />
+				<EthIcon />
 				{metadata.amount}
 			</div>
 		</div>

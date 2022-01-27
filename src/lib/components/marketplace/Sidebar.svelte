@@ -42,13 +42,17 @@
 
 	{#if isOpen}
 		<div transition:slide={{ duration: 200 }}>
-			<SidebarItem title="Status" iconSrc="/marketplace/status.svg"><StatusFilter /></SidebarItem>
+			<SidebarItem title="Status" icon="status">
+				<StatusFilter />
+			</SidebarItem>
 
-			<SidebarItem title="Collections" iconSrc="/marketplace/collections.svg">
+			<SidebarItem title="Collections" icon="collection">
 				<CollectionsFilter />
 			</SidebarItem>
 
-			<SidebarItem title="Price" iconSrc="/marketplace/price.svg"><PriceFilter /></SidebarItem>
+			<SidebarItem title="Price" icon="price">
+				<PriceFilter />
+			</SidebarItem>
 		</div>
 	{/if}
 </div>

@@ -5,6 +5,6 @@
 
 <div class="flex flex-wrap gap-2">
 	{#each SORT_BY as st, i}
-		<StatusFilterButton id={i}>{st}</StatusFilterButton>
+		<StatusFilterButton value={st} />
 	{/each}
 </div>
