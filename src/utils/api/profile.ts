@@ -31,7 +31,6 @@ export interface ProfileData {
 	facebook: string;
 	twitter: string;
 
-
 	// new socials
 	socialEmail: string;
 	pixiv: string;
@@ -103,6 +102,12 @@ async function hashImage(address: string, file: Blob) {
 	const res = await axios.post(api + '/v1/accounts/' + address + '/hashImage', formData);
 
 	return res.data.data;
+}
+
+export async function checkUsernameAvailability(username: string) {
+	const res = await axios.get(api + '/v1/accounts/existed?username=' + username);
+
+	return !res.data.data.username;
 }
 
 export async function updateProfile(address: string, data: Partial<EditableProfileData>) {

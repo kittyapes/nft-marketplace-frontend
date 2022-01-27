@@ -22,7 +22,8 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import getUserNfts from '$utils/nfts/getUserNfts';
 
-	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
+	// const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
+	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'FAVORITES'];
 	let selectedTab = 'CREATED NFTS';
 
 	$: address = $page.params.address;
@@ -68,11 +69,12 @@
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null &&
 		$profileCompletionProgress < 100 &&
+		address === $currentUserAddress &&
 		setPopup(ProfileProgressPopup);
 
 	let createdNfts: [] = null;
 	const fetchCreatedNfts = async () => {
-		createdNfts = (await getUserNfts(address)).result;
+		createdNfts = (await getUserNfts(address)).result.filter((v) => v.token_uri);
 	};
 
 	// When the user is viewing their own profie, we should change the displayed

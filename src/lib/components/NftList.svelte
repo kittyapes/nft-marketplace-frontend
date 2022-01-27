@@ -1,23 +1,10 @@
 <script lang="ts">
-	import { fetchTokenData } from '$utils/token/fetchToken';
 	import NftCard from './NftCard.svelte';
 
-	export let data: { token_uri: string }[];
-
-	// We are waiting for at least 20 tokens to be fetched
-	// to reduce jumping of the cards
-	$: displayThreshold = Math.min(data?.length - 1, 20);
-	$: displayCards = loadedTokens > displayThreshold;
-
-	let loadedTokens = 0;
-
-	function handleLoadedToken() {
-		loadedTokens++;
-		return '';
-	}
+	export let data: TokenData[];
 </script>
 
-{#if data === null || (data?.length && !displayCards)}
+{#if data === null}
 	<div class="placeholder">Loading...</div>
 {/if}
 
@@ -26,15 +13,11 @@
 {/if}
 
 {#if data?.length}
-	<div class="nftGrid" class:hidden={!displayCards}>
-		{#each data as data}
-			{#await fetchTokenData(data.token_uri) then tokenData}
-				{handleLoadedToken()}
-
-				{#if displayCards}
-					<NftCard data={null} {tokenData} />
-				{/if}
-			{/await}
+	<div class="nftGrid">
+		{#each data as tokenData}
+			{#if tokenData.metadata}
+				<NftCard {tokenData} />
+			{/if}
 		{/each}
 	</div>
 {/if}
