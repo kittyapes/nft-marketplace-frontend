@@ -159,10 +159,15 @@
 
 	usernameValue.subscribe((username) => {
 		if (!browser || !username) {
-			$usernameAvailable = false;
+			$usernameAvailable = null;
 		}
 
-		debouncedCheckUsernameAvailability(username);
+		// To only check if the username has been changed
+		if ($profileData?.username === username) {
+			$usernameAvailable = true;
+		} else {
+			debouncedCheckUsernameAvailability(username);
+		}
 	});
 
 	$: dataValid = $usernameAvailable;
@@ -226,7 +231,7 @@
 							bind:value={$localDataStore.username}
 						/>
 
-						{#if !$usernameAvailable}
+						{#if $usernameAvailable === false}
 							<div
 								class="text-xs ml-auto text-red-500 font-semibold mt-2 uppercase"
 								transition:slide|local
