@@ -77,6 +77,9 @@
 		createdNfts = (await getUserNfts(address)).result.filter((v) => v.token_uri);
 	};
 
+	// Refetch nfts when profile is switched
+	profileData.subscribe(fetchCreatedNfts);
+
 	// When the user is viewing their own profie, we should change the displayed
 	// profile when the user switches accounts in provider
 	currentUserAddress.subscribe(() => {
