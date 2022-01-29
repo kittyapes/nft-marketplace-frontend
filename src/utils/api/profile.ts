@@ -4,6 +4,7 @@ import axios from 'axios';
 import { get } from 'svelte/store';
 import { getAxiosConfig } from '.';
 
+
 const optionalProfileFields = ['twitter', 'instagram', 'facebook', 'bio'];
 
 export interface LoginHistoryEntry {

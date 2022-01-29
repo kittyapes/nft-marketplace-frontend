@@ -55,6 +55,7 @@
 
 	.rounded {
 		@apply rounded-full;
+
 	}
 
 	.stretch {

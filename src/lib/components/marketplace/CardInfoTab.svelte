@@ -38,10 +38,10 @@
 		<div class="w-full  flex flex-col gap-2 mt-5">
 			<span class="text-sm text-color-black opacity-70">Description:</span>
 
-			<span class=""
-				>Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia
-				consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet</span
-			>
+			<span>
+				Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia
+				consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet
+			</span>
 		</div>
 	</div>
 
@@ -61,10 +61,10 @@
 
 		<div class="w-full mt-3 flex flex-row gap-4">
 			<div class="w-1/2">
-				<Button gradient rounded>Sell</Button>
+				<Button gradient rounded stretch>Sell</Button>
 			</div>
 			<div class="w-1/2">
-				<Button variant="rounded-black">List for sale</Button>
+				<Button variant="rounded-black" stretch>List for sale</Button>
 			</div>
 		</div>
 	</div>

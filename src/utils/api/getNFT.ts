@@ -1,28 +1,11 @@
 import { ethers } from 'ethers';
 import axios from 'axios';
 import { request } from 'graphql-request';
+
 import { CARD_STATUSES } from '$constants/marketplace';
 import { GET_SINGLE_CARD } from '$utils/graphql/marketplace';
 
-export interface NftListing {
-	amount: string;
-	animation_url: string;
-	artist: string;
-	batch: string;
-	categories: string;
-	categoryIndex: string;
-	creationDate: string;
-	generation: string;
-	id: string;
-	image: string;
-	maxSupply: string;
-	name: string;
-	totalSupply: string;
-	uri: string;
-	status: string;
-}
-
-export async function fetchAllMetadata(_cards: Array<Object>): Promise<NftListing> {
+export async function fetchAllMetadata(_cards: Array<Object>): Promise<MarkeplaceNftListing> {
 	return Promise.all(
 		_cards.cards.map(async (card) => {
 			let uri = card?.uri?.replace('radiant-falls-54169', 'databasewaifu');
@@ -57,7 +40,10 @@ export async function fetchAllMetadata(_cards: Array<Object>): Promise<NftListin
 	});
 }
 
-export async function fetchMetadataFromUri(tokenId: number, uri: string): Promise<NftListing> {
+export async function fetchMetadataFromUri(
+	tokenId: number,
+	uri: string
+): Promise<MarkeplaceNftListing> {
 	let cardResponse = await request(
 		'https://api.thegraph.com/subgraphs/name/hysmagus/waifu',
 		GET_SINGLE_CARD,
