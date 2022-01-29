@@ -91,8 +91,6 @@ export const checkClaimEligibility = async (
 			(await get(appProvider).getBlock(await get(appProvider).getBlockNumber()))?.timestamp ||
 			getUTCSeconds();
 
-		console.log(`CURRENT BLOCK TIMESTAMP: ${blockTimestamp}`);
-
 		const contractIsActive = blockTimestamp < deployTime + contractActiveDuration;
 
 		// If past, show that claim period has past
@@ -228,7 +226,7 @@ export const checkClaimEligibility = async (
 				idoMerkleContractIsActive.set(contractIsActive);
 				idoClaimsArray.set(claimInfoArr);
 			}
-			console.log(airdropType, claimInfoArr);
+			console.log(`${airdropType} Checked`);
 
 			return claimInfoArr;
 		}
