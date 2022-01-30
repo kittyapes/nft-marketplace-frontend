@@ -160,6 +160,8 @@
 	usernameValue.subscribe((username) => {
 		if (!browser || !username) {
 			$usernameAvailable = true;
+		} else if (username === $profileData.username) {
+			$usernameAvailable = true;
 		} else {
 			debouncedCheckUsernameAvailability(username);
 		}
