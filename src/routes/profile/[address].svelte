@@ -21,6 +21,7 @@
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import getUserNfts from '$utils/nfts/getUserNfts';
+	import { browser } from '$app/env';
 
 	// const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'FAVORITES'];
@@ -74,7 +75,7 @@
 
 	let createdNfts: [] = null;
 	const fetchCreatedNfts = async () => {
-		createdNfts = (await getUserNfts(address)).result.filter((v) => v.token_uri);
+		createdNfts = browser ? (await getUserNfts(address)).result.filter((v) => v.token_uri) : [];
 	};
 
 	// Refetch nfts when profile is switched
