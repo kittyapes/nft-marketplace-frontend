@@ -43,6 +43,7 @@
 	"type": "module",
 	"dependencies": {
 		"@tailwindcss/aspect-ratio": "^0.3.0",
+		"@tailwindcss/line-clamp": "^0.3.1",
 		"authereum": "^0.1.14",
 		"axios": "^0.24.0",
 		"buffer": "^6.0.3",
