@@ -1,35 +1,33 @@
 <script lang="ts">
-	import DragDropImage from '$lib/components/DragDropImage.svelte';
-	import TextArea from '$lib/components/TextArea.svelte';
+	import { browser } from '$app/env';
+	import { goto } from '$app/navigation';
+	import Loader from '$icons/loader.svelte';
+	import Artstation from '$icons/socials/artstation.svelte';
+	import Deviantart from '$icons/socials/deviantart.svelte';
+	import Discord from '$icons/socials/discord.svelte';
 	import Instagram from '$icons/socials/instagram.svelte';
-	import Facebook from '$icons/socials/facebook.svelte';
+	import Pixiv from '$icons/socials/pixiv.svelte';
 	import Twitter from '$icons/socials/twitter.svelte';
+	import Web from '$icons/socials/web.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import { fade, slide } from 'svelte/transition';
+	import DragDropImage from '$lib/components/DragDropImage.svelte';
+	import LoadedContent from '$lib/components/LoadedContent.svelte';
+	import FreeNftPopup from '$lib/components/profile/FreeNFTPopup.svelte';
 	import Progressbar from '$lib/components/Progressbar.svelte';
-	import { derived, writable } from 'svelte/store';
+	import TextArea from '$lib/components/TextArea.svelte';
+	import { profileData, refreshProfileData } from '$stores/user';
+	import { currentUserAddress, welcomeNftClaimed } from '$stores/wallet';
 	import {
 		checkUsernameAvailability,
 		EditableProfileData,
-		ProfileData,
 		updateProfile
 	} from '$utils/api/profile';
-	import { currentUserAddress, welcomeNftClaimed } from '$stores/wallet';
-	import { notifyError, notifySuccess } from '$utils/toast';
-	import { browser } from '$app/env';
-	import Loader from '$icons/loader.svelte';
-	import { goto } from '$app/navigation';
-	import { cloneDeep } from 'lodash-es';
-	import { profileData, refreshProfileData } from '$stores/user';
 	import { setPopup } from '$utils/popup';
-	import FreeNftPopup from '$lib/components/profile/FreeNFTPopup.svelte';
-	import Web from '$icons/socials/web.svelte';
-	import Pixiv from '$icons/socials/pixiv.svelte';
-	import Deviantart from '$icons/socials/deviantart.svelte';
-	import Artstation from '$icons/socials/artstation.svelte';
+	import { notifyError, notifySuccess } from '$utils/toast';
 	import { isEmail } from '$utils/validator/isEmail';
-	import LoadedContent from '$lib/components/LoadedContent.svelte';
-	import { debounce } from 'lodash-es';
+	import { cloneDeep, debounce } from 'lodash-es';
+	import { derived, writable } from 'svelte/store';
+	import { fade, slide } from 'svelte/transition';
 
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
@@ -85,7 +83,7 @@
 				email: data.email,
 				bio: data.bio,
 				instagram: data.instagram,
-				facebook: data.facebook,
+				discord: data.discord,
 				twitter: data.twitter,
 				imageUrl: data.imageUrl,
 				coverUrl: data.coverUrl,
@@ -341,12 +339,12 @@
 						</div>
 
 						<div>
-							<Facebook />
+							<Discord />
 							<input
 								type="text"
 								class="input input-gray-outline"
-								placeholder="Facebook link"
-								bind:value={$localDataStore.facebook}
+								placeholder="Discord link"
+								bind:value={$localDataStore.discord}
 							/>
 						</div>
 
