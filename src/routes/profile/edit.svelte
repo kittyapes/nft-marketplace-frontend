@@ -159,13 +159,14 @@
 
 	usernameValue.subscribe((username) => {
 		if (!browser || !username) {
-			$usernameAvailable = false;
+			$usernameAvailable = true;
+		} else {
+			debouncedCheckUsernameAvailability(username);
 		}
-
-		debouncedCheckUsernameAvailability(username);
 	});
 
-	$: dataValid = $usernameAvailable;
+	// We setting false on SSR to avoid save button flashing
+	$: dataValid = browser && $usernameAvailable;
 </script>
 
 <LoadedContent loaded={$localDataStore}>
