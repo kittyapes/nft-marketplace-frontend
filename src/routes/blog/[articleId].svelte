@@ -15,7 +15,7 @@
 
 {#if articleData}
 	<main class="container py-16 px-8 overflow-hidden mb-32 mx-auto">
-		<img src={articleData.thumbnail} alt="" class="w-full max-h-[500px] object-cover" />
+		<img src={articleData.thumbnail} alt="" class="w-full object-contain" />
 
 		<div class="grid grid-cols-2 mt-16 gap-x-16">
 			<div>
