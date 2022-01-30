@@ -112,7 +112,7 @@ export const checkClaimEligibility = async (
 				const timeToNextClaimInSeconds = deployTime + cliffTime - blockTimestamp;
 				let reCheckFunc = null;
 
-				const treeIsClaimable = blockTimestamp >= deployTime + cliffTime;
+				const _treeIsClaimable = blockTimestamp >= deployTime + cliffTime;
 
 				// if (treeIsClaimable) {
 				// If not, check the amounts the user can claim from the merkle trees
