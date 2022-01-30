@@ -43,8 +43,8 @@
 
 	const localProfileData = writable<ProfileData>();
 
-	async function fetchData() {
-		if (address === $currentUserAddress) {
+	async function fetchData(forAddress: string) {
+		if (forAddress === $currentUserAddress) {
 			profileData.subscribe(localProfileData.set);
 			return;
 		}
@@ -52,7 +52,7 @@
 		$localProfileData = await fetchProfileData(address);
 	}
 
-	onMount(fetchData);
+	$: browser && fetchData(address);
 
 	function shortenAddress(address: string) {
 		return address.substring(0, 3) + '...' + address.substring(address.length - 4);
@@ -74,19 +74,20 @@
 		setPopup(ProfileProgressPopup);
 
 	let createdNfts: [] = null;
-	const fetchCreatedNfts = async () => {
-		createdNfts = browser ? (await getUserNfts(address)).result.filter((v) => v.token_uri) : [];
+	const fetchCreatedNfts = async (forAddress: string) => {
+		createdNfts = (await getUserNfts(forAddress)).result.filter((v) => v.token_uri);
 	};
 
 	// Refetch nfts when profile is switched
-	profileData.subscribe(fetchCreatedNfts);
+	profileData.subscribe(() => browser && address && fetchCreatedNfts(address));
 
 	// When the user is viewing their own profie, we should change the displayed
 	// profile when the user switches accounts in provider
 	currentUserAddress.subscribe(() => {
 		$currentUserAddress && isUsersProfile && goto('/profile/' + $currentUserAddress);
 	});
-	onMount(fetchCreatedNfts);
+
+	$: browser && address && fetchCreatedNfts(address);
 </script>
 
 <div class="h-72 bg-color-gray-light">
@@ -217,5 +218,5 @@
 </div>
 
 {#if $isAdmin && localProfileData}
-	<AdminTools profileData={$localProfileData} on:requestDataUpdate={fetchData} />
+	<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
 {/if}
