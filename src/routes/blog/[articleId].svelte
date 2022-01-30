@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import { blogPosts } from '$stores/blog';
 
 	const { articleId } = $page.params;
@@ -13,13 +14,13 @@
 	$: fixedContent = articleData && fixContent(articleData?.content);
 </script>
 
-{#if articleData}
+<LoadedContent loaded={!!articleData}>
 	<main class="container py-16 px-8 overflow-hidden mb-32 mx-auto">
-		<img src={articleData.thumbnail} alt="" class="w-full object-contain" />
+		<img src={articleData?.thumbnail} alt="" class="w-full object-contain" />
 
 		<div class="grid grid-cols-2 mt-16 gap-x-16">
 			<div>
-				<h1 class="uppercase text-4xl italic font-light text-color-black">{articleData.title}</h1>
+				<h1 class="uppercase text-4xl italic font-light text-color-black">{articleData?.title}</h1>
 			</div>
 
 			<div id="article-container" class="relative">
@@ -27,7 +28,7 @@
 			</div>
 		</div>
 	</main>
-{/if}
+</LoadedContent>
 
 <style>
 	#article-container :global(img) {
