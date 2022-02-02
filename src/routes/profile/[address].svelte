@@ -123,7 +123,7 @@
 			</Button>
 
 			{#if address === $currentUserAddress}
-				<div in:fade|local>
+				<div transition:fade|local>
 					<Button
 						variant="rounded-shadow"
 						rounded
