@@ -159,13 +159,14 @@
 
 	usernameValue.subscribe((username) => {
 		if (!browser || !username) {
-			$usernameAvailable = false;
+			$usernameAvailable = true;
+		} else {
+			debouncedCheckUsernameAvailability(username);
 		}
-
-		debouncedCheckUsernameAvailability(username);
 	});
 
-	$: dataValid = $usernameAvailable;
+	// We setting false on SSR to avoid save button flashing
+	$: dataValid = browser && $usernameAvailable;
 </script>
 
 <LoadedContent loaded={$localDataStore}>
@@ -252,12 +253,15 @@
 							placeholder="example@email.com"
 							bind:value={$localDataStore.email}
 						/>
-						<div
-							class="error"
-							class:hidden={!$localDataStore.email || isEmail($localDataStore.email)}
-						>
-							Please enter a valid email address
-						</div>
+						{#if $localDataStore.email && !isEmail($localDataStore.email)}
+							<div
+								transition:slide|local
+								class="text-xs ml-auto text-red-500 font-semibold mt-2 uppercase"
+								class:hidden={!$localDataStore.email || isEmail($localDataStore.email)}
+							>
+								Please enter a valid email address
+							</div>
+						{/if}
 					</div>
 				</div>
 
@@ -432,9 +436,5 @@
 
 	#socials-container > div > :global(svg) {
 		@apply h-12;
-	}
-
-	.error {
-		@apply text-red-300 uppercase text-[10px] mt-2;
 	}
 </style>
