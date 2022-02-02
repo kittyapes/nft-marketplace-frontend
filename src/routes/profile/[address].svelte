@@ -21,6 +21,7 @@
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import getUserNfts from '$utils/nfts/getUserNfts';
+	import { browser } from '$app/env';
 
 	// const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'FAVORITES'];
@@ -30,11 +31,11 @@
 
 	const localProfileData = writable<ProfileData>();
 
-	async function fetchData() {
-		$localProfileData = await fetchProfileData(address);
+	async function fetchData(forAdress: string) {
+		$localProfileData = await fetchProfileData(forAdress);
 	}
 
-	onMount(fetchData);
+	$: browser && fetchData(address);
 
 	function shortenAddress(address: string) {
 		return address.substring(0, 3) + '...' + address.substring(address.length - 4);
@@ -47,7 +48,7 @@
 	};
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
-	$: firstTimeUser = $profileData?.username.includes('great_gatsby');
+	$: firstTimeUser = $localProfileData?.username.includes('great_gatsby');
 
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null &&
