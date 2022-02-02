@@ -54,7 +54,7 @@ interface LoginHistoryEntry {
 }
 
 interface ProfileData {
-		address: string;
+	address: string;
 	createdAt: string;
 	email: string;
 	imageUrl: string;
@@ -67,11 +67,8 @@ interface ProfileData {
 	_id: string;
 	bio: string;
 	instagram: string;
-	facebook: string;
+	discord: string;
 	twitter: string;
-
-
-	// new socials
 	socialEmail: string;
 	pixiv: string;
 	deviantart: string;
