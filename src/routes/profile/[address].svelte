@@ -31,11 +31,6 @@
 	const localProfileData = writable<ProfileData>();
 
 	async function fetchData() {
-		if (address === $currentUserAddress) {
-			profileData.subscribe(localProfileData.set);
-			return;
-		}
-
 		$localProfileData = await fetchProfileData(address);
 	}
 
