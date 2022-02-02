@@ -28,18 +28,6 @@
 
 	$: address = $page.params.address;
 
-	let isUsersProfile = null;
-
-	// When the page is loaded, save whether the user is viewing their own profile.
-	// This is ran only once, when the page is loaded.
-	onMount(() => {
-		currentUserAddress.subscribe((userAddress) => {
-			if (userAddress && isUsersProfile === null) {
-				isUsersProfile = userAddress === address;
-			}
-		});
-	});
-
 	const localProfileData = writable<ProfileData>();
 
 	async function fetchData() {
@@ -77,11 +65,6 @@
 		createdNfts = (await getUserNfts(address)).result.filter((v) => v.token_uri);
 	};
 
-	// When the user is viewing their own profie, we should change the displayed
-	// profile when the user switches accounts in provider
-	currentUserAddress.subscribe(() => {
-		$currentUserAddress && isUsersProfile && goto('/profile/' + $currentUserAddress);
-	});
 	onMount(fetchCreatedNfts);
 </script>
 
