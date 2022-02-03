@@ -21,6 +21,7 @@
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import getUserNfts from '$utils/nfts/getUserNfts';
+	import { browser } from '$app/env';
 
 	// const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'FAVORITES'];
@@ -28,30 +29,13 @@
 
 	$: address = $page.params.address;
 
-	let isUsersProfile = null;
-
-	// When the page is loaded, save whether the user is viewing their own profile.
-	// This is ran only once, when the page is loaded.
-	onMount(() => {
-		currentUserAddress.subscribe((userAddress) => {
-			if (userAddress && isUsersProfile === null) {
-				isUsersProfile = userAddress === address;
-			}
-		});
-	});
-
 	const localProfileData = writable<ProfileData>();
 
-	async function fetchData() {
-		if (address === $currentUserAddress) {
-			profileData.subscribe(localProfileData.set);
-			return;
-		}
-
-		$localProfileData = await fetchProfileData(address);
+	async function fetchData(forAdress: string) {
+		$localProfileData = await fetchProfileData(forAdress);
 	}
 
-	onMount(fetchData);
+	$: browser && fetchData(address);
 
 	function shortenAddress(address: string) {
 		return address.substring(0, 3) + '...' + address.substring(address.length - 4);
@@ -63,7 +47,7 @@
 	};
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
-	$: firstTimeUser = $profileData?.username.includes('great_gatsby');
+	$: firstTimeUser = $localProfileData?.username.includes('great_gatsby');
 
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null &&
@@ -76,11 +60,6 @@
 		createdNfts = (await getUserNfts(address)).result.filter((v) => v.token_uri);
 	};
 
-	// When the user is viewing their own profie, we should change the displayed
-	// profile when the user switches accounts in provider
-	currentUserAddress.subscribe(() => {
-		$currentUserAddress && isUsersProfile && goto('/profile/' + $currentUserAddress);
-	});
 	onMount(fetchCreatedNfts);
 </script>
 
@@ -139,7 +118,7 @@
 			</Button>
 
 			{#if address === $currentUserAddress}
-				<div in:fade|local>
+				<div transition:fade|local>
 					<Button
 						variant="rounded-shadow"
 						rounded
