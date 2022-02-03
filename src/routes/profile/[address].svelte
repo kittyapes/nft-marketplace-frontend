@@ -12,9 +12,9 @@
 	import { profileCompletionProgress, profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { isAdmin } from '$utils/api/login';
-	import { fetchProfileData, ProfileData } from '$utils/api/profile';
+	import { fetchProfileData } from '$utils/api/profile';
 	import { setPopup } from '$utils/popup';
-	import { getFacebookUrl, getInstagramUrl, getTwitterUrl } from '$utils/profile';
+	import { getInstagramUrl, getTwitterUrl } from '$utils/profile';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
@@ -43,7 +43,6 @@
 
 	$: socialLinks = {
 		twitter: getTwitterUrl($localProfileData?.twitter),
-		facebook: getFacebookUrl($localProfileData?.facebook),
 		instagram: getInstagramUrl($localProfileData?.instagram)
 	};
 

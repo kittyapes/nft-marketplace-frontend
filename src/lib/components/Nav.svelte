@@ -41,23 +41,26 @@
 	<div class="flex-grow" />
 
 	<!-- Marketplace -->
-	<!-- <a
+	<a
 		id="marketplace-link"
 		href="/marketplace"
 		class="relative font-semibold text-transparent uppercase text-md bg-gradient-to-r bg-clip-text from-color-purple to-color-blue"
 	>
 		Marketplace
-	</a> -->
+	</a>
 
 	<!-- Staking -->
-	<!-- <a href="/staking" class="relative font-semibold uppercase text-md">Staking</a> -->
+	<a href="/staking" class="relative font-semibold uppercase text-md">Staking</a>
+
+	<!-- Airdrop -->
+	<a href="/airdrop" class="relative font-semibold uppercase text-md"> Airdrop </a>
 
 	<!-- Create -->
 	<a
-		href="/airdrop"
+		href="/create"
 		class="relative grid h-full px-16 font-semibold text-white uppercase text-md bg-gradient-to-r from-color-purple to-color-blue place-items-center"
 	>
-		Airdrop
+		Create
 	</a>
 
 	<!-- Profile -->

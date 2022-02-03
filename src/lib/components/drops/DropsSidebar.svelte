@@ -3,7 +3,7 @@
 	import Arrow from '$icons/back_.svelte';
 	import Filters from '$icons/filters.svelte';
 
-	import StatusFilter from '../drops/StatusFilter.svelte';
+	import StatusFilter from './StatusFilter.svelte';
 	import SortByFilter from './SortByFilter.svelte';
 
 	import { slide } from 'svelte/transition';
@@ -41,9 +41,13 @@
 
 	{#if isOpen}
 		<div transition:slide={{ duration: 200 }}>
-			<SidebarItem title="Sort By" iconSrc="/marketplace/status.svg"><StatusFilter /></SidebarItem>
+			<SidebarItem title="Sort By" icon="sort">
+				<SortByFilter />
+			</SidebarItem>
 
-			<SidebarItem title="Status" iconSrc="/marketplace/sort.svg"><SortByFilter /></SidebarItem>
+			<SidebarItem title="Status" icon="status">
+				<StatusFilter />
+			</SidebarItem>
 		</div>
 	{/if}
 </div>

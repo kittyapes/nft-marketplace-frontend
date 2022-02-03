@@ -79,6 +79,7 @@
 	let privateClaimAmt = 0;
 	let privateEscrowed = 0;
 	let privateHasClaimed = false;
+	let privateHasLoaded = false;
 	const updatePrivateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
 			privateHasClaimed =
@@ -107,6 +108,7 @@
 	let seedClaimAmt = 0;
 	let seedEscrowed = 0;
 	let seedHasClaimed = false;
+	let seedHasLoaded = false;
 	const seedUpdateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
 			seedHasClaimed =
@@ -135,11 +137,13 @@
 	let idoClaimAmount = 0;
 	let idoEscrowed = 0;
 	let idoPublicHasClaimed = false;
+	let idoHasLoaded = false;
 	const idoUpdateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
 			idoPublicHasClaimed =
 				$idoClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
 				$idoClaimsArray?.length;
+
 			if (idoPublicHasClaimed) {
 				idoClaimAmount = 0;
 				idoEscrowed = 0;
@@ -259,7 +263,13 @@
 	let selectedDuration = stakeDurationOptions[1];
 </script>
 
-<LoadedContent loaded={accessAllowed !== null}>
+<LoadedContent
+	loaded={accessAllowed !== null &&
+		$userHinataBalance !== null &&
+		privateHasLoaded &&
+		seedHasLoaded &&
+		idoHasLoaded}
+>
 	{#if accessAllowed}
 		<div class="w-full px-6 min-h-screen">
 			<div class="w-full flex justify-center mt-24">
