@@ -25,7 +25,9 @@
 			</div>
 
 			<div class="flex flex-col lg:ml-16 py-8 flex-grow">
-				<div class="text-3xl uppercase">{data.title}</div>
+				<div class="text-3xl uppercase italic font-light text-color-black line-clamp-2">
+					{data.title}
+				</div>
 
 				<!-- Where do we get this content from? -->
 				<p class="mt-4 flex-grow">
