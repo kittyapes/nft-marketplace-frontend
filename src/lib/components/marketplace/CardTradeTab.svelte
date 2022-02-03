@@ -26,10 +26,10 @@
 
 			<div class="w-full mt-3 flex flex-row gap-4">
 				<div class="w-1/2 ">
-					<Button gradient rounded>Sell</Button>
+					<Button gradient rounded stretch>Sell</Button>
 				</div>
 				<div class="w-1/2 ">
-					<Button variant="rounded-black">List for sale</Button>
+					<Button variant="rounded-black" stretch>List for sale</Button>
 				</div>
 			</div>
 		</div>

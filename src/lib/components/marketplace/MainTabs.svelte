@@ -1,7 +1,7 @@
 <script>
 	export let tab;
 	const TABS = ['MARKET', 'DROPS', 'POWAH', 'PHYSICAL NFT'];
-	const ROUTES = ['marketplace', 'drops', 'powah', 'physical'];
+	const ROUTES = ['marketplace/cards', 'drops', 'powah', 'physical'];
 </script>
 
 <div class="w-full flex flex-row gap-5 text-xs z-0 items-center">

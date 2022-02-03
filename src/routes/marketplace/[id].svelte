@@ -26,7 +26,7 @@
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row">
-	{#if $popupOpen}
+	{#if $popupOpen && $selectedCard}
 		<CardInfoPopup />
 	{/if}
 

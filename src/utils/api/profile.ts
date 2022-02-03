@@ -13,30 +13,6 @@ export interface LoginHistoryEntry {
 	upload_time: number;
 }
 
-export interface ProfileData {
-	address: string;
-	createdAt: string;
-	email: string;
-	imageUrl: string;
-	coverUrl: string;
-	loginHistories: LoginHistoryEntry[];
-	nickname: string;
-	status: 'USER' | 'AWAITING_VERIFIED' | 'VERIFIED' | 'AWAITING_INACTIVATED';
-	updatedAt: string;
-	username: string;
-	_id: string;
-	bio: string;
-	instagram: string;
-	facebook: string;
-	twitter: string;
-
-	// new socials
-	socialEmail: string;
-	pixiv: string;
-	deviantart: string;
-	artstation: string;
-}
-
 export async function fetchProfileData(address: string) {
 	const res = await axios.get(api + '/v1/accounts/' + address);
 	const data = res.data.data as ProfileData;
@@ -68,16 +44,14 @@ export interface EditableProfileData {
 	email: string;
 	bio: string;
 	instagram: string;
-	facebook: string;
+	discord: string;
 	twitter: string;
-	imageUrl: string;
-	coverUrl: string;
-
-	// new socials
 	socialEmail: string;
 	pixiv: string;
 	deviantart: string;
 	artstation: string;
+	imageUrl: string;
+	coverUrl: string;
 }
 
 function readFileAsync(file) {
@@ -128,7 +102,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 		requestTime,
 		profileImageHash || '',
 		coverImageHash || '',
-		data.facebook,
+		data.discord,
 		data.instagram,
 		data.twitter,
 		data.socialEmail,
@@ -146,7 +120,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	formData.append('request_time', requestTime);
 	data.profileImage && formData.append('image', data.profileImage);
 	data.coverImage && formData.append('cover', data.coverImage);
-	formData.append('facebook', data.facebook);
+	formData.append('discord', data.discord);
 	formData.append('instagram', data.instagram);
 	formData.append('twitter', data.twitter);
 	formData.append('socialEmail', data.socialEmail);

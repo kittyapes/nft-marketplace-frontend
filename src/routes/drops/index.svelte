@@ -2,18 +2,11 @@
 	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
 	import Sidebar from '$lib/components/drops/DropsSidebar.svelte';
 	import DropsSection from '$lib/sections/MarketplaceDropsSection.svelte';
-	import CardInfoPopup from '$lib/components/marketplace/CardPopup.svelte';
-
-	import { popupOpen } from '$stores/marketplace';
 
 	let sidebarOpen;
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row">
-	{#if $popupOpen}
-		<CardInfoPopup />
-	{/if}
-
 	<Sidebar bind:isOpen={sidebarOpen} />
 
 	<div

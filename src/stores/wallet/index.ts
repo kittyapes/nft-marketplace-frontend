@@ -7,7 +7,7 @@ export const appProvider = writable<ethers.providers.Web3Provider>(null);
 export const externalProvider = writable<ethers.providers.JsonRpcProvider>(null);
 export const connectionDetails = writable<ethers.providers.Network>(null);
 export const appSigner = writable<ethers.Signer>(null);
-export const userHinataBalance = writable<number>(0);
+export const userHinataBalance = writable<number>(null);
 export const currentUserAddress = writable<string>(null);
 
 // Staking
