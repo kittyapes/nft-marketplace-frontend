@@ -15,7 +15,7 @@
 </script>
 
 <LoadedContent loaded={!!articleData}>
-	<main class="container py-16 px-8 overflow-hidden mb-32 mx-auto">
+	<main class="container py-16 px-8 overflow-hidden mb-32 mx-auto max-w-screen-lg">
 		<img src={articleData?.thumbnail} alt="" class="w-full object-contain" />
 
 		<div class="grid grid-cols-2 mt-16 gap-x-16">
