@@ -11,14 +11,14 @@ const config = {
 					light: '#D8D8D8',
 					base: '#4D4D4D',
 					dark: '#1D1D1DB2',
-					accent: '#A9A8A8',
+					accent: '#A9A8A8'
 				},
 				'color-red': '#D61717',
 				'color-purple': '#868BF7',
 				'color-blue': '#6CC7F8',
 				'color-pink': {
 					dark: '#A95ABC'
-				},
+				}
 			},
 			screens: {
 				'2k': '2048px',
@@ -27,7 +27,11 @@ const config = {
 		}
 	},
 
-	plugins: [require('@tailwindcss/aspect-ratio'), require('tailwind-scrollbar-hide')]
+	plugins: [
+		require('@tailwindcss/aspect-ratio'),
+		require('tailwind-scrollbar-hide'),
+		require('@tailwindcss/line-clamp')
+	]
 };
 
 module.exports = config;
