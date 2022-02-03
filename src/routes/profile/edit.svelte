@@ -165,8 +165,15 @@
 		}
 	});
 
+	// Bio validation
+	function isValidBio(bio: string) {
+		return bio && bio.trim().split(' ').length > 2;
+	}
+
+	$: bioValid = isValidBio($localDataStore?.bio) || !$localDataStore?.bio;
+
 	// We setting false on SSR to avoid save button flashing
-	$: dataValid = browser && $usernameAvailable;
+	$: dataValid = browser && $usernameAvailable && bioValid;
 </script>
 
 <LoadedContent loaded={$localDataStore}>
@@ -227,7 +234,7 @@
 							bind:value={$localDataStore.username}
 						/>
 
-						{#if !$usernameAvailable}
+						{#if $usernameAvailable === false}
 							<div
 								class="text-xs ml-auto text-red-500 font-semibold mt-2 uppercase"
 								transition:slide|local
@@ -272,12 +279,23 @@
 					>
 						Bio
 					</div>
-					<TextArea
-						outline
-						placeholder="Enter your short bio"
-						maxChars={200}
-						bind:value={$localDataStore.bio}
-					/>
+
+					<div>
+						<TextArea
+							outline
+							placeholder="Enter your short bio"
+							maxChars={200}
+							bind:value={$localDataStore.bio}
+						/>
+						{#if $localDataStore.bio && !isValidBio($localDataStore.bio)}
+							<div
+								class="text-xs ml-auto text-red-500 font-semibold uppercase -translate-y-3"
+								transition:slide|local
+							>
+								Bio must be at least three words
+							</div>
+						{/if}
+					</div>
 				</div>
 
 				<div class="grid grid-cols-2">
