@@ -3,6 +3,7 @@
 	import Info from '$icons/info.svelte';
 	import ThreeDots from '$icons/three-dots.svelte';
 	import Trade from '$icons/trade.svelte';
+	import { notifyError, notifySuccess } from '$utils/toast';
 	import { fade, slide } from 'svelte/transition';
 
 	export let selectedTab = 0;
@@ -10,10 +11,16 @@
 	let dotsOpen = false;
 
 	const menuOptions = [
-		{ label: 'Transfer' },
-		{ label: 'Hide' },
-		{ label: 'Copy link' },
-		{ label: 'Report content' }
+		{ label: 'Transfer', action: () => notifyError('Something went wrong.') },
+		{ label: 'Hide', action: () => notifyError('Something went wrong.') },
+		{
+			label: 'Copy link',
+			action: () => {
+				navigator.clipboard.writeText(window.location.href);
+				notifySuccess('Copied!');
+			}
+		},
+		{ label: 'Report content', action: () => notifyError('Something went wrong.') }
 	];
 </script>
 
@@ -57,6 +64,10 @@
 					<button
 						class="transition-btn whitespace-nowrap text-left font-semibold py-2 first:pt-3 last:pb-3 pl-3 pr-4
 						hover:bg-gray-100 active:rounded-md"
+						on:click={() => {
+							option.action();
+							dotsOpen = false;
+						}}
 					>
 						{option.label}
 					</button>
