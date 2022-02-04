@@ -42,7 +42,7 @@
 		</div>
 
 		<!-- Content Side-->
-		<div class="w-full md:w-1/2 bg-white h-auto p-8">
+		<div class="w-full md:w-1/2 bg-white p-8 flex flex-col h-full">
 			<!-- Tabs container -->
 			<div class="w-full flex items-center justify-between">
 				<!-- Tabs -->
@@ -63,7 +63,7 @@
 			<div class="h-px w-full mt-1 bg-color-black bg-opacity-30" />
 
 			<!-- Selected Tab Content -->
-			<div class="py-5 h-full">
+			<div class="py-5 flex-grow overflow-hidden">
 				{#if tab == 0}
 					<CardInfoTab />
 				{:else if tab == 1}
@@ -72,6 +72,9 @@
 					<CardHistoryTab />
 				{/if}
 			</div>
+
+			<!-- Horizontal Line -->
+			<div class="h-px w-full mt-1 bg-color-black bg-opacity-30" />
 		</div>
 	</div>
 </div>
