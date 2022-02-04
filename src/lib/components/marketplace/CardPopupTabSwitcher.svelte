@@ -4,7 +4,6 @@
 	import ThreeDots from '$icons/three-dots.svelte';
 	import Trade from '$icons/trade.svelte';
 	import { notifyError, notifySuccess } from '$utils/toast';
-	import { fade, slide } from 'svelte/transition';
 
 	export let selectedTab = 0;
 

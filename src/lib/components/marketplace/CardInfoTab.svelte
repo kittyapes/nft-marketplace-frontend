@@ -2,6 +2,15 @@
 	import { fade } from 'svelte/transition';
 	import Button from '../Button.svelte';
 	import { selectedCard } from '$stores/marketplace';
+
+	// Temporary
+	const nftAttributes = [
+		{ label: 'Name', value: 'Value' },
+		{ label: 'Name', value: 'Value' },
+		{ label: 'Name', value: 'Value' },
+		{ label: 'Name', value: 'Value' },
+		{ label: 'Name', value: 'Value' }
+	];
 </script>
 
 <div in:fade={{ duration: 300 }} class="h-full flex flex-col justify-between">
@@ -28,11 +37,11 @@
 		</div>
 
 		<!-- External Link -->
-		<div class="w-full flex gap-x-2 items-center mt-5">
+		<!-- <div class="w-full flex gap-x-2 items-center mt-5">
 			<span class="text-sm text-color-black opacity-70">External Link:</span>
 
 			<span class="text-color-purple">LINK</span>
-		</div>
+		</div> -->
 
 		<!-- Description -->
 		<div class="w-full  flex flex-col gap-2 mt-5">
@@ -42,6 +51,21 @@
 				Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia
 				consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet
 			</span>
+		</div>
+
+		<!-- Horizontal Line -->
+		<div class="h-px w-full mt-2 bg-color-black bg-opacity-30" />
+
+		<!-- NFT attributes -->
+		<div class="flex flex-wrap justify-center items-center">
+			{#each nftAttributes as attribute}
+				<div class="w-1/3 p-2">
+					<div class="text-center text-xs uppercase font-semibold">{attribute.label}</div>
+					<div class="text-center bg-black text-white rounded-full py-2 text-xs uppercase">
+						{attribute.value}
+					</div>
+				</div>
+			{/each}
 		</div>
 	</div>
 
