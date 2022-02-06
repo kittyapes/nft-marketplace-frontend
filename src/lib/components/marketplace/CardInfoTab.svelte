@@ -59,9 +59,9 @@
 		<!-- NFT attributes -->
 		<div class="flex flex-wrap justify-center items-center">
 			{#each nftAttributes as attribute}
-				<div class="w-1/3 p-2">
+				<div class="w-1/3 p-2 select-none">
 					<div class="text-center text-xs uppercase font-semibold">{attribute.label}</div>
-					<div class="text-center bg-black text-white rounded-full py-2 text-xs uppercase">
+					<div class="text-center bg-black text-white rounded-full py-2 text-xs uppercase mt-1">
 						{attribute.value}
 					</div>
 				</div>
