@@ -8,7 +8,7 @@
 	export let title = '';
 	export let href = '';
 	export let icon = '';
-	export let arrow: true;
+	export let arrow = true;
 </script>
 
 <div>
