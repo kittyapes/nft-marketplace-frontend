@@ -1,11 +1,41 @@
-<div class="w-full">
-	<select class="w-full p-2 border border-gray-400 rounded-md font-bold text-xs thigh">
-		<option value="" disabled selected
-			><img src="/dropdown.svg" alt="dropdown icon" />SORT BY</option
+<script lang="ts">
+	export let options: { label: string; value?: string }[];
+
+	$: if (options.length < 1) {
+		throw new Error('No options provided');
+	}
+
+	export let selected: { label: string; value?: string } = options[0];
+	export let opened: boolean = false;
+
+	$: {
+		selected;
+		opened = false;
+	}
+</script>
+
+<div class="relative select-container select-none {$$props.class}">
+	<button class="select text-left" on:click={() => (opened = !opened)}>{selected.label}</button>
+
+	{#if opened}
+		<div
+			id="list-container"
+			class="absolute bottom-0 translate-y-full bg-white rounded-lg overflow-hidden"
 		>
-		<option class="py-4">Newest</option>
-		<option>Oldest</option>
-		<option>Most Popular</option>
-		<option>Ending Soon</option>
-	</select>
+			{#each options as option}
+				<button
+					class="font-semibold text-left py-2 px-4 hover:bg-gray-100 w-full transition-btn active:rounded"
+					on:click={() => (selected = option)}
+				>
+					{option.label}
+				</button>
+			{/each}
+		</div>
+	{/if}
 </div>
+
+<style>
+	#list-container {
+		box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.12);
+	}
+</style>

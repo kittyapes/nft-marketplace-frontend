@@ -6,6 +6,19 @@
 	import VerificationQueueSection from '$lib/sections/admin/VerificationQueueSection.svelte';
 	import VerifiedCreatorsSection from '$lib/sections/admin/VerifiedCreatorsSection.svelte';
 	import AdministratorsSection from '$lib/sections/admin/AdministratorsSection.svelte';
+	import Dropdown from '$lib/components/Dropdown.svelte';
+
+	const processDayOptions = [
+		{ label: 'Monday' },
+		{ label: 'Tuesday' },
+		{ label: 'Wednesday' },
+		{ label: 'Thrusday' },
+		{ label: 'Friday' },
+		{ label: 'Saturday' },
+		{ label: 'Sunday' }
+	];
+
+	const sortByOptions = [{ label: 'Date' }, { label: 'Alphabetical' }];
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row overflow-x-hidden">
@@ -40,17 +53,9 @@
 					<Checkbox />
 				</div>
 
-				<span class="pr-1">Process Every</span>
-				<div class="w-36 select-container">
-					<select class="select">
-						<option>Monday</option>
-						<option>Tuesday</option>
-						<option>Wednesday</option>
-						<option>Thursday</option>
-						<option>Friday</option>
-						<option>Saturday</option>
-						<option>Sunday</option>
-					</select>
+				<div class="flex items-center space-x-4">
+					<span class="pr-1 whitespace-nowrap">Process Every</span>
+					<Dropdown options={processDayOptions} class="w-36" />
 				</div>
 
 				<button
@@ -62,12 +67,7 @@
 
 			<div class="flex items-center">
 				<span class="pr-4">Sort By</span>
-				<div class="select-container">
-					<select class="select">
-						<option>Date</option>
-						<option>Alphabetical</option>
-					</select>
-				</div>
+				<Dropdown options={sortByOptions} class="w-40" />
 			</div>
 		</div>
 
