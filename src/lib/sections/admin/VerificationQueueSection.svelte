@@ -18,10 +18,10 @@
 <div class="mt-12">
 	<div class="flex justify-between">
 		<div class="uppercase text-lg font-bold">Verification Queue</div>
-		<div class="uppercase text-lg font-bold">Date added</div>
+		<div class="uppercase text-lg font-bold mr-16">Date added</div>
 	</div>
 
-	<div class="max-h-96 overflow-y-auto overflow-x-auto mt-5">
+	<div class="max-h-96 overflow-auto mt-5 custom-scrollbar pr-8 pb-4">
 		<table class="w-full table-auto border-t border-color-black border-opacity-30">
 			{#each QUEUE_ROWS as row}
 				<tr class="h-20 border-b border-color-black border-opacity-30">

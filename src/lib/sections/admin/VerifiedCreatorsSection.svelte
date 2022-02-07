@@ -55,7 +55,7 @@
 		</div>
 	</div>
 
-	<div class="max-h-[900px] overflow-y-auto overflow-x-auto mt-5">
+	<div class="max-h-[900px] overflow-auto mt-5 custom-scrollbar pb-4">
 		<table class="w-full table table-auto border-t border-color-black border-opacity-30">
 			{#each QUEUE_ROWS as row}
 				<tr class="h-20 border-b border-color-black border-opacity-30">

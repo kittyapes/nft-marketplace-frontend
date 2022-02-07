@@ -1,0 +1,18 @@
+.custom-scrollbar::-webkit-scrollbar {
+	/* @apply hidden; */
+	@apply block;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+	@apply bg-transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+	@apply bg-[#EAEAEA] rounded-full;
+	box-shadow: inset 0 0 2px #c6c6c6;
+	/* transform: translateX(100px); */
+}
+
+::-webkit-scrollbar-button {
+	@apply hidden;
+}
