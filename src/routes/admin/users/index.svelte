@@ -53,9 +53,11 @@
 					</select>
 				</div>
 
-				<div class="">
-					<Button variant="rounded-outline" class="text-xs" stretch>Force processing now</Button>
-				</div>
+				<button
+					class="rounded-full border border-black uppercase px-10 whitespace-nowrap italic h-12 ml-4 transition-btn"
+				>
+					Force processing now
+				</button>
 			</div>
 
 			<div>
