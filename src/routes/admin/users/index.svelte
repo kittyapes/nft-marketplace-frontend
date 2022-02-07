@@ -18,14 +18,18 @@
 		<!-- Add verified Creator -->
 		<div class="uppercase text-lg font-bold mt-12">Add Verified Creator</div>
 
-		<div class="mt-7 flex gap">
-			<TextInput
-				grayOutline
+		<div class="mt-7 flex gap items-center">
+			<input
+				type="text"
+				class="w-[500px] px-8 bg-[#F7F7F7] border border-[#CDCDCD] rounded-md placeholder-black font-light h-14"
 				placeholder="Enter an address to add to the Verified Creators..."
-				class="w-96 h-14"
 			/>
 
-			<Button variant="rounded-outline" class="ml-7 text-xs">add to queue</Button>
+			<button
+				class="rounded-full border border-black uppercase px-10 whitespace-nowrap italic h-12 ml-8 transition-btn"
+			>
+				Add to queue
+			</button>
 		</div>
 
 		<div class="w-full flex items-center mt-12 justify-between">
