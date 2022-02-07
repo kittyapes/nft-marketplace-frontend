@@ -21,13 +21,12 @@ body {
 }
 
 .transition-btn:not(:disabled) {
-	@apply transition duration-200 transform active:scale-95;
+	@apply transition-transform duration-200 transform active:scale-95;
 }
 
 .gradient-text {
 	@apply bg-gradient-to-r from-color-purple to-color-blue text-transparent bg-clip-text;
 }
-
 
 #WEB3_CONNECT_MODAL_ID {
 	@apply z-[1000];
