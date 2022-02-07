@@ -2,11 +2,13 @@
 	import AnalyticsIcon from '$icons/analytics.svelte';
 	import UserManageIcon from '$icons/user-manage.svelte';
 	import CreateIcon from '$icons/create.svelte';
-	import RightArrowIcon from '$icons/RightArrow.svelte';
+	import FiltersIcon from '$icons/filters.svelte';
+	import RightArrow from '$icons/right-arrow.svelte';
 
 	export let title = '';
 	export let href = '';
 	export let icon = '';
+	export let arrow: true;
 </script>
 
 <div>
@@ -19,12 +21,16 @@
 					<UserManageIcon />
 				{:else if icon === 'analytics'}
 					<AnalyticsIcon />
+				{:else if icon === 'filters'}
+					<FiltersIcon />
 				{/if}
 
 				{title}
 			</div>
 
-			<button><RightArrowIcon /></button>
+			{#if arrow}
+				<button><RightArrow /></button>
+			{/if}
 		</div>
 	</a>
 </div>
