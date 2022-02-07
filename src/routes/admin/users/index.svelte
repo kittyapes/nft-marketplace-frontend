@@ -40,9 +40,9 @@
 					<Checkbox />
 				</div>
 
-				<div>
-					<span class="pr-1">Process Every</span>
-					<select class="border h-10 rounded-md">
+				<span class="pr-1">Process Every</span>
+				<div class="w-36 select-container">
+					<select class="select">
 						<option>Monday</option>
 						<option>Tuesday</option>
 						<option>Wednesday</option>
@@ -60,12 +60,14 @@
 				</button>
 			</div>
 
-			<div>
+			<div class="flex items-center">
 				<span class="pr-4">Sort By</span>
-				<select class="border h-10 rounded-md">
-					<option>Date</option>
-					<option>Alphabetical</option>
-				</select>
+				<div class="select-container">
+					<select class="select">
+						<option>Date</option>
+						<option>Alphabetical</option>
+					</select>
+				</div>
 			</div>
 		</div>
 

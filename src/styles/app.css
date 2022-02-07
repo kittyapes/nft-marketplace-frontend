@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 @import 'input.css';
 @import 'scrollbar.css';
+@import 'select.css';
 
 /* Write your global styles here, in PostCSS syntax */
 @tailwind base;

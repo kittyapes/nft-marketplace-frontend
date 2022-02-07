@@ -1,0 +1,10 @@
+.select-container {
+	@apply relative
+	after:content-[url('/svg/dropdown-arrow.svg')] after:absolute after:right-1 after:w-6 after:h-6
+	after:top-0 after:bottom-0 after:my-auto after:pointer-events-none;
+}
+
+.select {
+	@apply border border-black border-opacity-30 h-10 rounded-md px-4 opacity-50 outline-none cursor-pointer
+	appearance-none w-full;
+}
