@@ -21,8 +21,9 @@
 		<div class="mt-7 flex gap items-center">
 			<input
 				type="text"
-				class="w-[500px] px-8 bg-[#F7F7F7] border border-[#CDCDCD] rounded-md placeholder-black font-light h-14"
+				class="w-[500px] px-8 bg-[#F7F7F7] border border-[#CDCDCD] rounded-md placeholder-black font-light h-14 outline-none"
 				placeholder="Enter an address to add to the Verified Creators..."
+				autocomplete="nope"
 			/>
 
 			<button
