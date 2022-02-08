@@ -130,7 +130,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 		data.discord,
 		data.instagram,
 		data.twitter,
-		data.socialEmail,
+		data.website,
 		data.pixiv,
 		data.deviantart,
 		data.artstation
@@ -151,7 +151,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	formData.append('discord', data.discord);
 	formData.append('instagram', data.instagram);
 	formData.append('twitter', data.twitter);
-	formData.append('website', data.socialEmail);
+	formData.append('website', data.website);
 	formData.append('pixiv', data.pixiv);
 	// There is a typo on the backend - devianart should be deviantart
 	formData.append('devianart', data.deviantart);
