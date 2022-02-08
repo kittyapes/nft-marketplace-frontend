@@ -1,6 +1,7 @@
 import { api } from '$constants/api';
 import { appSigner } from '$stores/wallet';
 import axios from 'axios';
+import { sha512 } from 'hash.js';
 import { get } from 'svelte/store';
 import { getAxiosConfig } from '.';
 
@@ -21,6 +22,10 @@ export async function fetchProfileData(address: string) {
 	for (let key of optionalProfileFields) {
 		data[key] = data[key] !== '_' ? data[key] : null;
 	}
+
+	// Fix deviantart typo
+	// @ts-ignore
+	data.deviantart = data.devianart;
 
 	return data;
 }
@@ -46,7 +51,7 @@ export interface EditableProfileData {
 	instagram: string;
 	discord: string;
 	twitter: string;
-	socialEmail: string;
+	website: string;
 	pixiv: string;
 	deviantart: string;
 	artstation: string;
@@ -95,6 +100,26 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 		data[key] = data[key] || '_';
 	}
 
+	const requiredKeys = [
+		'email',
+		'bio',
+		'username',
+		'discord',
+		'instagram',
+		'twitter',
+		'socialEmail',
+		'pixiv',
+		'deviantart',
+		'artstation'
+	];
+
+	// Prevent stuff from being undefined
+	requiredKeys.forEach((key) => {
+		if (!data[key]) {
+			data[key] = '';
+		}
+	});
+
 	const message = [
 		data.email,
 		data.bio,
@@ -109,9 +134,12 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 		data.pixiv,
 		data.deviantart,
 		data.artstation
-	].join('');
+	]
+		.map((v) => v || '')
+		.join('');
 
-	const signature = await get(appSigner).signMessage(message);
+	const hashedMessage = sha512().update(message).digest('hex');
+	const signature = await get(appSigner).signMessage(hashedMessage);
 
 	formData.append('nickname', '');
 	formData.append('email', data.email);
@@ -123,9 +151,10 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	formData.append('discord', data.discord);
 	formData.append('instagram', data.instagram);
 	formData.append('twitter', data.twitter);
-	formData.append('socialEmail', data.socialEmail);
+	formData.append('website', data.socialEmail);
 	formData.append('pixiv', data.pixiv);
-	formData.append('deviantart', data.deviantart);
+	// There is a typo on the backend - devianart should be deviantart
+	formData.append('devianart', data.deviantart);
 	formData.append('artstation', data.artstation);
 	formData.append('signature', signature);
 
