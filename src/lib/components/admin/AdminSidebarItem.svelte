@@ -11,26 +11,26 @@
 	export let arrow = true;
 </script>
 
-<div>
-	<a {href}>
-		<div class="px-5 py-6 border-b border-gray-400 uppercase flex justify-between items-center">
-			<div class=" w-full cursor-pointer flex items-center text-sm gap-4">
-				{#if icon === 'create'}
-					<CreateIcon />
-				{:else if icon === 'users-manage'}
-					<UserManageIcon />
-				{:else if icon === 'analytics'}
-					<AnalyticsIcon />
-				{:else if icon === 'filters'}
-					<FiltersIcon />
-				{/if}
-
-				{title}
-			</div>
-
-			{#if arrow}
-				<button><RightArrow /></button>
+<a {href}>
+	<div
+		class="px-5 py-6 border-b border-gray-400 uppercase flex justify-between items-center hover:bg-gray-100"
+	>
+		<div class=" w-full cursor-pointer flex items-center text-sm gap-4">
+			{#if icon === 'create'}
+				<CreateIcon />
+			{:else if icon === 'users-manage'}
+				<UserManageIcon />
+			{:else if icon === 'analytics'}
+				<AnalyticsIcon />
+			{:else if icon === 'filters'}
+				<FiltersIcon />
 			{/if}
+
+			{title}
 		</div>
-	</a>
-</div>
+
+		{#if arrow}
+			<button><RightArrow /></button>
+		{/if}
+	</div>
+</a>
