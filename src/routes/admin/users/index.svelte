@@ -47,27 +47,29 @@
 		</div>
 
 		<div class="w-full flex items-center mt-12 justify-between">
-			<div class="flex items-center gap-3 flex-col lg:flex-row flex-wrap">
-				<div class="flex items-center gap-3">
+			<div class="flex gap-3 lg:flex-row pb-2 flex-wrap">
+				<div class="flex items-center gap-3 whitespace-nowrap">
 					Automatic Batch Processing
 					<Checkbox />
 				</div>
 
-				<div class="flex items-center space-x-4">
+				<div class="flex items-center space-x-4 mr-4">
 					<span class="pr-1 whitespace-nowrap">Process Every</span>
 					<Dropdown options={processDayOptions} class="w-36" />
 				</div>
 
 				<button
-					class="rounded-full border border-black uppercase px-10 whitespace-nowrap italic h-12 ml-4 transition-btn"
+					class="rounded-full border border-black uppercase px-10 whitespace-nowrap italic h-12 transition-btn"
 				>
 					Force processing now
 				</button>
-			</div>
 
-			<div class="flex items-center">
-				<span class="pr-4">Sort By</span>
-				<Dropdown options={sortByOptions} class="w-40" />
+				<div class="flex items-center">
+					<span class="pr-4 whitespace-nowrap">Sort By</span>
+					<div>
+						<Dropdown options={sortByOptions} class="w-40" />
+					</div>
+				</div>
 			</div>
 		</div>
 
