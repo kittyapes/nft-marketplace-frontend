@@ -4,6 +4,7 @@
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
+	import { setPopup } from '$utils/popup';
 
 	let promotePopupOpen = false;
 	let inactivatePopupOpen = false;
@@ -22,17 +23,17 @@
 		}));
 
 	const sortByOptions = [{ label: 'Date' }, { label: 'Alphabetical' }];
+
+	function openPromotePopup() {
+		setPopup(ChangeCreatorStatusPopup, { props: { variant: 'promote' } });
+	}
+
+	function openInactivatePopup() {
+		setPopup(ChangeCreatorStatusPopup, { props: { variant: 'inactivate' } });
+	}
 </script>
 
 <div class="mt-32">
-	{#if promotePopupOpen}
-		<ChangeCreatorStatusPopup variant="promote" on:close={() => (promotePopupOpen = false)} />
-	{/if}
-
-	{#if inactivatePopupOpen}
-		<ChangeCreatorStatusPopup variant="inactivate" on:close={() => (inactivatePopupOpen = false)} />
-	{/if}
-
 	<div class="uppercase text-lg font-bold">Verified Creators</div>
 
 	<div class="mt-7 flex items-center">
@@ -81,13 +82,13 @@
 							{#if row.active}
 								<button
 									class="btn btn-rounded uppercase italic btn-gradient h-12 w-48 font-light"
-									on:click={() => (inactivatePopupOpen = true)}
+									on:click={openInactivatePopup}
 								>
 									Inactivate
 								</button>
 								<button
-									class="btn uppercase italic gradient-text ml-2 px-2"
-									on:click={() => (promotePopupOpen = true)}
+									class="btn uppercase italic gradient-text ml-2 px-2 w-28"
+									on:click={openPromotePopup}
 								>
 									Promote
 								</button>
@@ -97,7 +98,9 @@
 								>
 									Inactive
 								</button>
-								<button class="btn uppercase italic gradient-text ml-2 px-2">Reactivate</button>
+								<button class="btn uppercase italic gradient-text ml-2 px-2 w-28">
+									Reactivate
+								</button>
 							{/if}
 						</div>
 					</td>
