@@ -1,5 +1,4 @@
 <script>
-	import AdminSidebar from '$lib/components/admin/AdminSidebar.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
@@ -9,9 +8,6 @@
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row overflow-x-hidden">
-	<AdminSidebar />
-
-	<!-- Page Content -->
 	<div class="w-2/3 px-20 py-16 overflow-x-auto">
 		<div class="text-4xl uppercase font-bold">User management</div>
 
