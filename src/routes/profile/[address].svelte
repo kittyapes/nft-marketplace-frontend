@@ -43,7 +43,8 @@
 
 	$: socialLinks = {
 		twitter: getTwitterUrl($localProfileData?.twitter),
-		instagram: getInstagramUrl($localProfileData?.instagram)
+		instagram: getInstagramUrl($localProfileData?.instagram),
+		discord: $localProfileData?.discord
 	};
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
@@ -191,5 +192,5 @@
 </div>
 
 {#if $isAdmin && localProfileData}
-	<AdminTools profileData={$localProfileData} on:requestDataUpdate={fetchData} />
+	<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
 {/if}
