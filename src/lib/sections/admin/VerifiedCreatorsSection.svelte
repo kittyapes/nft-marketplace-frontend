@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
-	import EthAddress from '$lib/components/EthAddress.svelte';
-	import TextInput from '$lib/components/TextInput.svelte';
 	import PersonIcon from '$icons/person.svelte';
 	import ChangeCreatorStatusPopup from '$lib/components/admin/ChangeCreatorStatusPopup.svelte';
+	import Dropdown from '$lib/components/Dropdown.svelte';
+	import EthAddress from '$lib/components/EthAddress.svelte';
+	import TextInput from '$lib/components/TextInput.svelte';
 
 	let promotePopupOpen = false;
 	let inactivatePopupOpen = false;
@@ -20,6 +20,8 @@
 			date: '12-01-21 02:21:34',
 			active: boolStates[Math.floor(Math.random() * boolStates.length)]
 		}));
+
+	const sortByOptions = [{ label: 'Date' }, { label: 'Alphabetical' }];
 </script>
 
 <div class="mt-32">
@@ -50,12 +52,12 @@
 			<button class="btn btn-rounded uppercase italic btn-gradient h-12 w-32">All</button>
 		</div>
 
-		<div>
-			<span class="pr-4">Sort By</span>
-			<select class="border h-10 rounded-md">
-				<option>Date</option>
-				<option>Alphabetical</option>
-			</select>
+		<!-- Sort by dropdown -->
+		<div class="flex items-center">
+			<span class="pr-4 whitespace-nowrap">Sort By</span>
+			<div>
+				<Dropdown options={sortByOptions} class="w-40" />
+			</div>
 		</div>
 	</div>
 
