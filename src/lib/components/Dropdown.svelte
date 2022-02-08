@@ -27,7 +27,7 @@
 	{#if opened}
 		<div
 			id="list-container"
-			class="absolute bottom-0 translate-y-full bg-white rounded-lg overflow-hidden z-10"
+			class="absolute bottom-0 translate-y-full bg-white rounded-lg overflow-hidden z-10 w-full"
 		>
 			{#each options as option}
 				<button
