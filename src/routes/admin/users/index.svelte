@@ -73,13 +73,8 @@
 			</div>
 		</div>
 
-		<!-- Verification Queue -->
 		<VerificationQueueSection />
-
-		<!-- Verified Creators -->
 		<VerifiedCreatorsSection />
-
-		<!-- Administrators -->
 		<AdministratorsSection />
 	</div>
 </div>

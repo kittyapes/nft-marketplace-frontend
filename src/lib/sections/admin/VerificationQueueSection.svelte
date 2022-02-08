@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import PersonIcon from '$icons/person.svelte';
@@ -45,7 +44,7 @@
 	</div>
 
 	<div class="flex gap-5 mt-5">
-		<Button class="text-xs" gradient rounded>Approve</Button>
-		<Button class="text-xs" gradient rounded>Reject</Button>
+		<button class="btn btn-gradient btn-rounded italic font-light w-48 uppercase"> Approve </button>
+		<button class="btn btn-gradient btn-rounded italic font-light w-48 uppercase"> Reject </button>
 	</div>
 </div>

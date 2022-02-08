@@ -33,17 +33,21 @@
 
 	<div class="uppercase text-lg font-bold">Verified Creators</div>
 
-	<div class="mt-7 flex">
-		<TextInput grayOutline class="w-96 h-14" />
+	<div class="mt-7 flex items-center">
+		<TextInput grayOutline class="w-96 h-14 bg-[#F7F7F7]" />
 
-		<Button variant="rounded-outline" class="!w-32 ml-7 text-xs">Search</Button>
+		<button class="btn btn-rounded btn-outline ml-6 h-12">Search</button>
 	</div>
 
 	<div class="w-full flex mt-7 justify-between">
 		<div class="flex gap-4">
-			<Button variant="rounded-outline" class="!w-36 text-xs opacity-40">active</Button>
-			<Button variant="rounded-outline" class="!w-36 text-xs opacity-40">inactive</Button>
-			<Button class="!w-24 text-xs" rounded gradient>All</Button>
+			<button class="btn btn-rounded uppercase italic btn-outline h-12 w-48 opacity-50">
+				Active
+			</button>
+			<button class="btn btn-rounded uppercase italic btn-outline h-12 w-48 opacity-50">
+				Inactive
+			</button>
+			<button class="btn btn-rounded uppercase italic btn-gradient h-12 w-32">All</button>
 		</div>
 
 		<div>
@@ -66,40 +70,32 @@
 						</div>
 					</td>
 
-					<td class="px-4">
+					<td class="px-4 w-72">
 						<EthAddress address={row.address} />
 					</td>
 
 					<td class="px-6">
 						<div class="flex items-center gap-3">
 							{#if row.active}
-								<Button
-									class="!w-40 text-xs"
-									on:click={() => {
-										inactivatePopupOpen = true;
-									}}
-									rounded
-									gradient
+								<button
+									class="btn btn-rounded uppercase italic btn-gradient h-12 w-48 font-light"
+									on:click={() => (inactivatePopupOpen = true)}
 								>
 									Inactivate
-								</Button>
-								<Button
-									class="text-transparent bg-clip-text bg-gradient-to-br from-color-purple to-color-blue font-bold"
-									on:click={() => {
-										promotePopupOpen = true;
-									}}
+								</button>
+								<button
+									class="btn uppercase italic gradient-text ml-2 px-2"
+									on:click={() => (promotePopupOpen = true)}
 								>
-									PROMOTE
-								</Button>
+									Promote
+								</button>
 							{:else}
-								<Button variant="rounded-outline" class="!w-40 text-xs opacity-50">
-									Inactivate
-								</Button>
-								<Button
-									class="text-transparent bg-clip-text bg-gradient-to-br from-color-purple to-color-blue font-bold"
+								<button
+									class="btn btn-rounded uppercase italic btn-outline h-12 w-48 font-light opacity-50"
 								>
-									REACTIVATE
-								</Button>
+									Inactive
+								</button>
+								<button class="btn uppercase italic gradient-text ml-2 px-2">Reactivate</button>
 							{/if}
 						</div>
 					</td>

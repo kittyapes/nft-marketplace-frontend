@@ -29,11 +29,12 @@
 
 	<div class="w-full flex justify-between items-baseline">
 		<div class="uppercase text-lg font-bold ">Administrators</div>
-		<Button
-			variant="rounded-outline"
-			class="!w-28 text-xs py-1"
-			on:click={() => goto('/admin/users/add-admin')}>Add</Button
+		<a
+			href="/admin/users/add-admin"
+			class="btn btn-rounded uppercase italic btn-outline h-12 font-light"
 		>
+			Add
+		</a>
 	</div>
 
 	<div class="max-h-[900px] overflow-auto custom-scrollbar mt-5 pb-4">
@@ -47,21 +48,23 @@
 						</div>
 					</td>
 
-					<td class="px-6"> <span class="font-bold">Username:</span> {row.username} </td>
+					<td class="px-6">
+						<span class="font-bold">Username:</span>
+						{row.username}
+					</td>
 
-					<td class="px-6"> <span class="font-bold">Status:</span> {row.status} </td>
+					<td class="px-6">
+						<span class="font-bold">Status:</span>
+						{row.status}
+					</td>
 
 					<td class="px-4 w-28 whitespace-nowrap">
-						<Button
-							class="!w-40 text-xs"
-							on:click={() => {
-								modifyAdminOpen = true;
-							}}
-							gradient
-							rounded
+						<button
+							class="btn btn-rounded uppercase italic btn-gradient h-12 w-48 font-light"
+							on:click={() => (modifyAdminOpen = true)}
 						>
 							Modify
-						</Button>
+						</button>
 					</td>
 				</tr>
 			{/each}
