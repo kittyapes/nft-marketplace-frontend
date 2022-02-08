@@ -8,19 +8,26 @@
 	export let selected: { label: string; value?: string } = options[0];
 	export let opened: boolean = false;
 
-	$: {
-		selected;
-		opened = false;
+	let elemOpenButton: HTMLButtonElement;
+
+	$: if (opened) {
+		document.addEventListener('click', (event) => {
+			if (event.target !== elemOpenButton) {
+				opened = false;
+			}
+		});
 	}
 </script>
 
 <div class="relative select-container select-none {$$props.class}">
-	<button class="select text-left" on:click={() => (opened = !opened)}>{selected.label}</button>
+	<button class="select text-left" on:click={() => (opened = !opened)} bind:this={elemOpenButton}>
+		{selected.label}
+	</button>
 
 	{#if opened}
 		<div
 			id="list-container"
-			class="absolute bottom-0 translate-y-full bg-white rounded-lg overflow-hidden"
+			class="absolute bottom-0 translate-y-full bg-white rounded-lg overflow-hidden z-10"
 		>
 			{#each options as option}
 				<button
