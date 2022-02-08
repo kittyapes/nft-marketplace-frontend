@@ -14,7 +14,6 @@
 	import { isAdmin } from '$utils/api/login';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { setPopup } from '$utils/popup';
-	import { getInstagramUrl, getTwitterUrl } from '$utils/profile';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
@@ -42,9 +41,13 @@
 	}
 
 	$: socialLinks = {
-		twitter: getTwitterUrl($localProfileData?.twitter),
-		instagram: getInstagramUrl($localProfileData?.instagram),
-		discord: $localProfileData?.discord
+		twitter: $localProfileData?.twitter,
+		instagram: $localProfileData?.instagram,
+		discord: $localProfileData?.discord,
+		website: $localProfileData?.website,
+		pixiv: $localProfileData?.pixiv,
+		deviantart: $localProfileData?.deviantart,
+		artstation: $localProfileData?.artstation
 	};
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
@@ -149,14 +152,16 @@
 		</div>
 
 		<!-- Social links -->
-		<div class="px-16 w-48 overflow-hidden">
+		<div class="px-16 overflow-hidden">
 			<div class="font-bold text-color-gray-dark whitespace-nowrap">SOCIAL LINKS</div>
 
-			<div class="flex space-x-2 mt-4">
+			<div class="flex mt-4 flex-wrap">
 				{#if areSocialLinks}
 					{#each Object.entries(socialLinks) as [key, link]}
 						{#if link}
-							<SocialButton social={key} href={link} />
+							<div class="mr-2 mb-2">
+								<SocialButton social={key} href={link} />
+							</div>
 						{/if}
 					{/each}
 				{:else}
