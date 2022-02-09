@@ -1,0 +1,18 @@
+.btn {
+}
+
+.btn:not(:disabled) {
+	@apply transition-transform duration-200 transform active:scale-95;
+}
+
+.btn-rounded {
+	@apply rounded-full px-8 py-3;
+}
+
+.btn-gradient {
+	@apply bg-gradient-to-r from-color-purple to-color-blue text-white;
+}
+
+.btn-outline {
+	@apply border border-color-black;
+}

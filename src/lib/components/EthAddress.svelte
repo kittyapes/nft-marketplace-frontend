@@ -18,8 +18,15 @@
 </script>
 
 <div class="flex items-center gap-6 {$$props.class}">
-	<span class="text-color-blue font-bold">{address} </span>
-	<button on:click={copyToClipboard}>
+	<a
+		class="text-[#27C9FF] font-light italic"
+		href="https://etherscan.io/address/{address}"
+		target="_blank"
+	>
+		{address}
+	</a>
+
+	<button on:click={copyToClipboard} class="transition-btn">
 		<Copy />
 	</button>
 </div>
