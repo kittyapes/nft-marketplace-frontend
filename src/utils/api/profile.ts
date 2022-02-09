@@ -5,8 +5,6 @@ import { sha512 } from 'hash.js';
 import { get } from 'svelte/store';
 import { getAxiosConfig } from '.';
 
-const optionalProfileFields = ['twitter', 'instagram', 'facebook', 'bio'];
-
 export interface LoginHistoryEntry {
 	address: string;
 	checksum: string;
@@ -17,11 +15,6 @@ export interface LoginHistoryEntry {
 export async function fetchProfileData(address: string) {
 	const res = await axios.get(api + '/v1/accounts/' + address);
 	const data = res.data.data as ProfileData;
-
-	// We are using _ to set a "not present" value for optional fields
-	for (let key of optionalProfileFields) {
-		data[key] = data[key] !== '_' ? data[key] : null;
-	}
 
 	// Fix deviantart typo
 	// @ts-ignore
@@ -95,10 +88,6 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 
 	const profileImageHash = data.profileImage && (await hashImage(address, data.profileImage));
 	const coverImageHash = data.coverImage && (await hashImage(address, data.coverImage));
-
-	for (let key of optionalProfileFields) {
-		data[key] = data[key] || '_';
-	}
 
 	const requiredKeys = [
 		'email',
