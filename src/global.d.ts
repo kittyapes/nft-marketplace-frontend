@@ -69,7 +69,7 @@ interface ProfileData {
 	instagram: string;
 	discord: string;
 	twitter: string;
-	socialEmail: string;
+	website: string;
 	pixiv: string;
 	deviantart: string;
 	artstation: string;

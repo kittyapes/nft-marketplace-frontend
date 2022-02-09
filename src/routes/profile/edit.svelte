@@ -77,6 +77,8 @@
 	}
 
 	async function useProfileData(data: ProfileData) {
+		console.log(data);
+
 		try {
 			const localData = {
 				username: data.username,
@@ -89,7 +91,7 @@
 				coverUrl: data.coverUrl,
 				profileImage: null,
 				coverImage: null,
-				socialEmail: data.socialEmail,
+				website: data.website,
 				pixiv: data.pixiv,
 				deviantart: data.deviantart,
 				artstation: data.artstation
@@ -381,8 +383,8 @@
 							<input
 								type="email"
 								class="input input-gray-outline"
-								placeholder="Personal/Business Email"
-								bind:value={$localDataStore.socialEmail}
+								placeholder="Personal Website"
+								bind:value={$localDataStore.website}
 							/>
 						</div>
 
