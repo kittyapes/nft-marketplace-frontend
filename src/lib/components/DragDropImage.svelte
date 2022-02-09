@@ -4,7 +4,7 @@
 	import { fade } from 'svelte/transition';
 
 	export let text = 'Drag and drop an image here, or click to browse';
-	export let dimensions: string;
+	export let dimensions: string = '';
 	export let blob: Blob | null = null;
 	export let currentImgUrl: string = null;
 
