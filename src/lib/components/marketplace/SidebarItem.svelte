@@ -4,8 +4,7 @@
 	import PriceIcon from '$icons/price.svelte';
 	import CollectionsIcon from '$icons/collections.svelte';
 	import SortIcon from '$icons/sort.svelte';
-
-	import RightArrowIcon from '$icons/RightArrow.svelte';
+	import DownArrow from '$icons/down-arrow.svelte';
 
 	export let title = '';
 	export let icon = '';
@@ -37,7 +36,7 @@
 		</div>
 
 		<button on:click={toggle} aria-expanded={isOpen}>
-			<RightArrowIcon />
+			<DownArrow />
 		</button>
 	</div>
 	{#if isOpen}
