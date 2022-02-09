@@ -1,9 +1,10 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
-	import EthAddress from '$lib/components/EthAddress.svelte';
-	import TextInput from '$lib/components/TextInput.svelte';
 	import PersonIcon from '$icons/person.svelte';
 	import ChangeCreatorStatusPopup from '$lib/components/admin/ChangeCreatorStatusPopup.svelte';
+	import Dropdown from '$lib/components/Dropdown.svelte';
+	import EthAddress from '$lib/components/EthAddress.svelte';
+	import TextInput from '$lib/components/TextInput.svelte';
+	import { setPopup } from '$utils/popup';
 
 	let promotePopupOpen = false;
 	let inactivatePopupOpen = false;
@@ -20,42 +21,48 @@
 			date: '12-01-21 02:21:34',
 			active: boolStates[Math.floor(Math.random() * boolStates.length)]
 		}));
+
+	const sortByOptions = [{ label: 'Date' }, { label: 'Alphabetical' }];
+
+	function openPromotePopup() {
+		setPopup(ChangeCreatorStatusPopup, { props: { variant: 'promote' } });
+	}
+
+	function openInactivatePopup() {
+		setPopup(ChangeCreatorStatusPopup, { props: { variant: 'inactivate' } });
+	}
 </script>
 
 <div class="mt-32">
-	{#if promotePopupOpen}
-		<ChangeCreatorStatusPopup variant="promote" on:close={() => (promotePopupOpen = false)} />
-	{/if}
-
-	{#if inactivatePopupOpen}
-		<ChangeCreatorStatusPopup variant="inactivate" on:close={() => (inactivatePopupOpen = false)} />
-	{/if}
-
 	<div class="uppercase text-lg font-bold">Verified Creators</div>
 
-	<div class="mt-7 flex">
-		<TextInput grayOutline class="w-96 h-14" />
+	<div class="mt-7 flex items-center">
+		<TextInput grayOutline class="w-96 h-14 bg-[#F7F7F7]" />
 
-		<Button variant="rounded-outline" class="!w-32 ml-7 text-xs">Search</Button>
+		<button class="btn btn-rounded btn-outline ml-6 h-12">Search</button>
 	</div>
 
 	<div class="w-full flex mt-7 justify-between">
 		<div class="flex gap-4">
-			<Button variant="rounded-outline" class="!w-36 text-xs opacity-40">active</Button>
-			<Button variant="rounded-outline" class="!w-36 text-xs opacity-40">inactive</Button>
-			<Button class="!w-24 text-xs" rounded gradient>All</Button>
+			<button class="btn btn-rounded uppercase italic btn-outline h-12 w-48 opacity-50">
+				Active
+			</button>
+			<button class="btn btn-rounded uppercase italic btn-outline h-12 w-48 opacity-50">
+				Inactive
+			</button>
+			<button class="btn btn-rounded uppercase italic btn-gradient h-12 w-32">All</button>
 		</div>
 
-		<div>
-			<span class="pr-4">Sort By</span>
-			<select class="border h-10 rounded-md">
-				<option>Date</option>
-				<option>Alphabetical</option>
-			</select>
+		<!-- Sort by dropdown -->
+		<div class="flex items-center">
+			<span class="pr-4 whitespace-nowrap">Sort By</span>
+			<div>
+				<Dropdown options={sortByOptions} class="w-40" />
+			</div>
 		</div>
 	</div>
 
-	<div class="max-h-[900px] overflow-y-auto overflow-x-auto mt-5">
+	<div class="max-h-[900px] overflow-auto mt-5 custom-scrollbar pb-4">
 		<table class="w-full table table-auto border-t border-color-black border-opacity-30">
 			{#each QUEUE_ROWS as row}
 				<tr class="h-20 border-b border-color-black border-opacity-30">
@@ -66,40 +73,34 @@
 						</div>
 					</td>
 
-					<td class="px-4">
+					<td class="px-4 w-72">
 						<EthAddress address={row.address} />
 					</td>
 
 					<td class="px-6">
 						<div class="flex items-center gap-3">
 							{#if row.active}
-								<Button
-									class="!w-40 text-xs"
-									on:click={() => {
-										inactivatePopupOpen = true;
-									}}
-									rounded
-									gradient
+								<button
+									class="btn btn-rounded uppercase italic btn-gradient h-12 w-48 font-light"
+									on:click={openInactivatePopup}
 								>
 									Inactivate
-								</Button>
-								<Button
-									class="text-transparent bg-clip-text bg-gradient-to-br from-color-purple to-color-blue font-bold"
-									on:click={() => {
-										promotePopupOpen = true;
-									}}
+								</button>
+								<button
+									class="btn uppercase italic gradient-text ml-2 px-2 w-28"
+									on:click={openPromotePopup}
 								>
-									PROMOTE
-								</Button>
+									Promote
+								</button>
 							{:else}
-								<Button variant="rounded-outline" class="!w-40 text-xs opacity-50">
-									Inactivate
-								</Button>
-								<Button
-									class="text-transparent bg-clip-text bg-gradient-to-br from-color-purple to-color-blue font-bold"
+								<button
+									class="btn btn-rounded uppercase italic btn-outline h-12 w-48 font-light opacity-50"
 								>
-									REACTIVATE
-								</Button>
+									Inactive
+								</button>
+								<button class="btn uppercase italic gradient-text ml-2 px-2 w-28">
+									Reactivate
+								</button>
 							{/if}
 						</div>
 					</td>
