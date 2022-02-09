@@ -96,7 +96,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 		'discord',
 		'instagram',
 		'twitter',
-		'socialEmail',
+		'website',
 		'pixiv',
 		'deviantart',
 		'artstation'
