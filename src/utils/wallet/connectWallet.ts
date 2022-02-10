@@ -17,7 +17,7 @@ import { loginServerNotify } from '$utils/api/login';
 const infuraId = '456e115b04624699aa0e776f6f2ee65c';
 const appName = 'Hinata Marketplace';
 
-// Check if Metamask is Installed
+// Check if Metamask is Installed on browser
 const isMetaMaskInstalled = () => {
 	if (window.ethereum) {
 		if (window.ethereum.providers) {
