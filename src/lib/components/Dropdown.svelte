@@ -1,11 +1,11 @@
 <script lang="ts">
 	export let options: { label: string; value?: string }[];
 
-	$: if (options.length < 1) {
+	$: if (!options?.length) {
 		throw new Error('No options provided');
 	}
 
-	export let selected: { label: string; value?: string } = options[0];
+	export let selected: { label: string; value?: string } = options?.[0];
 	export let opened: boolean = false;
 
 	let elemOpenButton: HTMLButtonElement;

@@ -45,7 +45,7 @@
 			<div />
 
 			<div class="w-36 ">
-				<Dropdown />
+				<Dropdown options={[{ label: 'Date' }]} />
 			</div>
 		</div>
 
