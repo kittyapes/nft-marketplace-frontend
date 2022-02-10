@@ -28,4 +28,6 @@
 
 <hr class="separator mt-4" />
 
-<CommonProperties class="mt-8" propertyNames={tabToProperties[selectedTab]} />
+<CommonProperties class="mt-8" propNames={tabToProperties[selectedTab]} />
+
+<hr class="separator mt-8" />
