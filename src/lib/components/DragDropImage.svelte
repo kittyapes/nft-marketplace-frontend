@@ -7,11 +7,11 @@
 	export let dimensions: string = '';
 	export let blob: Blob | null = null;
 	export let currentImgUrl: string = null;
+	export let previewSrc = '';
 
 	let fileInput: HTMLInputElement;
 	let files: any = [];
 	let over = false;
-	let previewSrc = '';
 
 	$: if (browser && files.length) {
 		const reader = new FileReader();

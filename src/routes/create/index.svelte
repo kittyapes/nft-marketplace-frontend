@@ -5,6 +5,11 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
+
+	let nftName = '';
+	let nftCollection = 'No collection';
+	let nftDescription = '';
+	let nftImagePreview = '';
 </script>
 
 <hr class="separator" />
@@ -26,11 +31,16 @@
 
 				<div class="text-[#1D1D1DB2] mt-4">File types:</div>
 				<div class="text-color-black font-semibold mt-1">
-					PNG, GIF, WEBP, MP4, MP3 <br /> Max 50 MB
+					PNG, GIF, WEBP, MP4, MP3 <br />
+					Max 50 MB
 				</div>
 			</div>
 
-			<DragDropImage class="ml-24 max-w-screen-sm" text={dragDropText} />
+			<DragDropImage
+				class="ml-24 max-w-screen-sm"
+				text={dragDropText}
+				bind:previewSrc={nftImagePreview}
+			/>
 		</div>
 
 		<!-- Thumbnail upload -->
@@ -52,7 +62,7 @@
 		<div class="flex space-x-32 mt-8">
 			<div class="w-1/2">
 				<div class="uppercase italic text-[#1D1D1DB2]">Create name</div>
-				<input type="text" class="input w-full mt-2 font-semibold" />
+				<input type="text" class="input w-full mt-2 font-semibold" bind:value={nftName} />
 
 				<div class="uppercase italic text-[#1D1D1DB2] mt-8">Collection</div>
 				<Dropdown options={[{ label: 'No collections.' }]} class="mt-2" btnClass="font-semibold" />
@@ -82,9 +92,8 @@
 	</div>
 
 	<!-- Right side -->
-	<div class="separator border-0 border-l p-8">
-		<div class="uppercase italic text-xl">Preview</div>
-		<!-- TODO -->
-		<!-- <NftCard /> -->
+	<div class="separator border-0 border-l p-8 w-80">
+		<div class="uppercase italic text-xl mb-4">Preview</div>
+		<NftCard name={nftName || 'N/A'} collectionName={nftCollection} imageUrl={nftImagePreview} />
 	</div>
 </div>
