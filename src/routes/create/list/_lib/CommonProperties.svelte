@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Datepicker from '$lib/components/Datepicker.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
 	import type { PropertyName } from './types';
 
@@ -16,21 +17,22 @@
 	{#key propNames}
 		{#if is('price')}
 			<label for="price-component">
-				Price
+				<span>Price</span>
 				<TokenDropdown id="price-component" bind:value={propValues.price} />
 			</label>
 		{/if}
 
 		{#if is('date')}
-			<label>
+			<label for="datepicker-component">
 				<div class="h-6" />
-				<input type="text" bind:value={propValues.date} placeholder="DD/MM/YYYY" />
+				<!-- <input type="text" bind:value={propValues.date} placeholder="DD/MM/YYYY" /> -->
+				<Datepicker id="datepicker-component" />
 			</label>
 		{/if}
 
 		{#if is('quantity')}
 			<label>
-				Quantity
+				<span>Quantity</span>
 				<input type="text" bind:value={propValues.quantity} placeholder="Enter quantity number" />
 			</label>
 		{/if}
@@ -102,13 +104,13 @@
 </div>
 
 <style>
-	label {
-		@apply uppercase italic font-light;
+	label > span {
+		@apply uppercase italic font-light block mb-2;
 	}
 
-	:global(input),
+	/* :global(input),
 	input {
 		@apply block h-12 border border-opacity-30 focus:border-opacity-100
 		border-[#1D1D1D] rounded-lg outline-none !mt-2 px-4 w-full;
-	}
+	} */
 </style>

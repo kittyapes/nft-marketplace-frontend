@@ -19,7 +19,7 @@
 	<input
 		{id}
 		type="text"
-		class="input"
+		class="input w-full h-12 {$$props.class}"
 		class:font-semibold={value}
 		placeholder="Enter price for NFT"
 		bind:value
