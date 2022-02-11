@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
 	import type { PropertyName } from './types';
 
 	export let propNames: PropertyName[] = [];
@@ -14,9 +15,9 @@
 <div class="{$$props.class} grid grid-cols-2 gap-x-16 gap-y-8 pr-8">
 	{#key propNames}
 		{#if is('price')}
-			<label>
+			<label for="price-component">
 				Price
-				<input type="text" bind:value={propValues.price} placeholder="Enter price for NFT" />
+				<TokenDropdown id="price-component" bind:value={propValues.price} />
 			</label>
 		{/if}
 
@@ -105,7 +106,9 @@
 		@apply uppercase italic font-light;
 	}
 
+	:global(input),
 	input {
-		@apply block h-12 border border-opacity-30 focus:border-opacity-100 border-[#1D1D1D] rounded-lg outline-none mt-2 px-4 w-full;
+		@apply block h-12 border border-opacity-30 focus:border-opacity-100
+		border-[#1D1D1D] rounded-lg outline-none !mt-2 px-4 w-full;
 	}
 </style>

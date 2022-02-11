@@ -1,4 +1,8 @@
 <script lang="ts">
+	import { browser } from '$app/env';
+
+	import { goto } from '$app/navigation';
+
 	import { page } from '$app/stores';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
@@ -8,6 +12,10 @@
 
 	const listingType = $page.params.listingType;
 	const tabs = ['Sale', 'Auction', 'Raffle', 'Limited Edition', 'Queue Drop', 'Gacha', 'Admin'];
+
+	if (browser && !tabs.includes(listingType)) {
+		goto('/create/list/sale');
+	}
 
 	const tabToProperties: { [key: string]: PropertyName[] } = {
 		Sale: ['price', 'date', 'quantity']
