@@ -14,7 +14,7 @@
 
 <hr class="separator" />
 
-<div class="flex">
+<div class="flex mb-32">
 	<!-- Left side -->
 	<div class="flex-grow">
 		<!-- Title -->
@@ -83,9 +83,7 @@
 
 		<!-- Mint button -->
 		<div class="pr-8 w-full">
-			<button
-				class="btn btn-gradient btn-rounded w- uppercase font-semibold mt-8 mb-32 h-14 w-full"
-			>
+			<button class="btn btn-gradient btn-rounded w- uppercase font-semibold mt-8 h-14 w-full">
 				Mint & Continue to Listing
 			</button>
 		</div>
