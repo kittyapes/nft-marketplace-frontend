@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/env';
-
 	import { goto } from '$app/navigation';
-
 	import { page } from '$app/stores';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
