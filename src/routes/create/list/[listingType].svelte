@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import CommonProperties from './_lib/CommonProperties.svelte';
+	import Royalties from './_lib/Royalties.svelte';
 	import type { PropertyName } from './_lib/types';
 
 	const listingType = $page.params.listingType;
@@ -31,3 +32,5 @@
 <CommonProperties class="mt-8" propNames={tabToProperties[selectedTab]} />
 
 <hr class="separator mt-8" />
+
+<Royalties />
