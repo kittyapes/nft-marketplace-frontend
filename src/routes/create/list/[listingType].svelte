@@ -11,7 +11,20 @@
 
 	const tabs = ['sale', 'auction', 'raffle', 'limited-edition', 'queue-drop', 'gacha', 'admin'];
 	const typeToProperties: { [key: string]: PropertyName[] } = {
-		sale: ['price', 'date', 'quantity']
+		sale: ['price', 'date', 'quantity'],
+		auction: ['price', 'auctionDate', 'reservePrice', 'auctionDuration', 'quantity'],
+		raffle: [
+			'entryTickets',
+			'ticketPrice',
+			'price',
+			'totalTickets',
+			'date',
+			'quantity',
+			'raffleDuration'
+		],
+		'limited-edition': ['entryTickets', 'price', 'claimsBegin', 'quantity', 'claimsDuration'],
+		'queue-drop': ['price', 'cutPrice', 'preQueueOpens', 'queueDuration', 'quantity'],
+		gacha: ['quantity', 'gachaContract']
 	};
 
 	$: listingType = $page.params.listingType;
