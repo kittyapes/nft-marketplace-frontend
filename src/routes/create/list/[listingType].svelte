@@ -10,7 +10,7 @@
 	import type { PropertyName } from './_lib/types';
 
 	const tabs = ['sale', 'auction', 'raffle', 'limited-edition', 'queue-drop', 'gacha', 'admin'];
-	const tabToProperties: { [key: string]: PropertyName[] } = {
+	const typeToProperties: { [key: string]: PropertyName[] } = {
 		sale: ['price', 'date', 'quantity']
 	};
 
@@ -24,8 +24,6 @@
 	if (browser && !validListingType) {
 		goto('/create/list/sale');
 	}
-
-	let selectedTab = tabs[0];
 
 	const nftName = 'Todo NFT name';
 	const nftCollection = 'Todo NFT collection';
@@ -52,7 +50,7 @@
 
 		<hr class="separator mt-4" />
 
-		<CommonProperties class="mt-8" propNames={tabToProperties[selectedTab]} />
+		<CommonProperties class="mt-8" propNames={typeToProperties[listingType]} />
 
 		<hr class="separator mt-8" />
 
