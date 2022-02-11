@@ -6,20 +6,26 @@
 	import { page } from '$app/stores';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
+	import { capitalize } from 'lodash-es';
 	import CommonProperties from './_lib/CommonProperties.svelte';
 	import Royalties from './_lib/Royalties.svelte';
 	import type { PropertyName } from './_lib/types';
 
-	const listingType = $page.params.listingType;
-	const tabs = ['Sale', 'Auction', 'Raffle', 'Limited Edition', 'Queue Drop', 'Gacha', 'Admin'];
+	const tabs = ['sale', 'auction', 'raffle', 'limited-edition', 'queue-drop', 'gacha', 'admin'];
+	const tabToProperties: { [key: string]: PropertyName[] } = {
+		sale: ['price', 'date', 'quantity']
+	};
 
-	if (browser && !tabs.includes(listingType)) {
-		goto('/create/list/sale');
+	$: listingType = $page.params.listingType;
+	$: validListingType = tabs.includes(listingType);
+
+	function humanizeType(s: string) {
+		return capitalize(s.replace(/-/g, ' '));
 	}
 
-	const tabToProperties: { [key: string]: PropertyName[] } = {
-		Sale: ['price', 'date', 'quantity']
-	};
+	if (browser && !validListingType) {
+		goto('/create/list/sale');
+	}
 
 	let selectedTab = tabs[0];
 
@@ -30,7 +36,9 @@
 
 <div class="space-x-8">
 	{#each tabs as tab}
-		<TabButton selected={selectedTab === tab} on:click={() => (selectedTab = tab)}>{tab}</TabButton>
+		<TabButton selected={listingType === tab} on:click={() => goto('/create/list/' + tab)}>
+			{humanizeType(tab)}
+		</TabButton>
 	{/each}
 </div>
 
@@ -39,7 +47,9 @@
 <div class="flex mb-32">
 	<div class="flex-grow">
 		<h1 class="text-xl italic uppercase font-light mt-8">
-			Step 2: List for <span class="gradient-text">Sale</span>
+			Step 2: List for <span class="gradient-text">
+				{(validListingType && humanizeType(listingType)) || 'N/A'}
+			</span>
 		</h1>
 
 		<hr class="separator mt-4" />
