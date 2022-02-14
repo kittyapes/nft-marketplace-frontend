@@ -23,12 +23,14 @@ export async function fetchProfileData(address: string) {
 	return data;
 }
 
+// TODO remove, moved into utils/api/admin/userManagement.ts
 export async function promoteProfile(address: string) {
 	return await axios
 		.post(api + '/v1/accounts/' + address + '/promote', {}, getAxiosConfig())
 		.then((res) => res.data);
 }
 
+// TODO remove, moved into utils/api/admin/userManagement.ts
 export async function inactivateProfile(address: string) {
 	return await axios
 		.post(api + '/v1/accounts/' + address + '/inactivate', {}, getAxiosConfig())
