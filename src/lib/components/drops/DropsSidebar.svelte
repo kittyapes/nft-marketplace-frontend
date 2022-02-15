@@ -1,12 +1,10 @@
 <script>
-	import SidebarItem from '$lib/components/marketplace/SidebarItem.svelte';
-	import Arrow from '$icons/back_.svelte';
+	import ArrowLeft from '$icons/arrow-left.svelte';
 	import Filters from '$icons/filters.svelte';
-
-	import StatusFilter from '../drops/StatusFilter.svelte';
-	import SortByFilter from './SortByFilter.svelte';
-
+	import SidebarItem from '$lib/components/marketplace/SidebarItem.svelte';
 	import { slide } from 'svelte/transition';
+	import SortByFilter from './SortByFilter.svelte';
+	import StatusFilter from './StatusFilter.svelte';
 
 	export let isOpen = true;
 	const toggle = () => (isOpen = !isOpen);
@@ -25,7 +23,7 @@
 			</div>
 
 			<button on:click={toggle} class="rotate-90 md:rotate-0">
-				<Arrow />
+				<ArrowLeft />
 			</button>
 		</div>
 	{:else}
@@ -34,16 +32,20 @@
 		>
 			<div class="text-sm">FILTERS</div>
 			<button on:click={toggle} class="-rotate-90 md:rotate-180">
-				<Arrow />
+				<ArrowLeft />
 			</button>
 		</div>
 	{/if}
 
 	{#if isOpen}
 		<div transition:slide={{ duration: 200 }}>
-			<SidebarItem title="Sort By" iconSrc="/marketplace/status.svg"><StatusFilter /></SidebarItem>
+			<SidebarItem title="Sort By" icon="sort">
+				<SortByFilter />
+			</SidebarItem>
 
-			<SidebarItem title="Status" iconSrc="/marketplace/sort.svg"><SortByFilter /></SidebarItem>
+			<SidebarItem title="Status" icon="status">
+				<StatusFilter />
+			</SidebarItem>
 		</div>
 	{/if}
 </div>

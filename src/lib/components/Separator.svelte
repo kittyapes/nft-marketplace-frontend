@@ -1,1 +1,5 @@
-<div class="h-px bg-black opacity-30 w-full {$$props.class}" />
+<script lang="ts">
+	export let color: string = '#00000020';
+</script>
+
+<div class="h-px w-full {$$props.class}" style="background-color: {color}" />

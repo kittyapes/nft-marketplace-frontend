@@ -1,7 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+@import 'button.css';
+@import 'input.css';
+@import 'scrollbar.css';
+@import 'select.css';
 
 /* Write your global styles here, in PostCSS syntax */
 @tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+	scroll-behavior: smooth;
+}
 
 body {
 	font-family: 'Open Sans', sans-serif;
@@ -13,13 +23,14 @@ body {
 	height: 100%;
 }
 
-.transition-btn {
-	@apply transition duration-200 transform active:scale-95;
+.transition-btn:not(:disabled) {
+	@apply transition-transform duration-200 transform active:scale-95;
 }
 
 .gradient-text {
 	@apply bg-gradient-to-r from-color-purple to-color-blue text-transparent bg-clip-text;
 }
 
-@tailwind components;
-@tailwind utilities;
+#WEB3_CONNECT_MODAL_ID {
+	@apply z-[1000];
+}

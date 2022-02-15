@@ -1,7 +1,16 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import RoundedButton from '../RoundedButton.svelte';
+	import Button from '../Button.svelte';
 	import { selectedCard } from '$stores/marketplace';
+
+	// Temporary
+	const nftAttributes = [
+		{ label: 'Name', value: 'Value' },
+		{ label: 'Name', value: 'Value' },
+		{ label: 'Name', value: 'Value' },
+		{ label: 'Name', value: 'Value' },
+		{ label: 'Name', value: 'Value' }
+	];
 </script>
 
 <div in:fade={{ duration: 300 }} class="h-full flex flex-col justify-between">
@@ -17,31 +26,46 @@
 				src="https://images.generated.photos/5Lc44DqxkR5Mhtm9SaQZgi8KBe6f0Lga7HkJAN54sGI/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92Ml8w/NTc4MDI3LmpwZw.jpg"
 			/>
 
-			<span class="text-color-purple">@{$selectedCard.artist}</span>
+			<span class="text-color-purple">@{$selectedCard?.artist}</span>
 		</div>
 
 		<!-- Edition -->
 		<div class="w-full flex gap-x-2 items-center mt-5">
 			<span class="text-sm text-color-black opacity-70">Edition:</span>
 
-			<span class="">{$selectedCard.supply} of {$selectedCard.maxSupply}</span>
+			<span class="">{$selectedCard?.totalSupply} of {$selectedCard?.maxSupply}</span>
 		</div>
 
 		<!-- External Link -->
-		<div class="w-full flex gap-x-2 items-center mt-5">
+		<!-- <div class="w-full flex gap-x-2 items-center mt-5">
 			<span class="text-sm text-color-black opacity-70">External Link:</span>
 
 			<span class="text-color-purple">LINK</span>
-		</div>
+		</div> -->
 
 		<!-- Description -->
 		<div class="w-full  flex flex-col gap-2 mt-5">
 			<span class="text-sm text-color-black opacity-70">Description:</span>
 
-			<span class=""
-				>Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia
-				consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet</span
-			>
+			<span>
+				Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia
+				consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet
+			</span>
+		</div>
+
+		<!-- Horizontal Line -->
+		<div class="h-px w-full mt-2 bg-color-black bg-opacity-30" />
+
+		<!-- NFT attributes -->
+		<div class="flex flex-wrap justify-center items-center">
+			{#each nftAttributes as attribute}
+				<div class="w-1/3 p-2 select-none">
+					<div class="text-center text-xs uppercase font-semibold">{attribute.label}</div>
+					<div class="text-center bg-black text-white rounded-full py-2 text-xs uppercase mt-1">
+						{attribute.value}
+					</div>
+				</div>
+			{/each}
 		</div>
 	</div>
 
@@ -59,12 +83,12 @@
 			</div>
 		</div>
 
-		<div class="w-full mt-3 flex flex-row">
-			<div class="w-1/2 p-2">
-				<RoundedButton bgColor="from-color-purple to-color-blue">Sell</RoundedButton>
+		<div class="w-full mt-3 flex flex-row gap-4">
+			<div class="w-1/2">
+				<Button gradient rounded stretch>Sell</Button>
 			</div>
-			<div class="w-1/2 p-2">
-				<RoundedButton>List for sale</RoundedButton>
+			<div class="w-1/2">
+				<Button variant="rounded-black" stretch>List for sale</Button>
 			</div>
 		</div>
 	</div>

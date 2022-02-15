@@ -8,4 +8,10 @@ node_modules
 .vercel
 .vercel_build_output
 yarn.lock
-pnpm-lock.yaml
+package-lock.json
+
+# Logs
+*.log
+
+# Browserify
+static/wallets.js

@@ -1,5 +1,7 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import { expoOut } from 'svelte/easing';
 
 	const dispatch = createEventDispatcher();
 
@@ -13,9 +15,10 @@
 </script>
 
 <div
-	class="grid place-items-center fixed top-0 w-screen h-screen bg-[#1D1D1DB2]"
+	class="grid place-items-center fixed top-0 w-screen h-screen bg-color-gray-dark z-20"
 	on:click={close}
 	bind:this={overlay}
+	transition:fade={{ duration: 200, easing: expoOut }}
 >
 	<slot />
 </div>

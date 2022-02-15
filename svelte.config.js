@@ -23,8 +23,17 @@ const config = {
 					$styles: path.resolve('./src/styles'),
 					$utils: path.resolve('./src/utils'),
 					$constants: path.resolve('./src/constants'),
-					$icons: path.resolve('./src/icons')
+					$icons: path.resolve('./src/icons'),
+					$contracts: path.resolve('./src/contracts'),
+					$actions: path.resolve('./src/actions')
 				}
+			},
+			define: {
+				'process.env': process.env
+			},
+			optimizeDeps: {
+				entries: ['jwt-decode'],
+				exclude: ['@zerodevx/svelte-toast']
 			}
 		}
 	}

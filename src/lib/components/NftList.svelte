@@ -1,18 +1,34 @@
 <script lang="ts">
-	import type { NftData } from '$lib/data/nft';
 	import NftCard from './NftCard.svelte';
 
-	export let promise: Promise<NftData[]>;
+	export let data: TokenData[];
 </script>
 
-<div
-	class="grid gap-4 p-8 justify-center grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 w-full"
->
-	{#await promise}
-		Loading...
-	{:then nfts}
-		{#each nfts as data}
-			<NftCard {data} />
+{#if data === null}
+	<div class="placeholder">Loading...</div>
+{/if}
+
+{#if data?.length === 0}
+	<div class="placeholder">Nothing to see here, move along.</div>
+{/if}
+
+{#if data?.length}
+	<div class="nftGrid">
+		{#each data as tokenData}
+			{#if tokenData.metadata}
+				<NftCard {tokenData} />
+			{/if}
 		{/each}
-	{/await}
-</div>
+	</div>
+{/if}
+
+<style>
+	.placeholder {
+		@apply p-36 font-semibold text-lg opacity-60;
+	}
+
+	.nftGrid {
+		@apply grid min-w-full gap-3 p-2 my-5 mx-auto;
+		grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+	}
+</style>

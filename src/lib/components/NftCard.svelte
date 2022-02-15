@@ -1,19 +1,24 @@
 <script lang="ts">
-	import type { NftData } from '$lib/data/nft';
 	import Eth from '$icons/eth.svelte';
 	import Heart from '$icons/heart.svelte';
 	import ThreeDots from '$icons/three-dots.svelte';
+	import { fade } from 'svelte/transition';
 
-	export let data: NftData;
+	export let tokenData: TokenData;
+
+	const tokenUriData = tokenData?.token_uri_data;
 
 	let dotsOpened = false;
+	let imgLoaded = false;
 
 	const toggleDots = () => (dotsOpened = !dotsOpened);
 </script>
 
-<div class="rounded-2xl overflow-hidden border p-4 relative">
+<div class="rounded-2xl overflow-hidden border p-4 relative" in:fade>
 	<div class="flex items-center gap-x-2">
-		{#if data.ownedByUser}
+		<!-- Remove && false to show options -->
+		<!-- Owned by user -->
+		{#if false}
 			<button on:click={toggleDots}>
 				<ThreeDots />
 			</button>
@@ -22,23 +27,36 @@
 		<div class="flex-grow" />
 
 		<Heart />
-		<div>{data.likes}</div>
+		<!-- TODO Likes -->
+		<div class="font-medium select-none">{0}</div>
 	</div>
 
-	<img src={data.img} alt="" class="mx-auto w-48 h-48 object-cover rounded-lg mt-2" />
+	<div
+		class="transition w-full h-[18.5rem] mx-auto bg-gray-100 rounded-2xl overflow-hidden mt-2"
+		class:animate-pulse={!imgLoaded}
+	>
+		<img
+			src={$tokenUriData?.image || tokenData.metadata?.image}
+			alt=""
+			class="object-cover transition w-full h-full"
+			class:opacity-0={!imgLoaded}
+			on:load={() => (imgLoaded = true)}
+		/>
+	</div>
 
-	<div class="flex text-sm font-normal text-gray-600 mt-2">
-		<div class="flex-grow">{data.collectionName}</div>
+	<div class="flex text-sm font-medium text-gray-600 mt-2">
+		<div class="flex-grow">{tokenData?.name || 'N/A'}</div>
 		<div>Price</div>
 	</div>
 
 	<div class="flex font-semibold mt-2 items-center">
-		<div class="flex-grow">{data.name}</div>
+		<div class="flex-grow">{tokenData?.metadata?.name || $tokenUriData?.name || 'N/A'}</div>
 		<Eth />
-		<div class="ml-1">{data.priceEth}</div>
+		<div class="ml-1">{tokenData?.metadata?.price || 'N/A'}</div>
 	</div>
 
-	{#if dotsOpened && data.ownedByUser}
+	<!-- TODO If owned by user -->
+	{#if dotsOpened && false}
 		<div id="popup" class="flex flex-col absolute bg-white font-bold rounded-md top-10">
 			<button class="gradient-text transition-btn">TRANSFER</button>
 			<button class="transition-btn">HIDE</button>

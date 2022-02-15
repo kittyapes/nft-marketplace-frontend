@@ -1,13 +1,13 @@
 <script>
-	import RoundedButton from '../RoundedButton.svelte';
-	import LockupPeriod from './LockupPeriod.svelte';
 	import { fade } from 'svelte/transition';
 	import Eth from '$icons/eth.svelte';
+	import { connectToWallet } from '$utils/wallet/connectWallet';
+	import { appSigner, communityClaimsArray } from '$stores/wallet';
+	import { ethers } from 'ethers';
+	import Button from '../Button.svelte';
 
-	export let walletConnected = false;
-
-	const connectWallet = () => {
-		walletConnected = true;
+	const connectWallet = async () => {
+		await connectToWallet();
 	};
 </script>
 
@@ -33,9 +33,17 @@
 			class="w-full h-full p-11 flex flex-col text-left border-r-2 border-black border-opacity-20"
 		>
 			<div class="text-2xl opacity-60 font-bold">Claim</div>
-			<div class="text-2xl font-bold flex items-center gap-3 mt-3">14,203 HiNATA</div>
-			<div class="w-28 mt-7">
-				<RoundedButton bgColor="from-color-purple to-color-blue">CLAIM</RoundedButton>
+			<div class="text-2xl font-bold flex items-center gap-3 mt-3">
+				{0} HiNATA
+			</div>
+			<div class="mt-7">
+				{#if $appSigner}
+					<Button gradient rounded>Claim</Button>
+				{:else}
+					<Button gradient rounded class="whitespace-nowrap w-44" on:click={connectWallet}>
+						Connect To Wallet
+					</Button>
+				{/if}
 			</div>
 		</div>
 
@@ -45,12 +53,13 @@
 
 			<div class="uppercase text-left my-5">lockup period</div>
 
-			<LockupPeriod />
+			<!-- <LockupPeriod /> -->
+			<!-- Use HorizontalOptionSwitcher instead -->
 
 			<div class="text-left mt-4">Stake your HINATA to the DAO</div>
 
-			<div class="w-28 mt-2">
-				<RoundedButton bgColor="from-color-purple to-color-blue">STAKE</RoundedButton>
+			<div class="w-28 mt-2" class:hidden={!$appSigner}>
+				<Button gradient rounded>STAKE</Button>
 			</div>
 		</div>
 	</div>
