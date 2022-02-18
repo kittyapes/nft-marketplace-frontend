@@ -4,10 +4,7 @@ export function outsideClickCallback(node: HTMLElement, { cb }: { cb: () => any 
 		(event) => {
 			const composedPath = event.composedPath();
 
-			// console.log(composedPath);
-
 			if (!composedPath.includes(node)) {
-				console.log('outside');
 				cb();
 			}
 		},
