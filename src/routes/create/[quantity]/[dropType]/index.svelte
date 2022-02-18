@@ -39,10 +39,10 @@
 		<!-- File upload -->
 		<div class="mt-8 flex h-56 mr-8">
 			<div class="w-80">
-				<div class="uppercase italic font-light text-color-black">Upload file</div>
+				<div class="uppercase italic font-light text-color-black text-xs">Upload file</div>
 
-				<div class="text-[#1D1D1DB2] mt-4">File types:</div>
-				<div class="text-color-black font-semibold mt-1">
+				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
+				<div class="text-color-black font-semibold mt-1 text-sm">
 					PNG, GIF, WEBP, MP4, MP3 <br />
 					Max 50 MB
 				</div>
@@ -56,10 +56,10 @@
 		<!-- Thumbnail upload -->
 		<div class="mt-8 flex h-56 mr-8">
 			<div class="w-80">
-				<div class="uppercase italic font-light text-color-black">Upload thumbnail</div>
+				<div class="uppercase italic font-light text-color-black text-xs">Upload thumbnail</div>
 
-				<div class="text-[#1D1D1DB2] mt-4">For other marketplaces:</div>
-				<div class="text-[#1D1D1DB2] mt-4">File types:</div>
+				<div class="text-[#1D1D1DB2] mt-4 text-sm">For other marketplaces:</div>
+				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
 				<div class="text-color-black font-semibold mt-1 w-max">PNG, GIF</div>
 			</div>
 
