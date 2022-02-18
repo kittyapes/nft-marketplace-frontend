@@ -3,9 +3,9 @@
 	import CardHistoryRow from './CardHistoryRow.svelte';
 	import Button from '../Button.svelte';
 
-	export let rowInfo: PopupRowInfo[] = Array(20).fill(0).map((_, i) => ({id: i, message: 'Placed a bid for', nickname: 'Mura Masa', imageUrl: '', ammount: 3.50} as PopupRowInfo))
+	export let rowInfo: PopupRowInfo[] = Array(20).fill(0).map((_, i) => ({id: i, message: 'Placed a bid for', nickname: 'Mura Masa', imageUrl: '', amount: 3.50} as PopupRowInfo))
 	let tradedVolume: number = 0;
-	rowInfo.forEach((i) => tradedVolume += i.ammount)
+	rowInfo.forEach((i) => tradedVolume += i.amount)
 </script>
 
 <div class="w-full h-full flex flex-col" in:fade={{ duration: 300 }}>

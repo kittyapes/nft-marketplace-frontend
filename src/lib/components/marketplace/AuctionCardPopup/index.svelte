@@ -5,16 +5,14 @@
 	import CardInfoTab from './AuctionInfoTab.svelte';
 	import TabSwitcher from './AuctionTabSwitcher.svelte';
 	import CardBidsTab from './CardBidsTab.svelte';
-	import { goto } from '$app/navigation';
 	import { browser } from '$app/env';
 	import Fullscreen from '$icons/fullscreen.svelte';
 	import Share from '$icons/share.svelte';
 	import { notifySuccess } from '$utils/toast';
 	import Button from '$lib/components/Button.svelte';
 	import { fade } from 'svelte/transition';
-	import ArrowLeft from '$icons/arrow-left.svelte';
 	import LongLeftArrow from '$icons/long-left-arrow.svelte';
-import SuccessCheckmark from '$icons/success-checkmark.svelte';
+	import SuccessCheckmark from '$icons/success-checkmark.svelte';
 
 
 	export let currentBid: number = 3.50;

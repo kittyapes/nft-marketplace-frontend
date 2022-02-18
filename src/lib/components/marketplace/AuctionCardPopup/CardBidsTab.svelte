@@ -3,7 +3,7 @@
 	import CardBidsRow from './CardBidsRow.svelte';
 	import Button from '$lib/components/Button.svelte';
 
-	export let rowInfo: PopupRowInfo[] = Array(20).fill(0).map((_, i) => ({id: i, message: 'Placed a bid for', nickname: 'Mitchell', imageUrl: '', ammount: 3.50} as PopupRowInfo))
+	export let rowInfo: PopupRowInfo[] = Array(20).fill(0).map((_, i) => ({id: i, message: 'Placed a bid for', nickname: 'Mitchell', imageUrl: '', amount: 3.50} as PopupRowInfo))
 	export let currentBid: number = 3.50;
 	export let ethereumUsdRate: number = 2878.62;
 	export let endingInMiliseconds: Date = new Date();

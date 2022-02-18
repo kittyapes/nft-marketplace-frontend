@@ -15,13 +15,13 @@
 			{#if first}
 				{row.message} 
 				<b>
-					{row.ammount} Ξ
+					{row.amount} Ξ
 				</b>
 			{:else}
 				<strike class='opacity-50'>
 					{row.message}  
 					<b>
-						{row.ammount} Ξ
+						{row.amount} Ξ
 					</b>
 				</strike>
 			{/if}

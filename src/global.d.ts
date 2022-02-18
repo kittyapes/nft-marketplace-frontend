@@ -121,5 +121,5 @@ interface PopupRowInfo {
 	message: string;
 	nickname: string;
 	imageUrl: string;
-	ammount: number;
+	amount: number;
 }

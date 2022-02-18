@@ -12,7 +12,7 @@
 		<div class="w-10 h-10 rounded-full bg-black " />
 		<div>
 			<div class="text-xs font-semibold">{row.nickname}</div>
-			<div class="text-sm">{row.message} <b>{row.ammount} Ξ</b></div>
+			<div class="text-sm">{row.message} <b>{row.amount} Ξ</b></div>
 		</div>
 	</div>
 
