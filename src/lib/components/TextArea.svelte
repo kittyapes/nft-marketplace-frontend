@@ -2,15 +2,17 @@
 	export let placeholder: string = '';
 	export let maxChars: number = 0;
 	export let value: string = '';
+	export let containerClass = '';
+	export let textAreaClass = '';
 
 	export let outline: boolean = false;
 </script>
 
-<div>
+<div class={containerClass}>
 	<textarea
 		id=""
 		rows="10"
-		class="w-full"
+		class="w-full resize-none {textAreaClass}"
 		{placeholder}
 		maxlength={maxChars}
 		class:outline

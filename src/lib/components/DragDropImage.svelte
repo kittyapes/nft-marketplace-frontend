@@ -4,14 +4,14 @@
 	import { fade } from 'svelte/transition';
 
 	export let text = 'Drag and drop an image here, or click to browse';
-	export let dimensions: string;
+	export let dimensions: string = '';
 	export let blob: Blob | null = null;
 	export let currentImgUrl: string = null;
+	export let previewSrc = '';
 
 	let fileInput: HTMLInputElement;
 	let files: any = [];
 	let over = false;
-	let previewSrc = '';
 
 	$: if (browser && files.length) {
 		const reader = new FileReader();
@@ -43,35 +43,37 @@
 	}
 </script>
 
-<button
-	id="container"
-	class="border-2 rounded-2xl border-dashed w-full mx-auto flex items-center justify-center overflow-hidden
-	select-none {$$props.class}"
-	on:click={() => fileInput.click()}
-	on:drop={onDrop}
-	on:dragover={onDragOver}
-	on:dragleave={onDragLeave}
-	class:over
->
-	{#if previewSrc || currentImgUrl}
-		<img
-			src={previewSrc || currentImgUrl}
-			alt=""
-			in:fade
-			class="max-h-full w-full object-contain rounded"
-		/>
-	{:else}
-		<div class="text-center text-color-black opacity-50 text-sm px-12">
-			{@html text}
-		</div>
-	{/if}
-</button>
+<div class="overflow-hidden">
+	<button
+		id="container"
+		class="h-full w-full border-2 rounded-2xl border-dashed flex items-center justify-center overflow-hidden
+		select-none {$$props.class}"
+		on:click={() => fileInput.click()}
+		on:drop={onDrop}
+		on:dragover={onDragOver}
+		on:dragleave={onDragLeave}
+		class:over
+	>
+		{#if previewSrc || currentImgUrl}
+			<img
+				src={previewSrc || currentImgUrl}
+				alt=""
+				in:fade
+				class="max-h-full w-full object-contain rounded"
+			/>
+		{:else}
+			<div class="text-center text-color-black opacity-50 text-sm px-12">
+				{@html text}
+			</div>
+		{/if}
+	</button>
 
-<div class="text-xs text-center mt-2 text-color-gray-accent font-semibold">
-	{dimensions}
+	<div class="text-xs text-center mt-2 text-color-gray-accent font-semibold">
+		{dimensions}
+	</div>
+
+	<input type="file" accept={acceptedImages} class="hidden" bind:this={fileInput} bind:files />
 </div>
-
-<input type="file" accept={acceptedImages} class="hidden" bind:this={fileInput} bind:files />
 
 <style lang="postcss">
 	#container {
