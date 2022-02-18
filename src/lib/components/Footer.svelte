@@ -1,6 +1,5 @@
 <script>
 	import { goto } from '$app/navigation';
-
 	import { socials } from '$constants/socials';
 </script>
 
