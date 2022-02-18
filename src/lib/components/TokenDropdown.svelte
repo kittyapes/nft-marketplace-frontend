@@ -6,9 +6,9 @@
 	export let id = '';
 	export let value = '';
 	export let tokens: { label: string; iconUrl: string }[] = [
-		{ label: 'Eth', iconUrl: '/svg/white-eth.svg' },
-		{ label: 'Waifu', iconUrl: '/svg/white-eth.svg' },
-		{ label: 'Sol', iconUrl: '/svg/white-eth.svg' }
+		{ label: 'Eth', iconUrl: '/svg/white-eth.svg' }
+		// { label: 'Waifu', iconUrl: '/svg/white-eth.svg' },
+		// { label: 'Sol', iconUrl: '/svg/white-eth.svg' }
 	];
 	export let selected = tokens[0];
 
