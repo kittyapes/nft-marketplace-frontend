@@ -115,3 +115,10 @@ interface PrivatePageSplitOptions {
 	airdropHasClaimed: boolean;
 	contractActive: boolean;
 }
+
+interface PopupRowInfo {
+	id: number;
+	nickname: string;
+	imageUrl: string;
+	ammount: number;
+}

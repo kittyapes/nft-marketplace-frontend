@@ -1,0 +1,103 @@
+<script>
+	import CloseButton from '$icons/close-button.svelte';
+	import { popupOpen, selectedCard } from '$stores/marketplace';
+	import CardHistoryTab from '../CardHistoryTab.svelte';
+	import CardInfoTab from '../CardInfoTab.svelte';
+	import TabSwitcher from '../CardPopupTabSwitcher.svelte';
+	import CardBidsTab from './CardBidsTab.svelte';
+	import { goto } from '$app/navigation';
+	import { browser } from '$app/env';
+	import Fullscreen from '$icons/fullscreen.svelte';
+	import Share from '$icons/share.svelte';
+	import { notifySuccess } from '$utils/toast';
+
+	function handleShare() {
+		navigator.clipboard.writeText(window.location.href);
+		notifySuccess('Copied NFT link!');
+	}
+
+	let tab = 0;
+</script>
+
+<div
+	class="z-50 fixed w-full h-full top-0 left-0 flex items-center justify-center p-8 lg:p-0"
+	class:hidden={!browser}
+>
+	<!-- Dark overlay -->
+	<div class="fixed w-full h-full bg-gray-900 opacity-50" />
+
+	<!-- Modal -->
+	<div
+		class="bg-white w-full lg:w-2/3  mx-auto rounded-xl shadow-xl z-50 flex flex-col md:flex-row overflow-y-scroll md:overflow-y-hidden"
+		style="height:640px"
+	>
+		<!-- NFT Image side-->
+		<div class="w-full md:w-1/2 bg-gray-200 h-auto flex items-center justify-center">
+			<div class="m-10 text-center h-full flex flex-col justify-end">
+				<div class=" w-72 h-72 flex items-center justify-center">
+					<img
+						src={$selectedCard?.image}
+						class="max-w-full max-h-full shadow-xl rounded-xl"
+						alt="card artwork"
+					/>
+				</div>
+
+				<!-- NFT Name and ID-->
+				<div class="font-bold text-lg mt-4 opacity-70">
+					{$selectedCard?.name} #{$selectedCard?.id}
+				</div>
+
+				<!-- Fullscreen and Share button -->
+				<div class="flex justify-center mt-24 mb-8 gap-x-4">
+					<a
+						href={$selectedCard?.image}
+						target="_blank"
+						class="transition-btn hover:brightness-110"
+					>
+						<Fullscreen />
+					</a>
+
+					<button class="transition-btn hover:brightness-110" on:click={handleShare}>
+						<Share />
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Content Side-->
+		<div class="w-full md:w-1/2 bg-white p-8 flex flex-col h-full">
+			<!-- Tabs container -->
+			<div class="w-full flex items-center justify-between">
+				<!-- Tabs -->
+				<TabSwitcher bind:selectedTab={tab} />
+
+				<!-- Close button-->
+				<button
+					on:click={() => {
+						popupOpen.set(false);
+						goto('/marketplace/cards', { noscroll: true });
+					}}
+				>
+					<CloseButton />
+				</button>
+			</div>
+
+			<!-- Horizontal Line -->
+			<div class="h-px w-full mt-1 bg-color-black bg-opacity-30" />
+
+			<!-- Selected Tab Content -->
+			<div class="py-5 flex-grow overflow-hidden">
+				{#if tab == 0}
+					<CardInfoTab />
+				{:else if tab == 1}
+					<CardBidsTab />
+				{:else if tab == 2}
+					<CardHistoryTab />
+				{/if}
+			</div>
+
+			<!-- Horizontal Line -->
+			<div class="h-px w-full mt-1 bg-color-black bg-opacity-30" />
+		</div>
+	</div>
+</div>
