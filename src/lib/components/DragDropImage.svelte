@@ -43,35 +43,37 @@
 	}
 </script>
 
-<button
-	id="container"
-	class="border-2 rounded-2xl border-dashed w-full mx-auto flex items-center justify-center overflow-hidden
-	select-none {$$props.class}"
-	on:click={() => fileInput.click()}
-	on:drop={onDrop}
-	on:dragover={onDragOver}
-	on:dragleave={onDragLeave}
-	class:over
->
-	{#if previewSrc || currentImgUrl}
-		<img
-			src={previewSrc || currentImgUrl}
-			alt=""
-			in:fade
-			class="max-h-full w-full object-contain rounded"
-		/>
-	{:else}
-		<div class="text-center text-color-black opacity-50 text-sm px-12">
-			{@html text}
-		</div>
-	{/if}
-</button>
+<div>
+	<button
+		id="container"
+		class="h-full w-full border-2 rounded-2xl border-dashed flex items-center justify-center overflow-hidden
+		select-none {$$props.class}"
+		on:click={() => fileInput.click()}
+		on:drop={onDrop}
+		on:dragover={onDragOver}
+		on:dragleave={onDragLeave}
+		class:over
+	>
+		{#if previewSrc || currentImgUrl}
+			<img
+				src={previewSrc || currentImgUrl}
+				alt=""
+				in:fade
+				class="max-h-full w-full object-contain rounded"
+			/>
+		{:else}
+			<div class="text-center text-color-black opacity-50 text-sm px-12">
+				{@html text}
+			</div>
+		{/if}
+	</button>
 
-<div class="text-xs text-center mt-2 text-color-gray-accent font-semibold">
-	{dimensions}
+	<div class="text-xs text-center mt-2 text-color-gray-accent font-semibold">
+		{dimensions}
+	</div>
+
+	<input type="file" accept={acceptedImages} class="hidden" bind:this={fileInput} bind:files />
 </div>
-
-<input type="file" accept={acceptedImages} class="hidden" bind:this={fileInput} bind:files />
 
 <style lang="postcss">
 	#container {

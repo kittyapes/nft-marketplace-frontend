@@ -38,8 +38,8 @@
 
 		<!-- File upload -->
 		<div class="mt-8 flex h-56 mr-8">
-			<div class="flex-grow">
-				<div class="uppercase italic">Upload file</div>
+			<div class="w-80">
+				<div class="uppercase italic font-light text-color-black">Upload file</div>
 
 				<div class="text-[#1D1D1DB2] mt-4">File types:</div>
 				<div class="text-color-black font-semibold mt-1">
@@ -48,24 +48,24 @@
 				</div>
 			</div>
 
-			<DragDropImage
-				class="ml-24 max-w-screen-sm"
-				text={dragDropText}
-				bind:previewSrc={nftImagePreview}
-			/>
+			<div class="flex-grow grid place-items-stretch">
+				<DragDropImage text={dragDropText} bind:previewSrc={nftImagePreview} />
+			</div>
 		</div>
 
 		<!-- Thumbnail upload -->
 		<div class="mt-8 flex h-56 mr-8">
-			<div class="flex-grow">
-				<div class="uppercase italic">Upload thumbnail</div>
+			<div class="w-80">
+				<div class="uppercase italic font-light text-color-black">Upload thumbnail</div>
 
 				<div class="text-[#1D1D1DB2] mt-4">For other marketplaces:</div>
 				<div class="text-[#1D1D1DB2] mt-4">File types:</div>
 				<div class="text-color-black font-semibold mt-1 w-max">PNG, GIF</div>
 			</div>
 
-			<DragDropImage class="ml-24 max-w-screen-sm" text={dragDropText} />
+			<div class="flex-grow grid place-items-stretch">
+				<DragDropImage text={dragDropText} />
+			</div>
 		</div>
 
 		<hr class="separator mt-12" />
