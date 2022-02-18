@@ -15,9 +15,24 @@
 
 		<div class="grid flex-grow">
 			<div class="text-color-black italic uppercase font-light text-sm">Wallet address</div>
-			<input type="text" class="input mt-2" placeholder="Enter wallet address" />
-			<input type="text" class="input mt-4" placeholder="Enter wallet address" />
-			<input type="text" class="input mt-4" placeholder="Enter wallet address" />
+			<input
+				type="text"
+				class="input mt-2"
+				placeholder="Enter wallet address"
+				autocomplete="nope"
+			/>
+			<input
+				type="text"
+				class="input mt-4"
+				placeholder="Enter wallet address"
+				autocomplete="nope"
+			/>
+			<input
+				type="text"
+				class="input mt-4"
+				placeholder="Enter wallet address"
+				autocomplete="nope"
+			/>
 		</div>
 	</div>
 </div>
