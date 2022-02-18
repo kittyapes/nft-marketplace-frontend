@@ -32,8 +32,10 @@
 		padding-right: var(--px, 2rem);
 	}
 
+	/* Variants */
 	.square {
-		@apply bg-white uppercase font-semibold rounded-none;
+		@apply bg-white uppercase font-semibold px-8 py-4;
+		border-radius: 0;
 	}
 
 	.rounded-black {
