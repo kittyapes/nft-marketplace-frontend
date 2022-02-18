@@ -14,10 +14,13 @@
 	let nftCollection = 'No collection';
 	let nftDescription = '';
 	let nftImagePreview = '';
+	let nftThumbnailPreview = '';
 
 	function mintAndContinue() {
 		goto($page.path + '/list');
 	}
+
+	$: inputValid = nftName && nftCollection && nftImagePreview && nftThumbnailPreview;
 </script>
 
 <hr class="separator" />
@@ -64,7 +67,7 @@
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
-				<DragDropImage text={dragDropText} />
+				<DragDropImage text={dragDropText} bind:previewSrc={nftThumbnailPreview} />
 			</div>
 		</div>
 
@@ -98,6 +101,7 @@
 			<button
 				class="btn btn-gradient btn-rounded w- uppercase font-semibold mt-8 h-14 w-full"
 				on:click={mintAndContinue}
+				disabled={!inputValid}
 			>
 				Mint & Continue to Listing
 			</button>

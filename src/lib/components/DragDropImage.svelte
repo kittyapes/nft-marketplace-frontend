@@ -43,7 +43,7 @@
 	}
 </script>
 
-<div>
+<div class="overflow-hidden">
 	<button
 		id="container"
 		class="h-full w-full border-2 rounded-2xl border-dashed flex items-center justify-center overflow-hidden
