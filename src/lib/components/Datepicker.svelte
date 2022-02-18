@@ -85,7 +85,7 @@
 		{id}
 		type="text"
 		class="input w-full h-12"
-		placeholder="Enter price for NFT"
+		placeholder="Select date & time"
 		class:font-semibold={inputText}
 		bind:value={inputText}
 		readonly
