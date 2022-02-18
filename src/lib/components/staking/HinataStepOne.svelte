@@ -1,6 +1,6 @@
 <script>
 	import Button from '$lib/components/Button.svelte';
-	import Circle from './Circle.svelte';
+	import Circle from '$lib/components/staking/Circle.svelte';
 
 	let selectedMode = 'farm';
 
@@ -14,8 +14,11 @@
 </script>
 
 <p class="font-normal text-center mt-6 text-lg">
-	<b>Earn</b> WAIFU NFTs and receive our governance token by vesting in WAIFU DAO and becoming a
-	Founder, or convert your WAIF to our uToken and vote and earn ETH from our <b>unic.ly</b> collection.
+	<b>Earn</b>
+	WAIFU NFTs and receive our governance token by vesting in WAIFU DAO and becoming a Founder, or convert
+	your WAIF to our uToken and vote and earn ETH from our
+	<b>unic.ly</b>
+	collection.
 </p>
 
 <div class="flex mt-8 gap-8">
@@ -37,7 +40,7 @@
 
 <div class="grid w-[350px] space-y-3 mt-3">
 	<Button variant="rounded-black">Claim (500) WAIFU</Button>
-	<Button variant="rounded-gradient">WAIFU Farming Pool</Button>
+	<Button rounded={true} gradient={true}>WAIFU Farming Pool</Button>
 
 	<p class="text-[#1D1D1DB2] pt-2 text-sm">
 		Deposit your V1 WAIF or WAIF-ETH UNI-V2 LP tokens to receive bonded WAIFv2 and continue farming

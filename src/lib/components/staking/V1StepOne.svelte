@@ -1,6 +1,6 @@
 <script>
 	import Button from '$lib/components/Button.svelte';
-	import Circle from './Circle.svelte';
+	import Circle from '$lib/components/staking/Circle.svelte';
 
 	let selectedMode = 'migrate';
 
@@ -15,8 +15,12 @@
 </script>
 
 <p class="font-normal text-center mt-6 text-lg">
-	<span class="font-bold">Unstake, migrate</span> to HINATA and continue farming, <br /> or
-	<span class="font-bold">convert</span> old rewards.
+	<span class="font-bold">Unstake, migrate</span>
+	to HINATA and continue farming,
+	<br />
+	or
+	<span class="font-bold">convert</span>
+	old rewards.
 </p>
 
 <div class="flex mt-8 gap-8">
@@ -37,7 +41,7 @@
 </div>
 
 <div class="w-72 grid mt-4">
-	<Button variant="rounded-gradient">Waifu Farming Pool</Button>
+	<Button rounded={true} gradient={true}>Waifu Farming Pool</Button>
 </div>
 
 <p class="text-color-black w-[25rem] mt-6 text-sm">

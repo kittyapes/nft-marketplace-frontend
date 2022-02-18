@@ -1,9 +1,9 @@
 <script>
-	import Container from './_lib/Container.svelte';
-	import HinataStepOne from './_lib/HinataStepOne.svelte';
-	import LeftPane from './_lib/LeftPane.svelte';
-	import Pill from './_lib/Pill.svelte';
-	import V1StepOne from './_lib/V1StepOne.svelte';
+	import Container from '$lib/components/staking/Container.svelte';
+	import HinataStepOne from '$lib/components/staking/HinataStepOne.svelte';
+	import LeftPane from '$lib/components/staking/LeftPane.svelte';
+	import Pill from '$lib/components/staking/Pill.svelte';
+	import V1StepOne from '$lib/components/staking/V1StepOne.svelte';
 
 	let mode;
 </script>
