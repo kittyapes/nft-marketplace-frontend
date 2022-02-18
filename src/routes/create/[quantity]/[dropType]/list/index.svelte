@@ -77,12 +77,14 @@
 
 		<Royalties />
 
-		<button
-			class="btn btn-gradient btn-rounded w-full mt-8 uppercase font-semibold"
-			on:click={listForSale}
-		>
-			List for sale
-		</button>
+		<div class="pr-8">
+			<button
+				class="btn btn-gradient btn-rounded w-full mt-8 uppercase font-semibold"
+				on:click={listForSale}
+			>
+				List for sale
+			</button>
+		</div>
 	</div>
 
 	<div class="separator border-0 border-l p-8 w-80">
