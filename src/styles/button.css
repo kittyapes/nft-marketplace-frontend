@@ -1,4 +1,5 @@
 .btn {
+	@apply cursor-pointer;
 }
 
 .btn:not(:disabled) {
@@ -11,6 +12,10 @@
 
 .btn-gradient {
 	@apply bg-gradient-to-r from-color-purple to-color-blue text-white;
+}
+
+.btn-black {
+	@apply bg-black text-white font-semibold;
 }
 
 .btn-outline {
