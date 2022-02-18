@@ -1,4 +1,6 @@
 <script>
+	import { goto } from '$app/navigation';
+
 	import { page } from '$app/stores';
 
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
@@ -12,6 +14,10 @@
 	let nftCollection = 'No collection';
 	let nftDescription = '';
 	let nftImagePreview = '';
+
+	function mintAndContinue() {
+		goto($page.path + '/list');
+	}
 </script>
 
 <hr class="separator" />
@@ -21,11 +27,11 @@
 	<div class="flex-grow">
 		<!-- Title -->
 		<h1 class="text-xl uppercase mt-8">
-			<span class="font-normal italic">Step 3: Creating drop</span>
+			<span class="font-light italic">Step 3: Creating drop</span>
 			|
-			<span class="gradient-text font-bold italic">{$page.params.quantity}</span>
+			<span class="gradient-text font-bold italic pr-1">{$page.params.quantity}</span>
 			|
-			<span class="gradient-text font-bold italic pr-2">{$page.params.dropType}</span>
+			<span class="gradient-text font-bold italic pr-1">{$page.params.dropType}</span>
 		</h1>
 
 		<hr class="separator mt-8" />
@@ -89,7 +95,10 @@
 
 		<!-- Mint button -->
 		<div class="pr-8 w-full">
-			<button class="btn btn-gradient btn-rounded w- uppercase font-semibold mt-8 h-14 w-full">
+			<button
+				class="btn btn-gradient btn-rounded w- uppercase font-semibold mt-8 h-14 w-full"
+				on:click={mintAndContinue}
+			>
 				Mint & Continue to Listing
 			</button>
 		</div>

@@ -20,10 +20,6 @@
 			<input type="text" class="input mt-4" placeholder="Enter wallet address" />
 		</div>
 	</div>
-
-	<button class="btn btn-gradient btn-rounded w-full mt-8 uppercase font-semibold">
-		List for sale
-	</button>
 </div>
 
 <style>
