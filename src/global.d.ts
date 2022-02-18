@@ -118,6 +118,7 @@ interface PrivatePageSplitOptions {
 
 interface PopupRowInfo {
 	id: number;
+	message: string;
 	nickname: string;
 	imageUrl: string;
 	ammount: number;

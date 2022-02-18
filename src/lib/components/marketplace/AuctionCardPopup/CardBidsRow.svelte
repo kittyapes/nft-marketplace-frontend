@@ -1,6 +1,6 @@
 <script lang='ts'>
 	export let row: PopupRowInfo;
-	export let last = false;
+	export let first = false;
 </script>
 
 <div
@@ -10,16 +10,16 @@
 >
 	<div class="w-10 h-10 rounded-full bg-black " />
 	<div>
-		<div class="text-xs">{row.nickname}</div>
+		<div class="text-xs font-semibold">{row.nickname}</div>
 		<div class="text-sm">
-			{#if last}
-				Placed a bid for 
+			{#if first}
+				{row.message} 
 				<b>
 					{row.ammount} Ξ
 				</b>
 			{:else}
 				<strike class='opacity-50'>
-					Placed a bid for 
+					{row.message}  
 					<b>
 						{row.ammount} Ξ
 					</b>
