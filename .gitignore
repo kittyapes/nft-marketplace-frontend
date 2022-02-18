@@ -14,4 +14,4 @@ package-lock.json
 *.log
 
 # Browserify
-static/wallets.js
+# static/wallets.js
