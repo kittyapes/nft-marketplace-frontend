@@ -24,7 +24,7 @@
 
 		{#if is('date')}
 			<label for="datepicker-component">
-				<div class="h-6" />
+				<div class="h-6 mb-2" />
 				<!-- <input type="text" bind:value={propValues.date} placeholder="DD/MM/YYYY" /> -->
 				<Datepicker id="datepicker-component" />
 			</label>
