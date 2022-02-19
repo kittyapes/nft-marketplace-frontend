@@ -9,8 +9,6 @@
 	function is(propName: PropertyName) {
 		return propNames?.includes(propName);
 	}
-
-	$: console.log(propNames);
 </script>
 
 <div class="{$$props.class} grid grid-cols-2 gap-x-16 gap-y-8 pr-8">
