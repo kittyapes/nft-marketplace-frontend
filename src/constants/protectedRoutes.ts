@@ -1,3 +1,3 @@
-const protectedRoutes = ['/admin', '/create'];
+const protectedRoutes = ['/admin'];
 
 export default protectedRoutes;

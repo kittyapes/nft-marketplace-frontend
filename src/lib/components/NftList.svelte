@@ -1,5 +1,8 @@
 <script lang="ts">
 	import NftCard from './NftCard.svelte';
+	import type { TokenData } from '$lib/interfaces/tokenData';
+	import { adaptNftCard } from '$utils/adapters/adaptNftCard';
+	import { fetchTokenUriData } from '$utils/nfts/fetchTokenUriData';
 
 	export let data: TokenData[];
 </script>
@@ -14,9 +17,18 @@
 
 {#if data?.length}
 	<div class="nftGrid">
-		{#each data as tokenData}
-			{#if tokenData.metadata}
-				<NftCard {tokenData} />
+		{#each data.map(adaptNftCard) as tokenData}
+			{#if tokenData.name}
+				<!-- Fetching images and animations from tokenUri, because the default
+				fetched image are sometimes invalid -->
+
+				{#await fetchTokenUriData(tokenData.tokenUri)}
+					<NftCard {...tokenData} />
+				{:then tokenUriData}
+					<NftCard {...tokenData} imageUrl={tokenUriData?.image || tokenData.imageUrl} />
+				{:catch}
+					<NftCard {...tokenData} />
+				{/await}
 			{/if}
 		{/each}
 	</div>

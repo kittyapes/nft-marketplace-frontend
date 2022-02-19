@@ -56,25 +56,6 @@ export default async (address: string) => {
 			return item;
 		});
 
-		// Load asynchronously data from token_uri since this is the only
-		// image data that works for certain NFTs
-		ethereumNfts.result.map(async (item) => {
-			if (item.token_uri) {
-				const res = await fetch(item.token_uri);
-
-				const json = await res.json().catch(() => null);
-
-				if (!json) {
-					return;
-				}
-
-				json.image = makeHttps(json.image);
-				json.animation_url = makeHttps(json.animation_url);
-
-				item.token_uri_data.set(json);
-			}
-		});
-
 		return ethereumNfts;
 	} catch (error) {
 		console.error(error);

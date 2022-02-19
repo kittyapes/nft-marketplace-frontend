@@ -1,5 +1,6 @@
 <script lang="ts">
 	export let options: { label: string; value?: string }[];
+	export let btnClass = '';
 
 	$: if (!options?.length) {
 		throw new Error('No options provided');
@@ -20,7 +21,11 @@
 </script>
 
 <div class="relative select-container select-none {$$props.class}">
-	<button class="select text-left" on:click={() => (opened = !opened)} bind:this={elemOpenButton}>
+	<button
+		class="select text-left {btnClass}"
+		on:click={() => (opened = !opened)}
+		bind:this={elemOpenButton}
+	>
 		{selected.label}
 	</button>
 
