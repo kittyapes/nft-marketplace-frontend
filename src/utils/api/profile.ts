@@ -1,4 +1,5 @@
 import { api } from '$constants/api';
+import type { ProfileData } from '$lib/interfaces/profileData';
 import { appSigner } from '$stores/wallet';
 import axios from 'axios';
 import { sha512 } from 'hash.js';

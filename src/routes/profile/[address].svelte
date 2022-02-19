@@ -21,6 +21,7 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import getUserNfts from '$utils/nfts/getUserNfts';
 	import { browser } from '$app/env';
+	import type { ProfileData } from '$lib/interfaces/profileData';
 
 	// const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'FAVORITES'];
