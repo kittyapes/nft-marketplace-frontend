@@ -65,11 +65,16 @@
 		}
 	};
 	$: updateValues($communityClaimsArray);
-	$: pathIsProtected($page.path) && browser && isAuthExpired() && setPopup(AdminLoginPopup);
+	$: browser &&
+		$currentUserAddress &&
+		pathIsProtected($page.path) &&
+		isAuthExpired($currentUserAddress) &&
+		setPopup(AdminLoginPopup);
 	$: ((userAddress: string) => userAddress && getAllTokenBalances(userAddress))(
 		$currentUserAddress
 	);
 </script>
+
 <svelte:head>
 	<title>Hinata</title>
 </svelte:head>

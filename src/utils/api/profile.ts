@@ -25,13 +25,13 @@ export async function fetchProfileData(address: string) {
 
 export async function promoteProfile(address: string) {
 	return await axios
-		.post(api + '/v1/accounts/' + address + '/promote', {}, getAxiosConfig())
+		.post(api + '/v1/accounts/' + address + '/promote', {}, getAxiosConfig(address))
 		.then((res) => res.data);
 }
 
 export async function inactivateProfile(address: string) {
 	return await axios
-		.post(api + '/v1/accounts/' + address + '/inactivate', {}, getAxiosConfig())
+		.post(api + '/v1/accounts/' + address + '/inactivate', {}, getAxiosConfig(address))
 		.then((res) => res.data);
 }
 
