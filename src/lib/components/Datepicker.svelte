@@ -6,7 +6,7 @@
 	import ChevronRight from '$icons/chevron-right.svelte';
 	import Time from '$icons/time.svelte';
 	import dayjs from 'dayjs';
-	import isoWeek from 'dayjs/plugin/isoWeek';
+	import isoWeek from 'dayjs/plugin/isoWeek.js';
 	import { onMount } from 'svelte';
 	import Toggle from './Toggle.svelte';
 
@@ -103,7 +103,7 @@
 
 	{#if open}
 		<div
-			class="absolute top-0 right-0 w-full h-[480px] bg-white flex flex-col rounded-xl translate-y-14 p-4 z-10"
+			class="absolute top-0 right-0 w-full bg-white flex flex-col rounded-xl translate-y-14 p-4 z-10"
 			style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);"
 		>
 			<!-- use:outsideClickCallback={{ cb: () => (open = false) }} -->
