@@ -39,7 +39,7 @@
 			{title}
 		</div>
 
-		<button on:click={toggle} aria-expanded={isOpen} class:rotate-180={isOpen} class="transition">
+		<button aria-expanded={isOpen} class:rotate-180={isOpen} class="transition">
 			<DownArrow />
 		</button>
 	</div>
