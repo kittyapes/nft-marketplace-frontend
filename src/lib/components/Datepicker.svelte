@@ -6,7 +6,7 @@
 	import ChevronRight from '$icons/chevron-right.svelte';
 	import Time from '$icons/time.svelte';
 	import dayjs from 'dayjs';
-	import isoWeek from 'dayjs/plugin/isoWeek';
+	import isoWeek from 'dayjs/plugin/isoWeek.js';
 	import { onMount } from 'svelte';
 	import Toggle from './Toggle.svelte';
 
