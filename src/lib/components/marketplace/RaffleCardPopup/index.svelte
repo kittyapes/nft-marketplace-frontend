@@ -69,7 +69,6 @@
     $: {
         inputBidValue;
         if(!isNaN(inputBidValue)) {
-            console.log('hi')
             buyingTicketsAmount = Math.round((inputBidValue - (inputBidValue % ticketPrice)) / ticketPrice);
         }
     }
@@ -82,7 +81,6 @@
                 inputBidValue = inputBidValue - (inputBidValue % ticketPrice);
                 let coef = (currentEntries + buyingTicketsAmount) / 100;
                 potentialOdds = `${Math.round(((buyingTicketsAmount / coef) + Number.EPSILON) * 100) / 100} in 100`
-                //Math.round((buyingTicketsAmount / coef) + Number.EPSILON) * 100) / 100
             }
         }
     }
