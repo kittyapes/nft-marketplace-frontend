@@ -1,6 +1,8 @@
 <script lang='ts'>
 	import { browser } from '$app/env';
 	import NftDisplay from './NftDisplay.svelte';
+
+	export let size: 'large' | 'squished' | 'small' = 'large';
 </script>
 
 <div
@@ -10,18 +12,36 @@
 	<!-- Dark overlay -->
 	<div class="fixed w-full h-full bg-gray-900 opacity-50" />
 
-	<!-- Modal -->
-	<div
-		class="bg-white w-full lg:w-2/3  mx-auto rounded-xl shadow-xl z-50 flex flex-col md:flex-row overflow-y-scroll md:overflow-y-hidden"
-		style="height:640px"
-	>
+	{#if size === 'large'}
+		<!-- Modal -->
+		<div
+			class="bg-white w-full lg:w-2/3  mx-auto rounded-xl shadow-xl z-50 flex flex-col md:flex-row overflow-y-scroll md:overflow-y-hidden"
+			style="height:640px"
+		>
 
-        <NftDisplay></NftDisplay>
+			<NftDisplay></NftDisplay>
 
-        <!-- Right side of popup -->
-        <div class="w-full md:w-1/2 bg-white p-9 flex flex-col h-full">
-            <slot name='content'></slot>
-			<div class="h-px w-full mt-1 bg-color-black bg-opacity-30" />
-        </div>
-    </div>
+			<!-- Right side of popup -->
+			<div class="w-full md:w-1/2 bg-white p-9 flex flex-col h-full">
+				<slot name='content'></slot>
+				<div class="h-px w-full mt-1 bg-color-black bg-opacity-30" />
+			</div>
+		</div>
+	{:else if size === 'squished'}
+		<!-- Modal -->
+		<div
+			class="bg-white w-full lg:w-1/3 mx-auto rounded-xl shadow-xl z-50 flex flex-col md:flex-row overflow-y-scroll md:overflow-y-hidden"
+			style="height:640px"
+		>
+			<slot name='content'></slot>
+		</div>
+	{:else if size === 'small'}
+		<!-- Modal -->
+		<div
+			class="bg-white w-full lg:w-[35%] mx-auto rounded-xl shadow-xl z-50 flex md:overflow-y-hidden justify-center place-items-center"
+			style="height:360px"
+		>
+			<slot name='content'></slot>
+		</div>
+	{/if}
 </div>

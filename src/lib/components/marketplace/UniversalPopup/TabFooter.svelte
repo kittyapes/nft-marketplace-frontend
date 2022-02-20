@@ -3,7 +3,7 @@
     import { fade } from 'svelte/transition';
 
     export let infoText: {[key: string]: any}[];
-    export let buttonText: string;
+    export let buttonText: string = '';
     export let buyButtonDisabled = false;
 </script>
 
@@ -24,6 +24,8 @@
     </div>
 
     <div class="w-full mt-3 flex flex-row gap-4" on:click>
-        <Button gradient rounded stretch disabled={buyButtonDisabled}>{buttonText}</Button>
+        <slot name='bt'>
+            <Button gradient rounded stretch disabled={buyButtonDisabled}>{buttonText}</Button>
+        </slot>
     </div>
 </div>
