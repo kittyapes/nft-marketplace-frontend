@@ -7,11 +7,6 @@
 	import LeftPane from '$lib/components/staking/LeftPane.svelte';
 	import Pill from '$lib/components/staking/Pill.svelte';
 
-	let mode = $page.params.mode;
-	let action = $page.params.action;
-
-	$: browser && goto(`/stake/step-1/${mode}/${action}`);
-
 	const modes = {
 		v1: {
 			strokedText: 'Convert <br> your',
@@ -34,7 +29,19 @@
 		}
 	};
 
-	$: console.log(`${mode} mode`);
+	let mode = $page.params.mode;
+	let action = $page.params.action;
+
+	// When switching modes, we wanna auto-select the middle or the first action
+	$: if (mode) {
+		const modeActions = modes[mode].actions.map((a) => a[0]);
+
+		if (!modeActions.includes(action)) {
+			action = modeActions[modeActions.length - 2];
+		}
+	}
+
+	$: browser && goto(`/stake/step-1/${mode}/${action}`);
 </script>
 
 <Container class="my-32">
