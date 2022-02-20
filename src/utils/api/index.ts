@@ -1,25 +1,28 @@
 import { isJwtExpired } from '$utils/jwt';
 
-const tokenKey = 'authToken';
-
-export function setAuthToken(token: string) {
-	localStorage.setItem(tokenKey, token);
+function getTokenKey(address: string) {
+	return `authToken-${address}`;
 }
 
-export function getAuthToken() {
-	return localStorage.getItem(tokenKey);
+export function setAuthToken(address: string, token: string) {
+	const key = getTokenKey(address);
+	localStorage.setItem(key, token);
 }
 
-export function isAuthExpired() {
-	const token = getAuthToken();
+export function getAuthToken(address: string) {
+	return localStorage.getItem(getTokenKey(address));
+}
+
+export function isAuthExpired(address: string) {
+	const token = getAuthToken(address);
 
 	if (!token) return true;
 
 	return isJwtExpired(token);
 }
 
-export function getAxiosConfig() {
-	const token = getAuthToken();
+export function getAxiosConfig(address: string) {
+	const token = getAuthToken(address);
 
 	if (!token) return {};
 
