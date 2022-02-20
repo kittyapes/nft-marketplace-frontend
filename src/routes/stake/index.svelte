@@ -11,7 +11,7 @@
 	});
 
 	$: if ($currentUserAddress) {
-		goto('/stake/step-one/v1');
+		goto('/stake/step-one/v1/migrate-to-hinata');
 	}
 </script>
 
