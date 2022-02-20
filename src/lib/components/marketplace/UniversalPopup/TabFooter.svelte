@@ -4,6 +4,7 @@
 
     export let infoText: {[key: string]: any}[];
     export let buttonText: string;
+    export let buyButtonDisabled = false;
 </script>
 
 
@@ -23,6 +24,6 @@
     </div>
 
     <div class="w-full mt-3 flex flex-row gap-4" on:click>
-        <Button gradient rounded stretch>{buttonText}</Button>
+        <Button gradient rounded stretch disabled={buyButtonDisabled}>{buttonText}</Button>
     </div>
 </div>

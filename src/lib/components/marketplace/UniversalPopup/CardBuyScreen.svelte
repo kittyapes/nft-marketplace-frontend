@@ -1,23 +1,21 @@
 <script lang='ts'>
     export let currencySymbol: string;
     export let header: {info: string, amount: string, buttonText: string} = undefined;
-
-    export let inputBid: number;
 </script>
 
 
 <div class='flex gap-4 flex-col place-items-center'>
     {#if header}
+    <slot name='header'>
         <div class='flex gap-4 items-center'>
             <p class='text-color-black'>{header.info}</p>
             <p class='font-bold text-transparent bg-clip-text bg-gradient-to-r from-color-purple to-color-blue'>{header.amount}</p>
-            <p class='text-color-black underline underline-offset-1 text-xs font-semibold'>{header.buttonText}</p>
+            <p class='text-color-black underline underline-offset-1 text-xs font-semibold' >{header.buttonText}</p>
         </div>
+    </slot>
     {/if}
-    <div class='w-[95%] grid place-items-center relative'>
-        <input bind:value={inputBid} type='number' class='w-full p-2 rounded-md border border-color-black text-2xl' placeholder=00.00>
-        <button class='rounded-md bg-color-black text-white font-semibold text-xl px-12 py-[10px] absolute right-0'><slot name='button-symbol'></slot></button>
-    </div>
+    <slot name='buy-input'>
+    </slot>
     <div class='flex flex-col place-self-start ml-3 gap-3'>
         <div class='flex gap-2'>
             <p class='text-color-gray-base'>Creator gets: </p>

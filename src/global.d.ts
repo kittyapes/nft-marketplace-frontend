@@ -1,7 +1,5 @@
 /// <reference types="@sveltejs/kit" />
 
-import type { Writable } from 'svelte/store';
-
 declare global {
 	interface Number {
 		noExponents: () => string;
