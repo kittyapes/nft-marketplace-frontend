@@ -1,33 +1,27 @@
 <script>
-	import Button from '$lib/components/Button.svelte';
-	import ConnectWalletPopup from '$lib/components/ConnectWalletPopup.svelte';
-	import Modal from '$lib/components/Modal.svelte';
 	import { setLayoutOptions } from '$lib/utils/layout';
 	import Container from '$lib/components/staking/Container.svelte';
 	import LeftPane from '$lib/components/staking/LeftPane.svelte';
+	import { connectToWallet } from '$utils/wallet/connectWallet';
 
 	setLayoutOptions({
 		slotType: 'flex'
 	});
-
-	let showWalletPopup = false;
 </script>
 
 <Container class="my-32">
-	<LeftPane />
+	<LeftPane strokedText="Convert your" gradientText="Tokens" />
 
 	<div class="max-w-xl flex flex-col items-center justify-center mt-8">
-		<div class="font-medium text-3xl text-center mb-6">
-			Connect your wallet <br />
-			to continue
+		<div class="font-light italic text-4xl text-center mb-6">
+			Connect your <br />
+			wallet to continue
 		</div>
-		<Button variant="rounded-black" on:click={() => (showWalletPopup = true)}>Connect Wallet</Button
+		<button
+			class="btn btn-black btn-rounded uppercase text-sm font-normal py-4 px-12"
+			on:click={connectToWallet}
 		>
+			Connect Wallet
+		</button>
 	</div>
 </Container>
-
-{#if showWalletPopup}
-	<Modal on:close={() => (showWalletPopup = false)}>
-		<ConnectWalletPopup />
-	</Modal>
-{/if}
