@@ -5,8 +5,8 @@
 
 <div
 	class="w-full flex items-center justify-between"
-	class:bg-gray-100={row.id % 2 == 0}
-	class:white={row.id % 2 != 0}
+	class:bg-gray-100={row.id % 2 != 0}
+    class:bg-white={row.id % 2 == 0}
 >
 	<div class="flex gap-3 p-2">
 		<div class="w-10 h-10 rounded-full bg-black " />

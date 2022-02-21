@@ -5,7 +5,7 @@
     import LongLeftArrow from '$icons/long-left-arrow.svelte';
     import CardHistoryTab from '../UniversalPopup/CardHistoryTab.svelte';
 
-    let tab = 0;
+    export let tab = 0;
 	export let buyScreen = false;
 	export let successScreen = false;
 </script>
@@ -13,10 +13,12 @@
 {#if buyScreen}
     <div in:fade={{ duration: 300 }} class="h-full flex flex-col justify-between mb-5">
         <div class='mt-2'>
-            <button class='flex items-center gap-2 ml-auto' on:click={() => {buyScreen = false; successScreen = false;}}>
-                <LongLeftArrow/>
-                <p class='text-color-black font-semibold text-sm'>GO BACK</p>
-            </button>
+            <slot name='buy-screen-back-bt'>
+                <button class='flex items-center gap-2 ml-auto' on:click={() => {buyScreen = false; successScreen = false;}}>
+                    <LongLeftArrow/>
+                    <p class='text-color-black font-semibold text-sm'>GO BACK</p>
+                </button>
+            </slot>
             <div class="h-px w-full mt-1 bg-color-black bg-opacity-30" />
         </div>
         <slot name='buy-screen'></slot>
@@ -25,10 +27,12 @@
 {:else if successScreen}
     <div in:fade={{ duration: 300 }} class="h-full flex flex-col justify-between">
         <div class='mt-2'>
-            <button class='flex items-center gap-2 ml-auto' on:click={() => {buyScreen = true; successScreen = false;}}>
-                <LongLeftArrow/>
-                <p class='text-color-black font-semibold text-sm'>GO BACK</p>
-            </button>
+            <slot name='success-screen-back-bt'>
+                <button class='flex items-center gap-2 ml-auto' on:click={() => {buyScreen = true; successScreen = false;}}>
+                    <LongLeftArrow/>
+                    <p class='text-color-black font-semibold text-sm'>GO BACK</p>
+                </button>
+            </slot>
             <div class="h-px w-full mt-1 bg-color-black bg-opacity-30" />
         </div>
         <slot name='success-screen'></slot>

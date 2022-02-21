@@ -1,29 +1,26 @@
 <script lang='ts'>
-    import Bids from "$icons/bids.svelte";
-import Button from "$lib/components/Button.svelte";
-import Popup from "$lib/components/Popup.svelte";
+    import LongLeftArrow from "$icons/long-left-arrow.svelte";
+    import Queue from "$icons/queue.svelte";
+    import Button from "$lib/components/Button.svelte";
     import { closePopup, setPopup } from "$utils/popup";
     import { onMount } from "svelte";
-    import CardBuyScreen from "../UniversalPopup/CardBuyScreen.svelte";
     import CardMidTab from "../UniversalPopup/CardMidTab.svelte";
     import ContentDisplay from "../UniversalPopup/contentDisplay.svelte";
     import InfoTab from "../UniversalPopup/InfoTab.svelte";
     import PopupContainer from "../UniversalPopup/PopupContainer.svelte";
     import SuccessScreen from "../UniversalPopup/SuccessScreen.svelte";
     import TabFooter from "../UniversalPopup/TabFooter.svelte";
+    import QueueCardRow from "./QueueCardRow.svelte";
     import QueueCountDisplay from "./QueueCountDisplay.svelte";
     import QueueEntryPopup from "./QueueEntryPopup.svelte";
 
     export let entryReq: number = 50;
     export let queueTotal: number = 5254;
     export let queueCurrent: number = 3241;
-    //export let pricePerOrder: number = 0.1;
+    export let queueCutCost: number = 0.5;
     export let userWaifu: number = 55;
     export let endingDate: Date = new Date(2022, 1, 25);
-
-    export let currentBid: number = 3.50;
-	export let ethereumUsdRate: number = 2878.62;
-	export let lowestPossibleBid: number = 4.50;
+    export let remainingNfts: number = 5;
 
     export let creator: string = 'WAIFUlover69';
     export let edition: string = '5 of 8';
@@ -31,16 +28,17 @@ import Popup from "$lib/components/Popup.svelte";
     export let externalLink: string = 'Value';
     export let editionType: string;
 
-    export let rowInfo: PopupRowInfo[] = Array(20).fill(0).map((_, i) => ({id: i, message: 'Placed a bid for', nickname: 'Mitchell', imageUrl: '', amount: 3.50} as PopupRowInfo))
+    export let rowInfo: PopupRowInfo[] = Array(20).fill(0).map((_, i) => ({id: i, message: 'Ξ', nickname: 'Mitchell', imageUrl: '', amount: 1.2} as PopupRowInfo))
     
     export let queueEntry = false;
 
-    let header = {info: 'You must bid at least', amount: lowestPossibleBid + ' Ξ ' + '($' + Math.round((lowestPossibleBid*ethereumUsdRate + Number.EPSILON) * 100) / 100 + ')', buttonText: 'ADD BALANCE'}
-    let inputBid: string;
+    let infoText: {[key: string]: any}[] = [{'Entry requirements': `${entryReq} WAIFU`}, {'Users in pre-queue': queueTotal}];
+    let queueInfoText = infoText;
     let successScreen = false;
     let buyScreen = false;
-    let buyButtonDisabled = true;
     let today = new Date();
+    let tab: number;
+    
 
 	onMount(() => {
 		const interval = setInterval(() => {
@@ -51,15 +49,6 @@ import Popup from "$lib/components/Popup.svelte";
 			clearInterval(interval);
 		};
 	});
-	
-    let buttonClick = () => {
-        if(inputBid) {   
-            if(Number(inputBid) != NaN && Number(inputBid) >= lowestPossibleBid) {
-                buyButtonDisabled = false;
-                inputBid = `${inputBid} Ξ`;
-            }
-        }
-    }
 
 	let endingIn = new Date(Math.abs(endingDate.getTime() - today.getTime()));
 
@@ -68,34 +57,26 @@ import Popup from "$lib/components/Popup.svelte";
 		endingIn = new Date(Math.abs(endingDate.getTime() - today.getTime()));
 	}
 
-    
+    $: if(queueEntry)
+        {
+            infoText = [{'NFTs remainings': remainingNfts}, {'Claim queue is live for': endingIn.getDate() - 1 + 'D ' + endingIn.getHours() + 'H ' + endingIn.getMinutes() + 'M'}];
+        }
 </script>
 
 
 <PopupContainer>
-    <ContentDisplay slot='content' bind:buyScreen={buyScreen} bind:successScreen={successScreen}>
+    <ContentDisplay slot='content' bind:buyScreen={buyScreen} bind:successScreen={successScreen} bind:tab={tab}>
 
-        <CardBuyScreen slot='buy-screen' currencySymbol={'Ξ'} {header}>
-            <div class='w-[95%] grid place-items-center relative' slot='buy-input'>
-                <input bind:value={inputBid} class='w-full p-2 rounded-md border border-color-black text-2xl' placeholder=00.00>
-                <button class='rounded-md bg-color-black text-white font-semibold text-xl px-12 py-[10px] absolute right-0' on:click={buttonClick} >
-                    <div class='w-full h-full'>
-                        Ξ
-                    </div>
-                </button>
-            </div>
-        </CardBuyScreen>
-        <TabFooter slot='buy-screen-footer' on:click={() => {successScreen = true; buyScreen = false; }} 
-            buttonText={'PLACE A BID'}
-            infoText={[{'Current bid': '$' + currentBid*ethereumUsdRate + ' | ' + currentBid + ' Ξ'}, {'Ending in': endingIn.getDate() - 1 + 'D ' + endingIn.getHours() + 'H ' + endingIn.getMinutes() + 'M'}]}
-            {buyButtonDisabled}
-        />
+        <SuccessScreen slot='success-screen' successMessage={'Your have cut the queue!'}></SuccessScreen>
 
-        <SuccessScreen slot='success-screen' successMessage={'Your bid placed successfully'}></SuccessScreen>
-
+        <button slot='success-screen-back-bt' class='flex items-center gap-2 ml-auto' on:click={() => {successScreen = false; tab = 0;}}>
+            <LongLeftArrow/>
+            <p class='text-color-black font-semibold text-sm'>GO BACK</p>
+        </button>
+        
         <div slot='mid-tab-nav-content' class='flex items-center gap-1 font-bold cursor-pointer'>
-            <Bids></Bids>
-            BIDS
+            <Queue></Queue>
+            QUEUE
         </div>
 
         <InfoTab slot='first-tab' data={{creator, edition, editionType, externalLink: externalLink, description}}></InfoTab>
@@ -105,7 +86,7 @@ import Popup from "$lib/components/Popup.svelte";
                     setPopup(QueueEntryPopup);
                 }
             }}
-            infoText={[{'Entry requirements': `${entryReq} WAIFU`}, {'User in pre-queue': queueTotal}]} >
+            {infoText} >
             <div slot='bt' class='w-full'>
                 {#if queueEntry}
                     <QueueCountDisplay currentVal={queueCurrent} totalVal={queueTotal}></QueueCountDisplay>
@@ -115,11 +96,16 @@ import Popup from "$lib/components/Popup.svelte";
             </div>
         </TabFooter>
 
-        <CardMidTab slot='mid-tab' crossOld={true} {rowInfo}></CardMidTab>
-        <TabFooter slot='mid-tab-footer' on:click={() => {successScreen = false; buyScreen = true;}}
-            buttonText={'PLACE A BID'}
-            infoText={[{'Current bid': '$' + currentBid*ethereumUsdRate + ' | ' + currentBid + ' Ξ'}, {'Ending in': endingIn.getDate() - 1 + 'D ' + endingIn.getHours() + 'H ' + endingIn.getMinutes() + 'M'}]}>
+        <CardMidTab slot='mid-tab' crossOld={true} {rowInfo}>
+            <div slot='mid-tab-row'>
+                <p class='font-bold text-color-gray-base text-right text-xs'>FEE TO CUT QUEUE</p>
+                {#each rowInfo as row}
+                    <QueueCardRow {row} out={row.id > remainingNfts} ></QueueCardRow>
+                {/each}
+        </CardMidTab>
+        <TabFooter slot='mid-tab-footer' on:click={() => {successScreen = true;}}
+            buttonText={`CUT QUEUE FOR ${queueCutCost} Ξ`}
+            infoText={queueInfoText} >
         </TabFooter>
-        
     </ContentDisplay>
 </PopupContainer>
