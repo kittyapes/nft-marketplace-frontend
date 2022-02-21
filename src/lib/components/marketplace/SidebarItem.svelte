@@ -14,8 +14,12 @@
 </script>
 
 <div>
-	<div class="px-11 py-6 border-b border-gray-400 uppercase flex justify-between items-center">
-		<div on:click={toggle} class=" w-full cursor-pointer flex items-center gap-3">
+	<div
+		class="px-11 py-6 border-b border-gray-400 uppercase flex justify-between items-center
+		cursor-pointer"
+		on:click={toggle}
+	>
+		<div class=" w-full flex items-center gap-3">
 			{#if icon == 'status'}
 				<StatusIcon />
 			{/if}
@@ -35,7 +39,7 @@
 			{title}
 		</div>
 
-		<button on:click={toggle} aria-expanded={isOpen}>
+		<button aria-expanded={isOpen} class:rotate-180={isOpen} class="transition">
 			<DownArrow />
 		</button>
 	</div>

@@ -1,15 +1,22 @@
-import { browser } from '$app/env';
 import { api } from '$constants/api';
-import { isJwtExpired } from '$utils/jwt';
 import axios from 'axios';
-import { writable } from 'svelte/store';
 import { getAuthToken, setAuthToken } from '.';
 import sha256 from 'hash.js/lib/hash/sha/256.js';
+import { browser } from '$app/env';
+import { isJwtExpired } from '$utils/jwt';
+import { derived } from 'svelte/store';
+import { currentUserAddress } from '$stores/wallet';
 
-// TODO: init this wil null when the API is updated to return user's role
-export const isAdmin = writable<boolean>(
-	browser && getAuthToken() !== null && !isJwtExpired(getAuthToken())
-);
+/**
+ * Whther the the provided address is currently logged in as an admin.
+ *
+ * Checks the local storage for the auth token and if it exists.
+ */
+export function isAdmin(address: string) {
+	return browser && getAuthToken(address) !== null && !isJwtExpired(getAuthToken(address));
+}
+
+export const isCurrentAddressAdmin = derived(currentUserAddress, (v) => v && isAdmin(v));
 
 /**
  * Retrieve a message from the API that can be signed by the wallet provider
@@ -35,10 +42,7 @@ export async function login(address: string, signature: string) {
 		token: { token: string };
 	};
 
-	setAuthToken(data.token.token);
-
-	// TODO: Remove this when the API is updated to return the user's role.
-	isAdmin.set(true);
+	setAuthToken(address, data.token.token);
 }
 
 export async function loginServerNotify(address: string) {

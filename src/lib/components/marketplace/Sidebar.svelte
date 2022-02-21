@@ -12,7 +12,7 @@
 </script>
 
 <div
-	class={`w-full ${
+	class={`w-full overflow-auto max-h-[calc(100vh-4rem)] scrollbar-hide ${
 		!isOpen ? 'md:w-20' : 'md:w-72'
 	} h-auto md:h-screen block md:fixed border-t bg-white md:border-r border-gray-400 font-bold transition-all transform duration-200`}
 >

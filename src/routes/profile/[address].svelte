@@ -9,9 +9,9 @@
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
-	import { profileCompletionProgress, profileData } from '$stores/user';
+	import { profileCompletionProgress } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
-	import { isAdmin } from '$utils/api/login';
+	import { isCurrentAddressAdmin } from '$utils/api/login';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { setPopup } from '$utils/popup';
 	import { onMount } from 'svelte';
@@ -21,6 +21,7 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import getUserNfts from '$utils/nfts/getUserNfts';
 	import { browser } from '$app/env';
+	import type { ProfileData } from '$lib/interfaces/profileData';
 
 	// const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'FAVORITES'];
@@ -196,6 +197,6 @@
 	</div>
 </div>
 
-{#if $isAdmin && localProfileData}
+{#if $isCurrentAddressAdmin && localProfileData}
 	<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
 {/if}
