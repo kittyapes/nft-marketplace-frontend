@@ -9,10 +9,11 @@ import {
 	communityClaimsArray,
 	web3ModalInstance
 } from '$stores/wallet';
-import { ethers } from 'ethers';
+import { ethers, Wallet } from 'ethers';
 import { get } from 'svelte/store';
 import Web3Modal from 'web3modal';
 import { loginServerNotify } from '$utils/api/login';
+import { WalletState, walletState } from '.';
 
 const infuraId = '456e115b04624699aa0e776f6f2ee65c';
 const appName = 'Hinata Marketplace';
@@ -176,6 +177,7 @@ export const disconnectWallet = () => {
 	appSigner.set(null);
 	web3ModalInstance.set(null);
 	appProvider.set(null);
+	walletState.set(WalletState.DISCONNECTED);
 };
 
 // Connect to Wallet (new connection)
@@ -198,6 +200,10 @@ export const connectToWallet = async () => {
 
 		// Add provider to store
 		setProvider(provider);
+
+		// Set wallet state to connected
+		walletState.set(WalletState.CONNECTED);
+
 		return;
 	} else {
 		notifyError('You can only connect to mainnet or Rinkeby Test Network');
@@ -267,6 +273,10 @@ export const refreshConnection = async () => {
 	// setPopup(null, null);
 	communityClaimsArray.set(null);
 
+	// Setting wallet state to UNKNOWN to display loaders
+	// rather than 'Connect wallet' prompts
+	walletState.set(WalletState.UNKNOWN);
+
 	const web3Modal = get(web3ModalInstance) || initWeb3ModalInstance();
 
 	// If user has a cached provider prompt for connection
@@ -282,11 +292,13 @@ export const refreshConnection = async () => {
 
 			// Add provider to store
 			setProvider(provider);
-			return;
+
+			walletState.set(WalletState.CONNECTED);
 		} else {
 			console.log('Hey 2');
 			notifyError('You can only connect to mainnet or Rinkeby Test Network');
-			return;
 		}
+	} else {
+		walletState.set(WalletState.DISCONNECTED);
 	}
 };

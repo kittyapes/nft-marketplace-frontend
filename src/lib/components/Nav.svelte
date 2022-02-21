@@ -50,10 +50,10 @@
 	</a>
 
 	<!-- Staking -->
-	<a href="/staking" class="relative font-semibold uppercase text-md">Staking</a>
+	<a href="/stake" class="relative font-semibold uppercase text-md">Staking</a>
 
 	<!-- Airdrop -->
-	<a href="/airdrop" class="relative font-semibold uppercase text-md"> Airdrop </a>
+	<a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a>
 
 	<!-- Create -->
 	<a

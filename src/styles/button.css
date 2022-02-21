@@ -15,7 +15,7 @@
 }
 
 .btn-black {
-	@apply bg-black text-white font-semibold;
+	@apply bg-color-black text-white font-semibold;
 }
 
 .btn-outline {
