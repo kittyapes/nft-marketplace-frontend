@@ -13,8 +13,18 @@ export interface LoginHistoryEntry {
 	upload_time: number;
 }
 
+/**
+ * Fetch profile data from the server.
+ * @param address The address of the profile.
+ * @returns Profile data or `null` in case of an error.
+ */
 export async function fetchProfileData(address: string) {
-	const res = await axios.get(api + '/v1/accounts/' + address);
+	const res = await axios.get(api + '/v1/accounts/' + address).catch(() => null);
+
+	if (!res) {
+		return null;
+	}
+
 	const data = res.data.data as ProfileData;
 
 	// Fix deviantart typo
