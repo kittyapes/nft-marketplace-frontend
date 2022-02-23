@@ -88,19 +88,22 @@
 	</div>
 
 	<div class="flex items-center pt-20">
-		<span class="font-semibold text-xl mr-2 text-center w-32">
+		<span class="font-semibold text-xl mr-2 text-center w-32 whitespace-nowrap">
 			{#if $localProfileData?.username}
 				{$localProfileData?.username}
 			{:else}
 				<span class="opacity-50 font-bold whitespace-nowrap">No username</span>
 			{/if}
-		</span>
 
-		{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
-			<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED'}>
-				<VerifiedBadge />
-			</div>
-		{/if}
+			{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
+				<div
+					class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED'}
+					class="inline-block translate-y-1 translate-x-1"
+				>
+					<VerifiedBadge />
+				</div>
+			{/if}
+		</span>
 	</div>
 
 	<div class="flex mt-8">
