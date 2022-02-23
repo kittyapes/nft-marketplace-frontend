@@ -100,6 +100,11 @@
 			fetchedDataStore.set(cloneDeep(localData));
 			localDataStore.set(localData);
 
+			// We have to explicitly set this because reactive statements
+			// do not react to changes in async functions.
+			isProfileImage = localData.imageUrl;
+			isCoverImage = localData.coverUrl;
+
 			if (data.username.includes('great_gatsby')) {
 				firstTimeUser = true;
 			}
@@ -130,6 +135,14 @@
 			.map((v) => (v ? 1 : 0))
 			.join('')
 			.indexOf('0') * 25;
+
+	$: console.log([
+		isEmail($localDataStore?.email),
+		isBioValid($localDataStore?.bio),
+		isProfileImage,
+		isCoverImage,
+		0
+	]);
 
 	// Go to home if the user's wallet isn't connected,
 	// this is a temporary solution, we will solve this better
@@ -182,7 +195,8 @@
 	<div class="bg-[#f2f2f2] py-16">
 		<div class="max-w-4xl mx-auto py-16 bg-white px-16">
 			<h1 class="uppercase text-center text-5xl font-semibold">
-				{firstTimeUser ? 'Setup' : 'Edit'} Your <span class="gradient-text">Profile</span>
+				{firstTimeUser ? 'Setup' : 'Edit'} Your
+				<span class="gradient-text">Profile</span>
 			</h1>
 
 			<div class="font-bold text-sm text-center mt-4">
@@ -306,7 +320,8 @@
 							class="input-label gradient-text brightness-0 transition"
 							class:brightness-100={isProfileImage}
 						>
-							PROFILE <br /> PICTURE
+							PROFILE <br />
+							PICTURE
 						</div>
 						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
 					</div>
