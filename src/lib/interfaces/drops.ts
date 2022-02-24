@@ -1,4 +1,4 @@
-export type PropertyName =
+export type DropPropertyName =
 	| 'price'
 	| 'date'
 	| 'quantity'
@@ -18,3 +18,5 @@ export type PropertyName =
 	| 'gachaContract'
 	| 'dateOfRelease'
 	| 'initialPrice';
+
+export type DropListingType = 'sale' | 'auction' | 'raffle';

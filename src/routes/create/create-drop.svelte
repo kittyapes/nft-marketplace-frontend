@@ -1,12 +1,11 @@
 <script>
-	import { goto } from '$app/navigation';
-
-	import { page } from '$app/stores';
-
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
+	import { newDropProperties } from '$stores/create';
+	import { setPopup } from '$utils/popup';
+	import ContinueListingPopup from '$lib/components/create/ContinueListingPopup.svelte';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
@@ -17,7 +16,9 @@
 	let nftThumbnailPreview = '';
 
 	function mintAndContinue() {
-		goto($page.path + '/list');
+		setPopup(ContinueListingPopup, {
+			props: { relHref: 'sale', title: 'Sale', imgUrl: '/img/create/drop-type-sale.svg' }
+		});
 	}
 
 	$: inputValid = nftName && nftCollection && nftImagePreview && nftThumbnailPreview;
@@ -30,11 +31,9 @@
 	<div class="flex-grow">
 		<!-- Title -->
 		<h1 class="text-xl uppercase mt-8">
-			<span class="font-light italic">Step 3: Creating drop</span>
+			<span class="font-light italic">Step 2: Creating drop</span>
 			|
-			<span class="gradient-text font-bold italic pr-1">{$page.params.quantity}</span>
-			|
-			<span class="gradient-text font-bold italic pr-1">{$page.params.dropType}</span>
+			<span class="gradient-text font-bold italic pr-1">{$newDropProperties.quantity}</span>
 		</h1>
 
 		<hr class="separator mt-8" />
@@ -103,7 +102,7 @@
 				on:click={mintAndContinue}
 				disabled={!inputValid}
 			>
-				Mint & Continue to Listing
+				Mint
 			</button>
 		</div>
 	</div>
