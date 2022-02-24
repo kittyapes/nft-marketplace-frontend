@@ -1,10 +1,8 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import type { DropPropertyName } from '$lib/interfaces/drops';
 	import { setPopup } from '$utils/popup';
 	import CommonProperties from '$lib/components/create/CommonProperties.svelte';
-	import ListNftConfirm from '$lib/components/create/ContinueListingPopup.svelte';
 	import Royalties from '$lib/components/create/Royalties.svelte';
 	import { newDropProperties } from '$stores/create';
 	import ConfirmListingPopup from '$lib/components/create/ConfirmListingPopup.svelte';

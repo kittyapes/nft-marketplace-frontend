@@ -2,8 +2,7 @@
 	import { setPopup } from '$utils/popup';
 	import CardButton from '$lib/components/create/CardButton.svelte';
 	import DropType from '$lib/components/create/DropType.svelte';
-	import ListTypeConfirm from '$lib/components/create/ListTypeConfirm.svelte';
-	import StepTitle from '$lib/components/create/StepTitle.svelte';
+	import ConfirmListingTypePopup from '$lib/components/create/ConfirmListingTypePopup.svelte';
 
 	const dropTypes = [
 		{ listingType: 'sale', title: 'Sale', imgUrl: '/img/create/drop-type-sale.svg' },
@@ -12,7 +11,7 @@
 	];
 
 	function handleClick(dropType) {
-		setPopup(ListTypeConfirm, { props: dropType });
+		setPopup(ConfirmListingTypePopup, { props: dropType });
 	}
 </script>
 

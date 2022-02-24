@@ -1,9 +1,8 @@
 <script>
 	import { goto } from '$app/navigation';
-	import { newDropProperties } from '$stores/create';
 	import CardButton from '$lib/components/create/CardButton.svelte';
 	import Quantity from '$lib/components/create/Quantity.svelte';
-	import StepTitle from '$lib/components/create/StepTitle.svelte';
+	import { newDropProperties } from '$stores/create';
 
 	function handleSingle() {
 		newDropProperties.update((v) => ({ ...v, quantity: 'single' }));
@@ -18,7 +17,7 @@
 
 <hr class="separator" />
 
-<StepTitle blackText="Step 1: Choose your quantity" />
+<h1 class="text-xl uppercase mt-8 italic font-light">Step 1: Choose your quantity</h1>
 
 <p class="font-poppins text-[#585858] mt-8">
 	Choose “Single” for one of a kind or “Multiple” if you want to sell one collectible multiple times
