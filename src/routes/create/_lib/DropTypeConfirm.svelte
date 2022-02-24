@@ -16,7 +16,7 @@
 </script>
 
 <Popup closeButton>
-	<div class="min-w-[80vw] min-h-[50vh] flex flex-col items-center justify-center">
+	<div class="min-w-[800px] min-h-[500px] flex flex-col items-center justify-center">
 		<div class="bg-[#F4F4F4] w-48 h-48 rounded-full flex flex-col justify-center items-center">
 			<img src={imgUrl} alt="" class="-mt-4" />
 			<div class="font-bold mt-2 text-lg">{title}</div>

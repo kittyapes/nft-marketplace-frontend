@@ -19,6 +19,12 @@
 	import { currentUserAddress, communityClaimsArray } from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import { getAllTokenBalances } from '$utils/contracts/tokenBalances';
+	import { initNavigationHandlers } from '$utils/navigation';
+
+	// Various navigation handlers such as functions to be called when
+	// the wallet is disconnected, etc.
+	initNavigationHandlers();
+
 	onMount(async () => {
 		// Check for whether user has access/has provided password
 		if (import.meta.env.VITE_LOCK_SITE === 'true') {
