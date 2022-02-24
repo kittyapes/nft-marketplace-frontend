@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import ArrowDown from '$icons/arrow-down.svelte';
 	import Calendar from '$icons/calendar.svelte';
 	import ChevronLeft from '$icons/chevron-left.svelte';
@@ -13,6 +12,7 @@
 	dayjs.extend(isoWeek);
 
 	export let id = '';
+	export let placeholder = 'Select date & time';
 
 	let open = false;
 	let section: 'date' | 'time' = 'date';
@@ -85,7 +85,7 @@
 		{id}
 		type="text"
 		class="input w-full h-12"
-		placeholder="Select date & time"
+		{placeholder}
 		class:font-semibold={inputText}
 		bind:value={inputText}
 		readonly

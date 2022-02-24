@@ -1,27 +1,19 @@
 <script lang="ts">
 	import NftCard from '$lib/components/NftCard.svelte';
-	import type { DropPropertyName } from '$lib/interfaces/drops';
+	import type { ListingPropName } from '$lib/interfaces/drops';
 	import { setPopup } from '$utils/popup';
 	import CommonProperties from '$lib/components/create/CommonProperties.svelte';
 	import Royalties from '$lib/components/create/Royalties.svelte';
 	import { newDropProperties } from '$stores/create';
 	import ConfirmListingPopup from '$lib/components/create/ConfirmListingPopup.svelte';
 
-	const typeToProperties: { [key: string]: DropPropertyName[] } = {
-		sale: ['price', 'date', 'quantity'],
-		auction: ['price', 'auctionDate', 'reservePrice', 'auctionDuration', 'quantity'],
-		raffle: [
-			'entryTickets',
-			'ticketPrice',
-			'price',
-			'totalTickets',
-			'date',
-			'quantity',
-			'raffleDuration'
-		],
-		'limited-edition': ['entryTickets', 'price', 'claimsBegin', 'quantity', 'claimsDuration'],
-		'queue-drop': ['price', 'cutPrice', 'preQueueOpens', 'queueDuration', 'quantity'],
-		gacha: ['quantity', 'gachaContract']
+	const typeToProperties: { [key: string]: ListingPropName[] } = {
+		sale: ['price', 'date'],
+		auction: ['price', 'auctionDate', 'reservePrice', 'auctionDuration'],
+		raffle: ['entryTickets', 'ticketPrice', 'price', 'totalTickets', 'date', 'raffleDuration'],
+		'limited-edition': ['entryTickets', 'price', 'claimsBegin', 'claimsDuration'],
+		'queue-drop': ['price', 'cutPrice', 'preQueueOpens', 'queueDuration'],
+		gacha: ['gachaContract']
 	};
 
 	const nftName = 'Todo NFT name';

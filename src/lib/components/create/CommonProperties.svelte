@@ -1,12 +1,12 @@
 <script lang="ts">
 	import Datepicker from '$lib/components/Datepicker.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
-	import type { PropertyName } from './types';
+	import type { ListingPropName } from '$lib/interfaces/drops';
 
-	export let propNames: PropertyName[] = [];
+	export let propNames: ListingPropName[] = [];
 	export let propValues: { [key: string]: string } = {};
 
-	function is(propName: PropertyName) {
+	function is(propName: ListingPropName) {
 		return propNames?.includes(propName);
 	}
 </script>
@@ -28,76 +28,60 @@
 			</label>
 		{/if}
 
-		{#if is('quantity')}
-			<label>
-				<span>Quantity</span>
-				<input type="text" bind:value={propValues.quantity} placeholder="Enter quantity number" />
+		{#if is('listingDate')}{/if}
+
+		{#if is('auctionDate')}
+			<label for="datepicker-component">
+				<span class="!font-medium !not-italic">
+					Date of auction <span class="gradient-text">(Optional)</span>
+				</span>
+				<!-- <input type="text" bind:value={propValues.date} placeholder="DD/MM/YYYY" /> -->
+				<Datepicker id="datepicker-component" />
 			</label>
 		{/if}
 
-		{#if is('listingDate')}
-			Price
-		{/if}
-
 		{#if is('reservePrice')}
-			Price
-		{/if}
-
-		{#if is('auctionDate')}
-			Price
+			<label for="reserve-price-component">
+				<span>Reserve price</span>
+				<TokenDropdown
+					id="reserve-price-component"
+					bind:value={propValues.price}
+					placeholder="5.00"
+				/>
+			</label>
 		{/if}
 
 		{#if is('auctionDuration')}
-			Price
+			<label for="datepicker-component">
+				<span>Auction duration</span>
+				<!-- <input type="text" bind:value={propValues.date} placeholder="DD/MM/YYYY" /> -->
+				<Datepicker id="datepicker-component" placeholder="DD/HH/MM" />
+			</label>
 		{/if}
 
-		{#if is('entryTickets')}
-			Price
-		{/if}
+		{#if is('entryTickets')}{/if}
 
-		{#if is('ticketPrice')}
-			Price
-		{/if}
+		{#if is('ticketPrice')}{/if}
 
-		{#if is('totalTickets')}
-			Price
-		{/if}
+		{#if is('totalTickets')}{/if}
 
-		{#if is('raffleDuration')}
-			Price
-		{/if}
+		{#if is('raffleDuration')}{/if}
 
-		{#if is('claimsBegin')}
-			Price
-		{/if}
+		{#if is('claimsBegin')}{/if}
 
-		{#if is('claimsDuration')}
-			Price
-		{/if}
+		{#if is('claimsDuration')}{/if}
 
-		{#if is('cutPrice')}
-			Price
-		{/if}
+		{#if is('cutPrice')}{/if}
 
-		{#if is('preQueueOpens')}
-			Price
-		{/if}
+		{#if is('preQueueOpens')}{/if}
 
-		{#if is('queueDuration')}
-			Price
-		{/if}
+		{#if is('queueDuration')}{/if}
 
-		{#if is('gachaContract')}
-			Price
-		{/if}
+		{#if is('gachaContract')}{/if}
 
-		{#if is('dateOfRelease')}
-			Price
-		{/if}
+		{#if is('dateOfRelease')}{/if}
 
-		{#if is('initialPrice')}
-			Price
-		{/if}
+		{#if is('initialPrice')}{/if}
 	{/key}
 </div>
 
