@@ -42,7 +42,7 @@
 	
     let buttonClick = () => {
         if(inputBid) {   
-            if(Number(inputBid) != NaN && Number(inputBid) >= lowestPossibleBid) {
+            if(!isNaN(Number(inputBid)) && Number(inputBid) >= lowestPossibleBid) {
                 buyButtonDisabled = false;
                 inputBid = `${inputBid} Ξ`;
             }

@@ -42,7 +42,7 @@
 	
     let buttonClick = () => {
         if(inputBid) {   
-            if(Number(inputBid) != NaN && Number(inputBid) != 0) {
+            if(!isNaN(Number(inputBid)) && Number(inputBid) != 0) {
                 buyButtonDisabled = false;
                 inputBid = `${inputBid} Hi`;
             }
