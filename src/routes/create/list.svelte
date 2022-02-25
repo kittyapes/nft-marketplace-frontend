@@ -50,7 +50,7 @@
 				class="btn btn-gradient btn-rounded w-full mt-8 uppercase font-semibold"
 				on:click={listForSale}
 			>
-				List for sale
+				List for {$newDropProperties.listingType || 'N/A'}
 			</button>
 		</div>
 	</div>
