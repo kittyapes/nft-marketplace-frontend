@@ -2,6 +2,8 @@
 	import Datepicker from '$lib/components/Datepicker.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
 	import type { ListingPropName } from '$lib/interfaces/drops';
+	import DurationSelect from '../DurationSelect.svelte';
+	import RadioGroup from '../RadioGroup.svelte';
 
 	export let propNames: ListingPropName[] = [];
 	export let propValues: { [key: string]: string } = {};
@@ -13,10 +15,42 @@
 
 <div class="{$$props.class} grid grid-cols-2 gap-x-16 gap-y-8 pr-8">
 	{#key propNames}
+		{#if is('entryTickets')}
+			<div>
+				<span class="uppercase italic font-light block mb-4">Entry tickets</span>
+				<RadioGroup
+					name="entry-tickets"
+					options={[
+						{ label: 'Price to enter', value: 'price-to-enter' },
+						{ label: 'Free entry tickets', value: 'free-entry-tickets' }
+					]}
+				/>
+			</div>
+
+			<div />
+		{/if}
+
+		{#if is('ticketPrice')}
+			<label for="price-component">
+				<span>Ticket price</span>
+				<TokenDropdown
+					id="price-component"
+					bind:value={propValues.price}
+					placeholder="Enter price for tickets"
+				/>
+			</label>{/if}
+
 		{#if is('price')}
 			<label for="price-component">
 				<span>Price</span>
 				<TokenDropdown id="price-component" bind:value={propValues.price} />
+			</label>
+		{/if}
+
+		{#if is('totalTickets')}
+			<label>
+				<span>Total tickets</span>
+				<input type="text" class="input h-12 w-full" placeholder="Enter tickets number" />
 			</label>
 		{/if}
 
@@ -52,20 +86,18 @@
 		{/if}
 
 		{#if is('auctionDuration')}
-			<label for="datepicker-component">
+			<label for="auction-duration-component">
 				<span>Auction duration</span>
-				<!-- <input type="text" bind:value={propValues.date} placeholder="DD/MM/YYYY" /> -->
-				<Datepicker id="datepicker-component" placeholder="DD/HH/MM" />
+				<DurationSelect id="auction-duration-component" />
 			</label>
 		{/if}
 
-		{#if is('entryTickets')}{/if}
-
-		{#if is('ticketPrice')}{/if}
-
-		{#if is('totalTickets')}{/if}
-
-		{#if is('raffleDuration')}{/if}
+		{#if is('raffleDuration')}
+			<label for="raffle-duration-component">
+				<span>Raffle Duration</span>
+				<DurationSelect id="raffle-duration-component" />
+			</label>
+		{/if}
 
 		{#if is('claimsBegin')}{/if}
 
