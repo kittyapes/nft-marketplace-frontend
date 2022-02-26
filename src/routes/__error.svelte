@@ -14,7 +14,6 @@
 </script>
   
 <script lang='ts'>
-    import Button from "$lib/components/Button.svelte";
     import Error404 from '$lib/components/404.svelte'
 </script>
 
@@ -22,8 +21,8 @@
     {#if response === 404}
         <div class='flex flex-col gap-10 p-20 items-center'>
             <Error404></Error404>
-            <h1 class='text-7xl text-transparent bg-clip-text bg-gradient-to-r from-color-purple to-color-blue py-4'>Something Went Wrong</h1>
-            <Button gradient rounded>Go Back</Button>
+            <h1 class='text-7xl gradient-text py-4'>Something Went Wrong</h1>
+            <button class='btn btn-rounded btn-gradient'>Go Back</button>
         </div>
     {/if}
 </div>
