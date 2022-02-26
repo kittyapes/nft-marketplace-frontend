@@ -1,5 +1,4 @@
 <script lang='ts'>
-    import Button from "$lib/components/Button.svelte";
     import { fade } from 'svelte/transition';
 
     export let infoText: {[key: string]: any}[];
@@ -25,7 +24,7 @@
 
     <div class="w-full mt-3 flex flex-row gap-4" on:click>
         <slot name='bt'>
-            <Button gradient rounded stretch disabled={buyButtonDisabled}>{buttonText}</Button>
+            <button class='btn btn-gradient btn-rounded w-full' disabled={buyButtonDisabled}>{buttonText}</button>
         </slot>
     </div>
 </div>

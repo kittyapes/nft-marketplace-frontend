@@ -29,7 +29,7 @@
 			</div>
 
 			<div class="w-full mt-3 flex flex-row gap-4">
-				<Button rounded gradient stretch>view blockchain data</Button>
+				<button class='btn btn-gradient btn-rounded w-full'>VIEW BLOCKCHAIN DATA</button>
 			</div>
 		</div>
 	</div>
@@ -37,11 +37,11 @@
 
 <style type='postcss'>
 	.tab-content {
-		-ms-overflow-style: none;  /* Internet Explorer 10+ */
-		scrollbar-width: none;  /* Firefox */
+		-ms-overflow-style: none;
+		scrollbar-width: none;
 	}
 	.tab-content::-webkit-scrollbar { 
-		display: none;  /* Safari and Chrome */
+		display: none; 
 	}
 	
 </style>

@@ -1,6 +1,5 @@
 <script lang='ts'>
     import SuccessCheckmark from "$icons/success-checkmark.svelte";
-import Button from "$lib/components/Button.svelte";
     import PopupContainer from "../UniversalPopup/PopupContainer.svelte";
     import TabFooter from "../UniversalPopup/TabFooter.svelte";
 
@@ -38,7 +37,7 @@ import Button from "$lib/components/Button.svelte";
                     </div>
                 </button>
             </div>
-            <Button gradient rounded stretch disabled={buyButtonDisabled} on:click={() => successScreen = true}><p class='italic font-light text-sm'>ROLL</p></Button>
+            <button class='btn btn-gradient btn-rounded w-full' disabled={buyButtonDisabled} on:click={() => successScreen = true}><p class='italic font-light text-sm'>ROLL</p></button>
         </div>
     </PopupContainer>
 {:else}
@@ -54,7 +53,7 @@ import Button from "$lib/components/Button.svelte";
 				alt="card artwork"
 			/>
 		</div>
-        <Button outline rounded stretch>VIEW IN INVENTORY</Button>
+        <button class='btn btn-outline btn-rounded w-full'>VIEW IN INVENTORY</button>
     </div>
 </PopupContainer>
 {/if}

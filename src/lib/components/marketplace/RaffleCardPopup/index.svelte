@@ -30,7 +30,7 @@
     $: {
         userTickets;
         if (userTickets != 0) {
-            let checkForUser = rowInfo.filter((r) =>  r.nickname === 'user');
+            let checkForUser = rowInfo.filter((r) =>  r.nickname === 'User');
             if (checkForUser.length === 0) {
                 rowInfo.forEach((r) => r.id++);
                 rowInfo.unshift({id: 0, message: `You have`, nickname: 'User', imageUrl: '', amount: userTickets});
@@ -46,7 +46,7 @@
     }
 
     let successMessage = 'You have purchased and entered raffle tickets';
-
+    let claimedFree = false;
     let buyingTicketsAmount: number = 0;
     let inputBid: string;
     $: inputBidValue = Number(inputBid);
@@ -129,9 +129,12 @@
         <InfoTab slot='first-tab' data={{creator, edition, editionType, externalLink: externalLink, description}}></InfoTab>
         <TabFooter slot='first-tab-footer' 
             on:click={() => {
-                successMessage = 'You have entered raffle'; 
-                successScreen = true; buyScreen = false;
-                userTickets++;
+                if (!claimedFree) {
+                    claimedFree = true;
+                    successMessage = 'You have entered raffle'; 
+                    successScreen = true; buyScreen = false;
+                    userTickets++;
+                }   
             }}
             buttonText={`CLAIM FREE TICKET`}
             infoText={[{'Current entries': currentEntries}, {'Drawing in': endingIn.getDate() - 1 + 'D ' + endingIn.getHours() + 'H ' + endingIn.getMinutes() + 'M'}]}>

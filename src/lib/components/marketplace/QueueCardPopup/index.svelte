@@ -91,7 +91,7 @@
                 {#if queueEntry}
                     <QueueCountDisplay currentVal={queueCurrent} totalVal={queueTotal}></QueueCountDisplay>
                 {:else}
-                    <Button gradient rounded stretch disabled={false}>{`ENTER PRE-QUEUE`}</Button>
+                    <button class='btn btn-gradient btn-rounded w-full' disabled={false}>{`ENTER PRE-QUEUE`}</button>
                 {/if} 
             </div>
         </TabFooter>

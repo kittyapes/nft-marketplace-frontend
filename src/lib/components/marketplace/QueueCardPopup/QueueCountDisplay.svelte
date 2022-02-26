@@ -27,10 +27,7 @@
 
     div::after {
         content: '';
-        @apply top-0 bottom-0 left-0 bg-gradient-to-r from-color-purple to-color-blue rounded-l-full rounded-r-none -z-10;
-        position: absolute;
-        top: 0; bottom: 0;
-        left: 0; 
+        @apply absolute top-0 bottom-0 left-0 bg-gradient-to-r from-color-purple to-color-blue rounded-l-full rounded-r-none -z-10;
         width: var(--part-width);
     }
 </style>

@@ -1,5 +1,4 @@
 <script lang='ts'>
-    import Bids from "$icons/bids.svelte";
     import Claims from "$icons/claims.svelte";
     import HinataLogo from "$icons/hinata-logo.svelte";
     import { onMount } from "svelte";
