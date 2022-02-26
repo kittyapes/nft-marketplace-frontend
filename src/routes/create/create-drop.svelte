@@ -89,6 +89,7 @@
 					containerClass="mt-2 mr-8"
 					maxChars={200}
 					placeholder="Enter description..."
+					bind:value={nftDescription}
 				/>
 			</div>
 		</div>
