@@ -5,12 +5,13 @@
 
 </script>
 
-<svelte:head>
+<svelte:head> 
 	<title>Hinata</title>
 </svelte:head>
 
+
 <Nav />
-<div class="pt-24 mx-auto">
+<div class="py-24 mx-auto">
 	<slot />
 </div>
 <Toast />

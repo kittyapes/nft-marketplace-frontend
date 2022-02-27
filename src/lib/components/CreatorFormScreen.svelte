@@ -1,21 +1,25 @@
 <script lang="ts">
     import HinataLogoToken from "$icons/hinata-logo-token.svelte";
+    
+    export let step = 1;
 </script>
 
 
-<div class='w-full h-full'>
-    <div class='grid place-items-center'>
-        <HinataLogoToken></HinataLogoToken>
-    </div>
+<div class='grid place-items-center'>
+    <div class='w-1/2 flex flex-col gap-10'>
+        <div class='grid place-items-center'>
+            <HinataLogoToken></HinataLogoToken>
+        </div>
 
-    <div class='flex'>
-        <div class='step-circle bg-gradient-to-r from-color-purple to-color-blue rounded-full text-white p-4 px-6'>1</div>
-        <div class='flex flex-col'>
-            <div class='flex flex-col'>
-
-            </div>
-            <div class='flex flex-col'>
-
+        <div class='flex gap-20'>
+            <div class='step-circle bg-gradient-to-r from-color-purple to-color-blue rounded-full text-white w-16 h-16 grid place-items-center font-bold text-2xl -bottom-10 min-w-[4rem]'>{step}</div>
+            <div class='flex flex-col gap-4'>
+                <div class='flex flex-col'>
+                    <slot name='header'/>
+                </div>
+                <div class='flex flex-col'>
+                    <slot name='content'></slot>
+                </div>
             </div>
         </div>
     </div>
@@ -23,8 +27,11 @@
 
 <style type='postcss'>
     .step-circle:after {
-        @apply inset-y-0 absolute -z-10 left-1/2 border-l border-l-zinc-900 border-dashed;
         content:"";
-
+        @apply inset-y-0 absolute -z-10 border-l-white border-l-2 border-dashed translate-y-[30%];
+        background: 
+            linear-gradient(white, white) padding-box,
+            linear-gradient(to bottom, #868BF7, #6CC7F8) border-box;
     }
+    
 </style>
