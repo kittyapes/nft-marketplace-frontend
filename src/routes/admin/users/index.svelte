@@ -22,17 +22,29 @@
 
 	let addressToAdd: string;
 
-	let inAddingToQueue = false;
+	let isAddingToQueue = false;
 
 	async function handleAddToQueue() {
-		inAddingToQueue = true;
+		isAddingToQueue = true;
 
 		await addToVerificationQueue(addressToAdd)
 			.then(() => notifySuccess('Added to queue'))
 			.catch((e) => notifyError(e.message));
 
-		inAddingToQueue = false;
+		isAddingToQueue = false;
 		addressToAdd = '';
+	}
+
+	let isForceBatchProcessing = false;
+
+	async function handleForceBatchProcess() {
+		isForceBatchProcessing = true;
+
+		await forceBatchProcess()
+			.then(() => notifySuccess('Batch processed.'))
+			.catch((e) => notifyError(e.message));
+
+		isForceBatchProcessing = false;
 	}
 </script>
 
@@ -53,10 +65,9 @@
 			/>
 
 			<button
-				class="rounded-full border border-black uppercase px-10 whitespace-nowrap italic h-12 ml-8 transition-btn
-				disabled:opacity-50"
+				class="btn-secondary italic h-12 ml-8"
 				on:click={handleAddToQueue}
-				disabled={inAddingToQueue}
+				disabled={isAddingToQueue}
 			>
 				Add to queue
 			</button>
@@ -75,8 +86,9 @@
 				</div>
 
 				<button
-					class="rounded-full border border-black uppercase px-10 whitespace-nowrap italic h-12 transition-btn"
-					on:click={forceBatchProcess}
+					class="btn-secondary"
+					on:click={handleForceBatchProcess}
+					disabled={isForceBatchProcessing}
 				>
 					Force processing now
 				</button>

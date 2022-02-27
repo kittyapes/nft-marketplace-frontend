@@ -1,8 +1,5 @@
 .btn {
-}
-
-.btn:not(:disabled) {
-	@apply transition-transform duration-200 transform active:scale-95;
+	@apply transition-transform duration-200 transform active:scale-95 whitespace-nowrap;
 }
 
 .btn-rounded {
@@ -15,4 +12,14 @@
 
 .btn-outline {
 	@apply border border-color-black;
+}
+
+.btn-disabled-effect {
+	@apply disabled:opacity-50;
+}
+
+@layer components {
+	.btn-secondary {
+		@apply btn btn-disabled-effect btn-outline btn-rounded uppercase;
+	}
 }
