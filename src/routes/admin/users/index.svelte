@@ -58,16 +58,17 @@
 		<div class="mt-7 flex gap items-center">
 			<input
 				type="text"
-				class="w-[500px] px-8 bg-[#F7F7F7] border border-[#CDCDCD] rounded-md font-light h-14 outline-none"
+				class="w-[500px] px-8 bg-[#F7F7F7] border border-[#CDCDCD] rounded-md font-light h-14 outline-none disabled:opacity-50"
 				placeholder="Enter an address to add to the Verified Creators..."
 				autocomplete="nope"
 				bind:value={addressToAdd}
+				disabled={isAddingToQueue}
 			/>
 
 			<button
 				class="btn-secondary italic h-12 ml-8"
 				on:click={handleAddToQueue}
-				disabled={isAddingToQueue}
+				disabled={isAddingToQueue || !addressToAdd}
 			>
 				Add to queue
 			</button>
