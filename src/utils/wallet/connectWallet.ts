@@ -178,6 +178,7 @@ export const disconnectWallet = () => {
 	web3ModalInstance.set(null);
 	appProvider.set(null);
 	walletState.set(WalletState.DISCONNECTED);
+	currentUserAddress.set(null);
 };
 
 // Connect to Wallet (new connection)

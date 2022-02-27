@@ -1,7 +1,5 @@
 /// <reference types="@sveltejs/kit" />
 
-import type { Writable } from 'svelte/store';
-
 declare global {
 	interface Number {
 		noExponents: () => string;
@@ -56,4 +54,12 @@ interface PrivatePageSplitOptions {
 	airdropType: 'seed' | 'private' | 'ido';
 	airdropHasClaimed: boolean;
 	contractActive: boolean;
+}
+
+interface PopupRowInfo {
+	id: number;
+	message: string;
+	nickname: string;
+	imageUrl: string;
+	amount: number;
 }
