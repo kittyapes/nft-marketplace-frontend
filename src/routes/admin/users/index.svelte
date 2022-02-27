@@ -6,6 +6,7 @@
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import { addToVerificationQueue } from '$utils/api/admin/userManagement';
 	import { notifyError, notifySuccess } from '$utils/toast';
+	import { forceBatchProcess } from '$utils/api/admin/batchProcessing';
 
 	const processDayOptions = [
 		{ label: 'Monday' },
@@ -74,6 +75,7 @@
 
 				<button
 					class="rounded-full border border-black uppercase px-10 whitespace-nowrap italic h-12 transition-btn"
+					on:click={forceBatchProcess}
 				>
 					Force processing now
 				</button>
