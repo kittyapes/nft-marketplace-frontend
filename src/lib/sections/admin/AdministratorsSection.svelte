@@ -1,9 +1,25 @@
 <script lang="ts">
+	import Button from '$lib/components/Button.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import PersonIcon from '$icons/person.svelte';
+	import { goto } from '$app/navigation';
 	import ModifyAdmin from '$lib/components/admin/ModifyAdmin.svelte';
 
 	let modifyAdminOpen = false;
+
+	// TODO Remove this
+	let usernames = ['Username', 'KindaLongerUsername', 'Shrt'];
+	let boolStates = [true, false];
+	let statuses = ['Super Admin', 'Admin'];
+
+	const QUEUE_ROWS = Array(10)
+		.fill(0)
+		.map((_) => ({
+			username: usernames[Math.floor(Math.random() * usernames.length)],
+			address: '0x3468C6dE9662C2877vd10184B4228e5711b89D42',
+			status: statuses[Math.floor(Math.random() * statuses.length)],
+			active: boolStates[Math.floor(Math.random() * boolStates.length)]
+		}));
 </script>
 
 <div class="mt-32">
@@ -23,7 +39,7 @@
 
 	<div class="max-h-[900px] overflow-auto custom-scrollbar mt-5 pb-4">
 		<table class="w-full table table-auto border-t border-color-black border-opacity-30">
-			{#each [{ address: '0x40D6f8Ac990d98F9c812A3910e3255345fB32f8e', username: 'Jakub', status: 'Superadmin' }] as row}
+			{#each QUEUE_ROWS as row}
 				<tr class="h-20 border-b border-color-black border-opacity-30">
 					<td class="px-4">
 						<div class="flex items-center gap-4">

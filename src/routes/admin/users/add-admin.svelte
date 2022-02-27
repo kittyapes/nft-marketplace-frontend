@@ -1,38 +1,13 @@
-<script lang="ts">
+<script>
 	import Button from '$lib/components/Button.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Separator from '$lib/components/Separator.svelte';
-	import { adminPermissions, AdminPermissionKey } from '$constants/admin';
+	import { permissions } from '$constants/admin';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import ChevronLeft from '$icons/chevron-left.svelte';
-	import { createAdmin } from '$utils/api/admin/userManagement';
-	import { notifyError, notifySuccess } from '$utils/toast';
 
 	const adminTypeOptions = [{ label: 'Super Admin' }];
-
-	let name: string;
-	let address: string;
-	const roles = {} as Record<AdminPermissionKey, boolean>;
-
-	let isCreatingAdmin = false;
-
-	async function handleCreateAdmin() {
-		isCreatingAdmin = true;
-
-		const permissions = Object.entries(roles)
-			.map(([k, v]) => (v ? k : null))
-			.filter((v) => v);
-
-		await createAdmin({ name, address, permissions })
-			.catch((e) => {
-				notifyError(e.message);
-				throw e;
-			})
-			.then(() => notifySuccess('Admin created!'));
-
-		isCreatingAdmin = false;
-	}
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row overflow-x-hidden">
@@ -50,7 +25,7 @@
 
 		<div class="flex flex-col">
 			<div class="text-xs font-light italic uppercase mb-2">Creator Username</div>
-			<TextInput grayOutline placeholder="newadmin" class="w-96 h-14 italic" bind:value={name} />
+			<TextInput grayOutline placeholder="newadmin" class="w-96 h-14 italic" />
 
 			<div class="text-xs font-light italic uppercase mt-9 mb-2">Address</div>
 			<TextInput grayOutline placeholder="0x..." class="w-96 h-14" />
@@ -60,20 +35,12 @@
 
 			<div class="text-xs font-light italic uppercase mt-9">permissions</div>
 			<div class="grid grid-cols-2 grid-rows-3 gap-4 mt-8">
-				{#each adminPermissions as permission}
-					<Checkbox label={permission.label} bind:checked={roles[permission.key]} />
+				{#each permissions as permission}
+					<Checkbox label={permission} />
 				{/each}
 			</div>
 
-			<Button
-				variant="rounded-black"
-				class=" mt-16"
-				stretch
-				on:click={handleCreateAdmin}
-				disabled={isCreatingAdmin}
-			>
-				Save Changes
-			</Button>
+			<Button variant="rounded-black" class=" mt-16" stretch>Save Changes</Button>
 		</div>
 	</div>
 </div>
