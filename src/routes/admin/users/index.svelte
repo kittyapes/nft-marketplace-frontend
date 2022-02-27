@@ -6,16 +6,22 @@
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import { addToVerificationQueue } from '$utils/api/admin/userManagement';
 	import { notifyError, notifySuccess } from '$utils/toast';
-	import { forceBatchProcess } from '$utils/api/admin/batchProcessing';
+	import {
+		forceBatchProcess,
+		getBatchProcessSettings,
+		putBatchProcessSettings
+	} from '$utils/api/admin/batchProcessing';
+	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	const processDayOptions = [
-		{ label: 'Monday' },
-		{ label: 'Tuesday' },
-		{ label: 'Wednesday' },
-		{ label: 'Thrusday' },
-		{ label: 'Friday' },
-		{ label: 'Saturday' },
-		{ label: 'Sunday' }
+		{ label: 'Monday', index: 0 },
+		{ label: 'Tuesday', index: 1 },
+		{ label: 'Wednesday', index: 2 },
+		{ label: 'Thrusday', index: 3 },
+		{ label: 'Friday', index: 4 },
+		{ label: 'Saturday', index: 5 },
+		{ label: 'Sunday', index: 6 }
 	];
 
 	const sortByOptions = [{ label: 'Date' }, { label: 'Alphabetical' }];
@@ -46,6 +52,41 @@
 
 		isForceBatchProcessing = false;
 	}
+
+	const isBatchProcessEnabled = writable(null);
+	const batchProcessDayOption = writable(processDayOptions[0]);
+	let isRefreshingBatchProcessSettings = false;
+
+	async function refreshBatchProcessSettings() {
+		isRefreshingBatchProcessSettings = false;
+
+		const settings = await getBatchProcessSettings();
+
+		isBatchProcessEnabled.set(settings.enabled);
+		batchProcessDayOption.set(processDayOptions[settings.processingDayIndex]);
+
+		isRefreshingBatchProcessSettings = true;
+	}
+
+	let isPushingBatchProcessSettings = false;
+
+	async function pushBatchProcessSettings() {
+		isPushingBatchProcessSettings = true;
+		await putBatchProcessSettings({
+			enabled: $isBatchProcessEnabled,
+			processingDayIndex: $batchProcessDayOption.index
+		}).catch((e) => notifyError(e.message));
+		isPushingBatchProcessSettings = false;
+	}
+
+	isBatchProcessEnabled.subscribe(
+		() => isRefreshingBatchProcessSettings && pushBatchProcessSettings()
+	);
+	batchProcessDayOption.subscribe(
+		() => isRefreshingBatchProcessSettings && pushBatchProcessSettings()
+	);
+
+	onMount(refreshBatchProcessSettings);
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row overflow-x-hidden">
@@ -78,12 +119,20 @@
 			<div class="flex gap-3 lg:flex-row pb-2 flex-wrap">
 				<div class="flex items-center gap-3 whitespace-nowrap">
 					Automatic Batch Processing
-					<Checkbox />
+					<Checkbox
+						bind:checked={$isBatchProcessEnabled}
+						disabled={isPushingBatchProcessSettings}
+					/>
 				</div>
 
 				<div class="flex items-center space-x-4 mr-4">
 					<span class="pr-1 whitespace-nowrap">Process Every</span>
-					<Dropdown options={processDayOptions} class="w-36" />
+					<Dropdown
+						options={processDayOptions}
+						disabled={isPushingBatchProcessSettings}
+						bind:selected={$batchProcessDayOption}
+						class="w-36"
+					/>
 				</div>
 
 				<button

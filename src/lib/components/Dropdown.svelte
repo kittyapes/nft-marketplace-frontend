@@ -1,4 +1,8 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
+
 	export let options: { label: string; value?: string }[];
 
 	$: if (!options?.length) {
@@ -7,6 +11,7 @@
 
 	export let selected: { label: string; value?: string } = options?.[0];
 	export let opened: boolean = false;
+	export let disabled = false;
 
 	let elemOpenButton: HTMLButtonElement;
 
@@ -17,10 +22,20 @@
 			}
 		});
 	}
+
+	function handleOptionSelect(option) {
+		selected = option;
+		dispatch('select', option);
+	}
 </script>
 
 <div class="relative select-container select-none {$$props.class}">
-	<button class="select text-left" on:click={() => (opened = !opened)} bind:this={elemOpenButton}>
+	<button
+		class="select text-left"
+		on:click={() => (opened = !opened)}
+		bind:this={elemOpenButton}
+		{disabled}
+	>
 		{selected.label}
 	</button>
 
@@ -32,7 +47,7 @@
 			{#each options as option}
 				<button
 					class="font-semibold text-left py-2 px-4 hover:bg-gray-100 w-full transition-btn active:rounded"
-					on:click={() => (selected = option)}
+					on:click={() => handleOptionSelect(option)}
 				>
 					{option.label}
 				</button>

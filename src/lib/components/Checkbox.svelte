@@ -5,6 +5,7 @@
 	export let checked = false;
 	export let id = 'check';
 	export let label = '';
+	export let disabled = false;
 </script>
 
 <label
@@ -12,7 +13,7 @@
 	border rounded text-color-blue transition relative
 	{checked ? 'border-color-blue' : 'border-[#989898] border-opacity-40'}"
 >
-	<input type="checkbox" class="hidden" {id} {name} bind:checked />
+	<input type="checkbox" class="hidden" {id} {name} {disabled} bind:checked />
 	{#if checked}
 		<div class="w-6 grid place-items-center absolute -m-px">
 			<Tick />
