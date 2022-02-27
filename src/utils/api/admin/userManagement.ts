@@ -7,6 +7,24 @@ export async function addToVerificationQueue(address: string) {
 	return await axios.post(api + '/v1/accounts/' + address + '/promote', {}, getAxiosConfig());
 }
 
+export interface VerificationQueueItem {
+	address: string;
+	dateAdded: string;
+}
+
+export async function getVerificationQueue(
+	sortBy: 'date' | 'alphabetical'
+): Promise<VerificationQueueItem[]> {
+	// const res = axios.get(api + '/v1/')
+
+	console.log({ sortBy });
+
+	return [
+		{ address: 'asdasdasd', dateAdded: 'asdads' },
+		{ address: 'homas tobza', dateAdded: 'tomas hobza' }
+	];
+}
+
 export async function createAdmin(data: Partial<AdminData>) {
 	const body = {
 		name: data.name,

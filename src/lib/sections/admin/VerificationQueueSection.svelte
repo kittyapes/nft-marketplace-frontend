@@ -2,18 +2,19 @@
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import PersonIcon from '$icons/person.svelte';
+	import type { VerificationQueueItem } from '$utils/api/admin/userManagement';
 
-	const queue = [];
+	export let queue: VerificationQueueItem[] = [];
 </script>
 
 <div class="mt-12">
 	<div class="flex justify-between">
-		<div class="uppercase text-lg font-bold">Verification Queue</div>
-		<div class="uppercase text-lg font-bold mr-16">Date added</div>
+		<div class="text-lg font-bold uppercase">Verification Queue</div>
+		<div class="mr-16 text-lg font-bold uppercase">Date added</div>
 	</div>
 
-	<div class="max-h-96 overflow-auto mt-5 custom-scrollbar pr-8 pb-4">
-		<table class="w-full table-auto border-t border-color-black border-opacity-30">
+	<div class="pb-4 pr-8 mt-5 overflow-auto max-h-96 custom-scrollbar">
+		<table class="w-full border-t table-auto border-color-black border-opacity-30">
 			{#each queue as row}
 				<tr class="h-20 border-b border-color-black border-opacity-30">
 					<td class="px-2"><Checkbox /></td>
@@ -21,22 +22,22 @@
 					<td class="px-2">
 						<div class="flex items-center gap-4">
 							<PersonIcon />
-							{row.username}
+							{row.address}
 						</div>
 					</td>
 
-					<td class="px-2 max-w-full whitespace-nowrap">
+					<td class="max-w-full px-2 whitespace-nowrap">
 						<EthAddress address={row.address} />
 					</td>
 
-					<td class="px-4 w-28 whitespace-nowrap">{row.date}</td>
+					<td class="px-4 w-28 whitespace-nowrap">{row.dateAdded}</td>
 				</tr>
 			{/each}
 		</table>
 	</div>
 
 	<div class="flex gap-5 mt-5">
-		<button class="btn btn-gradient btn-rounded italic font-light w-48 uppercase">Approve</button>
-		<button class="btn btn-gradient btn-rounded italic font-light w-48 uppercase">Reject</button>
+		<button class="w-48 italic font-light uppercase btn btn-gradient btn-rounded">Approve</button>
+		<button class="w-48 italic font-light uppercase btn btn-gradient btn-rounded">Reject</button>
 	</div>
 </div>

@@ -4,7 +4,7 @@
 	import VerifiedCreatorsSection from '$lib/sections/admin/VerifiedCreatorsSection.svelte';
 	import AdministratorsSection from '$lib/sections/admin/AdministratorsSection.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
-	import { addToVerificationQueue } from '$utils/api/admin/userManagement';
+	import { addToVerificationQueue, getVerificationQueue } from '$utils/api/admin/userManagement';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import {
 		forceBatchProcess,
@@ -41,6 +41,7 @@
 		addressToAdd = '';
 	}
 
+	// Force batch processing
 	let isForceBatchProcessing = false;
 
 	async function handleForceBatchProcess() {
@@ -53,6 +54,7 @@
 		isForceBatchProcessing = false;
 	}
 
+	// Batch processing settings
 	const isBatchProcessEnabled = writable(null);
 	const batchProcessDayOption = writable(processDayOptions[0]);
 	let isRefreshingBatchProcessSettings = false;
@@ -87,16 +89,27 @@
 	);
 
 	onMount(refreshBatchProcessSettings);
+
+	// Verification queue
+	let verificationQueueItems = [];
+
+	async function fetchVerificationQueueItems() {
+		verificationQueueItems = await getVerificationQueue('date');
+	}
+
+	onMount(fetchVerificationQueueItems);
+
+	$: console.log(verificationQueueItems);
 </script>
 
-<div class="w-full min-h-screen h-full flex flex-col md:flex-row overflow-x-hidden">
-	<div class="px-20 py-16 w-full overflow-x-auto">
-		<div class="text-4xl uppercase font-bold">User management</div>
+<div class="flex flex-col w-full h-full min-h-screen overflow-x-hidden md:flex-row">
+	<div class="w-full px-20 py-16 overflow-x-auto">
+		<div class="text-4xl font-bold uppercase">User management</div>
 
 		<!-- Add verified Creator -->
-		<div class="uppercase text-lg font-bold mt-12">Add Verified Creator</div>
+		<div class="mt-12 text-lg font-bold uppercase">Add Verified Creator</div>
 
-		<div class="mt-7 flex gap items-center">
+		<div class="flex items-center mt-7 gap">
 			<input
 				type="text"
 				class="w-[500px] px-8 bg-[#F7F7F7] border border-[#CDCDCD] rounded-md font-light h-14 outline-none disabled:opacity-50"
@@ -107,7 +120,7 @@
 			/>
 
 			<button
-				class="btn-secondary italic h-12 ml-8"
+				class="h-12 ml-8 italic btn-secondary"
 				on:click={handleAddToQueue}
 				disabled={isAddingToQueue || !addressToAdd}
 			>
@@ -115,8 +128,8 @@
 			</button>
 		</div>
 
-		<div class="w-full flex items-center mt-12 justify-between">
-			<div class="flex gap-3 lg:flex-row pb-2 flex-wrap">
+		<div class="flex items-center justify-between w-full mt-12">
+			<div class="flex flex-wrap gap-3 pb-2 lg:flex-row">
 				<div class="flex items-center gap-3 whitespace-nowrap">
 					Automatic Batch Processing
 					<Checkbox
@@ -125,7 +138,7 @@
 					/>
 				</div>
 
-				<div class="flex items-center space-x-4 mr-4">
+				<div class="flex items-center mr-4 space-x-4">
 					<span class="pr-1 whitespace-nowrap">Process Every</span>
 					<Dropdown
 						options={processDayOptions}
@@ -152,7 +165,7 @@
 			</div>
 		</div>
 
-		<VerificationQueueSection />
+		<VerificationQueueSection queue={verificationQueueItems} />
 		<VerifiedCreatorsSection />
 		<AdministratorsSection />
 	</div>
