@@ -38,14 +38,14 @@
             <p>Apply to be a</p>
             <p class='gradient-text'>verified creator</p>
         </h1>
-        <button class='text-color-black text-sm uppercase mb-4 self-center'>
+    </div>
+    <div slot='content' id="form-container" class='flex flex-col max-w-xl gap-8'>
+        <button class='text-color-black text-sm uppercase self-end'>
             <p class='flex gap-3'>
                 {submissions} submissions | Why become a verified creator?
                 <Disconnect></Disconnect>
             </p>
         </button>
-    </div>
-    <div slot='content' id="form-container" class='flex flex-col max-w-xl gap-8'>
         <p class='text-sm font-light mb-6'>We are aiming to build a world class anime artist platform that gives artist more reach with their fans. We support artists when it comes to expanding their own brand and being able to access resources such as merchants to create physical goods, get access to commercial clients, and establish themselves as a metaverse creator who can earn perpetual fees from their original artwork using open-source NFT technology. 100% of minting costs on Ethereum are covered by the Hinata DAO.</p>
         <div class="grid grid-cols-[1fr_1.5fr]">
             <div class="uppercase text-lg gradient-text brightness-0" class:brightness-100={name}>Contact name</div>
