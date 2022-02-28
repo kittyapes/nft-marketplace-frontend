@@ -4,8 +4,13 @@
 	import VerifiedCreatorsSection from '$lib/sections/admin/VerifiedCreatorsSection.svelte';
 	import AdministratorsSection from '$lib/sections/admin/AdministratorsSection.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
-	import { addToVerificationQueue, getVerificationQueue } from '$utils/api/admin/userManagement';
-	import { notifyError, notifySuccess } from '$utils/toast';
+	import {
+		addToVerificationQueue,
+		approveFromVerificationQueue,
+		getVerificationQueue,
+		rejectFromVerificationQueue
+	} from '$utils/api/admin/userManagement';
+	import { httpErrorHandler, makeErrorHandler, notifyError, notifySuccess } from '$utils/toast';
 	import {
 		forceBatchProcess,
 		getBatchProcessSettings,
@@ -90,14 +95,39 @@
 
 	onMount(refreshBatchProcessSettings);
 
-	// Verification queue
+	// Verification queue fetch
 	let verificationQueueItems = [];
 
 	async function fetchVerificationQueueItems() {
-		verificationQueueItems = await getVerificationQueue('date');
+		const res = await getVerificationQueue('date').catch(
+			makeErrorHandler('Failed to fetch verification queue!')
+		);
+
+		verificationQueueItems = res || [];
 	}
 
 	onMount(fetchVerificationQueueItems);
+
+	// Verification queue batch approve
+	let isChangingVerificationQueue = false;
+
+	async function handleVerificationQueueBatchApprove(event) {
+		isChangingVerificationQueue = true;
+		await approveFromVerificationQueue(event.detail.addresses)
+			.then(() => notifySuccess('Approved addresses.'))
+			.catch(httpErrorHandler);
+		await fetchVerificationQueueItems();
+		isChangingVerificationQueue = false;
+	}
+
+	async function handleVerificationQueueBatchReject(event) {
+		isChangingVerificationQueue = true;
+		await rejectFromVerificationQueue(event.detail.addresses)
+			.then(() => notifySuccess('Rejected addresses.'))
+			.catch(httpErrorHandler);
+		await fetchVerificationQueueItems();
+		isChangingVerificationQueue = false;
+	}
 
 	$: console.log(verificationQueueItems);
 </script>
@@ -165,7 +195,12 @@
 			</div>
 		</div>
 
-		<VerificationQueueSection queue={verificationQueueItems} />
+		<VerificationQueueSection
+			queue={verificationQueueItems}
+			on:batchApprove={handleVerificationQueueBatchApprove}
+			on:batchReject={handleVerificationQueueBatchReject}
+			disabled={isChangingVerificationQueue}
+		/>
 		<VerifiedCreatorsSection />
 		<AdministratorsSection />
 	</div>

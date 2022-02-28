@@ -15,14 +15,19 @@ export interface VerificationQueueItem {
 export async function getVerificationQueue(
 	sortBy: 'date' | 'alphabetical'
 ): Promise<VerificationQueueItem[]> {
-	// const res = axios.get(api + '/v1/')
+	const res = await axios.get(api + '/v1/accounts', { params: {}, ...getAxiosConfig() });
 
-	console.log({ sortBy });
+	return res.data.data;
+}
 
-	return [
-		{ address: 'asdasdasd', dateAdded: 'asdads' },
-		{ address: 'homas tobza', dateAdded: 'tomas hobza' }
-	];
+export async function approveFromVerificationQueue(addresses: string[]) {
+	console.log(addresses);
+
+	return await axios.post(api + '/v1/accounts/batchPromote', { addresses }, getAxiosConfig());
+}
+
+export async function rejectFromVerificationQueue(addresses: string[]) {
+	return await axios.post(api + '/v1/accounts/batchReject', { addresses }, getAxiosConfig());
 }
 
 export async function createAdmin(data: Partial<AdminData>) {

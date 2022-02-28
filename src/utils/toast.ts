@@ -26,3 +26,9 @@ export const notifyError = (message: string) =>
 			'--toastBarBackground': '#ef4444'
 		}
 	});
+
+export const httpErrorHandler = (e: { message: string }) => [notifyError(e.message)];
+export const makeErrorHandler = (message: string) => (e) => {
+	notifyError(message);
+	console.error(e.message);
+};
