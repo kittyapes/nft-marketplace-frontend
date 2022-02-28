@@ -19,6 +19,10 @@
 }
 
 @layer components {
+	.btn-primary {
+		@apply btn btn-disabled-effect btn-gradient btn-rounded uppercase;
+	}
+
 	.btn-secondary {
 		@apply btn btn-disabled-effect btn-outline btn-rounded uppercase;
 	}

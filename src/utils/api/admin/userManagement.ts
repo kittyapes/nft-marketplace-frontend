@@ -33,3 +33,10 @@ export async function createAdmin(data: Partial<AdminData>) {
 
 	return await axios.post(api + '/v1/admins', body, getAxiosConfig()).then((res) => res.data);
 }
+
+export async function getVerifiedCreators(
+	verificationStatus: 'verified' | 'inactivated' | 'all',
+	sortBy: 'date' | 'alphabetical'
+) {
+	return await axios.get(api + '/v1/accounts', { params: { status: verificationStatus, sortBy } });
+}
