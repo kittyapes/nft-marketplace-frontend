@@ -29,7 +29,10 @@
 		{ label: 'Sunday', index: 6 }
 	];
 
-	const sortByOptions = [{ label: 'Date' }, { label: 'Alphabetical' }];
+	const sortByOptions = [
+		{ label: 'Date', value: 'date' },
+		{ label: 'Alphabetical', value: 'alphabetical' }
+	];
 
 	let addressToAdd: string;
 
@@ -96,10 +99,11 @@
 	onMount(refreshBatchProcessSettings);
 
 	// Verification queue fetch
+	const verificationQueueSort = writable(sortByOptions[0]);
 	let verificationQueueItems = [];
 
 	async function fetchVerificationQueueItems() {
-		const res = await getVerificationQueue('date').catch(
+		const res = await getVerificationQueue($verificationQueueSort.value as any).catch(
 			makeErrorHandler('Failed to fetch verification queue!')
 		);
 
@@ -108,7 +112,9 @@
 
 	onMount(fetchVerificationQueueItems);
 
-	// Verification queue batch approve
+	verificationQueueSort.subscribe(fetchVerificationQueueItems);
+
+	// Verification queue batch operations
 	let isChangingVerificationQueue = false;
 
 	async function handleVerificationQueueBatchApprove(event) {
@@ -189,7 +195,7 @@
 				<div class="flex items-center">
 					<span class="pr-4 whitespace-nowrap">Sort By</span>
 					<div>
-						<Dropdown options={sortByOptions} class="w-40" />
+						<Dropdown options={sortByOptions} class="w-40" bind:selected={$verificationQueueSort} />
 					</div>
 				</div>
 			</div>
