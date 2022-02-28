@@ -15,19 +15,9 @@ export interface VerificationQueueItem {
 export async function getVerificationQueue(
 	sortBy: 'date' | 'alphabetical'
 ): Promise<VerificationQueueItem[]> {
-	const res = await axios.get(api + '/v1/accounts', { params: { sortBy }, ...getAxiosConfig() });
+	const res = await axios.get(api + '/v1/accounts', { params: {}, ...getAxiosConfig() });
 
 	return res.data.data;
-}
-
-export async function approveFromVerificationQueue(addresses: string[]) {
-	console.log(addresses);
-
-	return await axios.post(api + '/v1/accounts/batchPromote', { addresses }, getAxiosConfig());
-}
-
-export async function rejectFromVerificationQueue(addresses: string[]) {
-	return await axios.post(api + '/v1/accounts/batchReject', { addresses }, getAxiosConfig());
 }
 
 export async function createAdmin(data: Partial<AdminData>) {

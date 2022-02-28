@@ -1,88 +1,200 @@
 <script lang="ts">
-	import Checkbox from '$lib/components/Checkbox.svelte';
-	import EthAddress from '$lib/components/EthAddress.svelte';
 	import PersonIcon from '$icons/person.svelte';
-	import type { VerificationQueueItem } from '$utils/api/admin/userManagement';
-	import { createEventDispatcher } from 'svelte';
+	import Checkbox from '$lib/components/Checkbox.svelte';
+	import Dropdown from '$lib/components/Dropdown.svelte';
+	import EthAddress from '$lib/components/EthAddress.svelte';
+	import {
+		forceBatchProcess,
+		getBatchProcessSettings,
+		putBatchProcessSettings
+	} from '$utils/api/admin/batchProcessing';
+	import { addToVerificationQueue, getVerificationQueue } from '$utils/api/admin/userManagement';
+	import { makeErrorHandler, notifyError, notifySuccess } from '$utils/toast';
+	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 
-	const dispatch = createEventDispatcher();
+	const processDayOptions = [
+		{ label: 'Monday', index: 0 },
+		{ label: 'Tuesday', index: 1 },
+		{ label: 'Wednesday', index: 2 },
+		{ label: 'Thrusday', index: 3 },
+		{ label: 'Friday', index: 4 },
+		{ label: 'Saturday', index: 5 },
+		{ label: 'Sunday', index: 6 }
+	];
 
-	export let queue: VerificationQueueItem[] = [];
-	export let selectedAddresses: VerificationQueueItem[] = [];
-	export let disabled = false;
+	const sortByOptions = [
+		{ label: 'Date', value: 'date' },
+		{ label: 'Alphabetical', value: 'alphabetical' }
+	];
 
-	function handleCheck(row) {
-		selectedAddresses.push(row);
-		selectedAddresses = selectedAddresses;
+	let addressToAdd: string;
+
+	let isAddingToQueue = false;
+
+	async function handleAddToQueue() {
+		isAddingToQueue = true;
+
+		await addToVerificationQueue(addressToAdd)
+			.then(() => notifySuccess('Added to queue'))
+			.catch((e) => notifyError(e.message));
+
+		isAddingToQueue = false;
+		addressToAdd = '';
 	}
 
-	function handleUncheck(row) {
-		selectedAddresses = selectedAddresses.filter((v) => v.address != row.address);
+	// Force batch processing
+	let isForceBatchProcessing = false;
+
+	async function handleForceBatchProcess() {
+		isForceBatchProcessing = true;
+
+		await forceBatchProcess()
+			.then(() => notifySuccess('Batch processed.'))
+			.catch((e) => notifyError(e.message));
+
+		isForceBatchProcessing = false;
 	}
 
-	function getSelectedAddresses() {
-		return selectedAddresses.map((v) => v.address);
+	// Batch processing settings
+	const isBatchProcessEnabled = writable(null);
+	const batchProcessDayOption = writable(processDayOptions[0]);
+	let isRefreshingBatchProcessSettings = false;
+
+	async function refreshBatchProcessSettings() {
+		isRefreshingBatchProcessSettings = false;
+
+		const settings = await getBatchProcessSettings();
+
+		isBatchProcessEnabled.set(settings.enabled);
+		batchProcessDayOption.set(processDayOptions[settings.processingDayIndex]);
+
+		isRefreshingBatchProcessSettings = true;
 	}
 
-	function handleBatchApprove() {
-		dispatch('batchApprove', { rows: selectedAddresses, addresses: getSelectedAddresses() });
+	let isPushingBatchProcessSettings = false;
+
+	async function pushBatchProcessSettings() {
+		isPushingBatchProcessSettings = true;
+		await putBatchProcessSettings({
+			enabled: $isBatchProcessEnabled,
+			processingDayIndex: $batchProcessDayOption.index
+		}).catch((e) => notifyError(e.message));
+		isPushingBatchProcessSettings = false;
 	}
 
-	function handleBatchReject() {
-		dispatch('batchReject', { rows: selectedAddresses, addresses: getSelectedAddresses() });
+	isBatchProcessEnabled.subscribe(
+		() => isRefreshingBatchProcessSettings && pushBatchProcessSettings()
+	);
+	batchProcessDayOption.subscribe(
+		() => isRefreshingBatchProcessSettings && pushBatchProcessSettings()
+	);
+
+	onMount(refreshBatchProcessSettings);
+
+	// Verification queue fetch
+	const verificationQueueSort = writable(sortByOptions[0]);
+	let queueItems = [];
+
+	async function fetchVerificationQueueItems() {
+		const res = await getVerificationQueue($verificationQueueSort.value as any).catch(
+			makeErrorHandler('Failed to fetch verification queue!')
+		);
+
+		queueItems = res || [];
 	}
+
+	onMount(fetchVerificationQueueItems);
+
+	verificationQueueSort.subscribe(fetchVerificationQueueItems);
+
+	$: console.log(queueItems);
 </script>
 
-<div class="mt-12">
-	<div class="flex justify-between">
-		<div class="text-lg font-bold uppercase">Verification Queue</div>
-		<div class="mr-16 text-lg font-bold uppercase">Date added</div>
+<!-- Add verified Creator -->
+<div class="mt-12 text-lg font-bold uppercase">Verification Queue</div>
+
+<div class="flex items-center mt-7 gap">
+	<input
+		type="text"
+		class="w-[500px] px-8 bg-[#F7F7F7] border border-[#CDCDCD] rounded-md font-light h-14 outline-none disabled:opacity-50"
+		placeholder="Enter an address to add to Verified Creators..."
+		autocomplete="nope"
+		bind:value={addressToAdd}
+		disabled={isAddingToQueue}
+	/>
+
+	<button
+		class="h-12 ml-8 italic btn-secondary"
+		on:click={handleAddToQueue}
+		disabled={isAddingToQueue || !addressToAdd}
+	>
+		Add to queue
+	</button>
+
+	<div class="flex-grow" />
+
+	<!-- Verification queue sort by dropdown -->
+	<div class="flex items-center">
+		<span class="pr-4 whitespace-nowrap">Sort By</span>
+		<div>
+			<Dropdown options={sortByOptions} class="w-40" bind:selected={$verificationQueueSort} />
+		</div>
 	</div>
+</div>
 
-	<div class="pb-4 pr-8 mt-5 overflow-auto max-h-96 custom-scrollbar">
-		<table class="w-full border-t table-auto border-color-black border-opacity-30">
-			{#each queue as row}
-				<tr class="h-20 border-b border-color-black border-opacity-30" class:opacity-50={disabled}>
-					<td class="px-2">
-						<Checkbox
-							on:checked={() => handleCheck(row)}
-							on:unchecked={() => handleUncheck(row)}
-							{disabled}
-						/>
-					</td>
+<!-- Verification queue table -->
+<div class="pb-4 pr-8 mt-5 overflow-auto max-h-96 custom-scrollbar">
+	<table class="w-full table-auto">
+		<tr class="h-20">
+			<th />
+			<th />
+			<th class="font-bold uppercase whitespace-nowrap">Date Added</th>
+		</tr>
 
-					<td class="px-2">
-						<div class="flex items-center gap-4">
-							<PersonIcon />
-							{row.address}
-						</div>
-					</td>
+		{#each queueItems as row}
+			<tr class="h-20 border-t border-color-black border-opacity-30">
+				<td class="px-2">
+					<div class="flex items-center gap-4">
+						<PersonIcon />
+						{row.address}
+					</div>
+				</td>
 
-					<td class="max-w-full px-2 whitespace-nowrap">
-						<EthAddress address={row.address} />
-					</td>
+				<td class="max-w-full px-2 font-mono whitespace-nowrap">
+					<EthAddress address={row.address} />
+				</td>
 
-					<td class="px-4 w-28 whitespace-nowrap">{row.dateAdded}</td>
-				</tr>
-			{/each}
-		</table>
-	</div>
+				<td class="px-4 w-28 whitespace-nowrap">{row.dateAdded || 'N/A'}</td>
+			</tr>
+		{/each}
+	</table>
+</div>
 
-	<div class="flex gap-5 mt-5">
+<!-- Verification queue options -->
+<div class="flex items-center justify-between w-full mt-12">
+	<div class="flex flex-wrap gap-3 pb-2 lg:flex-row">
+		<div class="flex items-center gap-3 whitespace-nowrap">
+			Automatic Batch Processing
+			<Checkbox bind:checked={$isBatchProcessEnabled} disabled={isPushingBatchProcessSettings} />
+		</div>
+
+		<div class="flex items-center mr-4 space-x-4">
+			<span class="pr-1 whitespace-nowrap">Process Every</span>
+			<Dropdown
+				options={processDayOptions}
+				disabled={isPushingBatchProcessSettings}
+				bind:selected={$batchProcessDayOption}
+				class="w-36"
+			/>
+		</div>
+
 		<button
-			class="w-48 italic font-light uppercase btn btn-gradient btn-rounded disabled:opacity-50"
-			on:click={handleBatchApprove}
-			{disabled}
+			class="btn-secondary"
+			on:click={handleForceBatchProcess}
+			disabled={isForceBatchProcessing}
 		>
-			Approve
-		</button>
-
-		<button
-			class="w-48 italic font-light uppercase btn btn-gradient btn-rounded disabled:opacity-50"
-			on:click={handleBatchReject}
-			{disabled}
-		>
-			Reject
+			Force processing now
 		</button>
 	</div>
 </div>
