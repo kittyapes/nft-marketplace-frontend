@@ -4,19 +4,27 @@
     import { checkUsernameAvailability } from "$utils/api/profile";
     import { debounce } from "lodash-es";
     import { slide } from 'svelte/transition';
-
+    import TextArea from "$lib/components/TextArea.svelte";
+import DragDropImage from "$lib/components/DragDropImage.svelte";
     
     export let namesClaimed = 323;
     export let username = '';
+    export let bio = '';
+    export let profileImage = '';
+    export let imageUrl = '';
 
-    let usernameAvailable = false;
+    let usernameAvailable = true;
 
     const debouncedCheckUsernameAvailability = debounce(async (username: string) => {
 		usernameAvailable = await checkUsernameAvailability(username);
 	}, 500);
+
+    function isValidBio(bio: string) {
+		return bio && bio.trim().split(' ').length > 2;
+	}
 </script>
 
-<CreatorFormScreen>
+<CreatorFormScreen step={2}>
     <div slot='header' class='flex flex-col gap-5 max-w-3xl'>
         <h1 class='uppercase font-bold text-7xl'>
             <p>Claim your</p>
@@ -51,6 +59,43 @@
                         Username already taken
                     </div>
                 {/if}
+            </div>
+        </div>
+        <div class="grid grid-cols-[1fr_1.5fr]">
+            <div class="transition max-w-[12rem]">
+                <div class='uppercase gradient-text brightness-0' class:brightness-100={isValidBio(bio)}>Bio</div>
+                <div class="text-xs font-medium text-[#A9A8A8]">optional</div>
+            </div>
+
+            <div>
+                <TextArea
+                    outline
+                    placeholder="Enter your short bio "
+                    maxChars={200}
+                    bind:value={bio}
+                />
+                {#if bio && !isValidBio(bio)}
+                    <div
+                        class="text-xs ml-auto text-red-500 font-semibold uppercase -translate-y-3"
+                        transition:slide|local
+                    >
+                       Bio must be at least three words
+                    </div>
+                {/if}
+            </div>
+        </div>
+        <div class="grid grid-cols-[1fr_1.5fr]">
+            <div>
+                <div class="uppercase text-lg gradient-text brightness-0" class:brightness-100={username}>picture profile</div>
+                <div class="text-xs font-medium text-[#A9A8A8]">mandatory</div>
+            </div>
+            <div class="flex w-full flex-col">
+                <DragDropImage
+                    bind:blob={profileImage}
+                    currentImgUrl={imageUrl}
+                    dimensions="180x180 px"
+                    class="!w-48 !h-44"
+                />
             </div>
         </div>
 </CreatorFormScreen>
