@@ -1,7 +1,6 @@
-export type PropertyName =
+export type ListingPropName =
 	| 'price'
 	| 'date'
-	| 'quantity'
 	| 'listingDate'
 	| 'reservePrice'
 	| 'auctionDate'
@@ -18,3 +17,5 @@ export type PropertyName =
 	| 'gachaContract'
 	| 'dateOfRelease'
 	| 'initialPrice';
+
+export type DropListingType = 'sale' | 'auction' | 'raffle';

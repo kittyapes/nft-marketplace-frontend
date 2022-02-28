@@ -1,16 +1,18 @@
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
-
-	import { page } from '$app/stores';
 	import Popup from '$lib/components/Popup.svelte';
+	import type { DropListingType } from '$lib/interfaces/drops';
+	import { newDropProperties } from '$stores/create';
 	import { closePopup } from '$utils/popup';
 
 	export let imgUrl;
 	export let title;
-	export let relHref;
+	export let listingType: DropListingType;
 
 	function handleConfirm() {
-		goto($page.path + '/' + relHref);
+		$newDropProperties.listingType = listingType;
+
+		goto('/create/list');
 		closePopup();
 	}
 </script>
