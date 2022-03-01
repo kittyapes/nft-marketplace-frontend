@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	import PersonIcon from '$icons/person.svelte';
 	import ChangeCreatorStatusPopup from '$lib/components/admin/ChangeCreatorStatusPopup.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
@@ -40,11 +42,16 @@
 	async function fetchCreators() {
 		isFetchingCreators = true;
 
-		await getVerifiedCreators($filterBy, $sortBy.value)
-			.then((res) => {
-				rows = res.data.data;
-			})
-			.catch(makeErrorHandler('Failed to load list of verified creators.'));
+		// await getVerifiedCreators($filterBy, $sortBy.value)
+		// 	.then((res) => {
+		// 		rows = res.data.data;
+		// 	})
+		// 	.catch(makeErrorHandler('Failed to load list of verified creators.'));
+
+		rows = [
+			{ address: '0x0', dateAdded: '0x0', status: 'VERIFIED' },
+			{ address: '0x0', dateAdded: '0x0', status: 'INACTIVATED', active: true }
+		];
 
 		isFetchingCreators = false;
 	}
@@ -108,7 +115,10 @@
 					</td>
 
 					<td class="px-6">
-						<div class="flex items-center gap-3">
+						<button class="btn-secondary" on:click={() => goto('/profile/' + row.address)}>
+							Profile
+						</button>
+						<!-- <div class="flex items-center gap-3">
 							{#if row.active}
 								<button
 									class="w-48 h-12 italic font-light uppercase btn btn-rounded btn-gradient"
@@ -132,7 +142,7 @@
 									Reactivate
 								</button>
 							{/if}
-						</div>
+						</div> -->
 					</td>
 
 					<td class="px-4 w-28 whitespace-nowrap">{row.date}</td>
