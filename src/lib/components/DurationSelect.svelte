@@ -1,8 +1,10 @@
+<!-- This is not a finalized version, we are missing designs for the popup -->
 <script lang="ts">
 	import ArrowDown from '$icons/arrow-down.svelte';
 	import Calendar from '$icons/calendar.svelte';
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import ChevronRight from '$icons/chevron-right.svelte';
+	import Clock from '$icons/clock.svelte';
 	import Time from '$icons/time.svelte';
 	import dayjs from 'dayjs';
 	import isoWeek from 'dayjs/plugin/isoWeek.js';
@@ -12,7 +14,7 @@
 	dayjs.extend(isoWeek);
 
 	export let id = '';
-	export let placeholder = 'Select date & time';
+	export let placeholder = 'DD/HH/MM';
 
 	let open = false;
 	let section: 'date' | 'time' = 'date';
@@ -96,7 +98,7 @@
 		on:click={() => (open = !open)}
 	>
 		<div class="btn flex items-center justify-center space-x-2">
-			<Calendar />
+			<Clock />
 			<ArrowDown />
 		</div>
 	</button>

@@ -11,6 +11,7 @@
 		// { label: 'Sol', iconUrl: '/svg/white-eth.svg' }
 	];
 	export let selected = tokens[0];
+	export let placeholder = 'Enter price for NFT';
 
 	let open = false;
 </script>
@@ -21,7 +22,7 @@
 		type="text"
 		class="input w-full h-12 {$$props.class}"
 		class:font-semibold={value}
-		placeholder="Enter price for NFT"
+		{placeholder}
 		bind:value
 	/>
 
