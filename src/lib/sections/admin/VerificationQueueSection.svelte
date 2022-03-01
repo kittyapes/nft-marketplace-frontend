@@ -9,9 +9,9 @@
 		putBatchProcessSettings
 	} from '$utils/api/admin/batchProcessing';
 	import { addToVerificationQueue, getVerificationQueue } from '$utils/api/admin/userManagement';
-	import { makeErrorHandler, notifyError, notifySuccess } from '$utils/toast';
+	import { makeErrorHandler, makeSuccessHandler, notifyError, notifySuccess } from '$utils/toast';
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
+	import { derived, writable } from 'svelte/store';
 
 	const processDayOptions = [
 		{ label: 'Monday', index: 0 },
@@ -59,36 +59,34 @@
 	// Batch processing settings
 	const isBatchProcessEnabled = writable(null);
 	const batchProcessDayOption = writable(processDayOptions[0]);
+
 	let isRefreshingBatchProcessSettings = false;
 
 	async function refreshBatchProcessSettings() {
-		isRefreshingBatchProcessSettings = false;
+		isRefreshingBatchProcessSettings = true;
 
 		const settings = await getBatchProcessSettings();
 
 		isBatchProcessEnabled.set(settings.enabled);
 		batchProcessDayOption.set(processDayOptions[settings.processingDayIndex]);
 
-		isRefreshingBatchProcessSettings = true;
+		isRefreshingBatchProcessSettings = false;
 	}
 
 	let isPushingBatchProcessSettings = false;
 
 	async function pushBatchProcessSettings() {
 		isPushingBatchProcessSettings = true;
+
 		await putBatchProcessSettings({
 			enabled: $isBatchProcessEnabled,
 			processingDayIndex: $batchProcessDayOption.index
-		}).catch((e) => notifyError(e.message));
+		})
+			.then(makeSuccessHandler('Successfully updated batch processing settings.'))
+			.catch((e) => notifyError(e.message));
+
 		isPushingBatchProcessSettings = false;
 	}
-
-	isBatchProcessEnabled.subscribe(
-		() => isRefreshingBatchProcessSettings && pushBatchProcessSettings()
-	);
-	batchProcessDayOption.subscribe(
-		() => isRefreshingBatchProcessSettings && pushBatchProcessSettings()
-	);
 
 	onMount(refreshBatchProcessSettings);
 
@@ -176,7 +174,11 @@
 	<div class="flex flex-wrap gap-3 pb-2 lg:flex-row">
 		<div class="flex items-center gap-3 whitespace-nowrap">
 			Automatic Batch Processing
-			<Checkbox bind:checked={$isBatchProcessEnabled} disabled={isPushingBatchProcessSettings} />
+			<Checkbox
+				bind:checked={$isBatchProcessEnabled}
+				disabled={isPushingBatchProcessSettings}
+				on:change={pushBatchProcessSettings}
+			/>
 		</div>
 
 		<div class="flex items-center mr-4 space-x-4">

@@ -27,7 +27,8 @@ export const notifyError = (message: string) =>
 		}
 	});
 
-export const httpErrorHandler = (e: { message: string }) => [notifyError(e.message)];
+export const httpErrorHandler = (e: { message: string }) => notifyError(e.message);
+export const makeSuccessHandler = (message: string) => () => notifySuccess(message);
 export const makeErrorHandler = (message: string) => (e) => {
 	notifyError(message);
 	console.error(e.message);
