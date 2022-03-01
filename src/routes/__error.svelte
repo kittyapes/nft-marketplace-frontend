@@ -18,7 +18,7 @@
     import LoadedContent from "$lib/components/LoadedContent.svelte";
     import { onMount } from "svelte";
 
-    let loaded= false;
+    let loaded = false;
 
     onMount(() => {
         setTimeout(() => loaded = true, 100);
