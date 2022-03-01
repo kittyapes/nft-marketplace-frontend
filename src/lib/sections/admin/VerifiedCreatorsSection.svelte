@@ -3,14 +3,11 @@
 	import ChangeCreatorStatusPopup from '$lib/components/admin/ChangeCreatorStatusPopup.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
-	import TextInput from '$lib/components/TextInput.svelte';
 	import { getVerifiedCreators } from '$utils/api/admin/userManagement';
-	import { fetchCreatedNfts } from '$utils/api/fetchCreatedNfts';
 	import { setPopup } from '$utils/popup';
 	import { makeErrorHandler } from '$utils/toast';
-	import { filter } from 'lodash-es';
 	import { onMount } from 'svelte';
-	import { derived, writable } from 'svelte/store';
+	import { writable } from 'svelte/store';
 
 	const sortByOptions = [
 		{ label: 'Date', value: 'date' },
@@ -52,7 +49,7 @@
 		isFetchingCreators = false;
 	}
 
-	$: $filterBy && $sortBy && fetchCreators();
+	onMount(fetchCreators);
 </script>
 
 <div class="mt-32">
@@ -71,7 +68,9 @@
 				<button
 					class={$filterBy === option.value ? 'btn-primary' : 'btn-secondary'}
 					disabled={isFetchingCreators}
-					on:click={() => ($filterBy = option.value)}
+					on:click={() => {
+						($filterBy = option.value), fetchCreators();
+					}}
 				>
 					{option.label}
 				</button>
@@ -87,6 +86,7 @@
 					class="w-40"
 					bind:selected={$sortBy}
 					disabled={isFetchingCreators}
+					on:select={fetchCreators}
 				/>
 			</div>
 		</div>

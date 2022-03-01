@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { inactivateProfile, ProfileData, promoteProfile } from '$utils/api/profile';
-	import { notifyError } from '$utils/toast';
+	import { inactivateProfileNow, promoteProfileNow } from '$utils/api/admin/userManagement';
+
+	import { httpErrorHandler, makeSuccessHandler, notifyError } from '$utils/toast';
 	import { createEventDispatcher } from 'svelte';
 
-	export let profileData: ProfileData;
+	export let profileData: { address: string; status: string };
 
 	const dispatch = createEventDispatcher();
 
@@ -11,50 +12,57 @@
 		dispatch('requestDataUpdate');
 	}
 
+	let isChangingverifiedStatus = false;
+
 	async function onProfilePromote() {
-		try {
-			await promoteProfile(profileData.address);
-		} catch (e) {
-			notifyError(e.message);
-			return;
-		}
+		isChangingverifiedStatus = true;
+
+		await promoteProfileNow(profileData.address)
+			.then(makeSuccessHandler('Promoted profile.'))
+			.catch(httpErrorHandler);
+
+		isChangingverifiedStatus = false;
 
 		requestDataUpdate();
 	}
 
 	async function onProfileInactivate() {
-		try {
-			await inactivateProfile(profileData.address);
-		} catch (e) {
-			notifyError(e.message);
-			return;
-		}
+		isChangingverifiedStatus = true;
+
+		await inactivateProfileNow(profileData.address)
+			.then(makeSuccessHandler('Promoted profile.'))
+			.catch(httpErrorHandler);
+
+		isChangingverifiedStatus = false;
 
 		requestDataUpdate();
 	}
 
 	$: userStatus = profileData?.status;
+
+	$: promoteDisabled = userStatus === 'VERIFIED' || isChangingverifiedStatus;
+	$: inactivateDisabled =
+		userStatus === 'USER' || userStatus === 'INACTIVATED' || isChangingverifiedStatus;
 </script>
 
-<div class="px-32 py-24 flex gap-x-2 items-center">
-	{#if userStatus === 'USER' || userStatus === 'AWAITING_INACTIVATED'}
-		<button
-			on:click={onProfilePromote}
-			class="uppercase font-medium shadow px-4 py-2 rounded-full bg-gradient-to-r from-color-purple to-color-blue text-white transition-btn"
-		>
-			Promote
-		</button>
-	{:else}
-		<button
-			on:click={onProfileInactivate}
-			class="uppercase font-medium shadow px-4 py-2 rounded-full transition-btn text-gray-600"
-		>
-			Inactivate
-		</button>
-	{/if}
+<div class="px-32 py-24 gap-x-2 items-center">
+	<div class="bg-gray-50 px-8 py-6 rounded-xl border">
+		<div class="uppercase font-semibold text-lg">Admin tools</div>
 
-	<div class="font-semibold ml-4 opacity-60">
-		<span>Status:</span>
-		<span>{profileData?.status}</span>
+		<hr class="separator mt-2" />
+
+		<div class="font-semibold uppercase mt-4">
+			Verified creator status: <span class="gradient-text">{profileData?.status}</span>
+		</div>
+
+		<div class="flex items-center gap-4 mt-4">
+			<button on:click={onProfilePromote} class="btn-primary" disabled={promoteDisabled}>
+				Promote
+			</button>
+
+			<button on:click={onProfileInactivate} class="btn-secondary" disabled={inactivateDisabled}>
+				Inactivate
+			</button>
+		</div>
 	</div>
 </div>

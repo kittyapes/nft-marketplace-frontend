@@ -29,8 +29,6 @@ export async function createAdmin(data: Partial<AdminData>) {
 		password: ''
 	};
 
-	console.log(body);
-
 	return await axios.post(api + '/v1/admins', body, getAxiosConfig()).then((res) => res.data);
 }
 
@@ -38,5 +36,16 @@ export async function getVerifiedCreators(
 	verificationStatus: 'verified' | 'inactivated' | 'all',
 	sortBy: 'date' | 'alphabetical'
 ) {
-	return await axios.get(api + '/v1/accounts', { params: { status: verificationStatus, sortBy } });
+	return await axios.get(api + '/v1/accounts', {
+		params: { status: verificationStatus, sortBy },
+		...getAxiosConfig()
+	});
+}
+
+export async function promoteProfileNow(address: string) {
+	return await axios.post(api + '/v1/accounts/' + address + '/promoteNow', {}, getAxiosConfig());
+}
+
+export async function inactivateProfileNow(address: string) {
+	return await axios.post(api + '/v1/accounts/' + address + '/inactivateNow', {}, getAxiosConfig());
 }
