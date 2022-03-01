@@ -184,10 +184,11 @@
 		<div class="flex items-center mr-4 space-x-4">
 			<span class="pr-1 whitespace-nowrap">Process Every</span>
 			<Dropdown
+				class="w-36"
 				options={processDayOptions}
 				disabled={isPushingBatchProcessSettings}
 				bind:selected={$batchProcessDayOption}
-				class="w-36"
+				on:select={pushBatchProcessSettings}
 			/>
 		</div>
 

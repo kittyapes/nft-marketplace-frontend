@@ -12,12 +12,11 @@ export interface BatchProcessingSettings {
 }
 
 export async function putBatchProcessSettings(options: BatchProcessingSettings) {
-	console.log('Putting new config');
-	console.log(options);
+	const cronString = `0 0 * * ${options.processingDayIndex + 1}`;
 
 	return await axios.put(
 		api + '/v1/settings/job',
-		{ isEnableProcessingJob: options.enabled },
+		{ enabled: options.enabled, cronString },
 		getAxiosConfig()
 	);
 }
