@@ -6,14 +6,12 @@
 	import { refreshConnection } from '$utils/wallet/connectWallet';
 	import Toast from '$lib/components/toast/index.svelte';
 	import PopupManager from '$utils/popup/PopupManager.svelte';
-
 	// Login Popup
 	import { browser } from '$app/env';
 	import AdminLoginPopup from '$lib/components/AdminLoginPopup.svelte';
 	import { page } from '$app/stores';
 	import pathIsProtected from '$utils/pathIsProtected';
 	import { isAuthExpired } from '$utils/api';
-
 	// Aidrop popup
 	import { setPopup } from '$utils/popup';
 	import AirdropPopup from '$lib/components/airdrop/AirdropPopup.svelte';
@@ -21,6 +19,11 @@
 	import { currentUserAddress, communityClaimsArray } from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import { getAllTokenBalances } from '$utils/contracts/tokenBalances';
+	import { initNavigationHandlers } from '$utils/navigation';
+
+	// Various navigation handlers such as functions to be called when
+	// the wallet is disconnected, etc.
+	initNavigationHandlers();
 
 	onMount(async () => {
 		// Check for whether user has access/has provided password
@@ -31,14 +34,11 @@
 			) {
 				return window.location.replace('https://hinata.foundation');
 			}
-
 			localStorage.setItem('ewjbasdjasdjhewh', 'true');
 		}
-
 		// Keep connection live as long as cachedProvider is present (even after reloads)
 		await refreshConnection();
 	});
-
 	// Airdrop Popup
 	let claimAmount = 0;
 	let hasClaimed = false;
@@ -56,9 +56,7 @@
 						claimAmount += +ethers.utils.formatEther(claimsObj.user.amount);
 					}
 				});
-
 				let options = null;
-
 				options =
 					claimAmount > 0
 						? ({
@@ -68,16 +66,16 @@
 								valueTwo: 20000
 						  } as AirdropPopupOptions)
 						: null;
-
 				options && setPopup(AirdropPopup, { props: { options } });
 			}
 		}
 	};
-
 	$: updateValues($communityClaimsArray);
-
-	$: pathIsProtected($page.path) && browser && isAuthExpired() && setPopup(AdminLoginPopup);
-
+	$: browser &&
+		$currentUserAddress &&
+		pathIsProtected($page.path) &&
+		isAuthExpired($currentUserAddress) &&
+		setPopup(AdminLoginPopup);
 	$: ((userAddress: string) => userAddress && getAllTokenBalances(userAddress))(
 		$currentUserAddress
 	);
@@ -86,12 +84,10 @@
 <svelte:head>
 	<title>Hinata</title>
 </svelte:head>
-
 <Nav />
 <div class="pt-16 mx-auto">
 	<slot />
 </div>
 <Footer />
 <Toast />
-
 <PopupManager />

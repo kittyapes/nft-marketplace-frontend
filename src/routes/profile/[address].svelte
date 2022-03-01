@@ -9,9 +9,9 @@
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
-	import { profileCompletionProgress, profileData } from '$stores/user';
+	import { profileCompletionProgress } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
-	import { isAdmin } from '$utils/api/login';
+	import { isCurrentAddressAdmin } from '$utils/api/login';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { setPopup } from '$utils/popup';
 	import { onMount } from 'svelte';
@@ -21,6 +21,7 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import getUserNfts from '$utils/nfts/getUserNfts';
 	import { browser } from '$app/env';
+	import type { ProfileData } from '$lib/interfaces/profileData';
 
 	// const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'FAVORITES'];
@@ -32,6 +33,10 @@
 
 	async function fetchData(forAdress: string) {
 		$localProfileData = await fetchProfileData(forAdress);
+
+		if (!$localProfileData) {
+			goto('/404');
+		}
 	}
 
 	$: browser && fetchData(address);
@@ -87,19 +92,22 @@
 	</div>
 
 	<div class="flex items-center pt-20">
-		<span class="font-semibold text-xl mr-2 text-center w-32">
+		<span class="font-semibold text-xl mr-2 text-center w-32 whitespace-nowrap">
 			{#if $localProfileData?.username}
 				{$localProfileData?.username}
 			{:else}
 				<span class="opacity-50 font-bold whitespace-nowrap">No username</span>
 			{/if}
-		</span>
 
-		{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
-			<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED'}>
-				<VerifiedBadge />
-			</div>
-		{/if}
+			{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
+				<div
+					class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED'}
+					class="inline-block translate-y-1 translate-x-1"
+				>
+					<VerifiedBadge />
+				</div>
+			{/if}
+		</span>
 	</div>
 
 	<div class="flex mt-8">
@@ -196,6 +204,6 @@
 	</div>
 </div>
 
-{#if $isAdmin && localProfileData}
+{#if $isCurrentAddressAdmin && localProfileData}
 	<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
 {/if}

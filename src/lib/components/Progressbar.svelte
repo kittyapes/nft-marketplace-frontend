@@ -29,7 +29,7 @@
 	{/each}
 </div>
 
-<style>
+<style type='postcss'>
 	#rail::after {
 		@apply block absolute top-0 bottom-0
 		bg-gradient-to-r from-color-purple to-color-blue rounded-full

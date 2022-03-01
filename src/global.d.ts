@@ -46,66 +46,6 @@ interface MarkeplaceNftListing {
 	status: string;
 }
 
-interface LoginHistoryEntry {
-	address: string;
-	checksum: string;
-	device_info: string;
-	upload_time: number;
-}
-
-interface ProfileData {
-	address: string;
-	createdAt: string;
-	email: string;
-	imageUrl: string;
-	coverUrl: string;
-	loginHistories: LoginHistoryEntry[];
-	nickname: string;
-	status: 'USER' | 'AWAITING_VERIFIED' | 'VERIFIED' | 'AWAITING_INACTIVATED';
-	updatedAt: string;
-	username: string;
-	_id: string;
-	bio: string;
-	instagram: string;
-	discord: string;
-	twitter: string;
-	website: string;
-	pixiv: string;
-	deviantart: string;
-	artstation: string;
-}
-
-// Data provided by databasewaifu.herokuapp.com
-interface TokenData {
-	amount: string;
-	block_number: string;
-	block_number_minted: string;
-	contract_type: string;
-	frozen: boolean;
-	is_valid: boolean;
-	metadata: {
-		animation_url: string;
-		artist: string;
-		categories: string;
-		id: string;
-		image: string;
-		name: string;
-		price: string;
-		supply: string;
-	};
-	name: string;
-	owner_of: string;
-	symbol: string;
-	synced_at: string;
-	syncing: number;
-	token_address: string;
-	token_id: string;
-	token_uri: string;
-	token_uri_data: writable<{
-		image: string;
-	}>;
-}
-
 interface PrivatePageSplitOptions {
 	title: string;
 	nextEscrowUnlock: string;
@@ -114,4 +54,12 @@ interface PrivatePageSplitOptions {
 	airdropType: 'seed' | 'private' | 'ido';
 	airdropHasClaimed: boolean;
 	contractActive: boolean;
+}
+
+interface PopupRowInfo {
+	id: number;
+	message: string;
+	nickname: string;
+	imageUrl: string;
+	amount: number;
 }

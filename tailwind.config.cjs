@@ -23,6 +23,9 @@ const config = {
 			screens: {
 				'2k': '2048px',
 				'4k': '3840px'
+			},
+			fontFamily: {
+				poppins: ['Poppins', 'sans-serif']
 			}
 		}
 	},

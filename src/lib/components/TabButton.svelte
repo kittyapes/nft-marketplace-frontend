@@ -1,8 +1,16 @@
 <script>
 	export let selected;
+	export let underlineWidth = 100;
+
+	$: underlineTranslate = 0.5 * (underlineWidth - 100);
 </script>
 
-<button on:click class:selected class:gradient-text={selected}>
+<button
+	on:click
+	class:selected
+	class:gradient-text={selected}
+	style="--underline-width: {underlineWidth}%; --underline-translate: {underlineTranslate}%"
+>
 	<slot />
 </button>
 
@@ -12,10 +20,12 @@
 	}
 
 	button::after {
-		@apply absolute bottom-0 left-0 h-[3px] w-full bg-gradient-to-r from-color-purple to-color-blue opacity-100;
+		@apply absolute bottom-0 left-0 h-[3px] bg-gradient-to-r from-color-purple to-color-blue opacity-100;
 		@apply transition-opacity duration-200;
 		content: '';
 		opacity: 0;
+		width: var(--underline-width);
+		/* transform: translateX(var(--underline-translate)); */
 	}
 
 	button.selected::after {

@@ -1,0 +1,37 @@
+<script lang="ts">
+	import { goto } from '$app/navigation';
+	import Popup from '$lib/components/Popup.svelte';
+	import type { DropListingType } from '$lib/interfaces/drops';
+	import { newDropProperties } from '$stores/create';
+	import { closePopup } from '$utils/popup';
+
+	export let imgUrl;
+	export let title;
+	export let listingType: DropListingType;
+
+	function handleConfirm() {
+		$newDropProperties.listingType = listingType;
+
+		goto('/create/list');
+		closePopup();
+	}
+</script>
+
+<Popup closeButton>
+	<div class="min-w-[800px] min-h-[500px] flex flex-col items-center justify-center">
+		<div class="bg-[#F4F4F4] w-48 h-48 rounded-full flex flex-col justify-center items-center">
+			<img src={imgUrl} alt="" class="-mt-4" />
+			<div class="font-bold mt-2 text-lg">{title}</div>
+		</div>
+
+		<div class="text-center text-2xl font-bold mt-8">Lorem Ipsum dolor sit amet, consectetur</div>
+		<div class="max-w-prose text-center mt-2">
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+			labore et dolore magna aliqua. Ut
+		</div>
+
+		<button class="btn btn-gradient btn-rounded uppercase mt-16 font-bold" on:click={handleConfirm}>
+			Confirm
+		</button>
+	</div>
+</Popup>

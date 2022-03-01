@@ -4,6 +4,7 @@
 	const dispatch = createEventDispatcher();
 
 	export let options: { label: string; value?: string }[];
+	export let btnClass = '';
 
 	$: if (!options?.length) {
 		throw new Error('No options provided');

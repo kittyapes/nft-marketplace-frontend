@@ -4,9 +4,11 @@
 	import ThreeDots from '$icons/three-dots.svelte';
 	import { fade } from 'svelte/transition';
 
-	export let tokenData: TokenData;
-
-	const tokenUriData = tokenData?.token_uri_data;
+	export let imageUrl = '';
+	export let name = 'N/A';
+	export let collectionName = 'N/A';
+	export let likes = 0;
+	export let price = 0;
 
 	let dotsOpened = false;
 	let imgLoaded = false;
@@ -28,16 +30,17 @@
 
 		<Heart />
 		<!-- TODO Likes -->
-		<div class="font-medium select-none">{0}</div>
+		<div class="font-medium select-none">{likes}</div>
 	</div>
 
 	<div
-		class="transition w-full h-[18.5rem] mx-auto bg-gray-100 rounded-2xl overflow-hidden mt-2"
+		class="transition w-full aspect-1 mx-auto bg-gray-100 rounded-lg overflow-hidden mt-2"
 		class:animate-pulse={!imgLoaded}
 	>
+		<!-- src={$tokenUriData?.image || tokenData.metadata?.image} -->
 		<img
-			src={$tokenUriData?.image || tokenData.metadata?.image}
 			alt=""
+			src={imageUrl}
 			class="object-cover transition w-full h-full"
 			class:opacity-0={!imgLoaded}
 			on:load={() => (imgLoaded = true)}
@@ -45,14 +48,16 @@
 	</div>
 
 	<div class="flex text-sm font-medium text-gray-600 mt-2">
-		<div class="flex-grow">{tokenData?.name || 'N/A'}</div>
+		<!-- <div class="flex-grow">{tokenData?.name || 'N/A'}</div> -->
+		<div class="flex-grow">{collectionName}</div>
 		<div>Price</div>
 	</div>
 
 	<div class="flex font-semibold mt-2 items-center">
-		<div class="flex-grow">{tokenData?.metadata?.name || $tokenUriData?.name || 'N/A'}</div>
+		<!-- <div class="flex-grow">{tokenData?.metadata?.name || $tokenUriData?.name || 'N/A'}</div> -->
+		<div class="flex-grow">{name}</div>
 		<Eth />
-		<div class="ml-1">{tokenData?.metadata?.price || 'N/A'}</div>
+		<div class="ml-1">{price}</div>
 	</div>
 
 	<!-- TODO If owned by user -->

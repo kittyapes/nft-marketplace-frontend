@@ -1,5 +1,6 @@
 .btn {
 	@apply transition-transform duration-200 transform active:scale-95 whitespace-nowrap;
+	@apply cursor-pointer disabled:opacity-50;
 }
 
 .btn-rounded {
@@ -8,6 +9,10 @@
 
 .btn-gradient {
 	@apply bg-gradient-to-r from-color-purple to-color-blue text-white;
+}
+
+.btn-black {
+	@apply bg-color-black text-white font-semibold;
 }
 
 .btn-outline {
