@@ -34,7 +34,7 @@
 	</div>
 
 	<div
-		class="transition w-full h-[18.5rem] mx-auto bg-gray-100 rounded-2xl overflow-hidden mt-2"
+		class="transition w-full aspect-1 mx-auto bg-gray-100 rounded-lg overflow-hidden mt-2"
 		class:animate-pulse={!imgLoaded}
 	>
 		<!-- src={$tokenUriData?.image || tokenData.metadata?.image} -->
