@@ -22,7 +22,7 @@
             <button class='text-color-black text-sm uppercase self-end'>
                 <p class='flex gap-3'>
                     how does this work?
-                    <Disconnect></Disconnect>
+                    <Disconnect />
                 </p>
             </button>
         </div>
