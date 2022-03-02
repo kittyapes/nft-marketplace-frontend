@@ -45,7 +45,7 @@ import LoadedContent from "$lib/components/LoadedContent.svelte";
             <button class='text-color-black text-sm uppercase self-end'>
                 <p class='flex gap-3'>
                     {namesClaimed} Names Claimed | How does this work?
-                    <Disconnect></Disconnect>
+                    <Disconnect />
                 </p>
             </button>
             <p class='text-sm font-light mb-6'>You will need to connect sign a free and secure message on the Ethereum network in order to save your profile information. You must connect a web3-enabled wallet such as MetaMask to do this. </p>
