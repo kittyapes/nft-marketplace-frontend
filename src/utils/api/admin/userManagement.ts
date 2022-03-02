@@ -2,8 +2,12 @@ import { api } from '$constants/api';
 import axios from 'axios';
 import { getAxiosConfig } from '..';
 
-export async function addToVerificationQueue(address: string) {
+export async function postVerificationQueueAdd(address: string) {
 	return await axios.post(api + '/v1/accounts/' + address + '/promote', {}, getAxiosConfig());
+}
+
+export async function postInactivationQueueAdd(address: string) {
+	return await axios.post(api + '/v1/accounts/' + address + '/inactivate', {}, getAxiosConfig());
 }
 
 export interface VerificationQueueItem {
@@ -27,12 +31,4 @@ export async function getVerifiedCreators(
 		params: { status: verificationStatus, sortBy },
 		...getAxiosConfig()
 	});
-}
-
-export async function promoteProfileNow(address: string) {
-	return await axios.post(api + '/v1/accounts/' + address + '/promoteNow', {}, getAxiosConfig());
-}
-
-export async function inactivateProfileNow(address: string) {
-	return await axios.post(api + '/v1/accounts/' + address + '/inactivateNow', {}, getAxiosConfig());
 }

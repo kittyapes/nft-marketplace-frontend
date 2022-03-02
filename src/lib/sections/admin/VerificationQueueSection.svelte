@@ -8,10 +8,10 @@
 		getBatchProcessSettings,
 		putBatchProcessSettings
 	} from '$utils/api/admin/batchProcessing';
-	import { addToVerificationQueue, getVerificationQueue } from '$utils/api/admin/userManagement';
+	import { getVerificationQueue, postVerificationQueueAdd } from '$utils/api/admin/userManagement';
 	import { makeErrorHandler, makeSuccessHandler, notifyError, notifySuccess } from '$utils/toast';
 	import { onMount } from 'svelte';
-	import { derived, writable } from 'svelte/store';
+	import { writable } from 'svelte/store';
 
 	const processDayOptions = [
 		{ label: 'Monday', index: 0 },
@@ -35,7 +35,7 @@
 	async function handleAddToQueue() {
 		isAddingToQueue = true;
 
-		await addToVerificationQueue(addressToAdd)
+		await postVerificationQueueAdd(addressToAdd)
 			.then(() => notifySuccess('Added to queue'))
 			.catch((e) => notifyError(e.message));
 

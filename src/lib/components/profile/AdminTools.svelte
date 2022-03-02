@@ -1,8 +1,13 @@
 <script lang="ts">
-	import { inactivateProfileNow, promoteProfileNow } from '$utils/api/admin/userManagement';
+	import {
+		postVerificationQueueAdd,
+		postInactivationQueueAdd
+	} from '$utils/api/admin/userManagement';
+	import { setPopup } from '$utils/popup';
 
-	import { httpErrorHandler, makeSuccessHandler, notifyError } from '$utils/toast';
+	import { httpErrorHandler, notifySuccess } from '$utils/toast';
 	import { createEventDispatcher } from 'svelte';
+	import ConfirmBatchProcessPopup from '../admin/ConfirmBatchProcessPopup.svelte';
 
 	export let profileData: { address: string; status: string };
 
@@ -17,9 +22,16 @@
 	async function onProfilePromote() {
 		isChangingverifiedStatus = true;
 
-		await promoteProfileNow(profileData.address)
-			.then(makeSuccessHandler('Promoted profile.'))
+		const res = await postVerificationQueueAdd(profileData.address)
+			.then((res) => {
+				notifySuccess('Profile added to batch process queue.');
+				return res;
+			})
 			.catch(httpErrorHandler);
+
+		if (res) {
+			setPopup(ConfirmBatchProcessPopup);
+		}
 
 		isChangingverifiedStatus = false;
 
@@ -29,9 +41,16 @@
 	async function onProfileInactivate() {
 		isChangingverifiedStatus = true;
 
-		await inactivateProfileNow(profileData.address)
-			.then(makeSuccessHandler('Promoted profile.'))
+		const res = await postInactivationQueueAdd(profileData.address)
+			.then((res) => {
+				notifySuccess('Profile added to batch inactivate queue.');
+				return res;
+			})
 			.catch(httpErrorHandler);
+
+		if (res) {
+			setPopup(ConfirmBatchProcessPopup);
+		}
 
 		isChangingverifiedStatus = false;
 
@@ -40,18 +59,23 @@
 
 	$: userStatus = profileData?.status;
 
-	$: promoteDisabled = userStatus === 'VERIFIED' || isChangingverifiedStatus;
+	$: promoteDisabled =
+		['VERIFIED', 'AWAITING_PROMOTED', 'AWAITING_INACTIVATED'].includes(userStatus) ||
+		isChangingverifiedStatus ||
+		!profileData;
 	$: inactivateDisabled =
-		userStatus === 'USER' || userStatus === 'INACTIVATED' || isChangingverifiedStatus;
+		['USER', 'AWAITING_PROMOTED', 'AWAITING_INACTIVATED'].includes(userStatus) ||
+		isChangingverifiedStatus ||
+		!profileData;
 </script>
 
 <div class="px-32 py-24 gap-x-2 items-center">
 	<div class="bg-gray-50 px-8 py-6 rounded-xl border">
 		<div class="uppercase font-semibold text-lg">Admin tools</div>
 
-		<hr class="separator mt-2" />
+		<hr class="border-px mt-4" />
 
-		<div class="font-semibold uppercase mt-4">
+		<div class="font-semibold uppercase mt-6">
 			Verified creator status: <span class="gradient-text">{profileData?.status}</span>
 		</div>
 

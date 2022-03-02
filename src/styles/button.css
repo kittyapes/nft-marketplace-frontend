@@ -23,12 +23,17 @@
 	@apply disabled:opacity-50;
 }
 
+/* Duplicate CSS code, because applying btn class does not work. >_< */
 @layer components {
 	.btn-primary {
-		@apply btn btn-disabled-effect btn-gradient btn-rounded uppercase;
+		@apply btn-disabled-effect btn-gradient btn-rounded uppercase;
+		@apply transition-transform duration-200 transform active:scale-95 whitespace-nowrap;
+		@apply cursor-pointer disabled:opacity-50;
 	}
 
 	.btn-secondary {
 		@apply btn btn-disabled-effect btn-outline btn-rounded uppercase;
+		@apply transition-transform duration-200 transform active:scale-95 whitespace-nowrap;
+		@apply cursor-pointer disabled:opacity-50;
 	}
 }
