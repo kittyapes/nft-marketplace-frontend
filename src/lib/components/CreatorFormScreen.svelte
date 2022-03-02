@@ -8,7 +8,7 @@
 <div class='grid place-items-center'>
     <div class='w-1/2 flex flex-col gap-10 mt-10'>
         <div class='grid place-items-center'>
-            <HinataLogoToken></HinataLogoToken>
+            <HinataLogoToken />
         </div>
 
         <div class='flex gap-20 justify-center relative'>
