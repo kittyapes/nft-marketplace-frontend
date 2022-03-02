@@ -5,7 +5,7 @@
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import TextInput from '$lib/components/TextInput.svelte';
-	import { permissions } from '$constants/admin';
+	// import { permissions } from '$constants/admin';
 
 	const dispatch = createEventDispatcher();
 
@@ -51,9 +51,9 @@
 
 				<div class="font-bold uppercase">Permissions</div>
 				<div class="max-w-sm grid grid-cols-2 grid-rows-3 gap-4 col-span-2">
-					{#each permissions as permission}
+					<!-- {#each permissions as permission}
 						<Checkbox label={permission} />
-					{/each}
+					{/each} -->
 				</div>
 			</div>
 
