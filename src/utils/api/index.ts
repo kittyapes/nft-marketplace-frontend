@@ -28,8 +28,6 @@ export function getAxiosConfig(address?: string) {
 		address = get(currentUserAddress);
 	}
 
-	console.log(address);
-
 	if (!address) {
 		throw new Error('No address provided and could not automatically get an address.');
 	}

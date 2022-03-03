@@ -5,8 +5,6 @@
 	import LoaderPopup from './LoaderPopup.svelte';
 	import WalletNotConnectedPopup from './WalletNotConnectedPopup.svelte';
 
-	$: console.log($walletState);
-
 	$: if ($walletState === WalletState.UNKNOWN) {
 		setPopup(LoaderPopup);
 	}
