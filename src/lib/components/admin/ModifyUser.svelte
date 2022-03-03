@@ -1,13 +1,13 @@
 <script lang="ts">
 	import EthAddress from '$lib/components/EthAddress.svelte';
-	import { putModifyAdmin } from '$utils/api/admin/adminManagement';
+	import { AdminData, putModifyAdmin } from '$utils/api/admin/adminManagement';
 	import { httpErrorHandler, notifySuccess } from '$utils/toast';
 	import Dropdown from '../Dropdown.svelte';
 	import Popup from '../Popup.svelte';
 
 	const adminTypeOptions = [{ label: 'Admin', value: 'admin' }];
 
-	export let userData: { name: string; address: string; role: string };
+	export let userData: AdminData;
 
 	let name = userData?.name;
 
@@ -16,7 +16,7 @@
 	async function submit() {
 		isSubmiting = true;
 
-		await putModifyAdmin(name, userData.address, 'admin')
+		await putModifyAdmin(userData._id, name, userData.wallet, 'admin')
 			.then(() => notifySuccess('Admin created!'))
 			.catch(httpErrorHandler);
 

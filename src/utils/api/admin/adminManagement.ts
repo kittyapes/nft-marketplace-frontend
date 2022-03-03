@@ -25,6 +25,10 @@ export async function postCreateAdmin(name: string, address: string, roles: stri
 	return await axios.post(api + '/v1/admins', { wallet: address, roles, name }, getAxiosConfig());
 }
 
-export async function putModifyAdmin(name: string, address: string, roles: string) {
-	return await axios.put(api + '/v1/admins', { wallet: address, roles, name }, getAxiosConfig());
+export async function putModifyAdmin(_id: string, name: string, address: string, roles: string) {
+	return await axios.put(
+		api + '/v1/admins/' + _id,
+		{ wallet: address, roles, name },
+		getAxiosConfig()
+	);
 }
