@@ -5,6 +5,7 @@
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import { getVerifiedCreators } from '$utils/api/admin/userManagement';
+	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
 	import { setPopup } from '$utils/popup';
 	import { httpErrorHandler, makeErrorHandler } from '$utils/toast';
 	import { toUpper } from 'lodash-es';
@@ -20,9 +21,6 @@
 		{ label: 'Inactive', value: 'inactivated' },
 		{ label: 'All', value: 'all' }
 	] as any;
-
-	let promotePopupOpen = false;
-	let inactivatePopupOpen = false;
 
 	const filterBy = writable<'verified' | 'inactivated' | 'all'>('all');
 	const sortBy = writable<{ label: string; value: any }>(sortByOptions[0]);
@@ -152,7 +150,7 @@
 						</div> -->
 					</td>
 
-					<td class="px-4 w-28 whitespace-nowrap">{row.date}</td>
+					<td class="px-4 w-28 whitespace-nowrap">{formatDatetimeFromISO(row.updatedAt)}</td>
 				</tr>
 			{/each}
 		</table>
