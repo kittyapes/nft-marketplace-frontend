@@ -1,6 +1,7 @@
 <script lang="ts">
 	import EthAddress from '$lib/components/EthAddress.svelte';
-	import { AdminData, putModifyAdmin } from '$utils/api/admin/adminManagement';
+	import { AdminData, deleteAdmin, putModifyAdmin } from '$utils/api/admin/adminManagement';
+	import { closePopup } from '$utils/popup';
 	import { httpErrorHandler, notifySuccess } from '$utils/toast';
 	import Dropdown from '../Dropdown.svelte';
 	import Popup from '../Popup.svelte';
@@ -13,12 +14,24 @@
 
 	let isSubmiting = false;
 
-	async function submit() {
+	async function update() {
 		isSubmiting = true;
 
 		await putModifyAdmin(userData._id, name, userData.wallet, 'admin')
-			.then(() => notifySuccess('Admin created!'))
+			.then(() => notifySuccess('User updated.'))
 			.catch(httpErrorHandler);
+
+		isSubmiting = false;
+	}
+
+	async function delete_() {
+		isSubmiting = true;
+
+		await deleteAdmin(userData._id)
+			.then(() => notifySuccess('User deleted.'))
+			.catch(httpErrorHandler);
+
+		closePopup();
 
 		isSubmiting = false;
 	}
@@ -53,9 +66,11 @@
 			<!-- </div> -->
 		</div>
 
-		<div class="flex mt-8 justify-center px-16">
-			<button class="btn-primary" disabled={isSubmiting} on:click={submit}>Delete</button>
-			<button class="btn-primary" disabled={isSubmiting} on:click={submit}>Save Changes</button>
+		<div class="flex mt-8 justify-center px-16 gap-4">
+			<button class="btn-secondary w-48" disabled={isSubmiting} on:click={delete_}>Delete</button>
+			<button class="btn-primary w-48" disabled={isSubmiting} on:click={update}>
+				Save Changes
+			</button>
 		</div>
 	</div>
 </Popup>

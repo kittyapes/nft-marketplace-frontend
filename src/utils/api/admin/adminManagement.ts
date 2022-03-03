@@ -32,3 +32,7 @@ export async function putModifyAdmin(_id: string, name: string, address: string,
 		getAxiosConfig()
 	);
 }
+
+export async function deleteAdmin(_id: string) {
+	return await axios.delete(api + '/v1/admins/' + _id, getAxiosConfig());
+}
