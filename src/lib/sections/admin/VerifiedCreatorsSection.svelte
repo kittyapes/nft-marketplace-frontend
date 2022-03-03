@@ -4,6 +4,7 @@
 	import ChangeCreatorStatusPopup from '$lib/components/admin/ChangeCreatorStatusPopup.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
+	import { currentUserAddress } from '$stores/wallet';
 	import { getVerifiedCreators } from '$utils/api/admin/userManagement';
 	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
 	import { setPopup } from '$utils/popup';
@@ -61,7 +62,7 @@
 		isFetchingCreators = false;
 	}
 
-	onMount(fetchCreators);
+	$: $currentUserAddress && fetchCreators();
 </script>
 
 <div class="mt-32">
