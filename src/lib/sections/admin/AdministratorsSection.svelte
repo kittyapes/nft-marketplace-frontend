@@ -1,12 +1,23 @@
 <script lang="ts">
-	import EthAddress from '$lib/components/EthAddress.svelte';
 	import PersonIcon from '$icons/person.svelte';
 	import ModifyUser from '$lib/components/admin/ModifyUser.svelte';
+	import EthAddress from '$lib/components/EthAddress.svelte';
+	import { currentUserAddress } from '$stores/wallet';
+	import { AdminData, getAdmins } from '$utils/api/admin/adminManagement';
 	import { setPopup } from '$utils/popup';
+	import { httpErrorHandler } from '$utils/toast';
 
 	function handleModifyAdmin(userData) {
 		setPopup(ModifyUser, { props: { userData } });
 	}
+
+	let admins: AdminData[] = null;
+
+	async function fetchAdmins() {
+		admins = await getAdmins().catch(httpErrorHandler);
+	}
+
+	$: $currentUserAddress && !admins && fetchAdmins();
 </script>
 
 <div class="mt-32">
@@ -22,12 +33,12 @@
 
 	<div class="max-h-[900px] overflow-auto custom-scrollbar mt-5 pb-4">
 		<table class="w-full table table-auto border-t border-color-black border-opacity-30">
-			{#each [{ address: '0x40D6f8Ac990d98F9c812A3910e3255345fB32f8e', name: 'Jakub', role: 'admin' }] as row}
+			{#each admins || [] as row}
 				<tr class="h-20 border-b border-color-black border-opacity-30">
 					<td class="px-4">
 						<div class="flex items-center gap-4">
 							<PersonIcon />
-							<EthAddress address={row.address} concat />
+							<EthAddress address={row.wallet} concat />
 						</div>
 					</td>
 
@@ -38,7 +49,7 @@
 
 					<td class="px-6">
 						<span class="font-bold">Status:</span>
-						{row.role}
+						{row.roles}
 					</td>
 
 					<td class="px-4 w-28 whitespace-nowrap">

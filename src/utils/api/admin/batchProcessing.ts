@@ -16,7 +16,7 @@ export async function putBatchProcessSettings(options: BatchProcessingSettings) 
 
 	return await axios.put(
 		api + '/v1/settings/job',
-		{ enabled: options.enabled, cronString },
+		{ isEnableProcessingJob: options.enabled, intervalTime: cronString },
 		getAxiosConfig()
 	);
 }

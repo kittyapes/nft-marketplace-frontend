@@ -2,7 +2,7 @@
 	import { forceBatchProcess } from '$utils/api/admin/batchProcessing';
 
 	import { closePopup } from '$utils/popup';
-	import { httpErrorHandler, makeErrorHandler, makeSuccessHandler } from '$utils/toast';
+	import { httpErrorHandler, makeSuccessHandler } from '$utils/toast';
 
 	import Popup from '../Popup.svelte';
 

@@ -28,6 +28,12 @@ export const notifyError = (message: string) =>
 		}
 	});
 
+/**
+ * A function meant to be put inside a .catch. Creates a toast notification with the error code
+ * and error. Logs the error to the console and returns null.
+ * @param e AxiosError
+ * @returns null
+ */
 export function httpErrorHandler(e: AxiosError) {
 	const toastText = `Code: ${e.response?.status || 'N/A'} - ${e.response?.statusText || 'N/A'}, ${
 		e.response?.data?.message || 'N/A'
@@ -36,6 +42,8 @@ export function httpErrorHandler(e: AxiosError) {
 	notifyError(toastText);
 
 	console.error(e);
+
+	return null;
 }
 
 export const makeSuccessHandler = (message: string) => () => notifySuccess(message);

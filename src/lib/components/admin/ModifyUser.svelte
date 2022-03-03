@@ -1,6 +1,6 @@
 <script lang="ts">
 	import EthAddress from '$lib/components/EthAddress.svelte';
-	import { postCreateAdmin } from '$utils/api/admin/adminManagement';
+	import { putModifyAdmin } from '$utils/api/admin/adminManagement';
 	import { httpErrorHandler, notifySuccess } from '$utils/toast';
 	import Dropdown from '../Dropdown.svelte';
 	import Popup from '../Popup.svelte';
@@ -16,7 +16,7 @@
 	async function submit() {
 		isSubmiting = true;
 
-		await postCreateAdmin(name, userData.address, 'admin')
+		await putModifyAdmin(name, userData.address, 'admin')
 			.then(() => notifySuccess('Admin created!'))
 			.catch(httpErrorHandler);
 
