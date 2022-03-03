@@ -1,7 +1,6 @@
 <script lang="ts">
 	import CloseButton from '$icons/close-button.svelte';
 	import Fullscreen from '$icons/fullscreen.svelte';
-	import Share from '$icons/share.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import ChevronRight from '$icons/chevron-right.svelte';
@@ -9,6 +8,8 @@
 	import { clone } from 'lodash-es';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { closePopup } from '$utils/popup';
+	import { claimFreeNft } from '$utils/api/freeNft';
+	import { appSigner, currentUserAddress, welcomeNftMessage } from '$stores/wallet';
 
 	const dispatch = createEventDispatcher();
 
@@ -30,6 +31,21 @@
 			// await .... mint(nftData. ...)
 			// And please set welcomeNftClaimed (in stores/wallet)
 			// Update this store walue on wallet connect.
+			const signature = await $appSigner.signMessage($welcomeNftMessage).catch((err) => {
+				console.log(err);
+				notifyError('Failed to Sign Message');
+				return '';
+			});
+
+			console.log(signature);
+			if (signature) {
+				const claimRes = await claimFreeNft(
+					welcomeNfts.indexOf(nfts[0]),
+					$currentUserAddress,
+					signature
+				);
+				console.log('Here', claimRes);
+			}
 		} catch (err) {
 			console.error(err);
 			return notifyError('Failed minting your NFT.');
