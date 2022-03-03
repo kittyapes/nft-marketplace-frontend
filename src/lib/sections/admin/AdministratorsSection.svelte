@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Loader from '$icons/loader.svelte';
 	import PersonIcon from '$icons/person.svelte';
 	import ModifyUser from '$lib/components/admin/ModifyUser.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
@@ -13,8 +14,12 @@
 
 	let admins: AdminData[] = null;
 
+	let isFetching = false;
+
 	async function fetchAdmins() {
+		isFetching = true;
 		admins = await getAdmins().catch(httpErrorHandler);
+		isFetching = false;
 	}
 
 	$: $currentUserAddress && !admins && fetchAdmins();
@@ -32,6 +37,10 @@
 	</div>
 
 	<div class="max-h-[900px] overflow-auto custom-scrollbar mt-5 pb-4">
+		{#if isFetching}
+			<Loader class="ml-0" />
+		{/if}
+
 		<table class="w-full table table-auto border-t border-color-black border-opacity-30">
 			{#each admins || [] as row}
 				<tr class="h-20 border-b border-color-black border-opacity-30">

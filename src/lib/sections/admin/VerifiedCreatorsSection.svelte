@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import Loader from '$icons/loader.svelte';
 	import PersonIcon from '$icons/person.svelte';
 	import ChangeCreatorStatusPopup from '$lib/components/admin/ChangeCreatorStatusPopup.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
@@ -106,6 +107,10 @@
 	</div>
 
 	<div class="max-h-[900px] overflow-auto mt-5 custom-scrollbar pb-4">
+		{#if isFetchingCreators}
+			<Loader class="ml-0" />
+		{/if}
+
 		<table class="table w-full border-t table-auto border-color-black border-opacity-30">
 			{#each rows as row}
 				<tr class="h-20 border-b border-color-black border-opacity-30">

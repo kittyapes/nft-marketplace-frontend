@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Loader from '$icons/loader.svelte';
 	import PersonIcon from '$icons/person.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
@@ -94,19 +95,21 @@
 	const verificationQueueSort = writable(sortByOptions[0]);
 	let queueItems = [];
 
+	let isRefreshingQueue = false;
+
 	async function fetchVerificationQueueItems() {
+		isRefreshingQueue = true;
 		const res = await getVerificationQueue($verificationQueueSort.value as any).catch(
 			makeErrorHandler('Failed to fetch verification queue!')
 		);
 
 		queueItems = res || [];
+		isRefreshingQueue = false;
 	}
 
 	onMount(fetchVerificationQueueItems);
 
 	verificationQueueSort.subscribe(fetchVerificationQueueItems);
-
-	$: console.log(queueItems);
 </script>
 
 <!-- Add verified Creator -->
@@ -143,30 +146,36 @@
 
 <!-- Verification queue table -->
 <div class="pb-4 pr-8 mt-5 overflow-auto max-h-96 custom-scrollbar">
-	<table class="w-full table-auto">
-		<tr class="h-20">
-			<th />
-			<th />
-			<th class="font-bold uppercase whitespace-nowrap">Date Added</th>
-		</tr>
+	{#if isRefreshingQueue}
+		<Loader class="ml-0" />
+	{/if}
 
-		{#each queueItems as row}
-			<tr class="h-20 border-t border-color-black border-opacity-30">
-				<td class="px-2">
-					<div class="flex items-center gap-4">
-						<PersonIcon />
-						{row.address}
-					</div>
-				</td>
-
-				<td class="max-w-full px-2 font-mono whitespace-nowrap">
-					<EthAddress address={row.address} />
-				</td>
-
-				<td class="px-4 w-28 whitespace-nowrap">{row.dateAdded || 'N/A'}</td>
+	{#if queueItems.length}
+		<table class="w-full table-auto">
+			<tr class="h-20">
+				<th />
+				<th />
+				<th class="font-bold uppercase whitespace-nowrap">Date Added</th>
 			</tr>
-		{/each}
-	</table>
+
+			{#each queueItems as row}
+				<tr class="h-20 border-t border-color-black border-opacity-30">
+					<td class="px-2">
+						<div class="flex items-center gap-4">
+							<PersonIcon />
+							{row.address}
+						</div>
+					</td>
+
+					<td class="max-w-full px-2 font-mono whitespace-nowrap">
+						<EthAddress address={row.address} />
+					</td>
+
+					<td class="px-4 w-28 whitespace-nowrap">{row.dateAdded || 'N/A'}</td>
+				</tr>
+			{/each}
+		</table>
+	{/if}
 </div>
 
 <!-- Verification queue options -->
