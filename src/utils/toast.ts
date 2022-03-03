@@ -29,7 +29,9 @@ export const notifyError = (message: string) =>
 	});
 
 export function httpErrorHandler(e: AxiosError) {
-	const toastText = `Code: ${e.response.status} - ${e.response.statusText}, ${e.response.data.message}`;
+	const toastText = `Code: ${e.response?.status || 'N/A'} - ${e.response?.statusText || 'N/A'}, ${
+		e.response?.data?.message || 'N/A'
+	}`;
 
 	notifyError(toastText);
 
