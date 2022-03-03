@@ -115,8 +115,12 @@
 						</div>
 					</td>
 
-					<td class="px-4 w-72">
+					<td class="px-4 w-72 font-mono">
 						<EthAddress address={row.address} />
+					</td>
+
+					<td class="whitespace-nowrap">
+						Status: <span class="font-semibold uppercase gradient-text">{row.status}</span>
 					</td>
 
 					<td class="px-6">
