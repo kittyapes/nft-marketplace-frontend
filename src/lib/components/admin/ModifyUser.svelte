@@ -35,7 +35,7 @@
 
 		<div class="mt-16 text-color-black grid grid-cols-3 gap-y-6">
 			<div class=" font-bold uppercase">Edit Username</div>
-			<input placeholder="Account name" class="input col-span-2" value={name} />
+			<input placeholder="Account name" class="input col-span-2" bind:value={name} />
 
 			<div class="font-bold uppercase">Address</div>
 			<EthAddress class="col-span-2" address="0x3468C6dE9662C2877vd10184B4228e5711b89D42" concat />
@@ -54,6 +54,7 @@
 		</div>
 
 		<div class="flex mt-8 justify-center px-16">
+			<button class="btn-primary" disabled={isSubmiting} on:click={submit}>Delete</button>
 			<button class="btn-primary" disabled={isSubmiting} on:click={submit}>Save Changes</button>
 		</div>
 	</div>
