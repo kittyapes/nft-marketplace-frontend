@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import CardBuyScreen from '$components/marketplace/UniversalPopup/CardBuyScreen.svelte';
 	import CardMidTab from '$components/marketplace/UniversalPopup/CardMidTab.svelte';
-	import ContentDisplay from '$components/marketplace/UniversalPopup/contentDisplay.svelte';
+	import ContentDisplay from '$components/marketplace/UniversalPopup/ContentDisplay.svelte';
 	import InfoTab from '$components/marketplace/UniversalPopup/InfoTab.svelte';
 	import PopupContainer from '$components/marketplace/UniversalPopup/PopupContainer.svelte';
 	import SuccessScreen from '$components/marketplace/UniversalPopup/SuccessScreen.svelte';
