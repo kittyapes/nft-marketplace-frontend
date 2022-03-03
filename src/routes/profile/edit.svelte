@@ -16,7 +16,8 @@
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { profileData, refreshProfileData } from '$stores/user';
-	import { currentUserAddress, welcomeNftClaimed } from '$stores/wallet';
+	import { currentUserAddress, welcomeNftClaimed, welcomeNftMessage } from '$stores/wallet';
+	import { hasClaimedFreeNft } from '$utils/api/freeNft';
 	import {
 		checkUsernameAvailability,
 		EditableProfileData,
@@ -177,6 +178,18 @@
 			$usernameAvailable = true;
 		} else {
 			debouncedCheckUsernameAvailability(username);
+		}
+	});
+
+	currentUserAddress.subscribe(async (address) => {
+		try {
+			if (address) {
+				const hasClaimedResult = await hasClaimedFreeNft(address);
+				welcomeNftClaimed.set(hasClaimedResult?.isClaimed);
+				welcomeNftMessage.set(hasClaimedResult?.message);
+			}
+		} catch (err) {
+			console.log(err);
 		}
 	});
 

@@ -36,7 +36,6 @@ export default () => {
 		hinataContract.on('Approval', async (userAddress, _poolId, _amount) => {
 			if (userAddress === get(currentUserAddress)) {
 				try {
-					// console.log('LP TOKENS DEPOSITED');
 					// Refresh stake balance
 					await checkHinataAllowance(userAddress);
 				} catch (err) {
@@ -48,7 +47,6 @@ export default () => {
 		stakingContract.on('Staked', async (userAddress, _rest) => {
 			if (userAddress === get(currentUserAddress)) {
 				try {
-					// console.log('LP TOKENS DEPOSITED');
 					// Refresh stake balance
 					await getAllTokenBalances(userAddress);
 				} catch (err) {
@@ -60,7 +58,6 @@ export default () => {
 		communityAirdropContract.on('Claimed', async (_amount, userAddress, _rest) => {
 			if (userAddress === get(currentUserAddress)) {
 				try {
-					// console.log('LP TOKENS DEPOSITED');
 					// Refresh stake balance
 					await getAllTokenBalances(userAddress);
 					await checkClaimEligibility('community', userAddress);
@@ -73,7 +70,6 @@ export default () => {
 		seedAirdropContract.on('Claimed', async (_amount, userAddress, _rest) => {
 			if (userAddress === get(currentUserAddress)) {
 				try {
-					// console.log('LP TOKENS DEPOSITED');
 					// Refresh stake balance
 					await getAllTokenBalances(userAddress);
 					await checkClaimEligibility('seed', userAddress);
@@ -86,7 +82,6 @@ export default () => {
 		privateAirdropContract.on('Claimed', async (_amount, userAddress, _rest) => {
 			if (userAddress === get(currentUserAddress)) {
 				try {
-					// console.log('LP TOKENS DEPOSITED');
 					// Refresh stake balance
 					await getAllTokenBalances(userAddress);
 					await checkClaimEligibility('private', userAddress);
@@ -99,7 +94,6 @@ export default () => {
 		idoAirdropContract.on('Claimed', async (_amount, userAddress, _rest) => {
 			if (userAddress === get(currentUserAddress)) {
 				try {
-					// console.log('LP TOKENS DEPOSITED');
 					// Refresh stake balance
 					await getAllTokenBalances(userAddress);
 					await checkClaimEligibility('ido', userAddress);
