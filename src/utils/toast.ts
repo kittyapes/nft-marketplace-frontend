@@ -1,4 +1,5 @@
 import { toast } from '@zerodevx/svelte-toast';
+import type { AxiosError } from 'axios';
 
 export const notifySuccess = (message: string) =>
 	toast.push(message, {
@@ -27,7 +28,14 @@ export const notifyError = (message: string) =>
 		}
 	});
 
-export const httpErrorHandler = (e: { message: string }) => notifyError(e.message);
+export function httpErrorHandler(e: AxiosError) {
+	const toastText = `Code: ${e.response.status} - ${e.response.statusText}, ${e.response.data.message}`;
+
+	notifyError(toastText);
+
+	console.error(e);
+}
+
 export const makeSuccessHandler = (message: string) => () => notifySuccess(message);
 export const makeErrorHandler = (message: string) => (e) => {
 	notifyError(message);
