@@ -24,7 +24,7 @@ export async function getVerificationQueue(
 }
 
 export async function getVerifiedCreators(
-	verificationStatus: 'verified' | 'inactivated' | 'all',
+	verificationStatus: string,
 	sortBy: 'date' | 'alphabetical'
 ) {
 	return await axios.get(api + '/v1/accounts', {

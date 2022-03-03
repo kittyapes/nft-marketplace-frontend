@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-
 	import PersonIcon from '$icons/person.svelte';
 	import ChangeCreatorStatusPopup from '$lib/components/admin/ChangeCreatorStatusPopup.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import { getVerifiedCreators } from '$utils/api/admin/userManagement';
 	import { setPopup } from '$utils/popup';
-	import { makeErrorHandler } from '$utils/toast';
+	import { httpErrorHandler, makeErrorHandler } from '$utils/toast';
+	import { toUpper } from 'lodash-es';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -42,16 +42,23 @@
 	async function fetchCreators() {
 		isFetchingCreators = true;
 
-		// await getVerifiedCreators($filterBy, $sortBy.value)
-		// 	.then((res) => {
-		// 		rows = res.data.data;
-		// 	})
-		// 	.catch(makeErrorHandler('Failed to load list of verified creators.'));
+		// Hotfix to filter by multiple at once
+		if ($filterBy === 'all') {
+			const active = await getVerifiedCreators('VERIFIED', $sortBy.value)
+				.then((res) => res.data.data)
+				.catch(httpErrorHandler);
+			const inactivated = await getVerifiedCreators('INACTIVATED', $sortBy.value)
+				.then((res) => res.data.data)
+				.catch(httpErrorHandler);
 
-		rows = [
-			{ address: '0x0', dateAdded: '0x0', status: 'VERIFIED' },
-			{ address: '0x0', dateAdded: '0x0', status: 'INACTIVATED', active: true }
-		];
+			rows = [...(active || []), ...(inactivated || [])];
+		} else {
+			await getVerifiedCreators(toUpper($filterBy), $sortBy.value)
+				.then((res) => {
+					rows = res.data.data;
+				})
+				.catch(makeErrorHandler('Failed to load list of verified creators.'));
+		}
 
 		isFetchingCreators = false;
 	}
