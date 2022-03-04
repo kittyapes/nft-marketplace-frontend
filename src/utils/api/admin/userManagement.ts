@@ -18,7 +18,10 @@ export interface VerificationQueueItem {
 export async function getVerificationQueue(
 	sortBy: 'date' | 'alphabetical'
 ): Promise<VerificationQueueItem[]> {
-	const res = await axios.get(api + '/v1/accounts', { params: { sortBy }, ...getAxiosConfig() });
+	const res = await axios.get(api + '/v1/accounts', {
+		params: { sortBy, status: 'AWAITING_VERIFIED,AWAITING_INACTIVATED' },
+		...getAxiosConfig()
+	});
 
 	return res.data.data;
 }
