@@ -2,16 +2,12 @@
 	import { goto } from '$app/navigation';
 	import Loader from '$icons/loader.svelte';
 	import PersonIcon from '$icons/person.svelte';
-	import ChangeCreatorStatusPopup from '$lib/components/admin/ChangeCreatorStatusPopup.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { getVerifiedCreators } from '$utils/api/admin/userManagement';
 	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
-	import { setPopup } from '$utils/popup';
-	import { httpErrorHandler, makeErrorHandler } from '$utils/toast';
-	import { toUpper } from 'lodash-es';
-	import { onMount } from 'svelte';
+	import { makeErrorHandler } from '$utils/toast';
 	import { writable } from 'svelte/store';
 
 	const sortByOptions = [
@@ -19,46 +15,34 @@
 		{ label: 'Alphabetical', value: 'alphabetical' }
 	];
 	const filterByOptions = [
-		{ label: 'active', value: 'verified' },
-		{ label: 'Inactive', value: 'inactivated' },
-		{ label: 'All', value: 'all' }
+		{ label: 'active', value: 'VERIFIED' },
+		{ label: 'Inactive', value: 'INACTIVATED' },
+		{ label: 'All', value: 'VERIFIED,INACTIVATED' }
 	] as any;
 
-	const filterBy = writable<'verified' | 'inactivated' | 'all'>('all');
+	const filterBy = writable<string>('VERIFIED,INACTIVATED');
 	const sortBy = writable<{ label: string; value: any }>(sortByOptions[0]);
 
 	let rows = [];
 
-	function openPromotePopup() {
-		setPopup(ChangeCreatorStatusPopup, { props: { variant: 'promote' } });
-	}
+	// function openPromotePopup() {
+	// 	setPopup(ChangeCreatorStatusPopup, { props: { variant: 'promote' } });
+	// }
 
-	function openInactivatePopup() {
-		setPopup(ChangeCreatorStatusPopup, { props: { variant: 'inactivate' } });
-	}
+	// function openInactivatePopup() {
+	// 	setPopup(ChangeCreatorStatusPopup, { props: { variant: 'inactivate' } });
+	// }
 
 	let isFetchingCreators = false;
 
 	async function fetchCreators() {
 		isFetchingCreators = true;
 
-		// Hotfix to filter by multiple at once
-		if ($filterBy === 'all') {
-			const active = await getVerifiedCreators('VERIFIED', $sortBy.value)
-				.then((res) => res.data.data)
-				.catch(httpErrorHandler);
-			const inactivated = await getVerifiedCreators('INACTIVATED', $sortBy.value)
-				.then((res) => res.data.data)
-				.catch(httpErrorHandler);
-
-			rows = [...(active || []), ...(inactivated || [])];
-		} else {
-			await getVerifiedCreators(toUpper($filterBy), $sortBy.value)
-				.then((res) => {
-					rows = res.data.data;
-				})
-				.catch(makeErrorHandler('Failed to load list of verified creators.'));
-		}
+		await getVerifiedCreators($filterBy, $sortBy.value)
+			.then((res) => {
+				rows = res.data.data;
+			})
+			.catch(makeErrorHandler('Failed to load list of verified creators.'));
 
 		isFetchingCreators = false;
 	}

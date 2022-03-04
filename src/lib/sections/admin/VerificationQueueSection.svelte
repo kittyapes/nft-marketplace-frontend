@@ -13,7 +13,6 @@
 	import { getVerificationQueue, postVerificationQueueAdd } from '$utils/api/admin/userManagement';
 	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
 	import { makeErrorHandler, makeSuccessHandler, notifyError, notifySuccess } from '$utils/toast';
-	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	const processDayOptions = [
@@ -31,8 +30,8 @@
 		{ label: 'Alphabetical', value: 'alphabetical' }
 	];
 
+	// Adding to queue
 	let addressToAdd: string;
-
 	let isAddingToQueue = false;
 
 	async function handleAddToQueue() {
@@ -41,6 +40,8 @@
 		await postVerificationQueueAdd(addressToAdd)
 			.then(() => notifySuccess('Added to queue'))
 			.catch((e) => notifyError(e.message));
+
+		await refreshVerificationQueue();
 
 		isAddingToQueue = false;
 		addressToAdd = '';
@@ -55,6 +56,8 @@
 		await forceBatchProcess()
 			.then(() => notifySuccess('Batch processed.'))
 			.catch((e) => notifyError(e.message));
+
+		await refreshVerificationQueue();
 
 		isForceBatchProcessing = false;
 	}
@@ -99,7 +102,7 @@
 
 	let isRefreshingQueue = false;
 
-	async function fetchVerificationQueueItems() {
+	async function refreshVerificationQueue() {
 		isRefreshingQueue = true;
 		const res = await getVerificationQueue($verificationQueueSort.value as any).catch(
 			makeErrorHandler('Failed to fetch verification queue!')
@@ -109,8 +112,8 @@
 		isRefreshingQueue = false;
 	}
 
-	$: $currentUserAddress && fetchVerificationQueueItems();
-	verificationQueueSort.subscribe(() => $currentUserAddress && fetchVerificationQueueItems());
+	$: $currentUserAddress && refreshVerificationQueue();
+	verificationQueueSort.subscribe(() => $currentUserAddress && refreshVerificationQueue());
 </script>
 
 <!-- Add verified Creator -->
@@ -212,6 +215,6 @@
 	</div>
 </div>
 
-{#if isRefreshingBatchProcessSettings || isPushingBatchProcessSettings}
+{#if isRefreshingBatchProcessSettings || isPushingBatchProcessSettings || isForceBatchProcessing}
 	<Loader class="ml-0" />
 {/if}
