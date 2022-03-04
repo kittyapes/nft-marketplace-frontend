@@ -1,4 +1,8 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
+
 	export let options: { label: string; value?: string }[];
 	export let btnClass = '';
 
@@ -8,6 +12,7 @@
 
 	export let selected: { label: string; value?: string } = options?.[0];
 	export let opened: boolean = false;
+	export let disabled = false;
 
 	let elemOpenButton: HTMLButtonElement;
 
@@ -18,13 +23,22 @@
 			}
 		});
 	}
+
+	function handleOptionSelect(option) {
+		selected = option;
+		dispatch('select', option);
+	}
 </script>
 
-<div class="relative select-container select-none {$$props.class}">
+<div
+	class="relative select-container select-none transition {$$props.class}"
+	class:opacity-50={disabled}
+>
 	<button
-		class="select text-left {btnClass}"
+		class="text-left select"
 		on:click={() => (opened = !opened)}
 		bind:this={elemOpenButton}
+		{disabled}
 	>
 		{selected.label}
 	</button>
@@ -32,12 +46,12 @@
 	{#if opened}
 		<div
 			id="list-container"
-			class="absolute bottom-0 translate-y-full bg-white rounded-lg overflow-hidden z-10 w-full"
+			class="absolute bottom-0 z-10 w-full overflow-hidden translate-y-full bg-white rounded-lg"
 		>
 			{#each options as option}
 				<button
-					class="font-semibold text-left py-2 px-4 hover:bg-gray-100 w-full transition-btn active:rounded"
-					on:click={() => (selected = option)}
+					class="w-full px-4 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded"
+					on:click={() => handleOptionSelect(option)}
 				>
 					{option.label}
 				</button>

@@ -1,28 +1,33 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import Loader from '$icons/loader.svelte';
 	import PersonIcon from '$icons/person.svelte';
 	import ChangeCreatorStatusPopup from '$lib/components/admin/ChangeCreatorStatusPopup.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
-	import TextInput from '$lib/components/TextInput.svelte';
+	import { currentUserAddress } from '$stores/wallet';
+	import { getVerifiedCreators } from '$utils/api/admin/userManagement';
+	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
 	import { setPopup } from '$utils/popup';
+	import { httpErrorHandler, makeErrorHandler } from '$utils/toast';
+	import { toUpper } from 'lodash-es';
+	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 
-	let promotePopupOpen = false;
-	let inactivatePopupOpen = false;
+	const sortByOptions = [
+		{ label: 'Date', value: 'date' },
+		{ label: 'Alphabetical', value: 'alphabetical' }
+	];
+	const filterByOptions = [
+		{ label: 'active', value: 'verified' },
+		{ label: 'Inactive', value: 'inactivated' },
+		{ label: 'All', value: 'all' }
+	] as any;
 
-	// TODO Remove this
-	let usernames = ['Username', 'KindaLongerUsername', 'Shrt'];
-	let boolStates = [true, false];
+	const filterBy = writable<'verified' | 'inactivated' | 'all'>('all');
+	const sortBy = writable<{ label: string; value: any }>(sortByOptions[0]);
 
-	const QUEUE_ROWS = Array(10)
-		.fill(0)
-		.map((_) => ({
-			username: usernames[Math.floor(Math.random() * usernames.length)],
-			address: '0x3468C6dE9662C2877vd10184B4228e5711b89D42',
-			date: '12-01-21 02:21:34',
-			active: boolStates[Math.floor(Math.random() * boolStates.length)]
-		}));
-
-	const sortByOptions = [{ label: 'Date' }, { label: 'Alphabetical' }];
+	let rows = [];
 
 	function openPromotePopup() {
 		setPopup(ChangeCreatorStatusPopup, { props: { variant: 'promote' } });
@@ -31,40 +36,83 @@
 	function openInactivatePopup() {
 		setPopup(ChangeCreatorStatusPopup, { props: { variant: 'inactivate' } });
 	}
+
+	let isFetchingCreators = false;
+
+	async function fetchCreators() {
+		isFetchingCreators = true;
+
+		// Hotfix to filter by multiple at once
+		if ($filterBy === 'all') {
+			const active = await getVerifiedCreators('VERIFIED', $sortBy.value)
+				.then((res) => res.data.data)
+				.catch(httpErrorHandler);
+			const inactivated = await getVerifiedCreators('INACTIVATED', $sortBy.value)
+				.then((res) => res.data.data)
+				.catch(httpErrorHandler);
+
+			rows = [...(active || []), ...(inactivated || [])];
+		} else {
+			await getVerifiedCreators(toUpper($filterBy), $sortBy.value)
+				.then((res) => {
+					rows = res.data.data;
+				})
+				.catch(makeErrorHandler('Failed to load list of verified creators.'));
+		}
+
+		isFetchingCreators = false;
+	}
+
+	$: $currentUserAddress && fetchCreators();
 </script>
 
 <div class="mt-32">
-	<div class="uppercase text-lg font-bold">Verified Creators</div>
+	<div class="text-lg font-bold uppercase">Verified Creators</div>
 
-	<div class="mt-7 flex items-center">
-		<TextInput grayOutline class="w-96 h-14 bg-[#F7F7F7]" />
+	<div class="flex items-center mt-7">
+		<input class="input w-96 h-14" placeholder="Enter username..." />
 
-		<button class="btn btn-rounded btn-outline ml-6 h-12">Search</button>
+		<button class="h-12 ml-6 btn btn-rounded btn-outline">Search</button>
 	</div>
 
-	<div class="w-full flex mt-7 justify-between">
+	<div class="flex justify-between w-full mt-7">
+		<!-- Filtering options -->
 		<div class="flex gap-4">
-			<button class="btn btn-rounded uppercase italic btn-outline h-12 w-48 opacity-50">
-				Active
-			</button>
-			<button class="btn btn-rounded uppercase italic btn-outline h-12 w-48 opacity-50">
-				Inactive
-			</button>
-			<button class="btn btn-rounded uppercase italic btn-gradient h-12 w-32">All</button>
+			{#each filterByOptions as option}
+				<button
+					class={$filterBy === option.value ? 'btn-primary' : 'btn-secondary'}
+					disabled={isFetchingCreators}
+					on:click={() => {
+						($filterBy = option.value), fetchCreators();
+					}}
+				>
+					{option.label}
+				</button>
+			{/each}
 		</div>
 
 		<!-- Sort by dropdown -->
 		<div class="flex items-center">
 			<span class="pr-4 whitespace-nowrap">Sort By</span>
 			<div>
-				<Dropdown options={sortByOptions} class="w-40" />
+				<Dropdown
+					options={sortByOptions}
+					class="w-40"
+					bind:selected={$sortBy}
+					disabled={isFetchingCreators}
+					on:select={fetchCreators}
+				/>
 			</div>
 		</div>
 	</div>
 
 	<div class="max-h-[900px] overflow-auto mt-5 custom-scrollbar pb-4">
-		<table class="w-full table table-auto border-t border-color-black border-opacity-30">
-			{#each QUEUE_ROWS as row}
+		{#if isFetchingCreators}
+			<Loader class="ml-0" />
+		{/if}
+
+		<table class="table w-full border-t table-auto border-color-black border-opacity-30">
+			{#each rows as row}
 				<tr class="h-20 border-b border-color-black border-opacity-30">
 					<td class="px-4">
 						<div class="flex items-center gap-4">
@@ -73,39 +121,46 @@
 						</div>
 					</td>
 
-					<td class="px-4 w-72">
+					<td class="px-4 w-72 font-mono">
 						<EthAddress address={row.address} />
 					</td>
 
+					<td class="whitespace-nowrap">
+						Status: <span class="font-semibold uppercase gradient-text">{row.status}</span>
+					</td>
+
 					<td class="px-6">
-						<div class="flex items-center gap-3">
+						<button class="btn-secondary" on:click={() => goto('/profile/' + row.address)}>
+							Profile
+						</button>
+						<!-- <div class="flex items-center gap-3">
 							{#if row.active}
 								<button
-									class="btn btn-rounded uppercase italic btn-gradient h-12 w-48 font-light"
+									class="w-48 h-12 italic font-light uppercase btn btn-rounded btn-gradient"
 									on:click={openInactivatePopup}
 								>
 									Inactivate
 								</button>
 								<button
-									class="btn uppercase italic gradient-text ml-2 px-2 w-28"
+									class="px-2 ml-2 italic uppercase btn gradient-text w-28"
 									on:click={openPromotePopup}
 								>
 									Promote
 								</button>
 							{:else}
 								<button
-									class="btn btn-rounded uppercase italic btn-outline h-12 w-48 font-light opacity-50"
+									class="w-48 h-12 italic font-light uppercase opacity-50 btn btn-rounded btn-outline"
 								>
 									Inactive
 								</button>
-								<button class="btn uppercase italic gradient-text ml-2 px-2 w-28">
+								<button class="px-2 ml-2 italic uppercase btn gradient-text w-28">
 									Reactivate
 								</button>
 							{/if}
-						</div>
+						</div> -->
 					</td>
 
-					<td class="px-4 w-28 whitespace-nowrap">{row.date}</td>
+					<td class="px-4 w-28 whitespace-nowrap">{formatDatetimeFromISO(row.updatedAt)}</td>
 				</tr>
 			{/each}
 		</table>

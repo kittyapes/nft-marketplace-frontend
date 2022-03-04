@@ -78,8 +78,6 @@
 	}
 
 	async function useProfileData(data: ProfileData) {
-		console.log(data);
-
 		try {
 			const localData = {
 				username: data.username,
@@ -136,14 +134,6 @@
 			.map((v) => (v ? 1 : 0))
 			.join('')
 			.indexOf('0') * 25;
-
-	$: console.log([
-		isEmail($localDataStore?.email),
-		isBioValid($localDataStore?.bio),
-		isProfileImage,
-		isCoverImage,
-		0
-	]);
 
 	// Go to home if the user's wallet isn't connected,
 	// this is a temporary solution, we will solve this better

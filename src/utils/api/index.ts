@@ -1,4 +1,6 @@
+import { currentUserAddress } from '$stores/wallet';
 import { isJwtExpired } from '$utils/jwt';
+import { get } from 'svelte/store';
 
 function getTokenKey(address: string) {
 	return `authToken-${address}`;
@@ -21,7 +23,15 @@ export function isAuthExpired(address: string) {
 	return isJwtExpired(token);
 }
 
-export function getAxiosConfig(address: string) {
+export function getAxiosConfig(address?: string) {
+	if (!address) {
+		address = get(currentUserAddress);
+	}
+
+	if (!address) {
+		throw new Error('No address provided and could not automatically get an address.');
+	}
+
 	const token = getAuthToken(address);
 
 	if (!token) return {};
