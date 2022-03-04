@@ -25,5 +25,10 @@ export async function getBatchProcessSettings() {
 	const res = await axios.get(api + '/v1/settings/job', getAxiosConfig());
 	const info = res.data.data.info;
 
-	return { enabled: info.isEnableProcessingJob, processingDayIndex: 3 } as BatchProcessingSettings;
+	const dayIndex = parseInt(info.intervalTime.split(' ')[4]) - 1;
+
+	return {
+		enabled: info.isEnableProcessingJob,
+		processingDayIndex: dayIndex
+	} as BatchProcessingSettings;
 }
