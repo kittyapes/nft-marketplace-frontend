@@ -4,6 +4,7 @@
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
+	import { currentUserAddress } from '$stores/wallet';
 	import {
 		forceBatchProcess,
 		getBatchProcessSettings,
@@ -74,6 +75,10 @@
 		isRefreshingBatchProcessSettings = false;
 	}
 
+	$: $currentUserAddress && refreshBatchProcessSettings();
+
+	$: console.log('processing enabled', $isBatchProcessEnabled);
+
 	let isPushingBatchProcessSettings = false;
 
 	async function pushBatchProcessSettings() {
@@ -88,8 +93,6 @@
 
 		isPushingBatchProcessSettings = false;
 	}
-
-	onMount(refreshBatchProcessSettings);
 
 	// Verification queue fetch
 	const verificationQueueSort = writable(sortByOptions[0]);
@@ -185,7 +188,7 @@
 			Automatic Batch Processing
 			<Checkbox
 				bind:checked={$isBatchProcessEnabled}
-				disabled={isPushingBatchProcessSettings}
+				disabled={isPushingBatchProcessSettings || isRefreshingBatchProcessSettings}
 				on:change={pushBatchProcessSettings}
 			/>
 		</div>
@@ -195,7 +198,7 @@
 			<Dropdown
 				class="w-36"
 				options={processDayOptions}
-				disabled={isPushingBatchProcessSettings}
+				disabled={isPushingBatchProcessSettings || isRefreshingBatchProcessSettings}
 				bind:selected={$batchProcessDayOption}
 				on:select={pushBatchProcessSettings}
 			/>
@@ -204,9 +207,13 @@
 		<button
 			class="btn-secondary"
 			on:click={handleForceBatchProcess}
-			disabled={isForceBatchProcessing}
+			disabled={isForceBatchProcessing || isRefreshingBatchProcessSettings}
 		>
 			Force processing now
 		</button>
 	</div>
 </div>
+
+{#if isRefreshingBatchProcessSettings || isPushingBatchProcessSettings}
+	<Loader class="ml-0" />
+{/if}
