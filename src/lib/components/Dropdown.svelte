@@ -40,7 +40,7 @@
 		bind:this={elemOpenButton}
 		{disabled}
 	>
-		{selected.label}
+		{selected?.label}
 	</button>
 
 	{#if opened}

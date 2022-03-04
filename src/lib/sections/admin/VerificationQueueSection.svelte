@@ -77,8 +77,6 @@
 
 	$: $currentUserAddress && refreshBatchProcessSettings();
 
-	$: console.log('processing enabled', $isBatchProcessEnabled);
-
 	let isPushingBatchProcessSettings = false;
 
 	async function pushBatchProcessSettings() {
@@ -110,9 +108,8 @@
 		isRefreshingQueue = false;
 	}
 
-	onMount(fetchVerificationQueueItems);
-
-	verificationQueueSort.subscribe(fetchVerificationQueueItems);
+	$: $currentUserAddress && fetchVerificationQueueItems();
+	verificationQueueSort.subscribe(() => $currentUserAddress && fetchVerificationQueueItems());
 </script>
 
 <!-- Add verified Creator -->
