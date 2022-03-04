@@ -333,7 +333,7 @@
 							bind:blob={$localDataStore.profileImage}
 							currentImgUrl={$fetchedDataStore.imageUrl}
 							dimensions="180x180 px"
-							class="!w-48 !h-44"
+							class="!w-48 !h-44 mx-auto"
 						/>
 					</div>
 				</div>

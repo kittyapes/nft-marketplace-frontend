@@ -82,7 +82,7 @@
 	<!-- Profile image -->
 	<div
 		class="border-white border-4 w-32 h-32 absolute top-0 transform -translate-y-1/2 rounded-full bg-white
-		grid place-items-center shadow"
+		grid place-items-center shadow overflow-hidden"
 	>
 		{#if $localProfileData?.imageUrl}
 			<img src={$localProfileData?.imageUrl} class="rounded-full h-full" alt="User avatar." />
