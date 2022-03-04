@@ -11,6 +11,7 @@
 		putBatchProcessSettings
 	} from '$utils/api/admin/batchProcessing';
 	import { getVerificationQueue, postVerificationQueueAdd } from '$utils/api/admin/userManagement';
+	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
 	import { makeErrorHandler, makeSuccessHandler, notifyError, notifySuccess } from '$utils/toast';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -77,8 +78,6 @@
 
 	$: $currentUserAddress && refreshBatchProcessSettings();
 
-	$: console.log('processing enabled', $isBatchProcessEnabled);
-
 	let isPushingBatchProcessSettings = false;
 
 	async function pushBatchProcessSettings() {
@@ -110,9 +109,8 @@
 		isRefreshingQueue = false;
 	}
 
-	onMount(fetchVerificationQueueItems);
-
-	verificationQueueSort.subscribe(fetchVerificationQueueItems);
+	$: $currentUserAddress && fetchVerificationQueueItems();
+	verificationQueueSort.subscribe(() => $currentUserAddress && fetchVerificationQueueItems());
 </script>
 
 <!-- Add verified Creator -->
@@ -174,7 +172,7 @@
 						<EthAddress address={row.address} />
 					</td>
 
-					<td class="px-4 w-28 whitespace-nowrap">{row.dateAdded || 'N/A'}</td>
+					<td class="px-4 w-28 whitespace-nowrap">{formatDatetimeFromISO(row.updatedAt)}</td>
 				</tr>
 			{/each}
 		</table>
