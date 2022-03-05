@@ -7,7 +7,7 @@
     import TextArea from "$lib/components/TextArea.svelte";
     import DragDropImage from "$lib/components/DragDropImage.svelte";
     import { onMount } from "svelte";
-import LoadedContent from "$lib/components/LoadedContent.svelte";
+    import LoadedContent from "$lib/components/LoadedContent.svelte";
     
     export let namesClaimed = 323;
     export let username = '';

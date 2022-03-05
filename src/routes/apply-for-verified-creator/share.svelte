@@ -38,7 +38,7 @@
             <p class='text-sm font-light mb-6'>Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullamco laboriosam, nisi ut aliquid ex ea commodi consequatur.</p>
             <h1 class='text-lg text-color-black uppercase'>Sharing is caring</h1>
             <div class='bg-gradient-to-r from-color-purple to-color-blue w-full rounded-2xl text-white grid place-items-center py-9 relative'>
-                <div class='grid w-11/12 h-full gap-x-6 place-items-center grid-cols-[1fr_3fr]'>
+                <div class='grid w-11/12 h-full gap-x-4 place-items-center grid-cols-[1fr_3fr]'>
                     <div class='grid place-items-center w-full h-full p-2'>
                         <div class='w-36 h-36'>
                             <div class=' bg-white rounded-full self-center w-full h-full grid place-items-center'>
@@ -75,7 +75,7 @@
                         </div>
                         <div class='w-0 h-0 border-x-[0.75rem] border-t-[1rem] border-x-transparent border-t-white border-opacity-80 mb-1 bg-transparent' transition:slide></div>
                     {/if}
-                    <button class='btn btn-black btn-rounded flex gap-2 ' on:click={() => {showShare = true; moveRight = true}}>
+                    <button class='btn btn-black btn-rounded flex gap-2 ' on:click={() => {showShare = !showShare; moveRight = true}}>
                         <ShareWhite></ShareWhite>
                         <p class='text-sm font-normal uppercase'>Share</p>
                     </button>

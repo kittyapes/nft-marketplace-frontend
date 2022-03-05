@@ -98,7 +98,7 @@
 
                 <div id="socials-container" class="grid gap-y-3">
                     <div>
-                        <div class='brightness-0' class:brightness-100={instagram}>
+                        <div class='brightness-0 transition-all duration-300' class:brightness-100={instagram}>
                             <Instagram {gradient} />
                         </div>
                         <input
@@ -110,7 +110,7 @@
                     </div>
 
                     <div>
-                        <div class='brightness-0' class:brightness-100={discord}>
+                        <div class='brightness-0 transition-all duration-300' class:brightness-100={discord}>
                             <Discord {gradient}/>
                         </div>
                         <input
@@ -122,7 +122,7 @@
                     </div>
 
                     <div>
-                        <div class='brightness-0' class:brightness-100={twitter}>
+                        <div class='brightness-0 transition-all duration-300' class:brightness-100={twitter}>
                             <Twitter {gradient}/>
                         </div>
                         <input
@@ -134,7 +134,7 @@
                     </div>
 
                     <div>
-                        <div class='brightness-0' class:brightness-100={personalEmail}>
+                        <div class='brightness-0 transition-all duration-300' class:brightness-100={personalEmail}>
                             <Web {gradient}/>
                         </div>
                         <input
@@ -146,7 +146,7 @@
                     </div>
 
                     <div>
-                        <div class='brightness-0' class:brightness-100={pixiv}>
+                        <div class='brightness-0 transition-all duration-300' class:brightness-100={pixiv}>
                             <Pixiv {gradient} />
                         </div>
                         <input
@@ -158,7 +158,7 @@
                     </div>
 
                     <div>
-                        <div class='brightness-0' class:brightness-100={deviantart}>
+                        <div class='brightness-0 transition-all duration-300' class:brightness-100={deviantart}>
                             <Deviantart {gradient}/>
                         </div>
                         <input
@@ -170,7 +170,7 @@
                     </div>
 
                     <div>
-                        <div class='brightness-0' class:brightness-100={artstation}>
+                        <div class='brightness-0 transition-all duration-300' class:brightness-100={artstation}>
                             <Artstation {gradient}/>
                         </div>
                         <input
