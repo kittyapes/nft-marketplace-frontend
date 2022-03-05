@@ -34,18 +34,6 @@ export async function fetchProfileData(address: string) {
 	return data;
 }
 
-export async function promoteProfile(address: string) {
-	return await axios
-		.post(api + '/v1/accounts/' + address + '/promote', {}, getAxiosConfig(address))
-		.then((res) => res.data);
-}
-
-export async function inactivateProfile(address: string) {
-	return await axios
-		.post(api + '/v1/accounts/' + address + '/inactivate', {}, getAxiosConfig(address))
-		.then((res) => res.data);
-}
-
 export interface EditableProfileData {
 	profileImage: Blob;
 	coverImage: Blob;

@@ -35,6 +35,8 @@
 			"$utils/*": ["src/utils/*"],
 			"$constants": ["src/constants"],
 			"$constants/*": ["src/constants/*"],
+			"$components": ["src/lib/components"],
+			"$components/*": ["src/lib/components/*"],
 			"$contracts": ["src/utils/contracts"],
 			"$contracts/*": ["src/utils/contracts/*"],
 			"$actions": ["src/actions"],

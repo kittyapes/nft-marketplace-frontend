@@ -1,9 +1,6 @@
 .btn {
+	@apply transition-transform duration-200 transform active:scale-95 whitespace-nowrap;
 	@apply cursor-pointer disabled:opacity-50;
-}
-
-.btn:not(:disabled) {
-	@apply transition-transform duration-200 transform active:scale-95;
 }
 
 .btn-rounded {
@@ -20,4 +17,23 @@
 
 .btn-outline {
 	@apply border border-color-black;
+}
+
+.btn-disabled-effect {
+	@apply disabled:opacity-50;
+}
+
+/* Duplicate CSS code, because applying btn class does not work. >_< */
+@layer components {
+	.btn-primary {
+		@apply btn-disabled-effect btn-gradient btn-rounded uppercase;
+		@apply transition-transform duration-200 transform active:scale-95 whitespace-nowrap;
+		@apply cursor-pointer disabled:opacity-50;
+	}
+
+	.btn-secondary {
+		@apply btn btn-disabled-effect btn-outline btn-rounded uppercase;
+		@apply transition-transform duration-200 transform active:scale-95 whitespace-nowrap;
+		@apply cursor-pointer disabled:opacity-50;
+	}
 }

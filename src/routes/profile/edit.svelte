@@ -16,7 +16,8 @@
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { profileData, refreshProfileData } from '$stores/user';
-	import { currentUserAddress, welcomeNftClaimed } from '$stores/wallet';
+	import { currentUserAddress, welcomeNftClaimed, welcomeNftMessage } from '$stores/wallet';
+	import { hasClaimedFreeNft } from '$utils/api/freeNft';
 	import {
 		checkUsernameAvailability,
 		EditableProfileData,
@@ -77,8 +78,6 @@
 	}
 
 	async function useProfileData(data: ProfileData) {
-		console.log(data);
-
 		try {
 			const localData = {
 				username: data.username,
@@ -136,14 +135,6 @@
 			.join('')
 			.indexOf('0') * 25;
 
-	$: console.log([
-		isEmail($localDataStore?.email),
-		isBioValid($localDataStore?.bio),
-		isProfileImage,
-		isCoverImage,
-		0
-	]);
-
 	// Go to home if the user's wallet isn't connected,
 	// this is a temporary solution, we will solve this better
 	// in the future globally
@@ -177,6 +168,18 @@
 			$usernameAvailable = true;
 		} else {
 			debouncedCheckUsernameAvailability(username);
+		}
+	});
+
+	currentUserAddress.subscribe(async (address) => {
+		try {
+			if (address) {
+				const hasClaimedResult = await hasClaimedFreeNft(address);
+				welcomeNftClaimed.set(hasClaimedResult?.isClaimed);
+				welcomeNftMessage.set(hasClaimedResult?.message);
+			}
+		} catch (err) {
+			console.log(err);
 		}
 	});
 
@@ -330,7 +333,7 @@
 							bind:blob={$localDataStore.profileImage}
 							currentImgUrl={$fetchedDataStore.imageUrl}
 							dimensions="180x180 px"
-							class="!w-48 !h-44"
+							class="!w-48 !h-44 mx-auto"
 						/>
 					</div>
 				</div>
