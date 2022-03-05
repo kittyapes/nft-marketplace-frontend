@@ -11,7 +11,7 @@
             <HinataLogoToken />
         </div>
 
-        <div class='flex gap-20 justify-center relative'>
+        <div class='flex gap-10 justify-center relative'>
             <div class='step-circle bg-gradient-to-r from-color-purple to-color-blue rounded-full text-white w-16 h-16 grid place-items-center font-bold text-2xl -bottom-10 min-w-[4rem]'>{step}</div>
             <div class='flex flex-col gap-4'>
                 <div class='flex flex-col'>

@@ -21,7 +21,7 @@ import LoadedContent from "$lib/components/LoadedContent.svelte";
     let loaded: boolean = false;
     
     onMount(() => {
-        setTimeout(() => loaded = true, 500);
+        loaded = true;
     });
 
     const debouncedCheckUsernameAvailability = debounce(async (username: string) => {

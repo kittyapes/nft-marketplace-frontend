@@ -12,7 +12,7 @@
     import { isEmail } from "$utils/validator/isEmail";
     import TextArea from "$lib/components/TextArea.svelte";
     import LoadedContent from "$lib/components/LoadedContent.svelte";
-import { onMount } from "svelte";
+    import { onMount } from "svelte";
 
     export let submissions: number = 1293;
     export let name = '';
@@ -28,9 +28,10 @@ import { onMount } from "svelte";
     export let knowledgeDescription = '';
 
     let loaded: boolean = false;
+    let gradient = true;
     
     onMount(() => {
-        setTimeout(() => loaded = true, 500);
+        loaded = true;
     });
 
     function isValidBio(bio: string) {
@@ -97,7 +98,9 @@ import { onMount } from "svelte";
 
                 <div id="socials-container" class="grid gap-y-3">
                     <div>
-                        <Instagram />
+                        <div class='brightness-0' class:brightness-100={instagram}>
+                            <Instagram {gradient} />
+                        </div>
                         <input
                             type="text"
                             class="input input-gray-outline"
@@ -107,7 +110,9 @@ import { onMount } from "svelte";
                     </div>
 
                     <div>
-                        <Discord />
+                        <div class='brightness-0' class:brightness-100={discord}>
+                            <Discord {gradient}/>
+                        </div>
                         <input
                             type="text"
                             class="input input-gray-outline"
@@ -117,7 +122,9 @@ import { onMount } from "svelte";
                     </div>
 
                     <div>
-                        <Twitter />
+                        <div class='brightness-0' class:brightness-100={twitter}>
+                            <Twitter {gradient}/>
+                        </div>
                         <input
                             type="text"
                             class="input input-gray-outline"
@@ -127,7 +134,9 @@ import { onMount } from "svelte";
                     </div>
 
                     <div>
-                        <Web />
+                        <div class='brightness-0' class:brightness-100={personalEmail}>
+                            <Web {gradient}/>
+                        </div>
                         <input
                             type="email"
                             class="input input-gray-outline"
@@ -137,7 +146,9 @@ import { onMount } from "svelte";
                     </div>
 
                     <div>
-                        <Pixiv />
+                        <div class='brightness-0' class:brightness-100={pixiv}>
+                            <Pixiv {gradient} />
+                        </div>
                         <input
                             type="text"
                             class="input input-gray-outline"
@@ -147,7 +158,9 @@ import { onMount } from "svelte";
                     </div>
 
                     <div>
-                        <Deviantart />
+                        <div class='brightness-0' class:brightness-100={deviantart}>
+                            <Deviantart {gradient}/>
+                        </div>
                         <input
                             type="text"
                             class="input input-gray-outline"
@@ -156,8 +169,10 @@ import { onMount } from "svelte";
                         />
                     </div>
 
-                    <div class='w-full'>
-                        <Artstation />
+                    <div>
+                        <div class='brightness-0' class:brightness-100={artstation}>
+                            <Artstation {gradient}/>
+                        </div>
                         <input
                             type="text"
                             class="input input-gray-outline"
@@ -231,7 +246,7 @@ import { onMount } from "svelte";
         @apply flex gap-x-3 items-center;
     }
 
-    #socials-container > div > :global(svg) {
+    #socials-container > div > div > :global(svg) {
         @apply h-12;
     }
 
