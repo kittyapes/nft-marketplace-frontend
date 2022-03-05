@@ -3,4 +3,7 @@
 </script>
 
 <WalletConnectCheck />
-<slot />
+
+<div class="overflow-x-scroll min-w-[1400px]">
+	<slot />
+</div>

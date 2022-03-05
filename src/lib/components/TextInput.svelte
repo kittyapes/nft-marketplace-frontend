@@ -2,9 +2,10 @@
 	export let placeholder = '';
 	export let outline = false;
 	export let grayOutline = false;
+	export let value = '';
 </script>
 
-<input type="text" class:outline class:grayOutline {placeholder} class={$$props.class} />
+<input type="text" class:outline class:grayOutline {placeholder} class={$$props.class} bind:value />
 
 <style>
 	input {

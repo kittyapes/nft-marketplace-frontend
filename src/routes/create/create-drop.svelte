@@ -16,6 +16,8 @@
 	let nftThumbnailPreview = '';
 
 	function mintAndContinue() {
+		// Mint function here
+
 		setPopup(ContinueListingPopup, {
 			props: { relHref: 'sale', title: 'Sale', imgUrl: '/img/create/drop-type-sale.svg' }
 		});

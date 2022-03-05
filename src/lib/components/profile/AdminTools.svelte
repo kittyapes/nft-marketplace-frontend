@@ -1,9 +1,15 @@
 <script lang="ts">
-	import { inactivateProfile, ProfileData, promoteProfile } from '$utils/api/profile';
-	import { notifyError } from '$utils/toast';
-	import { createEventDispatcher } from 'svelte';
+	import {
+		postVerificationQueueAdd,
+		postInactivationQueueAdd
+	} from '$utils/api/admin/userManagement';
+	import { setPopup } from '$utils/popup';
 
-	export let profileData: ProfileData;
+	import { httpErrorHandler, notifySuccess } from '$utils/toast';
+	import { createEventDispatcher } from 'svelte';
+	import ConfirmBatchProcessPopup from '../admin/ConfirmBatchProcessPopup.svelte';
+
+	export let profileData: { address: string; status: string };
 
 	const dispatch = createEventDispatcher();
 
@@ -11,50 +17,76 @@
 		dispatch('requestDataUpdate');
 	}
 
+	let isChangingverifiedStatus = false;
+
 	async function onProfilePromote() {
-		try {
-			await promoteProfile(profileData.address);
-		} catch (e) {
-			notifyError(e.message);
-			return;
+		isChangingverifiedStatus = true;
+
+		const res = await postVerificationQueueAdd(profileData.address)
+			.then((res) => {
+				notifySuccess('Profile added to batch process queue.');
+				return res;
+			})
+			.catch(httpErrorHandler);
+
+		if (res) {
+			setPopup(ConfirmBatchProcessPopup);
 		}
+
+		isChangingverifiedStatus = false;
 
 		requestDataUpdate();
 	}
 
 	async function onProfileInactivate() {
-		try {
-			await inactivateProfile(profileData.address);
-		} catch (e) {
-			notifyError(e.message);
-			return;
+		isChangingverifiedStatus = true;
+
+		const res = await postInactivationQueueAdd(profileData.address)
+			.then((res) => {
+				notifySuccess('Profile added to batch inactivate queue.');
+				return res;
+			})
+			.catch(httpErrorHandler);
+
+		if (res) {
+			setPopup(ConfirmBatchProcessPopup);
 		}
+
+		isChangingverifiedStatus = false;
 
 		requestDataUpdate();
 	}
 
 	$: userStatus = profileData?.status;
+
+	$: promoteDisabled =
+		['VERIFIED', 'AWAITING_PROMOTED', 'AWAITING_INACTIVATED'].includes(userStatus) ||
+		isChangingverifiedStatus ||
+		!profileData;
+	$: inactivateDisabled =
+		['USER', 'AWAITING_PROMOTED', 'AWAITING_INACTIVATED'].includes(userStatus) ||
+		isChangingverifiedStatus ||
+		!profileData;
 </script>
 
-<div class="px-32 py-24 flex gap-x-2 items-center">
-	{#if userStatus === 'USER' || userStatus === 'AWAITING_INACTIVATED'}
-		<button
-			on:click={onProfilePromote}
-			class="uppercase font-medium shadow px-4 py-2 rounded-full bg-gradient-to-r from-color-purple to-color-blue text-white transition-btn"
-		>
-			Promote
-		</button>
-	{:else}
-		<button
-			on:click={onProfileInactivate}
-			class="uppercase font-medium shadow px-4 py-2 rounded-full transition-btn text-gray-600"
-		>
-			Inactivate
-		</button>
-	{/if}
+<div class="px-32 py-24 gap-x-2 items-center">
+	<div class="bg-gray-50 px-8 py-6 rounded-xl border">
+		<div class="uppercase font-semibold text-lg">Admin tools</div>
 
-	<div class="font-semibold ml-4 opacity-60">
-		<span>Status:</span>
-		<span>{profileData?.status}</span>
+		<hr class="border-px mt-4" />
+
+		<div class="font-semibold uppercase mt-6">
+			Verified creator status: <span class="gradient-text">{profileData?.status}</span>
+		</div>
+
+		<div class="flex items-center gap-4 mt-4">
+			<button on:click={onProfilePromote} class="btn-primary" disabled={promoteDisabled}>
+				Promote
+			</button>
+
+			<button on:click={onProfileInactivate} class="btn-secondary" disabled={inactivateDisabled}>
+				Inactivate
+			</button>
+		</div>
 	</div>
 </div>

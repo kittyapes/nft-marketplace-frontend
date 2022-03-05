@@ -7,5 +7,3 @@ interface NewDropProperties {
 }
 
 export const newDropProperties = writable<NewDropProperties>({});
-
-newDropProperties.subscribe((v) => console.log(v));
