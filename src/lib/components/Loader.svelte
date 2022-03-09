@@ -3,7 +3,7 @@
 	import LoaderIcon from '$icons/loader/loader-icon.svelte';
 </script>
 
-<div class="relative h-full">
+<div class="relative h-full w-full"> 
 	<div class="absolute grid place-items-center w-full h-full">
 		<LoaderIcon />
 	</div>
