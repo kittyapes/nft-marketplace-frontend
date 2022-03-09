@@ -5,5 +5,5 @@
 </script>
 
 <Popup class="w-1/3 h-1/3 grid place-items-center pb-6" >
-	<Loader></Loader>
+	<Loader />
 </Popup>
