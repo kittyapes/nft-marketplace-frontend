@@ -7,7 +7,7 @@
     let loaded: boolean = false;
     
     onMount(() => {
-        setTimeout(() => loaded = true, 500);
+        loaded = true;
     });
 </script>
 
