@@ -4,6 +4,7 @@
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import ChevronRight from '$icons/chevron-right.svelte';
 	import Time from '$icons/time.svelte';
+	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
 	import dayjs from 'dayjs';
 	import isoWeek from 'dayjs/plugin/isoWeek.js';
 	import { onMount } from 'svelte';
@@ -39,7 +40,7 @@
 			selectedDate = selectedDate.add(12, 'hour');
 		}
 
-		inputText = selectedDate.format('YYYY-MM-DD h:mm A');
+		inputText = formatDatetimeFromISO(selectedDate);
 		open = false;
 	}
 
