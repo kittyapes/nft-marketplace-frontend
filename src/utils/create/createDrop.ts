@@ -30,7 +30,7 @@ export const createDropOnAPI = async ({
 	return res.data.data;
 };
 
-export const createDropOnChain = async (dropId: number) => {
+export const createDropOnChain = async (dropId: string) => {
 	try {
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
 		const dropCreationTransaction: ethers.ContractTransaction =
