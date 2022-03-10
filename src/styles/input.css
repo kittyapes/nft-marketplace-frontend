@@ -13,3 +13,14 @@
 .input-gray-outline {
 	@apply border-[#1d1d1d4d];
 }
+
+.input-hide-controls::-webkit-outer-spin-button,
+.input-hide-controls::-webkit-inner-spin-button {
+	/* display: none; <- Crashes Chrome on hover */
+	-webkit-appearance: none;
+	margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+.input-hide-controls[type='number'] {
+	-moz-appearance: textfield; /* Firefox */
+}

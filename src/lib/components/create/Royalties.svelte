@@ -8,9 +8,9 @@
 	<div class="flex gap-x-4 mt-4">
 		<div id="percent-container" class="grid w-24">
 			<div class="text-color-black italic uppercase font-light text-sm">Fees</div>
-			<input type="text" class="input mt-2" placeholder="%" />
-			<input type="text" class="input mt-4" placeholder="%" />
-			<input type="text" class="input mt-4" placeholder="%" />
+			<input type="number" class="input input-hide-controls mt-2" placeholder="%" />
+			<input type="number" class="input input-hide-controls mt-4" placeholder="%" />
+			<input type="number" class="input input-hide-controls mt-4" placeholder="%" />
 		</div>
 
 		<div class="grid flex-grow">
