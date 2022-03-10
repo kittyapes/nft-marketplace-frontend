@@ -79,7 +79,7 @@
 				<span>Reserve price</span>
 				<TokenDropdown
 					id="reserve-price-component"
-					bind:value={propValues.price}
+					bind:value={propValues.reservePrice}
 					placeholder="5.00"
 				/>
 			</label>
