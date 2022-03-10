@@ -16,13 +16,15 @@
 			listingType: 'auction',
 			title: 'Auction',
 			imgUrl: '/img/create/drop-type-auction.svg',
-			hoverText: 'Allow other users to make bids on your NFT.'
+			hoverText: 'Allow other users to make bids on your NFT.',
+			disabled: true
 		},
 		{
 			listingType: 'raffle',
 			title: 'Raffle',
 			imgUrl: '/img/create/drop-type-raffle.svg',
-			hoverText: 'No description'
+			hoverText: 'No description',
+			disabled: true
 		}
 	];
 
@@ -53,6 +55,7 @@
 			on:pointerleave={() => {
 				if (hoveredListingType === listingType.listingType) hoveredListingType = null;
 			}}
+			disabled={listingType.disabled}
 		>
 			<ListingType imgUrl={listingType.imgUrl} title={listingType.title} />
 		</CardButton>
