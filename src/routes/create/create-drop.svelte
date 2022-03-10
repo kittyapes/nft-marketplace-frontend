@@ -6,6 +6,11 @@
 	import { newDropProperties } from '$stores/create';
 	import { setPopup } from '$utils/popup';
 	import ContinueListingPopup from '$lib/components/create/ContinueListingPopup.svelte';
+	import { createDropOnAPI, createDropOnChain } from '$utils/create/createDrop';
+	import { appSigner, currentUserAddress } from '$stores/wallet';
+	import { generateDropCreationSignMessage } from '$utils/signature';
+	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
+	import { getAuthToken } from '$utils/api';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
@@ -15,8 +20,48 @@
 	let nftImagePreview = '';
 	let nftThumbnailPreview = '';
 
-	function mintAndContinue() {
+	async function mintAndContinue() {
 		// Mint function here
+
+		// create message to sign
+		let dropId = '';
+		const signature = getAuthToken($currentUserAddress);
+
+		console.log(signature);
+
+		// create drop
+		const dropCreationApiResponse = await createDropOnAPI({
+			contractId: 0,
+			title: nftName,
+			artist: $currentUserAddress,
+			creator: $currentUserAddress,
+			description: nftDescription,
+			signature
+		});
+
+		console.log(dropCreationApiResponse);
+
+		// create drop on chain
+		// await createDropOnChain(dropId);
+
+		// create nft
+		const nftCreationApiResponse = await createNFTOnAPI({
+			dropId,
+			contractId: 0,
+			amount: '1',
+			name: nftName,
+			generation: nftCollection,
+			categories: '', // empty, the frontend does not have this
+			tag: '', // empty frontend does not have this
+			artist: $currentUserAddress,
+			creator: $currentUserAddress,
+			signature
+		});
+
+		console.log(nftCreationApiResponse);
+
+		// mint nft on chain
+		// await createNFTOnChain({ dropId, id: '0', amount: '1' });
 
 		setPopup(ContinueListingPopup, {
 			props: { relHref: 'sale', title: 'Sale', imgUrl: '/img/create/drop-type-sale.svg' }
