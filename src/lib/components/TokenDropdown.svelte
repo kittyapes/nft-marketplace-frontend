@@ -19,7 +19,7 @@
 <div class="relative">
 	<input
 		{id}
-		type="text"
+		type="number"
 		class="input w-full h-12 {$$props.class}"
 		class:font-semibold={value}
 		{placeholder}
