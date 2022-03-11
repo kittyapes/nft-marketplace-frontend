@@ -7,11 +7,12 @@
 	import RadioGroup from '../RadioGroup.svelte';
 
 	const propValidators: Record<string, (s) => boolean> = {
-		price: isPrice
+		price: isPrice,
+		date: (v) => v
 	};
 
 	export let propNames: ListingPropName[] = [];
-	export let propValues: { [key: string]: string } = {};
+	export let propValues: { [key: string]: any } = {};
 	export let isValid: boolean = false;
 
 	function is(propName: ListingPropName) {
@@ -78,7 +79,7 @@
 			<label for="datepicker-component">
 				<div class="h-6 mb-2" />
 				<!-- <input type="text" bind:value={propValues.date} placeholder="DD/MM/YYYY" /> -->
-				<Datepicker id="datepicker-component" />
+				<Datepicker id="datepicker-component" bind:value={propValues.date} />
 			</label>
 		{/if}
 

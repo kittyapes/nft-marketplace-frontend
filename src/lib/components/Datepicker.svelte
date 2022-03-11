@@ -14,6 +14,7 @@
 
 	export let id = '';
 	export let placeholder = 'Select date & time';
+	export let value = dayjs();
 
 	let open = false;
 	let section: 'date' | 'time' = 'date';
@@ -21,8 +22,11 @@
 	const days = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 	let selectedDate: dayjs.Dayjs = dayjs();
 
+	$: value = selectedDate;
+
 	function resetToday() {
 		selectedDate = dayjs();
+		handleDone();
 	}
 
 	function nextMonth() {
