@@ -1,10 +1,14 @@
-<script>
-	import { closePopup, popupComponent, popupOptions } from './index';
+<script lang="ts">
+	import { popupStack } from './index';
 	import Modal from '$lib/components/Modal.svelte';
 </script>
 
-{#if $popupComponent}
-	<Modal on:close={closePopup}>
-		<svelte:component this={$popupComponent} {...$popupOptions?.props} />
+{#each $popupStack as popupItem}
+	<Modal on:close={popupItem.handler.close}>
+		<svelte:component
+			this={popupItem.component}
+			{...popupItem.options.props || {}}
+			on:close={popupItem.handler.close}
+		/>
 	</Modal>
-{/if}
+{/each}

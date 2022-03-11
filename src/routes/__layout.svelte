@@ -71,11 +71,11 @@
 		}
 	};
 	$: updateValues($communityClaimsArray);
-	$: browser &&
-		$currentUserAddress &&
-		pathIsProtected($page.path) &&
-		isAuthExpired($currentUserAddress) &&
-		setPopup(AdminLoginPopup);
+	// $: browser &&
+	// 	$currentUserAddress &&
+	// 	pathIsProtected($page.path) &&
+	// 	isAuthExpired($currentUserAddress) &&
+	// 	setPopup(AdminLoginPopup);
 	$: ((userAddress: string) => userAddress && getAllTokenBalances(userAddress))(
 		$currentUserAddress
 	);
