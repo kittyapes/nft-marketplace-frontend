@@ -11,7 +11,7 @@
 	import AdminLoginPopup from '$lib/components/AdminLoginPopup.svelte';
 	import { page } from '$app/stores';
 	import pathIsProtected from '$utils/pathIsProtected';
-	import { isAuthExpired } from '$utils/api';
+	import { isAdminAuthExpired } from '$utils/api';
 	// Aidrop popup
 	import { setPopup } from '$utils/popup';
 	import AirdropPopup from '$lib/components/airdrop/AirdropPopup.svelte';
@@ -74,7 +74,7 @@
 	$: browser &&
 		$currentUserAddress &&
 		pathIsProtected($page.path) &&
-		isAuthExpired($currentUserAddress) &&
+		isAdminAuthExpired($currentUserAddress) &&
 		setPopup(AdminLoginPopup);
 	$: ((userAddress: string) => userAddress && getAllTokenBalances(userAddress))(
 		$currentUserAddress

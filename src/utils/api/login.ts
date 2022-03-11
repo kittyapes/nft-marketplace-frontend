@@ -1,11 +1,11 @@
 import { api } from '$constants/api';
 import axios from 'axios';
-import { getAuthToken, setAuthToken } from '.';
+import { getAdminAuthToken, isUserAuthExpired, setAdminAuthToken, setUserAuthToken } from '.';
 import sha256 from 'hash.js/lib/hash/sha/256.js';
 import { browser } from '$app/env';
 import { isJwtExpired } from '$utils/jwt';
-import { derived } from 'svelte/store';
-import { currentUserAddress } from '$stores/wallet';
+import { derived, get } from 'svelte/store';
+import { appSigner, currentUserAddress } from '$stores/wallet';
 
 /**
  * Whther the the provided address is currently logged in as an admin.
@@ -13,7 +13,9 @@ import { currentUserAddress } from '$stores/wallet';
  * Checks the local storage for the auth token and if it exists.
  */
 export function isAdmin(address: string) {
-	return browser && getAuthToken(address) !== null && !isJwtExpired(getAuthToken(address));
+	return (
+		browser && getAdminAuthToken(address) !== null && !isJwtExpired(getAdminAuthToken(address))
+	);
 }
 
 export const isCurrentAddressAdmin = derived(currentUserAddress, (v) => v && isAdmin(v));
@@ -42,21 +44,31 @@ export async function login(address: string, signature: string) {
 		token: { token: string };
 	};
 
-	setAuthToken(address, data.token.token);
+	setAdminAuthToken(address, data.token.token);
 }
 
 export async function loginServerNotify(address: string) {
-	const data = {
-		address,
-		device_info: 'desktop',
-		upload_time: Date.now(),
-		checksum: null
-	};
+	if (isUserAuthExpired(address)) {
+		const data = {
+			address,
+			device_info: 'desktop',
+			upload_time: Date.now(),
+			checksum: null,
+			signature: null
+		};
 
-	data.checksum = sha256()
-		.update(data.device_info + data.upload_time + data.address)
-		.digest('hex')
-		.substr(32);
+		data.checksum = sha256()
+			.update(data.device_info + data.upload_time + data.address)
+			.digest('hex')
+			.substr(32);
 
-	await axios.post(api + '/v1/accounts/login', data);
+		data.signature = await get(appSigner).signMessage(data.checksum);
+
+		const responseData = await axios.post(api + '/v1/accounts/login', data);
+
+		// Token returned here needs to be used in the drop creation process (attached to the axios config);
+		setUserAuthToken(address, responseData.data.data.token.token);
+
+		return responseData;
+	}
 }

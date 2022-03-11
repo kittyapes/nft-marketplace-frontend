@@ -7,10 +7,12 @@
 	import { setPopup } from '$utils/popup';
 	import ContinueListingPopup from '$lib/components/create/ContinueListingPopup.svelte';
 	import { createDropOnAPI, createDropOnChain } from '$utils/create/createDrop';
-	import { appSigner, currentUserAddress } from '$stores/wallet';
-	import { generateDropCreationSignMessage } from '$utils/signature';
+	import { currentUserAddress } from '$stores/wallet';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
-	import { getAuthToken } from '$utils/api';
+	import { onMount } from 'svelte';
+	import { profileData } from '$stores/user';
+	import { fetchProfileData } from '$utils/api/profile';
+	import { getLastDropID } from '$utils/create';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
@@ -19,49 +21,58 @@
 	let nftDescription = '';
 	let nftImagePreview = '';
 	let nftThumbnailPreview = '';
+	let fileBlob;
+	let animationBlob;
+
+	onMount(async () => {
+		profileData.set(await fetchProfileData($currentUserAddress));
+	});
 
 	async function mintAndContinue() {
 		// Mint function here
 
-		// create message to sign
-		let dropId = '';
-		const signature = getAuthToken($currentUserAddress);
-
-		console.log(signature);
-
-		// create drop
-		const dropCreationApiResponse = await createDropOnAPI({
-			contractId: 0,
-			title: nftName,
-			artist: $currentUserAddress,
-			creator: $currentUserAddress,
-			description: nftDescription,
-			signature
-		});
-
-		console.log(dropCreationApiResponse);
+		// get last drop ID
+		const maxDropId = await getLastDropID();
+		let dropId = maxDropId + 1;
 
 		// create drop on chain
-		// await createDropOnChain(dropId);
+		await createDropOnChain(dropId.toString())
+			.then(async (res) => {
+				// create drop
+				const dropCreationApiResponse = await createDropOnAPI({
+					contractId: 0,
+					title: nftName,
+					artist: $profileData?._id,
+					creator: $currentUserAddress,
+					description: nftDescription
+				});
 
-		// create nft
-		const nftCreationApiResponse = await createNFTOnAPI({
-			dropId,
-			contractId: 0,
-			amount: '1',
-			name: nftName,
-			generation: nftCollection,
-			categories: '', // empty, the frontend does not have this
-			tag: '', // empty frontend does not have this
-			artist: $currentUserAddress,
-			creator: $currentUserAddress,
-			signature
-		});
+				console.log(dropCreationApiResponse);
 
-		console.log(nftCreationApiResponse);
-
-		// mint nft on chain
-		// await createNFTOnChain({ dropId, id: '0', amount: '1' });
+				// mint nft on chaijn
+				await createNFTOnChain({ dropId: dropId.toString(), id: '0', amount: '1' })
+					.then(async (nftRes) => {
+						// create nft
+						const nftCreationApiResponse = await createNFTOnAPI({
+							dropId: dropId.toString(),
+							contractId: 0,
+							amount: '1',
+							name: nftName,
+							generation: nftCollection,
+							categories: '', // empty, the frontend does not have this
+							tag: '', // empty frontend does not have this
+							artist: $profileData?._id,
+							creator: $currentUserAddress,
+							image: fileBlob,
+							animation: animationBlob
+						});
+						console.log(nftCreationApiResponse);
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			})
+			.catch((err) => console.log(err));
 
 		setPopup(ContinueListingPopup, {
 			props: { relHref: 'sale', title: 'Sale', imgUrl: '/img/create/drop-type-sale.svg' }
@@ -98,7 +109,7 @@
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
-				<DragDropImage text={dragDropText} bind:previewSrc={nftImagePreview} />
+				<DragDropImage bind:blob={fileBlob} text={dragDropText} bind:previewSrc={nftImagePreview} />
 			</div>
 		</div>
 
@@ -113,7 +124,11 @@
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
-				<DragDropImage text={dragDropText} bind:previewSrc={nftThumbnailPreview} />
+				<DragDropImage
+					bind:blob={animationBlob}
+					text={dragDropText}
+					bind:previewSrc={nftThumbnailPreview}
+				/>
 			</div>
 		</div>
 

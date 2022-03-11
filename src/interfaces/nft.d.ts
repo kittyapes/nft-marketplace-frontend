@@ -8,8 +8,11 @@ interface NFTCreationObject {
 	tag: string;
 	artist: string;
 	creator: string;
-	signature: string;
+	image: Blob;
+	animation: Blob;
 }
+
+interface NFTApiReturnValue {}
 
 interface NFTMintingObject {
 	dropId: string;

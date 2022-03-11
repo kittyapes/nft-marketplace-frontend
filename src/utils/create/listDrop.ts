@@ -1,6 +1,6 @@
 import { api } from '$constants/api';
 import { appSigner } from '$stores/wallet';
-import { getAxiosConfig } from '$utils/api';
+import { getUserAxiosConfig } from '$utils/api';
 import HinataMarketplaceContract from '$utils/contracts/hinataMarketplace';
 import axios from 'axios';
 import { ethers } from 'ethers';
@@ -10,8 +10,7 @@ export const listDropOnAPI = async ({
 	dropId,
 	type,
 	price,
-	creator,
-	signature
+	creator
 }: CreateListingServerObject) => {
 	const res = await axios.post(
 		`${api}/v1/listings`,
@@ -19,10 +18,9 @@ export const listDropOnAPI = async ({
 			dropId,
 			type,
 			price,
-			creator,
-			signature
+			creator
 		},
-		getAxiosConfig()
+		getUserAxiosConfig()
 	);
 
 	return res.data.data;
