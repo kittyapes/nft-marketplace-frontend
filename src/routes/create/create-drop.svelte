@@ -40,7 +40,7 @@
 			.then(async (res) => {
 				// create drop
 				const dropCreationApiResponse = await createDropOnAPI({
-					contractId: 0,
+					contractId: dropId,
 					title: nftName,
 					artist: $profileData?._id,
 					creator: $currentUserAddress,
@@ -49,28 +49,30 @@
 
 				console.log(dropCreationApiResponse);
 
-				// mint nft on chaijn
-				await createNFTOnChain({ dropId: dropId.toString(), id: '0', amount: '1' })
-					.then(async (nftRes) => {
-						// create nft
-						const nftCreationApiResponse = await createNFTOnAPI({
-							dropId: dropId.toString(),
-							contractId: 0,
-							amount: '1',
-							name: nftName,
-							generation: nftCollection,
-							categories: '', // empty, the frontend does not have this
-							tag: '', // empty frontend does not have this
-							artist: $profileData?._id,
-							creator: $currentUserAddress,
-							image: fileBlob,
-							animation: animationBlob
+				if (dropCreationApiResponse) {
+					// mint nft on chaijn
+					await createNFTOnChain({ dropId: dropId.toString(), id: '0', amount: '1' })
+						.then(async (nftRes) => {
+							// create nft
+							const nftCreationApiResponse = await createNFTOnAPI({
+								dropId: dropId.toString(),
+								contractId: 0,
+								amount: '1',
+								name: nftName,
+								generation: nftCollection,
+								categories: '', // empty, the frontend does not have this
+								tag: '', // empty frontend does not have this
+								artist: $profileData?._id,
+								creator: $currentUserAddress,
+								image: fileBlob,
+								animation: animationBlob
+							});
+							console.log(nftCreationApiResponse);
+						})
+						.catch((err) => {
+							console.log(err);
 						});
-						console.log(nftCreationApiResponse);
-					})
-					.catch((err) => {
-						console.log(err);
-					});
+				}
 			})
 			.catch((err) => console.log(err));
 
