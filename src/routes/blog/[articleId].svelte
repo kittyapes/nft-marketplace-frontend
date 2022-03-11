@@ -18,12 +18,12 @@
 	<main class="container py-16 px-8 overflow-hidden mb-32 mx-auto max-w-screen-lg">
 		<img src={articleData?.thumbnail} alt="" class="w-full object-contain" />
 
-		<div class="grid grid-cols-2 mt-16 gap-x-16">
+		<div class="mt-16 gap-x-16 max-w-prose mx-auto">
 			<div>
 				<h1 class="uppercase text-4xl italic font-light text-color-black">{articleData?.title}</h1>
 			</div>
 
-			<div id="article-container" class="relative">
+			<div id="article-container" class="relative mt-8">
 				{@html fixedContent}
 			</div>
 		</div>
@@ -32,12 +32,11 @@
 
 <style>
 	#article-container :global(img) {
-		transform: translate(calc(-100% - 4rem));
-		position: absolute;
+		@apply my-8;
 	}
 
 	#article-container :global(h4) {
-		@apply font-bold text-2xl mt-4 mb-2;
+		@apply font-bold text-2xl mt-8 mb-2 uppercase;
 	}
 
 	#article-container :global(a) {

@@ -1,5 +1,5 @@
 interface NFTCreationObject {
-	dropId: number;
+	dropId: string;
 	contractId: number;
 	amount: string;
 	name: string;
@@ -8,11 +8,14 @@ interface NFTCreationObject {
 	tag: string;
 	artist: string;
 	creator: string;
-	signature: string;
+	image: Blob;
+	animation: Blob;
 }
 
+interface NFTApiReturnValue {}
+
 interface NFTMintingObject {
-	dropId: number;
-	id: number;
-	amount: number;
+	dropId: string;
+	id: string;
+	amount: string;
 }

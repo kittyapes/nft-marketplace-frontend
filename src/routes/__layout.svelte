@@ -6,12 +6,6 @@
 	import { refreshConnection } from '$utils/wallet/connectWallet';
 	import Toast from '$lib/components/toast/index.svelte';
 	import PopupManager from '$utils/popup/PopupManager.svelte';
-	// Login Popup
-	import { browser } from '$app/env';
-	import AdminLoginPopup from '$lib/components/AdminLoginPopup.svelte';
-	import { page } from '$app/stores';
-	import pathIsProtected from '$utils/pathIsProtected';
-	import { isAuthExpired } from '$utils/api';
 	// Aidrop popup
 	import { setPopup } from '$utils/popup';
 	import AirdropPopup from '$lib/components/airdrop/AirdropPopup.svelte';
@@ -71,11 +65,7 @@
 		}
 	};
 	$: updateValues($communityClaimsArray);
-	// $: browser &&
-	// 	$currentUserAddress &&
-	// 	pathIsProtected($page.path) &&
-	// 	isAuthExpired($currentUserAddress) &&
-	// 	setPopup(AdminLoginPopup);
+
 	$: ((userAddress: string) => userAddress && getAllTokenBalances(userAddress))(
 		$currentUserAddress
 	);

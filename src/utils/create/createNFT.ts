@@ -1,6 +1,6 @@
 import { api } from '$constants/api';
 import { appSigner } from '$stores/wallet';
-import { getAxiosConfig } from '$utils/api';
+import { getUserAxiosConfig } from '$utils/api';
 import HinataMarketplaceContract from '$utils/contracts/hinataMarketplace';
 import axios from 'axios';
 import { ethers } from 'ethers';
@@ -16,8 +16,23 @@ export const createNFTOnAPI = async ({
 	tag,
 	artist,
 	creator,
-	signature
+	image,
+	animation
 }: NFTCreationObject) => {
+	// const formData = new FormData();
+	// const formData = new FormData();
+	// formData.append('image', image);
+	// formData.append('animation', animation);
+	// formData.append('contractId', contractId.toString());
+	// formData.append('dropId', dropId);
+	// formData.append('amount', amount);
+	// formData.append('name', name);
+	// formData.append('generation', generation);
+	// formData.append('categories', categories);
+	// formData.append('tag', tag);
+	// formData.append('artist', artist);
+	// formData.append('creator', creator);
+
 	const res = await axios.post(
 		`${api}/v1/nfts`,
 		{
@@ -30,9 +45,10 @@ export const createNFTOnAPI = async ({
 			tag,
 			artist,
 			creator,
-			signature
+			image,
+			animation
 		},
-		getAxiosConfig()
+		getUserAxiosConfig()
 	);
 
 	return res.data.data;

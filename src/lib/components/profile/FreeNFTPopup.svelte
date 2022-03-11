@@ -9,7 +9,12 @@
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { closePopup } from '$utils/popup';
 	import { claimFreeNft } from '$utils/api/freeNft';
-	import { appSigner, currentUserAddress, welcomeNftMessage } from '$stores/wallet';
+	import {
+		appSigner,
+		currentUserAddress,
+		welcomeNftClaimed,
+		welcomeNftMessage
+	} from '$stores/wallet';
 
 	const dispatch = createEventDispatcher();
 
@@ -31,20 +36,31 @@
 			// await .... mint(nftData. ...)
 			// And please set welcomeNftClaimed (in stores/wallet)
 			// Update this store walue on wallet connect.
-			const signature = await $appSigner.signMessage($welcomeNftMessage).catch((err) => {
-				console.log(err);
-				notifyError('Failed to Sign Message');
-				return '';
-			});
 
-			console.log(signature);
-			if (signature) {
-				const claimRes = await claimFreeNft(
-					welcomeNfts.indexOf(nfts[0]),
-					$currentUserAddress,
-					signature
+			if ($welcomeNftMessage && $welcomeNftClaimed) {
+				const signature = await $appSigner.signMessage($welcomeNftMessage).catch((err) => {
+					console.log(err);
+					notifyError('Failed to Sign Message');
+					return '';
+				});
+
+				console.log(signature);
+
+				if (signature) {
+					const claimRes = await claimFreeNft(
+						welcomeNfts.indexOf(nfts[0]),
+						$currentUserAddress,
+						signature
+					);
+					console.log('Here', claimRes);
+					notifySuccess('Successfully minted your NFT!');
+				}
+			} else {
+				notifyError(
+					$welcomeNftClaimed
+						? "It appears you've already claimed your free NFT, please check your wallet to confirm this"
+						: 'Failed to mint your NFT'
 				);
-				console.log('Here', claimRes);
 			}
 		} catch (err) {
 			console.error(err);
@@ -53,7 +69,6 @@
 
 		minting = false;
 		minted = true;
-		notifySuccess('Successfully minted your NFT!');
 	}
 
 	let nfts = clone(welcomeNfts);
@@ -65,9 +80,9 @@
 		<img src={data.img} alt="" class="w-72 h-56 object-contain" />
 		<div class="mt-4 font-semibold text-xl">{data.name}</div>
 		<div class="flex mt-4 space-x-4">
-			<a class="transition-btn" href={data.img} target="_blank">
+			<!-- <a class="transition-btn" href={data.img} target="_blank">
 				<Fullscreen />
-			</a>
+			</a> -->
 
 			<!-- <button class="transition-btn">
 				<Share />

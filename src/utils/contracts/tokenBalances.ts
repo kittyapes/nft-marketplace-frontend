@@ -22,7 +22,6 @@ export const hinataTokensBalance = async (userAddress: string) => {
 
 		return ethers.utils.formatEther(balanceBigNumber);
 	} catch (error) {
-		console.log(error);
 		return '0';
 	}
 };
@@ -37,7 +36,6 @@ export const checkHinataAllowance = async (address: string) => {
 
 		return +ethers.utils.formatEther(allowance);
 	} catch (error) {
-		console.log(error);
 		hinataStakingAllowance.set(0);
 		return 0;
 	}
@@ -59,8 +57,6 @@ export const increaseHinataAllowance = async () => {
 
 		return true;
 	} catch (error) {
-		console.log(error);
-
 		notifyError(error.message || JSON.stringify(error));
 
 		return false;

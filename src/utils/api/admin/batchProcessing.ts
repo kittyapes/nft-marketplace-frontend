@@ -1,9 +1,9 @@
 import { api } from '$constants/api';
 import axios from 'axios';
-import { getAxiosConfig } from '..';
+import { getAdminAxiosConfig } from '..';
 
 export async function forceBatchProcess() {
-	return await axios.post(api + '/v1/settings/processJob', {}, getAxiosConfig());
+	return await axios.post(api + '/v1/settings/processJob', {}, getAdminAxiosConfig());
 }
 
 export interface BatchProcessingSettings {
@@ -17,12 +17,12 @@ export async function putBatchProcessSettings(options: BatchProcessingSettings) 
 	return await axios.put(
 		api + '/v1/settings/job',
 		{ isEnableProcessingJob: options.enabled, intervalTime: cronString },
-		getAxiosConfig()
+		getAdminAxiosConfig()
 	);
 }
 
 export async function getBatchProcessSettings() {
-	const res = await axios.get(api + '/v1/settings/job', getAxiosConfig());
+	const res = await axios.get(api + '/v1/settings/job', getAdminAxiosConfig());
 	const info = res.data.data.info;
 
 	const dayIndex = parseInt(info.intervalTime.split(' ')[4]) - 1;

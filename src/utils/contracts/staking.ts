@@ -62,7 +62,6 @@ export const getTotalStakedRewardsBalance = async (userAddress: string) => {
 
 		const waifuRewardsBigNumber = await stakingContract.calculateRewards(userAddress);
 		const waifuRewardsAmt = +ethers.utils.formatEther(waifuRewardsBigNumber);
-		console.log(ethers.utils.formatEther(waifuRewardsBigNumber));
 		// Set to store
 		stakingWaifuRewards.set(waifuRewardsAmt);
 
