@@ -23,6 +23,12 @@
 	function listForSale() {
 		setPopup(ConfirmListingPopup);
 	}
+
+	let royaltiesValid = false;
+
+	$: console.log({ royaltiesValid });
+
+	$: formValid = royaltiesValid;
 </script>
 
 <hr class="separator" />
@@ -43,12 +49,13 @@
 
 		<hr class="separator mt-8" />
 
-		<Royalties />
+		<Royalties bind:isValid={royaltiesValid} />
 
 		<div class="pr-8">
 			<button
 				class="btn btn-gradient btn-rounded w-full mt-8 uppercase font-semibold"
 				on:click={listForSale}
+				disabled={!formValid}
 			>
 				List for {$newDropProperties.listingType || 'N/A'}
 			</button>
