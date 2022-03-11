@@ -1,12 +1,14 @@
 import { browser } from '$app/env';
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
-import { existsInstanceOfPopup, setPopup } from '$utils/popup';
+import { setPopup } from '$utils/popup';
 import { WalletState, walletState } from '$utils/wallet';
-import { derived } from 'svelte/store';
+import { derived, get } from 'svelte/store';
 
 // @ts-ignore
 import AdminLoginPopup from '$lib/components/AdminLoginPopup.svelte';
+import { getAuthToken } from '$utils/api';
+import { currentUserAddress } from '$stores/wallet';
 
 // Regex of routes which are allowed to be accessed only with a
 // wallet connected.
@@ -50,7 +52,9 @@ export function initNavigationHandlers() {
 				id: 'admin-login-popup',
 				unique: true,
 				onClose: () => {
-					goto('/');
+					if (!getAuthToken(get(currentUserAddress))) {
+						goto('/');
+					}
 					return true;
 				}
 			});
