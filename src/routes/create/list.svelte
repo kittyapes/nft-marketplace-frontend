@@ -24,11 +24,10 @@
 		setPopup(ConfirmListingPopup);
 	}
 
-	let royaltiesValid = false;
+	let royaltiesValid;
+	let commonPropertiesValid;
 
-	$: console.log({ royaltiesValid });
-
-	$: formValid = royaltiesValid;
+	$: formValid = royaltiesValid && commonPropertiesValid;
 </script>
 
 <hr class="separator" />
@@ -45,7 +44,11 @@
 
 		<hr class="separator mt-4" />
 
-		<CommonProperties class="mt-8" propNames={typeToProperties[$newDropProperties.listingType]} />
+		<CommonProperties
+			class="mt-8"
+			propNames={typeToProperties[$newDropProperties.listingType]}
+			bind:isValid={commonPropertiesValid}
+		/>
 
 		<hr class="separator mt-8" />
 

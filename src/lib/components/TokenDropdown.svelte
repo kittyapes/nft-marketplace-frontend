@@ -12,6 +12,7 @@
 	];
 	export let selected = tokens[0];
 	export let placeholder = 'Enter price for NFT';
+	export let valid = true;
 
 	let open = false;
 </script>
@@ -20,7 +21,7 @@
 	<input
 		{id}
 		type="number"
-		class="input w-full h-12 {$$props.class}"
+		class="input w-full h-12 {$$props.class} {!valid && 'border-red-300'}"
 		class:font-semibold={value}
 		{placeholder}
 		bind:value

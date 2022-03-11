@@ -2,15 +2,31 @@
 	import Datepicker from '$lib/components/Datepicker.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
 	import type { ListingPropName } from '$lib/interfaces/drops';
+	import { isPrice } from '$utils/validator/isPrice';
 	import DurationSelect from '../DurationSelect.svelte';
 	import RadioGroup from '../RadioGroup.svelte';
 
+	const propValidators: Record<string, (s) => boolean> = {
+		price: isPrice
+	};
+
 	export let propNames: ListingPropName[] = [];
 	export let propValues: { [key: string]: string } = {};
+	export let isValid: boolean = false;
 
 	function is(propName: ListingPropName) {
 		return propNames?.includes(propName);
 	}
+
+	$: validations = Object.entries(propValidators).reduce((acc, [propName, validator]) => {
+		const value = propValues[propName];
+		acc[propName] = validator(value);
+		return acc;
+	}, {});
+
+	$: isValid = Object.entries(validations).every(([, isValid]) => isValid);
+
+	$: console.log(validations);
 </script>
 
 <div class="{$$props.class} grid grid-cols-2 gap-x-16 gap-y-8 pr-8">
@@ -43,7 +59,11 @@
 		{#if is('price')}
 			<label for="price-component">
 				<span>Price</span>
-				<TokenDropdown id="price-component" bind:value={propValues.price} />
+				<TokenDropdown
+					id="price-component"
+					bind:value={propValues.price}
+					valid={validations.price}
+				/>
 			</label>
 		{/if}
 
