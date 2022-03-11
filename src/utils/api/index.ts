@@ -11,7 +11,15 @@ export function setAuthToken(address: string, token: string) {
 	localStorage.setItem(key, token);
 }
 
-export function getAuthToken(address: string) {
+export function getAuthToken(address?: string) {
+	if (!address) {
+		address = get(currentUserAddress);
+	}
+
+	if (!address) {
+		throw new Error('No address provided and could not automatically get an address.');
+	}
+
 	return localStorage.getItem(getTokenKey(address));
 }
 
@@ -24,14 +32,6 @@ export function isAuthExpired(address: string) {
 }
 
 export function getAxiosConfig(address?: string) {
-	if (!address) {
-		address = get(currentUserAddress);
-	}
-
-	if (!address) {
-		throw new Error('No address provided and could not automatically get an address.');
-	}
-
 	const token = getAuthToken(address);
 
 	if (!token) return {};

@@ -9,6 +9,7 @@ import { derived, get } from 'svelte/store';
 import AdminLoginPopup from '$lib/components/AdminLoginPopup.svelte';
 import { getAuthToken } from '$utils/api';
 import { currentUserAddress } from '$stores/wallet';
+import { getAddress } from '$utils/misc/getters';
 
 // Regex of routes which are allowed to be accessed only with a
 // wallet connected.
@@ -46,13 +47,17 @@ export function initNavigationHandlers() {
 	shouldRedirectHome.subscribe((shouldRedirect) => shouldRedirect && browser && goto('/'));
 
 	// Auth popup should be shown if a route requires authentication
-	page.subscribe(($page) => {
-		if (matchesRouteIn(authRequiredRoutes, $page.path)) {
+	derived([page, currentUserAddress], ([$page]) => [$page]).subscribe(([$page]) => {
+		if (!getAddress()) {
+			return;
+		}
+
+		if (matchesRouteIn(authRequiredRoutes, $page.path) && !getAuthToken()) {
 			setPopup(AdminLoginPopup, {
 				id: 'admin-login-popup',
 				unique: true,
 				onClose: () => {
-					if (!getAuthToken(get(currentUserAddress))) {
+					if (!getAuthToken()) {
 						goto('/');
 					}
 					return true;
