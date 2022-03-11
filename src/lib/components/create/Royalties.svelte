@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { log } from '$utils/debug';
-
 	import { ethAddressRegex, isEthAddress } from '$utils/validator/isEthAddress';
 
 	// Prettier would break this line
