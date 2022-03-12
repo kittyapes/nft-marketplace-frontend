@@ -3,11 +3,11 @@ import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import { setPopup } from '$utils/popup';
 import { WalletState, walletState } from '$utils/wallet';
-import { derived, get } from 'svelte/store';
+import { derived } from 'svelte/store';
 
 // @ts-ignore
 import AdminLoginPopup from '$lib/components/AdminLoginPopup.svelte';
-import { getAuthToken } from '$utils/api';
+import { getAdminAuthToken } from '$utils/api';
 import { currentUserAddress } from '$stores/wallet';
 import { getAddress } from '$utils/misc/getters';
 
@@ -52,12 +52,12 @@ export function initNavigationHandlers() {
 			return;
 		}
 
-		if (matchesRouteIn(authRequiredRoutes, $page.path) && !getAuthToken()) {
+		if (matchesRouteIn(authRequiredRoutes, $page.path) && !getAdminAuthToken()) {
 			setPopup(AdminLoginPopup, {
 				id: 'admin-login-popup',
 				unique: true,
 				onClose: () => {
-					if (!getAuthToken()) {
+					if (!getAdminAuthToken()) {
 						goto('/');
 					}
 					return true;
