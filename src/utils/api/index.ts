@@ -11,7 +11,7 @@ function getAdminTokenKey(address: string) {
 		throw new Error('No address provided and could not automatically get an address.');
 	}
 
-	return `authToken-${address}`;
+	return `authToken-admin-${address}`;
 }
 
 export function getAdminAuthToken(address?: string) {
