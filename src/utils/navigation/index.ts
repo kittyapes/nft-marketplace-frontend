@@ -16,7 +16,7 @@ import { getAddress } from '$utils/misc/getters';
 export const walletRequiredRoutes = [/\/profile\/edit/];
 
 // Regex of routes which are allowed to be accessed only by authenticated users.
-export const authRequiredRoutes = [/\/admin\/.+/];
+export const authRequiredRoutes = [/\/admin.*/];
 
 export function matchesRouteIn(routes: RegExp[], path: string) {
 	return routes.some((route) => route.test(path));
