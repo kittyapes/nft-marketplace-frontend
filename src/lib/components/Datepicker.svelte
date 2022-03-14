@@ -4,6 +4,7 @@
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import ChevronRight from '$icons/chevron-right.svelte';
 	import Time from '$icons/time.svelte';
+	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
 	import dayjs from 'dayjs';
 	import isoWeek from 'dayjs/plugin/isoWeek.js';
 	import { onMount } from 'svelte';
@@ -13,6 +14,7 @@
 
 	export let id = '';
 	export let placeholder = 'Select date & time';
+	export let value = dayjs();
 
 	let open = false;
 	let section: 'date' | 'time' = 'date';
@@ -20,8 +22,11 @@
 	const days = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 	let selectedDate: dayjs.Dayjs = dayjs();
 
+	$: value = selectedDate;
+
 	function resetToday() {
 		selectedDate = dayjs();
+		handleDone();
 	}
 
 	function nextMonth() {
@@ -39,7 +44,7 @@
 			selectedDate = selectedDate.add(12, 'hour');
 		}
 
-		inputText = selectedDate.format('YYYY-MM-DD h:mm A');
+		inputText = formatDatetimeFromISO(selectedDate);
 		open = false;
 	}
 

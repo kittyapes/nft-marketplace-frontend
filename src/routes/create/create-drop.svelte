@@ -7,6 +7,7 @@
 	import { setPopup } from '$utils/popup';
 	import ContinueListingPopup from '$lib/components/create/ContinueListingPopup.svelte';
 	import { createDropOnAPI, createDropOnChain } from '$utils/create/createDrop';
+	import { appSigner, currentUserAddress } from '$stores/wallet';
 	import { currentUserAddress } from '$stores/wallet';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { onMount } from 'svelte';
