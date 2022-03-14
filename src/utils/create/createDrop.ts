@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { api } from '$constants/api';
-import { getAxiosConfig } from '$utils/api';
+import { getUserAxiosConfig } from '$utils/api';
 import HinataMarketplaceContract from '$utils/contracts/hinataMarketplace';
 import { get } from 'svelte/store';
 import { appSigner } from '$stores/wallet';
@@ -11,8 +11,7 @@ export const createDropOnAPI = async ({
 	title,
 	artist,
 	creator,
-	description,
-	signature
+	description
 }: DropPostObject) => {
 	const res = await axios.post(
 		`${api}/v1/drops`,
@@ -21,13 +20,12 @@ export const createDropOnAPI = async ({
 			description,
 			title,
 			artist,
-			creator,
-			signature
+			creator
 		},
-		getAxiosConfig()
+		getUserAxiosConfig()
 	);
 
-	return res.data.data;
+	return res.data.data as DropApiReturnValue;
 };
 
 export const createDropOnChain = async (dropId: string) => {

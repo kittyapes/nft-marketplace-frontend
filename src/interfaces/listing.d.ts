@@ -3,8 +3,9 @@ interface CreateListingServerObject {
 	type: 'UNIQUE_FIXED_PRICE';
 	price: string;
 	creator: string;
-	signature: string;
 }
+
+interface DropListingApiReturnValue {}
 
 interface CreateListingOnChainObject {
 	dropId: number;
