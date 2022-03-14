@@ -27,41 +27,67 @@ A component that comunicates nicely with the popup utilities in `utils/popup` an
 
 Popup manager is supposed to be placed at the root level of a layout file.
 
+Clicking outside the popup managed by the popup manager will attempt to close the popup on top of the popup stack.
+
 ## Pop-up and modal utilities
 
 ### `setPopup`
 
 `setPopup(component: any, options: PopupOptions)`
 
-Set a popup component with this function. The component will then be rendered by a popup manager.
+Set a popup component with this function. The component will be added to the popup stack and rendered by the popup manager. A popup handler object will be returned.
 
-_Note: This function manipulates the `popupComponent` and `popupOptions` stores, which are not recommended to be set manually._
+_Note: This function manipulates the `popupStack` store, which is not meant to be used directly._
 
 **Parameters**
 
 `component` - an imported svelte component file.
 
-`options` - at this moment only passes down props to your custom popup component (which is specified by the `component` parameter). See example below with a `message` property and a custom `onClose` handler called by your custom popup component.
+#### `options`
 
-```ts
-{
-    props: { message: "I am a cool popup.", onClose: () => ... }
-}
-```
+| Property  | Description                                                                                                                                                              |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`      | A unique id for the popup. This is used to identify the popup in the popup manager. Will be automatically generated when not explicitly specified.                       |
+| `unique`  | If `true` and a instance of `component` already exists, no new popup will be created. `false` by default.                                                                |
+| `onClose` | A callback function that will be called when the popup is closed. This function should return a boolean value saying whether the popup should actually be closed or not. |
+| `props`   | A object with properties that will be passed to the instance of `component`.                                                                                             |
 
 **Example**
 
-Assuming `DuckPopup` can accept properties `numberOfDucks` and `duckSound`...
+Assuming `DuckPopup` can accept properties `numberOfDucks` and `duckSound`:
 
 ```ts
 import DuckPopup from '$lib/components/DuckPopup.svelte';
 import { setPopup } from '$utils/popup';
 
-setPopup(DuckPopup, { props: { numberOfDucks: 123, duckSound: 'Quack!' } });
+const handler = setPopup(DuckPopup, {
+	id: `duck-popup`,
+	unique: true,
+	props: { numberOfDucks: 123, duckSound: 'Quack!' },
+	onClose: () => {
+		console.log('Closing the popup');
+		return true;
+	}
+});
+
+handler.close();
 ```
 
-### `closePopup`
+#### `PopupHandler`
 
-`closePopup()`
+| Property  | Description          |
+| --------- | -------------------- |
+| `id`      | The id of the popup. |
+| `close()` | Closes the popup.    |
 
-Resets the `popupComponent` store, effectively removing the popup from the screen. Note that this function does not reset the `popupOptions` store, because resetting this store could cause the popup to flicker with undefined data.
+### `existsInstanceOfPopup`
+
+**Parameters**
+
+Checks whether an instance of the given popup component already exists.
+
+- `component` - an imported svelte component file.
+
+**Returns**
+
+A boolean value indicating whether an instance of the given component already exists.

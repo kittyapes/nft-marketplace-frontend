@@ -1,6 +1,5 @@
 <script>
 	import CloseButton from '$icons/close-button.svelte';
-	import { closePopup } from '$utils/popup';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
@@ -9,7 +8,6 @@
 
 	function onClose() {
 		dispatch('close');
-		closePopup();
 	}
 </script>
 

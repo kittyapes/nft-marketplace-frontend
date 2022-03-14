@@ -1,11 +1,8 @@
 <script>
-	import { closePopup } from '$utils/popup';
-
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import Popup from './Popup.svelte';
 
 	function connectWallet() {
-		closePopup();
 		connectToWallet().catch(() => location.reload());
 	}
 </script>

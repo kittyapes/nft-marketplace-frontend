@@ -1,7 +1,6 @@
 <script lang="ts">
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import { AdminData, deleteAdmin, putModifyAdmin } from '$utils/api/admin/adminManagement';
-	import { closePopup } from '$utils/popup';
 	import { httpErrorHandler, notifySuccess } from '$utils/toast';
 	import Dropdown from '../Dropdown.svelte';
 	import Popup from '../Popup.svelte';
@@ -30,8 +29,6 @@
 		await deleteAdmin(userData._id)
 			.then(() => notifySuccess('User deleted.'))
 			.catch(httpErrorHandler);
-
-		closePopup();
 
 		isSubmiting = false;
 	}
