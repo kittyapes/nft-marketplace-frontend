@@ -46,29 +46,3 @@ export async function login(address: string, signature: string) {
 
 	setAdminAuthToken(address, data.token.token);
 }
-
-export async function loginServerNotify(address: string) {
-	if (isUserAuthExpired(address)) {
-		const data = {
-			address,
-			device_info: 'desktop',
-			upload_time: Date.now(),
-			checksum: null,
-			signature: null
-		};
-
-		data.checksum = sha256()
-			.update(data.device_info + data.upload_time + data.address)
-			.digest('hex')
-			.substr(32);
-
-		data.signature = await get(appSigner).signMessage(data.checksum);
-
-		const responseData = await axios.post(api + '/v1/accounts/login', data);
-
-		// Token returned here needs to be used in the drop creation process (attached to the axios config);
-		setUserAuthToken(address, responseData.data.data.token.token);
-
-		return responseData;
-	}
-}
