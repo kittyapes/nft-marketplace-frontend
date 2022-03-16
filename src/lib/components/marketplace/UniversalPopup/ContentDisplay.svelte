@@ -1,5 +1,4 @@
 <script lang='ts'>
-    import CloseButton from '../UniversalPopup/CloseButton.svelte';
 	import TabSwitcher from './TabSwitcher.svelte';
     import { fade } from 'svelte/transition';
     import LongLeftArrow from '$icons/long-left-arrow.svelte';
@@ -42,7 +41,6 @@
     <div class="w-full flex items-center justify-between">
         <!-- Tabs -->
         <TabSwitcher bind:selectedTab={tab}><slot name='mid-tab-nav-content' slot='mid-tab-nav'></slot></TabSwitcher>
-        <CloseButton />
     </div>
 
     <!-- Horizontal Line -->

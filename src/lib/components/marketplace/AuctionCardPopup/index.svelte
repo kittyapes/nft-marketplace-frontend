@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import CardBuyScreen from '$components/marketplace/UniversalPopup/CardBuyScreen.svelte';
 	import CardMidTab from '$components/marketplace/UniversalPopup/CardMidTab.svelte';
-	import ContentDisplay from '$components/marketplace/UniversalPopup/ContentDisplay.svelte';
+	import ContentDisplay from '$components/marketplace/UniversalPopup/contentDisplay.svelte';
 	import InfoTab from '$components/marketplace/UniversalPopup/InfoTab.svelte';
 	import PopupContainer from '$components/marketplace/UniversalPopup/PopupContainer.svelte';
 	import SuccessScreen from '$components/marketplace/UniversalPopup/SuccessScreen.svelte';
@@ -16,8 +16,7 @@
 
 	export let creator: string = 'WAIFUlover69';
 	export let edition: string = '1 of 1';
-	export let description: string =
-		'Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde aliquam sequi minus alias ad, odio delectus praesentium ratione facilis vel dignissimos ab repellendus inventore similique exercitationem ut deleniti minima necessitatibus!';
+	export let description: string = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde aliquam sequi minus alias ad, odio delectus praesentium ratione facilis vel dignissimos ab repellendus inventore similique exercitationem ut deleniti minima necessitatibus!';
 	export let externalLink: string = '';
 	export let editionType: string = '';
 

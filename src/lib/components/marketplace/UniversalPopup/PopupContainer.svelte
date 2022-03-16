@@ -1,6 +1,9 @@
 <script lang='ts'>
 	import { browser } from '$app/env';
 	import NftDisplay from './NftDisplay.svelte';
+	import Popup from '$lib/components/Popup.svelte';
+	import CloseButton from '$icons/close-button.svelte';
+	import { closePopup } from '$utils/popup';
 
 	export let size: 'large' | 'squished' | 'small' = 'large';
 </script>
@@ -9,39 +12,25 @@
 	class="z-50 fixed w-full h-full top-0 left-0 flex items-center justify-center p-8 lg:p-0"
 	class:hidden={!browser}
 >
-	<!-- Dark overlay -->
-	<div class="fixed w-full h-full bg-gray-900 opacity-50" />
-
 	{#if size === 'large'}
-		<!-- Modal -->
-		<div
-			class="bg-white w-full lg:w-2/3  mx-auto rounded-xl shadow-xl z-50 flex flex-col md:flex-row overflow-y-scroll md:overflow-y-hidden"
-			style="height:640px"
-		>
-
+		<Popup closeButton={true} class='w-full lg:w-2/3 mx-auto shadow-xl z-50 flex flex-col md:flex-row overflow-y-scroll md:overflow-y-hidden h-[40rem] pt-0'>
 			<NftDisplay></NftDisplay>
-
 			<!-- Right side of popup -->
 			<div class="w-full md:w-1/2 bg-white p-9 flex flex-col h-full">
 				<slot name='content'></slot>
 				<div class="h-px w-full mt-1 bg-color-black bg-opacity-30" />
 			</div>
-		</div>
+			<button on:click={() => closePopup()} class="absolute right-9 top-8 transition-btn" slot='close-button'>
+				<CloseButton />
+			</button>
+		</Popup>
 	{:else if size === 'squished'}
-		<!-- Modal -->
-		<div
-			class="bg-white w-full lg:w-1/3 mx-auto rounded-xl shadow-xl z-50 flex flex-col md:flex-row overflow-y-scroll md:overflow-y-hidden justify-center place-items-center"
-			style="height:640px"
-		>
+		<Popup class='w-full lg:w-1/3 mx-auto shadow-xl z-50 flex flex-col md:flex-row overflow-y-scroll md:overflow-y-hidden h-[40rem] pt-0 justify-center place-items-center'>
 			<slot name='content'></slot>
-		</div>
+		</Popup>
 	{:else if size === 'small'}
-		<!-- Modal -->
-		<div
-			class="bg-white w-full lg:w-[35%] mx-auto rounded-xl shadow-xl z-50 flex flex-col md:overflow-y-hidden justify-center place-items-center"
-			style="height:360px"
-		>
+		<Popup class='w-full lg:w-[35%] mx-auto shadow-xl z-50 flex flex-col md:flex-row overflow-y-scroll md:overflow-y-hidden h-96 pt-0 justify-center place-items-center'>
 			<slot name='content'></slot>
-		</div>
+		</Popup>
 	{/if}
 </div>

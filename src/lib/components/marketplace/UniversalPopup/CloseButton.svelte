@@ -3,6 +3,6 @@
     import { closePopup } from '$utils/popup';
 </script>
 
-<button on:click={closePopup}>
+<button on:click={() => closePopup()}>
     <CloseButton />
 </button>
