@@ -91,3 +91,11 @@ Checks whether an instance of the given popup component already exists.
 **Returns**
 
 A boolean value indicating whether an instance of the given component already exists.
+
+### `closePopup`
+
+Closes the popup with the given ID or the popup at the top of the stack if an ID is not given. Please try to use popup handlers instead of this function.
+
+**Parameters**
+
+- `id` (optional) - the id of the popup to close.

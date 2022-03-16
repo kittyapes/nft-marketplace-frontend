@@ -12,7 +12,6 @@ import {
 import { ethers, Wallet } from 'ethers';
 import { get } from 'svelte/store';
 import Web3Modal from 'web3modal';
-import { loginServerNotify } from '$utils/api/login';
 import { WalletState, walletState } from '.';
 
 const infuraId = '456e115b04624699aa0e776f6f2ee65c';
@@ -141,6 +140,11 @@ export const initWeb3ModalInstance = () => {
 	return web3Modal;
 };
 
+import { setPopup } from '$utils/popup';
+import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
+import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
+import { isUserAuthExpired } from '$utils/api';
+
 // Set the provider
 const setProvider = async (provider: ethers.providers.ExternalProvider) => {
 	const ethersProvider = new ethers.providers.Web3Provider(provider);
@@ -158,7 +162,10 @@ const setProvider = async (provider: ethers.providers.ExternalProvider) => {
 	//     await ethersProvider.getBalance(userAddress)
 	//   )
 	// );
-	userAddress && loginServerNotify(userAddress);
+
+	if (userAddress && isUserAuthExpired(userAddress)) {
+		setPopup(AuthLoginPopup, { props: { adapter: userAuthLoginPopupAdapter } });
+	}
 
 	return ethersProvider;
 };

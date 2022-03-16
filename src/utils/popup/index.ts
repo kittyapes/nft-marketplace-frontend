@@ -68,3 +68,18 @@ export function setPopup(component: any, options: PopupOptions = defaultOptions)
 export function existsInstanceOfPopup(component: any) {
 	return get(popupStack).some((item) => item.component === component);
 }
+
+/**
+ * Closes the popup with the given ID or the popup at the top of the stack.
+ */
+export function closePopup(id?: string) {
+	if (id) {
+		popupStack.update((stack) => {
+			return stack.filter((item) => item.id !== id);
+		});
+	} else {
+		popupStack.update((stack) => {
+			return stack.slice(0, -1);
+		});
+	}
+}
