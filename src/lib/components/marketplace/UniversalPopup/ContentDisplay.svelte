@@ -3,6 +3,7 @@
     import { fade } from 'svelte/transition';
     import LongLeftArrow from '$icons/long-left-arrow.svelte';
     import CardHistoryTab from '../UniversalPopup/CardHistoryTab.svelte';
+    import CloseButton from './CloseButton.svelte';
 
     export let tab = 0;
 	export let buyScreen = false;
@@ -41,6 +42,7 @@
     <div class="w-full flex items-center justify-between">
         <!-- Tabs -->
         <TabSwitcher bind:selectedTab={tab}><slot name='mid-tab-nav-content' slot='mid-tab-nav'></slot></TabSwitcher>
+        <CloseButton></CloseButton>
     </div>
 
     <!-- Horizontal Line -->
