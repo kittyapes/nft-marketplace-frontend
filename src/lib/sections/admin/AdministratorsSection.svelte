@@ -4,15 +4,16 @@
 	import ModifyUser from '$lib/components/admin/ModifyUser.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import { currentUserAddress } from '$stores/wallet';
-	import { AdminData, getAdmins } from '$utils/api/admin/adminManagement';
+	import { getAdmins } from '$utils/api/admin/adminManagement';
 	import { setPopup } from '$utils/popup';
 	import { httpErrorHandler } from '$utils/toast';
+	import type { UserData } from 'src/interfaces/userData';
 
 	function handleModifyAdmin(userData) {
 		setPopup(ModifyUser, { props: { userData } });
 	}
 
-	let admins: AdminData[] = null;
+	let admins: UserData[] = null;
 
 	let isFetching = false;
 
@@ -28,12 +29,6 @@
 <div class="mt-32">
 	<div class="w-full flex justify-between items-baseline">
 		<div class="uppercase text-lg font-bold ">Administrators</div>
-		<a
-			href="/admin/users/add-admin"
-			class="btn btn-rounded uppercase italic btn-outline h-12 font-light"
-		>
-			Add
-		</a>
 	</div>
 
 	<div class="max-h-[900px] overflow-auto custom-scrollbar mt-5 pb-4">

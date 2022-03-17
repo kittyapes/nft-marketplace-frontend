@@ -1,37 +1,36 @@
 <script lang="ts">
 	import EthAddress from '$lib/components/EthAddress.svelte';
-	import { AdminData, deleteAdmin, putModifyAdmin } from '$utils/api/admin/adminManagement';
-	import { httpErrorHandler, notifySuccess } from '$utils/toast';
+	import type { UserData } from 'src/interfaces/userData';
 	import Dropdown from '../Dropdown.svelte';
 	import Popup from '../Popup.svelte';
 
 	const adminTypeOptions = [{ label: 'Admin', value: 'admin' }];
 
-	export let userData: AdminData;
+	export let userData: UserData;
 
 	let name = userData?.name;
 
 	let isSubmiting = false;
 
-	async function update() {
-		isSubmiting = true;
+	// async function update() {
+	// 	isSubmiting = true;
 
-		await putModifyAdmin(userData._id, name, userData.wallet, 'admin')
-			.then(() => notifySuccess('User updated.'))
-			.catch(httpErrorHandler);
+	// 	await putModifyAdmin(userData._id, name, userData.wallet, 'admin')
+	// 		.then(() => notifySuccess('User updated.'))
+	// 		.catch(httpErrorHandler);
 
-		isSubmiting = false;
-	}
+	// 	isSubmiting = false;
+	// }
 
-	async function delete_() {
-		isSubmiting = true;
+	// async function delete_() {
+	// 	isSubmiting = true;
 
-		await deleteAdmin(userData._id)
-			.then(() => notifySuccess('User deleted.'))
-			.catch(httpErrorHandler);
+	// 	await deleteAdmin(userData._id)
+	// 		.then(() => notifySuccess('User deleted.'))
+	// 		.catch(httpErrorHandler);
 
-		isSubmiting = false;
-	}
+	// 	isSubmiting = false;
+	// }
 </script>
 
 <Popup class="min-w-[600px]" closeButton>
@@ -64,10 +63,8 @@
 		</div>
 
 		<div class="flex mt-8 justify-center px-16 gap-4">
-			<button class="btn-secondary w-48" disabled={isSubmiting} on:click={delete_}>Delete</button>
-			<button class="btn-primary w-48" disabled={isSubmiting} on:click={update}>
-				Save Changes
-			</button>
+			<button class="btn-secondary w-48" disabled={isSubmiting}>Delete</button>
+			<button class="btn-primary w-48" disabled={isSubmiting}>Save Changes</button>
 		</div>
 	</div>
 </Popup>
