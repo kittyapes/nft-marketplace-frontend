@@ -1,5 +1,5 @@
 export const HinataTokenAddress = '0x1AA88B44d0D650fc059275a804A60F538d363d12';
-export const HinataMarketplaceContractAddress = '0xcA88655957580Ae5f5aE985dB1fc14bc047BA614';
+export const HinataMarketplaceContractAddress = '0x991278b42179d99bB80d64058048F6d94bB40fD7'; //'0xcA88655957580Ae5f5aE985dB1fc14bc047BA614';
 export const communityMerkleDistributorLockContract = '0x35CaaBA865BD019dc738eCB96Ec7D0a7Ab349015';
 export const seedVestingMerkleDistributorLockContract =
 	'0xd2ba70F23eC1F11C8F01c54a360380d2aFe05Eec';
