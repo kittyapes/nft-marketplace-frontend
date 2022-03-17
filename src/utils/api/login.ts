@@ -1,3 +1,4 @@
+// TODO remove file
 import { browser } from '$app/env';
 import { isJwtExpired } from '$utils/jwt';
 import { derived } from 'svelte/store';

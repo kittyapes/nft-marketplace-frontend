@@ -11,7 +11,6 @@
 	import TabButton from '$lib/components/TabButton.svelte';
 	import { profileCompletionProgress } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
-	import { isCurrentAddressAdmin } from '$utils/api/login';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { setPopup } from '$utils/popup';
 	import { onMount } from 'svelte';
@@ -21,9 +20,8 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import getUserNfts from '$utils/nfts/getUserNfts';
 	import { browser } from '$app/env';
-	import type { ProfileData } from '$lib/interfaces/profileData';
-	import { userHasPermission, userRoles } from '$utils/auth/userPermissions';
 	import { userHasRole } from '$utils/auth/userRoles';
+	import type { UserData } from 'src/interfaces/userData';
 
 	// const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'FAVORITES'];
@@ -31,7 +29,7 @@
 
 	$: address = $page.params.address;
 
-	const localProfileData = writable<ProfileData>();
+	const localProfileData = writable<UserData>();
 
 	async function fetchData(forAdress: string) {
 		$localProfileData = await fetchProfileData(forAdress);
