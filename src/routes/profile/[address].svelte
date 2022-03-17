@@ -22,6 +22,8 @@
 	import getUserNfts from '$utils/nfts/getUserNfts';
 	import { browser } from '$app/env';
 	import type { ProfileData } from '$lib/interfaces/profileData';
+	import { userHasPermission, userRoles } from '$utils/auth/userPermissions';
+	import { userHasRole } from '$utils/auth/userRoles';
 
 	// const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'FAVORITES'];
@@ -204,6 +206,6 @@
 	</div>
 </div>
 
-{#if $isCurrentAddressAdmin && localProfileData}
+{#if $userHasRole('admin', 'superadmin')}
 	<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
 {/if}
