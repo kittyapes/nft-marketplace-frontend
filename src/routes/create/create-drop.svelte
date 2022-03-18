@@ -13,6 +13,8 @@
 	import { profileData } from '$stores/user';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { getLastDropID } from '$utils/create';
+	import { notifyError } from '$utils/toast';
+	import generateNftID from '$utils/create/generateNftID';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
@@ -33,48 +35,65 @@
 
 		// get last drop ID
 		const maxDropId = await getLastDropID();
-		let dropId = maxDropId + 1;
+		let dropId = maxDropId + 2;
 
-		// create drop on chain
-		await createDropOnChain(dropId.toString())
-			.then(async (res) => {
-				// create drop
-				const dropCreationApiResponse = await createDropOnAPI({
-					contractId: dropId,
-					title: nftName,
-					artist: $profileData?._id,
-					creator: $currentUserAddress,
-					description: nftDescription
-				});
+		await createDropOnAPI({
+			contractId: dropId,
+			title: nftName,
+			artist: $profileData?._id,
+			creator: $currentUserAddress,
+			description: nftDescription
+		})
+			.then(async (dropApiResponse) => {
+				console.log(dropApiResponse);
 
-				console.log(dropCreationApiResponse);
+				// Create drop on contract
+				await createDropOnChain(dropId.toString())
+					.then(async (res) => {
+						// Generate NFT ID
+						const nftID = await generateNftID();
 
-				if (dropCreationApiResponse) {
-					// mint nft on chaijn
-					await createNFTOnChain({ dropId: dropId.toString(), id: '0', amount: '1' })
-						.then(async (nftRes) => {
-							// create nft
-							const nftCreationApiResponse = await createNFTOnAPI({
-								dropId: dropId.toString(),
-								contractId: 0,
-								amount: '1',
-								name: nftName,
-								generation: nftCollection,
-								categories: '', // empty, the frontend does not have this
-								tag: '', // empty frontend does not have this
-								artist: $profileData?._id,
-								creator: $currentUserAddress,
-								image: fileBlob,
-								animation: animationBlob
-							});
-							console.log(nftCreationApiResponse);
+						// Create NFT on api
+						await createNFTOnAPI({
+							dropId: dropId.toString(),
+							contractId: nftID,
+							amount: '1',
+							name: nftName,
+							generation: nftCollection,
+							categories: '', // empty, the frontend does not have this
+							tag: '', // empty frontend does not have this
+							artist: $profileData?._id,
+							creator: $currentUserAddress,
+							image: fileBlob,
+							animation: animationBlob
 						})
-						.catch((err) => {
-							console.log(err);
-						});
-				}
+							.then(async (createNftResponse) => {
+								//
+								// Create NFT on contract
+								await createNFTOnChain({
+									dropId: dropId.toString(),
+									id: nftID,
+									amount: '1' // 1 for one of one
+								}).catch((err) => {
+									console.log(err);
+									notifyError('Failed to Mint NFT on contract');
+								});
+								//
+							})
+							.catch((err) => {
+								console.log(err);
+								notifyError('failed to create nft on api');
+							});
+					})
+					.catch((err) => {
+						console.log('DROP CREATION ON CONTRACT ERR: ', err);
+						notifyError('Failed to create drop on contract');
+					});
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				console.log('DROP CREATION ON API ERROR: ', err);
+				notifyError('Sorry, failed to create drop');
+			});
 
 		setPopup(ContinueListingPopup, {
 			props: { relHref: 'sale', title: 'Sale', imgUrl: '/img/create/drop-type-sale.svg' }

@@ -5,6 +5,7 @@
 	import Back from '$icons/back_.svelte';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import { newDropProperties } from '$stores/create';
+	import { appSigner } from '$stores/wallet';
 	import { goBack } from '$utils/navigation';
 
 	const pathToChecks = {
