@@ -2,7 +2,7 @@ import type { AuthLoginPopupAdapter } from '../authLoginPopupAdapter';
 import sha256 from 'hash.js/lib/hash/sha/256.js';
 import axios from 'axios';
 import { api } from '$constants/api';
-import { setUserAuthToken } from '$utils/api';
+import { setAuthToken } from '$utils/auth/token';
 
 let timestamp = null;
 
@@ -58,5 +58,5 @@ export const userAuthLoginPopupAdapter: AuthLoginPopupAdapter = {
 	getPrompt,
 	getMessageToSign,
 	getAuthToken,
-	useToken: setUserAuthToken
+	useToken: setAuthToken
 };

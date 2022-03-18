@@ -1,6 +1,6 @@
 import { api } from '$constants/api';
 import { appSigner } from '$stores/wallet';
-import { getUserAxiosConfig } from '$utils/api';
+import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import HinataMarketplaceContract from '$utils/contracts/hinataMarketplace';
 import axios from 'axios';
 import { ethers } from 'ethers';
@@ -48,7 +48,7 @@ export const createNFTOnAPI = async ({
 			image,
 			animation
 		},
-		getUserAxiosConfig()
+		getAxiosConfig()
 	);
 
 	return res.data.data;

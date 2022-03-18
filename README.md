@@ -52,3 +52,9 @@ TODOS
 - read waifu rewards balance from staking contract
 - prevent access to private page for users without balances in respective contracts/wallets
 - reenable private page access
+
+## Documentation
+
+- [Authentication](./docs//authentication.md)
+- [Hover hints](./docs/hover-hints.md)
+- [Popups & modal utilities](./docs/popup-modal-utils.md)
