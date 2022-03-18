@@ -3,7 +3,7 @@
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
-	import CardInfoPopup from '$lib/components/marketplace/AuctionCardPopup/index.svelte';
+	import CardInfoPopup from '$lib/components/marketplace/AuctionCardPopup/AuctionPopup.svelte';
 
 	import { page } from '$app/stores';
 	import { popupOpen, selectedCard } from '$stores/marketplace';
