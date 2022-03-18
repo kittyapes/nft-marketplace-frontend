@@ -4,12 +4,13 @@ import { page } from '$app/stores';
 import { setPopup } from '$utils/popup';
 import { WalletState, walletState } from '$utils/wallet';
 import { derived } from 'svelte/store';
-import { getAdminAuthToken } from '$utils/api';
 import { currentUserAddress } from '$stores/wallet';
 import { getAddress } from '$utils/misc/getters';
-import { adminAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/adminAuthLoginPopupAdapter';
+
 // @ts-ignore
 import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
+import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
+import { getAuthToken } from '$utils/auth/token';
 
 // Regex of routes which are allowed to be accessed only with a
 // wallet connected.
@@ -52,11 +53,11 @@ export function initNavigationHandlers() {
 			return;
 		}
 
-		if (matchesRouteIn(authRequiredRoutes, $page.path) && !getAdminAuthToken()) {
+		if (matchesRouteIn(authRequiredRoutes, $page.path) && !getAuthToken()) {
 			setPopup(AuthLoginPopup, {
-				props: { adapter: adminAuthLoginPopupAdapter },
+				props: { adapter: userAuthLoginPopupAdapter },
 				onClose: () => {
-					if (!getAdminAuthToken()) {
+					if (!getAuthToken()) {
 						goto('/');
 					}
 					return true;

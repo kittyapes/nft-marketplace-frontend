@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { api } from '$constants/api';
-import { getUserAxiosConfig } from '$utils/api';
 import HinataMarketplaceContract from '$utils/contracts/hinataMarketplace';
 import { get } from 'svelte/store';
 import { appSigner } from '$stores/wallet';
 import { ethers } from 'ethers';
+import { getAxiosConfig } from '$utils/auth/axiosConfig';
 
 export const createDropOnAPI = async ({
 	contractId,
@@ -22,7 +22,7 @@ export const createDropOnAPI = async ({
 			artist,
 			creator
 		},
-		getUserAxiosConfig()
+		getAxiosConfig()
 	);
 
 	return res.data.data as DropApiReturnValue;

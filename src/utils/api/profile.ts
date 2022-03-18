@@ -4,7 +4,6 @@ import { appSigner } from '$stores/wallet';
 import axios from 'axios';
 import { sha512 } from 'hash.js';
 import { get } from 'svelte/store';
-import { getAdminAxiosConfig } from '.';
 
 export interface LoginHistoryEntry {
 	address: string;
