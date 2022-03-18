@@ -1,3 +1,4 @@
+// This file is deprecated and a subject for future removal! Do not change anytihng here!
 export interface LoginHistoryEntry {
 	address: string;
 	checksum: string;
