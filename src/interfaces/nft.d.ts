@@ -1,6 +1,6 @@
 interface NFTCreationObject {
 	dropId: string;
-	contractId: number;
+	contractId: string;
 	amount: string;
 	name: string;
 	generation: string;
