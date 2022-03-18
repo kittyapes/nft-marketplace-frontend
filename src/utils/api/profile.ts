@@ -3,6 +3,7 @@ import type { ProfileData } from '$lib/interfaces/profileData';
 import { appSigner } from '$stores/wallet';
 import axios from 'axios';
 import { sha512 } from 'hash.js';
+import type { UserData } from 'src/interfaces/userData';
 import { get } from 'svelte/store';
 
 export interface LoginHistoryEntry {
@@ -30,7 +31,7 @@ export async function fetchProfileData(address: string) {
 	// @ts-ignore
 	data.deviantart = data.devianart;
 
-	return data;
+	return data as UserData;
 }
 
 export interface EditableProfileData {
