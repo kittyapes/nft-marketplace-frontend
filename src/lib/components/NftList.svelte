@@ -1,8 +1,8 @@
 <script lang="ts">
 	import NftCard from './NftCard.svelte';
-	import type { TokenData } from '$lib/interfaces/tokenData';
-	import { adaptNftCard } from '$utils/adapters/adaptNftCard';
 	import { fetchTokenUriData } from '$utils/nfts/fetchTokenUriData';
+	import type { TokenData } from 'src/interfaces/tokenData';
+	import { adaptNftCard } from '$utils/adapters/adaptNftCard';
 
 	export let data: TokenData[];
 </script>

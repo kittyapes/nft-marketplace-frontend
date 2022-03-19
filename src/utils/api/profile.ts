@@ -1,5 +1,4 @@
 import { api } from '$constants/api';
-import type { ProfileData } from '$lib/interfaces/profileData';
 import { appSigner } from '$stores/wallet';
 import axios from 'axios';
 import { sha512 } from 'hash.js';
@@ -25,7 +24,7 @@ export async function fetchProfileData(address: string) {
 		return null;
 	}
 
-	const data = res.data.data as ProfileData;
+	const data = res.data.data as UserData;
 
 	// Fix deviantart typo
 	// @ts-ignore
@@ -49,20 +48,6 @@ export interface EditableProfileData {
 	artstation: string;
 	imageUrl: string;
 	coverUrl: string;
-}
-
-function readFileAsync(file) {
-	return new Promise((resolve, reject) => {
-		let reader = new FileReader();
-
-		reader.onload = () => {
-			resolve(reader.result);
-		};
-
-		reader.onerror = reject;
-
-		reader.readAsArrayBuffer(file);
-	});
 }
 
 async function hashImage(address: string, file: Blob) {

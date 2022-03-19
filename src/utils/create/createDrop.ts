@@ -5,6 +5,8 @@ import { get } from 'svelte/store';
 import { appSigner } from '$stores/wallet';
 import { ethers } from 'ethers';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
+import type { DropApiReturnValue } from 'src/interfaces/drops/dropApiReturnValue';
+import type { DropPostObject } from 'src/interfaces/drops/dropPostObject';
 
 export const createDropOnAPI = async ({
 	contractId,
