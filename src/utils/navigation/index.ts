@@ -61,7 +61,8 @@ export function initNavigationHandlers() {
 						goto('/');
 					}
 					return true;
-				}
+				},
+				unique: true
 			});
 		}
 	});
