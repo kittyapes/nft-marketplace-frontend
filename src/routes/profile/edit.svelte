@@ -27,6 +27,7 @@
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { isEmail } from '$utils/validator/isEmail';
 	import { cloneDeep, debounce } from 'lodash-es';
+	import type { UserData } from 'src/interfaces/userData';
 	import { derived, writable } from 'svelte/store';
 	import { fade, slide } from 'svelte/transition';
 
@@ -77,7 +78,7 @@
 		}
 	}
 
-	async function useProfileData(data: ProfileData) {
+	async function useProfileData(data: UserData) {
 		try {
 			const localData = {
 				username: data.username,
