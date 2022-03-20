@@ -29,3 +29,8 @@ export function isAuthTokenExpired(address: string) {
 
 	return isJwtExpired(token);
 }
+
+export function removeAuthToken(address: string) {
+	const key = getAuthTokenKey(address);
+	localStorage.removeItem(key);
+}
