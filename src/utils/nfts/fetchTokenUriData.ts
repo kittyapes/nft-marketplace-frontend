@@ -1,5 +1,5 @@
 import { makeHttps } from '$utils/ipfs';
-import type { TokenUriData } from '$lib/interfaces/tokenUriData';
+import type { TokenUriData } from 'src/interfaces/tokenUriData';
 
 export async function fetchTokenUriData(uri: string): Promise<TokenUriData | null> {
 	console.log(uri);

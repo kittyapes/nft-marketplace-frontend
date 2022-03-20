@@ -1,5 +1,4 @@
-import { get, writable } from 'svelte/store';
-import type { TokenData } from '$lib/interfaces/tokenData';
+import type { TokenData } from 'src/interfaces/tokenData';
 
 export function adaptNftCard(data: TokenData) {
 	return {

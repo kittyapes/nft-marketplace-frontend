@@ -21,14 +21,13 @@
     let loaded = false;
 
     onMount(() => {
-        setTimeout(() => loaded = true, 100);
+        setTimeout(() => loaded = true, 0);
     });
 </script>
 
 <LoadedContent {loaded}>
     {#if response === 404}
         <div class='h-full w-full grid place-items-center'>
-            
             <div class='flex flex-col gap-10 p-20 items-center'>
                 <Error404></Error404>
                 <h1 class='text-7xl py-4 font-semibold text-color-gray-base'>Something's missing.</h1>
@@ -36,5 +35,4 @@
             </div>
         </div>
     {/if}
-    
 </LoadedContent>

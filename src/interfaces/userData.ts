@@ -1,3 +1,5 @@
+export type UserRole = 'superadmin' | 'admin' | 'user';
+
 export interface LoginHistoryEntry {
 	address: string;
 	checksum: string;
@@ -5,7 +7,7 @@ export interface LoginHistoryEntry {
 	upload_time: number;
 }
 
-export interface ProfileData {
+export interface UserData {
 	address: string;
 	createdAt: string;
 	email: string;
@@ -25,4 +27,5 @@ export interface ProfileData {
 	pixiv: string;
 	deviantart: string;
 	artstation: string;
+	roles: UserRole;
 }

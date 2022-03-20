@@ -1,6 +1,6 @@
-interface NFTCreationObject {
+export interface NFTCreationObject {
 	dropId: string;
-	contractId: number;
+	contractId: string;
 	amount: string;
 	name: string;
 	generation: string;
@@ -10,12 +10,4 @@ interface NFTCreationObject {
 	creator: string;
 	image: Blob;
 	animation: Blob;
-}
-
-interface NFTApiReturnValue {}
-
-interface NFTMintingObject {
-	dropId: string;
-	id: string;
-	amount: string;
 }

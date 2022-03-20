@@ -1,6 +1,6 @@
 import { api } from '$constants/api';
+import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
-import { getAdminAxiosConfig } from '.';
 
 /**
  * Check if the user has already claimed and get message to sign and attach to the claim route
@@ -8,7 +8,7 @@ import { getAdminAxiosConfig } from '.';
  * @returns An object with the message to sign when claiming and the isClaimed boolean value
  */
 export async function hasClaimedFreeNft(address: string) {
-	const res = await axios.get(`${api}/v1/nfts/isClaimed/${address}`, getAdminAxiosConfig());
+	const res = await axios.get(`${api}/v1/nfts/isClaimed/${address}`, getAxiosConfig());
 
 	return res.data.data;
 }
@@ -26,7 +26,7 @@ export async function claimFreeNft(selectedNftIndex: number, address: string, si
 			address,
 			signature
 		},
-		getAdminAxiosConfig()
+		getAxiosConfig()
 	);
 	console.log(res);
 

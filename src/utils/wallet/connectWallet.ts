@@ -143,7 +143,7 @@ export const initWeb3ModalInstance = () => {
 import { setPopup } from '$utils/popup';
 import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
 import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
-import { isUserAuthExpired } from '$utils/api';
+import { isAuthTokenExpired } from '$utils/auth/token';
 
 // Set the provider
 const setProvider = async (provider: ethers.providers.ExternalProvider) => {
@@ -162,10 +162,6 @@ const setProvider = async (provider: ethers.providers.ExternalProvider) => {
 	//     await ethersProvider.getBalance(userAddress)
 	//   )
 	// );
-
-	if (userAddress && isUserAuthExpired(userAddress)) {
-		setPopup(AuthLoginPopup, { props: { adapter: userAuthLoginPopupAdapter } });
-	}
 
 	return ethersProvider;
 };

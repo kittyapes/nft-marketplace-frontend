@@ -1,17 +1,13 @@
 import { api } from '$constants/api';
+import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
-import { getAdminAxiosConfig } from '..';
 
 export async function postVerificationQueueAdd(address: string) {
-	return await axios.post(api + '/v1/accounts/' + address + '/promote', {}, getAdminAxiosConfig());
+	return await axios.post(api + '/v1/accounts/' + address + '/promote', {}, getAxiosConfig());
 }
 
 export async function postInactivationQueueAdd(address: string) {
-	return await axios.post(
-		api + '/v1/accounts/' + address + '/inactivate',
-		{},
-		getAdminAxiosConfig()
-	);
+	return await axios.post(api + '/v1/accounts/' + address + '/inactivate', {}, getAxiosConfig());
 }
 
 export interface VerificationQueueItem {
@@ -24,7 +20,7 @@ export async function getVerificationQueue(
 ): Promise<VerificationQueueItem[]> {
 	const res = await axios.get(api + '/v1/accounts', {
 		params: { sortBy, status: 'AWAITING_VERIFIED,AWAITING_INACTIVATED' },
-		...getAdminAxiosConfig()
+		...getAxiosConfig()
 	});
 
 	return res.data.data;
@@ -36,6 +32,6 @@ export async function getVerifiedCreators(
 ) {
 	return await axios.get(api + '/v1/accounts', {
 		params: { status: verificationStatus, sortBy },
-		...getAdminAxiosConfig()
+		...getAxiosConfig()
 	});
 }
