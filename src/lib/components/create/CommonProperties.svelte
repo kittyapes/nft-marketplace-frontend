@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Datepicker from '$lib/components/Datepicker.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
-	import type { ListingPropName } from '$lib/interfaces/drops';
+	import type { ListingPropName } from 'src/interfaces/drops';
 	import { isPrice } from '$utils/validator/isPrice';
 	import DurationSelect from '../DurationSelect.svelte';
 	import RadioGroup from '../RadioGroup.svelte';
@@ -107,7 +107,7 @@
 		{#if is('auctionDuration')}
 			<label for="auction-duration-component">
 				<span>Auction duration</span>
-				<DurationSelect id="auction-duration-component" />
+				<DurationSelect id="auction-duration-component" bind:seconds={propValues.auctionDuration} />
 			</label>
 		{/if}
 
