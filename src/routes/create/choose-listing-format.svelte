@@ -17,7 +17,7 @@
 			title: 'Auction',
 			imgUrl: '/img/create/drop-type-auction.svg',
 			hoverText: 'Allow other users to make bids on your NFT.',
-			disabled: true
+			disabled: false
 		},
 		{
 			listingType: 'raffle',
