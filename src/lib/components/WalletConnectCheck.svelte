@@ -18,6 +18,7 @@
 	}
 
 	$: if ($walletState === WalletState.CONNECTED) {
+		console.log(popupHandler);
 		popupHandler?.close();
 	}
 </script>

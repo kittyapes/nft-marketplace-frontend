@@ -9,7 +9,7 @@ import {
 	communityClaimsArray,
 	web3ModalInstance
 } from '$stores/wallet';
-import { ethers, Wallet } from 'ethers';
+import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import Web3Modal from 'web3modal';
 import { WalletState, walletState } from '.';
@@ -139,11 +139,6 @@ export const initWeb3ModalInstance = () => {
 
 	return web3Modal;
 };
-
-import { setPopup } from '$utils/popup';
-import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
-import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
-import { isAuthTokenExpired } from '$utils/auth/token';
 
 // Set the provider
 const setProvider = async (provider: ethers.providers.ExternalProvider) => {
