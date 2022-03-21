@@ -4,7 +4,7 @@
 </script>
 
 {#each $popupStack as popupItem}
-	<Modal on:close={popupItem.handler.close}>
+	<Modal on:close={() => popupItem.options.closeByOutsideClick && popupItem.handler.close()}>
 		<svelte:component
 			this={popupItem.component}
 			{...popupItem.options.props || {}}
