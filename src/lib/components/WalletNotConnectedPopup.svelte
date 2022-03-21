@@ -1,9 +1,16 @@
-<script>
+<script lang="ts">
+	import type { PopupHandler } from '$utils/popup';
+	import { WalletState, walletState } from '$utils/wallet';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import Popup from './Popup.svelte';
 
+	export let handler: PopupHandler;
+
 	function connectWallet() {
-		connectToWallet().catch(() => location.reload());
+		walletState.set(WalletState.REQUESTING_CONNECT);
+
+		handler.close();
+		connectToWallet().catch(() => walletState.set(WalletState.DISCONNECTED));
 	}
 </script>
 

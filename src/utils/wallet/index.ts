@@ -3,7 +3,8 @@ import { derived, writable } from 'svelte/store';
 export enum WalletState {
 	UNKNOWN = 'UNKNOWN',
 	CONNECTED = 'CONNECTED',
-	DISCONNECTED = 'DISCONNECTED'
+	DISCONNECTED = 'DISCONNECTED',
+	REQUESTING_CONNECT = 'REQUESTING_CONNECT'
 }
 
 export const walletState = writable<WalletState>(WalletState.UNKNOWN);
