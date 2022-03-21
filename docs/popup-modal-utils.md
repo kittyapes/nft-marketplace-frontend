@@ -35,7 +35,7 @@ Clicking outside the popup managed by the popup manager will attempt to close th
 
 `setPopup(component: any, options: PopupOptions)`
 
-Set a popup component with this function. The component will be added to the popup stack and rendered by the popup manager. A popup handler object will be returned.
+Set a popup component with this function. The component will be added to the popup stack and rendered by the popup manager. A popup handler object will be returned. This popup handler will also be passed to the popup component itself, which can then access its methods (like `close`).
 
 _Note: This function manipulates the `popupStack` store, which is not meant to be used directly._
 
@@ -74,6 +74,8 @@ handler.close();
 ```
 
 #### `PopupHandler`
+
+Popup handler is returned by the `setPopup` function and also passed to the popup component itself, which can then access its methods (like `close`).
 
 | Property  | Description          |
 | --------- | -------------------- |
