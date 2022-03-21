@@ -6,19 +6,21 @@
 	import CardInfoPopup from '$lib/components/marketplace/AuctionCardPopup/index.svelte';
 
 	import { page } from '$app/stores';
-	import { popupOpen, selectedCard } from '$stores/marketplace';
+	import { selectedCard } from '$stores/marketplace';
 	import { fetchMetadataFromUri } from '$utils/api/getNFT';
+	import { setPopup } from '$utils/popup';
 
 	let sidebarOpen;
 
 	$: {
-		if ($page.params.id !== 'cards' && !$selectedCard) {
+		if ($page.params.id !== 'cards') {
 			let uri = `https://databasewaifu.herokuapp.com/api/token/${$page.params.id}`;
 			let data = fetchMetadataFromUri(parseInt($page.params.id), uri);
 			data
 				.then((resolvedData) => {
 					selectedCard.set(resolvedData);
-					popupOpen.set(true);
+
+					setPopup(CardInfoPopup, { unique: true });
 				})
 				.catch((err) => console.log(err));
 		}
@@ -26,10 +28,6 @@
 </script>
 
 <div class="w-full min-h-screen h-full flex flex-col md:flex-row">
-	{#if $popupOpen && $selectedCard}
-		<CardInfoPopup />
-	{/if}
-
 	<Sidebar bind:isOpen={sidebarOpen} />
 
 	<div

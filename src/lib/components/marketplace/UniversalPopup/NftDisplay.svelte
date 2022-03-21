@@ -1,5 +1,5 @@
 <script>
-	import { popupOpen, selectedCard } from '$stores/marketplace';
+	import { selectedCard } from '$stores/marketplace';
 	import Fullscreen from '$icons/fullscreen.svelte';
 	import Share from '$icons/share.svelte';
 	import { notifySuccess } from '$utils/toast';
@@ -28,11 +28,7 @@
 
 		<!-- Fullscreen and Share button -->
 		<div class="flex justify-center mt-24 mb-8 gap-x-4">
-			<a
-				href={$selectedCard?.image}
-				target="_blank"
-				class="transition-btn hover:brightness-110"
-			>
+			<a href={$selectedCard?.image} target="_blank" class="transition-btn hover:brightness-110">
 				<Fullscreen />
 			</a>
 
