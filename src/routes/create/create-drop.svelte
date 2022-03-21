@@ -15,6 +15,7 @@
 	import { getLastDropID } from '$utils/create';
 	import { notifyError } from '$utils/toast';
 	import generateNftID from '$utils/create/generateNftID';
+	import { goto } from '$app/navigation';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
@@ -32,6 +33,7 @@
 
 	async function mintAndContinue() {
 		// Mint function here
+		goto('/create/choose-listing-format');
 
 		// get last drop ID
 		const maxDropId = await getLastDropID();

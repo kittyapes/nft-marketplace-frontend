@@ -1,96 +1,40 @@
 <!-- This is not a finalized version, we are missing designs for the popup -->
 <script lang="ts">
 	import ArrowDown from '$icons/arrow-down.svelte';
-	import Calendar from '$icons/calendar.svelte';
-	import ChevronLeft from '$icons/chevron-left.svelte';
-	import ChevronRight from '$icons/chevron-right.svelte';
 	import Clock from '$icons/clock.svelte';
-	import Time from '$icons/time.svelte';
-	import dayjs from 'dayjs';
-	import isoWeek from 'dayjs/plugin/isoWeek.js';
-	import { onMount } from 'svelte';
-	import Toggle from './Toggle.svelte';
-
-	dayjs.extend(isoWeek);
 
 	export let id = '';
-	export let placeholder = 'DD/HH/MM';
+	export let placeholder = 'HH:MM';
+	export let seconds = 0;
 
 	let open = false;
-	let section: 'date' | 'time' = 'date';
-
-	const days = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
-	let selectedDate: dayjs.Dayjs = dayjs();
-
-	function resetToday() {
-		selectedDate = dayjs();
-	}
-
-	function nextMonth() {
-		selectedDate = selectedDate.add(1, 'month');
-	}
-
-	function previousMonth() {
-		selectedDate = selectedDate.subtract(1, 'month');
-	}
-
-	function handleDone() {
-		selectedDate = selectedDate.hour(hours).minute(minutes);
-
-		if (isPm) {
-			selectedDate = selectedDate.add(12, 'hour');
-		}
-
-		inputText = selectedDate.format('YYYY-MM-DD h:mm A');
-		open = false;
-	}
-
-	onMount(resetToday);
 
 	let hours = 6;
 	let minutes = 30;
-	let monthDays = [];
 	let inputText = '';
-	let isPm = false;
 
-	$: monthWeekdayOffset = selectedDate.date(1).isoWeekday() - 1;
+	let inputElement: HTMLInputElement;
 
-	interface DayInTable {
-		day: number;
-		isSelected: boolean;
-		isToday: boolean;
-		isDisabled: boolean;
+	function clickDone() {
+		inputElement.blur();
+		open = false;
 	}
 
-	$: {
-		const fillBeforeDays = Array(monthWeekdayOffset)
-			.fill(0)
-			.map((_, i) => ({
-				day: selectedDate.subtract(1, 'month').daysInMonth() - monthWeekdayOffset + i + 1,
-				isDisabled: true
-			}));
-
-		const currentMonthDays = Array(selectedDate.daysInMonth())
-			.fill(0)
-			.map((_, i) => ({ day: i + 1 }));
-
-		const fillAfterDays = Array(42 - fillBeforeDays.length - currentMonthDays.length)
-			.fill(0)
-			.map((_, i) => ({ day: i + 1, isDisabled: true }));
-
-		monthDays = [...fillBeforeDays, ...currentMonthDays, ...fillAfterDays] as DayInTable[];
-	}
+	// prettier-ignore
+	$: inputText = `${((hours || 0).toString()).padStart(2, '0')}:${((minutes || 0).toString()).padStart(2, '0')}`;
+	$: seconds = (hours || 0) * 60 * 60 + (minutes || 0) * 60;
 </script>
 
 <div class="relative">
 	<input
 		{id}
 		type="text"
-		class="input w-full h-12"
+		class="input w-full h-12 cursor-default disabled:bg-white"
 		{placeholder}
 		class:font-semibold={inputText}
 		bind:value={inputText}
-		readonly
+		bind:this={inputElement}
+		disabled
 	/>
 
 	<button
@@ -105,104 +49,34 @@
 
 	{#if open}
 		<div
-			class="absolute top-0 right-0 w-full bg-white flex flex-col rounded-xl translate-y-14 p-4 z-10"
+			class="absolute top-0 right-0 w-full bg-white flex flex-col rounded-xl translate-y-14 p-4 z-10 h-[400px]"
 			style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);"
 		>
-			<!-- use:outsideClickCallback={{ cb: () => (open = false) }} -->
-			<!-- Date/Time switch -->
+			<!-- Duration -->
 			<div
-				class="border-color-black border rounded-xl h-12 grid grid-cols-2 overflow-hidden flex-shrink-0"
+				class="bg-color-black border rounded-xl h-12 text-white grid place-items-center uppercase w-2/3 mx-auto"
 			>
-				<button
-					class="uppercase font-semibold transition flex items-center justify-center
-                    {section === 'date' ? 'bg-black text-white' : ''}"
-					on:click={() => (section = 'date')}
-				>
-					<Calendar />
-					<span class="ml-2">Date</span>
-				</button>
-
-				<button
-					class="uppercase font-semibold transition flex items-center justify-center
-                    {section === 'time' ? 'bg-black text-white' : ''}"
-					on:click={() => (section = 'time')}
-				>
-					<Time />
-					<span class="ml-2">Time</span>
-				</button>
+				Duration
 			</div>
 
-			{#if section === 'date'}
-				<div class="flex mt-4">
-					<div class="flex-grow font-bold">
-						{selectedDate.format('MMM')}
-						{selectedDate.year()}
-					</div>
-					<div class="flex space-x-2">
-						<button class="btn" on:click={previousMonth}><ChevronLeft /></button>
-						<button class="btn" on:click={nextMonth}><ChevronRight /></button>
-					</div>
-				</div>
+			<!-- Input boxes -->
+			<div class="flex items-center justify-center space-x-2 mt-4 flex-grow">
+				<input
+					type="number"
+					min="0"
+					class="input-hide-controls grid place-items-center border w-24 h-24 text-3xl text-center"
+					bind:value={hours}
+				/>
 
-				<div class="flex font-semibold mt-6">
-					{#each days as day}
-						<div class="flex-grow text-center">{day}</div>
-					{/each}
-				</div>
+				<div class="text-6xl opacity-40 font-semibold">:</div>
 
-				<div class="grid grid-cols-7 gap-px bg-[#DFDFDF] border mt-3">
-					{#each monthDays as day}
-						<button
-							class="btn flex-grow text-center aspect-1 bg-white grid place-items-center text-sm font-medium
-							{day.day === selectedDate.date() ? 'bg-[#388DFC] text-white' : ''}
-							{day.isDisabled ? 'text-[#747474] bg-[#FCFCFC]' : ''}"
-							class:font-bold={day.isToday}
-							on:click={() => (selectedDate = selectedDate.date(day.day))}
-							disabled={day.isDisabled}
-						>
-							{day.day}
-						</button>
-					{/each}
-				</div>
+				<input
+					class="grid place-items-center border w-24 h-24 text-3xl text-center"
+					bind:value={minutes}
+				/>
+			</div>
 
-				<button class="btn btn-outline btn-rounded mt-4" on:click={() => (section = 'time')}>
-					Select Time
-				</button>
-			{/if}
-
-			{#if section === 'time'}
-				<div class="flex justify-center mt-8">
-					<Toggle onInsideLabel="PM" offInsideLabel="AM" bind:state={isPm} />
-				</div>
-
-				<div class="flex items-center justify-center space-x-2 mt-4">
-					<div class="grid place-items-center border w-24 h-24 text-3xl">
-						{hours}
-					</div>
-
-					<div class="text-6xl opacity-40 font-semibold">:</div>
-
-					<div class="grid place-items-center border w-24 h-24 text-3xl">
-						{minutes}
-					</div>
-				</div>
-
-				<div class="mt-8">
-					<label class="font-semibold">
-						<div>Hours:</div>
-						<input type="range" bind:value={hours} max="12" class="mt-2" />
-					</label>
-
-					<label class="font-semibold">
-						<div>Minutes:</div>
-						<input type="range" bind:value={minutes} max="60" class="mt-2" />
-					</label>
-				</div>
-
-				<div class="flex-grow" />
-
-				<button class="btn btn-rounded mt-4 btn-black uppercase" on:click={handleDone}>Done</button>
-			{/if}
+			<button class="btn btn-rounded mt-4 btn-black uppercase" on:click={clickDone}>Done</button>
 		</div>
 	{/if}
 </div>
