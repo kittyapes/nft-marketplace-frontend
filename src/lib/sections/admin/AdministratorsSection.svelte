@@ -42,18 +42,18 @@
 					<td class="px-4">
 						<div class="flex items-center gap-4">
 							<PersonIcon />
-							<EthAddress address={row.wallet} concat />
+							<EthAddress address={row.address} concat />
 						</div>
 					</td>
 
 					<td class="px-6">
 						<span class="font-bold">Username:</span>
-						{row.name}
+						{row.username}
 					</td>
 
 					<td class="px-6">
 						<span class="font-bold">Status:</span>
-						{row.roles}
+						{row.roles || 'No roles'}
 					</td>
 
 					<td class="px-4 w-28 whitespace-nowrap">
