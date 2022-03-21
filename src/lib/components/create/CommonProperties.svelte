@@ -81,7 +81,7 @@
 			</label>
 		{/if}
 
-		{#if is('listingDate')}{/if}
+		<!-- {#if is('listingDate')}{/if} -->
 
 		{#if is('auctionDate')}
 			<label for="datepicker-component">
@@ -118,21 +118,21 @@
 			</label>
 		{/if}
 
-		{#if is('claimsBegin')}{/if}
+		<!-- {#if is('claimsBegin')}{/if} -->
 
-		{#if is('claimsDuration')}{/if}
+		<!-- {#if is('claimsDuration')}{/if} -->
 
-		{#if is('cutPrice')}{/if}
+		<!-- {#if is('cutPrice')}{/if} -->
 
-		{#if is('preQueueOpens')}{/if}
+		<!-- {#if is('preQueueOpens')}{/if} -->
 
-		{#if is('queueDuration')}{/if}
+		<!-- {#if is('queueDuration')}{/if} -->
 
-		{#if is('gachaContract')}{/if}
+		<!-- {#if is('gachaContract')}{/if} -->
 
-		{#if is('dateOfRelease')}{/if}
+		<!-- {#if is('dateOfRelease')}{/if} -->
 
-		{#if is('initialPrice')}{/if}
+		<!-- {#if is('initialPrice')}{/if} -->
 	{/key}
 </div>
 
