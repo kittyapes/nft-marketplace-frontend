@@ -76,11 +76,20 @@
 									dropId: dropId.toString(),
 									id: nftID,
 									amount: '1' // 1 for one of one
-								}).catch((err) => {
-									console.log(err);
-									notifyError('Failed to Mint NFT on contract');
-								});
-								//
+								})
+									.then((chainRes) => {
+										setPopup(ContinueListingPopup, {
+											props: {
+												relHref: 'sale',
+												title: 'Sale',
+												imgUrl: '/img/create/drop-type-sale.svg'
+											}
+										});
+									})
+									.catch((err) => {
+										console.log(err);
+										notifyError('Failed to Mint NFT on contract');
+									});
 							})
 							.catch((err) => {
 								console.log(err);
@@ -96,10 +105,6 @@
 				console.log('DROP CREATION ON API ERROR: ', err);
 				notifyError('Sorry, failed to create drop');
 			});
-
-		setPopup(ContinueListingPopup, {
-			props: { relHref: 'sale', title: 'Sale', imgUrl: '/img/create/drop-type-sale.svg' }
-		});
 	}
 
 	$: inputValid = nftName && nftCollection && nftImagePreview && nftThumbnailPreview;
