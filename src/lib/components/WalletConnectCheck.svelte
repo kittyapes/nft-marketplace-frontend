@@ -14,10 +14,11 @@
 
 	$: if ($walletState === WalletState.DISCONNECTED) {
 		popupHandler?.close();
-		popupHandler = setPopup(WalletNotConnectedPopup);
+		popupHandler = setPopup(WalletNotConnectedPopup, { closeByOutsideClick: false });
 	}
 
 	$: if ($walletState === WalletState.CONNECTED) {
+		console.log(popupHandler);
 		popupHandler?.close();
 	}
 </script>

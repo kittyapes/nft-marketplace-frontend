@@ -4,6 +4,7 @@ import { get, writable } from 'svelte/store';
 export interface PopupOptions {
 	id?: string;
 	unique?: boolean;
+	closeByOutsideClick?: boolean;
 	props?: {
 		[key: string]: any;
 	};
@@ -22,7 +23,9 @@ export interface PopupHandler {
 	close: () => void;
 }
 
-const defaultOptions: PopupOptions = {};
+const defaultOptions: PopupOptions = {
+	closeByOutsideClick: true
+};
 
 export const popupStack = writable<PopupStackItem[]>([]);
 
@@ -30,6 +33,12 @@ export function setPopup(component: any, options: PopupOptions = defaultOptions)
 	if (!browser) {
 		return;
 	}
+
+	// Popuplate unset properties with default values
+	options = {
+		...defaultOptions,
+		...options
+	};
 
 	// Ignore duplicate popups that should be unique
 	if (options.unique && existsInstanceOfPopup(component)) {

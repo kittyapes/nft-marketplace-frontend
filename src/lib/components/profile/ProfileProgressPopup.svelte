@@ -1,12 +1,14 @@
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
 	import { profileCompletionProgress } from '$stores/user';
-	import { closePopup } from '$utils/popup';
+	import type { PopupHandler } from '$utils/popup';
 	import Progressbar from '../Progressbar.svelte';
+
+	export let handler: PopupHandler;
 
 	function handleCompleteProfile() {
 		goto('/profile/edit');
-		closePopup();
+		handler.close();
 	}
 
 	$: progress = $profileCompletionProgress === null ? 'N/A' : $profileCompletionProgress;
@@ -14,7 +16,8 @@
 
 <div class="w-[700px] h-[420px] bg-white rounded-3xl flex flex-col justify-center">
 	<div class="text-center font-bold uppercase text-lg -mt-4 text-color-black">
-		Finish setting up your profile and receive <br /> an nft on us
+		Finish setting up your profile and receive <br />
+		an nft on us
 	</div>
 
 	<div class="text-center font-light text-sm mt-3 text-[#7B7B7B]">You pay the gas fee</div>
@@ -39,7 +42,7 @@
 
 	<button
 		class="rounded-full py-4 w-1/2 mx-auto uppercase block mt-3 border-2 border-black font-semibold transition-btn"
-		on:click={closePopup}
+		on:click={handler.close}
 	>
 		Cancel
 	</button>

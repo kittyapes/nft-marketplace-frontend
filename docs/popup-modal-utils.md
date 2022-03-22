@@ -35,7 +35,7 @@ Clicking outside the popup managed by the popup manager will attempt to close th
 
 `setPopup(component: any, options: PopupOptions)`
 
-Set a popup component with this function. The component will be added to the popup stack and rendered by the popup manager. A popup handler object will be returned.
+Set a popup component with this function. The component will be added to the popup stack and rendered by the popup manager. A popup handler object will be returned. This popup handler will also be passed to the popup component itself, which can then access its methods (like `close`).
 
 _Note: This function manipulates the `popupStack` store, which is not meant to be used directly._
 
@@ -45,12 +45,13 @@ _Note: This function manipulates the `popupStack` store, which is not meant to b
 
 #### `options`
 
-| Property  | Description                                                                                                                                                              |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `id`      | A unique id for the popup. This is used to identify the popup in the popup manager. Will be automatically generated when not explicitly specified.                       |
-| `unique`  | If `true` and a instance of `component` already exists, no new popup will be created. `false` by default.                                                                |
-| `onClose` | A callback function that will be called when the popup is closed. This function should return a boolean value saying whether the popup should actually be closed or not. |
-| `props`   | A object with properties that will be passed to the instance of `component`.                                                                                             |
+| Property              | Description                                                                                                                                                              |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                  | A unique id for the popup. This is used to identify the popup in the popup manager. Will be automatically generated when not explicitly specified.                       |
+| `unique`              | If `true` and a instance of `component` already exists, no new popup will be created. `false` by default.                                                                |
+| `closeByOutsideClick` | The user will be able to dismiss the popup by clicking outside of it.                                                                                                    |
+| `onClose`             | A callback function that will be called when the popup is closed. This function should return a boolean value saying whether the popup should actually be closed or not. |
+| `props`               | A object with properties that will be passed to the instance of `component`.                                                                                             |
 
 **Example**
 
@@ -74,6 +75,8 @@ handler.close();
 ```
 
 #### `PopupHandler`
+
+Popup handler is returned by the `setPopup` function and also passed to the popup component itself, which can then access its methods (like `close`).
 
 | Property  | Description          |
 | --------- | -------------------- |

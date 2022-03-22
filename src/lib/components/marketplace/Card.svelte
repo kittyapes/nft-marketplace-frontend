@@ -1,6 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import { popupOpen, selectedCard } from '$stores/marketplace';
+	import { selectedCard } from '$stores/marketplace';
 	import { goto } from '$app/navigation';
 	import EthIcon from '$icons/eth.svelte';
 	import HeartIcon from '$icons/heart.svelte';
@@ -11,8 +11,7 @@
 
 	let openPopup = (_data) => {
 		selectedCard.set({ ..._data });
-		popupOpen.set(true);
-		goto(`/marketplace/${_data['id']}`, { noscroll: true });
+		goto(`/marketplace/${_data.id}`, { noscroll: true });
 	};
 </script>
 

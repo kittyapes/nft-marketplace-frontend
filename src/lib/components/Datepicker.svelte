@@ -89,11 +89,11 @@
 	<input
 		{id}
 		type="text"
-		class="input w-full h-12"
+		class="input w-full h-12 disabled:bg-white"
 		{placeholder}
 		class:font-semibold={inputText}
 		bind:value={inputText}
-		readonly
+		disabled
 	/>
 
 	<button

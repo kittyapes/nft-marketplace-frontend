@@ -14,7 +14,7 @@
 		return `${id.substring(0, 6)}...${id.substring(id.length - 4, id.length)}`;
 	};
 
-	$: address = concat ? concatAddress(address) : address;
+	$: visibleAddress = concat ? concatAddress(address) : address;
 </script>
 
 <div class="flex items-center gap-6 {$$props.class}">
@@ -23,7 +23,7 @@
 		href="https://etherscan.io/address/{address}"
 		target="_blank"
 	>
-		{address}
+		{visibleAddress}
 	</a>
 
 	<button on:click={copyToClipboard} class="transition-btn">
