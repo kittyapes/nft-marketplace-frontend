@@ -23,6 +23,7 @@
 		EditableProfileData,
 		updateProfile
 	} from '$utils/api/profile';
+	import { inputize } from '$utils/misc/inputize';
 	import { setPopup } from '$utils/popup';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { isEmail } from '$utils/validator/isEmail';
@@ -83,7 +84,7 @@
 			const localData = {
 				username: data.username,
 				email: data.email,
-				bio: data.bio,
+				bio: inputize(data.bio),
 				instagram: data.instagram,
 				discord: data.discord,
 				twitter: data.twitter,
