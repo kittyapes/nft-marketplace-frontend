@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onEnterKey } from '$actions/onEnterkey';
 	import { goto } from '$app/navigation';
 	import Loader from '$icons/loader.svelte';
 	import PersonIcon from '$icons/person.svelte';
@@ -38,7 +39,7 @@
 	async function fetchCreators() {
 		isFetchingCreators = true;
 
-		await getVerifiedCreators($filterBy, $sortBy.value)
+		await getVerifiedCreators($filterBy, $sortBy.value, query)
 			.then((res) => {
 				rows = res.data.data;
 			})
@@ -48,15 +49,27 @@
 	}
 
 	$: $currentUserAddress && fetchCreators();
+
+	// Search
+	let query = '';
+
+	function clickSearch() {
+		fetchCreators();
+	}
 </script>
 
 <div class="mt-32">
 	<div class="text-lg font-bold uppercase">Verified Creators</div>
 
 	<div class="flex items-center mt-7">
-		<input class="input w-96 h-14" placeholder="Enter username..." />
+		<input
+			class="input w-96 h-14"
+			placeholder="Enter username..."
+			bind:value={query}
+			use:onEnterKey={clickSearch}
+		/>
 
-		<button class="h-12 ml-6 btn btn-rounded btn-outline">Search</button>
+		<button class="h-12 ml-6 btn btn-rounded btn-outline" on:click={clickSearch}>Search</button>
 	</div>
 
 	<div class="flex justify-between w-full mt-7">
@@ -73,6 +86,8 @@
 					{option.label}
 				</button>
 			{/each}
+
+			<div class="grid place-items-center opacity-50">Results: {rows.length}</div>
 		</div>
 
 		<!-- Sort by dropdown -->
