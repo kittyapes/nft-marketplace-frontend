@@ -1,5 +1,8 @@
 <script lang='ts'>
+    import type { CollectionData } from "src/interfaces/collectionData";
+    import CollectionsContainer from "./CollectionsContainer.svelte";
 
+    export let collections: CollectionData[];
 </script>
 
 <div class='grid place-items-center w-full'>
@@ -9,8 +12,6 @@
             <p class='font-semibold text-xl'>The top NFT collections on Hinata, ranked by floor price, volume and other statistics.</p>
         </div>
         <hr class='border-t border-black border-opacity-30'>
-        <div class=''>
-            
-        </div>
+        <CollectionsContainer {collections}></CollectionsContainer>
     </div>
 </div>
