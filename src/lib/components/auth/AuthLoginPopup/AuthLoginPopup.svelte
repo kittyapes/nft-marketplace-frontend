@@ -11,6 +11,7 @@
 	let state: AuthLoginPopupState = 'prompt';
 
 	export let adapter: AuthLoginPopupAdapter;
+	export let onLoginSuccess: () => void;
 
 	let message: string;
 
@@ -62,6 +63,14 @@
 		dispatch('close');
 	}
 
+	function onSuccessClose() {
+		if (onLoginSuccess) {
+			onLoginSuccess();
+		}
+
+		dispatchClose();
+	}
+
 	$: prompt = adapter.getPrompt();
 </script>
 
@@ -93,7 +102,7 @@
 	{#if state === 'success'}
 		<div class="title">Sign this message</div>
 		<div class="text-sm mt-8 font-bold">Signing Successful!</div>
-		<Button gradient rounded class="mt-6" on:click={dispatchClose}>Continue</Button>
+		<Button gradient rounded class="mt-6" on:click={onSuccessClose}>Continue</Button>
 	{/if}
 
 	{#if state === 'error'}

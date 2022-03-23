@@ -5,7 +5,6 @@
 	import Back from '$icons/back_.svelte';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import { newDropProperties } from '$stores/create';
-	import { appSigner } from '$stores/wallet';
 	import { goBack } from '$utils/navigation';
 
 	const pathToChecks = {
@@ -16,8 +15,8 @@
 
 	let canDisplayContent = false;
 
-	$: if (browser && $page.path && !canDisplayContent) {
-		const check = pathToChecks[$page.path] || (() => true);
+	$: if (browser && $page.url.pathname && !canDisplayContent) {
+		const check = pathToChecks[$page.url.pathname] || (() => true);
 
 		if (check()) {
 			canDisplayContent = true;

@@ -13,11 +13,7 @@
 	import { currentUserAddress, communityClaimsArray } from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import { getAllTokenBalances } from '$utils/contracts/tokenBalances';
-	import { initNavigationHandlers } from '$utils/navigation';
-
-	// Various navigation handlers such as functions to be called when
-	// the wallet is disconnected, etc.
-	initNavigationHandlers();
+	import NavigationHandlers from '$lib/utils/NavigationHandlers.svelte';
 
 	onMount(async () => {
 		// Check for whether user has access/has provided password
@@ -81,3 +77,4 @@
 <Footer />
 <Toast />
 <PopupManager />
+<NavigationHandlers />
