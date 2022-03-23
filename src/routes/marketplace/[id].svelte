@@ -13,7 +13,9 @@
 	let sidebarOpen;
 
 	$: {
-		if ($page.params.id !== 'cards') {
+		if ($page.params.id !== 'cards' && $page.params.id) {
+			console.log($page.params.id);
+
 			let uri = `https://databasewaifu.herokuapp.com/api/token/${$page.params.id}`;
 			let data = fetchMetadataFromUri(parseInt($page.params.id), uri);
 			data
