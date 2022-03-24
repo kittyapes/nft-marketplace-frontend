@@ -1,5 +1,5 @@
 .btn {
-	@apply transition-transform duration-200 transform active:scale-95 whitespace-nowrap;
+	@apply transition-transform duration-200 transform active:scale-95 whitespace-nowrap font-medium;
 	@apply cursor-pointer disabled:opacity-50 disabled:cursor-default;
 }
 
