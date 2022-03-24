@@ -21,37 +21,37 @@ export const createNFTOnAPI = async ({
 	image,
 	animation
 }: NFTCreationObject) => {
-	// const formData = new FormData();
-	// const formData = new FormData();
-	// formData.append('image', image);
-	// formData.append('animation', animation);
-	// formData.append('contractId', contractId.toString());
-	// formData.append('dropId', dropId);
-	// formData.append('amount', amount);
-	// formData.append('name', name);
-	// formData.append('generation', generation);
-	// formData.append('categories', categories);
-	// formData.append('tag', tag);
-	// formData.append('artist', artist);
-	// formData.append('creator', creator);
+	const formData = new FormData();
+	formData.append('image', image);
+	formData.append('animation', animation);
+	formData.append('contractId', contractId.toString());
+	formData.append('dropId', dropId.toString());
+	formData.append('amount', amount);
+	formData.append('name', name);
+	formData.append('generation', generation);
+	formData.append('categories', categories);
+	formData.append('tag', tag);
+	formData.append('artist', artist);
+	formData.append('creator', creator);
 
-	const res = await axios.post(
-		`${api}/v1/nfts`,
-		{
-			contractId: contractId || 0,
-			dropId,
-			amount,
-			name,
-			generation,
-			categories,
-			tag,
-			artist,
-			creator,
-			image,
-			animation
-		},
-		getAxiosConfig()
-	);
+	const res = await axios.post(`${api}/v1/nfts`, formData, getAxiosConfig());
+	// const res = await axios.post(
+	// 	`${api}/v1/nfts`,
+	// 	{
+	// 		contractId: contractId || 0,
+	// 		dropId,
+	// 		amount,
+	// 		name,
+	// 		generation,
+	// 		categories,
+	// 		tag,
+	// 		artist,
+	// 		creator,
+	// 		image,
+	// 		animation
+	// 	},
+	// 	getAxiosConfig()
+	// );
 
 	return res.data.data;
 };

@@ -12,7 +12,7 @@
 	import { onMount } from 'svelte';
 	import { profileData } from '$stores/user';
 	import { fetchProfileData } from '$utils/api/profile';
-	import { getLastDropID } from '$utils/create';
+	import { generateNewDropID } from '$utils/create';
 	import { notifyError } from '$utils/toast';
 	import generateNftID from '$utils/create/generateNftID';
 	import { goto } from '$app/navigation';
@@ -33,11 +33,11 @@
 
 	async function mintAndContinue() {
 		// Mint function here
-		goto('/create/choose-listing-format');
+		// goto('/create/choose-listing-format');
 
 		// get last drop ID
-		const maxDropId = await getLastDropID();
-		let dropId = maxDropId + 2;
+		const dropId = await generateNewDropID();
+		console.log(dropId);
 
 		await createDropOnAPI({
 			contractId: dropId,
@@ -50,14 +50,14 @@
 				console.log(dropApiResponse);
 
 				// Create drop on contract
-				await createDropOnChain(dropId.toString())
+				await createDropOnChain(dropId)
 					.then(async (res) => {
 						// Generate NFT ID
 						const nftID = await generateNftID();
 
 						// Create NFT on api
 						await createNFTOnAPI({
-							dropId: dropId.toString(),
+							dropId: dropId,
 							contractId: nftID,
 							amount: '1',
 							name: nftName,
@@ -73,7 +73,7 @@
 								//
 								// Create NFT on contract
 								await createNFTOnChain({
-									dropId: dropId.toString(),
+									dropId: dropId,
 									id: nftID,
 									amount: '1' // 1 for one of one
 								})
