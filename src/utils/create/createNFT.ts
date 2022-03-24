@@ -30,7 +30,7 @@ export const createNFTOnAPI = async ({
 	formData.append('name', name);
 	formData.append('generation', generation.trim() || 'No Generation');
 	formData.append('categories', categories.trim() || 'Uncategorized');
-	formData.append('tag', tag);
+	formData.append('tag', tag.trim() || 'Untagged');
 	formData.append('artist', artist);
 	formData.append('creator', creator);
 
@@ -64,7 +64,8 @@ export const createNFTOnChain = async ({ dropId, id, amount }: NFTMintingObject)
 		const nftMintingTransaction: ethers.ContractTransaction = await MarketplaceContract.mintDropNFT(
 			ethers.utils.parseEther(dropId.toString()),
 			ethers.utils.parseEther(id.toString()),
-			ethers.utils.parseEther(amount.toString())
+			ethers.utils.parseEther(amount.toString()),
+			[]
 			// Data object not added yet
 		);
 
