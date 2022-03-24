@@ -112,7 +112,7 @@
 
 		<!-- User role selection -->
 		<div class="font-semibold uppercase mt-6">
-			User roles: <span class="gradient-text">{profileData?.roles}</span>
+			User roles: <span class="gradient-text">{profileData?.roles || 'user'}</span>
 		</div>
 
 		<div class="mt-2 font-semibold">Add a role:</div>
