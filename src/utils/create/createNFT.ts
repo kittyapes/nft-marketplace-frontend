@@ -28,8 +28,8 @@ export const createNFTOnAPI = async ({
 	formData.append('dropId', dropId.toString());
 	formData.append('amount', amount);
 	formData.append('name', name);
-	formData.append('generation', generation);
-	formData.append('categories', categories);
+	formData.append('generation', generation.trim() || 'No Generation');
+	formData.append('categories', categories.trim() || 'Uncategorized');
 	formData.append('tag', tag);
 	formData.append('artist', artist);
 	formData.append('creator', creator);
