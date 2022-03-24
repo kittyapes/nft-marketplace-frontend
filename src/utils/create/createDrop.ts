@@ -18,7 +18,7 @@ export const createDropOnAPI = async ({
 	const res = await axios.post(
 		`${api}/v1/drops`,
 		{
-			contractId: contractId || 0,
+			contractId: contractId,
 			description,
 			title,
 			artist,
@@ -30,7 +30,7 @@ export const createDropOnAPI = async ({
 	return res.data.data as DropApiReturnValue;
 };
 
-export const createDropOnChain = async (dropId: string) => {
+export const createDropOnChain = async (dropId: number) => {
 	try {
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
 		const dropCreationTransaction: ethers.ContractTransaction =

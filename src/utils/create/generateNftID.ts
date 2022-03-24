@@ -14,10 +14,10 @@ const checkIdAvailability = async (id: number) => {
 	}
 };
 
-const generateNftID: () => Promise<string> = async () => {
+const generateNftID: () => Promise<number> = async () => {
 	let randomNum = Math.floor(1000 + Math.random() * 7000000);
 	if (await checkIdAvailability(randomNum)) {
-		return randomNum.toString();
+		return randomNum;
 	} else {
 		return await generateNftID();
 	}
