@@ -4,14 +4,29 @@
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import ArrowDown from '$icons/arrow-down.svelte';
 	import { seperateNumberWithCommas } from '$utils/misc/seperateNumberWithSeparators';
+    import Dropdown from '../Dropdown.svelte';
 
 	export let collections: CollectionData[];
 
+    let options = [
+        {
+            label: 'HIGHEST 24H VOL',
+        },
+        {
+            label: 'HIGHEST 24H VOL %',
+        },
+        {
+            label: 'HIGHEST TOTAL VOL',
+        },
+        {
+            label: 'HIGHEST FLOOR',
+        },
+    ]
 	let selection: 'ALL' | 'VERIFIED' = 'ALL';
 </script>
 
 <div class="w-full flex flex-col gap-10">
-	<div class="flex font-semibold text-xs gap-0">
+	<div class="flex font-semibold text-xs gap-0 w-full">
 		{#if selection === 'ALL'}
 			<button class="uppercase btn btn-gradient w-28 h-12">all</button>
 			<button class="uppercase btn bg-color-gray-lighter w-28 h-12">verified</button>
@@ -19,6 +34,8 @@
 			<button class="uppercase btn bg-color-gray-lighter w-28 h-12">all</button>
 			<button class="uppercase btn btn-gradient w-28 h-12">verified</button>
 		{/if}
+        <!-- <div class='flex-grow'/> -->
+        <Dropdown {options} class='w-40 bg-color-gray-lighter justify-self-end'></Dropdown>
 	</div>
 	<div class="bg-color-gray-lighter w-full flex flex-col">
 		<div
@@ -80,9 +97,5 @@
 <style lang="postcss">
 	.profile-pic {
 		background-image: var(--url);
-	}
-
-	.selected {
-		@apply text-white;
 	}
 </style>
