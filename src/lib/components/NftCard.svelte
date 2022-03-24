@@ -41,7 +41,7 @@
 		<img
 			alt=""
 			src={imageUrl}
-			class="object-cover transition w-full h-full"
+			class="object-cover object-top transition w-full h-full"
 			class:opacity-0={!imgLoaded}
 			on:load={() => (imgLoaded = true)}
 		/>
