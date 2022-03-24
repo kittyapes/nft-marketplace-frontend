@@ -152,7 +152,7 @@
 				class="mt-4 font-semibold h-32 break-words border-l border-r border-opacity-30 border-black px-16"
 			>
 				{#if $localProfileData?.bio}
-					{$localProfileData?.bio}
+					{@html $localProfileData?.bio}
 				{:else}
 					<span class="opacity-50 font-bold">No bio.</span>
 				{/if}
