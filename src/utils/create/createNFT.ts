@@ -22,7 +22,6 @@ export const createNFTOnAPI = async ({
 	animation
 }: NFTCreationObject) => {
 	const formData = new FormData();
-	formData.append('contractId', contractId.toString());
 	formData.append('image', image);
 	formData.append('animation', animation);
 	formData.append('contractId', contractId.toString());
