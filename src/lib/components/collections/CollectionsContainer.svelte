@@ -4,38 +4,61 @@
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import ArrowDown from '$icons/arrow-down.svelte';
 	import { seperateNumberWithCommas } from '$utils/misc/seperateNumberWithSeparators';
-    import Dropdown from '../Dropdown.svelte';
+	import Dropdown from '../Dropdown.svelte';
 
 	export let collections: CollectionData[];
 
-    let options = [
-        {
-            label: 'HIGHEST 24H VOL',
-        },
-        {
-            label: 'HIGHEST 24H VOL %',
-        },
-        {
-            label: 'HIGHEST TOTAL VOL',
-        },
-        {
-            label: 'HIGHEST FLOOR',
-        },
-    ]
+	$: verifiedCollections = collections.filter((e) => e.verfified);
+	let displayCollections = [...collections];
+
+	let options = [
+		{
+			label: 'HIGHEST 24H VOL'
+		},
+		{
+			label: 'HIGHEST 24H VOL %'
+		},
+		{
+			label: 'HIGHEST TOTAL VOL'
+		},
+		{
+			label: 'HIGHEST FLOOR'
+		}
+	];
 	let selection: 'ALL' | 'VERIFIED' = 'ALL';
+
+	let filter = () => {
+		if (selection === 'VERIFIED') {
+			displayCollections = [...collections];
+			displayCollections = displayCollections;
+		} else {
+			displayCollections = [...verifiedCollections];
+			displayCollections = displayCollections;
+		}
+	};
 </script>
 
 <div class="w-full flex flex-col gap-10">
 	<div class="flex font-semibold text-xs gap-0 w-full">
 		{#if selection === 'ALL'}
 			<button class="uppercase btn btn-gradient w-28 h-12">all</button>
-			<button class="uppercase btn bg-color-gray-lighter w-28 h-12">verified</button>
+			<button
+				class="uppercase btn bg-color-gray-lighter w-28 h-12 text-color-gray-base"
+				on:click={filter}
+			>
+				verified
+			</button>
 		{:else}
-			<button class="uppercase btn bg-color-gray-lighter w-28 h-12">all</button>
+			<button
+				class="uppercase btn bg-color-gray-lighter w-28 h-12 text-color-gray-base"
+				on:click={filter}
+			>
+				all
+			</button>
 			<button class="uppercase btn btn-gradient w-28 h-12">verified</button>
 		{/if}
-        <!-- <div class='flex-grow'/> -->
-        <Dropdown {options} class='w-40 bg-color-gray-lighter justify-self-end'></Dropdown>
+		<div class="flex-grow" />
+		<Dropdown {options} class="w-40 bg-color-gray-lighter" />
 	</div>
 	<div class="bg-color-gray-lighter w-full flex flex-col">
 		<div
@@ -47,7 +70,7 @@
 			<div class="uppercase">24h vol</div>
 			<div class="uppercase">24h vol %</div>
 		</div>
-		{#each collections as collection, i}
+		{#each displayCollections as collection, i}
 			<div class="grid w-full py-4 border-t border-black border-opacity-[0.15]">
 				<div class="grid grid-cols-[1.5fr_7fr_1.5fr_3fr_2fr_3fr] w-[95%] place-items-center">
 					<div class="text-center text-sm grid place-items-center">{i + 1}</div>
