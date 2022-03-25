@@ -7,7 +7,7 @@
 	import { welcomeNfts } from '$constants/nfts';
 	import { clone } from 'lodash-es';
 	import { notifyError, notifySuccess } from '$utils/toast';
-	import { closePopup } from '$utils/popup';
+	import type { PopupHandler } from '$utils/popup';
 	import { claimFreeNft } from '$utils/api/freeNft';
 	import {
 		appSigner,
@@ -17,6 +17,8 @@
 	} from '$stores/wallet';
 
 	const dispatch = createEventDispatcher();
+
+	export let handler: PopupHandler;
 
 	function cycle() {
 		nfts.unshift(nfts.pop());
@@ -127,7 +129,7 @@
 			Mint Now
 		</button>
 
-		<button class="absolute top-4 right-4 transition-btn" on:click={closePopup}>
+		<button class="absolute top-4 right-4 transition-btn" on:click={handler.close}>
 			<CloseButton />
 		</button>
 	</div>
