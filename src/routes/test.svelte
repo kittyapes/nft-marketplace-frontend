@@ -11,9 +11,9 @@
 					imageUrl: 'https://picsum.photos/400',
 					origin: 'HINATA',
 					verfified: Math.random() < 0.5,
-					floor: 0.5,
-					totalVolume: 2762839.02,
-					dailyVolume: 16430.58,
+					floor: Math.random(),
+					totalVolume: 2762839.02 + (Math.random() + 1) * 100,
+					dailyVolume: 16430.58 + (Math.random() + 1) * 100,
 					dailyGrowth: Math.random() < 0.5 ? (Math.random() + 1) * -10 : (Math.random() + 1) * 10
 				} as CollectionData)
 		);
