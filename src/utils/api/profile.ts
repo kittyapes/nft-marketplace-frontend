@@ -1,5 +1,6 @@
 import { api } from '$constants/api';
 import { appSigner } from '$stores/wallet';
+import { htmlize } from '$utils/misc/htmlize';
 import axios from 'axios';
 import { sha512 } from 'hash.js';
 import type { UserData } from 'src/interfaces/userData';
@@ -92,6 +93,9 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 			data[key] = '';
 		}
 	});
+
+	// Escape stuff
+	data.bio = htmlize(data.bio);
 
 	const message = [
 		data.email,

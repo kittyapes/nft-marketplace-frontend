@@ -28,10 +28,11 @@ export async function getVerificationQueue(
 
 export async function getVerifiedCreators(
 	verificationStatus: string,
-	sortBy: 'date' | 'alphabetical'
+	sortBy: 'date' | 'alphabetical',
+	query?: string
 ) {
 	return await axios.get(api + '/v1/accounts', {
-		params: { status: verificationStatus, sortBy },
+		params: { status: verificationStatus, sortBy, query: query || null },
 		...getAxiosConfig()
 	});
 }

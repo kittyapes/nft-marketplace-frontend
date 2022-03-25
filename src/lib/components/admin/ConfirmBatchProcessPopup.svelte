@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
 	import { forceBatchProcess } from '$utils/api/admin/batchProcessing';
-
-	import { closePopup } from '$utils/popup';
+	import { closePopup, PopupHandler } from '$utils/popup';
 	import { httpErrorHandler, makeSuccessHandler } from '$utils/toast';
 
 	import Popup from '../Popup.svelte';
+
+	export let handler: PopupHandler;
 
 	let isProcessing = false;
 
@@ -34,7 +35,7 @@
 	</div>
 
 	<div class="flex mt-8 justify-center gap-x-4">
-		<button class="btn btn-secondary w-44" on:click={closePopup} disabled={isProcessing}>
+		<button class="btn btn-secondary w-44" on:click={handler.close} disabled={isProcessing}>
 			Wait
 		</button>
 		<button class="btn-primary w-44" on:click={processNow} disabled={isProcessing}>

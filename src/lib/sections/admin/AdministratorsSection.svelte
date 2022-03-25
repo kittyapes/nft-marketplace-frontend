@@ -38,6 +38,8 @@
 
 		<table class="w-full table table-auto border-t border-color-black border-opacity-30">
 			{#each admins || [] as row}
+				{@const showModify = row.address !== $currentUserAddress && row.roles !== 'superadmin'}
+
 				<tr class="h-20 border-b border-color-black border-opacity-30">
 					<td class="px-4">
 						<div class="flex items-center gap-4">
@@ -57,12 +59,14 @@
 					</td>
 
 					<td class="px-4 w-28 whitespace-nowrap">
-						<button
-							class="btn btn-rounded uppercase italic btn-gradient h-12 w-48 font-light"
-							on:click={() => handleModifyAdmin(row)}
-						>
-							Modify
-						</button>
+						{#if showModify}
+							<button
+								class="btn btn-rounded uppercase italic btn-gradient h-12 w-48 font-light"
+								on:click={() => handleModifyAdmin(row)}
+							>
+								Modify
+							</button>
+						{/if}
 					</td>
 				</tr>
 			{/each}

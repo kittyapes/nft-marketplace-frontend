@@ -12,10 +12,12 @@
 	import { onMount } from 'svelte';
 	import { profileData } from '$stores/user';
 	import { fetchProfileData } from '$utils/api/profile';
-	import { getLastDropID } from '$utils/create';
+	import { generateNewDropID } from '$utils/create';
 	import { notifyError } from '$utils/toast';
 	import generateNftID from '$utils/create/generateNftID';
 	import { goto } from '$app/navigation';
+	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
+	import { writable } from 'svelte/store';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
@@ -33,11 +35,13 @@
 
 	async function mintAndContinue() {
 		// Mint function here
-		goto('/create/choose-listing-format');
+
+		const progress = writable(33);
+		setPopup(NftMintProgressPopup, { props: { progress } });
 
 		// get last drop ID
-		const maxDropId = await getLastDropID();
-		let dropId = maxDropId + 2;
+		const dropId = await generateNewDropID();
+		console.log(dropId);
 
 		await createDropOnAPI({
 			contractId: dropId,
@@ -50,14 +54,15 @@
 				console.log(dropApiResponse);
 
 				// Create drop on contract
-				await createDropOnChain(dropId.toString())
+				await createDropOnChain(dropId)
 					.then(async (res) => {
 						// Generate NFT ID
 						const nftID = await generateNftID();
+						progress.set(66);
 
 						// Create NFT on api
 						await createNFTOnAPI({
-							dropId: dropId.toString(),
+							dropId: dropId,
 							contractId: nftID,
 							amount: '1',
 							name: nftName,
@@ -70,17 +75,27 @@
 							animation: animationBlob
 						})
 							.then(async (createNftResponse) => {
-								//
+								console.log('NFT CREATED: ', createNftResponse);
 								// Create NFT on contract
 								await createNFTOnChain({
-									dropId: dropId.toString(),
+									dropId: dropId,
 									id: nftID,
 									amount: '1' // 1 for one of one
-								}).catch((err) => {
-									console.log(err);
-									notifyError('Failed to Mint NFT on contract');
-								});
-								//
+								})
+									.then((chainRes) => {
+										progress.set(100);
+										// setPopup(ContinueListingPopup, {
+										// 	props: {
+										// 		relHref: 'sale',
+										// 		title: 'Sale',
+										// 		imgUrl: '/img/create/drop-type-sale.svg'
+										// 	}
+										// });
+									})
+									.catch((err) => {
+										console.log(err);
+										notifyError('Failed to Mint NFT on contract');
+									});
 							})
 							.catch((err) => {
 								console.log(err);
@@ -96,10 +111,6 @@
 				console.log('DROP CREATION ON API ERROR: ', err);
 				notifyError('Sorry, failed to create drop');
 			});
-
-		setPopup(ContinueListingPopup, {
-			props: { relHref: 'sale', title: 'Sale', imgUrl: '/img/create/drop-type-sale.svg' }
-		});
 	}
 
 	$: inputValid = nftName && nftCollection && nftImagePreview && nftThumbnailPreview;
