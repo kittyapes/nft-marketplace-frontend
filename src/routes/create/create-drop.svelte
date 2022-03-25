@@ -58,6 +58,7 @@
 					.then(async (res) => {
 						// Generate NFT ID
 						const nftID = await generateNftID();
+						progress.set(66);
 
 						// Create NFT on api
 						await createNFTOnAPI({
@@ -82,6 +83,7 @@
 									amount: '1' // 1 for one of one
 								})
 									.then((chainRes) => {
+										progress.set(100);
 										setPopup(ContinueListingPopup, {
 											props: {
 												relHref: 'sale',
