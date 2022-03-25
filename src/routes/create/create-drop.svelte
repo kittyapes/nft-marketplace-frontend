@@ -16,6 +16,8 @@
 	import { notifyError } from '$utils/toast';
 	import generateNftID from '$utils/create/generateNftID';
 	import { goto } from '$app/navigation';
+	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
+	import { writable } from 'svelte/store';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
@@ -33,7 +35,9 @@
 
 	async function mintAndContinue() {
 		// Mint function here
-		// goto('/create/choose-listing-format');
+
+		const progress = writable(33);
+		setPopup(NftMintProgressPopup, { props: { progress } });
 
 		// get last drop ID
 		const dropId = await generateNewDropID();
@@ -54,6 +58,7 @@
 					.then(async (res) => {
 						// Generate NFT ID
 						const nftID = await generateNftID();
+						progress.set(66);
 
 						// Create NFT on api
 						await createNFTOnAPI({
@@ -70,7 +75,7 @@
 							animation: animationBlob
 						})
 							.then(async (createNftResponse) => {
-								//
+								console.log('NFT CREATED: ', createNftResponse);
 								// Create NFT on contract
 								await createNFTOnChain({
 									dropId: dropId,
@@ -78,13 +83,14 @@
 									amount: '1' // 1 for one of one
 								})
 									.then((chainRes) => {
-										setPopup(ContinueListingPopup, {
-											props: {
-												relHref: 'sale',
-												title: 'Sale',
-												imgUrl: '/img/create/drop-type-sale.svg'
-											}
-										});
+										progress.set(100);
+										// setPopup(ContinueListingPopup, {
+										// 	props: {
+										// 		relHref: 'sale',
+										// 		title: 'Sale',
+										// 		imgUrl: '/img/create/drop-type-sale.svg'
+										// 	}
+										// });
 									})
 									.catch((err) => {
 										console.log(err);
