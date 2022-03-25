@@ -5,7 +5,6 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { newDropProperties } from '$stores/create';
 	import { setPopup } from '$utils/popup';
-	import ContinueListingPopup from '$lib/components/create/ContinueListingPopup.svelte';
 	import { createDropOnAPI, createDropOnChain } from '$utils/create/createDrop';
 	import { currentUserAddress } from '$stores/wallet';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
@@ -15,9 +14,10 @@
 	import { generateNewDropID } from '$utils/create';
 	import { notifyError } from '$utils/toast';
 	import generateNftID from '$utils/create/generateNftID';
-	import { goto } from '$app/navigation';
+	import { goBack } from '$utils/navigation';
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import { writable } from 'svelte/store';
+	import Back from '$icons/back_.svelte';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
@@ -99,7 +99,7 @@
 							})
 							.catch((err) => {
 								console.log(err);
-								notifyError('failed to create nft on api');
+								notifyError('Failed to create nft on api');
 							});
 					})
 					.catch((err) => {
@@ -115,6 +115,15 @@
 
 	$: inputValid = nftName && nftCollection && nftImagePreview && nftThumbnailPreview;
 </script>
+
+<!-- Back button -->
+<button
+	class="btn flex items-center space-x-2 uppercase font-semibold mt-16 mb-8 text-sm"
+	on:click={goBack}
+>
+	<Back />
+	<div>Go Back</div>
+</button>
 
 <hr class="separator" />
 
