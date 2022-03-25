@@ -14,13 +14,13 @@
 	let currentCollectionsCount = viewCollectionsCount;
 	let options = [
 		{
-			label: 'HIGHEST 24H VOL %'
+			label: 'HIGHEST TOTAL VOL'
 		},
 		{
 			label: 'HIGHEST 24H VOL'
 		},
 		{
-			label: 'HIGHEST TOTAL VOL'
+			label: 'HIGHEST 24H VOL %'
 		},
 		{
 			label: 'HIGHEST FLOOR'
@@ -53,8 +53,8 @@
 
 	let handleSelect = (event?: CustomEvent) => {
 		if (!event) {
-			collections.sort((a, b) => b.dailyGrowth - a.dailyGrowth);
-			displayCollections.sort((a, b) => b.dailyGrowth - a.dailyGrowth);
+			collections.sort((a, b) => b.totalVolume - a.totalVolume);
+			displayCollections.sort((a, b) => b.totalVolume - a.totalVolume);
 			displayCollections = displayCollections;
 			return;
 		}
