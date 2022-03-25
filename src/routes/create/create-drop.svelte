@@ -75,7 +75,7 @@
 							animation: animationBlob
 						})
 							.then(async (createNftResponse) => {
-								//
+								console.log('NFT CREATED: ', createNftResponse);
 								// Create NFT on contract
 								await createNFTOnChain({
 									dropId: dropId,
@@ -84,13 +84,13 @@
 								})
 									.then((chainRes) => {
 										progress.set(100);
-										setPopup(ContinueListingPopup, {
-											props: {
-												relHref: 'sale',
-												title: 'Sale',
-												imgUrl: '/img/create/drop-type-sale.svg'
-											}
-										});
+										// setPopup(ContinueListingPopup, {
+										// 	props: {
+										// 		relHref: 'sale',
+										// 		title: 'Sale',
+										// 		imgUrl: '/img/create/drop-type-sale.svg'
+										// 	}
+										// });
 									})
 									.catch((err) => {
 										console.log(err);

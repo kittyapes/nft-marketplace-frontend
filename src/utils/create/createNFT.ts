@@ -35,23 +35,6 @@ export const createNFTOnAPI = async ({
 	formData.append('creator', creator);
 
 	const res = await axios.post(`${api}/v1/nfts`, formData, getAxiosConfig());
-	// const res = await axios.post(
-	// 	`${api}/v1/nfts`,
-	// 	{
-	// 		contractId: contractId || 0,
-	// 		dropId,
-	// 		amount,
-	// 		name,
-	// 		generation,
-	// 		categories,
-	// 		tag,
-	// 		artist,
-	// 		creator,
-	// 		image,
-	// 		animation
-	// 	},
-	// 	getAxiosConfig()
-	// );
 
 	return res.data.data;
 };
