@@ -14,6 +14,7 @@ const config = {
 					accent: '#A9A8A8'
 				},
 				'color-red': '#D61717',
+				'color-green': '#3BA160',
 				'color-purple': '#868BF7',
 				'color-blue': '#6CC7F8',
 				'color-pink': {

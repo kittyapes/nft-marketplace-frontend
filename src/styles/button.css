@@ -8,7 +8,7 @@
 }
 
 .btn-gradient {
-	@apply bg-gradient-to-r from-color-purple to-color-blue text-white;
+	@apply bg-gradient-to-r from-color-purple to-color-blue !text-white;
 }
 
 .btn-black {
