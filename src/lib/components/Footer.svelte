@@ -24,11 +24,11 @@
 				</div>
 			</div>
 
-			<div class="grid grid-cols-2 gap-x-4 ml-8">
+			<div class="grid grid-cols-2 gap-x-4 lg:ml-8">
 				<div class="perma-gray">Company:</div>
 				<div class="grid font-semibold gap-2">
 					<!-- <a href="!#">About</a> -->
-					<a href={socials.careers} target="_blank">Careers</a>
+					<a href={socials.careers} target="_blank" class="ml-4 lg:ml-0">Careers</a>
 				</div>
 			</div>
 
