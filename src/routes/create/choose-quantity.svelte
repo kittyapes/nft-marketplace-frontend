@@ -15,7 +15,7 @@
 	}
 </script>
 
-<hr class="separator" />
+<hr class="separator mt-16" />
 
 <h1 class="text-xl uppercase mt-8 italic font-light">Step 1: Choose your quantity</h1>
 

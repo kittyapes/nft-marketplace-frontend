@@ -4,6 +4,8 @@
 	import ListingType from '$lib/components/create/ListingType.svelte';
 	import ConfirmListingTypePopup from '$lib/components/create/ConfirmListingTypePopup.svelte';
 	import { fade } from 'svelte/transition';
+	import Back from '$icons/back_.svelte';
+	import { goBack } from '$utils/navigation';
 
 	const listingTypes = [
 		{
@@ -34,6 +36,15 @@
 
 	let hoveredListingType = null;
 </script>
+
+<!-- Back button -->
+<button
+	class="btn flex items-center space-x-2 uppercase font-semibold mt-16 mb-8 text-sm"
+	on:click={goBack}
+>
+	<Back />
+	<div>Go Back</div>
+</button>
 
 <hr class="separator" />
 
