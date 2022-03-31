@@ -267,10 +267,11 @@
 		];
 		*/
 
+	// TODO change duration values
 	const stakeDurationOptions = [
-		{ label: '1H', duration: 3600 },
-		{ label: '2H', duration: 7200 },
-		{ label: '3H', duration: 10800 }
+		{ label: '3 MO', duration: 3600 },
+		{ label: '1 YR', duration: 7200 },
+		{ label: '2 YR', duration: 10800 }
 	];
 
 	let selectedDuration = stakeDurationOptions[1];
