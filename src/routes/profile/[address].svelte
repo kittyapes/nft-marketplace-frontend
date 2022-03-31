@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import Copy from '$icons/copy.svelte';
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import Button from '$lib/components/Button.svelte';
@@ -16,12 +15,12 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
-	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import getUserNfts from '$utils/nfts/getUserNfts';
 	import { browser } from '$app/env';
 	import { userHasRole } from '$utils/auth/userRoles';
 	import type { UserData } from 'src/interfaces/userData';
+	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 
 	// const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
 	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'FAVORITES'];
@@ -40,11 +39,6 @@
 	}
 
 	$: browser && fetchData(address);
-
-	// TODO use utility
-	function shortenAddress(address: string) {
-		return address.substring(0, 3) + '...' + address.substring(address.length - 4);
-	}
 
 	$: socialLinks = {
 		twitter: $localProfileData?.twitter,
@@ -114,21 +108,7 @@
 	<div class="flex mt-8">
 		<!-- Buttons -->
 		<div class="flex flex-col gap-3 h-[min-content] w-72 pt-10">
-			<Button
-				variant="rounded-shadow"
-				rounded
-				--py="0.5rem"
-				--px="1.5rem"
-				--width="11rem"
-				on:click={() => copyTextToClipboard(address)}
-			>
-				<div class="flex items-center">
-					<div class="flex-grow font-norma">
-						{shortenAddress(address)}
-					</div>
-					<Copy />
-				</div>
-			</Button>
+			<CopyAddressButton {address} />
 
 			{#if address === $currentUserAddress}
 				<div transition:fade|local>
