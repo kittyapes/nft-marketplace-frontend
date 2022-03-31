@@ -1,4 +1,4 @@
-export const HinataTokenAddress = '0x1AA88B44d0D650fc059275a804A60F538d363d12';
+export const HinataTokenAddress = '0x1AA88B44d0D650fc059275a804A60F538d363d12'; //0xF43902008E23bCEDe947D9f8b253364b382cfcF4
 export const HinataMarketplaceContractAddress = '0xcA88655957580Ae5f5aE985dB1fc14bc047BA614';
 export const communityMerkleDistributorLockContract = '0x35CaaBA865BD019dc738eCB96Ec7D0a7Ab349015';
 export const seedVestingMerkleDistributorLockContract =
