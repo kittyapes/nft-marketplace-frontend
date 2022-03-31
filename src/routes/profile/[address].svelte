@@ -3,7 +3,6 @@
 	import { page } from '$app/stores';
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
-	import Button from '$lib/components/Button.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
@@ -112,16 +111,12 @@
 
 			{#if address === $currentUserAddress}
 				<div transition:fade|local>
-					<Button
-						variant="rounded-shadow"
-						rounded
-						--py="0.5rem"
-						--px="1.5rem"
-						--width="11rem"
+					<button
+						class="btn btn-rounded btn-shadow w-[11rem] py-2 uppercase"
 						on:click={() => goto('/profile/edit')}
 					>
 						{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}
-					</Button>
+					</button>
 				</div>
 			{/if}
 		</div>
