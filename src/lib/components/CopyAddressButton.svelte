@@ -2,17 +2,12 @@
 	import Copy from '$icons/copy.svelte';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
-	import Button from './Button.svelte';
 
 	export let address: string;
 </script>
 
-<Button
-	variant="rounded-shadow"
-	rounded
-	--py="0.5rem"
-	--px="1.5rem"
-	--width="11rem"
+<button
+	class="btn btn-rounded btn-shadow w-[11rem] py-2"
 	on:click={() => copyTextToClipboard(address)}
 >
 	<div class="flex items-center">
@@ -21,4 +16,4 @@
 		</div>
 		<Copy />
 	</div>
-</Button>
+</button>
