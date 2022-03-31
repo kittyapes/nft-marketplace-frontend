@@ -31,30 +31,24 @@
 	async function onMint() {
 		minting = true;
 
-		const nftData = data;
-
 		try {
 			// Web3 stuff here
 			// await .... mint(nftData. ...)
 			// And please set welcomeNftClaimed (in stores/wallet)
 			// Update this store walue on wallet connect.
 
-			if ($welcomeNftMessage && $welcomeNftClaimed) {
+			// WHEN IS CLAIMED IS TRUE, WE CAN CONTINUE MINTING (SO WE CAN SHOW THE USER A NOTIFICATION TO MINT THEIR FREE NFT)
+
+			if ($welcomeNftMessage && !$welcomeNftClaimed) {
 				const signature = await $appSigner.signMessage($welcomeNftMessage).catch((err) => {
 					console.log(err);
 					notifyError('Failed to Sign Message');
 					return '';
 				});
 
-				console.log(signature);
-
 				if (signature) {
-					const claimRes = await claimFreeNft(
-						welcomeNfts.indexOf(nfts[0]),
-						$currentUserAddress,
-						signature
-					);
-					console.log('Here', claimRes);
+					await claimFreeNft(nfts[0].id, $currentUserAddress, signature);
+
 					notifySuccess('Successfully minted your NFT!');
 				}
 			} else {
@@ -65,7 +59,7 @@
 				);
 			}
 		} catch (err) {
-			console.error(err);
+			console.error('FREE NFT ERROR: ', err);
 			return notifyError('Failed minting your NFT.');
 		}
 

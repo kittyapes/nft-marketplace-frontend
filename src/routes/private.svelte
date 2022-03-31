@@ -54,20 +54,22 @@
 			idoClaimAmount > 0 ||
 			idoEscrowed > 0;
 
-		userAddress &&
-			axios
-				.get(`/api/private-access?address=${userAddress}`)
-				.then((res) => {
-					if (!res.data.canAccess && !balanceAccess) {
-						notifyError('You are not allowed to access this page');
-						accessAllowed = false;
-					} else {
-						accessAllowed = true;
-					}
-				})
-				.catch((_err) => {
-					browser && goto('/');
-				});
+		accessAllowed = true;
+		// TODO: REACTIVATE THIS WITH UPDATED LIST OF ACCESS INDIVIDUALS
+		// userAddress &&
+		// 	axios
+		// 		.get(`/api/private-access?address=${userAddress}`)
+		// 		.then((res) => {
+		// 			if (!res.data.canAccess && !balanceAccess) {
+		// 				notifyError('You are not allowed to access this page');
+		// 				accessAllowed = false;
+		// 			} else {
+		// 				accessAllowed = true;
+		// 			}
+		// 		})
+		// 		.catch((_err) => {
+		// 			// browser && goto('/');
+		// 		});
 	};
 
 	$: browser && checkAccessibilityOfRoute($currentUserAddress);
@@ -100,6 +102,9 @@
 				});
 			}
 		}
+
+		// TODO: CHANGE THIS ONCE PRIVATE CONTRACT IS LIVE
+		privateHasLoaded = true;
 	};
 
 	$: updatePrivateValues($privateClaimsArray);
@@ -129,6 +134,9 @@
 				});
 			}
 		}
+
+		// TODO: CHANGE THIS ONCE SEED CONTRACT IS LIVE
+		seedHasLoaded = true;
 	};
 
 	$: seedUpdateValues($seedClaimsArray);
@@ -159,6 +167,9 @@
 				});
 			}
 		}
+
+		// TODO: CHANGE THIS ONCE IDO CONTRACT IS LIVE
+		idoHasLoaded = true;
 	};
 	$: idoUpdateValues($idoClaimsArray);
 
@@ -387,7 +398,8 @@
 						as well as claim exclusive NFTs on
 						<a href="https://www.hinata.io/drops" class="font-semibold">
 							https://www.hinata.io/drops
-						</a>.
+						</a>
+						.
 						<a href="/private" class="font-bold">READ MORE</a>
 					</p>
 				</GridOptionContainer>

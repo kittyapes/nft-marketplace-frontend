@@ -178,7 +178,7 @@
 			if (address) {
 				const hasClaimedResult = await hasClaimedFreeNft(address);
 				welcomeNftClaimed.set(hasClaimedResult?.isClaimed);
-				console.log('Msg: ', hasClaimedResult);
+				console.log('Server isClaimed Response: ', hasClaimedResult);
 				welcomeNftMessage.set(hasClaimedResult?.message);
 			}
 		} catch (err) {
