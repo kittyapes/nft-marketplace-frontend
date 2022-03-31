@@ -41,6 +41,7 @@
 
 	$: browser && fetchData(address);
 
+	// TODO use utility
 	function shortenAddress(address: string) {
 		return address.substring(0, 3) + '...' + address.substring(address.length - 4);
 	}
