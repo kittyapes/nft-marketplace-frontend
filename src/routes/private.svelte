@@ -38,6 +38,7 @@
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import AccessForbidden from '$lib/components/AccessForbidden.svelte';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
+	import { makeBold, makeLink } from '$utils/html';
 
 	// Access to private route
 	let accessAllowed = null;
@@ -361,7 +362,9 @@
 						<div class="uppercase font-bold">Lockup period</div>
 						<div
 							use:hoverHint={{
-								text: 'Lock your HiNATA for longer for better rewards!',
+								text: `Lock your HiNATA for longer for better rewards! ${makeBold(
+									makeLink('READ MORE', 'https://www.hinata.io/')
+								)}`,
 								targetId: 'hint-target'
 							}}
 						>
