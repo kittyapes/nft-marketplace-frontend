@@ -2,7 +2,7 @@
 	import Container from './Container.svelte';
 </script>
 
-<div class="w-full flex py-10 gap-20">
+<div class="w-full flex py-14 gap-20">
 	<div class="flex flex-col gap-6">
 		<div class="gradient-text text-5xl font-semibold">Earn with HINATA</div>
 		<div class="font-bold text-xl flex flex-col">
@@ -13,10 +13,10 @@
 			Later on, it’ll be the governance token in Hinata’s future DAO, but you can already benefit
 			from Hinata as an incentive for participating in the Hinata ecosystem.
 		</div>
-		<button class="btn btn-rounded btn-gradient font-semibold w-3/4">Buy Hinata</button>
+		<button class="btn btn-rounded btn-gradient font-semibold w-3/4 mt-8">Buy Hinata</button>
 	</div>
 
-	<div class="flex flex-col w-full gap-8">
+	<div class="flex flex-col gap-8 w-2/3">
 		<Container>
 			<div class="w-full flex flex-col gap-5">
 				<h1 class="font-bold text-xl">Earn by Staking</h1>
