@@ -1,5 +1,3 @@
-<div class="flex-grow {$$props.class}">
-	<div class="container flex justify-around w-full mx-auto">
-		<slot />
-	</div>
+<div class="w-full shadow-md shadow-color-gray-light rounded-lg bg-white {$$props.class} px-8 py-5">
+	<slot />
 </div>
