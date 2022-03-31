@@ -269,21 +269,16 @@
 				<div class="mt-16">If your wallet has a balance for the private or public HiNATA rounds you will be able to interact with this page</div>
 			</div>
 
-			<div class="w-full max-w-5xl mx-auto mt-16 mb-24 bg-color-black bg-opacity-5 border-2 rounded-2xl border-color-black border-opacity-10">
+			<div class="w-full max-w-5xl mx-auto mt-16 mb-24 bg-color-black bg-opacity-5 border-2 rounded-2xl border-color-black border-opacity-10 overflow-hidden">
 				<!-- Table header -->
-				<div
-					class="
-				flex items-center
-				border-b-2 border-color-black border-opacity-10
-			"
-				>
-					<div class="w-2/5 h-full opacity-80 font-bold text-[#807070] border-r-2 border-color-black border-opacity-10 flex items-center pl-14 pt-12 pb-8">
-						<span class="text-2xl">Balances</span>
-						<div class="ml-8">
-							<CopyAddressButton address={$currentUserAddress} />
+				<div class="flex border-b-2 border-color-black border-opacity-10 items-stretch">
+					<div class="w-2/5 opacity-80 font-bold text-[#807070] border-r-2 border-color-black border-opacity-10 items-center flex pl-14 flex-wrap">
+						<div class="mr-8">
+							<span class="text-2xl">Balances</span>
 						</div>
+						<CopyAddressButton address={$currentUserAddress} />
 					</div>
-					<div class="w-3/5 flex-grow opacity-80 text-black text-4xl text-center font-semibold pt-12 pb-8">Claim your tokens</div>
+					<div class="flex-grow opacity-80 text-black text-4xl text-center font-semibold pt-12 pb-8">Claim your tokens</div>
 				</div>
 
 				{#each splitOptions as option}
