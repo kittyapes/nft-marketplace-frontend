@@ -37,6 +37,7 @@
 	import { hoverHint } from '$actions/hoverHint';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import AccessForbidden from '$lib/components/AccessForbidden.svelte';
+	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 
 	// Access to private route
 	let accessAllowed = null;
@@ -272,14 +273,18 @@
 	];
 
 	let selectedDuration = stakeDurationOptions[1];
+
+	// TODO remove hotfix
+	$userHinataBalance = 100;
 </script>
 
 <LoadedContent
-	loaded={accessAllowed !== null &&
+	loaded={(accessAllowed !== null &&
 		$userHinataBalance !== null &&
 		privateHasLoaded &&
 		seedHasLoaded &&
-		idoHasLoaded}
+		idoHasLoaded) ||
+		true}
 >
 	{#if accessAllowed}
 		<div class="w-full px-6 min-h-screen">
@@ -309,7 +314,6 @@
 				<div
 					class="
 				flex items-center
-				text-2xl
 				border-b-2 border-color-black border-opacity-10
 			"
 				>
@@ -318,7 +322,10 @@
 					border-r-2 border-color-black border-opacity-10
 					flex items-center pl-14 pt-12 pb-8"
 					>
-						Balances
+						<span class="text-2xl">Balances</span>
+						<div class="ml-8">
+							<CopyAddressButton address={$currentUserAddress} />
+						</div>
 					</div>
 					<div
 						class="w-3/5 flex-grow opacity-80 text-black text-4xl text-center font-semibold pt-12 pb-8"
