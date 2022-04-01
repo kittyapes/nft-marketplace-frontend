@@ -11,6 +11,8 @@
 	import TradingRewardsDisplay from '$lib/components/staking/TradingRewardsDisplay.svelte';
 
 	export let hinataPerDay = 369.0;
+	export let hinataInWallet = 500;
+	export let hinataLpInWallet = 500;
 	export let waifuPerDay = 123.0;
 	export let annualPercentageReturn = 195.4;
 	export let tradingRewards: TradingRewards = {
@@ -160,9 +162,17 @@
 									{/if}
 								</div>
 								<div class="flex flex-col">
-									<div class="flex font-semibold text-2xl gap-2">
+									<div class="flex font-semibold text-2xl gap-2 w-full">
 										<div class="gradient-text ">${currency}</div>
 										<div>in wallet:</div>
+										<div class="flex-grow" />
+										<div class="text-xl font-semibold">
+											{#if currency === 'HiNATA'}
+												{hinataInWallet}
+											{:else}
+												{hinataLpInWallet}
+											{/if}
+										</div>
 									</div>
 									<div class="font-semibold">Your Stake (Compounding)</div>
 								</div>
