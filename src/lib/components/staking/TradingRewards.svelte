@@ -11,7 +11,7 @@
 	let tradingRewardsInput = `${tradingRewards} HiNATA ($)`;
 </script>
 
-<div class="w-full flex py-10 gap-20">
+<div class="w-full flex py-8 gap-20">
 	<div class="flex flex-col gap-6">
 		<div class="font-semibold text-2xl flex flex-col">
 			<div>Trading Rewards</div>

@@ -2,7 +2,7 @@
 	import Container from './Container.svelte';
 </script>
 
-<div class="w-full flex py-14 gap-20">
+<div class="w-full flex py-8 gap-20">
 	<div class="flex flex-col gap-6">
 		<div class="gradient-text text-5xl font-semibold">Earn with HINATA</div>
 		<div class="font-bold text-xl flex flex-col">
