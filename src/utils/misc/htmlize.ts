@@ -1,3 +1,3 @@
 export function htmlize(s: string) {
-	return s.replace(/\n/g, '<br>');
+	return s ? s.replace(/\n/g, '<br>') : '';
 }

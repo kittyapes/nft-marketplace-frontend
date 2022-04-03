@@ -1,3 +1,3 @@
 export function inputize(s: string) {
-	return s.replace(/<br>/g, '\n');
+	return s ? s.replace(/<br>/g, '\n') : '';
 }

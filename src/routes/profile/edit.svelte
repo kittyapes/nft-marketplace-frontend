@@ -23,11 +23,7 @@
 		welcomeNftMessage
 	} from '$stores/wallet';
 	import { hasClaimedFreeNft } from '$utils/api/freeNft';
-	import {
-		checkUsernameAvailability,
-		EditableProfileData,
-		updateProfile
-	} from '$utils/api/profile';
+	import { checkUsernameAvailability, EditableProfileData, updateProfile } from '$utils/api/profile';
 	import { inputize } from '$utils/misc/inputize';
 	import { setPopup } from '$utils/popup';
 	import { notifyError, notifySuccess } from '$utils/toast';
@@ -115,6 +111,7 @@
 				firstTimeUser = true;
 			}
 		} catch (ex) {
+			console.error(ex);
 			notifyError(ex.message);
 		}
 	}
@@ -131,13 +128,7 @@
 	// map, join, indexOf ensures that the progressbar cannot be filled
 	// in an incorrect order
 	$: profileCompletionProgress =
-		[
-			isEmail($localDataStore?.email),
-			isBioValid($localDataStore?.bio),
-			isProfileImage,
-			isCoverImage,
-			0
-		]
+		[isEmail($localDataStore?.email), isBioValid($localDataStore?.bio), isProfileImage, isCoverImage, 0]
 			.map((v) => (v ? 1 : 0))
 			.join('')
 			.indexOf('0') * 25;
@@ -217,12 +208,7 @@
 
 			<div class="relative w-full">
 				{#if profileCompletionProgress !== 100}
-					<div
-						class="absolute font-bold gradient-text -translate-y-12 translate-x-[-100%] right-0"
-						transition:fade|local
-					>
-						Free NFT
-					</div>
+					<div class="absolute font-bold gradient-text -translate-y-12 translate-x-[-100%] right-0" transition:fade|local>Free NFT</div>
 				{/if}
 			</div>
 
@@ -251,20 +237,10 @@
 					</div>
 
 					<div>
-						<input
-							type="text"
-							class="input input-gray-outline"
-							placeholder="Username"
-							bind:value={$localDataStore.username}
-						/>
+						<input type="text" class="input input-gray-outline" placeholder="Username" bind:value={$localDataStore.username} />
 
 						{#if $usernameAvailable === false}
-							<div
-								class="text-xs ml-auto text-red-500 font-semibold mt-2 uppercase"
-								transition:slide|local
-							>
-								Username already taken
-							</div>
+							<div class="text-xs ml-auto text-red-500 font-semibold mt-2 uppercase" transition:slide|local>Username already taken</div>
 						{/if}
 					</div>
 				</div>
@@ -278,18 +254,9 @@
 						Email
 					</div>
 					<div>
-						<input
-							type="email"
-							class="input input-gray-outline"
-							placeholder="example@email.com"
-							bind:value={$localDataStore.email}
-						/>
+						<input type="email" class="input input-gray-outline" placeholder="example@email.com" bind:value={$localDataStore.email} />
 						{#if $localDataStore.email && !isEmail($localDataStore.email)}
-							<div
-								transition:slide|local
-								class="text-xs ml-auto text-red-500 font-semibold mt-2 uppercase"
-								class:hidden={!$localDataStore.email || isEmail($localDataStore.email)}
-							>
+							<div transition:slide|local class="text-xs ml-auto text-red-500 font-semibold mt-2 uppercase" class:hidden={!$localDataStore.email || isEmail($localDataStore.email)}>
 								Please enter a valid email address
 							</div>
 						{/if}
@@ -297,148 +264,79 @@
 				</div>
 
 				<div class="grid grid-cols-2">
-					<div
-						class="input-label gradient-text brightness-0 transition"
-						class:brightness-100={isBioValid($localDataStore.bio)}
-					>
-						Bio
-					</div>
+					<div class="input-label gradient-text brightness-0 transition" class:brightness-100={isBioValid($localDataStore.bio)}>Bio</div>
 
 					<div>
-						<TextArea
-							outline
-							placeholder="Enter your short bio"
-							maxChars={200}
-							bind:value={$localDataStore.bio}
-						/>
+						<TextArea outline placeholder="Enter your short bio" maxChars={200} bind:value={$localDataStore.bio} />
 						{#if $localDataStore.bio && !isValidBio($localDataStore.bio)}
-							<div
-								class="text-xs ml-auto text-red-500 font-semibold uppercase -translate-y-3"
-								transition:slide|local
-							>
-								Bio must be at least three words
-							</div>
+							<div class="text-xs ml-auto text-red-500 font-semibold uppercase -translate-y-3" transition:slide|local>Bio must be at least three words</div>
 						{/if}
 					</div>
 				</div>
 
 				<div class="grid grid-cols-2">
 					<div>
-						<div
-							class="input-label gradient-text brightness-0 transition"
-							class:brightness-100={isProfileImage}
-						>
+						<div class="input-label gradient-text brightness-0 transition" class:brightness-100={isProfileImage}>
 							PROFILE <br />
 							PICTURE
 						</div>
 						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
 					</div>
 					<div class="flex w-full flex-col">
-						<DragDropImage
-							bind:blob={$localDataStore.profileImage}
-							currentImgUrl={$fetchedDataStore.imageUrl}
-							dimensions="180x180 px"
-							class="!w-48 !h-44 mx-auto"
-						/>
+						<DragDropImage bind:blob={$localDataStore.profileImage} currentImgUrl={$fetchedDataStore.imageUrl} dimensions="180x180 px" class="!w-48 !h-44 mx-auto" />
 					</div>
 				</div>
 
 				<div class="grid grid-cols-2">
 					<div>
-						<div class="input-label gradient-text brightness-0" class:brightness-100={isCoverImage}>
-							BANNER
-						</div>
+						<div class="input-label gradient-text brightness-0" class:brightness-100={isCoverImage}>BANNER</div>
 						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
 					</div>
 					<div class="flex w-full flex-col">
-						<DragDropImage
-							bind:blob={$localDataStore.coverImage}
-							currentImgUrl={$fetchedDataStore.coverUrl}
-							dimensions="2550x290 px"
-							class="!h-24 !px-12"
-						/>
+						<DragDropImage bind:blob={$localDataStore.coverImage} currentImgUrl={$fetchedDataStore.coverUrl} dimensions="2550x290 px" class="!h-24 !px-12" />
 					</div>
 				</div>
 
 				<div class="grid grid-cols-2">
 					<div>
-						<div
-							class="input-label gradient-text brightness-0 peer-focus-within:brightness-100 transition"
-						>
-							Social links
-						</div>
+						<div class="input-label gradient-text brightness-0 peer-focus-within:brightness-100 transition">Social links</div>
 						<div class="text-xs text-[#A9A8A8]">optional</div>
 					</div>
 
 					<div id="socials-container" class="grid gap-y-3 peer">
 						<div>
 							<Instagram />
-							<input
-								type="text"
-								class="input input-gray-outline"
-								placeholder="Instagram link"
-								bind:value={$localDataStore.instagram}
-							/>
+							<input type="text" class="input input-gray-outline" placeholder="Instagram link" bind:value={$localDataStore.instagram} />
 						</div>
 
 						<div>
 							<Discord />
-							<input
-								type="text"
-								class="input input-gray-outline"
-								placeholder="Discord link"
-								bind:value={$localDataStore.discord}
-							/>
+							<input type="text" class="input input-gray-outline" placeholder="Discord link" bind:value={$localDataStore.discord} />
 						</div>
 
 						<div>
 							<Twitter />
-							<input
-								type="text"
-								class="input input-gray-outline"
-								placeholder="Twitter link"
-								bind:value={$localDataStore.twitter}
-							/>
+							<input type="text" class="input input-gray-outline" placeholder="Twitter link" bind:value={$localDataStore.twitter} />
 						</div>
 
 						<div>
 							<Web />
-							<input
-								type="email"
-								class="input input-gray-outline"
-								placeholder="Personal Website"
-								bind:value={$localDataStore.website}
-							/>
+							<input type="email" class="input input-gray-outline" placeholder="Personal Website" bind:value={$localDataStore.website} />
 						</div>
 
 						<div>
 							<Pixiv />
-							<input
-								type="text"
-								class="input input-gray-outline"
-								placeholder="Pixiv link"
-								bind:value={$localDataStore.pixiv}
-							/>
+							<input type="text" class="input input-gray-outline" placeholder="Pixiv link" bind:value={$localDataStore.pixiv} />
 						</div>
 
 						<div>
 							<Deviantart />
-							<input
-								type="text"
-								class="input input-gray-outline"
-								placeholder="Deviantart link"
-								bind:value={$localDataStore.deviantart}
-							/>
+							<input type="text" class="input input-gray-outline" placeholder="Deviantart link" bind:value={$localDataStore.deviantart} />
 						</div>
 
 						<div>
 							<Artstation />
-							<input
-								type="text"
-								class="input input-gray-outline"
-								placeholder="Artstation link"
-								bind:value={$localDataStore.artstation}
-							/>
+							<input type="text" class="input input-gray-outline" placeholder="Artstation link" bind:value={$localDataStore.artstation} />
 						</div>
 					</div>
 				</div>
@@ -449,16 +347,7 @@
 				<div class="font-semibold ml-4 uppercase">Saving changes...</div>
 			</div>
 
-			<Button
-				rounded
-				variant="rounded-black"
-				stretch
-				on:click={onSave}
-				disabled={isSaving || !dataChanged || !dataValid}
-				class="!font-medium"
-			>
-				Save changes
-			</Button>
+			<Button rounded variant="rounded-black" stretch on:click={onSave} disabled={isSaving || !dataChanged || !dataValid} class="!font-medium">Save changes</Button>
 		</div>
 	</div>
 </LoadedContent>
