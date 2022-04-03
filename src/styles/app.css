@@ -32,6 +32,12 @@ body {
 	@apply bg-gradient-to-r from-color-purple to-color-blue text-transparent bg-clip-text;
 }
 
+.gradient-stroke {
+	background: linear-gradient(to right, #868bf7, #6cc7f8);
+	@apply bg-clip-text font-extrabold;
+	-webkit-text-stroke: 4px transparent;
+}
+
 #WEB3_CONNECT_MODAL_ID {
 	@apply z-[1000];
 }
