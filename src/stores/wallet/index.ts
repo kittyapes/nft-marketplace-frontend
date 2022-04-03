@@ -43,5 +43,6 @@ export const privateClaimsArray = writable<ClaimsObject[]>(null);
 export const privateMerkleContractIsActive = writable<boolean>(false);
 
 // Welcome NFT
-export const welcomeNftClaimed = writable(true);
+export const welcomeNftClaimedOnServer = writable(true);
 export const welcomeNftMessage = writable('');
+export const welcomeNftClaimedOnChain = writable(true);

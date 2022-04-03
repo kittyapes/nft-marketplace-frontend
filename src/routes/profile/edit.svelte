@@ -16,7 +16,12 @@
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { profileData, refreshProfileData } from '$stores/user';
-	import { currentUserAddress, welcomeNftClaimed, welcomeNftMessage } from '$stores/wallet';
+	import {
+		currentUserAddress,
+		welcomeNftClaimedOnChain,
+		welcomeNftClaimedOnServer,
+		welcomeNftMessage
+	} from '$stores/wallet';
 	import { hasClaimedFreeNft } from '$utils/api/freeNft';
 	import {
 		checkUsernameAvailability,
@@ -176,10 +181,7 @@
 	currentUserAddress.subscribe(async (address) => {
 		try {
 			if (address) {
-				const hasClaimedResult = await hasClaimedFreeNft(address);
-				welcomeNftClaimed.set(hasClaimedResult?.isClaimed);
-				console.log('Server isClaimed Response: ', hasClaimedResult);
-				welcomeNftMessage.set(hasClaimedResult?.message);
+				await hasClaimedFreeNft(address);
 			}
 		} catch (err) {
 			console.log(err);
@@ -234,7 +236,7 @@
 						on:click={handleNftClaim}
 						in:fade|local={{ delay: 300 }}
 						out:fade|local
-						disabled={isSaving || $welcomeNftClaimed}
+						disabled={isSaving || $welcomeNftClaimedOnChain}
 					>
 						Claim your NFT
 					</button>
