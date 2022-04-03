@@ -12,7 +12,8 @@
 	import {
 		appSigner,
 		currentUserAddress,
-		welcomeNftClaimed,
+		welcomeNftClaimedOnChain,
+		welcomeNftClaimedOnServer,
 		welcomeNftMessage
 	} from '$stores/wallet';
 
@@ -34,26 +35,27 @@
 		try {
 			// Web3 stuff here
 			// await .... mint(nftData. ...)
-			// And please set welcomeNftClaimed (in stores/wallet)
+			// And please set welcomeNftClaimedOnServer (in stores/wallet)
 			// Update this store walue on wallet connect.
 
 			// WHEN IS CLAIMED IS TRUE, WE CAN CONTINUE MINTING (SO WE CAN SHOW THE USER A NOTIFICATION TO MINT THEIR FREE NFT)
+			if (!$welcomeNftClaimedOnChain) {
+				let signature = '';
 
-			if ($welcomeNftMessage && !$welcomeNftClaimed) {
-				const signature = await $appSigner.signMessage($welcomeNftMessage).catch((err) => {
-					console.log(err);
-					notifyError('Failed to Sign Message');
-					return '';
-				});
-
-				if (signature) {
-					await claimFreeNft(nfts[0].id, $currentUserAddress, signature);
-
-					notifySuccess('Successfully minted your NFT!');
+				if ($welcomeNftMessage) {
+					signature = await $appSigner.signMessage($welcomeNftMessage).catch((err) => {
+						console.log(err);
+						notifyError('Failed to Sign Message');
+						return '';
+					});
 				}
+
+				await claimFreeNft(nfts[0].id, $currentUserAddress, signature);
+
+				notifySuccess('Successfully minted your NFT!');
 			} else {
 				notifyError(
-					$welcomeNftClaimed
+					$welcomeNftClaimedOnChain
 						? "It appears you've already claimed your free NFT, please check your wallet to confirm this"
 						: 'Failed to mint your NFT'
 				);

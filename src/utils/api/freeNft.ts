@@ -1,8 +1,15 @@
 import { api } from '$constants/api';
-import { appSigner, welcomeNftClaimed } from '$stores/wallet';
+import {
+	appProvider,
+	appSigner,
+	welcomeNftClaimedOnChain,
+	welcomeNftClaimedOnServer,
+	welcomeNftMessage
+} from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { getHinataTokenContract } from '$utils/contracts/generalContractCalls';
 import axios from 'axios';
+import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 
 /**
@@ -13,37 +20,56 @@ import { get } from 'svelte/store';
 export async function hasClaimedFreeNft(address: string) {
 	const res = await axios.get(`${api}/v1/nfts/isClaimed/${address}`, getAxiosConfig());
 
-	welcomeNftClaimed.set(res.data.data.isClaimed);
+	// Check if user's nonce has already claimed
+	console.log(res.data.data);
+	if (res.data.data.nonce) {
+		const hinataTokenContract = getHinataTokenContract(get(appProvider));
+		const hasClaimed = await hinataTokenContract.usedNonce(
+			ethers.utils.parseEther(res.data.data.nonce.toString())
+		);
+
+		console.log(hasClaimed);
+		if (typeof hasClaimed === 'boolean') {
+			console.log(hasClaimed);
+			welcomeNftClaimedOnServer.set(hasClaimed);
+			welcomeNftClaimedOnChain.set(hasClaimed);
+		}
+	} else {
+		welcomeNftClaimedOnServer.set(res.data.data.isClaimed);
+		if (res.data.data.message) {
+			welcomeNftMessage.set(res.data.data?.message);
+			welcomeNftClaimedOnChain.set(false);
+		}
+	}
+
+	console.log(res.data.data);
 
 	return res.data.data;
 }
-
-// /**
-//  * Returns the free NFT details (used to render the UI and add the drop IDs)
-//  * @returns An object with the message to sign when claiming and the isClaimed boolean value
-//  */
-// export const getFreeNFTDetails = async () => {
-// 	/**
-// 	 *  nftAirdropId: [987654, 987653],
-//             nftAirdropUri: ["https://gateway.pinata.cloud/ipfs/QmaDH6qmcJHqKm8xaKDpeuVA7e889oCVpbdVfixd4jLRs2", "https://gateway.pinata.cloud/ipfs/QmT3rd5J3NrbNEktX9nUaZX6GhueW4SvYCf3LFjfmWLA6G"]
-// 	 * */
-// };
 
 /**
  * Check if the user has already claimed and get message to sign and attach to the claim route
  * @param address Currently logged in user's wallet address.
  * @returns An object with the message to sign when claiming and the isClaimed boolean value
  */
-export async function claimFreeNft(selectedNftIndex: number, address: string, signature: string) {
-	const res = await axios.post(
-		`${api}/v1/nfts/claim`,
-		{
-			choice: selectedNftIndex,
-			address,
-			signature
-		},
-		getAxiosConfig()
-	);
+export async function claimFreeNft(
+	selectedNftIndex: number,
+	address: string,
+	signature: string = ''
+) {
+	const res = signature
+		? (
+				await axios.post(
+					`${api}/v1/nfts/claim`,
+					{
+						choice: selectedNftIndex,
+						address,
+						signature
+					},
+					getAxiosConfig()
+				)
+		  ).data.data
+		: await hasClaimedFreeNft(address);
 
 	interface ClaimData {
 		_id: string;
@@ -66,15 +92,15 @@ export async function claimFreeNft(selectedNftIndex: number, address: string, si
 		uri: string;
 	}
 
-	const resData: ClaimData = res.data.data;
+	const resData: ClaimData = res;
 
 	const hinataContract = getHinataTokenContract(get(appSigner));
 	const tx = await hinataContract.claimNFT(
 		address,
-		resData.nftID,
-		resData.nftAmount,
-		resData.nonce,
-		resData.signature,
+		ethers.utils.parseEther(resData.nftID.toString()),
+		ethers.utils.parseEther(resData.nftAmount.toString()),
+		ethers.utils.parseEther(resData.nonce.toString()),
+		await get(appSigner).signMessage(resData.claimingMessage),
 		[]
 	);
 	const txRes = await tx.wait(1);
