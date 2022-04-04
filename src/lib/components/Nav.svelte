@@ -52,8 +52,8 @@
 	<!-- Staking -->
 	<a href="/stake" class="relative font-semibold uppercase text-md">Staking</a>
 
-	<!-- Airdrop -->
-	<a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a>
+	<!-- Airdrop HIDDEN FOR NOW -->
+	<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
 
 	<!-- Create -->
 	<a

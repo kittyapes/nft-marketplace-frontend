@@ -16,12 +16,7 @@
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { profileData, refreshProfileData } from '$stores/user';
-	import {
-		currentUserAddress,
-		welcomeNftClaimedOnChain,
-		welcomeNftClaimedOnServer,
-		welcomeNftMessage
-	} from '$stores/wallet';
+	import { currentUserAddress, welcomeNftClaimedOnChain, welcomeNftClaimedOnServer, welcomeNftMessage } from '$stores/wallet';
 	import { hasClaimedFreeNft } from '$utils/api/freeNft';
 	import { checkUsernameAvailability, EditableProfileData, updateProfile } from '$utils/api/profile';
 	import { inputize } from '$utils/misc/inputize';
@@ -72,12 +67,16 @@
 				.catch(() => notifyError('Failed to fetch new profile data.'))
 				.then(() => {
 					isSaving = false;
+
+					// Once done, check if the user can claim free NFT
 				});
 		} catch (err) {
 			notifyError('Could not save new profile data.');
 			console.error(err);
 			isSaving = false;
 		}
+
+		await hasClaimedFreeNft($currentUserAddress);
 	}
 
 	async function useProfileData(data: UserData) {
