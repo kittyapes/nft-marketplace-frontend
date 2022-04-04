@@ -4,18 +4,13 @@
 	import { createEventDispatcher } from 'svelte';
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import ChevronRight from '$icons/chevron-right.svelte';
+	import Loader from '$icons/loader.svelte';
 	import { welcomeNfts } from '$constants/nfts';
 	import { clone } from 'lodash-es';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import type { PopupHandler } from '$utils/popup';
 	import { claimFreeNft } from '$utils/api/freeNft';
-	import {
-		appSigner,
-		currentUserAddress,
-		welcomeNftClaimedOnChain,
-		welcomeNftClaimedOnServer,
-		welcomeNftMessage
-	} from '$stores/wallet';
+	import { appSigner, currentUserAddress, welcomeNftClaimedOnChain, welcomeNftClaimedOnServer, welcomeNftMessage } from '$stores/wallet';
 
 	const dispatch = createEventDispatcher();
 
@@ -33,12 +28,6 @@
 		minting = true;
 
 		try {
-			// Web3 stuff here
-			// await .... mint(nftData. ...)
-			// And please set welcomeNftClaimedOnServer (in stores/wallet)
-			// Update this store walue on wallet connect.
-
-			// WHEN IS CLAIMED IS TRUE, WE CAN CONTINUE MINTING (SO WE CAN SHOW THE USER A NOTIFICATION TO MINT THEIR FREE NFT)
 			if (!$welcomeNftClaimedOnChain) {
 				let signature = '';
 
@@ -54,15 +43,11 @@
 
 				notifySuccess('Successfully minted your NFT!');
 			} else {
-				notifyError(
-					$welcomeNftClaimedOnChain
-						? "It appears you've already claimed your free NFT, please check your wallet to confirm this"
-						: 'Failed to mint your NFT'
-				);
+				notifyError($welcomeNftClaimedOnChain ? "It appears you've already claimed your free NFT, please check your wallet to confirm this" : 'Failed to mint your NFT');
 			}
 		} catch (err) {
 			console.error('FREE NFT ERROR: ', err);
-			return notifyError('Failed minting your NFT.');
+			notifyError('Failed minting your NFT.');
 		}
 
 		minting = false;
@@ -105,15 +90,9 @@
 	</div>
 
 	<div class="flex flex-col items-center justify-center px-8 relative w-full">
-		<div
-			class="font-bold uppercase mb-1 border-b border-opacity-30 border-black w-full text-center py-1 text-color-black"
-		>
-			Welcome to Hinata Marketplace
-		</div>
+		<div class="font-bold uppercase mb-1 border-b border-opacity-30 border-black w-full text-center py-1 text-color-black">Welcome to Hinata Marketplace</div>
 
-		<div class="text-sm text-center mt-8">
-			Thanks for signing up! Choose your free NFT in either portrait or landscape.
-		</div>
+		<div class="text-sm text-center mt-8">Thanks for signing up! Choose your free NFT in either portrait or landscape.</div>
 		<!-- <div class="text-xs opacity-70 mt-1">You pay the gas fee</div> -->
 
 		<button
@@ -122,7 +101,13 @@
 			on:click={onMint}
 			disabled={minting || minted}
 		>
-			Mint Now
+			{#if minting}
+				<div class="loading-animation">
+					<Loader />
+				</div>
+			{:else}
+				Mint Now
+			{/if}
 		</button>
 
 		<button class="absolute top-4 right-4 transition-btn" on:click={handler.close}>
@@ -130,3 +115,9 @@
 		</button>
 	</div>
 </div>
+
+<style lang="postcss">
+	.loading-animation {
+		@apply h-12 flex items-center justify-center;
+	}
+</style>

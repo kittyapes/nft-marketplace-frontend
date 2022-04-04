@@ -1,11 +1,5 @@
 import { api } from '$constants/api';
-import {
-	appProvider,
-	appSigner,
-	welcomeNftClaimedOnChain,
-	welcomeNftClaimedOnServer,
-	welcomeNftMessage
-} from '$stores/wallet';
+import { appProvider, appSigner, welcomeNftClaimedOnChain, welcomeNftClaimedOnServer, welcomeNftMessage } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { getHinataTokenContract } from '$utils/contracts/generalContractCalls';
 import axios from 'axios';
@@ -24,9 +18,7 @@ export async function hasClaimedFreeNft(address: string) {
 	console.log(res.data.data);
 	if (res.data.data.nonce) {
 		const hinataTokenContract = getHinataTokenContract(get(appProvider));
-		const hasClaimed = await hinataTokenContract.usedNonce(
-			ethers.utils.parseEther(res.data.data.nonce.toString())
-		);
+		const hasClaimed = await hinataTokenContract.usedNonce(res.data.data.nonce);
 
 		console.log(hasClaimed);
 		if (typeof hasClaimed === 'boolean') {
@@ -52,11 +44,7 @@ export async function hasClaimedFreeNft(address: string) {
  * @param address Currently logged in user's wallet address.
  * @returns An object with the message to sign when claiming and the isClaimed boolean value
  */
-export async function claimFreeNft(
-	selectedNftIndex: number,
-	address: string,
-	signature: string = ''
-) {
+export async function claimFreeNft(selectedNftIndex: number, address: string, signature: string = '') {
 	const res = signature
 		? (
 				await axios.post(
@@ -95,14 +83,8 @@ export async function claimFreeNft(
 	const resData: ClaimData = res;
 
 	const hinataContract = getHinataTokenContract(get(appSigner));
-	const tx = await hinataContract.claimNFT(
-		address,
-		ethers.utils.parseEther(resData.nftID.toString()),
-		ethers.utils.parseEther(resData.nftAmount.toString()),
-		ethers.utils.parseEther(resData.nonce.toString()),
-		await get(appSigner).signMessage(resData.claimingMessage),
-		[]
-	);
+	console.log('Address: ', address, 'NFTID: ', resData.nftID.toString(), 'NFT Amount: ', resData.nftAmount.toString(), 'Nonce: ', resData.nonce.toString(), 'Signature: ', resData.signature, []);
+	const tx = await hinataContract.claimNFT(address, resData.nftID, resData.nftAmount, resData.nonce, resData.signature, []);
 	const txRes = await tx.wait(1);
 	console.log(txRes);
 
