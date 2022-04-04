@@ -45,19 +45,19 @@ export async function hasClaimedFreeNft(address: string) {
  * @returns An object with the message to sign when claiming and the isClaimed boolean value
  */
 export async function claimFreeNft(selectedNftIndex: number, address: string, signature: string = '') {
-	const res = signature
-		? (
-				await axios.post(
-					`${api}/v1/nfts/claim`,
-					{
-						choice: selectedNftIndex,
-						address,
-						signature
-					},
-					getAxiosConfig()
-				)
-		  ).data.data
-		: await hasClaimedFreeNft(address);
+	if (signature) {
+		await axios.post(
+			`${api}/v1/nfts/claim`,
+			{
+				choice: selectedNftIndex,
+				address,
+				signature
+			},
+			getAxiosConfig()
+		);
+	}
+
+	const res = await hasClaimedFreeNft(address);
 
 	interface ClaimData {
 		_id: string;
@@ -82,11 +82,16 @@ export async function claimFreeNft(selectedNftIndex: number, address: string, si
 
 	const resData: ClaimData = res;
 
-	const hinataContract = getHinataTokenContract(get(appSigner));
-	console.log('Address: ', address, 'NFTID: ', resData.nftID.toString(), 'NFT Amount: ', resData.nftAmount.toString(), 'Nonce: ', resData.nonce.toString(), 'Signature: ', resData.signature, []);
-	const tx = await hinataContract.claimNFT(address, resData.nftID, resData.nftAmount, resData.nonce, resData.signature, []);
-	const txRes = await tx.wait(1);
-	console.log(txRes);
+	try {
+		const hinataContract = getHinataTokenContract(get(appSigner));
+		const tx = await hinataContract.claimNFT(address, resData.nftID, resData.nftAmount, resData.nonce, resData.signature, []);
+		const txRes = await tx.wait(1);
+		console.log(txRes);
+		welcomeNftClaimedOnServer.set(true);
+		welcomeNftClaimedOnChain.set(true);
+	} catch (err) {
+		console.log('ERROR: ', err);
+	}
 
 	return resData;
 }
