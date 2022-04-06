@@ -12,11 +12,7 @@
 
 	export let isValid = false;
 
-	$: isValid = values.every(
-		(v) =>
-			(!!v.percentage === !!v.ethAddress && isEthAddress(v.ethAddress)) ||
-			(v.percentage == null && v.ethAddress == '')
-	);
+	$: isValid = values.every((v) => (!!v.percentage === !!v.ethAddress && isEthAddress(v.ethAddress)) || (v.percentage == null && v.ethAddress == ''));
 </script>
 
 <div class="pr-12">
@@ -26,28 +22,14 @@
 		<div id="percent-container" class="grid w-24">
 			<div class="text-color-black italic uppercase font-light text-sm">Fees</div>
 			{#each values as value}
-				<input
-					type="number"
-					class="input input-hide-controls mt-4 first:mt-2"
-					placeholder="%"
-					required={!!value.ethAddress}
-					bind:value={value.percentage}
-				/>
+				<input type="number" class="input input-hide-controls mt-4 first:mt-2" placeholder="%" required={!!value.ethAddress} bind:value={value.percentage} />
 			{/each}
 		</div>
 
 		<div class="grid flex-grow">
 			<div class="text-color-black italic uppercase font-light text-sm">Wallet address</div>
 			{#each values as value}
-				<input
-					type="text"
-					class="input mt-4 first:mt-2"
-					placeholder="Enter wallet address"
-					autocomplete="nope"
-					pattern={ethAddressRegex}
-					required={!!value.percentage}
-					bind:value={value.ethAddress}
-				/>
+				<input type="text" class="input mt-4 first:mt-2" placeholder="Enter wallet address" autocomplete="nope" pattern={ethAddressRegex} required={!!value.percentage} bind:value={value.ethAddress} />
 			{/each}
 		</div>
 	</div>

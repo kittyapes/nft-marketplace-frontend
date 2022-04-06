@@ -5,6 +5,7 @@
 	import ChevronRight from '$icons/chevron-right.svelte';
 	import Time from '$icons/time.svelte';
 	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
+	import { notifyWarning } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import isoWeek from 'dayjs/plugin/isoWeek.js';
 	import { onMount } from 'svelte';
@@ -44,8 +45,13 @@
 			selectedDate = selectedDate.add(12, 'hour');
 		}
 
-		inputText = formatDatetimeFromISO(selectedDate);
-		open = false;
+		if (selectedDate.isBefore(dayjs(), 'minute')) {
+			inputText = '';
+			notifyWarning('Invalid date');
+		} else {
+			inputText = formatDatetimeFromISO(selectedDate);
+			open = false;
+		}
 	}
 
 	onMount(resetToday);
@@ -86,20 +92,9 @@
 </script>
 
 <div class="relative">
-	<input
-		{id}
-		type="text"
-		class="input w-full h-12 disabled:bg-white"
-		{placeholder}
-		class:font-semibold={inputText}
-		bind:value={inputText}
-		disabled
-	/>
+	<input {id} type="text" class="input w-full h-12 disabled:bg-white" {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
 
-	<button
-		class="bg-color-black text-white w-20 absolute top-0 right-0 h-full rounded-r-md"
-		on:click={() => (open = !open)}
-	>
+	<button class="bg-color-black text-white w-20 absolute top-0 right-0 h-full rounded-r-md" on:click={() => (open = !open)}>
 		<div class="btn flex items-center justify-center space-x-2">
 			<Calendar />
 			<ArrowDown />
@@ -107,15 +102,10 @@
 	</button>
 
 	{#if open}
-		<div
-			class="absolute top-0 right-0 w-full bg-white flex flex-col rounded-xl translate-y-14 p-4 z-10"
-			style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);"
-		>
+		<div class="absolute top-0 right-0 w-full bg-white flex flex-col rounded-xl translate-y-14 p-4 z-10" style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);">
 			<!-- use:outsideClickCallback={{ cb: () => (open = false) }} -->
 			<!-- Date/Time switch -->
-			<div
-				class="border-color-black border rounded-xl h-12 grid grid-cols-2 overflow-hidden flex-shrink-0"
-			>
+			<div class="border-color-black border rounded-xl h-12 grid grid-cols-2 overflow-hidden flex-shrink-0">
 				<button
 					class="uppercase font-semibold transition flex items-center justify-center
                     {section === 'date' ? 'bg-black text-white' : ''}"
@@ -168,9 +158,7 @@
 					{/each}
 				</div>
 
-				<button class="btn btn-outline btn-rounded mt-4" on:click={() => (section = 'time')}>
-					Select Time
-				</button>
+				<button class="btn btn-outline btn-rounded mt-4" on:click={() => (section = 'time')}>Select Time</button>
 			{/if}
 
 			{#if section === 'time'}
