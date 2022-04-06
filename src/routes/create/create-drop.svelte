@@ -36,8 +36,7 @@
 
 	async function mintAndContinue() {
 		// Mint function here
-		goto('/create/choose-listing-format');
-		return;
+
 		const progress = writable(33);
 		setPopup(NftMintProgressPopup, { props: { progress } });
 
