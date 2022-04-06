@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { setPopup } from '$utils/popup';
+	import { walletConnected, walletDisconnected } from '$utils/wallet';
 
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {
@@ -25,11 +27,8 @@
 
 	// Check if the path needs a wallet connected. If yes, check if the user is connected.
 	function isConnectionRequired(path: string) {
-		console.log('test');
 		const walletRequiredRoutes = getWalletRequiredRoutes();
 		const isWalletRequired = walletRequiredRoutes.some((route) => route.test(path));
-
-		console.log({ isWalletRequired }, $currentUserAddress);
 
 		return isWalletRequired && !$currentUserAddress;
 	}
@@ -55,9 +54,6 @@
 	// Handler for when the user is already in the app and is about
 	// to navigate to a protected route
 	beforeNavigate(({ to, cancel }) => {
-		console.log(to?.pathname);
-		// cancel();
-
 		if (!to?.pathname) {
 			return;
 		}
@@ -67,13 +63,13 @@
 			setWalletConnectionPopup(to.pathname);
 		}
 
-		if (isProtectedAndExpired(to.pathname)) {
+		if ($walletConnected && isProtectedAndExpired(to.pathname)) {
 			cancel();
 			setLoginPopup(to.pathname);
 		}
 	});
 
-	// Handler for when the app is first loaded on a protected route
+	// Handler for when the app is first loaded on a auth protected route
 	afterNavigate(({ to }) => {
 		const unsub = currentUserAddress.subscribe(async (address) => {
 			if (!address) return;
@@ -85,4 +81,8 @@
 			}
 		});
 	});
+
+	$: if ($walletDisconnected && isConnectionRequired($page.url.pathname)) {
+		goto('/');
+	}
 </script>
