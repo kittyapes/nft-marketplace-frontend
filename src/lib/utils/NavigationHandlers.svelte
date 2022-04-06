@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { isAuthTokenExpired } from '$utils/auth/token';
+	import { userRoles } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
 
 	// We are using a function to prevent reactivity race conditions
@@ -51,5 +53,14 @@
 				setLoginPopup(to.pathname);
 			}
 		});
+	});
+
+	userRoles.subscribe((roles) => {
+		if (!roles) return;
+
+		// If the user is not an admin and tyring to access admin routes, redirect to the home page
+		if ($page.url.pathname.startsWith('/admin') && !roles.includes('admin') && !roles.includes('superadmin')) {
+			goto('/');
+		}
 	});
 </script>

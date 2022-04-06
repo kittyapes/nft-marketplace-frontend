@@ -24,7 +24,7 @@ export const userPermissions = derived(profileData, (data: UserData) => {
  * Store containing a function that will check whether the current user has
  * at least one of the supplied permissions.
  */
-export const userHasRole = derived<typeof userPermissions, (...role: UserPermission[]) => boolean>(
+export const userHasPermission = derived<typeof userPermissions, (...role: UserPermission[]) => boolean>(
 	userPermissions,
 	(permissions) => {
 		return (...permission: UserPermission[]) => {
