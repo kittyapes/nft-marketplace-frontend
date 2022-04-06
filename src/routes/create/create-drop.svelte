@@ -18,6 +18,7 @@
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import { writable } from 'svelte/store';
 	import Back from '$icons/back_.svelte';
+	import { goto } from '$app/navigation';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
@@ -35,7 +36,8 @@
 
 	async function mintAndContinue() {
 		// Mint function here
-
+		goto('/create/choose-listing-format');
+		return;
 		const progress = writable(33);
 		setPopup(NftMintProgressPopup, { props: { progress } });
 
@@ -117,10 +119,7 @@
 </script>
 
 <!-- Back button -->
-<button
-	class="btn flex items-center space-x-2 uppercase font-semibold mt-16 mb-8 text-sm"
-	on:click={goBack}
->
+<button class="btn flex items-center space-x-2 uppercase font-semibold mt-16 mb-8 text-sm" on:click={goBack}>
 	<Back />
 	<div>Go Back</div>
 </button>
@@ -167,11 +166,7 @@
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
-				<DragDropImage
-					bind:blob={animationBlob}
-					text={dragDropText}
-					bind:previewSrc={nftThumbnailPreview}
-				/>
+				<DragDropImage bind:blob={animationBlob} text={dragDropText} bind:previewSrc={nftThumbnailPreview} />
 			</div>
 		</div>
 
@@ -189,13 +184,7 @@
 
 			<div class="w-1/2">
 				<div class="uppercase italic text-[#1D1D1DB2]">Description</div>
-				<TextArea
-					outline
-					containerClass="mt-2 mr-8"
-					maxChars={200}
-					placeholder="Enter description..."
-					bind:value={nftDescription}
-				/>
+				<TextArea outline containerClass="mt-2 mr-8" maxChars={200} placeholder="Enter description..." bind:value={nftDescription} />
 			</div>
 		</div>
 
@@ -203,13 +192,7 @@
 
 		<!-- Mint button -->
 		<div class="pr-8 w-full">
-			<button
-				class="btn btn-gradient btn-rounded w- uppercase font-semibold mt-8 h-14 w-full"
-				on:click={mintAndContinue}
-				disabled={!inputValid}
-			>
-				Mint
-			</button>
+			<button class="btn btn-gradient btn-rounded w- uppercase font-semibold mt-8 h-14 w-full" on:click={mintAndContinue} disabled={!inputValid}>Mint</button>
 		</div>
 	</div>
 

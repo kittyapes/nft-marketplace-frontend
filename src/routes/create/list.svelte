@@ -33,10 +33,7 @@
 </script>
 
 <!-- Back button -->
-<button
-	class="btn flex items-center space-x-2 uppercase font-semibold mt-16 mb-8 text-sm"
-	on:click={goBack}
->
+<button class="btn flex items-center space-x-2 uppercase font-semibold mt-16 mb-8 text-sm" on:click={goBack}>
 	<Back />
 	<div>Go Back</div>
 </button>
@@ -55,22 +52,14 @@
 
 		<hr class="separator mt-4" />
 
-		<CommonProperties
-			class="mt-8"
-			propNames={typeToProperties[$newDropProperties.listingType]}
-			bind:isValid={commonPropertiesValid}
-		/>
+		<CommonProperties class="mt-8" propNames={typeToProperties[$newDropProperties.listingType]} bind:isValid={commonPropertiesValid} />
 
 		<hr class="separator mt-8" />
 
 		<Royalties bind:isValid={royaltiesValid} />
 
 		<div class="pr-8">
-			<button
-				class="btn btn-gradient btn-rounded w-full mt-8 uppercase font-semibold"
-				on:click={listForSale}
-				disabled={!formValid}
-			>
+			<button class="btn btn-gradient btn-rounded w-full mt-8 uppercase font-semibold" on:click={listForSale} disabled={!formValid}>
 				List for {$newDropProperties.listingType || 'N/A'}
 			</button>
 		</div>
