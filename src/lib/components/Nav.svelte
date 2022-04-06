@@ -7,6 +7,7 @@
 	import { profileData } from '$stores/user';
 	import { fade } from 'svelte/transition';
 	import UserCircle from '$icons/user-circle.svelte';
+	import { goto } from '$app/navigation';
 
 	let displayProfilePopup = false;
 	let showProfileButton = false;
@@ -22,9 +23,7 @@
 		window.addEventListener('click', closeModalIfNotInElement);
 	});
 
-	$: displayedUsername = $profileData?.username.includes('great_gatsby')
-		? 'Guest User'
-		: $profileData?.username;
+	$: displayedUsername = $profileData?.username.includes('great_gatsby') ? 'Guest User' : $profileData?.username;
 
 	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
 </script>
@@ -41,13 +40,7 @@
 	<div class="flex-grow" />
 
 	<!-- Marketplace -->
-	<a
-		id="marketplace-link"
-		href="/marketplace"
-		class="relative font-semibold text-transparent uppercase text-md bg-gradient-to-r bg-clip-text from-color-purple to-color-blue"
-	>
-		Marketplace
-	</a>
+	<a id="marketplace-link" href="/marketplace" class="relative font-semibold text-transparent uppercase text-md bg-gradient-to-r bg-clip-text from-color-purple to-color-blue">Marketplace</a>
 
 	<!-- Staking -->
 	<a href="/stake" class="relative font-semibold uppercase text-md">Staking</a>
@@ -56,12 +49,9 @@
 	<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
 
 	<!-- Create -->
-	<a
-		href="/create"
-		class="relative grid h-full px-16 font-semibold text-white uppercase text-md bg-gradient-to-r from-color-purple to-color-blue place-items-center"
-	>
+	<button on:click={() => goto('/create')} class="relative grid h-full px-16 font-semibold text-white uppercase text-md bg-gradient-to-r from-color-purple to-color-blue place-items-center">
 		Create
-	</a>
+	</button>
 
 	<!-- Profile -->
 	<div class="relative h-full flex items-center pr-4">
@@ -76,9 +66,7 @@
 			>
 				<div class="flex-grow" in:fade>
 					{#if $profileData?.username}
-						{displayedUsername && displayedUsername.length > 15
-							? `${displayedUsername.substring(0, 13)}...`
-							: displayedUsername}
+						{displayedUsername && displayedUsername.length > 15 ? `${displayedUsername.substring(0, 13)}...` : displayedUsername}
 					{:else}
 						Guest User
 					{/if}
@@ -87,11 +75,7 @@
 				<!-- Profile image or guest user icon -->
 				<div class="w-6 h-6">
 					{#if $profileData?.imageUrl}
-						<img
-							src={$profileData.imageUrl}
-							alt="Current account avatar."
-							class="w-full h-full object-cover rounded-full"
-						/>
+						<img src={$profileData.imageUrl} alt="Current account avatar." class="w-full h-full object-cover rounded-full" />
 					{:else}
 						<div class="text-color-purple" in:fade>
 							<UserCircle />

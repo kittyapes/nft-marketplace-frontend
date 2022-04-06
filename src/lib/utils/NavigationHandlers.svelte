@@ -2,6 +2,7 @@
 	import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
 	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
+	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { setPopup } from '$utils/popup';
@@ -18,8 +19,23 @@
 		return isProtectedRoute && isTokenExpired;
 	}
 
+	function getWalletRequiredRoutes() {
+		return [RegExp('create.*')];
+	}
+
+	// Check if the path needs a wallet connected. If yes, check if the user is connected.
+	function isConnectionRequired(path: string) {
+		console.log('test');
+		const walletRequiredRoutes = getWalletRequiredRoutes();
+		const isWalletRequired = walletRequiredRoutes.some((route) => route.test(path));
+
+		console.log({ isWalletRequired }, $currentUserAddress);
+
+		return isWalletRequired && !$currentUserAddress;
+	}
+
 	function setLoginPopup(onSuccessRedirect?: string) {
-		const onLoginSuccess = () => goto(onSuccessRedirect);
+		const onLoginSuccess = () => onSuccessRedirect && goto(onSuccessRedirect);
 
 		setPopup(AuthLoginPopup, {
 			unique: true,
@@ -27,11 +43,28 @@
 		});
 	}
 
+	function setWalletConnectionPopup(onSuccessRedirect?: string) {
+		const onConnectSuccess = () => onSuccessRedirect && goto(onSuccessRedirect);
+
+		setPopup(WalletNotConnectedPopup, {
+			unique: true,
+			props: { onConnectSuccess }
+		});
+	}
+
 	// Handler for when the user is already in the app and is about
 	// to navigate to a protected route
 	beforeNavigate(({ to, cancel }) => {
-		if (!to) {
+		console.log(to?.pathname);
+		// cancel();
+
+		if (!to?.pathname) {
 			return;
+		}
+
+		if (isConnectionRequired(to.pathname)) {
+			cancel();
+			setWalletConnectionPopup(to.pathname);
 		}
 
 		if (isProtectedAndExpired(to.pathname)) {
