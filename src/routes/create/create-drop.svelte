@@ -18,6 +18,7 @@
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import { writable } from 'svelte/store';
 	import Back from '$icons/back_.svelte';
+	import { goto } from '$app/navigation';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
@@ -36,6 +37,10 @@
 
 	async function mintAndContinue() {
 		// Mint function here
+
+		// Keep for skipping mint
+		// goto('/create/choose-listing-format');
+		// return;
 
 		const progress = writable(33);
 		setPopup(NftMintProgressPopup, { props: { progress } });
