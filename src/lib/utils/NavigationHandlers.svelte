@@ -6,6 +6,7 @@
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { isAuthTokenExpired } from '$utils/auth/token';
+	import { userRoles } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
 	import { walletConnected, walletDisconnected } from '$utils/wallet';
 
@@ -85,4 +86,13 @@
 	$: if ($walletDisconnected && isConnectionRequired($page.url.pathname)) {
 		goto('/');
 	}
+
+	userRoles.subscribe((roles) => {
+		if (!roles) return;
+
+		// If the user is not an admin and tyring to access admin routes, redirect to the home page
+		if ($page.url.pathname.startsWith('/admin') && !roles.includes('admin') && !roles.includes('superadmin')) {
+			goto('/');
+		}
+	});
 </script>

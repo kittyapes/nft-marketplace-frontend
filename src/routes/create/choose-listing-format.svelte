@@ -38,10 +38,7 @@
 </script>
 
 <!-- Back button -->
-<button
-	class="btn flex items-center space-x-2 uppercase font-semibold mt-16 mb-8 text-sm"
-	on:click={goBack}
->
+<button class="btn flex items-center space-x-2 uppercase font-semibold mt-16 mb-8 text-sm" on:click={goBack}>
 	<Back />
 	<div>Go Back</div>
 </button>
