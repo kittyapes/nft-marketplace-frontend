@@ -3,7 +3,6 @@ import { appProvider, appSigner, welcomeNftClaimedOnChain, welcomeNftClaimedOnSe
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { getHinataTokenContract } from '$utils/contracts/generalContractCalls';
 import axios from 'axios';
-import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 
 /**

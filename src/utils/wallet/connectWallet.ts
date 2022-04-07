@@ -1,18 +1,12 @@
 import { notifyError } from '$utils/toast';
 import { coinbaseLogo, metamaskLogo } from '$constants/walletIcons';
-import {
-	appProvider,
-	appSigner,
-	connectionDetails,
-	currentUserAddress,
-	externalProvider,
-	communityClaimsArray,
-	web3ModalInstance
-} from '$stores/wallet';
+import { appProvider, appSigner, connectionDetails, currentUserAddress, externalProvider, communityClaimsArray, web3ModalInstance } from '$stores/wallet';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import Web3Modal from 'web3modal';
 import { WalletState, walletState } from '.';
+import { page } from '$app/stores';
+import { browser } from '$app/env';
 
 const infuraId = '456e115b04624699aa0e776f6f2ee65c';
 const appName = 'Hinata Marketplace';
@@ -251,9 +245,10 @@ export const initProviderEvents = (provider: any) => {
 
 		if (isAllowedNetworks(provider)) {
 			notifyError('Wallet Disconnected');
-		} else {
-			notifyError('You can only connect to mainnet or Rinkeby Test Network');
 		}
+		// else {
+		// 	notifyError('You can only connect to mainnet or Rinkeby Test Network');
+		// }
 
 		disconnectWallet();
 	});
@@ -262,6 +257,8 @@ export const initProviderEvents = (provider: any) => {
 };
 
 export const deregisterEvents = () => {
+	// console.log(get(externalProvider), get(appProvider));
+
 	return get(externalProvider).removeAllListeners();
 };
 
@@ -281,9 +278,7 @@ export const refreshConnection = async () => {
 	// If user has a cached provider prompt for connection
 	if (web3Modal.cachedProvider) {
 		// Connect to cached wallet
-		const provider: ethers.providers.ExternalProvider = await web3Modal.connectTo(
-			web3Modal.cachedProvider
-		);
+		const provider: ethers.providers.ExternalProvider = await web3Modal.connectTo(web3Modal.cachedProvider);
 
 		if (await isAllowedNetworks(provider)) {
 			// Init Provider Events

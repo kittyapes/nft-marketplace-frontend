@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import Loader from '$icons/loader.svelte';
 	import Artstation from '$icons/socials/artstation.svelte';
 	import Deviantart from '$icons/socials/deviantart.svelte';
@@ -16,17 +17,19 @@
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { profileData, refreshProfileData } from '$stores/user';
-	import { currentUserAddress, welcomeNftClaimedOnChain, welcomeNftClaimedOnServer, welcomeNftMessage } from '$stores/wallet';
+	import { appSigner, currentUserAddress, welcomeNftClaimedOnChain, welcomeNftClaimedOnServer, welcomeNftMessage } from '$stores/wallet';
 	import { hasClaimedFreeNft } from '$utils/api/freeNft';
 	import { checkUsernameAvailability, EditableProfileData, updateProfile } from '$utils/api/profile';
 	import { inputize } from '$utils/misc/inputize';
 	import { setPopup } from '$utils/popup';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { isEmail } from '$utils/validator/isEmail';
+	import checkIfWalletConnected from '$utils/wallet/checkIfWalletConnected';
 	import { cloneDeep, debounce } from 'lodash-es';
 	import type { UserData } from 'src/interfaces/userData';
 	import { derived, writable } from 'svelte/store';
 	import { fade, slide } from 'svelte/transition';
+	import { withPrevious } from 'svelte-previous';
 
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
@@ -132,16 +135,6 @@
 			.join('')
 			.indexOf('0') * 25;
 
-	// Go to home if the user's wallet isn't connected,
-	// this is a temporary solution, we will solve this better
-	// in the future globally
-	browser &&
-		setTimeout(() => {
-			if (!$currentUserAddress) {
-				goto('/');
-			}
-		}, 3000);
-
 	async function handleNftClaim() {
 		if (dataChanged) {
 			await onSave();
@@ -187,6 +180,13 @@
 
 	// We setting false on SSR to avoid save button flashing
 	$: dataValid = browser && $usernameAvailable && bioValid;
+
+	const [currentAddress, previousAddress] = withPrevious('', { requireChange: true });
+	$: $currentAddress = $currentUserAddress;
+
+	$: browser && $currentAddress && $previousAddress && $currentAddress !== $previousAddress && goto('/');
+
+	appSigner.subscribe((signer) => browser && checkIfWalletConnected(signer, $page.url.pathname));
 </script>
 
 <LoadedContent loaded={$localDataStore}>
