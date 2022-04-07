@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
@@ -18,11 +18,11 @@
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import { writable } from 'svelte/store';
 	import Back from '$icons/back_.svelte';
-	import { goto } from '$app/navigation';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
 	let nftName = '';
+	let nftQuantity: number;
 	let nftCollection = 'No collection';
 	let nftDescription = '';
 	let nftImagePreview = '';
@@ -114,7 +114,8 @@
 			});
 	}
 
-	$: inputValid = nftName && nftCollection && nftImagePreview && nftThumbnailPreview;
+	$: nftQuantityValid = nftQuantity > 0;
+	$: inputValid = nftName && nftCollection && nftImagePreview && nftThumbnailPreview && nftQuantityValid;
 </script>
 
 <!-- Back button -->
@@ -176,6 +177,9 @@
 			<div class="w-1/2">
 				<div class="uppercase italic text-[#1D1D1DB2]">Create name</div>
 				<input type="text" class="input w-full mt-2 font-semibold" bind:value={nftName} />
+
+				<div class="uppercase italic text-[#1D1D1DB2] mt-8">NFT Quantity</div>
+				<input type="number" class="input w-full mt-2 font-semibold input-hide-controls" bind:value={nftQuantity} min="1" />
 
 				<div class="uppercase italic text-[#1D1D1DB2] mt-8">Collection</div>
 				<Dropdown options={[{ label: 'No collections.' }]} class="mt-2" btnClass="font-semibold" />
