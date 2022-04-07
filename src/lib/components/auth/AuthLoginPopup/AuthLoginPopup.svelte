@@ -5,6 +5,7 @@
 	import Popup from '$lib/components/Popup.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import type { AuthLoginPopupAdapter, AuthLoginPopupState } from './authLoginPopupAdapter';
+	import type { PopupHandler } from '$utils/popup';
 
 	const dispatch = createEventDispatcher();
 
@@ -12,6 +13,7 @@
 
 	export let adapter: AuthLoginPopupAdapter;
 	export let onLoginSuccess: () => void;
+	export let handler: PopupHandler;
 
 	let message: string;
 
@@ -68,7 +70,7 @@
 			onLoginSuccess();
 		}
 
-		dispatchClose();
+		handler.close();
 	}
 
 	$: prompt = adapter.getPrompt();
@@ -80,9 +82,7 @@
 			{@html prompt.title}
 		</div>
 
-		<button class="btn btn-gradient btn-rounded mt-12 uppercase" on:click={onSignIn}>
-			Sign In
-		</button>
+		<button class="btn btn-gradient btn-rounded mt-12 uppercase" on:click={onSignIn}>Sign In</button>
 	{/if}
 
 	{#if state === 'loading'}

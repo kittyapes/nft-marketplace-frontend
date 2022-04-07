@@ -4,6 +4,7 @@
 	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
+	import { profileData, refreshProfileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
@@ -12,7 +13,7 @@
 
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {
-		return [RegExp('admin.*'), RegExp(`profile/${$currentUserAddress}`), RegExp('create.*')];
+		return [RegExp('admin.*'), RegExp('create.*')];
 	}
 
 	function isProtectedAndExpired(path: string) {
@@ -67,6 +68,24 @@
 		if ($walletConnected && isProtectedAndExpired(to.pathname)) {
 			cancel();
 			setLoginPopup(to.pathname);
+		}
+
+		// When the user is trying to access his profile and the the profile has not been created on the backend,
+		// request him to sign in, which will create the profile.
+		if (to.pathname === '/profile' || RegExp(`profile/${$currentUserAddress}`).test(to.pathname)) {
+			if (!$profileData) {
+				cancel();
+				setPopup(AuthLoginPopup, {
+					unique: true,
+					props: {
+						adapter: userAuthLoginPopupAdapter,
+						onLoginSuccess: async () => {
+							await refreshProfileData();
+							goto('/profile');
+						}
+					}
+				});
+			}
 		}
 	});
 
