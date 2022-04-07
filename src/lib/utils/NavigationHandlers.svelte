@@ -3,10 +3,12 @@
 	import { page } from '$app/stores';
 	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
+	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
+	import { walletConnected, walletDisconnected } from '$utils/wallet';
 
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {
@@ -20,8 +22,20 @@
 		return isProtectedRoute && isTokenExpired;
 	}
 
+	function getWalletRequiredRoutes() {
+		return [RegExp('create.*')];
+	}
+
+	// Check if the path needs a wallet connected. If yes, check if the user is connected.
+	function isConnectionRequired(path: string) {
+		const walletRequiredRoutes = getWalletRequiredRoutes();
+		const isWalletRequired = walletRequiredRoutes.some((route) => route.test(path));
+
+		return isWalletRequired && !$currentUserAddress;
+	}
+
 	function setLoginPopup(onSuccessRedirect?: string) {
-		const onLoginSuccess = () => goto(onSuccessRedirect);
+		const onLoginSuccess = () => onSuccessRedirect && goto(onSuccessRedirect);
 
 		setPopup(AuthLoginPopup, {
 			unique: true,
@@ -29,20 +43,34 @@
 		});
 	}
 
+	function setWalletConnectionPopup(onSuccessRedirect?: string) {
+		const onConnectSuccess = () => onSuccessRedirect && goto(onSuccessRedirect);
+
+		setPopup(WalletNotConnectedPopup, {
+			unique: true,
+			props: { onConnectSuccess }
+		});
+	}
+
 	// Handler for when the user is already in the app and is about
 	// to navigate to a protected route
 	beforeNavigate(({ to, cancel }) => {
-		if (!to) {
+		if (!to?.pathname) {
 			return;
 		}
 
-		if (isProtectedAndExpired(to.pathname)) {
+		if (isConnectionRequired(to.pathname)) {
+			cancel();
+			setWalletConnectionPopup(to.pathname);
+		}
+
+		if ($walletConnected && isProtectedAndExpired(to.pathname)) {
 			cancel();
 			setLoginPopup(to.pathname);
 		}
 	});
 
-	// Handler for when the app is first loaded on a protected route
+	// Handler for when the app is first loaded on a auth protected route
 	afterNavigate(({ to }) => {
 		const unsub = currentUserAddress.subscribe(async (address) => {
 			if (!address) return;
@@ -54,6 +82,10 @@
 			}
 		});
 	});
+
+	$: if ($walletDisconnected && isConnectionRequired($page.url.pathname)) {
+		goto('/');
+	}
 
 	userRoles.subscribe((roles) => {
 		if (!roles) return;
