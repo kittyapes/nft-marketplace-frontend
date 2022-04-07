@@ -53,10 +53,7 @@
 	$: firstTimeUser = $localProfileData?.username.includes('great_gatsby');
 
 	// Display profile completion popup when profile not completed
-	$: $profileCompletionProgress !== null &&
-		$profileCompletionProgress < 100 &&
-		address === $currentUserAddress &&
-		setPopup(ProfileProgressPopup);
+	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
 
 	let createdNfts: [] = null;
 	const fetchCreatedNfts = async () => {
@@ -94,10 +91,7 @@
 			{/if}
 
 			{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
-				<div
-					class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED'}
-					class="inline-block translate-y-1 translate-x-1"
-				>
+				<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED'} class="inline-block translate-y-1 translate-x-1">
 					<VerifiedBadge />
 				</div>
 			{/if}
@@ -111,10 +105,7 @@
 
 			{#if address === $currentUserAddress}
 				<div transition:fade|local>
-					<button
-						class="btn btn-rounded btn-shadow w-[11rem] py-2 uppercase"
-						on:click={() => goto('/profile/edit')}
-					>
+					<button class="btn btn-rounded btn-shadow w-[11rem] py-2 uppercase" on:click={() => goto('/profile/edit')}>
 						{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}
 					</button>
 				</div>
@@ -124,9 +115,7 @@
 		<!-- Bio -->
 		<div class="max-w-[600px] flex-grow">
 			<div class="font-bold text-color-gray-dark pl-16">BIO</div>
-			<p
-				class="mt-4 font-semibold h-32 break-words border-l border-r border-opacity-30 border-black px-16"
-			>
+			<p class="mt-4 font-semibold h-32 break-words border-l border-r border-opacity-30 border-black px-16 overflow-y-scroll">
 				{#if $localProfileData?.bio}
 					{@html $localProfileData?.bio}
 				{:else}
