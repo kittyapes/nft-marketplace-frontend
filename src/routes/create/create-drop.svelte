@@ -70,7 +70,7 @@
 						await createNFTOnAPI({
 							dropId: dropId,
 							contractId: nftID,
-							amount: '1',
+							amount: nftQuantity.toString() || '1',
 							name: nftName,
 							generation: nftCollection,
 							categories: '', // empty, the frontend does not have this
@@ -86,7 +86,7 @@
 								await createNFTOnChain({
 									dropId: dropId,
 									id: nftID,
-									amount: '1' // 1 for one of one
+									amount: nftQuantity.toString() || '1', // 1 for one of one
 								})
 									.then((chainRes) => {
 										progress.set(100);
