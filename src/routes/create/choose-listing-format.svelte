@@ -6,27 +6,29 @@
 	import { fade } from 'svelte/transition';
 	import Back from '$icons/back_.svelte';
 	import { goBack } from '$utils/navigation';
+	import { newDropProperties } from '$stores/create';
 
 	const listingTypes = [
 		{
 			listingType: 'sale',
 			title: 'Sale',
 			imgUrl: '/img/create/drop-type-sale.svg',
-			hoverText: 'No description.'
+			hoverText: 'No description.',
+			show: () => true
 		},
 		{
 			listingType: 'auction',
 			title: 'Auction',
 			imgUrl: '/img/create/drop-type-auction.svg',
 			hoverText: 'Allow other users to make bids on your NFT.',
-			disabled: false
+			show: () => $newDropProperties.quantity === 'single'
 		},
 		{
 			listingType: 'raffle',
 			title: 'Raffle',
 			imgUrl: '/img/create/drop-type-raffle.svg',
 			hoverText: 'No description',
-			disabled: true
+			show: () => $newDropProperties.quantity === 'single'
 		}
 	];
 
@@ -55,17 +57,21 @@
 	{/if}
 </div>
 
-<div class="grid grid-cols-3 mt-8 gap-16 mb-64">
+<div class="flex justify-center mt-8 mb-64 gap-16 flex-wrap">
 	{#each listingTypes as listingType}
-		<CardButton
-			on:click={() => handleClick(listingType)}
-			on:pointerenter={() => (hoveredListingType = listingType.listingType)}
-			on:pointerleave={() => {
-				if (hoveredListingType === listingType.listingType) hoveredListingType = null;
-			}}
-			disabled={listingType.disabled}
-		>
-			<ListingType imgUrl={listingType.imgUrl} title={listingType.title} />
-		</CardButton>
+		{#if listingType.show?.()}
+			<div class="w-64">
+				<CardButton
+					on:click={() => handleClick(listingType)}
+					on:pointerenter={() => (hoveredListingType = listingType.listingType)}
+					on:pointerleave={() => {
+						if (hoveredListingType === listingType.listingType) hoveredListingType = null;
+					}}
+					disabled={listingType.disabled}
+				>
+					<ListingType imgUrl={listingType.imgUrl} title={listingType.title} />
+				</CardButton>
+			</div>
+		{/if}
 	{/each}
 </div>
