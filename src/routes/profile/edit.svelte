@@ -30,6 +30,7 @@
 	import { derived, writable } from 'svelte/store';
 	import { fade, slide } from 'svelte/transition';
 	import { withPrevious } from 'svelte-previous';
+	import { isUrl, urlPattern } from '$utils/validator/isUrl';
 
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
@@ -179,7 +180,7 @@
 	$: bioValid = isValidBio($localDataStore?.bio) || !$localDataStore?.bio;
 
 	// We setting false on SSR to avoid save button flashing
-	$: dataValid = browser && $usernameAvailable && bioValid;
+	$: dataValid = browser && $usernameAvailable && bioValid && isUrl($localDataStore.website);
 
 	const [currentAddress, previousAddress] = withPrevious('', { requireChange: true });
 	$: $currentAddress = $currentUserAddress;
@@ -320,7 +321,7 @@
 
 						<div>
 							<Web />
-							<input type="email" class="input input-gray-outline" placeholder="Personal Website" bind:value={$localDataStore.website} />
+							<input type="text" pattern={urlPattern} class="input input-gray-outline" placeholder="Personal Website" bind:value={$localDataStore.website} />
 						</div>
 
 						<div>
