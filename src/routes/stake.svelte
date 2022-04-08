@@ -141,13 +141,21 @@
 				</div>
 			</div>
 
-			{#if currency === 'HiNATA'}
-				<RewardsToCollect {...hinataRewards} />
-			{:else}
-				{#each hinataLpRewards as reward}
-					<RewardsToCollect {...reward} />
-				{/each}
-			{/if}
+			<div class="grid grid-cols-[2fr_3fr] gap-20">
+				<div class="flex-grow" />
+				<div class="">
+					<div class="px-8 font-semibold text-lg">Rewards to collect</div>
+					<div class="flex flex-col gap-10">
+						{#if currency === 'HiNATA'}
+							<RewardsToCollect {...hinataRewards} />
+						{:else}
+							{#each hinataLpRewards as reward}
+								<RewardsToCollect {...reward} />
+							{/each}
+						{/if}
+					</div>
+				</div>
+			</div>
 			<hr class="separator" />
 			<TradingRewardsDisplay {...tradingRewards} />
 			<hr class="separator" />

@@ -17,7 +17,7 @@
 		<div class="flex-grow" />
 		<div class="flex flex-col text-right">
 			<div class="text-6xl gradient-text font-semibold">{roundTwoDecimals(hinataPerDay)}</div>
-			<div class="text-lg">$HiNATA/day</div>
+			<div class="text-lg text-color-gray-base opacity-70">$HiNATA/day</div>
 		</div>
 	</div>
 	<div class="flex">
@@ -27,7 +27,7 @@
 		<div class="flex-grow" />
 		<div class="flex flex-col text-right">
 			<div class="text-6xl gradient-text font-semibold">{roundTwoDecimals(waifuPerDay)}</div>
-			<div class="text-lg">$WAIFU/day</div>
+			<div class="text-lg text-color-gray-base opacity-70">$WAIFU Reward/day</div>
 		</div>
 	</div>
 </div>
