@@ -1331,16 +1331,18 @@ const privateInvestors = [
 	'0xf3b706a26fa7298bf1309a49ccb5886db176639a',
 	'0xf8d870c2b7f63e9af2ec1e4690cbe196c05efc7f',
 	'0xfeedfe9c2acb949ef80b0fa714e282d66bd2f955',
-	'0x7FB10CF27B4A7613d1B6F168e3DCf9728a115EFb'
+
+	// Custom Testers
+	'0x7FB10CF27B4A7613d1B6F168e3DCf9728a115EFb',
+	'0x43fea27665EE03573021e012eA43c7922Ee572D7',
+	'0xB662804100f604674b90A0ec3F14806160622800'
 ];
 
 export const get = (req) => {
 	if (req.url.searchParams.get('address')) {
 		return {
 			body: {
-				canAccess: !!privateInvestors.find(
-					(item) => item.toLowerCase() === req.url.searchParams.get('address').toLowerCase()
-				)
+				canAccess: !!privateInvestors.find((item) => item.toLowerCase() === req.url.searchParams.get('address').toLowerCase())
 			}
 		};
 	}

@@ -33,6 +33,8 @@
 	import daysFromNow from '$utils/daysFromNow';
 	import { makeBold, makeLink } from '$utils/html';
 	import { setPopup } from '$utils/popup';
+	import { notifyError } from '$utils/toast';
+	import axios from 'axios';
 	import { ethers } from 'ethers';
 	import { onMount } from 'svelte';
 
@@ -40,34 +42,34 @@
 	let accessAllowed = null;
 
 	const checkAccessibilityOfRoute = (userAddress: string) => {
-		const balanceAccess =
-			$userHinataBalance > 0 ||
-			seedClaimAmt > 0 ||
-			seedEscrowed > 0 ||
-			$communityClaimsArray?.length > 0 ||
-			$stakingWaifuRewards > 0 ||
-			$stakedHinataBalance > 0 ||
-			privateClaimAmt > 0 ||
-			privateEscrowed > 0 ||
-			idoClaimAmount > 0 ||
-			idoEscrowed > 0;
+		//
+		// const balanceAccess =
+		// 	$userHinataBalance > 0 ||
+		// 	seedClaimAmt > 0 ||
+		// 	seedEscrowed > 0 ||
+		// 	$communityClaimsArray?.length > 0 ||
+		// 	$stakingWaifuRewards > 0 ||
+		// 	$stakedHinataBalance > 0 ||
+		// 	privateClaimAmt > 0 ||
+		// 	privateEscrowed > 0 ||
+		// 	idoClaimAmount > 0 ||
+		// 	idoEscrowed > 0;
 
-		accessAllowed = true;
-		// TODO: REACTIVATE THIS WITH UPDATED LIST OF ACCESS INDIVIDUALS
-		// userAddress &&
-		// 	axios
-		// 		.get(`/api/private-access?address=${userAddress}`)
-		// 		.then((res) => {
-		// 			if (!res.data.canAccess && !balanceAccess) {
-		// 				notifyError('You are not allowed to access this page');
-		// 				accessAllowed = false;
-		// 			} else {
-		// 				accessAllowed = true;
-		// 			}
-		// 		})
-		// 		.catch((_err) => {
-		// 			// browser && goto('/');
-		// 		});
+		// // TODO: REACTIVATE THIS WITH UPDATED LIST OF ACCESS INDIVIDUALS
+		userAddress &&
+			axios
+				.get(`/api/private-access?address=${userAddress}`)
+				.then((res) => {
+					if (!res.data.canAccess) {
+						notifyError('You are not allowed to access this page');
+						accessAllowed = false;
+					} else {
+						accessAllowed = true;
+					}
+				})
+				.catch((_err) => {
+					// browser && goto('/');
+				});
 	};
 
 	$: browser && checkAccessibilityOfRoute($currentUserAddress);
