@@ -52,6 +52,7 @@
 
 		minting = false;
 		minted = true;
+		handler.close();
 	}
 
 	let nfts = clone(welcomeNfts);
