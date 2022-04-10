@@ -24,9 +24,11 @@ const isMetaMaskInstalled = () => {
 };
 
 const getProviderOptions = () => {
-	let providerOptions = {
-		// Replace Default Metamask Injected Wallet
-		'custom-metamask': {
+	let providerOptions = {};
+
+	// Metamask - replaces the default injected wallet
+	if (isMetaMaskInstalled()) {
+		providerOptions['custom-metamask'] = {
 			display: {
 				logo: metamaskLogo,
 				name: 'MetaMask',
@@ -40,29 +42,24 @@ const getProviderOptions = () => {
 				}
 
 				let provider = null;
-				if (typeof window.ethereum !== 'undefined') {
-					if (window.ethereum.providers) {
-						let providers = window.ethereum.providers;
-						provider = providers.find((prov) => prov.isMetaMask);
-					} else {
-						provider = window.ethereum;
-					}
-
-					try {
-						await provider.request({ method: 'eth_requestAccounts' });
-					} catch (error) {
-						console.log('Wallet Request Cancelled');
-						return;
-					}
+				if (window.ethereum.providers) {
+					let providers = window.ethereum.providers;
+					provider = providers.find((prov) => prov.isMetaMask);
 				} else {
-					console.log('No MetaMask Wallet found');
+					provider = window.ethereum;
+				}
+
+				try {
+					await provider.request({ method: 'eth_requestAccounts' });
+				} catch (error) {
+					console.log('Wallet Request Cancelled');
 					return;
 				}
 
 				return provider;
 			}
-		}
-	};
+		};
+	}
 
 	// WalletConnect
 	if ((window as any).WalletConnectProvider) {
