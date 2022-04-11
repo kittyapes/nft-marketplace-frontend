@@ -60,12 +60,7 @@
 
 					<td class="px-4 w-28 whitespace-nowrap">
 						{#if showModify}
-							<button
-								class="btn btn-rounded uppercase italic btn-gradient h-12 w-48 font-light"
-								on:click={() => handleModifyAdmin(row)}
-							>
-								Modify
-							</button>
+							<button class="btn btn-rounded uppercase italic btn-gradient h-12 w-48 font-light" on:click={() => handleModifyAdmin(row)}>Modify</button>
 						{/if}
 					</td>
 				</tr>

@@ -8,7 +8,7 @@
 
 	export let userData: UserData;
 
-	let name = userData?.name;
+	let name = userData?.username;
 
 	let isSubmiting = false;
 
@@ -33,13 +33,11 @@
 	// }
 </script>
 
-<Popup class="min-w-[600px]" closeButton>
+<Popup class="min-w-[600px]" closeButton on:close>
 	<div class="px-12 py-12">
 		<div class="w-full text-center text-5xl text-color-black uppercase">
 			Modify
-			<span class="text-transparent bg-clip-text bg-gradient-to-r from-color-purple to-color-blue">
-				Admin
-			</span>
+			<span class="text-transparent bg-clip-text bg-gradient-to-r from-color-purple to-color-blue">Admin</span>
 		</div>
 
 		<div class="mt-16 text-color-black grid grid-cols-3 gap-y-6">
