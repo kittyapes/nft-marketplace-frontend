@@ -40,7 +40,8 @@
 				}
 
 				await claimFreeNft(nfts[0].id, $currentUserAddress, signature);
-
+				minting = false;
+				minted = true;
 				notifySuccess('Successfully minted your NFT!');
 			} else {
 				notifyError($welcomeNftClaimedOnChain ? "It appears you've already claimed your free NFT, please check your wallet to confirm this" : 'Failed to mint your NFT');
@@ -49,9 +50,6 @@
 			console.error('FREE NFT ERROR: ', err);
 			notifyError('Failed minting your NFT.');
 		}
-
-		minting = false;
-		minted = true;
 		handler.close();
 	}
 
