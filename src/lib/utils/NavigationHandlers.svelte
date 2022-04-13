@@ -36,7 +36,10 @@
 	}
 
 	function setLoginPopup(onSuccessRedirect?: string) {
-		const onLoginSuccess = () => onSuccessRedirect && goto(onSuccessRedirect);
+		const onLoginSuccess = () => {
+			onSuccessRedirect && goto(onSuccessRedirect);
+			refreshProfileData();
+		};
 
 		setPopup(AuthLoginPopup, {
 			unique: true,
