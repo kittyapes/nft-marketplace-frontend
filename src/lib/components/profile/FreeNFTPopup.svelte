@@ -10,7 +10,7 @@
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import type { PopupHandler } from '$utils/popup';
 	import { claimFreeNft } from '$utils/api/freeNft';
-	import { appSigner, currentUserAddress, welcomeNftClaimedOnChain, welcomeNftClaimedOnServer, welcomeNftMessage } from '$stores/wallet';
+	import { appSigner, currentUserAddress, welcomeNftClaimedOnChain, welcomeNftMessage } from '$stores/wallet';
 
 	const dispatch = createEventDispatcher();
 
@@ -60,7 +60,10 @@
 
 <div class="bg-white rounded-3xl grid grid-cols-2 overflow-hidden w-[1000px] h-[400px]">
 	<div class="bg-color-gray-lighter flex flex-col items-center justify-center p-8 relative">
-		<img src={data.img} alt="" class="w-72 h-56 object-contain" />
+		<!-- <img src={data.img} alt={data.name} class="w-72 h-56 object-contain" /> -->
+		<video src={data.img} class="w-72 h-56 object-contain" autoplay loop>
+			<track kind="captions" />
+		</video>
 		<div class="mt-4 font-semibold text-xl">{data.name}</div>
 		<div class="flex mt-4 space-x-4">
 			<!-- <a class="transition-btn" href={data.img} target="_blank">
