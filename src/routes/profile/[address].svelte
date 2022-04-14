@@ -119,7 +119,7 @@
 		<!-- Bio -->
 		<div class="max-w-[600px] flex-grow">
 			<div class="font-bold text-color-gray-dark pl-16">BIO</div>
-			<p class="mt-4 font-semibold h-32 break-words border-l border-r border-opacity-30 border-black px-16 overflow-y-scroll">
+			<p class="mt-4 font-semibold h-32 break-words border-l border-r border-opacity-30 border-black px-16 overflow-y-auto">
 				{#if $localProfileData?.bio}
 					{@html $localProfileData?.bio}
 				{:else}
