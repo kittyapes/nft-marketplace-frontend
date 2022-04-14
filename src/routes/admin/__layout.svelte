@@ -4,6 +4,6 @@
 
 <WalletConnectCheck />
 
-<div class="overflow-x-scroll min-w-[1400px]">
+<div class="min-w-[1400px]">
 	<slot />
 </div>
