@@ -21,8 +21,7 @@
 	import type { UserData } from 'src/interfaces/userData';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 
-	// const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'ACTIVITY', 'FAVORITES'];
-	const tabs = ['CREATED NFTS', 'COLLECTED NFTS', 'FAVORITES'];
+	const tabs = ['COLLECTED NFTS', 'CREATED NFTS', 'FAVORITES'];
 	let selectedTab = 'CREATED NFTS';
 
 	$: address = $page.params.address;
@@ -57,7 +56,12 @@
 
 	let createdNfts: [] = null;
 	const fetchCreatedNfts = async () => {
-		createdNfts = (await getUserNfts(address)).result.filter((v) => v.token_uri);
+		try {
+			const unfiltered = (await getUserNfts(address)).result;
+			createdNfts = unfiltered.filter((v) => v.token_uri);
+		} catch {
+			createdNfts = [];
+		}
 	};
 
 	onMount(fetchCreatedNfts);
@@ -157,10 +161,10 @@
 	<div class="h-px bg-black opacity-30" />
 
 	<div class="max-w-screen-xl mx-auto">
-		{#if selectedTab === 'CREATED NFTS'}
-			<NftList data={createdNfts} />
-		{:else if selectedTab === 'COLLECTED NFTS'}
+		{#if selectedTab === 'COLLECTED NFTS'}
 			<NftList data={[]} />
+		{:else if selectedTab === 'CREATED NFTS'}
+			<NftList data={createdNfts} />
 		{:else if selectedTab === 'ACTIVITY'}
 			<NftList data={[]} />
 		{:else if selectedTab === 'FAVORITES'}
