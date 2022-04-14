@@ -1,7 +1,5 @@
 <script lang="ts">
 	import CloseButton from '$icons/close-button.svelte';
-	import Fullscreen from '$icons/fullscreen.svelte';
-	import { createEventDispatcher } from 'svelte';
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import ChevronRight from '$icons/chevron-right.svelte';
 	import Loader from '$icons/loader.svelte';
@@ -11,8 +9,6 @@
 	import type { PopupHandler } from '$utils/popup';
 	import { claimFreeNft } from '$utils/api/freeNft';
 	import { appSigner, currentUserAddress, welcomeNftClaimedOnChain, welcomeNftMessage } from '$stores/wallet';
-
-	const dispatch = createEventDispatcher();
 
 	export let handler: PopupHandler;
 
@@ -40,7 +36,12 @@
 					}
 				}
 
-				await claimFreeNft(nfts[0].id, $currentUserAddress, signature);
+				const claimed = await claimFreeNft(nfts[0].id, $currentUserAddress, signature);
+
+				if (!claimed) {
+					notifyError('Failed to Claim Free NFT');
+					return;
+				}
 
 				notifySuccess('Successfully minted your NFT!');
 			} else {

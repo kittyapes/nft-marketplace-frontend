@@ -41,7 +41,8 @@ export async function hasClaimedFreeNft(address: string) {
 /**
  * Check if the user has already claimed and get message to sign and attach to the claim route
  * @param address Currently logged in user's wallet address.
- * @returns An object with the message to sign when claiming and the isClaimed boolean value
+ * @returns An object with the message to sign when claiming and the isClaimed boolean value. Return
+ * false in case of an error.
  */
 export async function claimFreeNft(selectedNftIndex: number, address: string, signature: string = '') {
 	if (signature) {
@@ -90,6 +91,7 @@ export async function claimFreeNft(selectedNftIndex: number, address: string, si
 		welcomeNftClaimedOnChain.set(true);
 	} catch (err) {
 		console.log('ERROR: ', err);
+		return false;
 	}
 
 	return resData;
