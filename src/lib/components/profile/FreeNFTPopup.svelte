@@ -32,11 +32,12 @@
 				let signature = '';
 
 				if ($welcomeNftMessage) {
-					signature = await $appSigner.signMessage($welcomeNftMessage).catch((err) => {
-						console.log(err);
+					try {
+						signature = await $appSigner.signMessage($welcomeNftMessage);
+					} catch {
 						notifyError('Failed to Sign Message');
-						return '';
-					});
+						return;
+					}
 				}
 
 				await claimFreeNft(nfts[0].id, $currentUserAddress, signature);
@@ -48,9 +49,10 @@
 		} catch (err) {
 			console.error('FREE NFT ERROR: ', err);
 			notifyError('Failed minting your NFT.');
+		} finally {
+			minting = false;
 		}
 
-		minting = false;
 		minted = true;
 	}
 
