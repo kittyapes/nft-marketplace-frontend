@@ -16,12 +16,7 @@
 </script>
 
 {#if metadata}
-	<div
-		class="w-56 min-h-80 rounded-xl border border-gray-400 cursor-pointer transition-all hover:scale-105"
-		transition:fade={{ duration: 500 }}
-		class:hidden
-		on:click={() => openPopup(metadata)}
-	>
+	<div class="w-56 min-h-80 rounded-xl border border-gray-400 cursor-pointer transition-all hover:scale-105" transition:fade={{ duration: 500 }} class:hidden on:click={() => openPopup(metadata)}>
 		<div class="w-full justify-end flex items-center gap-2 pt-3 px-3">
 			<HeartIcon />
 			1
