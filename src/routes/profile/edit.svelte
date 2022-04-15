@@ -137,11 +137,14 @@
 			.indexOf('0') * 25;
 
 	async function handleNftClaim() {
-		if (dataChanged) {
-			await onSave();
+		try {
+			if (dataChanged) {
+				await onSave();
+			}
+			setPopup(FreeNftPopup);
+		} catch (err) {
+			console.log(err);
 		}
-
-		setPopup(FreeNftPopup);
 	}
 
 	// Username availability check
@@ -178,9 +181,10 @@
 	}
 
 	$: bioValid = isValidBio($localDataStore?.bio) || !$localDataStore?.bio;
+	$: websiteValid = browser && (!$localDataStore.website || isUrl($localDataStore.website));
 
 	// We setting false on SSR to avoid save button flashing
-	$: dataValid = browser && $usernameAvailable && bioValid && isUrl($localDataStore.website);
+	$: dataValid = browser && $usernameAvailable && bioValid && websiteValid;
 
 	const [currentAddress, previousAddress] = withPrevious('', { requireChange: true });
 	$: $currentAddress = $currentUserAddress;

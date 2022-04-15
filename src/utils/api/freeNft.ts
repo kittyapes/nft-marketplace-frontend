@@ -14,7 +14,7 @@ export async function hasClaimedFreeNft(address: string) {
 	const res = await axios.get(`${api}/v1/nfts/isClaimed/${address}`, getAxiosConfig());
 
 	// Check if user's nonce has already claimed
-	console.log(res.data.data);
+	//console.log(res.data.data);
 	if (res.data.data.nonce) {
 		const hinataTokenContract = getHinataTokenContract(get(appProvider));
 		const hasClaimed = await hinataTokenContract.usedNonce(res.data.data.nonce);
