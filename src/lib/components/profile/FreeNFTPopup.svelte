@@ -1,7 +1,5 @@
 <script lang="ts">
 	import CloseButton from '$icons/close-button.svelte';
-	import Fullscreen from '$icons/fullscreen.svelte';
-	import { createEventDispatcher } from 'svelte';
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import ChevronRight from '$icons/chevron-right.svelte';
 	import Loader from '$icons/loader.svelte';
@@ -11,8 +9,6 @@
 	import type { PopupHandler } from '$utils/popup';
 	import { claimFreeNft } from '$utils/api/freeNft';
 	import { appSigner, currentUserAddress, welcomeNftClaimedOnChain, welcomeNftMessage } from '$stores/wallet';
-
-	const dispatch = createEventDispatcher();
 
 	export let handler: PopupHandler;
 
@@ -32,16 +28,21 @@
 				let signature = '';
 
 				if ($welcomeNftMessage) {
-					signature = await $appSigner.signMessage($welcomeNftMessage).catch((err) => {
-						console.log(err);
+					try {
+						signature = await $appSigner.signMessage($welcomeNftMessage);
+					} catch {
 						notifyError('Failed to Sign Message');
-						return '';
-					});
+						return;
+					}
 				}
 
-				await claimFreeNft(nfts[0].id, $currentUserAddress, signature);
-				minting = false;
-				minted = true;
+				const claimed = await claimFreeNft(nfts[0].id, $currentUserAddress, signature);
+
+				if (!claimed) {
+					notifyError('Failed to Claim Free NFT');
+					return;
+				}
+
 				notifySuccess('Successfully minted your NFT!');
 			} else {
 				notifyError($welcomeNftClaimedOnChain ? "It appears you've already claimed your free NFT, please check your wallet to confirm this" : 'Failed to mint your NFT');
@@ -49,7 +50,11 @@
 		} catch (err) {
 			console.error('FREE NFT ERROR: ', err);
 			notifyError('Failed minting your NFT.');
+		} finally {
+			minting = false;
 		}
+
+		minted = true;
 		handler.close();
 	}
 
