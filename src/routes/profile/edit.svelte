@@ -138,14 +138,7 @@
 			.indexOf('0') * 25;
 
 	async function handleNftClaim() {
-		try {
-			if (dataChanged) {
-				await onSave();
-			}
-			setPopup(FreeNftPopup);
-		} catch (err) {
-			console.log(err);
-		}
+		setPopup(FreeNftPopup);
 	}
 
 	// Username availability check
