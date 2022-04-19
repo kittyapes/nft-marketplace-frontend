@@ -31,6 +31,7 @@
 	import { fade, slide } from 'svelte/transition';
 	import { withPrevious } from 'svelte-previous';
 	import { isUrl, urlPattern } from '$utils/validator/isUrl';
+	import { isEqual } from 'lodash-es';
 
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
@@ -139,14 +140,7 @@
 			.indexOf('0') * 25;
 
 	async function handleNftClaim() {
-		try {
-			if (dataChanged) {
-				await onSave();
-			}
-			setPopup(FreeNftPopup);
-		} catch (err) {
-			console.log(err);
-		}
+		setPopup(FreeNftPopup);
 	}
 
 	// Username availability check
@@ -176,6 +170,8 @@
 			console.log(err);
 		}
 	});
+
+	$: isSynced = isEqual($fetchedDataStore, $localDataStore);
 
 	// Bio validation
 	function isValidBio(bio: string) {
@@ -231,7 +227,7 @@
 						on:click={handleNftClaim}
 						in:fade|local={{ delay: 300 }}
 						out:fade|local
-						disabled={isSaving || $welcomeNftClaimedOnChain}
+						disabled={isSaving || $welcomeNftClaimedOnChain || !isSynced}
 					>
 						Claim your NFT
 					</button>
