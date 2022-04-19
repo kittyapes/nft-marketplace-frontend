@@ -46,6 +46,8 @@
 
 	let firstTimeUser = false;
 
+	let pattern = urlPattern.toString();
+
 	let isSaving = false;
 
 	async function onSave() {
@@ -182,6 +184,9 @@
 
 	$: bioValid = isValidBio($localDataStore?.bio) || !$localDataStore?.bio;
 	$: websiteValid = browser && (!$localDataStore.website || isUrl($localDataStore.website));
+	$: if (websiteValid) {
+		console.log(websiteValid);
+	}
 
 	// We setting false on SSR to avoid save button flashing
 	$: dataValid = browser && $usernameAvailable && bioValid && websiteValid;
@@ -325,7 +330,13 @@
 
 						<div>
 							<Web />
-							<input type="text" pattern={urlPattern} class="input input-gray-outline" placeholder="Personal Website" bind:value={$localDataStore.website} />
+							<input
+								type="text"
+								pattern={'^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?'}
+								class="input input-gray-outline"
+								placeholder="Personal Website"
+								bind:value={$localDataStore.website}
+							/>
 						</div>
 
 						<div>
