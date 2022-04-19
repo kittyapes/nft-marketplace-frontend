@@ -22,7 +22,7 @@
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 
 	const tabs = ['COLLECTED NFTS', 'CREATED NFTS', 'FAVORITES'];
-	let selectedTab = 'CREATED NFTS';
+	let selectedTab = 'COLLECTED NFTS';
 
 	$: address = $page.params.address;
 
