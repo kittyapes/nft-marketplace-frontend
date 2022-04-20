@@ -4,7 +4,7 @@
 	import NftCard from '$lib/components/NftCard.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { newDropProperties } from '$stores/create';
-	import { setPopup } from '$utils/popup';
+	import { closePopup, setPopup } from '$utils/popup';
 	import { createDropOnAPI, createDropOnChain } from '$utils/create/createDrop';
 	import { currentUserAddress } from '$stores/wallet';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
@@ -86,7 +86,7 @@
 								await createNFTOnChain({
 									dropId: dropId,
 									id: nftID,
-									amount: nftQuantity.toString() || '1', // 1 for one of one
+									amount: nftQuantity.toString() || '1' // 1 for one of one
 								})
 									.then((chainRes) => {
 										progress.set(100);
@@ -101,21 +101,25 @@
 									.catch((err) => {
 										console.log(err);
 										notifyError('Failed to Mint NFT on contract');
+										closePopup();
 									});
 							})
 							.catch((err) => {
 								console.log(err);
 								notifyError('Failed to create nft on api');
+								closePopup();
 							});
 					})
 					.catch((err) => {
 						console.log('DROP CREATION ON CONTRACT ERR: ', err);
 						notifyError('Failed to create drop on contract');
+						closePopup();
 					});
 			})
 			.catch((err) => {
 				console.log('DROP CREATION ON API ERROR: ', err);
 				notifyError('Sorry, failed to create drop');
+				closePopup();
 			});
 	}
 
