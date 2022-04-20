@@ -1,6 +1,8 @@
 <script lang="ts">
 	import Search from '$icons/search.svelte';
+	import { searchDropsByTitle } from '$utils/search/globalSearch';
 	import { debounce } from 'lodash-es';
+	import { notifyError, notifySuccess } from '$utils/toast';
 
 	let query;
 	let beginSearch = false;
@@ -9,9 +11,18 @@
 		beginSearch = true;
 	}, 500);
 
+	let searchDrops = async (query: string) => {
+		await searchDropsByTitle(query)
+			.then((response) => console.log(response))
+			.catch((e) => notifyError(e.message));
+	};
+
 	$: if (query) {
 		debouncedSearch();
-		console.log(beginSearch);
+	}
+
+	$: if (beginSearch) {
+		searchDrops(query);
 	}
 </script>
 
