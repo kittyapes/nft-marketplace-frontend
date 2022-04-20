@@ -34,7 +34,6 @@
 		<img src="/img/logo/logo.svg" alt="Hinata logo." />
 	</a>
 
-	<!-- <Search /> -->
 	<Search />
 
 	<!-- Flex filler -->
