@@ -181,7 +181,7 @@
 	$: bioValid = isValidBio($localDataStore?.bio) || !$localDataStore?.bio;
 	$: websiteValid = browser && (!$localDataStore.website || isUrl($localDataStore.website));
 	$: if (websiteValid) {
-		console.log(websiteValid);
+		// console.log(websiteValid);
 	}
 
 	// We setting false on SSR to avoid save button flashing
@@ -190,7 +190,7 @@
 	const [currentAddress, previousAddress] = withPrevious('', { requireChange: true });
 	$: $currentAddress = $currentUserAddress;
 
-	$: browser && $currentAddress && $previousAddress && $currentAddress !== $previousAddress && goto('/');
+	$: browser && $currentAddress && $previousAddress && $currentAddress !== $previousAddress && goto('/profile');
 
 	appSigner.subscribe((signer) => browser && checkIfWalletConnected(signer, $page.url.pathname));
 </script>

@@ -48,15 +48,13 @@
 				notifyError($welcomeNftClaimedOnChain ? "It appears you've already claimed your free NFT, please check your wallet to confirm this" : 'Failed to mint your NFT');
 			}
 			minted = true;
+			handler.close();
 		} catch (err) {
 			console.error('FREE NFT ERROR: ', err);
 			notifyError('Failed minting your NFT.');
-			minted = false;
 		} finally {
 			minting = false;
 		}
-
-		handler.close();
 	}
 
 	let nfts = clone(welcomeNfts);
