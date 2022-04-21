@@ -38,7 +38,7 @@
 <!-- NFT Image side-->
 <div class="w-full md:w-1/2 bg-gray-200 h-auto flex items-center justify-center">
 	<div class="m-10 text-center h-full flex flex-col justify-end">
-		<div class=" w-72 h-72 flex items-center justify-center self-center">
+		<div class="w-96 h-96 flex items-center justify-center self-center">
 			{#if $selectedCard?.animation_url}
 				{#await preload($selectedCard?.animation_url)}
 					<Loader />
@@ -52,14 +52,13 @@
 				<img src={$selectedCard?.image} class="max-w-full max-h-full shadow-xl rounded-xl" alt="card artwork" />
 			{/if}
 		</div>
-
 		<!-- NFT Name and ID-->
-		<div class="font-bold text-lg mt-4 opacity-70">
+		<div class="font-bold text-2xl mt-4 opacity-70 justify-self-end">
 			{$selectedCard?.name} #{$selectedCard?.id}
 		</div>
 
 		<!-- Fullscreen and Share button -->
-		<div class="flex justify-center mt-24 mb-8 gap-x-4">
+		<div class="flex justify-center mt-8 mb-8 gap-x-4">
 			{#if $selectedCard?.animation_url}
 				<div on:click={openFullscreen}><Fullscreen /></div>
 			{:else}
