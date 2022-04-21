@@ -2,6 +2,7 @@ import { api } from '$constants/api';
 import { appSigner } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import HinataMarketplaceContract from '$utils/contracts/hinataMarketplace';
+import { notifyError } from '$utils/toast';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import type { NFTCreationObject } from 'src/interfaces/nft/nftCreationObject';
@@ -58,7 +59,7 @@ export const createNFTOnChain = async ({ dropId, id, amount }: NFTMintingObject)
 		return true;
 	} catch (error) {
 		console.log(error);
-		// Can also notify error
-		return false;
+		throw new Error('Failed to create NFT on chain');
+		//return false;
 	}
 };
