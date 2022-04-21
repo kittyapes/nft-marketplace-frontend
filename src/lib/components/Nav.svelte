@@ -26,6 +26,7 @@
 	$: displayedUsername = $profileData?.username.includes('great_gatsby') ? 'Guest User' : $profileData?.username;
 
 	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
+	let imageFailedToLoad = false;
 </script>
 
 <div class="flex items-center h-16 pl-8 gap-x-8 fixed w-full z-10 bg-white drop-shadow-lg">
@@ -75,7 +76,12 @@
 				<!-- Profile image or guest user icon -->
 				<div class="w-6 h-6">
 					{#if $profileData?.imageUrl}
-						<img src={$profileData.imageUrl} alt="Current account avatar." class="w-full h-full object-cover rounded-full" />
+						<img
+							on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"}
+							src={$profileData.imageUrl}
+							alt="Current account avatar."
+							class="w-full h-full object-cover rounded-full"
+						/>
 					{:else}
 						<div class="text-color-purple" in:fade>
 							<UserCircle />
