@@ -10,7 +10,7 @@ import { getApiUrl } from '$utils/api';
 
 export const createDropOnAPI = async ({ contractId, title, artist, creator, description }: DropPostObject) => {
 	const res = await axios.post(
-		getApiUrl('sprint-26', 'drops'),
+		getApiUrl('latest', 'drops'),
 		{
 			contractId: contractId,
 			description,
