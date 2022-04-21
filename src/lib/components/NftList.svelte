@@ -3,8 +3,14 @@
 	import { fetchTokenUriData } from '$utils/nfts/fetchTokenUriData';
 	import type { TokenData } from 'src/interfaces/tokenData';
 	import { adaptNftCard } from '$utils/adapters/adaptNftCard';
+	import NftDisplayPopup from './profile/NFTDisplayPopup.svelte';
+	import { setPopup } from '$utils/popup';
 
 	export let data: TokenData[];
+
+	function handleOpenPopup(data: TokenData) {
+		setPopup(NftDisplayPopup, { props: { data } });
+	}
 </script>
 
 {#if data === null}
@@ -17,24 +23,24 @@
 
 {#if data?.length}
 	<div class="nftGrid">
-		{#each data.map(adaptNftCard) as tokenData}
+		{#each data.map(adaptNftCard) as tokenData, i}
 			{#if tokenData.name}
 				<!-- Fetching images and animations from tokenUri, because the default
 				fetched image are sometimes invalid -->
 
 				{#await fetchTokenUriData(tokenData.tokenUri)}
-					<NftCard {...tokenData} />
+					<NftCard on:click={() => handleOpenPopup(data[i])} {...tokenData} />
 				{:then tokenUriData}
-					<NftCard {...tokenData} imageUrl={tokenUriData?.image || tokenData.imageUrl} />
+					<NftCard on:click={() => handleOpenPopup(data[i])} {...tokenData} imageUrl={tokenUriData?.image || tokenData.imageUrl} />
 				{:catch}
-					<NftCard {...tokenData} />
+					<NftCard on:click={() => handleOpenPopup(data[i])} {...tokenData} />
 				{/await}
 			{/if}
 		{/each}
 	</div>
 {/if}
 
-<style>
+<style type="postcss">
 	.placeholder {
 		@apply p-36 font-semibold text-lg opacity-60;
 	}

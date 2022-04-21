@@ -54,13 +54,16 @@
 		</div>
 		<!-- NFT Name and ID-->
 		<div class="font-bold text-2xl mt-4 opacity-70 justify-self-end">
-			{$selectedCard?.name} #{$selectedCard?.id}
+			{$selectedCard?.name}
+			{#if $selectedCard?.id}
+				#{$selectedCard?.id}
+			{/if}
 		</div>
 
 		<!-- Fullscreen and Share button -->
 		<div class="flex justify-center mt-8 mb-8 gap-x-4">
 			{#if $selectedCard?.animation_url}
-				<div on:click={openFullscreen}><Fullscreen /></div>
+				<div class="transition-btn hover:brightness-110 cursor-pointer" on:click={openFullscreen}><Fullscreen /></div>
 			{:else}
 				<a href={$selectedCard?.image} target="_blank" class="transition-btn hover:brightness-110">
 					<Fullscreen />

@@ -14,6 +14,8 @@ export interface TokenData {
 		name: string;
 		price: string;
 		supply: string;
+		external_link: string;
+		description: string;
 	};
 	name: string;
 	owner_of: string;

@@ -9,9 +9,9 @@
 	<Popup class="w-full lg:w-2/3 mx-auto shadow-xl z-50 flex flex-col md:flex-row overflow-y-scroll md:overflow-y-hidden h-[40rem] pt-0">
 		<NftDisplay />
 		<!-- Right side of popup -->
-		<div class="w-full md:w-1/2 bg-white p-9 flex flex-col h-full">
+		<div class="w-full md:w-1/2 bg-white p-10 flex flex-col h-full relative">
 			<slot name="content" />
-			<div class="h-px w-full mt-1 bg-color-black bg-opacity-30" />
+			<div class="h-px mt-1 bg-color-black bg-opacity-30 w-full" />
 		</div>
 	</Popup>
 {:else if size === 'squished'}

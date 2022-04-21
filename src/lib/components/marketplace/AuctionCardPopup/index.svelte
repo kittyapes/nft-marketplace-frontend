@@ -36,12 +36,7 @@
 
 	let header = {
 		info: 'You must bid at least',
-		amount:
-			lowestPossibleBid +
-			' Ξ ' +
-			'($' +
-			Math.round((lowestPossibleBid * ethereumUsdRate + Number.EPSILON) * 100) / 100 +
-			')',
+		amount: lowestPossibleBid + ' Ξ ' + '($' + Math.round((lowestPossibleBid * ethereumUsdRate + Number.EPSILON) * 100) / 100 + ')',
 		buttonText: 'ADD BALANCE'
 	};
 	let inputBid: string;
@@ -81,15 +76,8 @@
 	<ContentDisplay slot="content" bind:buyScreen bind:successScreen>
 		<CardBuyScreen slot="buy-screen" currencySymbol={'Ξ'} {header}>
 			<div class="w-[95%] grid place-items-center relative" slot="buy-input">
-				<input
-					bind:value={inputBid}
-					class="w-full p-2 rounded-md border border-color-black text-2xl"
-					placeholder="00.00"
-				/>
-				<button
-					class="rounded-md bg-color-black text-white font-semibold text-xl px-12 py-[10px] absolute right-0"
-					on:click={buttonClick}
-				>
+				<input bind:value={inputBid} class="w-full p-2 rounded-md border border-color-black text-2xl" placeholder="00.00" />
+				<button class="rounded-md bg-color-black text-white font-semibold text-xl px-12 py-[10px] absolute right-0" on:click={buttonClick}>
 					<div class="w-full h-full">Ξ</div>
 				</button>
 			</div>
@@ -104,8 +92,7 @@
 			infoText={[
 				{ 'Current bid': '$' + currentBid * ethereumUsdRate + ' | ' + currentBid + ' Ξ' },
 				{
-					'Ending in':
-						endingIn.getDate() - 1 + 'D ' + endingIn.getHours() + 'H ' + endingIn.getMinutes() + 'M'
+					'Ending in': endingIn.getDate() - 1 + 'D ' + endingIn.getHours() + 'H ' + endingIn.getMinutes() + 'M'
 				}
 			]}
 			{buyButtonDisabled}
@@ -138,8 +125,7 @@
 			infoText={[
 				{ 'Current bid': '$' + currentBid * ethereumUsdRate + ' | ' + currentBid + ' Ξ' },
 				{
-					'Ending in':
-						endingIn.getDate() - 1 + 'D ' + endingIn.getHours() + 'H ' + endingIn.getMinutes() + 'M'
+					'Ending in': endingIn.getDate() - 1 + 'D ' + endingIn.getHours() + 'H ' + endingIn.getMinutes() + 'M'
 				}
 			]}
 		/>
@@ -155,8 +141,7 @@
 			infoText={[
 				{ 'Current bid': '$' + currentBid * ethereumUsdRate + ' | ' + currentBid + ' Ξ' },
 				{
-					'Ending in':
-						endingIn.getDate() - 1 + 'D ' + endingIn.getHours() + 'H ' + endingIn.getMinutes() + 'M'
+					'Ending in': endingIn.getDate() - 1 + 'D ' + endingIn.getHours() + 'H ' + endingIn.getMinutes() + 'M'
 				}
 			]}
 		/>
