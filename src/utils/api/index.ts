@@ -1,3 +1,5 @@
+import { getEnv } from '$utils/env';
+
 export type ApiVersion = 'latest' | 'sprint-26';
 
 const versionToUrl: Partial<Record<ApiVersion, string>> = {
@@ -5,9 +7,15 @@ const versionToUrl: Partial<Record<ApiVersion, string>> = {
 };
 
 export function getApiUrl(apiVersion: ApiVersion, apiPath: string): string {
-	if (apiVersion === 'latest') {
+	let domain = null;
+
+	if (getEnv() === 'dev') {
+		console.info('[API] Using dev environment');
+		domain = 'https://hinata-dev.rekt-news.xyz/api/v1';
+	} else if (apiVersion === 'latest') {
 		apiVersion = Object.keys(versionToUrl).slice(-1)[0] as ApiVersion;
+		domain = versionToUrl[apiVersion];
 	}
 
-	return `${versionToUrl[apiVersion]}/${apiPath}`;
+	return `${domain}/${apiPath}`;
 }
