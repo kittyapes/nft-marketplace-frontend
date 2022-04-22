@@ -41,7 +41,7 @@ export interface Listing {
 }
 
 export async function getListings() {
-	const res = await axios.get(getApiUrl('latest', 'listings/search'));
+	const res = await axios.get(getApiUrl('latest', 'listings/search'), { params: { limit: 100 } });
 
 	return res.data.data as Listing[];
 }
