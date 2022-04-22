@@ -7,7 +7,13 @@ import type { UserData } from 'src/interfaces/userData';
 
 export const getDropsByTitle = async (query: string) => {
     try {
-        const res = await axios.get(api + '/v1/drops/search', { params: { keyword: query } });
+        let params;
+        if (!query) {
+            params = {}
+        } else {
+            params = { keyword: query }
+        }
+        const res = await axios.get(api + '/v1/drops/search', { params });
         return res.data.data as DropApiReturnValue[];
     } catch {    
         throw new Error('Failed to search for drops');
@@ -16,9 +22,16 @@ export const getDropsByTitle = async (query: string) => {
 
 export const getUsersByName = async (query: string) => {
     try {
-        const res = await axios.get(api + '/v1/accounts',  { params: { query }, ...getAxiosConfig()});
+        let params;
+        if (!query) {
+            params = {}
+        } else {
+            params = {query}
+        }
+        
+        const res = await axios.get(api + '/v1/accounts',  { params , ...getAxiosConfig()});
         return res.data.data as UserData[];
-    } catch {    
+    } catch {
         throw new Error('Failed to search for users');
     }
 }
