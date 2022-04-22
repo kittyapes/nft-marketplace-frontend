@@ -1,49 +1,47 @@
 <script lang="ts">
 	import Card from '$lib/components/marketplace/Card.svelte';
 	import { onMount } from 'svelte';
-	import { request } from 'graphql-request';
-	import { fetchAllMetadata } from '$utils/api/getNFT';
-	import { priceFilters, statusFilters } from '$stores/marketplace';
-	import { GET_ALL_CARDS } from '$utils/graphql/marketplace';
+	// import { priceFilters, statusFilters } from '$stores/marketplace';
+	import { getListings, Listing } from '$utils/api/listing';
+	import { writable } from 'svelte/store';
+	import { getNft } from '$utils/api/nft';
+	import NftCard from '$lib/components/NftCard.svelte';
 
-	let oldCards;
-	let allCards;
-	let filteredCards;
+	const listings = writable<Listing[]>([]);
 
 	onMount(async () => {
-		oldCards = await request('https://api.thegraph.com/subgraphs/name/hysmagus/waifu', GET_ALL_CARDS, {
-			numberToSkip: 0
-		});
+		listings.set(await getListings());
 
-		fetchAllMetadata(oldCards).then((data) => {
-			allCards = data;
-			filteredCards = data;
-		});
+		console.log(listings);
 	});
 
-	$: {
-		filteredCards = allCards;
+	// $: {
+	// 	filteredCards = allCards;
 
-		// Status filter
-		if (allCards && $statusFilters.size > 0) {
-			filteredCards = filteredCards.filter((_card) => {
-				return $statusFilters.has(_card?.status);
-			});
-		}
+	// 	// Status filter
+	// 	if (allCards && $statusFilters.size > 0) {
+	// 		filteredCards = filteredCards.filter((_card) => {
+	// 			return $statusFilters.has(_card?.status);
+	// 		});
+	// 	}
 
-		// Price filter
-		if (allCards && $priceFilters.min < $priceFilters.max && $priceFilters.min != 0 && $priceFilters.max != 0) {
-			filteredCards = filteredCards.filter((_card) => {
-				return parseFloat(_card?.amount) >= $priceFilters.min && parseFloat(_card?.amount) <= $priceFilters.max;
-			});
-		}
-	}
+	// 	// Price filter
+	// 	if (allCards && $priceFilters.min < $priceFilters.max && $priceFilters.min != 0 && $priceFilters.max != 0) {
+	// 		filteredCards = filteredCards.filter((_card) => {
+	// 			return parseFloat(_card?.amount) >= $priceFilters.min && parseFloat(_card?.amount) <= $priceFilters.max;
+	// 		});
+	// 	}
+	// }
 </script>
 
 <div class="flex flex-wrap mt-11 justify-center gap-6 cards">
-	{#if filteredCards}
-		{#each filteredCards as _card}
-			<Card metadata={_card} />
+	{#if $listings.length}
+		{#each $listings as listing}
+			{#await getNft(listing.drop.nft_ids[0])}
+				<NftCard />
+			{:then nft}
+				<NftCard imageUrl={nft.imageUrl} name={nft.name} price={nft.price} />
+			{/await}
 		{/each}
 	{:else}
 		Loading...
