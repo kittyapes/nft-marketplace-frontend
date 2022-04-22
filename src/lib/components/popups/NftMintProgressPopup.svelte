@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Loader from '$icons/loader.svelte';
+	import { newBundleData } from '$utils/create';
 	import type { PopupHandler } from '$utils/popup';
 
 	import type { Readable } from 'svelte/store';
@@ -20,7 +21,7 @@
 	export let progress: Readable<number> = readable(0);
 
 	function clickChooseFormat() {
-		goto('/create/choose-listing-format');
+		goto('/create/choose-listing-format/' + $newBundleData.bundleId);
 		handler.close();
 	}
 </script>
