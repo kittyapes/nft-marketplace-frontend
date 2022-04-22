@@ -32,7 +32,7 @@
 		</div>
 
 		<div class="w-full flex justify-between px-2 gap-2 font-bold mt-2 mb-6 flex-1">
-			<div class="tracking-tight leading-tight">{metadata.name} #{metadata.id}</div>
+			<div class="tracking-tight leading-tight">{metadata.name}</div>
 			<div class="flex gap-1 items-center justify-center flex-shrink-0">
 				<EthIcon />
 				{metadata.amount}

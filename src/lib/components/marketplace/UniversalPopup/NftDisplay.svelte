@@ -52,13 +52,12 @@
 				<img src={$selectedCard?.image} class="max-w-full max-h-full shadow-xl rounded-xl" alt="card artwork" />
 			{/if}
 		</div>
-		<!-- NFT Name and ID-->
-		<div class="font-bold text-2xl mt-4 opacity-70 justify-self-end">
-			{$selectedCard?.name}
-			{#if $selectedCard?.id}
-				#{$selectedCard?.id}
-			{/if}
-		</div>
+		<!-- NFT Name -->
+		{#if $selectedCard?.name}
+			<div class="font-bold text-2xl mt-4 opacity-70 justify-self-end">
+				{$selectedCard?.name}
+			</div>
+		{/if}
 
 		<!-- Fullscreen and Share button -->
 		<div class="flex justify-center mt-8 mb-8 gap-x-4">
