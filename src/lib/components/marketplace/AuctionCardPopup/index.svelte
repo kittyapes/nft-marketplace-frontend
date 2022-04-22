@@ -55,14 +55,21 @@
 		};
 	});
 
-	let buttonClick = () => {
-		if (inputBid) {
-			if (!isNaN(Number(inputBid)) && Number(inputBid) >= lowestPossibleBid) {
-				buyButtonDisabled = false;
-				inputBid = `${inputBid} Ξ`;
-			}
+	$: if (inputBid) {
+		console.log(inputBid);
+		if (!buyButtonDisabled) {
+			let test: string = inputBid.match(/\d+/) ? inputBid.match(/\d+/)[0] : '';
+			inputBid = test;
 		}
-	};
+
+		if (!isNaN(Number(inputBid)) && Number(inputBid) >= lowestPossibleBid) {
+			buyButtonDisabled = false;
+			inputBid = `${inputBid} Ξ`;
+			console.log(inputBid);
+		} else {
+			buyButtonDisabled = true;
+		}
+	}
 
 	let endingIn = new Date(Math.abs(endingDate.getTime() - today.getTime()));
 
@@ -77,7 +84,7 @@
 		<CardBuyScreen slot="buy-screen" currencySymbol={'Ξ'} {header}>
 			<div class="w-[95%] grid place-items-center relative" slot="buy-input">
 				<input bind:value={inputBid} class="w-full p-2 rounded-md border border-color-black text-2xl" placeholder="00.00" />
-				<button class="rounded-md bg-color-black text-white font-semibold text-xl px-12 py-[10px] absolute right-0" on:click={buttonClick}>
+				<button class="rounded-md bg-color-black text-white font-semibold text-xl px-12 py-[10px] absolute right-0">
 					<div class="w-full h-full">Ξ</div>
 				</button>
 			</div>
