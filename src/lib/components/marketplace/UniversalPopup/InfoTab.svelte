@@ -31,7 +31,7 @@
 		<div class="w-full flex gap-x-2 items-center mt-5">
 			<span class="text-sm text-color-black opacity-70">Edition:</span>
 
-			<span class="font-semibold">{data.edition}</span>
+			<span class="font-semibold text-color-black">{data.edition}</span>
 		</div>
 	{/if}
 
@@ -40,7 +40,7 @@
 		<div class="w-full flex gap-x-2 items-center mt-5">
 			<span class="text-sm text-color-black opacity-70">External Link:</span>
 
-			<span class="font-semibold">{data.externalLink}</span>
+			<span class="font-semibold text-color-black">{data.externalLink}</span>
 		</div>
 	{/if}
 
@@ -48,7 +48,7 @@
 		<div class="w-full flex gap-x-2 items-center mt-5">
 			<span class="text-sm text-color-black opacity-70">Edition Type:</span>
 
-			<span class="font-semibold">{data.editionType}</span>
+			<span class="font-semibold text-color-black">{data.editionType}</span>
 		</div>
 	{/if}
 
@@ -56,7 +56,7 @@
 	{#if data.description}
 		<div class="w-full  flex flex-col gap-2 mt-5">
 			<span class="text-sm text-color-black opacity-70">Description:</span>
-			<span>
+			<span class="text-color-black">
 				{data.description}
 			</span>
 		</div>
