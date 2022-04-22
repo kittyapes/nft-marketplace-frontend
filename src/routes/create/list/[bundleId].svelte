@@ -14,6 +14,10 @@
 	import { makeErrorHandler, notifyError, notifySuccess } from '$utils/toast';
 	import Loader from '$icons/loader.svelte';
 	import { contractCreateListing, LISTING_TYPE } from '$utils/contracts/listing';
+	import { writable } from 'svelte/store';
+	import { getNft, GetNftResponse } from '$utils/api/nft';
+	import { onMount } from 'svelte';
+	import { getBundle } from '$utils/api/bundle';
 
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
 		sale: ['price', 'date'],
@@ -24,9 +28,17 @@
 		gacha: ['gachaContract']
 	};
 
-	const nftName = 'Todo NFT name';
-	const nftCollection = 'Todo NFT collection';
-	const nftImagePreview = 'https://i.imgur.com/w3duR07.png';
+	// Fetch NFT data on mount to show a preview
+	const fetchedNftData = writable<GetNftResponse>(null);
+
+	onMount(async () => {
+		const bundleRes = await getBundle($page.params.bundleId);
+		const nftRes = await getNft(bundleRes.nft_ids[0]);
+
+		fetchedNftData.set(nftRes);
+
+		console.log(nftRes);
+	});
 
 	let isListing = false;
 
@@ -117,6 +129,6 @@
 
 	<div class="separator border-0 border-l p-8 w-80">
 		<div class="uppercase italic text-xl mb-4">Preview</div>
-		<NftCard name={nftName || 'N/A'} collectionName={nftCollection} imageUrl={nftImagePreview} />
+		<NftCard name={$fetchedNftData?.name || 'N/A'} collectionName="No collection" imageUrl={$fetchedNftData?.imageUrl} />
 	</div>
 </div>
