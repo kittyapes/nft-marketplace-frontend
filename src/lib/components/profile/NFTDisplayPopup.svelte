@@ -20,7 +20,7 @@
 	console.log(data);
 </script>
 
-<PopupContainer>
+<PopupContainer closeButton on:close>
 	<div slot="content" class="flex-grow flex flex-col">
 		<InfoTab data={infoData} />
 		<button class="btn btn-rounded btn-black uppercase text-sm font-normal mt-auto w-full mb-5 self-center">make an offer</button>
