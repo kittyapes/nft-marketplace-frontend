@@ -4,17 +4,17 @@ import { httpErrorHandler } from '$utils/toast';
 import axios from 'axios';
 
 export interface CreateBundleOptions {
-	contractId: string;
+	contractId: number;
 	description: string;
 	title: string;
-	nftIds: string[];
+	nftIds: number[];
 	nftAmounts: number[];
 	creator: string;
 }
 
 export interface CreateBundleResponse {
 	artist: string;
-	contractId: string;
+	contractId: number;
 	coverUrl: string;
 	createdAt: string; // Date string
 	creator: string; // address
@@ -30,11 +30,11 @@ export async function createBundle(options: CreateBundleOptions) {
 		.post(
 			getApiUrl('latest', 'drops'),
 			{
-				contractId: options.contractId,
+				contractId: options.contractId.toString(),
 				description: options.description || 'No description.',
 				title: options.title,
 				creator: options.creator,
-				nft_ids: options.nftIds,
+				nft_ids: options.nftIds.map((id) => id.toString()),
 				nft_amounts: options.nftAmounts
 			},
 			getAxiosConfig()

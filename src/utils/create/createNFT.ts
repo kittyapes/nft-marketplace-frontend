@@ -35,9 +35,9 @@ export const createNFTOnChain = async ({ dropId, id, amount }: NFTMintingObject)
 	try {
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
 		const nftMintingTransaction: ethers.ContractTransaction = await MarketplaceContract.mintDropNFT(
-			ethers.utils.parseEther(dropId.toString()),
-			ethers.utils.parseEther(id),
-			ethers.utils.parseEther(amount.toString()),
+			dropId,
+			id,
+			amount,
 			[]
 			// Data object not added yet
 		);
@@ -54,8 +54,8 @@ export const createNFTOnChain = async ({ dropId, id, amount }: NFTMintingObject)
 };
 
 export interface BatchMintNftOptions {
-	dropId: string;
-	nftIds: string[];
+	dropId: number;
+	nftIds: number[];
 	nftAmounts: number[];
 }
 
@@ -63,10 +63,9 @@ export async function batchMintNft(options: BatchMintNftOptions) {
 	try {
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
 		const nftMintingTransaction: ethers.ContractTransaction = await MarketplaceContract.mintBatchDropNFT(
-			ethers.utils.parseEther(options.dropId),
-			// Is the following mapping correct? Will it work?
-			options.nftIds.map(ethers.utils.parseEther),
-			options.nftAmounts.map((v) => ethers.utils.parseEther(v.toString())),
+			options.dropId,
+			options.nftIds,
+			options.nftAmounts,
 			[]
 			// Data object not added yet
 		);

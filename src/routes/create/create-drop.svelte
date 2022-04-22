@@ -49,7 +49,7 @@
 		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
 
 		// Create NFT on the server
-		const nftId = await random(0, 999999999).toString();
+		const nftId = await random(0, 999999999);
 		console.info('[Create] Using new NFT ID:', nftId);
 
 		const createNftRes = await createNFTOnAPI({
@@ -70,7 +70,7 @@
 		progress.set(33);
 
 		// Create NFT bundle on the server
-		const bundleId = await random(0, 999999999).toString();
+		const bundleId = await random(0, 999999999);
 		console.info('[Create] Using new Bundle ID:', bundleId);
 
 		const createdBundleRes = await createBundle({
@@ -78,7 +78,7 @@
 			creator: $currentUserAddress,
 			description: nftDescription,
 			title: nftName,
-			nftIds: [nftId.toString()],
+			nftIds: [nftId],
 			nftAmounts: [nftQuantity]
 		});
 

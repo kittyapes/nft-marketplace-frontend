@@ -51,11 +51,11 @@
 		// Create listing on chain
 		const successListingOnChain = await contractCreateListing({
 			bundleId: $page.params.bundleId,
-			payToken: $currentUserAddress,
+			payToken: '0x0000000000000000000000000000000000000000',
 			listingType: LISTING_TYPE.FIXED_PRICE,
 			startingPrice: listingPropValues.price,
 			endingPrice: listingPropValues.price,
-			duration: 1,
+			duration: 60 * 60 * 24,
 			quantity: 1
 		});
 

@@ -26,6 +26,9 @@ export interface ContractCreateListingOptions {
 export async function contractCreateListing(options: ContractCreateListingOptions) {
 	try {
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
+
+		console.log(options);
+
 		const dropCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing(
 			options.bundleId,
 			ethers.utils.parseEther(options.startingPrice.toString()),
