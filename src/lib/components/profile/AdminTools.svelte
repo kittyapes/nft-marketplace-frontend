@@ -1,10 +1,7 @@
 <script lang="ts">
 	import { addUserRole } from '$utils/api/addUserRole';
 
-	import {
-		postVerificationQueueAdd,
-		postInactivationQueueAdd
-	} from '$utils/api/admin/userManagement';
+	import { postVerificationQueueAdd, postInactivationQueueAdd } from '$utils/api/admin/userManagement';
 	import { setPopup } from '$utils/popup';
 
 	import { httpErrorHandler, notifyError, notifySuccess } from '$utils/toast';
@@ -63,14 +60,8 @@
 
 	$: userStatus = profileData?.status;
 
-	$: promoteDisabled =
-		['VERIFIED', 'AWAITING_PROMOTED', 'AWAITING_INACTIVATED'].includes(userStatus) ||
-		isChangingverifiedStatus ||
-		!profileData;
-	$: inactivateDisabled =
-		['USER', 'AWAITING_PROMOTED', 'AWAITING_INACTIVATED'].includes(userStatus) ||
-		isChangingverifiedStatus ||
-		!profileData;
+	$: promoteDisabled = ['VERIFIED', 'AWAITING_PROMOTED', 'AWAITING_INACTIVATED'].includes(userStatus) || isChangingverifiedStatus || !profileData;
+	$: inactivateDisabled = ['USER', 'AWAITING_PROMOTED', 'AWAITING_INACTIVATED'].includes(userStatus) || isChangingverifiedStatus || !profileData;
 
 	// User roles
 	const availableUserRoles = [
@@ -99,13 +90,9 @@
 		</div>
 
 		<div class="flex items-center gap-4 mt-4">
-			<button on:click={onProfilePromote} class="btn-primary" disabled={promoteDisabled}>
-				Promote
-			</button>
+			<button on:click={onProfilePromote} class="btn-primary" disabled={promoteDisabled}>Promote</button>
 
-			<button on:click={onProfileInactivate} class="btn-secondary" disabled={inactivateDisabled}>
-				Inactivate
-			</button>
+			<button on:click={onProfileInactivate} class="btn-secondary" disabled={inactivateDisabled}>Inactivate</button>
 		</div>
 
 		<hr class="border-px mt-4" />
@@ -118,9 +105,7 @@
 		<div class="mt-2 font-semibold">Add a role:</div>
 		<div class="w-72 flex mt-2">
 			<Dropdown options={availableUserRoles} bind:selected={selectedRole} class="flex-grow" />
-			<button class="btn btn-gradient aspect-1 rounded w-12 h-12 ml-2" on:click={addRoleClick}>
-				+
-			</button>
+			<button class="btn btn-gradient aspect-1 rounded w-12 h-12 ml-2" on:click={addRoleClick}>+</button>
 		</div>
 	</div>
 </div>

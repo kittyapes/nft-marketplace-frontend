@@ -16,7 +16,7 @@
 	const toggleDots = () => (dotsOpened = !dotsOpened);
 </script>
 
-<div class="rounded-2xl overflow-hidden border p-4 relative" in:fade>
+<div class="rounded-2xl overflow-hidden border p-4 relative cursor-pointer" in:fade on:click>
 	<div class="flex items-center gap-x-2">
 		<!-- Remove && false to show options -->
 		<!-- Owned by user -->
@@ -33,18 +33,9 @@
 		<div class="font-medium select-none">{likes}</div>
 	</div>
 
-	<div
-		class="transition w-full aspect-1 mx-auto bg-gray-100 rounded-lg overflow-hidden mt-2"
-		class:animate-pulse={!imgLoaded}
-	>
+	<div class="transition w-full aspect-1 mx-auto bg-gray-100 rounded-lg overflow-hidden mt-2" class:animate-pulse={!imgLoaded}>
 		<!-- src={$tokenUriData?.image || tokenData.metadata?.image} -->
-		<img
-			alt=""
-			src={imageUrl}
-			class="object-cover object-top transition w-full h-full"
-			class:opacity-0={!imgLoaded}
-			on:load={() => (imgLoaded = true)}
-		/>
+		<img alt="" src={imageUrl} class="object-cover object-top transition w-full h-full" class:opacity-0={!imgLoaded} on:load={() => (imgLoaded = true)} />
 	</div>
 
 	<div class="flex text-sm font-medium text-gray-600 mt-2">
@@ -69,7 +60,7 @@
 	{/if}
 </div>
 
-<style>
+<style type="postcss">
 	#popup {
 		@apply px-3 py-3 space-y-2;
 		filter: drop-shadow(0px 4px 20px rgba(136, 136, 136, 0.25));
