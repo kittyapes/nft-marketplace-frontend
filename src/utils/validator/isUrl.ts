@@ -1,7 +1,12 @@
-export const urlPattern = '^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$';
+export const urlPattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+									'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+									'((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+									'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+									'(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+									'(\\#[-a-z\\d_]*)?$');
 
 export function isUrl(s: string) {
 	if (!s) return false;
 
-	return s.match(new RegExp(urlPattern));
+	return s.match(urlPattern);
 }

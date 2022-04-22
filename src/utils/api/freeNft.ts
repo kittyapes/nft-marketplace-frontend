@@ -19,9 +19,7 @@ export async function hasClaimedFreeNft(address: string) {
 		const hinataTokenContract = getHinataTokenContract(get(appProvider));
 		const hasClaimed = await hinataTokenContract.usedNonce(res.data.data.nonce);
 
-		console.log(hasClaimed);
 		if (typeof hasClaimed === 'boolean') {
-			console.log(hasClaimed);
 			welcomeNftClaimedOnServer.set(hasClaimed);
 			welcomeNftClaimedOnChain.set(hasClaimed);
 		}
@@ -32,8 +30,6 @@ export async function hasClaimedFreeNft(address: string) {
 			welcomeNftClaimedOnChain.set(false);
 		}
 	}
-
-	console.log(res.data.data);
 
 	return res.data.data;
 }
@@ -46,15 +42,17 @@ export async function hasClaimedFreeNft(address: string) {
  */
 export async function claimFreeNft(selectedNftIndex: number, address: string, signature: string = '') {
 	if (signature) {
-		await axios.post(
-			`${api}/v1/nfts/claim`,
-			{
-				choice: selectedNftIndex,
-				address,
-				signature
-			},
-			getAxiosConfig()
-		);
+		await axios
+			.post(
+				`${api}/v1/nfts/claim`,
+				{
+					choice: selectedNftIndex,
+					address,
+					signature
+				},
+				getAxiosConfig()
+			)
+			.catch((err) => err);
 	}
 
 	const res = await hasClaimedFreeNft(address);
@@ -89,10 +87,8 @@ export async function claimFreeNft(selectedNftIndex: number, address: string, si
 		console.log(txRes);
 		welcomeNftClaimedOnServer.set(true);
 		welcomeNftClaimedOnChain.set(true);
+		return resData;
 	} catch (err) {
-		console.log('ERROR: ', err);
-		return false;
+		throw err;
 	}
-
-	return resData;
 }

@@ -31,6 +31,7 @@
 	import { fade, slide } from 'svelte/transition';
 	import { withPrevious } from 'svelte-previous';
 	import { isUrl, urlPattern } from '$utils/validator/isUrl';
+	import { isEqual } from 'lodash-es';
 
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
@@ -45,6 +46,8 @@
 	$: dataChanged = JSON.stringify($fetchedDataStore) != JSON.stringify($localDataStore);
 
 	let firstTimeUser = false;
+
+	let pattern = urlPattern.toString();
 
 	let isSaving = false;
 
@@ -137,14 +140,7 @@
 			.indexOf('0') * 25;
 
 	async function handleNftClaim() {
-		try {
-			if (dataChanged) {
-				await onSave();
-			}
-			setPopup(FreeNftPopup);
-		} catch (err) {
-			console.log(err);
-		}
+		setPopup(FreeNftPopup);
 	}
 
 	// Username availability check
@@ -175,6 +171,8 @@
 		}
 	});
 
+	$: isSynced = isEqual($fetchedDataStore, $localDataStore);
+
 	// Bio validation
 	function isValidBio(bio: string) {
 		return bio && bio.trim().split(' ').length > 2;
@@ -182,6 +180,9 @@
 
 	$: bioValid = isValidBio($localDataStore?.bio) || !$localDataStore?.bio;
 	$: websiteValid = browser && (!$localDataStore.website || isUrl($localDataStore.website));
+	$: if (websiteValid) {
+		// console.log(websiteValid);
+	}
 
 	// We setting false on SSR to avoid save button flashing
 	$: dataValid = browser && $usernameAvailable && bioValid && websiteValid;
@@ -189,7 +190,7 @@
 	const [currentAddress, previousAddress] = withPrevious('', { requireChange: true });
 	$: $currentAddress = $currentUserAddress;
 
-	$: browser && $currentAddress && $previousAddress && $currentAddress !== $previousAddress && goto('/');
+	$: browser && $currentAddress && $previousAddress && $currentAddress !== $previousAddress && goto('/profile');
 
 	appSigner.subscribe((signer) => browser && checkIfWalletConnected(signer, $page.url.pathname));
 </script>
@@ -226,7 +227,7 @@
 						on:click={handleNftClaim}
 						in:fade|local={{ delay: 300 }}
 						out:fade|local
-						disabled={isSaving || $welcomeNftClaimedOnChain}
+						disabled={isSaving || $welcomeNftClaimedOnChain || !isSynced}
 					>
 						Claim your NFT
 					</button>
@@ -325,7 +326,13 @@
 
 						<div>
 							<Web />
-							<input type="text" pattern={urlPattern} class="input input-gray-outline" placeholder="Personal Website" bind:value={$localDataStore.website} />
+							<input
+								type="text"
+								pattern={'^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?'}
+								class="input input-gray-outline"
+								placeholder="Personal Website"
+								bind:value={$localDataStore.website}
+							/>
 						</div>
 
 						<div>

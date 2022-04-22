@@ -22,7 +22,7 @@
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 
 	const tabs = ['COLLECTED NFTS', 'CREATED NFTS', 'FAVORITES'];
-	let selectedTab = 'CREATED NFTS';
+	let selectedTab = 'COLLECTED NFTS';
 
 	$: address = $page.params.address;
 
@@ -162,9 +162,9 @@
 
 	<div class="max-w-screen-xl mx-auto">
 		{#if selectedTab === 'COLLECTED NFTS'}
-			<NftList data={[]} />
-		{:else if selectedTab === 'CREATED NFTS'}
 			<NftList data={createdNfts} />
+		{:else if selectedTab === 'CREATED NFTS'}
+			<NftList data={[]} />
 		{:else if selectedTab === 'ACTIVITY'}
 			<NftList data={[]} />
 		{:else if selectedTab === 'FAVORITES'}
