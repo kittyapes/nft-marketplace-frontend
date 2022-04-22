@@ -10,7 +10,7 @@
 	const listings = writable<Listing[]>([]);
 
 	onMount(async () => {
-		listings.set(await getListings());
+		listings.set((await getListings()).reverse());
 
 		console.log(listings);
 	});
