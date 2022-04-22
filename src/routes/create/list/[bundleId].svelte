@@ -1,6 +1,6 @@
 <script lang="ts">
 	import NftCard from '$lib/components/NftCard.svelte';
-	import type { ListingPropName } from '$lib/interfaces/drops';
+	import type { ListingPropName } from 'src/interfaces/drops';
 	import { setPopup } from '$utils/popup';
 	import CommonProperties from '$lib/components/create/CommonProperties.svelte';
 	import Royalties from '$lib/components/create/Royalties.svelte';
@@ -8,6 +8,12 @@
 	import ConfirmListingPopup from '$lib/components/create/ConfirmListingPopup.svelte';
 	import Back from '$icons/back_.svelte';
 	import { goBack } from '$utils/navigation';
+	import { postCreateListing } from '$utils/api/listing';
+	import { page } from '$app/stores';
+	import { currentUserAddress } from '$stores/wallet';
+	import { makeErrorHandler, notifyError, notifySuccess } from '$utils/toast';
+	import Loader from '$icons/loader.svelte';
+	import { contractCreateListing, LISTING_TYPE } from '$utils/contracts/listing';
 
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
 		sale: ['price', 'date'],
@@ -22,11 +28,51 @@
 	const nftCollection = 'Todo NFT collection';
 	const nftImagePreview = 'https://i.imgur.com/w3duR07.png';
 
-	function listForSale() {
-		setPopup(ConfirmListingPopup);
+	let isListing = false;
+
+	async function listForSale() {
+		isListing = true;
+
+		// Create listing on the server
+		const apiCreateListingRes = await postCreateListing({
+			bundleId: $page.params.bundleId,
+			creator: $currentUserAddress,
+			listingType: 'UNIQUE_FIXED_PRICE',
+			price: listingPropValues.price,
+			startedAt: listingPropValues.date
+		});
+
+		if (!apiCreateListingRes) {
+			notifyError('Failed to create listing.');
+			isListing = false;
+			return;
+		}
+
+		// Create listing on chain
+		const successListingOnChain = await contractCreateListing({
+			bundleId: $page.params.bundleId,
+			payToken: $currentUserAddress,
+			listingType: LISTING_TYPE.FIXED_PRICE,
+			startingPrice: listingPropValues.price,
+			endingPrice: listingPropValues.price,
+			duration: 1,
+			quantity: 1
+		});
+
+		if (!successListingOnChain) {
+			notifyError('Failed to create listing on chain.');
+			isListing = false;
+			return;
+		}
+
+		notifySuccess('Successfully created listing.');
+
+		isListing = false;
 	}
 
-	let royaltiesValid;
+	let listingPropValues: Partial<Record<ListingPropName, any>>;
+
+	let royaltiesValid = true; // TODO remove true when re-adding royalties
 	let commonPropertiesValid;
 
 	$: formValid = royaltiesValid && commonPropertiesValid;
@@ -52,17 +98,21 @@
 
 		<hr class="separator mt-4" />
 
-		<CommonProperties class="mt-8" propNames={typeToProperties[$newDropProperties.listingType]} bind:isValid={commonPropertiesValid} />
+		<CommonProperties class="mt-8" propNames={typeToProperties[$newDropProperties.listingType]} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} />
 
-		<hr class="separator mt-8" />
+		<!-- <hr class="separator mt-8" /> -->
 
-		<Royalties bind:isValid={royaltiesValid} />
+		<!-- <Royalties bind:isValid={royaltiesValid} /> -->
 
 		<div class="pr-8">
-			<button class="btn btn-gradient btn-rounded w-full mt-8 uppercase font-semibold" on:click={listForSale} disabled={!formValid}>
+			<button class="btn btn-gradient btn-rounded w-full mt-8 uppercase font-semibold" on:click={listForSale} disabled={!formValid || isListing}>
 				List for {$newDropProperties.listingType || 'N/A'}
 			</button>
 		</div>
+
+		{#if isListing}
+			<Loader class="w-8 h-8 mx-1" />
+		{/if}
 	</div>
 
 	<div class="separator border-0 border-l p-8 w-80">

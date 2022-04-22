@@ -28,7 +28,7 @@
 	$: isValid = Object.entries(validations).every(([, isValid]) => isValid);
 </script>
 
-<div class="{$$props.class} grid grid-cols-2 gap-x-16 gap-y-8 pr-8">
+<div class="{$$props.class} grid lg:grid-cols-2 gap-x-16 gap-y-8 pr-8">
 	{#key propNames}
 		{#if is('entryTickets')}
 			<div>
@@ -48,21 +48,13 @@
 		{#if is('ticketPrice')}
 			<label for="price-component">
 				<span>Ticket price</span>
-				<TokenDropdown
-					id="price-component"
-					bind:value={propValues.price}
-					placeholder="Enter price for tickets"
-				/>
+				<TokenDropdown id="price-component" bind:value={propValues.price} placeholder="Enter price for tickets" />
 			</label>{/if}
 
 		{#if is('price')}
 			<label for="price-component">
 				<span>Price</span>
-				<TokenDropdown
-					id="price-component"
-					bind:value={propValues.price}
-					valid={validations.price}
-				/>
+				<TokenDropdown id="price-component" bind:value={propValues.price} valid={validations.price} />
 			</label>
 		{/if}
 
@@ -96,11 +88,7 @@
 		{#if is('reservePrice')}
 			<label for="reserve-price-component">
 				<span>Reserve price</span>
-				<TokenDropdown
-					id="reserve-price-component"
-					bind:value={propValues.reservePrice}
-					placeholder="5.00"
-				/>
+				<TokenDropdown id="reserve-price-component" bind:value={propValues.reservePrice} placeholder="5.00" />
 			</label>
 		{/if}
 
