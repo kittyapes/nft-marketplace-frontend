@@ -10,7 +10,7 @@
 	let videoAsset: HTMLVideoElement;
 
 	function handleShare() {
-		navigator.clipboard.writeText(window.location.href);
+		navigator.clipboard.writeText($selectedCard.image);
 		notifySuccess('Copied NFT link!');
 	}
 
