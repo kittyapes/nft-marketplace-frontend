@@ -10,7 +10,7 @@
 	};
 </script>
 
-<div in:fade={{ duration: 300 }}>
+<div in:fade={{ duration: 300 }} class="overflow-y-auto custom-scrollbar">
 	<!-- Creator -->
 	{#if data.creator}
 		<div class="w-full flex gap-x-2 items-center">
@@ -54,7 +54,7 @@
 
 	<!-- Description -->
 	{#if data.description}
-		<div class="w-full  flex flex-col gap-2 mt-5">
+		<div class="w-full flex flex-col gap-2 mt-5 max-h-72">
 			<span class="text-sm text-color-black opacity-70">Description:</span>
 			<span class="text-color-black">
 				{data.description}
