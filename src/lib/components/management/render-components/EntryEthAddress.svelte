@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
-	import EthAddress from '../EthAddress.svelte';
-	import ColumnComponentContainer from './ColumnComponentContainer.svelte';
+	import EthAddress from '$lib/components/EthAddress.svelte';
+	import ColumnComponentContainer from '../ColumnComponentContainer.svelte';
 
 	export let props;
 </script>

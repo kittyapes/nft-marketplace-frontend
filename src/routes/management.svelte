@@ -1,8 +1,8 @@
 <script lang="ts">
 	import EntryName from '$lib/components/management/EntryName.svelte';
-	import EthAddress from '$lib/components/management/EntryEthAddress.svelte';
+	import EthAddress from '$lib/components/management/render-components/EntryEthAddress.svelte';
 	import ManagementTable from '$lib/components/management/ManagementTable.svelte';
-	import TableTitle from '$lib/components/management/TableTitle.svelte';
+	import TableTitle from '$lib/components/management/render-components/TableTitle.svelte';
 	import type { TableCol } from 'src/interfaces/management/tableColumn';
 	import SearchBar from '$lib/components/management/SearchBar.svelte';
 

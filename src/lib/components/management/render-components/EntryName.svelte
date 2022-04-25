@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ColumnComponentContainer from './ColumnComponentContainer.svelte';
+	import ColumnComponentContainer from '../ColumnComponentContainer.svelte';
 
 	export let props;
 </script>

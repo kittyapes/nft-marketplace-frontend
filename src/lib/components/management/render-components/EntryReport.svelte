@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ReportActive from '$icons/report-active.svelte';
 	import Report from '$icons/report.svelte';
-	import ColumnComponentContainer from './ColumnComponentContainer.svelte';
+	import ColumnComponentContainer from '../ColumnComponentContainer.svelte';
 
 	export let props;
 
