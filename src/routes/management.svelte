@@ -9,6 +9,8 @@
 	import type { UserData } from 'src/interfaces/userData';
 	import EntryReport from '$lib/components/management/render-components/EntryReport.svelte';
 	import EntryGenericText from '$lib/components/management/render-components/EntryGenericText.svelte';
+	import RoleFilter from '$lib/components/management/RoleFilter.svelte';
+	import Filter from '$lib/components/management/Filter.svelte';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[];
@@ -68,7 +70,10 @@
 		}
 	}
 
-	$: searchPlaceholder = `Search 1 ${mode.toLowerCase()}`;
+	let roleFilterOptions = [{ label: 'All' }, { label: 'Verified Creator' }, { label: 'Admin' }, { label: 'Super Admin' }, { label: 'Blogger' }, { label: 'Inactive' }];
+	let filterOptions = [{ label: 'Flagged' }, { label: 'Joined 24 hrs ago' }, { label: 'Joined 7 days ago' }, { label: 'Joined 1 Mon ago' }];
+
+	$: searchPlaceholder = `Search for ${mode.toLowerCase()}`;
 </script>
 
 <div class="flex flex-col w-full h-full p-40 gap-12">
@@ -80,6 +85,11 @@
 	</div>
 	<div class="flex gap-4">
 		<SearchBar placeholder={searchPlaceholder} />
+		<div class="flex-grow" />
+		<div class="flex gap-4">
+			<RoleFilter options={roleFilterOptions} />
+			<Filter options={filterOptions} />
+		</div>
 	</div>
 	<InteractiveTable {tableData} />
 </div>
