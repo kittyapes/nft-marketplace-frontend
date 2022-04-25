@@ -1,10 +1,12 @@
 <script lang="ts">
 	import EntryName from '$lib/components/management/EntryName.svelte';
 	import EthAddress from '$lib/components/management/EntryEthAddress.svelte';
-	import ManagementTable from '$lib/components/management/ManagementTable.svelte';
+	import InteractiveTable from '$lib/components/management/InteractiveTable.svelte';
 	import TableTitle from '$lib/components/management/TableTitle.svelte';
 	import type { TableCol } from 'src/interfaces/management/tableColumn';
 	import SearchBar from '$lib/components/management/SearchBar.svelte';
+	import RoleFilter from '$lib/components/management/RoleFilter.svelte';
+	import Filter from '$lib/components/management/Filter.svelte';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 
@@ -29,6 +31,9 @@
 		}
 	];
 
+	let roleFilterOptions = [{ label: 'All' }, { label: 'Verified Creator' }, { label: 'Admin' }, { label: 'Super Admin' }, { label: 'Blogger' }, { label: 'Inactive' }];
+	let filterOptions = [{ label: 'Flagged' }, { label: 'Joined 24 hrs ago' }, { label: 'Joined 7 days ago' }, { label: 'Joined 1 Mon ago' }];
+
 	$: searchPlaceholder = `Search for ${mode.toLowerCase()}`;
 </script>
 
@@ -41,8 +46,13 @@
 	</div>
 	<div class="flex gap-4">
 		<SearchBar placeholder={searchPlaceholder} />
+		<div class="flex-grow" />
+		<div class="flex gap-4">
+			<RoleFilter options={roleFilterOptions} />
+			<Filter options={filterOptions} />
+		</div>
 	</div>
-	<ManagementTable tableData={dummyData} />
+	<InteractiveTable tableData={dummyData} />
 </div>
 
 <style lang="postcss">
