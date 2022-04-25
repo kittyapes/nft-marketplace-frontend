@@ -9,6 +9,7 @@
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { fetchProfileData } from '$utils/api/profile';
+	import { NewBundleData, newBundleData } from '$utils/create';
 	import { createBundle } from '$utils/create/createBundle';
 	import { createDropOnChain } from '$utils/create/createDrop';
 	import { batchMintNft, createNFTOnAPI } from '$utils/create/createNFT';
@@ -42,11 +43,13 @@
 		// Notes:
 		// Bundle is a former drop
 
+		newBundleData.set({} as NewBundleData);
+
 		const progress = writable(0);
 		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
 
 		// Create NFT on the server
-		const nftId = await random(0, 999999999).toString();
+		const nftId = await random(0, 999999999);
 		console.info('[Create] Using new NFT ID:', nftId);
 
 		const createNftRes = await createNFTOnAPI({
@@ -67,7 +70,7 @@
 		progress.set(33);
 
 		// Create NFT bundle on the server
-		const bundleId = await random(0, 999999999).toString();
+		const bundleId = await random(0, 999999999);
 		console.info('[Create] Using new Bundle ID:', bundleId);
 
 		const createdBundleRes = await createBundle({
@@ -75,7 +78,7 @@
 			creator: $currentUserAddress,
 			description: nftDescription,
 			title: nftName,
-			nftIds: [nftId.toString()],
+			nftIds: [nftId],
 			nftAmounts: [nftQuantity]
 		});
 
@@ -109,6 +112,10 @@
 			console.error('[Create] Failed to create NFT on chain.');
 			return;
 		}
+
+		newBundleData.update((data) => {
+			return { ...data, bundleId };
+		});
 
 		progress.set(100);
 	}
