@@ -1,11 +1,7 @@
 export interface NFTCreationObject {
-	dropId: number;
-	contractId: number;
-	amount: string;
+	contractId: string;
+	amount: number;
 	name: string;
-	generation: string;
-	categories: string;
-	tag: string;
 	artist: string;
 	creator: string;
 	image: Blob;

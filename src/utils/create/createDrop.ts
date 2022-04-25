@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { api } from '$constants/api';
 import HinataMarketplaceContract from '$utils/contracts/hinataMarketplace';
 import { get } from 'svelte/store';
 import { appSigner } from '$stores/wallet';
@@ -7,16 +6,11 @@ import { ethers } from 'ethers';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import type { DropApiReturnValue } from 'src/interfaces/drops/dropApiReturnValue';
 import type { DropPostObject } from 'src/interfaces/drops/dropPostObject';
+import { getApiUrl } from '$utils/api';
 
-export const createDropOnAPI = async ({
-	contractId,
-	title,
-	artist,
-	creator,
-	description
-}: DropPostObject) => {
+export const createDropOnAPI = async ({ contractId, title, artist, creator, description }: DropPostObject) => {
 	const res = await axios.post(
-		`${api}/v1/drops`,
+		getApiUrl('latest', 'drops'),
 		{
 			contractId: contractId,
 			description,
@@ -30,11 +24,10 @@ export const createDropOnAPI = async ({
 	return res.data.data as DropApiReturnValue;
 };
 
-export const createDropOnChain = async (dropId: number) => {
+export const createDropOnChain = async (dropId: string) => {
 	try {
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
-		const dropCreationTransaction: ethers.ContractTransaction =
-			await MarketplaceContract.createDrop(ethers.utils.parseEther(dropId.toString()));
+		const dropCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createDrop(ethers.utils.parseEther(dropId));
 
 		// Wait for at least once confirmation
 		await dropCreationTransaction.wait(1);
