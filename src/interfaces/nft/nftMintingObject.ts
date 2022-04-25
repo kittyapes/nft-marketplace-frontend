@@ -1,5 +1,5 @@
 export interface NFTMintingObject {
 	dropId: number;
-	id: number;
+	id: string;
 	amount: string;
 }

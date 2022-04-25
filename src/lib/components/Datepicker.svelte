@@ -45,13 +45,16 @@
 			selectedDate = selectedDate.add(12, 'hour');
 		}
 
-		if (selectedDate.isBefore(dayjs(), 'minute')) {
-			inputText = '';
-			notifyWarning('Invalid date');
-		} else {
-			inputText = formatDatetimeFromISO(selectedDate);
-			open = false;
-		}
+		// if (selectedDate.isBefore(dayjs(), 'minute')) {
+		// 	inputText = '';
+		// 	notifyWarning('Invalid date');
+		// } else {
+		// 	inputText = formatDatetimeFromISO(selectedDate);
+		// 	open = false;
+		// }
+
+		inputText = formatDatetimeFromISO(selectedDate);
+		open = false;
 	}
 
 	onMount(resetToday);

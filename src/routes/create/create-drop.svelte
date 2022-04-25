@@ -1,24 +1,24 @@
 <script lang="ts">
+	import Back from '$icons/back_.svelte';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
+	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { newDropProperties } from '$stores/create';
-	import { closePopup, setPopup } from '$utils/popup';
-	import { createDropOnAPI, createDropOnChain } from '$utils/create/createDrop';
-	import { currentUserAddress } from '$stores/wallet';
-	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
-	import { onMount } from 'svelte';
 	import { profileData } from '$stores/user';
+	import { currentUserAddress } from '$stores/wallet';
 	import { fetchProfileData } from '$utils/api/profile';
-	import { generateNewDropID } from '$utils/create';
-	import { notifyError } from '$utils/toast';
-	import generateNftID from '$utils/create/generateNftID';
+	import { NewBundleData, newBundleData } from '$utils/create';
+	import { createBundle } from '$utils/create/createBundle';
+	import { createDropOnChain } from '$utils/create/createDrop';
+	import { batchMintNft, createNFTOnAPI } from '$utils/create/createNFT';
 	import { goBack } from '$utils/navigation';
-	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
+	import { setPopup } from '$utils/popup';
+	import { notifyError } from '$utils/toast';
+	import { random } from 'lodash-es';
+	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import Back from '$icons/back_.svelte';
-	import { goto } from '$app/navigation';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
@@ -36,91 +36,88 @@
 	});
 
 	async function mintAndContinue() {
-		// Mint function here
-
 		// Keep for skipping mint
 		// goto('/create/choose-listing-format');
 		// return;
 
-		const progress = writable(33);
-		setPopup(NftMintProgressPopup, { props: { progress } });
+		// Notes:
+		// Bundle is a former drop
 
-		// get last drop ID
-		const dropId = await generateNewDropID();
-		console.log(dropId);
+		newBundleData.set({} as NewBundleData);
 
-		await createDropOnAPI({
-			contractId: dropId,
-			title: nftName,
+		const progress = writable(0);
+		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
+
+		// Create NFT on the server
+		const nftId = await random(0, 999999999);
+		console.info('[Create] Using new NFT ID:', nftId);
+
+		const createNftRes = await createNFTOnAPI({
+			contractId: nftId,
+			amount: nftQuantity,
+			name: nftName,
 			artist: $profileData?._id,
 			creator: $currentUserAddress,
-			description: nftDescription
-		})
-			.then(async (dropApiResponse) => {
-				console.log(dropApiResponse);
+			image: fileBlob,
+			animation: animationBlob
+		});
 
-				// Create drop on contract
-				await createDropOnChain(dropId)
-					.then(async (res) => {
-						// Generate NFT ID
-						const nftID = await generateNftID();
-						progress.set(66);
+		if (!createNftRes) {
+			popupHandler.close();
+			return;
+		}
 
-						// Create NFT on api
-						await createNFTOnAPI({
-							dropId: dropId,
-							contractId: nftID,
-							amount: nftQuantity.toString() || '1',
-							name: nftName,
-							generation: nftCollection,
-							categories: '', // empty, the frontend does not have this
-							tag: '', // empty frontend does not have this
-							artist: $profileData?._id,
-							creator: $currentUserAddress,
-							image: fileBlob,
-							animation: animationBlob
-						})
-							.then(async (createNftResponse) => {
-								console.log('NFT CREATED: ', createNftResponse);
-								// Create NFT on contract
-								await createNFTOnChain({
-									dropId: dropId,
-									id: nftID,
-									amount: nftQuantity.toString() || '1' // 1 for one of one
-								})
-									.then((chainRes) => {
-										progress.set(100);
-										// setPopup(ContinueListingPopup, {
-										// 	props: {
-										// 		relHref: 'sale',
-										// 		title: 'Sale',
-										// 		imgUrl: '/img/create/drop-type-sale.svg'
-										// 	}
-										// });
-									})
-									.catch((err) => {
-										console.log(err);
-										notifyError('Failed to Mint NFT on contract');
-										closePopup();
-									});
-							})
-							.catch((err) => {
-								console.log(err);
-								notifyError('Failed to create nft on api');
-								closePopup();
-							});
-					})
-					.catch((err) => {
-						console.log('DROP CREATION ON CONTRACT ERR: ', err);
-						notifyError('Failed to create drop on contract');
-						closePopup();
-					});
-			})
-			.catch((err) => {
-				console.log('DROP CREATION ON API ERROR: ', err);
-				notifyError('Sorry, failed to create drop');
-				closePopup();
-			});
+		progress.set(33);
+
+		// Create NFT bundle on the server
+		const bundleId = await random(0, 999999999);
+		console.info('[Create] Using new Bundle ID:', bundleId);
+
+		const createdBundleRes = await createBundle({
+			contractId: bundleId,
+			creator: $currentUserAddress,
+			description: nftDescription,
+			title: nftName,
+			nftIds: [nftId],
+			nftAmounts: [nftQuantity]
+		});
+
+		if (!createdBundleRes) {
+			popupHandler.close();
+			return;
+		}
+
+		// Create bundle on chain
+		const chainBundleSuccess = await createDropOnChain(bundleId);
+
+		if (chainBundleSuccess) {
+			console.info('[Create] Bundle created on chain.');
+		} else {
+			popupHandler.close();
+			notifyError('Failed to create bundle on chain.');
+			console.error('[Create] Failed to create bundle on chain.');
+			return;
+		}
+
+		progress.set(66);
+
+		// Create NFT on chain
+		const nftBundleSuccess = await batchMintNft({ dropId: bundleId, nftIds: [nftId], nftAmounts: [nftQuantity] });
+
+		if (nftBundleSuccess) {
+			console.info('[Create] NFT created on chain.');
+		} else {
+			popupHandler.close();
+			notifyError('Failed to create NFT on chain.');
+			console.error('[Create] Failed to create NFT on chain.');
+			return;
+		}
+
+		newBundleData.update((data) => {
+			return { ...data, bundleId };
+		});
+
+		progress.set(100);
 	}
 
 	$: nftQuantityValid = nftQuantity > 0;
