@@ -1,5 +1,3 @@
-import type { SvelteComponent } from "svelte"
-
 export interface TableCol {
     gridSize: string
     renderComponent: any,

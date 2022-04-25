@@ -8,5 +8,5 @@
 
 <ColumnComponentContainer>
 	<Eth />
-	<EthAddress address={props.address} concat class="text-lg text-color-black font-bold" />
+	<EthAddress address={props.address} concat copyIcon={false} etherScanLink={false} charsFromStart={11} charsFromEnd={5} class="!text-lg !not-italic !font-semibold !text-color-black clickable" />
 </ColumnComponentContainer>

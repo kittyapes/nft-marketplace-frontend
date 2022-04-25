@@ -3,9 +3,11 @@
 	export let props;
 </script>
 
-<div class="w-full text-lg text-color-gray-base flex gap-1 items-center h-20 px-4">
+<div class="w-full text-lg text-color-gray-base flex gap-1 items-center h-20 px-4" class:justify-center={props?.centered} class:clickable={props?.sortable}>
 	<div>{props.title}</div>
-	{#if props.sortable}
-		<ArrowDown />
+	{#if props?.sortable}
+		<div>
+			<ArrowDown />
+		</div>
 	{/if}
 </div>

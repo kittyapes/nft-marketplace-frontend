@@ -5,17 +5,21 @@
 
 	export let props;
 
+	let active = false;
 	let handleReport = () => {
-		props.active = true;
+		active = true;
+		console.log(active);
 	};
 </script>
 
-<ColumnComponentContainer class="btn">
-	{#if props.active}
-		<ReportActive />
-	{:else}
-		<div on:click={handleReport}>
-			<Report />
-		</div>
-	{/if}
+<ColumnComponentContainer class="justify-center">
+	<div class="clickable">
+		{#if props?.active || active}
+			<ReportActive />
+		{:else}
+			<div on:click={handleReport}>
+				<Report />
+			</div>
+		{/if}
+	</div>
 </ColumnComponentContainer>
