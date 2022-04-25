@@ -27,10 +27,6 @@ export async function fetchProfileData(address: string) {
 
 	const data = res.data.data as UserData;
 
-	// Fix deviantart typo
-	// @ts-ignore
-	data.deviantart = data.devianart;
-
 	return data as UserData;
 }
 
@@ -74,18 +70,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	const profileImageHash = data.profileImage && (await hashImage(address, data.profileImage));
 	const coverImageHash = data.coverImage && (await hashImage(address, data.coverImage));
 
-	const requiredKeys = [
-		'email',
-		'bio',
-		'username',
-		'discord',
-		'instagram',
-		'twitter',
-		'website',
-		'pixiv',
-		'deviantart',
-		'artstation'
-	];
+	const requiredKeys = ['email', 'bio', 'username', 'discord', 'instagram', 'twitter', 'website', 'pixiv', 'deviantart', 'artstation'];
 
 	// Prevent stuff from being undefined
 	requiredKeys.forEach((key) => {
@@ -130,8 +115,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	formData.append('twitter', data.twitter);
 	formData.append('website', data.website);
 	formData.append('pixiv', data.pixiv);
-	// There is a typo on the backend - devianart should be deviantart
-	formData.append('devianart', data.deviantart);
+	formData.append('deviantart', data.deviantart);
 	formData.append('artstation', data.artstation);
 	formData.append('signature', signature);
 

@@ -358,7 +358,7 @@
 				<div class="font-semibold ml-4 uppercase">Saving changes...</div>
 			</div>
 
-			<Button rounded variant="rounded-black" stretch on:click={onSave} disabled={isSaving || !dataChanged || !dataValid} class="!font-medium">Save changes</Button>
+			<Button rounded variant="rounded-black" stretch on:click={onSave} disabled={isSynced || !dataChanged || !dataValid} class="!font-medium">Save changes</Button>
 		</div>
 	</div>
 </LoadedContent>

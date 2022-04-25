@@ -1,20 +1,22 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import Popup from '$lib/components/Popup.svelte';
-	import type { DropListingType } from '$lib/interfaces/drops';
 	import { newDropProperties } from '$stores/create';
 	import type { PopupHandler } from '$utils/popup';
 
 	export let imgUrl;
 	export let title;
-	export let listingType: DropListingType;
+	export let listingType: string;
 	export let handler: PopupHandler;
+
+	$: console.log($page);
 
 	function handleConfirm() {
 		$newDropProperties.listingType = listingType;
 
 		handler.close();
-		goto('/create/list');
+		goto('/create/list/' + $page.params.bundleId);
 	}
 </script>
 
@@ -26,13 +28,8 @@
 		</div>
 
 		<div class="text-center text-2xl font-bold mt-8">Lorem Ipsum dolor sit amet, consectetur</div>
-		<div class="max-w-prose text-center mt-2">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-			labore et dolore magna aliqua. Ut
-		</div>
+		<div class="max-w-prose text-center mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut</div>
 
-		<button class="btn btn-gradient btn-rounded uppercase mt-16 font-bold" on:click={handleConfirm}>
-			Confirm
-		</button>
+		<button class="btn btn-gradient btn-rounded uppercase mt-16 font-bold" on:click={handleConfirm}>Confirm</button>
 	</div>
 </Popup>
