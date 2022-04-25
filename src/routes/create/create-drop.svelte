@@ -79,7 +79,8 @@
 			description: nftDescription,
 			title: nftName,
 			nftIds: [nftId],
-			nftAmounts: [nftQuantity]
+			nftAmounts: [nftQuantity],
+			image: fileBlob
 		});
 
 		if (!createdBundleRes) {

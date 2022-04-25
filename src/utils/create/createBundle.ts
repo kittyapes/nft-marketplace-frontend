@@ -10,6 +10,7 @@ export interface CreateBundleOptions {
 	nftIds: number[];
 	nftAmounts: number[];
 	creator: string;
+	image: Blob;
 }
 
 export interface CreateBundleResponse {
@@ -26,23 +27,20 @@ export interface CreateBundleResponse {
 }
 
 export async function createBundle(options: CreateBundleOptions) {
-	const res = await axios
-		.post(
-			getApiUrl('latest', 'drops'),
-			{
-				contractId: options.contractId.toString(),
-				description: options.description || 'No description.',
-				title: options.title,
-				creator: options.creator,
-				nft_ids: options.nftIds.map((id) => id.toString()),
-				nft_amounts: options.nftAmounts
-			},
-			getAxiosConfig()
-		)
-		.catch((e) => {
-			httpErrorHandler(e);
-			return null;
-		});
+	console.log(options.image);
+	const formData = new FormData();
+	formData.append('contractId', options.contractId.toString());
+	formData.append('description', options.description || 'No description');
+	formData.append('title', options.title);
+	formData.append('nftIds', options.nftIds.join(','));
+	formData.append('nftAmounts', options.nftAmounts.join(','));
+	formData.append('creator', options.creator);
+	formData.append('image', options.image);
+
+	const res = await axios.post(getApiUrl('latest', 'drops'), formData, getAxiosConfig()).catch((e) => {
+		httpErrorHandler(e);
+		return null;
+	});
 
 	if (!res) return null;
 
