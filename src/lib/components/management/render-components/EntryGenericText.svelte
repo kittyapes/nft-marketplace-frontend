@@ -5,5 +5,5 @@
 </script>
 
 <ColumnComponentContainer>
-	<div class="text-color-black">{props.date}</div>
+	<div class="text-color-black">{props.text}</div>
 </ColumnComponentContainer>

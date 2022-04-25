@@ -4,11 +4,11 @@ export interface TableCol {
     gridSize: string
     renderComponent: any,
     titleRenderComponent: any,
-    renderComponentProps: 
+    renderComponentProps?: 
         {
             [key: string]: any
         }[],
-    titleRenderComponentProps: {
+    titleRenderComponentProps?: {
         [key: string]: any
     },
 }

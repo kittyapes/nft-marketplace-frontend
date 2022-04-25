@@ -1,35 +1,74 @@
 <script lang="ts">
-	import EntryName from '$lib/components/management/EntryName.svelte';
+	import EntryName from '$lib/components/management/render-components/EntryName.svelte';
 	import EthAddress from '$lib/components/management/render-components/EntryEthAddress.svelte';
-	import ManagementTable from '$lib/components/management/ManagementTable.svelte';
+	import InteractiveTable from '$lib/components/management/InteractiveTable.svelte';
 	import TableTitle from '$lib/components/management/render-components/TableTitle.svelte';
 	import type { TableCol } from 'src/interfaces/management/tableColumn';
 	import SearchBar from '$lib/components/management/SearchBar.svelte';
+	import { getUsers } from '$utils/api/management/getUsers';
+	import type { UserData } from 'src/interfaces/userData';
+	import EntryReport from '$lib/components/management/render-components/EntryReport.svelte';
+	import EntryGenericText from '$lib/components/management/render-components/EntryGenericText.svelte';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
+	let users: UserData[];
+	let collections;
 
-	let dummyData: TableCol[] = [
-		{
-			gridSize: '1fr',
-			titleRenderComponent: TableTitle,
-			titleRenderComponentProps: { title: 'Name', sortable: true },
-			renderComponent: EntryName,
-			renderComponentProps: [
-				{ name: 'Jakub', imageUrl: 'https://picsum.photos/200' },
-				{ name: 'Pavel', imageUrl: 'https://picsum.photos/200' },
-				{ name: 'Hobzič', imageUrl: 'https://picsum.photos/200' }
-			]
-		},
-		{
-			gridSize: '1fr',
-			titleRenderComponent: TableTitle,
-			titleRenderComponentProps: { title: 'Ethereum Adress' },
-			renderComponent: EthAddress,
-			renderComponentProps: [{ address: '0xb794f5ea0ba39494ce839613fffba74279579268' }, { name: '0xb794f5ea0ba39494ce839613fffba74279579268' }, { name: '0xb794f5ea0ba39494ce839613fffba74279579268' }]
+	let tableData: TableCol[];
+
+	let createUserTable = async () => {
+		await getUsers()
+			.then((res) => (users = res))
+			.catch((err) => console.log(err));
+		if (!users) return;
+		tableData = [
+			{
+				gridSize: '3fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Name', sortable: true },
+				renderComponent: EntryName,
+				renderComponentProps: users.map((u) => ({ name: u.username, imageUrl: u.imageUrl }))
+			},
+			{
+				gridSize: '3fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Ethereum Address' },
+				renderComponent: EthAddress,
+				renderComponentProps: users.map((u) => ({ address: u.address }))
+			},
+			{
+				gridSize: '2fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Ethereum Address' },
+				renderComponent: EthAddress,
+				renderComponentProps: users.map((u) => ({ address: u.address }))
+			},
+			{
+				gridSize: '2fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Ethereum Address' },
+				renderComponent: EntryGenericText,
+				renderComponentProps: users.map((u) => ({ text: u.createdAt }))
+			},
+			{
+				gridSize: '2fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Report' },
+				renderComponent: EntryReport
+			}
+		];
+	};
+
+	$: {
+		mode;
+		if (mode === 'USER') {
+			createUserTable();
+		} else {
+			//createCollectionTable()
 		}
-	];
+	}
 
-	$: searchPlaceholder = `Search for ${mode.toLowerCase()}`;
+	$: searchPlaceholder = `Search 1 ${mode.toLowerCase()}`;
 </script>
 
 <div class="flex flex-col w-full h-full p-40 gap-12">
@@ -42,7 +81,7 @@
 	<div class="flex gap-4">
 		<SearchBar placeholder={searchPlaceholder} />
 	</div>
-	<ManagementTable tableData={dummyData} />
+	<InteractiveTable {tableData} />
 </div>
 
 <style lang="postcss">
