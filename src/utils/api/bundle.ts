@@ -5,6 +5,8 @@ export interface GetBundleResponse {
 	_id: string;
 	nft_ids: string[];
 	nft_amounts: number[];
+	title: string;
+	imageUrl: string;
 }
 
 export interface Bundle extends GetBundleResponse {}

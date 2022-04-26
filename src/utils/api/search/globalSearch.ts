@@ -43,6 +43,6 @@ export const getCollectionsByTitle = async (query: string) => {
         const res = await axios.get(api + '/v1/accounts',  { params: { query }, ...getAxiosConfig()});
         return res.data.data as UserData[];
     } catch {    
-        throw new Error('Failed to search for users');
+        throw new Error('Failed to search for collections');
     }*/
 }
