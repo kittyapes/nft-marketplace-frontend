@@ -14,7 +14,7 @@
 	});
 </script>
 
-<div class="w-full grid shadow-md rounded-xl relative" bind:this={table}>
+<div class="w-full grid shadow-md rounded-xl relative min-w-min" bind:this={table}>
 	{#each tableData as column}
 		<div in:fade>
 			<svelte:component this={column.titleRenderComponent} props={column.titleRenderComponentProps || null} />

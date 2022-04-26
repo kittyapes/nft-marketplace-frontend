@@ -1,9 +1,12 @@
 <script lang="ts">
-	import Dropdown from '../Dropdown.svelte';
+	import IconDropdown from '../IconDropdown.svelte';
 
 	export let options;
+	export let icon;
 </script>
 
 <div class="w-44">
-	<Dropdown {options} />
+	<IconDropdown {options}>
+		<svelte:component this={icon} slot="icon" />
+	</IconDropdown>
 </div>

@@ -3,11 +3,19 @@
 	import ColumnComponentContainer from '../ColumnComponentContainer.svelte';
 
 	export let props;
+
+	let open = false;
+	let handleClick = () => {
+		open = true;
+	};
 </script>
 
-<ColumnComponentContainer class={props.color}>
+<ColumnComponentContainer class={props?.color}>
 	<div class="clickable">
 		<ArrowDown />
-		<div>{props.role}</div>
+		<div on:click={handleClick} class="relative">{props.role}</div>
+		{#if open}
+			<div class="absolut bg-white shadow-lg" />
+		{/if}
 	</div>
 </ColumnComponentContainer>

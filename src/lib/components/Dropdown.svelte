@@ -30,29 +30,15 @@
 	}
 </script>
 
-<div
-	class="relative select-container select-none transition {$$props.class}"
-	class:opacity-50={disabled}
->
-	<button
-		class="text-left select"
-		on:click={() => (opened = !opened)}
-		bind:this={elemOpenButton}
-		{disabled}
-	>
+<div class="relative select-container select-none transition {$$props.class}" class:opacity-50={disabled}>
+	<button class="text-left select" on:click={() => (opened = !opened)} bind:this={elemOpenButton} {disabled}>
 		{selected?.label}
 	</button>
 
 	{#if opened}
-		<div
-			id="list-container"
-			class="absolute bottom-0 z-10 w-full overflow-hidden translate-y-full bg-white rounded-lg"
-		>
+		<div id="list-container" class="absolute bottom-0 z-10 w-full overflow-hidden translate-y-full bg-white rounded-lg">
 			{#each options as option}
-				<button
-					class="w-full px-4 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded"
-					on:click={() => handleOptionSelect(option)}
-				>
+				<button class="w-full px-4 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded" on:click={() => handleOptionSelect(option)}>
 					{option.label}
 				</button>
 			{/each}

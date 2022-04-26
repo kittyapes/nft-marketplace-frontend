@@ -14,10 +14,12 @@
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import dayjs from 'dayjs';
+	import UserManage from '$icons/user-manage.svelte';
+	import Filters from '$icons/filters.svelte';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
-	let collections;
+	let collections = [];
 	let loaded = false;
 
 	let tableData: TableCol[] = [];
@@ -47,16 +49,16 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Role' },
 				renderComponent: EntryGenericText,
-				renderComponentProps: users.map((u) => ({ text: 'dunno' }))
-				//	renderComponentProps: users.map((u) => {
-
-				//return	{ role: u.roles[0], color:  };
-				//	})
+				renderComponentProps: users.map((u) => ({ text: 'Need roles' }))
+				//renderComponentProps: users.map((u) => {
+				//console.log(u);
+				//return { role: u.roles.length > 0 ? u.roles[0] : 'User', color: 'text-color-green' };
+				//})
 			},
 			{
 				gridSize: '2fr',
 				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Date Joined' },
+				titleRenderComponentProps: { title: 'Date Joined', sortable: true },
 				renderComponent: EntryGenericText,
 				renderComponentProps: users.map((u) => {
 					let date = dayjs(u.createdAt);
@@ -74,12 +76,12 @@
 		return true;
 	};
 
-	$: if ($currentUserAddress) {
+	$: if ($currentUserAddress && mode === 'USER') {
 		createTable();
 	}
 
 	let createTable = async () => {
-		if (mode === 'USER' && (await createUserTable())) {
+		if (await createUserTable()) {
 			loaded = true;
 		} else {
 		}
@@ -102,9 +104,9 @@
 		<div class="flex gap-4">
 			<SearchBar placeholder={searchPlaceholder} />
 			<div class="flex-grow" />
-			<div class="flex gap-4">
-				<RoleFilter options={roleFilterOptions} />
-				<Filter options={filterOptions} />
+			<div class="flex gap-8">
+				<RoleFilter options={roleFilterOptions} icon={UserManage} />
+				<Filter options={filterOptions} icon={Filters} bind:entries={users} />
 			</div>
 		</div>
 
