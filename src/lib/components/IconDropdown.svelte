@@ -37,7 +37,7 @@
 </script>
 
 <button
-	class="group min-w-fit relative text-left z-10 text-color-black border-2 border-color-gray-lighter focus-within:border-[#1d1d1d] h-full min-h-[3rem] rounded-md pl-4 pr-2 w-full outline-none clickable flex items-center gap-2 transition {$$props.class}"
+	class="group min-w-fit relative text-left z-[5] text-color-black border-2 border-color-gray-lighter focus-within:border-[#1d1d1d] h-full min-h-[3rem] rounded-md pl-4 pr-2 w-full outline-none clickable flex items-center gap-2 transition {$$props.class}"
 	bind:this={elemOpenButton}
 	{disabled}
 	class:opacity-50={disabled}
@@ -48,7 +48,7 @@
 >
 	<div class="min-w-max">{selected?.label}</div>
 	<div class="flex-grow" />
-	<div class="h-12 border border-t-2 border-color-gray-lighter max-h-max group-focus-within:border-[#1d1d1d] transition-colors" />
+	<div class="h-12 border-l-2 border-color-gray-lighter max-h-max group-focus-within:border-[#1d1d1d] transition-colors" />
 	<div class="min-w-[2rem] grid place-items-center clickable">
 		{#if !opened}
 			<slot name="icon" />

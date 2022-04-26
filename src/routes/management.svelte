@@ -171,12 +171,16 @@
 		<div class="flex gap-4">
 			<SearchBar placeholder={searchPlaceholder} />
 			<div class="flex-grow" />
-			<div class="flex gap-8">
+			<div class="flex gap-10">
 				{#if mode === 'USER'}
-					<Filter options={roleFilterOptions} icon={UserManage} bind:entries={users} />
-					<Filter options={filterOptions} icon={Filters} bind:entries={users} defaultOption={{ label: 'Filter' }} />
+					<div class="">
+						<Filter options={roleFilterOptions} icon={UserManage} bind:entries={users} />
+					</div>
+					<div class="">
+						<Filter options={filterOptions} icon={Filters} bind:entries={users} defaultOption={{ label: 'Filter' }} />
+					</div>
 				{:else}
-					<RoleFilter options={roleFilterOptions} icon={UserManage} />
+					<Filter options={roleFilterOptions} icon={UserManage} bind:entries={collections} />
 					<Filter options={filterOptions} icon={Filters} bind:entries={collections} />
 				{/if}
 			</div>
