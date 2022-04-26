@@ -16,6 +16,7 @@
 	import dayjs from 'dayjs';
 	import UserManage from '$icons/user-manage.svelte';
 	import Filters from '$icons/filters.svelte';
+	import { tick } from 'svelte';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
@@ -73,22 +74,88 @@
 				renderComponentProps: Array(users.length).map((_) => ({ active: false }))
 			}
 		];
+		console.log(users);
 		return true;
 	};
 
-	$: if ($currentUserAddress && mode === 'USER') {
-		createTable();
-	}
+	let createCollectionTable = async () => {
+		return true;
+	};
 
 	let createTable = async () => {
-		if (await createUserTable()) {
+		if (mode === 'USER' && (await createUserTable())) {
+			await tick();
 			loaded = true;
-		} else {
+		} else if (await createCollectionTable()) {
+			await tick();
+			loaded = true;
 		}
 	};
 
-	let roleFilterOptions = [{ label: 'All' }, { label: 'Verified Creator' }, { label: 'Admin' }, { label: 'Super Admin' }, { label: 'Blogger' }, { label: 'Inactive' }];
-	let filterOptions = [{ label: 'Flagged' }, { label: 'Joined 24 hrs ago' }, { label: 'Joined 7 days ago' }, { label: 'Joined 1 Mon ago' }];
+	$: if ($currentUserAddress && mode) {
+		createTable();
+	}
+
+	$: if (users)
+		tableData = [
+			{
+				gridSize: '3fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Name', sortable: true },
+				renderComponent: EntryName,
+				renderComponentProps: users.map((u) => ({ name: u.username, imageUrl: u.imageUrl, address: u.address }))
+			},
+			{
+				gridSize: '3fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Ethereum Address' },
+				renderComponent: EthAddress,
+				renderComponentProps: users.map((u) => ({ address: u.address }))
+			},
+			{
+				gridSize: '2fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Role' },
+				renderComponent: EntryGenericText,
+				renderComponentProps: users.map((u) => ({ text: 'Need roles' }))
+				//renderComponentProps: users.map((u) => {
+				//console.log(u);
+				//return { role: u.roles.length > 0 ? u.roles[0] : 'User', color: 'text-color-green' };
+				//})
+			},
+			{
+				gridSize: '2fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Date Joined', sortable: true },
+				renderComponent: EntryGenericText,
+				renderComponentProps: users.map((u) => {
+					let date = dayjs(u.createdAt);
+					return { text: date.format('MMM D, YYYY') };
+				})
+			},
+			{
+				gridSize: '2fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Report', centered: true },
+				renderComponent: EntryReport,
+				renderComponentProps: Array(users.length).map((_) => ({ active: false }))
+			}
+		];
+
+	let roleFilterOptions = [
+		{ label: 'All', cb: (e) => true },
+		{ label: 'Super Admin', cb: (e) => e.roles === 'superadmin' },
+		{ label: 'Admin', cb: (e) => e.roles === 'admin' },
+		{ label: 'Verified Creator', cb: (e) => e.status === 'VERIFIED' },
+		{ label: 'Blogger' },
+		{ label: 'Inactive' }
+	];
+	let filterOptions = [
+		{ label: 'Flagged' },
+		{ label: 'Joined 24 hrs ago', cb: (e) => dayjs().subtract(1, 'day').isBefore(e.createdAt) },
+		{ label: 'Joined 7 days ago', cb: (e) => dayjs().subtract(1, 'week').isBefore(e.createdAt) },
+		{ label: 'Joined 1 Mon ago', cb: (e) => dayjs().subtract(1, 'month').isBefore(e.createdAt) }
+	];
 
 	$: searchPlaceholder = `Search for ${mode.toLowerCase()}`;
 </script>
@@ -105,8 +172,13 @@
 			<SearchBar placeholder={searchPlaceholder} />
 			<div class="flex-grow" />
 			<div class="flex gap-8">
-				<RoleFilter options={roleFilterOptions} icon={UserManage} />
-				<Filter options={filterOptions} icon={Filters} bind:entries={users} />
+				{#if mode === 'USER'}
+					<Filter options={roleFilterOptions} icon={UserManage} bind:entries={users} />
+					<Filter options={filterOptions} icon={Filters} bind:entries={users} defaultOption={{ label: 'Filter' }} />
+				{:else}
+					<RoleFilter options={roleFilterOptions} icon={UserManage} />
+					<Filter options={filterOptions} icon={Filters} bind:entries={collections} />
+				{/if}
 			</div>
 		</div>
 

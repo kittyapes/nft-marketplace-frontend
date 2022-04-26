@@ -1,21 +1,23 @@
 <script lang="ts">
-	import ArrowDown from '$icons/arrow-down.svelte';
+	import CheckboxDropdown from '$lib/components/CheckboxDropdown.svelte';
 	import ColumnComponentContainer from '../ColumnComponentContainer.svelte';
 
 	export let props;
+	export let entries;
+	let defaultEntries = entries;
 
-	let open = false;
-	let handleClick = () => {
-		open = true;
+	let handleFilter = (event: CustomEvent) => {
+		entries = defaultEntries.filter((e) => {
+			if (!event.detail.cb) return false;
+			return event.detail.cb(e);
+		});
+	};
+
+	let handleClear = () => {
+		entries = defaultEntries;
 	};
 </script>
 
-<ColumnComponentContainer class={props?.color}>
-	<div class="clickable">
-		<ArrowDown />
-		<div on:click={handleClick} class="relative">{props.role}</div>
-		{#if open}
-			<div class="absolut bg-white shadow-lg" />
-		{/if}
-	</div>
+<ColumnComponentContainer>
+	<CheckboxDropdown on:select={handleFilter} on:clear={handleClear} options={props} />
 </ColumnComponentContainer>
