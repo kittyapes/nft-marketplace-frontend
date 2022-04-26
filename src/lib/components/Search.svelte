@@ -6,13 +6,17 @@
 	import type { SearchResults } from 'src/interfaces/search/searchResults';
 	import { reject } from 'lodash-es';
 	import Loader from '$icons/loader.svelte';
-	import { afterUpdate, tick } from 'svelte';
+	import { tick } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import { goto } from '$app/navigation';
-	import { browser } from '$app/env';
-	import { result } from 'lodash-es';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
+	import { isAuthTokenExpired } from '$utils/auth/token';
+	import { currentUserAddress } from '$stores/wallet';
+	import { setPopup } from '$utils/popup';
+	import AuthLoginPopup from './auth/AuthLoginPopup/AuthLoginPopup.svelte';
+	import { userAuthLoginPopupAdapter } from './auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
+	import axios from 'axios';
 
 	let query: string;
 	let searching = false;
@@ -78,14 +82,20 @@
 	}
 
 	$: if (query) {
-		searching = true;
-		debouncedSearch();
+		if (isAuthTokenExpired($currentUserAddress)) {
+			console.log('??');
+			setPopup(AuthLoginPopup, { props: { onLoginSuccess: () => {}, adapter: userAuthLoginPopupAdapter } });
+		} else {
+			searching = true;
+			debouncedSearch();
+		}
 	}
 
 	const preload = async (src) => {
 		try {
-			const resp = await fetch(src);
-			const blob = await resp.blob();
+			console.log(src);
+			const res = await axios.get(src);
+			const blob = await new Blob(res.data);
 
 			return new Promise(function (resolve) {
 				let reader = new FileReader();
@@ -122,9 +132,9 @@
 									{#if section === 'drops'}
 										<div class="flex gap-4 items-center btn">
 											{#if result.imageUrl}
-												<div class="w-10 h-10 rounded-full">
+												<div class="w-12 h-12 rounded-full grid place-items-center">
 													{#await preload(result.imageUrl)}
-														<Loader class="m-0" />
+														<Loader class="my-0 mx-0" />
 													{:then}
 														<div class="w-full h-full rounded-full" style="background-image: url({result.imageUrl})" />
 													{/await}
@@ -141,9 +151,9 @@
 											}}
 										>
 											{#if result.imageUrl}
-												<div class="w-10 h-10 rounded-full">
+												<div class="w-12 h-12 rounded-full grid place-items-center">
 													{#await preload(result.imageUrl)}
-														<Loader class="m-0" />
+														<Loader class="my-0 mx-0" />
 													{:then}
 														<div class="w-full h-full bg-cover rounded-full" style="background-image: url({result.imageUrl})" />
 													{/await}
