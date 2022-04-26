@@ -1,16 +1,14 @@
 <script lang="ts">
-	import Card from '$lib/components/marketplace/Card.svelte';
 	import { onMount } from 'svelte';
 	// import { priceFilters, statusFilters } from '$stores/marketplace';
 	import { getListings, Listing } from '$utils/api/listing';
 	import { writable } from 'svelte/store';
-	import { getNft } from '$utils/api/nft';
 	import NftCard from '$lib/components/NftCard.svelte';
 
 	const listings = writable<Listing[]>([]);
 
 	onMount(async () => {
-		listings.set((await getListings()).reverse());
+		listings.set(await getListings());
 
 		console.log(listings);
 	});
@@ -37,11 +35,7 @@
 <div class="flex flex-wrap mt-11 justify-center gap-6 cards">
 	{#if $listings.length}
 		{#each $listings as listing}
-			{#await getNft(listing.drop.nft_ids[0])}
-				<NftCard />
-			{:then nft}
-				<NftCard imageUrl={nft.imageUrl} name={nft.name} price={nft.price} />
-			{/await}
+			<NftCard imageUrl={listing.drop.imageUrl} name={listing.drop.title} price={listing.drop.price} />
 		{/each}
 	{:else}
 		Loading...
