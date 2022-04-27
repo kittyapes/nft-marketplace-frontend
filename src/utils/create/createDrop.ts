@@ -26,15 +26,11 @@ export const createDropOnAPI = async ({ contractId, title, artist, creator, desc
 
 export const createDropOnChain = async (dropId: number) => {
 	try {
-		console.log('here 1');
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
-		console.log('here 2');
 		const dropCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createDrop(dropId);
-		console.log('here 3');
 
 		// Wait for at least once confirmation
 		await dropCreationTransaction.wait(1);
-		console.log('here 4');
 
 		return true;
 	} catch (error) {
