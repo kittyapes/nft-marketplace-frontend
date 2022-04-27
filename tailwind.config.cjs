@@ -17,6 +17,7 @@ const config = {
 				'color-green': '#3BA160',
 				'color-purple': '#868BF7',
 				'color-blue': '#6CC7F8',
+				'color-orange': '#FF9548',
 				'color-pink': {
 					dark: '#A95ABC'
 				}

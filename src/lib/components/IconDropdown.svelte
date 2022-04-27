@@ -41,7 +41,7 @@
 	bind:this={elemOpenButton}
 	{disabled}
 	class:opacity-50={disabled}
-	on:click={() => {
+	on:click|stopPropagation={() => {
 		opened = !opened;
 		if (!opened) elemOpenButton?.blur();
 	}}
@@ -51,7 +51,9 @@
 	<div class="h-12 border-l-2 border-color-gray-lighter max-h-max group-focus-within:border-[#1d1d1d] transition-colors" />
 	<div class="min-w-[2rem] grid place-items-center clickable">
 		{#if !opened}
-			<slot name="icon" />
+			<div>
+				<slot name="icon" />
+			</div>
 		{:else}
 			<div on:click={handleDefault}>
 				<ThemedCross />

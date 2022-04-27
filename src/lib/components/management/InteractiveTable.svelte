@@ -17,7 +17,7 @@
 <div class="w-full grid shadow-md rounded-xl relative min-w-min" bind:this={table}>
 	{#each tableData as column}
 		<div in:fade>
-			<svelte:component this={column.titleRenderComponent} props={column.titleRenderComponentProps || null} />
+			<svelte:component this={column.titleRenderComponent} on:event props={column.titleRenderComponentProps || null} />
 			<div class="">
 				{#if column.renderComponentProps}
 					{#each column.renderComponentProps as props}

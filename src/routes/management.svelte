@@ -9,7 +9,6 @@
 	import type { UserData } from 'src/interfaces/userData';
 	import EntryReport from '$lib/components/management/render-components/EntryReport.svelte';
 	import EntryGenericText from '$lib/components/management/render-components/EntryGenericText.svelte';
-	import RoleFilter from '$lib/components/management/RoleFilter.svelte';
 	import Filter from '$lib/components/management/Filter.svelte';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import { currentUserAddress } from '$stores/wallet';
@@ -17,6 +16,7 @@
 	import UserManage from '$icons/user-manage.svelte';
 	import Filters from '$icons/filters.svelte';
 	import { tick } from 'svelte';
+	import EntryRole from '$lib/components/management/render-components/EntryRole.svelte';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
@@ -30,50 +30,6 @@
 			.then((res) => (users = res))
 			.catch((err) => console.log(err));
 		if (users.length === 0) return false;
-		tableData = [
-			{
-				gridSize: '3fr',
-				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Name', sortable: true },
-				renderComponent: EntryName,
-				renderComponentProps: users.map((u) => ({ name: u.username, imageUrl: u.imageUrl, address: u.address }))
-			},
-			{
-				gridSize: '3fr',
-				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Ethereum Address' },
-				renderComponent: EthAddress,
-				renderComponentProps: users.map((u) => ({ address: u.address }))
-			},
-			{
-				gridSize: '2fr',
-				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Role' },
-				renderComponent: EntryGenericText,
-				renderComponentProps: users.map((u) => ({ text: 'Need roles' }))
-				//renderComponentProps: users.map((u) => {
-				//console.log(u);
-				//return { role: u.roles.length > 0 ? u.roles[0] : 'User', color: 'text-color-green' };
-				//})
-			},
-			{
-				gridSize: '2fr',
-				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Date Joined', sortable: true },
-				renderComponent: EntryGenericText,
-				renderComponentProps: users.map((u) => {
-					let date = dayjs(u.createdAt);
-					return { text: date.format('MMM D, YYYY') };
-				})
-			},
-			{
-				gridSize: '2fr',
-				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Report', centered: true },
-				renderComponent: EntryReport,
-				renderComponentProps: Array(users.length).map((_) => ({ active: false }))
-			}
-		];
 		console.log(users);
 		return true;
 	};
@@ -90,6 +46,21 @@
 			await tick();
 			loaded = true;
 		}
+	};
+
+	let getRoleColor = (role: string) => {
+		if (role === 'superadmin') {
+			return 'text-color-orange';
+		} else if (role === 'admin') {
+			return 'gradient-text';
+		} else if (role === 'VERIFIED') {
+			return 'text-color-green';
+		}
+	};
+
+	let handleTableEvent = async (event: CustomEvent) => {
+		users = await getUsers(event.detail.sortBy, event.detail.sortReversed);
+		console.log(users);
 	};
 
 	$: if ($currentUserAddress && mode) {
@@ -115,13 +86,19 @@
 			{
 				gridSize: '2fr',
 				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Role' },
-				renderComponent: EntryGenericText,
-				renderComponentProps: users.map((u) => ({ text: 'Need roles' }))
-				//renderComponentProps: users.map((u) => {
-				//console.log(u);
-				//return { role: u.roles.length > 0 ? u.roles[0] : 'User', color: 'text-color-green' };
-				//})
+				titleRenderComponentProps: { title: 'Role', sortable: true },
+				renderComponent: EntryRole,
+				renderComponentProps: users.map((u) => ({
+					id: u.address,
+					role: u.roles || 'User',
+					color: getRoleColor(u.roles),
+					options: [
+						{ label: 'sadmin', checked: u.roles === 'superadmin', cb: (e) => e.roles === 'superadmin' },
+						{ label: 'admin', checked: u.roles === 'admin', cb: (e) => e.roles === 'admin' },
+						{ label: 'verified', checked: u.status === 'VERIFIED', cb: (e) => e.status === 'VERIFIED' },
+						{ label: 'user', checked: false, cb: (e) => e.roles === 'user' }
+					]
+				}))
 			},
 			{
 				gridSize: '2fr',
@@ -161,7 +138,7 @@
 </script>
 
 <LoadedContent {loaded}>
-	<div class="flex flex-col w-full h-full p-40 gap-12 ">
+	<div class="flex flex-col w-full h-full p-40 gap-12">
 		<div class="flex gap-14">
 			<div class="{mode === 'USER' ? 'gradient-text gradient-underline' : 'text-color-gray-base'} font-bold text-3xl relative btn" on:click={() => (mode = 'USER')}>User Management</div>
 			<div class="{mode === 'COLLECTION' ? 'gradient-text gradient-underline' : 'text-color-gray-dark'} font-bold text-3xl relative btn" on:click={() => (mode = 'COLLECTION')}>
@@ -186,7 +163,7 @@
 			</div>
 		</div>
 
-		<InteractiveTable {tableData} rows={mode === 'USER' ? users.length : collections.length} />
+		<InteractiveTable on:event={handleTableEvent} {tableData} rows={mode === 'USER' ? users.length : collections.length} />
 	</div>
 </LoadedContent>
 

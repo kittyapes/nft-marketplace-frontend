@@ -7,8 +7,14 @@
 	export let defaultOption = options?.[0];
 
 	let defaultEntries = entries;
+	let lastEvent;
+
+	$: if (entries && lastEvent) {
+		handleFilter(lastEvent);
+	}
 
 	let handleFilter = (event: CustomEvent) => {
+		lastEvent = event;
 		entries = defaultEntries.filter((e) => {
 			if (!event.detail.cb) return false;
 			return event.detail.cb(e);
