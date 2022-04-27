@@ -4,6 +4,7 @@
 	import { getListings, Listing } from '$utils/api/listing';
 	import { writable } from 'svelte/store';
 	import NftCard from '$lib/components/NftCard.svelte';
+	import { drop } from 'lodash-es';
 
 	const listings = writable<Listing[]>([]);
 
@@ -35,7 +36,10 @@
 <div class="flex flex-wrap mt-11 justify-center gap-6 cards">
 	{#if $listings.length}
 		{#each $listings as listing}
-			<NftCard imageUrl={listing.drop.imageUrl} name={listing.drop.title} price={listing.drop.price} />
+			<!-- I guess a hotfix -->
+			{#if listing?.drop}
+				<NftCard imageUrl={listing.drop.imageUrl} name={listing.drop.title} price={listing.drop.price} />
+			{/if}
 		{/each}
 	{:else}
 		Loading...
