@@ -15,5 +15,11 @@
 </script>
 
 <ColumnComponentContainer>
-	<CheckboxDropdown class="pl-0 {localProps.color || ''} z-[4]" on:change={handleSelect} options={localProps.options} dropdownLabel={localProps.role} />
+	<CheckboxDropdown
+		class="pl-0 {localProps.color || ''} z-[4] font-semibold"
+		on:change={handleSelect}
+		options={localProps.options}
+		dropdownLabel={localProps.role}
+		gradient={localProps.role === 'admin'}
+	/>
 </ColumnComponentContainer>

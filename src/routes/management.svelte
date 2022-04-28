@@ -63,6 +63,11 @@
 		console.log(users);
 	};
 
+	let handleFilter = (event: CustomEvent) => {
+		if (mode === 'USER') users = event.detail.changeTo;
+		else collections = event.detail.changeTo;
+	};
+
 	$: if ($currentUserAddress && mode) {
 		createTable();
 	}
@@ -72,7 +77,7 @@
 			{
 				gridSize: '3fr',
 				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Name', sortable: true },
+				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETIC' },
 				renderComponent: EntryName,
 				renderComponentProps: users.map((u) => ({ name: u.username, imageUrl: u.imageUrl, address: u.address }))
 			},
@@ -86,7 +91,7 @@
 			{
 				gridSize: '2fr',
 				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Role', sortable: true },
+				titleRenderComponentProps: { title: 'Role' },
 				renderComponent: EntryRole,
 				renderComponentProps: users.map((u) => ({
 					id: u.address,
@@ -103,7 +108,7 @@
 			{
 				gridSize: '2fr',
 				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Date Joined', sortable: true },
+				titleRenderComponentProps: { title: 'Date Joined', sortBy: 'CREATED_AT' },
 				renderComponent: EntryGenericText,
 				renderComponentProps: users.map((u) => {
 					let date = dayjs(u.createdAt);
@@ -146,21 +151,25 @@
 			</div>
 		</div>
 		<div class="flex gap-4">
-			<SearchBar placeholder={searchPlaceholder} />
-			<div class="flex-grow" />
-			<div class="flex gap-10">
-				{#if mode === 'USER'}
+			{#if mode === 'USER'}
+				<SearchBar placeholder={searchPlaceholder} />
+				<div class="flex-grow" />
+				<div class="flex gap-10">
 					<div class="">
-						<Filter options={roleFilterOptions} icon={UserManage} bind:entries={users} />
+						<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} bind:entries={users} />
 					</div>
 					<div class="">
-						<Filter options={filterOptions} icon={Filters} bind:entries={users} defaultOption={{ label: 'Filter' }} />
+						<Filter on:filter={handleFilter} options={filterOptions} icon={Filters} bind:entries={users} defaultOption={{ label: 'Filter', cb: (e) => true }} />
 					</div>
-				{:else}
+				</div>
+			{:else}
+				<SearchBar placeholder={searchPlaceholder} />
+				<div class="flex-grow" />
+				<div class="flex gap-10">
 					<Filter options={roleFilterOptions} icon={UserManage} bind:entries={collections} />
 					<Filter options={filterOptions} icon={Filters} bind:entries={collections} />
-				{/if}
-			</div>
+				</div>
+			{/if}
 		</div>
 
 		<InteractiveTable on:event={handleTableEvent} {tableData} rows={mode === 'USER' ? users.length : collections.length} />

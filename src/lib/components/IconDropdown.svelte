@@ -32,7 +32,7 @@
 
 	function handleDefault() {
 		selected = defaultOption;
-		dispatch('clear');
+		dispatch('select', defaultOption);
 	}
 </script>
 

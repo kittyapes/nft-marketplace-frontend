@@ -2,6 +2,7 @@
 	import ArrowDownGradient from '$icons/arrow-down-gradient.svelte';
 	import ArrowDown from '$icons/arrow-down.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import Checkbox from './Checkbox.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -32,7 +33,7 @@
 </script>
 
 <button
-	class="group min-w-fit relative text-left z-[5] text-color-black h-full min-h-[3rem] rounded-md pl-4 pr-2 w-full outline-none clickable flex items-center gap-2 transition {$$props.class}"
+	class="group min-w-fit relative z-[5] text-left text-color-black h-full min-h-[3rem] rounded-md pl-4 pr-2 w-full outline-none clickable flex items-center gap-2 transition {$$props.class}"
 	bind:this={elemOpenButton}
 	{disabled}
 	class:opacity-50={disabled}
@@ -42,9 +43,7 @@
 	}}
 >
 	{#if gradient}
-		<div class="bg-white ">
-			<ArrowDownGradient />
-		</div>
+		<ArrowDownGradient />
 	{:else}
 		<ArrowDown />
 	{/if}
@@ -53,11 +52,14 @@
 
 	{#if opened}
 		<div id="list-container" class="absolute -bottom-1 left-0 w-full overflow-hidden translate-y-full bg-white rounded-lg text-color-black flex flex-col">
-			{#each options as option}
-				<button class="px-2 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded first-letter:uppercase " on:click|preventDefault={() => handleOptionSelect()}>
-					{option.label}
-				</button>
-			{/each}
+			<div class="relative ">
+				{#each options as option}
+					<button class="px-2 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded flex gap-1 ">
+						<Checkbox on:change={() => handleOptionSelect} bind:checked={option.checked} />
+						<div class="first-letter:uppercase">{option.label}</div>
+					</button>
+				{/each}
+			</div>
 		</div>
 	{/if}
 </button>

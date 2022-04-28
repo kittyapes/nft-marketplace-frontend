@@ -2,7 +2,6 @@
 	import Eth from '$icons/eth.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import ColumnComponentContainer from '../ColumnComponentContainer.svelte';
-	import { hoverHint } from '$actions/hoverHint';
 	import { notifySuccess } from '$utils/toast';
 
 	export let props;
@@ -15,8 +14,6 @@
 
 <ColumnComponentContainer>
 	<Eth />
-	<!--<div use:hoverHint={{ text: props.address, targetId: 'hint-target' }} class="">
-		<div id="hint-target" class="">-->
 	<EthAddress
 		address={props.address}
 		concat
@@ -24,9 +21,8 @@
 		etherScanLink={false}
 		charsFromStart={11}
 		charsFromEnd={5}
+		tooltip
 		class="!text-lg !not-italic !font-semibold !text-color-black clickable w-full h-full"
 		on:click={copyToClipboard}
 	/>
-	<!--	</div>
-	</div>-->
 </ColumnComponentContainer>
