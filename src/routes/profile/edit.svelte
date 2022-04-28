@@ -185,7 +185,7 @@
 	}
 
 	// We setting false on SSR to avoid save button flashing
-	$: dataValid = browser && $usernameAvailable && bioValid && websiteValid;
+	$: dataValid = browser && $localDataStore.username && $usernameAvailable && bioValid && websiteValid;
 
 	const [currentAddress, previousAddress] = withPrevious('', { requireChange: true });
 	$: $currentAddress = $currentUserAddress;
