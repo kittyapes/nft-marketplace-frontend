@@ -45,3 +45,7 @@ export async function getListings() {
 
 	return res.data.data as Listing[];
 }
+
+export async function getListing() {
+	
+}

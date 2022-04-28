@@ -3,6 +3,7 @@ import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 
 export function adaptListingToNftCard(listing: Listing) {
 	const options: NftCardOptions = {
+		id: listing.drop.contractId,
 		title: listing.drop.title,
 		imageUrl: listing.drop.imageUrl,
 		getUniversalPopupOptions: async () => {

@@ -16,6 +16,7 @@ export interface Bundle {
 	title: string;
 	imageUrl: string;
 	description: string;
+	contractId: string;
 }
 
 export async function getBundle(id: string) {
