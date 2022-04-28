@@ -3,15 +3,13 @@
 	// import { priceFilters, statusFilters } from '$stores/marketplace';
 	import { getListings, Listing } from '$utils/api/listing';
 	import { writable } from 'svelte/store';
-	import NftCard from '$lib/components/NftCard.svelte';
-	import { drop } from 'lodash-es';
+	import NftList from '$lib/components/NftList.svelte';
+	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 
 	const listings = writable<Listing[]>([]);
 
 	onMount(async () => {
 		listings.set(await getListings());
-
-		console.log(listings);
 	});
 
 	// $: {
@@ -33,14 +31,9 @@
 	// }
 </script>
 
-<div class="flex flex-wrap mt-11 justify-center gap-6 cards">
+<div class="flex flex-wrap justify-center gap-6 mt-11 cards">
 	{#if $listings.length}
-		{#each $listings as listing}
-			<!-- I guess a hotfix -->
-			{#if listing?.drop}
-				<NftCard imageUrl={listing.drop.imageUrl} name={listing.drop.title} price={listing.drop.price} />
-			{/if}
-		{/each}
+		<NftList data={$listings.map(adaptListingToNftCard)} />
 	{:else}
 		Loading...
 	{/if}

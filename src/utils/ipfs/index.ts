@@ -1,4 +1,6 @@
 export function makeHttps(url: string) {
+	if (!url) return null;
+
 	if (url.startsWith('https://') || url.startsWith('http://')) {
 		return url;
 	}

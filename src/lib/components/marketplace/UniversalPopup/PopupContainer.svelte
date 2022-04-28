@@ -1,14 +1,17 @@
 <script lang="ts">
 	import NftDisplay from './NftDisplay.svelte';
 	import Popup from '$lib/components/Popup.svelte';
+	import type { UniversalPopupOptions } from 'src/interfaces/universalPopupOptions';
 
 	export let size: 'large' | 'squished' | 'small' = 'large';
 	export let closeButton = false;
+
+	export let options: UniversalPopupOptions;
 </script>
 
 {#if size === 'large'}
 	<Popup {closeButton} class="w-full lg:w-2/3 mx-auto shadow-xl z-50 flex flex-col md:flex-row overflow-y-scroll md:overflow-y-hidden h-[40rem] pt-0" on:close>
-		<NftDisplay />
+		<NftDisplay {options} />
 		<!-- Right side of popup -->
 		<div class="w-full md:w-1/2 bg-white p-10 flex flex-col h-full relative">
 			<slot name="content" />

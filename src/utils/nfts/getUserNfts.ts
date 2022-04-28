@@ -1,6 +1,5 @@
 // In a node.js environment
 import { makeHttps } from '$utils/ipfs';
-import { getMoralis } from '$utils/moralisFuncs';
 import axios from 'axios';
 import { writable } from 'svelte/store';
 
@@ -39,7 +38,10 @@ export default async (address: string) => {
 
 		const options: Options = { chain: 'eth', userAddress: address };
 		//const ethereumNfts = await Moralis.Web3API.account.getNFTs(options);
-		const ethereumNfts = await axios.post('https://moralis-resolver.vercel.app/api/nfts/user', options).then(res => res.data.data).catch(err => console.log(err));
+		const ethereumNfts = await axios
+			.post('https://moralis-resolver.vercel.app/api/nfts/user', options)
+			.then((res) => res.data.data)
+			.catch((err) => console.log(err));
 
 		// Parse the metadata object to get the nft image.
 		// That is metadata.animation_url or metadata.image. We need to try with other types of nfts from different collections to make sure we cover the data expected from the urls
