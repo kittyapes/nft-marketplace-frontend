@@ -4,7 +4,7 @@
 	import { fade } from 'svelte/transition';
 
 	export let tableData: TableCol[];
-	export let rows: number;
+	export let rows: number = 0;
 	let table: HTMLDivElement;
 
 	onMount(() => {
@@ -21,11 +21,11 @@
 			<div class="">
 				{#if column.renderComponentProps}
 					{#each column.renderComponentProps as props}
-						<svelte:component this={column.renderComponent} {props} />
+						<svelte:component this={column.renderComponent} on:event {props} />
 					{/each}
-				{:else}
+				{:else if rows}
 					{#each Array(rows) as _}
-						<svelte:component this={column.renderComponent} props={null} />
+						<svelte:component this={column.renderComponent} on:event props={null} />
 					{/each}
 				{/if}
 			</div>
