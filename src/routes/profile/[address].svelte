@@ -49,7 +49,7 @@
 	};
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
-	$: firstTimeUser = $localProfileData?.username.includes('great_gatsby');
+	$: firstTimeUser = $localProfileData?.createdAt === $localProfileData?.updatedAt;
 
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
