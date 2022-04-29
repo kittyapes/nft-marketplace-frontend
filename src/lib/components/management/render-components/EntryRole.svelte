@@ -16,7 +16,8 @@
 
 <ColumnComponentContainer>
 	<CheckboxDropdown
-		class="pl-0 {localProps.color || ''} z-[4] font-semibold"
+		class="pl-0 {localProps.color || ''} z-[9] font-semibold"
+		id={localProps.id}
 		on:change={handleSelect}
 		options={localProps.options}
 		dropdownLabel={localProps.role}

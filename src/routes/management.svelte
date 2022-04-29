@@ -60,7 +60,6 @@
 
 	let handleTableEvent = async (event: CustomEvent) => {
 		users = await getUsers(event.detail.sortBy, event.detail.sortReversed);
-		console.log(users);
 	};
 
 	let handleFilter = (event: CustomEvent) => {

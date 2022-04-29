@@ -14,7 +14,6 @@
 	let lastEvent;
 
 	let handleFilter = (event: CustomEvent) => {
-		console.log(defaultEntries);
 		lastEvent = event;
 		dispatch('filter', {
 			changeTo: defaultEntries.filter((e) => {
@@ -26,7 +25,6 @@
 
 	$: if (entries && lastEvent) {
 		handleFilter(lastEvent);
-		console.log(entries);
 	}
 </script>
 
