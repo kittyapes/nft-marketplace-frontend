@@ -12,8 +12,8 @@
 	import { writable } from 'svelte/store';
 
 	const sortByOptions = [
-		{ label: 'Date', value: 'date' },
-		{ label: 'Alphabetical', value: 'alphabetical' }
+		{ label: 'Date', value: 'UPDATED_AT' },
+		{ label: 'Alphabetical', value: 'ALPHABETICAL' }
 	];
 	const filterByOptions = [
 		{ label: 'active', value: 'VERIFIED' },
@@ -62,12 +62,7 @@
 	<div class="text-lg font-bold uppercase">Verified Creators</div>
 
 	<div class="flex items-center mt-7">
-		<input
-			class="input w-96 h-14"
-			placeholder="Enter username..."
-			bind:value={query}
-			use:onEnterKey={clickSearch}
-		/>
+		<input class="input w-96 h-14" placeholder="Enter username..." bind:value={query} use:onEnterKey={clickSearch} />
 
 		<button class="h-12 ml-6 btn btn-rounded btn-outline" on:click={clickSearch}>Search</button>
 	</div>
@@ -94,13 +89,7 @@
 		<div class="flex items-center">
 			<span class="pr-4 whitespace-nowrap">Sort By</span>
 			<div>
-				<Dropdown
-					options={sortByOptions}
-					class="w-40"
-					bind:selected={$sortBy}
-					disabled={isFetchingCreators}
-					on:select={fetchCreators}
-				/>
+				<Dropdown options={sortByOptions} class="w-40" bind:selected={$sortBy} disabled={isFetchingCreators} on:select={fetchCreators} />
 			</div>
 		</div>
 	</div>
@@ -129,9 +118,7 @@
 					</td>
 
 					<td class="px-6">
-						<button class="btn-secondary" on:click={() => goto('/profile/' + row.address)}>
-							Profile
-						</button>
+						<button class="btn-secondary" on:click={() => goto('/profile/' + row.address)}>Profile</button>
 						<!-- <div class="flex items-center gap-3">
 							{#if row.active}
 								<button
