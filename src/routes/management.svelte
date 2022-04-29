@@ -113,14 +113,15 @@
 					let date = dayjs(u.createdAt);
 					return { text: date.format('MMM D, YYYY') };
 				})
-			},
+			}
+			/*
 			{
 				gridSize: '2fr',
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Report', centered: true },
 				renderComponent: EntryReport,
 				renderComponentProps: Array(users.length).map((_) => ({ active: false }))
-			}
+			}*/
 		];
 
 	let roleFilterOptions = [
