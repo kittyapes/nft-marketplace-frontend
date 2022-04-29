@@ -38,6 +38,7 @@ export async function postCreateListing(options: CreateListingOptions) {
 export interface Listing {
 	_id: string;
 	drop: Bundle;
+	creator: string;
 }
 
 export async function getListings() {
@@ -46,6 +47,8 @@ export async function getListings() {
 	return res.data.data as Listing[];
 }
 
-export async function getListing() {
-	
+export async function getListing(id: string) {
+	const res = await axios.get(getApiUrl('latest', 'listings/' + id));
+
+	return res.data.data as Listing;
 }

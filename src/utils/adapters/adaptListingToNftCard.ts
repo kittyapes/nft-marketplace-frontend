@@ -1,19 +1,14 @@
 import type { Listing } from '$utils/api/listing';
 import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
+import { adaptListingToUniversalPopup } from './adaptListingToUniversalPopup';
 
 export function adaptListingToNftCard(listing: Listing) {
 	const options: NftCardOptions = {
-		id: listing.drop.contractId,
+		id: listing._id,
 		title: listing.drop.title,
 		imageUrl: listing.drop.imageUrl,
 		getUniversalPopupOptions: async () => {
-			return {
-				id: '-1',
-				imageUrl: listing.drop.imageUrl,
-				title: listing.drop.title,
-				description: listing.drop.description,
-				currentUserIsOwner: false
-			};
+			return adaptListingToUniversalPopup(listing);
 		}
 	};
 
