@@ -26,6 +26,7 @@ export function hoverHint(node: HTMLElement, options: { text: string; targetId: 
 	const { text } = options;
 
 	const hintTarget = document.getElementById(options.targetId);
+    if(!hintTarget) return;
 
 	hintTarget.innerHTML = getHint(text);
 
