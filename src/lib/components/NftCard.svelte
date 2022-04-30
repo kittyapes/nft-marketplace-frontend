@@ -22,10 +22,7 @@
 		options.getUniversalPopupOptions().then((universalPopupOptions) => {
 			setPopup(NftDisplayPopup, {
 				props: { options: universalPopupOptions },
-				onClose: () => {
-					removeUrlParam('id');
-					return true;
-				}
+				onClose: () => removeUrlParam('id')
 			});
 		});
 	}

@@ -4,23 +4,29 @@
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
+	import { getListing } from '$utils/api/listing';
+	import { adaptListingToUniversalPopup } from '$utils/adapters/adaptListingToUniversalPopup';
+	import { setPopup } from '$utils/popup';
+	import NftDisplayPopup from '$lib/components/profile/NFTDisplayPopup.svelte';
+	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 
 	let sidebarOpen;
 
-	// $: {
-	// 	if ($page.params.id !== 'cards' && $page.params.id) {
-	// 		console.log($page.params.id);
+	// When there is a URL search param for id, we open a popup with the listing
+	onMount(async () => {
+		if ($page.url.searchParams.has('id')) {
+			const id = $page.url.searchParams.get('id');
+			const listing = await getListing(id);
+			const adaptedListing = adaptListingToUniversalPopup(listing);
 
-	// 		let uri = `https://databasewaifu.herokuapp.com/api/token/${$page.params.id}`;
-	// 		let data = fetchMetadataFromUri(parseInt($page.params.id), uri);
-	// 		data
-	// 			.then((resolvedData) => {
-	// 				selectedCard.set(resolvedData);
-	// 				setPopup(CardInfoPopup, { unique: true });
-	// 			})
-	// 			.catch((err) => console.log(err));
-	// 	}
-	// }
+			setPopup(NftDisplayPopup, {
+				props: { options: adaptedListing },
+				onClose: () => removeUrlParam('id'),
+				unique: true
+			});
+		}
+	});
 </script>
 
 <div class="flex flex-col w-full h-full min-h-screen md:flex-row">
