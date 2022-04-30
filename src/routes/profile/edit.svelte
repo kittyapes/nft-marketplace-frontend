@@ -145,21 +145,25 @@
 
 	// Username availability check
 	const usernameAvailable = writable(null);
+	const usernameValidLength = writable(null);
 	const usernameValue = derived(localDataStore, ($localDataStore) => $localDataStore?.username);
 
 	const debouncedCheckUsernameAvailability = debounce(async (username: string) => {
 		$usernameAvailable = await checkUsernameAvailability(username);
 	}, 500);
 
-	usernameValue.subscribe((username) => {
+	usernameValue.subscribe(async (username) => {
 		if (!browser || !username) {
 			$usernameAvailable = true;
 		} else if (username === $profileData.username) {
 			$usernameAvailable = true;
 		} else {
-			debouncedCheckUsernameAvailability(username);
+			await debouncedCheckUsernameAvailability(username);
 		}
+		$usernameValidLength = username?.length <= 25;
 	});
+
+	$: usernameValid = $usernameAvailable && $usernameValidLength;
 
 	currentUserAddress.subscribe(async (address) => {
 		try {
@@ -185,7 +189,7 @@
 	}
 
 	// We setting false on SSR to avoid save button flashing
-	$: dataValid = browser && $localDataStore.username && $usernameAvailable && bioValid && websiteValid;
+	$: dataValid = browser && $localDataStore.username && usernameValid && bioValid && websiteValid;
 
 	const [currentAddress, previousAddress] = withPrevious('', { requireChange: true });
 	$: $currentAddress = $currentUserAddress;
@@ -246,6 +250,8 @@
 
 						{#if $usernameAvailable === false}
 							<div class="text-xs ml-auto text-red-500 font-semibold mt-2 uppercase" transition:slide|local>Username already taken</div>
+						{:else if $usernameValidLength === false}
+							<div class="text-xs ml-auto text-red-500 font-semibold mt-2 uppercase" transition:slide|local>Username can't be longer than 25 characters</div>
 						{/if}
 					</div>
 				</div>
