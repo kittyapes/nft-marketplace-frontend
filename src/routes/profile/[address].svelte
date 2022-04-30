@@ -20,6 +20,7 @@
 	import { userHasRole } from '$utils/auth/userRoles';
 	import type { UserData } from 'src/interfaces/userData';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
+	import { adaptTokenDataToNftCard } from '$utils/adapters/adaptTokenDataToNftCard';
 
 	const tabs = ['COLLECTED NFTS', 'CREATED NFTS', 'FAVORITES'];
 	let selectedTab = 'COLLECTED NFTS';
@@ -54,13 +55,15 @@
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
 
-	let createdNfts: [] = null;
+	let collectedNfts: [] = null;
 	const fetchCreatedNfts = async () => {
 		try {
 			const unfiltered = (await getUserNfts(address)).result;
-			createdNfts = unfiltered.filter((v) => v.token_uri);
+			collectedNfts = unfiltered.filter((v) => v.token_uri).map(adaptTokenDataToNftCard);
+
+			console.log(collectedNfts);
 		} catch {
-			createdNfts = [];
+			collectedNfts = [];
 		}
 	};
 
@@ -162,7 +165,7 @@
 
 	<div class="max-w-screen-xl mx-auto">
 		{#if selectedTab === 'COLLECTED NFTS'}
-			<NftList data={createdNfts} />
+			<NftList data={collectedNfts} />
 		{:else if selectedTab === 'CREATED NFTS'}
 			<NftList data={[]} />
 		{:else if selectedTab === 'ACTIVITY'}
