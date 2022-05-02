@@ -137,11 +137,7 @@
 	<!-- Left side -->
 	<div class="flex-grow">
 		<!-- Title -->
-		<h1 class="text-xl uppercase mt-8">
-			<span class="font-light italic">Step 2: Creating drop</span>
-			|
-			<span class="gradient-text font-bold italic pr-1">{$newDropProperties.quantity}</span>
-		</h1>
+		<h1 class="text-xl uppercase mt-8 font-light italic">Step 1: Creating your drop</h1>
 
 		<hr class="separator mt-8" />
 
