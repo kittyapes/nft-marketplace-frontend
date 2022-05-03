@@ -180,13 +180,10 @@
 		<hr class="separator mt-12" />
 
 		<!-- NFT details -->
-		<div class="flex space-x-32 mt-8">
+		<div class="flex space-x-20 mt-8">
 			<div class="w-1/2">
 				<div class="uppercase italic text-[#1D1D1DB2]">Create name</div>
 				<input type="text" class="input w-full mt-2 font-semibold" bind:value={nftName} />
-
-				<div class="uppercase italic text-[#1D1D1DB2] mt-8">NFT Quantity</div>
-				<input type="number" class="input w-full mt-2 font-semibold input-hide-controls" bind:value={nftQuantity} min="1" />
 
 				<div class="uppercase italic text-[#1D1D1DB2] mt-8">Collection</div>
 				<Dropdown options={[{ label: 'No collections.' }]} class="mt-2" btnClass="font-semibold" />
@@ -195,6 +192,10 @@
 			<div class="w-1/2">
 				<div class="uppercase italic text-[#1D1D1DB2]">Description</div>
 				<TextArea outline containerClass="mt-2 mr-8" maxChars={200} placeholder="Enter description..." bind:value={nftDescription} />
+				<div class="mr-8">
+					<div class="uppercase italic text-[#1D1D1DB2] mt-8 ">NFT Quantity</div>
+					<input type="number" class="input w-full mt-2font-semibold input-hide-controls" bind:value={nftQuantity} min="1" />
+				</div>
 			</div>
 		</div>
 
