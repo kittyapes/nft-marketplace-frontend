@@ -6,7 +6,6 @@
 	import { fade } from 'svelte/transition';
 	import Back from '$icons/back_.svelte';
 	import { goBack } from '$utils/navigation';
-	import { newDropProperties } from '$stores/create';
 
 	const listingTypes = [
 		{
@@ -21,14 +20,14 @@
 			title: 'Auction',
 			imgUrl: '/img/create/drop-type-auction.svg',
 			hoverText: 'Allow other users to make bids on your NFT.',
-			show: () => $newDropProperties.quantity === 'single'
+			show: () => false
 		},
 		{
 			listingType: 'raffle',
 			title: 'Raffle',
 			imgUrl: '/img/create/drop-type-raffle.svg',
 			hoverText: 'No description',
-			show: () => $newDropProperties.quantity === 'single'
+			show: () => false
 		}
 	];
 
