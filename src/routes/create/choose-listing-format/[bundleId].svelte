@@ -47,7 +47,7 @@
 
 <hr class="separator" />
 
-<h1 class="italic font-light uppercase mt-8 text-xl">Step 3: Choose listing format</h1>
+<h1 class="italic font-light uppercase mt-8 text-xl">Step 2: Choose listing format</h1>
 
 <div class="font-poppins text-[#585858] mt-8 h-6">
 	{#if hoveredListingType}

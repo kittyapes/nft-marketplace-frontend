@@ -101,9 +101,7 @@
 <div class="flex mb-32">
 	<div class="flex-grow">
 		<h1 class="text-xl uppercase mt-8">
-			<span class="italic font-light">Step 4: Setting details</span>
-			|
-			<span class="gradient-text font-bold italic pr-1">{$newDropProperties.quantity}</span>
+			<span class="italic font-light">Step 3: Setting details</span>
 			|
 			<span class="gradient-text font-bold italic pr-1">{$newDropProperties.listingType}</span>
 		</h1>
