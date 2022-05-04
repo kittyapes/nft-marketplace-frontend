@@ -26,7 +26,7 @@
 	let nftQuantity: number;
 	let nftCollection = 'No collection';
 	let nftDescription = '';
-	let nftImagePreview = '';
+	let nftAssetPreview = '';
 	let nftThumbnailPreview = '';
 	let fileBlob;
 	let animationBlob;
@@ -80,7 +80,8 @@
 			title: nftName,
 			nftIds: [nftId],
 			nftAmounts: [nftQuantity],
-			image: fileBlob
+			image: fileBlob,
+			animation: animationBlob
 		});
 
 		if (!createdBundleRes) {
@@ -122,7 +123,7 @@
 	}
 
 	$: nftQuantityValid = nftQuantity > 0;
-	$: inputValid = nftName && nftCollection && nftImagePreview && nftThumbnailPreview && nftQuantityValid;
+	$: inputValid = nftName && nftCollection && nftAssetPreview && nftThumbnailPreview && nftQuantityValid;
 </script>
 
 <!-- Back button -->
@@ -158,7 +159,7 @@
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
-				<DragDropImage bind:blob={fileBlob} text={dragDropText} bind:previewSrc={nftImagePreview} />
+				<DragDropImage bind:blob={animationBlob} text={dragDropText} bind:previewSrc={nftAssetPreview} acceptedType="video" />
 			</div>
 		</div>
 
@@ -173,7 +174,7 @@
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
-				<DragDropImage bind:blob={animationBlob} text={dragDropText} bind:previewSrc={nftThumbnailPreview} />
+				<DragDropImage bind:blob={fileBlob} text={dragDropText} bind:previewSrc={nftThumbnailPreview} />
 			</div>
 		</div>
 
@@ -209,6 +210,6 @@
 	<!-- Right side -->
 	<div class="separator border-0 border-l p-8 w-80">
 		<div class="uppercase italic text-xl mb-4">Preview</div>
-		<NftCard name={nftName || 'N/A'} collectionName={nftCollection} imageUrl={nftImagePreview} />
+		<NftCard name={nftName || 'N/A'} collectionName={nftCollection} imageUrl={nftAssetPreview} />
 	</div>
 </div>

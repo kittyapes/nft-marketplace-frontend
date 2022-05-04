@@ -18,7 +18,7 @@
 
 	function handleClick() {
 		addUrlParam('id', options.id);
-
+		console.log(options);
 		options.getUniversalPopupOptions().then((universalPopupOptions) => {
 			setPopup(NftDisplayPopup, {
 				props: { options: universalPopupOptions },
