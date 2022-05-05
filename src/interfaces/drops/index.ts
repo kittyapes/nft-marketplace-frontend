@@ -1,6 +1,7 @@
 export type ListingPropName =
 	| 'price'
 	| 'date'
+	| 'quantity'
 	| 'listingDate'
 	| 'reservePrice'
 	| 'auctionDate'

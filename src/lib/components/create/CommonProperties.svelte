@@ -12,7 +12,9 @@
 	};
 
 	export let propNames: ListingPropName[] = [];
-	export let propValues: { [key: string]: any } = {};
+	export let propValues: { [key: string]: any } = {
+		quantity: 1
+	};
 	export let isValid: boolean = false;
 
 	function is(propName: ListingPropName) {
@@ -70,6 +72,13 @@
 				<div class="h-6 mb-2" />
 				<!-- <input type="text" bind:value={propValues.date} placeholder="DD/MM/YYYY" /> -->
 				<Datepicker id="datepicker-component" bind:value={propValues.date} />
+			</label>
+		{/if}
+
+		{#if is('quantity')}
+			<label for="price-component">
+				<span>Quantity</span>
+				<input type="number" class="input h-12 w-full input-hide-controls" bind:value={propValues['quantity']} />
 			</label>
 		{/if}
 

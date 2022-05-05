@@ -11,7 +11,7 @@
 	import { postCreateListing } from '$utils/api/listing';
 	import { page } from '$app/stores';
 	import { currentUserAddress } from '$stores/wallet';
-	import { makeErrorHandler, notifyError, notifySuccess } from '$utils/toast';
+	import { notifyError, notifySuccess } from '$utils/toast';
 	import Loader from '$icons/loader.svelte';
 	import { contractCreateListing, LISTING_TYPE } from '$utils/contracts/listing';
 	import { writable } from 'svelte/store';
@@ -20,7 +20,7 @@
 	import { getBundle } from '$utils/api/bundle';
 
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
-		sale: ['price', 'date'],
+		sale: ['price', 'date', 'quantity'],
 		auction: ['price', 'auctionDate', 'reservePrice', 'auctionDuration'],
 		raffle: ['entryTickets', 'ticketPrice', 'price', 'totalTickets', 'date', 'raffleDuration'],
 		'limited-edition': ['entryTickets', 'price', 'claimsBegin', 'claimsDuration'],
