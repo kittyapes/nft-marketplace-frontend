@@ -53,7 +53,7 @@ export function setPopup(component: any, options: PopupOptions = defaultOptions)
 	const handler: PopupHandler = {
 		id,
 		close: () => {
-			const canBeClosed = options.onClose ? options.onClose() : true;
+			const canBeClosed = options.onClose ? options.onClose() !== false : true;
 
 			console.log({ canBeClosed });
 

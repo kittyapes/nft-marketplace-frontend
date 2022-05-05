@@ -38,10 +38,17 @@ export async function postCreateListing(options: CreateListingOptions) {
 export interface Listing {
 	_id: string;
 	drop: Bundle;
+	creator: string;
 }
 
 export async function getListings() {
 	const res = await axios.get(getApiUrl('latest', 'listings/search'), { params: { limit: 500 } });
 
 	return res.data.data as Listing[];
+}
+
+export async function getListing(id: string) {
+	const res = await axios.get(getApiUrl('latest', 'listings/' + id));
+
+	return res.data.data as Listing;
 }

@@ -27,6 +27,12 @@
 
 	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
 	let imageFailedToLoad = false;
+
+	let showCreate = false;
+
+	profileData.subscribe((profile) => {
+		showCreate = profile && profile.status === 'VERIFIED';
+	});
 </script>
 
 <div class="flex items-center h-16 pl-8 gap-x-8 fixed w-full z-10 bg-white drop-shadow-lg">
@@ -44,15 +50,17 @@
 	<a id="marketplace-link" href="/marketplace" class="relative font-semibold text-transparent uppercase text-md bg-gradient-to-r bg-clip-text from-color-purple to-color-blue">Marketplace</a>
 
 	<!-- Staking -->
-	<a href="/stake" class="relative font-semibold uppercase text-md">Staking</a>
+	<a href="/stake" class="relative font-semibold uppercase text-md" class:-mr-8={!showCreate && showProfileButton}>Staking</a>
 
 	<!-- Airdrop HIDDEN FOR NOW -->
 	<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
 
 	<!-- Create -->
-	<button on:click={() => goto('/create')} class="relative grid h-full px-16 font-semibold text-white uppercase text-md bg-gradient-to-r from-color-purple to-color-blue place-items-center">
-		Create
-	</button>
+	{#if showCreate}
+		<button on:click={() => goto('/create')} class="relative grid h-full px-16 font-semibold text-white uppercase text-md bg-gradient-to-r from-color-purple to-color-blue place-items-center">
+			Create
+		</button>
+	{/if}
 
 	<!-- Profile -->
 	<div class="relative h-full flex items-center pr-4">
