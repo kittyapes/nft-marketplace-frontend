@@ -42,7 +42,6 @@
 	};
 
 	let createTable = async () => {
-		console.log('hello');
 		if (mode === 'USER' && (await createUserTable())) {
 			await tick();
 			loaded = true;
