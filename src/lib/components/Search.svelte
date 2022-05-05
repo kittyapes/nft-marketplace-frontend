@@ -83,7 +83,6 @@
 
 	$: if (query) {
 		if (isAuthTokenExpired($currentUserAddress)) {
-			console.log('??');
 			setPopup(AuthLoginPopup, { props: { onLoginSuccess: () => {}, adapter: userAuthLoginPopupAdapter } });
 		} else {
 			searching = true;
