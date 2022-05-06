@@ -22,7 +22,7 @@
 	import { checkUsernameAvailability, EditableProfileData, updateProfile } from '$utils/api/profile';
 	import { inputize } from '$utils/misc/inputize';
 	import { setPopup } from '$utils/popup';
-	import { notifyError, notifySuccess } from '$utils/toast';
+	import { httpErrorHandler, notifyError, notifySuccess } from '$utils/toast';
 	import { isEmail } from '$utils/validator/isEmail';
 	import checkIfWalletConnected from '$utils/wallet/checkIfWalletConnected';
 	import { cloneDeep, debounce } from 'lodash-es';
@@ -78,11 +78,12 @@
 					// Once done, check if the user can claim free NFT
 				});
 		} catch (err) {
-			notifyError('Could not save new profile data.');
+			httpErrorHandler(err);
 			console.error(err);
 			isSaving = false;
 		}
 
+		// Why? - Jakub
 		await hasClaimedFreeNft($currentUserAddress);
 	}
 

@@ -15,8 +15,12 @@
 	import dayjs from 'dayjs';
 	import UserManage from '$icons/user-manage.svelte';
 	import Filters from '$icons/filters.svelte';
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import EntryRole from '$lib/components/management/render-components/EntryRole.svelte';
+	import { isAuthTokenExpired } from '$utils/auth/token';
+	import { setPopup } from '$utils/popup';
+	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
+	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
@@ -29,8 +33,7 @@
 		await getUsers()
 			.then((res) => (users = res))
 			.catch((err) => console.log(err));
-		if (users.length === 0) return false;
-		console.log(users);
+		if (!users.length) return false;
 		return true;
 	};
 
@@ -68,7 +71,18 @@
 	};
 
 	$: if ($currentUserAddress && mode) {
-		createTable();
+		if (isAuthTokenExpired($currentUserAddress)) {
+			setPopup(AuthLoginPopup, {
+				props: {
+					onLoginSuccess: () => {
+						createTable();
+					},
+					adapter: userAuthLoginPopupAdapter
+				}
+			});
+		} else {
+			createTable();
+		}
 	}
 
 	$: if (users)
