@@ -5,6 +5,7 @@ import axios from 'axios';
 import { sha512 } from 'hash.js';
 import type { UserData } from 'src/interfaces/userData';
 import { get } from 'svelte/store';
+import { getApiUrl } from '.';
 
 export interface LoginHistoryEntry {
 	address: string;
@@ -19,7 +20,7 @@ export interface LoginHistoryEntry {
  * @returns Profile data or `null` in case of an error.
  */
 export async function fetchProfileData(address: string) {
-	const res = await axios.get(api + '/v1/accounts/' + address).catch(() => null);
+	const res = await axios.get(getApiUrl('latest', 'accounts/' + address)).catch(() => null);
 
 	if (!res) {
 		return null;

@@ -1,6 +1,6 @@
 import { getEnv } from '$utils/env';
 
-const LATEST = 27;
+const LATEST = 28;
 
 export type ApiVersion = 'latest' | `sprint-${number}`;
 

@@ -11,8 +11,7 @@ export const userRoles = derived(profileData, (data: UserData) => {
 	// No roles, API doesn't return an empty array.
 	if (!data.roles) return [];
 
-	// Returning an array because API currently returns a string.
-	return [data.roles];
+	return data.roles;
 });
 
 /**
