@@ -20,14 +20,8 @@
 	import { getBundle } from '$utils/api/bundle';
 
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
-		sale: ['price', 'date', 'quantity'],
-		auction: ['price', 'auctionDate', 'reservePrice', 'auctionDuration'],
-		raffle: ['entryTickets', 'ticketPrice', 'price', 'totalTickets', 'date', 'raffleDuration'],
-		'limited-edition': ['entryTickets', 'price', 'claimsBegin', 'claimsDuration'],
-		'queue-drop': ['price', 'cutPrice', 'preQueueOpens', 'queueDuration'],
-		gacha: ['gachaContract']
+		sale: ['price', 'startDate', 'quantity', 'duration']
 	};
-
 	// Fetch NFT data on mount to show a preview
 	const fetchedNftData = writable<GetNftResponse>(null);
 
@@ -108,7 +102,8 @@
 
 		<hr class="separator mt-4" />
 
-		<CommonProperties class="mt-8" propNames={typeToProperties[$newDropProperties.listingType]} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} />
+		<!-- <CommonProperties class="mt-8" propNames={typeToProperties[$newDropProperties.listingType]} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} /> -->
+		<CommonProperties class="mt-8" propNames={typeToProperties['sale']} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} />
 
 		<!-- <hr class="separator mt-8" /> -->
 

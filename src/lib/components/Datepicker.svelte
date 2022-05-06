@@ -5,7 +5,6 @@
 	import ChevronRight from '$icons/chevron-right.svelte';
 	import Time from '$icons/time.svelte';
 	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
-	import { notifyWarning } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import isoWeek from 'dayjs/plugin/isoWeek.js';
 	import { onMount } from 'svelte';
@@ -16,6 +15,7 @@
 	export let id = '';
 	export let placeholder = 'Select date & time';
 	export let value = dayjs();
+	export let dateOnly = false;
 
 	let open = false;
 	let section: 'date' | 'time' = 'date';
@@ -39,19 +39,15 @@
 	}
 
 	function handleDone() {
-		selectedDate = selectedDate.hour(hours).minute(minutes);
+		if (dateOnly) {
+			selectedDate = selectedDate.set('hour', 0).set('minute', 0).set('second', 0).set('millisecond', 0);
+		} else {
+			selectedDate = selectedDate.hour(hours).minute(minutes);
 
-		if (isPm) {
-			selectedDate = selectedDate.add(12, 'hour');
+			if (isPm) {
+				selectedDate = selectedDate.add(12, 'hour');
+			}
 		}
-
-		// if (selectedDate.isBefore(dayjs(), 'minute')) {
-		// 	inputText = '';
-		// 	notifyWarning('Invalid date');
-		// } else {
-		// 	inputText = formatDatetimeFromISO(selectedDate);
-		// 	open = false;
-		// }
 
 		inputText = formatDatetimeFromISO(selectedDate);
 		open = false;
@@ -108,25 +104,27 @@
 		<div class="absolute top-0 right-0 w-full bg-white flex flex-col rounded-xl translate-y-14 p-4 z-10" style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);">
 			<!-- use:outsideClickCallback={{ cb: () => (open = false) }} -->
 			<!-- Date/Time switch -->
-			<div class="border-color-black border rounded-xl h-12 grid grid-cols-2 overflow-hidden flex-shrink-0">
-				<button
-					class="uppercase font-semibold transition flex items-center justify-center
+			{#if !dateOnly}
+				<div class="border-color-black border rounded-xl h-12 grid grid-cols-2 overflow-hidden flex-shrink-0">
+					<button
+						class="uppercase font-semibold transition flex items-center justify-center
                     {section === 'date' ? 'bg-black text-white' : ''}"
-					on:click={() => (section = 'date')}
-				>
-					<Calendar />
-					<span class="ml-2">Date</span>
-				</button>
+						on:click={() => (section = 'date')}
+					>
+						<Calendar />
+						<span class="ml-2">Date</span>
+					</button>
 
-				<button
-					class="uppercase font-semibold transition flex items-center justify-center
+					<button
+						class="uppercase font-semibold transition flex items-center justify-center
                     {section === 'time' ? 'bg-black text-white' : ''}"
-					on:click={() => (section = 'time')}
-				>
-					<Time />
-					<span class="ml-2">Time</span>
-				</button>
-			</div>
+						on:click={() => (section = 'time')}
+					>
+						<Time />
+						<span class="ml-2">Time</span>
+					</button>
+				</div>
+			{/if}
 
 			{#if section === 'date'}
 				<div class="flex mt-4">
@@ -161,7 +159,11 @@
 					{/each}
 				</div>
 
-				<button class="btn btn-outline btn-rounded mt-4" on:click={() => (section = 'time')}>Select Time</button>
+				{#if dateOnly}
+					<button class="btn btn-black btn-rounded mt-4" on:click={handleDone}>Confirm</button>
+				{:else}
+					<button class="btn btn-outline btn-rounded mt-4" on:click={() => (section = 'time')}>Select Time</button>
+				{/if}
 			{/if}
 
 			{#if section === 'time'}
