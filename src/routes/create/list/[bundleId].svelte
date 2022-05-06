@@ -39,17 +39,20 @@
 	async function listForSale() {
 		isListing = true;
 
+		const duration = listingPropValues.duration.value * 60 * 60 * 24;
+
 		// Create listing on the server
 		const apiCreateListingRes = await postCreateListing({
 			bundleId: $page.params.bundleId,
 			creator: $currentUserAddress,
 			listingType: 'UNIQUE_FIXED_PRICE',
 			price: listingPropValues.price,
-			startedAt: listingPropValues.date
+			startedAt: listingPropValues.date,
+			duration: duration.toString()
 		});
 
-		if (!apiCreateListingRes) {
-			notifyError('Failed to create listing.');
+		if (apiCreateListingRes.data.error) {
+			notifyError(apiCreateListingRes.data.message);
 			isListing = false;
 			return;
 		}
@@ -61,7 +64,7 @@
 			listingType: LISTING_TYPE.FIXED_PRICE,
 			startingPrice: listingPropValues.price,
 			endingPrice: listingPropValues.price,
-			duration: 60 * 60 * 24,
+			duration: duration,
 			quantity: 1
 		});
 

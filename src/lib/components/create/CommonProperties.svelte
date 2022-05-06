@@ -8,7 +8,7 @@
 
 	const propValidators: Record<string, (s) => boolean> = {
 		price: isPrice,
-		date: (v) => v
+		startDate: (v) => v
 	};
 
 	export let propNames: ListingPropName[] = [];
@@ -94,7 +94,7 @@
 		{#if is('duration')}
 			<label for="">
 				<span>Duration</span>
-				<Dropdown options={durationOptions} bind:value={propValues['duration']} />
+				<Dropdown options={durationOptions} bind:selected={propValues['duration']} />
 			</label>
 		{/if}
 

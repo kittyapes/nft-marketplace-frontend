@@ -15,8 +15,8 @@ export interface CreateListingOptions {
 }
 
 export async function postCreateListing(options: CreateListingOptions) {
-	try {
-		const res = await axios.post(
+	return await axios
+		.post(
 			getApiUrl('latest', 'listings'),
 			{
 				dropId: options.bundleId,
@@ -27,12 +27,8 @@ export async function postCreateListing(options: CreateListingOptions) {
 				startedAt: options.startedAt
 			},
 			getAxiosConfig()
-		);
-
-		return res.data;
-	} catch (error) {
-		return null;
-	}
+		)
+		.catch((e) => e.response);
 }
 
 export interface Listing {
