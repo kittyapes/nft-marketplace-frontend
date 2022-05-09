@@ -23,7 +23,7 @@
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
 	let nftName = '';
-	let nftQuantity: number;
+	let nftQuantity: number = 1;
 	let nftCollection = 'No collection';
 	let nftDescription = '';
 	let nftImagePreview = '';
