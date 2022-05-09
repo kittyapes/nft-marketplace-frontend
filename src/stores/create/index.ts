@@ -1,8 +1,7 @@
-import type { DropListingType } from '$lib/interfaces/drops';
+import type { DropListingType } from '$interfaces/drops/';
 import { writable } from 'svelte/store';
 
 interface NewDropProperties {
-	quantity?: 'single' | 'multiple';
 	listingType?: DropListingType;
 }
 

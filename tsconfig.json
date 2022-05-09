@@ -40,7 +40,9 @@
 			"$contracts": ["src/utils/contracts"],
 			"$contracts/*": ["src/utils/contracts/*"],
 			"$actions": ["src/actions"],
-			"$actions/*": ["src/actions/*"]
+			"$actions/*": ["src/actions/*"],
+			"$interfaces": ["src/interfaces"],
+			"$interfaces/*": ["src/interfaces/*"]
 		}
 	},
 	"include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.ts", "src/**/*.svelte"],

@@ -11,7 +11,7 @@
 	import { postCreateListing } from '$utils/api/listing';
 	import { page } from '$app/stores';
 	import { currentUserAddress } from '$stores/wallet';
-	import { makeErrorHandler, notifyError, notifySuccess } from '$utils/toast';
+	import { notifyError, notifySuccess } from '$utils/toast';
 	import Loader from '$icons/loader.svelte';
 	import { contractCreateListing, LISTING_TYPE } from '$utils/contracts/listing';
 	import { writable } from 'svelte/store';
@@ -20,14 +20,8 @@
 	import { getBundle } from '$utils/api/bundle';
 
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
-		sale: ['price', 'date'],
-		auction: ['price', 'auctionDate', 'reservePrice', 'auctionDuration'],
-		raffle: ['entryTickets', 'ticketPrice', 'price', 'totalTickets', 'date', 'raffleDuration'],
-		'limited-edition': ['entryTickets', 'price', 'claimsBegin', 'claimsDuration'],
-		'queue-drop': ['price', 'cutPrice', 'preQueueOpens', 'queueDuration'],
-		gacha: ['gachaContract']
+		sale: ['price', 'startDate', 'quantity', 'duration']
 	};
-
 	// Fetch NFT data on mount to show a preview
 	const fetchedNftData = writable<GetNftResponse>(null);
 
@@ -45,17 +39,20 @@
 	async function listForSale() {
 		isListing = true;
 
+		const duration = listingPropValues.duration.value * 60 * 60 * 24;
+
 		// Create listing on the server
 		const apiCreateListingRes = await postCreateListing({
 			bundleId: $page.params.bundleId,
 			creator: $currentUserAddress,
 			listingType: 'UNIQUE_FIXED_PRICE',
 			price: listingPropValues.price,
-			startedAt: listingPropValues.date
+			startedAt: listingPropValues.date,
+			duration: duration.toString()
 		});
 
-		if (!apiCreateListingRes) {
-			notifyError('Failed to create listing.');
+		if (apiCreateListingRes.data.error) {
+			notifyError(apiCreateListingRes.data.message);
 			isListing = false;
 			return;
 		}
@@ -67,7 +64,7 @@
 			listingType: LISTING_TYPE.FIXED_PRICE,
 			startingPrice: listingPropValues.price,
 			endingPrice: listingPropValues.price,
-			duration: 60 * 60 * 24,
+			duration: duration,
 			quantity: 1
 		});
 
@@ -101,16 +98,15 @@
 <div class="flex mb-32">
 	<div class="flex-grow">
 		<h1 class="text-xl uppercase mt-8">
-			<span class="italic font-light">Step 4: Setting details</span>
-			|
-			<span class="gradient-text font-bold italic pr-1">{$newDropProperties.quantity}</span>
+			<span class="italic font-light">Step 3: Setting details</span>
 			|
 			<span class="gradient-text font-bold italic pr-1">{$newDropProperties.listingType}</span>
 		</h1>
 
 		<hr class="separator mt-4" />
 
-		<CommonProperties class="mt-8" propNames={typeToProperties[$newDropProperties.listingType]} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} />
+		<!-- <CommonProperties class="mt-8" propNames={typeToProperties[$newDropProperties.listingType]} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} /> -->
+		<CommonProperties class="mt-8" propNames={typeToProperties['sale']} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} />
 
 		<!-- <hr class="separator mt-8" /> -->
 
