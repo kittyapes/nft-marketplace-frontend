@@ -205,6 +205,6 @@
 	<!-- Right side -->
 	<div class="separator border-0 border-l p-8 w-80">
 		<div class="uppercase italic text-xl mb-4">Preview</div>
-		<NftCard name={nftName || 'N/A'} collectionName={nftCollection} imageUrl={nftImagePreview} />
+		<NftCard options={{ id: null, title: nftName, imageUrl: nftImagePreview }} />
 	</div>
 </div>
