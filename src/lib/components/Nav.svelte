@@ -23,7 +23,9 @@
 		window.addEventListener('click', closeModalIfNotInElement);
 	});
 
-	$: displayedUsername = $profileData?.username.includes('great_gatsby') ? 'Guest User' : $profileData?.username;
+	// had to be changed to get rid of great_gatsby, needs further improvements
+	/*$: displayedUsername = $profileData?.username.includes('great_gatsby') ? 'Guest User' : $profileData?.username;*/
+	$: displayedUsername = $profileData?.username;
 
 	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
 	let imageFailedToLoad = false;
