@@ -26,6 +26,8 @@
 			});
 		});
 	}
+
+	function favoriteNFT() {}
 </script>
 
 <div class="relative p-4 overflow-hidden border cursor-pointer rounded-2xl" in:fade on:click={handleClick}>
@@ -40,7 +42,9 @@
 
 		<div class="flex-grow" />
 
-		<Heart />
+		<div class="btn text-white" on:click={favoriteNFT}>
+			<Heart />
+		</div>
 		<!-- TODO Likes -->
 		<div class="font-medium select-none">{options?.likes || 0}</div>
 	</div>
