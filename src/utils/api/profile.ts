@@ -58,7 +58,7 @@ async function hashImage(address: string, file: Blob) {
 }
 
 export async function checkUsernameAvailability(username: string) {
-	const res = await axios.get(getApiUrl('latest', `users/accounts/existed?username=${username}`));
+	const res = await axios.get(getApiUrl('latest', `users/existed?username=${username}`));
 
 	return !res.data.data.username;
 }
