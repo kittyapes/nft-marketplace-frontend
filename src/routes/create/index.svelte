@@ -23,7 +23,7 @@
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
 	let nftName = '';
-	let nftQuantity: number;
+	let nftQuantity: number = 1;
 	let nftCollection = 'No collection';
 	let nftDescription = '';
 	let nftAssetPreview = '';
@@ -206,6 +206,6 @@
 	<!-- Right side -->
 	<div class="separator border-0 border-l p-8 w-80">
 		<div class="uppercase italic text-xl mb-4">Preview</div>
-		<NftCard name={nftName || 'N/A'} collectionName={nftCollection} imageUrl={nftAssetPreview} />
+		<NftCard options={{ id: null, title: nftName, imageUrl: nftAssetPreview }} />
 	</div>
 </div>

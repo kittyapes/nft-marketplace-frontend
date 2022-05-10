@@ -17,6 +17,8 @@
 	const toggleDots = () => (dotsOpened = !dotsOpened);
 
 	function handleClick() {
+		if (!options.getUniversalPopupOptions) return;
+
 		addUrlParam('id', options.id);
 		console.log(options);
 		options.getUniversalPopupOptions().then((universalPopupOptions) => {
@@ -28,7 +30,7 @@
 	}
 </script>
 
-<div class="relative p-4 overflow-hidden border cursor-pointer rounded-2xl" in:fade on:click={handleClick}>
+<div class="relative p-4 overflow-hidden border rounded-2xl" in:fade on:click={handleClick} class:cursor-pointer={options?.getUniversalPopupOptions}>
 	<div class="flex items-center gap-x-2">
 		<!-- Remove && false to show options -->
 		<!-- Owned by user -->
