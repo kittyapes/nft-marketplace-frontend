@@ -15,23 +15,24 @@
 	import Loader from '$icons/loader.svelte';
 	import { contractCreateListing, LISTING_TYPE } from '$utils/contracts/listing';
 	import { writable } from 'svelte/store';
-	import { getNft, GetNftResponse } from '$utils/api/nft';
+	import { GetNftResponse } from '$utils/api/nft';
 	import { onMount } from 'svelte';
-	import { getBundle } from '$utils/api/bundle';
+	import { getBundle, GetBundleResponse } from '$utils/api/bundle';
 
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
 		sale: ['price', 'startDate', 'quantity', 'duration']
 	};
 	// Fetch NFT data on mount to show a preview
-	const fetchedNftData = writable<GetNftResponse>(null);
+	const fetchedBundleData = writable<GetBundleResponse>(null);
 
 	onMount(async () => {
+		console.log('bundleId', $page.params.bundleId);
+
 		const bundleRes = await getBundle($page.params.bundleId);
-		const nftRes = await getNft(bundleRes.nft_ids[0]);
 
-		fetchedNftData.set(nftRes);
+		console.log(bundleRes);
 
-		console.log(nftRes);
+		fetchedBundleData.set(bundleRes);
 	});
 
 	let isListing = false;
@@ -125,6 +126,6 @@
 
 	<div class="separator border-0 border-l p-8 w-80">
 		<div class="uppercase italic text-xl mb-4">Preview</div>
-		<NftCard name={$fetchedNftData?.name || 'N/A'} collectionName="No collection" imageUrl={$fetchedNftData?.imageUrl} />
+		<NftCard options={{ title: $fetchedBundleData?.title, imageUrl: $fetchedBundleData?.imageUrl, id: null }} />
 	</div>
 </div>
