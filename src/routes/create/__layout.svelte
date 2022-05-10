@@ -2,13 +2,10 @@
 	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import Back from '$icons/back_.svelte';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import { newDropProperties } from '$stores/create';
-	import { goBack } from '$utils/navigation';
 
 	const pathToChecks = {
-		'/create/create-drop': () => $newDropProperties.quantity,
 		'/create/choose-listing-format': () => $newDropProperties.quantity,
 		'/create/list': () => $newDropProperties.quantity && $newDropProperties.listingType
 	};

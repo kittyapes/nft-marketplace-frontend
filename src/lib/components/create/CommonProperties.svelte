@@ -3,16 +3,18 @@
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
 	import type { ListingPropName } from 'src/interfaces/drops';
 	import { isPrice } from '$utils/validator/isPrice';
-	import DurationSelect from '../DurationSelect.svelte';
 	import RadioGroup from '../RadioGroup.svelte';
+	import Dropdown from '../Dropdown.svelte';
 
 	const propValidators: Record<string, (s) => boolean> = {
 		price: isPrice,
-		date: (v) => v
+		startDate: (v) => v
 	};
 
 	export let propNames: ListingPropName[] = [];
-	export let propValues: { [key: string]: any } = {};
+	export let propValues: { [key: string]: any } = {
+		quantity: 1
+	};
 	export let isValid: boolean = false;
 
 	function is(propName: ListingPropName) {
@@ -26,6 +28,16 @@
 	}, {});
 
 	$: isValid = Object.entries(validations).every(([, isValid]) => isValid);
+
+	// Duration
+	const durationOptions = [
+		{ label: '1 day', value: 1 },
+		{ label: '3 days', value: 3 },
+		{ label: '7 days', value: 7 },
+		{ label: '1 month', value: 30 },
+		{ label: '3 months', value: 90 },
+		{ label: '6 months', value: 180 }
+	];
 </script>
 
 <div class="{$$props.class} grid lg:grid-cols-2 gap-x-16 gap-y-8 pr-8">
@@ -65,23 +77,24 @@
 			</label>
 		{/if}
 
-		{#if is('date')}
+		{#if is('startDate')}
 			<label for="datepicker-component">
-				<div class="h-6 mb-2" />
-				<!-- <input type="text" bind:value={propValues.date} placeholder="DD/MM/YYYY" /> -->
-				<Datepicker id="datepicker-component" bind:value={propValues.date} />
+				<span>Start Date</span>
+				<Datepicker id="datepicker-component" dateOnly bind:value={propValues['startDate']} />
 			</label>
 		{/if}
 
-		<!-- {#if is('listingDate')}{/if} -->
+		{#if is('quantity')}
+			<label for="price-component">
+				<span>Quantity</span>
+				<input type="number" class="input h-12 w-full input-hide-controls" bind:value={propValues['quantity']} />
+			</label>
+		{/if}
 
-		{#if is('auctionDate')}
-			<label for="datepicker-component">
-				<span class="!font-medium !not-italic">
-					Date of auction <span class="gradient-text">(Optional)</span>
-				</span>
-				<!-- <input type="text" bind:value={propValues.date} placeholder="DD/MM/YYYY" /> -->
-				<Datepicker id="datepicker-component" />
+		{#if is('duration')}
+			<label for="">
+				<span>Duration</span>
+				<Dropdown options={durationOptions} bind:selected={propValues['duration']} />
 			</label>
 		{/if}
 
@@ -91,36 +104,6 @@
 				<TokenDropdown id="reserve-price-component" bind:value={propValues.reservePrice} placeholder="5.00" />
 			</label>
 		{/if}
-
-		{#if is('auctionDuration')}
-			<label for="auction-duration-component">
-				<span>Auction duration</span>
-				<DurationSelect id="auction-duration-component" bind:seconds={propValues.auctionDuration} />
-			</label>
-		{/if}
-
-		{#if is('raffleDuration')}
-			<label for="raffle-duration-component">
-				<span>Raffle Duration</span>
-				<DurationSelect id="raffle-duration-component" />
-			</label>
-		{/if}
-
-		<!-- {#if is('claimsBegin')}{/if} -->
-
-		<!-- {#if is('claimsDuration')}{/if} -->
-
-		<!-- {#if is('cutPrice')}{/if} -->
-
-		<!-- {#if is('preQueueOpens')}{/if} -->
-
-		<!-- {#if is('queueDuration')}{/if} -->
-
-		<!-- {#if is('gachaContract')}{/if} -->
-
-		<!-- {#if is('dateOfRelease')}{/if} -->
-
-		<!-- {#if is('initialPrice')}{/if} -->
 	{/key}
 </div>
 

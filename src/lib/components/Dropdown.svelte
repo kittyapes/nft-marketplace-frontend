@@ -3,7 +3,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let options: { label: string; value?: string }[];
+	export let options: { label: string; value?: any }[];
 	export let btnClass = '';
 
 	$: if (!options?.length) {
