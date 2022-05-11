@@ -11,7 +11,13 @@
 		if (props.role === 'superadmin') localProps.role = 'sadmin';
 	}
 
-	let handleSelect = (event: CustomEvent) => {};
+	let handleSelect = (event: CustomEvent) => {
+		if (event.detail.options?.label === 'admin') {
+			//promote to admin
+		} else if (event.detail.options?.label === 'verified') {
+			//promote to verified
+		}
+	};
 </script>
 
 <ColumnComponentContainer>

@@ -112,9 +112,10 @@
 					role: u.roles[u.roles.length - 1],
 					color: getRoleColor(u.roles),
 					options: [
-						{ label: 'admin', checked: u.roles === 'admin', cb: (e) => e.roles === 'admin' },
-						{ label: 'verified', checked: u.status === 'VERIFIED', cb: (e) => e.status === 'VERIFIED' },
-						{ label: 'user', checked: false, cb: (e) => e.roles === 'user' }
+						{ label: 'admin', checked: u.roles === 'admin', cb: (e) => e.roles.includes('admin') },
+						{ label: 'verified', checked: u.status === 'VERIFIED', cb: (e) => e.status.includes() === 'verified' },
+						{ label: 'blogger', checked: false, cb: (e) => e.roles === 'blogger' },
+						{ label: 'inactive', checked: false, cb: (e) => e.roles === 'inactive' }
 					]
 				}))
 			},
@@ -139,7 +140,7 @@
 		];
 
 	let roleFilterOptions = [
-		{ label: 'All', cb: (e) => true },
+		{ label: 'All', cb: () => true },
 		{ label: 'Super Admin', cb: (e) => e.roles === 'superadmin' },
 		{ label: 'Admin', cb: (e) => e.roles === 'admin' },
 		{ label: 'Verified Creator', cb: (e) => e.status === 'VERIFIED' },
