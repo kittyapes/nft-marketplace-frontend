@@ -34,6 +34,7 @@
 			.then((res) => (users = res))
 			.catch((err) => console.log(err));
 		if (!users.length) return false;
+		console.log(users);
 		return true;
 	};
 
@@ -108,10 +109,9 @@
 				renderComponent: EntryRole,
 				renderComponentProps: users.map((u) => ({
 					id: u.address,
-					role: u.roles || 'User',
+					role: u.roles[u.roles.length - 1],
 					color: getRoleColor(u.roles),
 					options: [
-						{ label: 'sadmin', checked: u.roles === 'superadmin', cb: (e) => e.roles === 'superadmin' },
 						{ label: 'admin', checked: u.roles === 'admin', cb: (e) => e.roles === 'admin' },
 						{ label: 'verified', checked: u.status === 'VERIFIED', cb: (e) => e.status === 'VERIFIED' },
 						{ label: 'user', checked: false, cb: (e) => e.roles === 'user' }

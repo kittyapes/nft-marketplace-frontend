@@ -7,7 +7,7 @@ import { getApiUrl } from '..';
 export const getUsers = async (sortBy: string = 'ALPHABETIC', sortReversed: boolean = false) => {
     try {
         
-        const res = await axios.get(getApiUrl('latest', 'accounts'), { params: { sortBy, sortReversed }, ...getAxiosConfig()});
+        const res = await axios.get(getApiUrl('latest', 'users'), { params: { sortBy, sortReversed }, ...getAxiosConfig()});
         return res.data.data as UserData[];
     } catch {
         notifyError('Failed to fetch users');
