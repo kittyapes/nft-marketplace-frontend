@@ -6,6 +6,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import type { AuthLoginPopupAdapter, AuthLoginPopupState } from './authLoginPopupAdapter';
 	import type { PopupHandler } from '$utils/popup';
+	import { refreshProfileData } from '$stores/user';
 
 	const dispatch = createEventDispatcher();
 

@@ -114,7 +114,7 @@
 			isProfileImage = localData.imageUrl;
 			isCoverImage = localData.coverUrl;
 
-			if (data.username.includes('great_gatsby')) {
+			if (data.updatedAt === data.createdAt) {
 				firstTimeUser = true;
 			}
 		} catch (ex) {
@@ -161,7 +161,8 @@
 		} else {
 			await debouncedCheckUsernameAvailability(username);
 		}
-		$usernameValidLength = username?.length <= 25;
+
+		$usernameValidLength = $profileData.updatedAt === $profileData.createdAt ? true : username?.length <= 25;
 	});
 
 	$: usernameValid = $usernameAvailable && $usernameValidLength;
