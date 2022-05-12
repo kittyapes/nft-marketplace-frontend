@@ -58,7 +58,7 @@
 		} else if (role === 'admin') {
 			return 'gradient-text';
 		} else if (role === 'VERIFIED') {
-			return 'text-color-green';
+			return 'text-green-400';
 		}
 	};
 
@@ -93,7 +93,7 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETIC' },
 				renderComponent: EntryName,
-				renderComponentProps: users.map((u) => ({ name: u.username, imageUrl: u.imageUrl, address: u.address }))
+				renderComponentProps: users.map((u) => ({ name: u.username || '', imageUrl: u.imageUrl, address: u.address }))
 			},
 			{
 				gridSize: '3fr',
@@ -109,13 +109,13 @@
 				renderComponent: EntryRole,
 				renderComponentProps: users.map((u) => ({
 					id: u.address,
-					role: u.roles[u.roles.length - 1],
-					color: getRoleColor(u.roles),
+					role: u.status === 'VERIFIED' || (u.status === 'INACTIVATED' && (u.roles[u.roles.length - 1] !== 'admin' || 'superadmin')) ? u.status : u.roles[u.roles.length - 1],
+					color: getRoleColor(u.status === 'VERIFIED' || (u.status === 'INACTIVATED' && (u.roles[u.roles.length - 1] !== 'admin' || 'superadmin')) ? u.status : u.roles[u.roles.length - 1]),
 					options: [
-						{ label: 'admin', checked: u.roles === 'admin', cb: (e) => e.roles.includes('admin') },
-						{ label: 'verified', checked: u.status === 'VERIFIED', cb: (e) => e.status.includes() === 'verified' },
+						{ label: 'admin', checked: u.roles.includes('admin'), cb: (e) => e.roles.includes('admin') },
+						{ label: 'verified', checked: u.status === 'VERIFIED', cb: (e) => e.status === 'VERIFIED' },
 						{ label: 'blogger', checked: false, cb: (e) => e.roles === 'blogger' },
-						{ label: 'inactive', checked: false, cb: (e) => e.roles === 'inactive' }
+						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED' }
 					]
 				}))
 			},

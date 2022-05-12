@@ -8,7 +8,9 @@
 
 	$: if (props) {
 		localProps = props;
+		localProps.role = localProps.role.toLowerCase();
 		if (props.role === 'superadmin') localProps.role = 'sadmin';
+		else if (props.role === 'inactivated') localProps.role = 'inactive';
 	}
 
 	let handleSelect = (event: CustomEvent) => {
