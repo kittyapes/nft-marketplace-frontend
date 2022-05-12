@@ -162,7 +162,7 @@
 			await debouncedCheckUsernameAvailability(username);
 		}
 
-		$usernameValidLength = $profileData.updatedAt === $profileData.createdAt ? true : username?.length <= 25;
+		$usernameValidLength = $profileData?.updatedAt === $profileData?.createdAt ? true : username?.length <= 25;
 	});
 
 	$: usernameValid = $usernameAvailable && $usernameValidLength;
