@@ -6,10 +6,10 @@ import { get } from 'svelte/store';
 export function adaptListingToUniversalPopup(listing: Listing) {
 	const options: UniversalPopupOptions = {
 		id: listing._id,
-		imageUrl: listing.drop.imageUrl,
-		title: listing.drop.title,
-		description: listing.drop.description,
-		currentUserIsOwner: listing.creator === get(currentUserAddress)
+		imageUrl: listing.imageUrl,
+		title: listing.title,
+		description: listing.description,
+		currentUserIsOwner: listing.seller === get(currentUserAddress)
 	};
 
 	return options;

@@ -5,8 +5,8 @@ import { adaptListingToUniversalPopup } from './adaptListingToUniversalPopup';
 export function adaptListingToNftCard(listing: Listing) {
 	const options: NftCardOptions = {
 		id: listing._id,
-		title: listing.drop.title,
-		imageUrl: listing.drop.imageUrl,
+		title: listing.title,
+		imageUrl: listing.imageUrl,
 		getUniversalPopupOptions: async () => {
 			return adaptListingToUniversalPopup(listing);
 		}
