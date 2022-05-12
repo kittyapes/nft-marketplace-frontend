@@ -1,5 +1,6 @@
 import { api } from '$constants/api';
 import { appSigner } from '$stores/wallet';
+import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { htmlize } from '$utils/misc/htmlize';
 import axios from 'axios';
 import { sha512 } from 'hash.js';
@@ -52,7 +53,7 @@ async function hashImage(address: string, file: Blob) {
 	const formData = new FormData();
 	formData.append('image', file);
 
-	const res = await axios.post( getApiUrl('latest', `users/${address}/hashImage`), formData);
+	const res = await axios.post(getApiUrl('latest', `users/${address}/hashImage`), formData);
 
 	return res.data.data;
 }
@@ -120,5 +121,5 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	formData.append('artstation', data.artstation);
 	formData.append('signature', signature);
 
-	await axios.put(api + '/v1/accounts/' + address, formData);
+	await axios.put(getApiUrl('latest', `users/${address}`), formData, getAxiosConfig());
 }
