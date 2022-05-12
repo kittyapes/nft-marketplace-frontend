@@ -128,6 +128,8 @@
 
 	$: browser && $profileData && useProfileData($profileData);
 
+	$: console.log($profileData);
+
 	function isBioValid(bio: string) {
 		return bio && bio.trim().split(' ').length > 2;
 	}
@@ -162,7 +164,15 @@
 			await debouncedCheckUsernameAvailability(username);
 		}
 
-		$usernameValidLength = $profileData?.updatedAt === $profileData?.createdAt ? true : username?.length <= 25;
+		if (!username) return;
+
+		// Do not scream at the user about invalid username length if they are a first time user
+		// and have not yet entered a username
+		if ($profileData?.updatedAt === $profileData?.createdAt && username?.length === 0) {
+			$usernameValidLength = true;
+		} else {
+			$usernameValidLength = username.length <= 25;
+		}
 	});
 
 	$: usernameValid = $usernameAvailable && $usernameValidLength;
