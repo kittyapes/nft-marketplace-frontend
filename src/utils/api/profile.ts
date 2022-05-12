@@ -20,7 +20,7 @@ export interface LoginHistoryEntry {
  * @returns Profile data or `null` in case of an error.
  */
 export async function fetchProfileData(address: string) {
-	const res = await axios.get(getApiUrl('latest', 'users/' + address)).catch(() => null);
+	const res = await axios.get(getApiUrl('latest', 'accounts/' + address)).catch(() => null);
 
 	if (!res) {
 		return null;
@@ -52,7 +52,7 @@ async function hashImage(address: string, file: Blob) {
 	const formData = new FormData();
 	formData.append('image', file);
 
-	const res = await axios.post( getApiUrl('latest', `users/${address}/hashImage`), formData);
+	const res = await axios.post(getApiUrl('latest', `users/${address}/hashImage`), formData);
 
 	return res.data.data;
 }

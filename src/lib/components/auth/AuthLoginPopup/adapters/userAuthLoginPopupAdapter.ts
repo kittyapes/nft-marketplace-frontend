@@ -47,8 +47,7 @@ async function getAuthToken(address: string, signature: string) {
 	const data = getData(address);
 
 	data.signature = signature;
-	console.log(getApiUrl('latest', 'users/login'));
-	const responseData = await axios.post(getApiUrl('latest', 'users/login'), data).catch(() => null);
+	const responseData = await axios.post(getApiUrl('latest', 'accounts/login'), data).catch(() => null);
 	const token = responseData?.data.data.token.token;
 
 	return token;
