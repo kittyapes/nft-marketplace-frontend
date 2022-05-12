@@ -59,6 +59,8 @@
 			return 'gradient-text';
 		} else if (role === 'VERIFIED') {
 			return 'text-green-400';
+		} else if (role === 'INACTIVATED') {
+			return 'text-color-gray-light';
 		}
 	};
 
