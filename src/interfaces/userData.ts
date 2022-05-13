@@ -15,7 +15,7 @@ export interface UserData {
 	coverUrl: string;
 	loginHistories: LoginHistoryEntry[];
 	nickname: string;
-	status: 'USER' | 'AWAITING_VERIFIED' | 'VERIFIED' | 'AWAITING_INACTIVATED';
+	status: 'USER' | 'AWAITING_VERIFIED' | 'VERIFIED' | 'AWAITING_INACTIVATED' | 'INACTIVATED';
 	updatedAt: string;
 	username: string;
 	_id: string;

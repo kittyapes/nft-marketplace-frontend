@@ -34,6 +34,7 @@
 			.then((res) => (users = res))
 			.catch((err) => console.log(err));
 		if (!users.length) return false;
+		console.log(users);
 		return true;
 	};
 
@@ -57,7 +58,9 @@
 		} else if (role === 'admin') {
 			return 'gradient-text';
 		} else if (role === 'VERIFIED') {
-			return 'text-color-green';
+			return 'text-green-400';
+		} else if (role === 'INACTIVATED') {
+			return 'text-color-gray-light';
 		}
 	};
 
@@ -92,7 +95,7 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETIC' },
 				renderComponent: EntryName,
-				renderComponentProps: users.map((u) => ({ name: u.username, imageUrl: u.imageUrl, address: u.address }))
+				renderComponentProps: users.map((u) => ({ name: u.username || '', imageUrl: u.imageUrl, address: u.address }))
 			},
 			{
 				gridSize: '3fr',
@@ -108,13 +111,13 @@
 				renderComponent: EntryRole,
 				renderComponentProps: users.map((u) => ({
 					id: u.address,
-					role: u.roles || 'User',
-					color: getRoleColor(u.roles),
+					role: u.status === 'VERIFIED' || (u.status === 'INACTIVATED' && (u.roles[u.roles.length - 1] !== 'admin' || 'superadmin')) ? u.status : u.roles[u.roles.length - 1],
+					color: getRoleColor(u.status === 'VERIFIED' || (u.status === 'INACTIVATED' && (u.roles[u.roles.length - 1] !== 'admin' || 'superadmin')) ? u.status : u.roles[u.roles.length - 1]),
 					options: [
-						{ label: 'sadmin', checked: u.roles === 'superadmin', cb: (e) => e.roles === 'superadmin' },
-						{ label: 'admin', checked: u.roles === 'admin', cb: (e) => e.roles === 'admin' },
+						{ label: 'admin', checked: u.roles.includes('admin'), cb: (e) => e.roles.includes('admin') },
 						{ label: 'verified', checked: u.status === 'VERIFIED', cb: (e) => e.status === 'VERIFIED' },
-						{ label: 'user', checked: false, cb: (e) => e.roles === 'user' }
+						{ label: 'blogger', checked: false, cb: (e) => e.roles === 'blogger' },
+						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED' }
 					]
 				}))
 			},
@@ -139,7 +142,7 @@
 		];
 
 	let roleFilterOptions = [
-		{ label: 'All', cb: (e) => true },
+		{ label: 'All', cb: () => true },
 		{ label: 'Super Admin', cb: (e) => e.roles === 'superadmin' },
 		{ label: 'Admin', cb: (e) => e.roles === 'admin' },
 		{ label: 'Verified Creator', cb: (e) => e.status === 'VERIFIED' },

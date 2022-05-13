@@ -15,7 +15,7 @@
 	import Loader from '$icons/loader.svelte';
 	import { contractCreateListing, LISTING_TYPE } from '$utils/contracts/listing';
 	import { writable } from 'svelte/store';
-	import { getNft, GetNftResponse } from '$utils/api/nft';
+	import { GetNftResponse } from '$utils/api/nft';
 	import { onMount } from 'svelte';
 	import { getBundle } from '$utils/api/bundle';
 	import axios from 'axios';
@@ -26,7 +26,7 @@
 		sale: ['price', 'startDate', 'quantity', 'duration']
 	};
 	// Fetch NFT data on mount to show a preview
-	const fetchedNftData = writable<GetNftResponse>(null);
+	const fetchedBundleData = writable<GetBundleResponse>(null);
 
 	onMount(async () => {
 		//const bundleRes = await getBundle($page.params.bundleId);
@@ -134,6 +134,6 @@
 
 	<div class="separator border-0 border-l p-8 w-80">
 		<div class="uppercase italic text-xl mb-4">Preview</div>
-		<NftCard name={$fetchedNftData?.name || 'N/A'} collectionName="No collection" imageUrl={$fetchedNftData?.imageUrl} />
+		<NftCard options={{ title: $fetchedBundleData?.title, imageUrl: $fetchedBundleData?.imageUrl, id: null }} />
 	</div>
 </div>
