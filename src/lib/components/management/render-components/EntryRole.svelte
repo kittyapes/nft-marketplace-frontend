@@ -8,10 +8,18 @@
 
 	$: if (props) {
 		localProps = props;
+		localProps.role = localProps.role.toLowerCase();
 		if (props.role === 'superadmin') localProps.role = 'sadmin';
+		else if (props.role === 'inactivated') localProps.role = 'inactive';
 	}
 
-	let handleSelect = (event: CustomEvent) => {};
+	let handleSelect = (event: CustomEvent) => {
+		if (event.detail.options?.label === 'admin') {
+			//promote to admin
+		} else if (event.detail.options?.label === 'verified') {
+			//promote to verified
+		}
+	};
 </script>
 
 <ColumnComponentContainer>
