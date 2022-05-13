@@ -2,7 +2,7 @@ import axios from 'axios';
 import HinataMarketplaceContract from '$utils/contracts/hinataMarketplace';
 import { get } from 'svelte/store';
 import { appSigner } from '$stores/wallet';
-import { ethers } from 'ethers';
+import type { ethers } from 'ethers';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import type { DropApiReturnValue } from 'src/interfaces/drops/dropApiReturnValue';
 import type { DropPostObject } from 'src/interfaces/drops/dropPostObject';

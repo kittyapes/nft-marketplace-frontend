@@ -5,11 +5,7 @@
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import { currentUserAddress } from '$stores/wallet';
-	import {
-		forceBatchProcess,
-		getBatchProcessSettings,
-		putBatchProcessSettings
-	} from '$utils/api/admin/batchProcessing';
+	import { forceBatchProcess, getBatchProcessSettings, putBatchProcessSettings } from '$utils/api/admin/batchProcessing';
 	import { getVerificationQueue, postVerificationQueueAdd } from '$utils/api/admin/userManagement';
 	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
 	import { makeErrorHandler, makeSuccessHandler, notifyError, notifySuccess } from '$utils/toast';
@@ -19,7 +15,7 @@
 		{ label: 'Monday', index: 0 },
 		{ label: 'Tuesday', index: 1 },
 		{ label: 'Wednesday', index: 2 },
-		{ label: 'Thrusday', index: 3 },
+		{ label: 'Thursday', index: 3 },
 		{ label: 'Friday', index: 4 },
 		{ label: 'Saturday', index: 5 },
 		{ label: 'Sunday', index: 6 }
@@ -104,9 +100,7 @@
 
 	async function refreshVerificationQueue() {
 		isRefreshingQueue = true;
-		const res = await getVerificationQueue($verificationQueueSort.value as any).catch(
-			makeErrorHandler('Failed to fetch verification queue!')
-		);
+		const res = await getVerificationQueue($verificationQueueSort.value as any).catch(makeErrorHandler('Failed to fetch verification queue!'));
 
 		queueItems = res || [];
 		isRefreshingQueue = false;
@@ -129,13 +123,7 @@
 		disabled={isAddingToQueue}
 	/>
 
-	<button
-		class="h-12 ml-8 italic btn-secondary"
-		on:click={handleAddToQueue}
-		disabled={isAddingToQueue || !addressToAdd}
-	>
-		Add to queue
-	</button>
+	<button class="h-12 ml-8 italic btn-secondary" on:click={handleAddToQueue} disabled={isAddingToQueue || !addressToAdd}>Add to queue</button>
 
 	<div class="flex-grow" />
 
@@ -187,11 +175,7 @@
 	<div class="flex flex-wrap gap-3 pb-2 lg:flex-row">
 		<div class="flex items-center gap-3 whitespace-nowrap">
 			Automatic Batch Processing
-			<Checkbox
-				bind:checked={$isBatchProcessEnabled}
-				disabled={isPushingBatchProcessSettings || isRefreshingBatchProcessSettings}
-				on:change={pushBatchProcessSettings}
-			/>
+			<Checkbox bind:checked={$isBatchProcessEnabled} disabled={isPushingBatchProcessSettings || isRefreshingBatchProcessSettings} on:change={pushBatchProcessSettings} />
 		</div>
 
 		<div class="flex items-center mr-4 space-x-4">
@@ -205,13 +189,7 @@
 			/>
 		</div>
 
-		<button
-			class="btn-secondary"
-			on:click={handleForceBatchProcess}
-			disabled={isForceBatchProcessing || isRefreshingBatchProcessSettings}
-		>
-			Force processing now
-		</button>
+		<button class="btn-secondary" on:click={handleForceBatchProcess} disabled={isForceBatchProcessing || isRefreshingBatchProcessSettings}>Force processing now</button>
 	</div>
 </div>
 

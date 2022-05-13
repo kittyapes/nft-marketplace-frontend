@@ -4,7 +4,7 @@ import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import HinataMarketplaceContract from '$utils/contracts/hinataMarketplace';
 import { httpErrorHandler } from '$utils/toast';
 import axios from 'axios';
-import { ethers } from 'ethers';
+import type { ethers } from 'ethers';
 import type { NFTCreationObject } from 'src/interfaces/nft/nftCreationObject';
 import type { NFTMintingObject } from 'src/interfaces/nft/nftMintingObject';
 import { get } from 'svelte/store';
@@ -13,11 +13,14 @@ export const createNFTOnAPI = async ({ amount, animation, artist, contractId, cr
 	const formData = new FormData();
 	formData.append('image', image);
 	formData.append('animation', animation);
-	formData.append('contractId', contractId.toString());
+	//formData.append('contractId', contractId.toString());
 	formData.append('amount', amount.toString() || '1');
 	formData.append('name', name);
 	formData.append('artist', artist);
 	formData.append('creator', creator);
+	formData.append('contractAddress', contractId.toString());
+	formData.append('metadata', JSON.parse(name));
+
 
 	const res = await axios.post(getApiUrl('latest', 'nfts'), formData, getAxiosConfig()).catch((e) => {
 		httpErrorHandler(e);
@@ -25,7 +28,7 @@ export const createNFTOnAPI = async ({ amount, animation, artist, contractId, cr
 	});
 
 	if (!res) return null;
-
+	console.log(res)
 	return res.data.data;
 };
 

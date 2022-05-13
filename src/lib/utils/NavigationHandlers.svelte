@@ -105,11 +105,12 @@
 		});
 
 		// Restrict create route to verified creators
-		if (to.pathname.match(/create*/)) {
-			profileData.subscribe((profile) => {
+
+		//if (to.pathname.match(/create*/)) {
+		/*	profileData.subscribe((profile) => {
 				if (profile && profile.status !== 'VERIFIED') goto('/');
 			});
-		}
+		}*/
 	});
 
 	$: if ($walletDisconnected && isConnectionRequired($page.url.pathname)) {

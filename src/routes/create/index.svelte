@@ -10,9 +10,9 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { NewBundleData, newBundleData } from '$utils/create';
-	import { createBundle } from '$utils/create/createBundle';
+	import { createListing } from '$utils/create/createListing';
 	import { createDropOnChain } from '$utils/create/createDrop';
-	import { batchMintNft, createNFTOnAPI } from '$utils/create/createNFT';
+	import { batchMintNft, createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
@@ -71,19 +71,16 @@
 
 		// Create NFT bundle on the server
 		const bundleId = await random(0, 999999999);
-		console.info('[Create] Using new Bundle ID:', bundleId);
-
-		const createdBundleRes = await createBundle({
-			contractId: bundleId,
-			creator: $currentUserAddress,
+		//console.info('[Create] Using new Listing ID:', bundleId);
+		/*
+		const createdListingRes = await createListing({
+			paymentTokenAddress: String(bundleId),
 			description: nftDescription,
 			title: nftName,
-			nftIds: [nftId],
-			nftAmounts: [nftQuantity],
-			image: fileBlob
+			nfts: [{ nftId: String(nftId), amount: nftQuantity }]
 		});
 
-		if (!createdBundleRes) {
+		if (!createdListingRes) {
 			popupHandler.close();
 			return;
 		}
@@ -99,11 +96,11 @@
 			console.error('[Create] Failed to create bundle on chain.');
 			return;
 		}
-
+		*/
 		progress.set(66);
 
 		// Create NFT on chain
-		const nftBundleSuccess = await batchMintNft({ dropId: bundleId, nftIds: [nftId], nftAmounts: [nftQuantity] });
+		const nftBundleSuccess = await createNFTOnChain({ dropId: bundleId, id: nftId.toString(), amount: nftQuantity });
 
 		if (nftBundleSuccess) {
 			console.info('[Create] NFT created on chain.');
