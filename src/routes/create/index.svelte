@@ -5,12 +5,12 @@
 	import NftCard from '$lib/components/NftCard.svelte';
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
-	import { newDropProperties } from '$stores/create';
+	import { newDropProperties, newNFTs } from '$stores/create';
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { NewBundleData, newBundleData } from '$utils/create';
-	import { createListing } from '$utils/create/createListing';
+	import { createBundle } from '$utils/create/createBundle';
 	import { createDropOnChain } from '$utils/create/createDrop';
 	import { batchMintNft, createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { goBack } from '$utils/navigation';
@@ -50,10 +50,11 @@
 
 		// Create NFT on the server
 		const nftId = await random(0, 999999999);
-		console.info('[Create] Using new NFT ID:', nftId);
+		console.info('[Create] Using new NFT contract ID:', nftId);
 
 		const createNftRes = await createNFTOnAPI({
 			contractId: nftId,
+			description: nftDescription,
 			amount: nftQuantity,
 			name: nftName,
 			artist: $profileData?._id,
@@ -65,13 +66,16 @@
 		if (!createNftRes) {
 			popupHandler.close();
 			return;
+		} else {
+			$newNFTs = [{ nftId: createNftRes.nftId, amount: nftQuantity }];
+			console.log($newNFTs);
 		}
 
 		progress.set(33);
 
 		// Create NFT bundle on the server
 		const bundleId = await random(0, 999999999);
-		//console.info('[Create] Using new Listing ID:', bundleId);
+		console.info('[Create] Using new Listing ID:', bundleId);
 		/*
 		const createdListingRes = await createListing({
 			paymentTokenAddress: String(bundleId),
@@ -100,7 +104,8 @@
 		progress.set(66);
 
 		// Create NFT on chain
-		const nftBundleSuccess = await createNFTOnChain({ dropId: bundleId, id: nftId.toString(), amount: nftQuantity });
+		/*
+		const nftBundleSuccess = await createNFTOnChain({ dropId: bundleId, id: createNftRes.nftId.toString(), amount: nftQuantity });
 
 		if (nftBundleSuccess) {
 			console.info('[Create] NFT created on chain.');
@@ -110,7 +115,7 @@
 			console.error('[Create] Failed to create NFT on chain.');
 			return;
 		}
-
+		*/
 		newBundleData.update((data) => {
 			return { ...data, bundleId };
 		});

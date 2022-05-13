@@ -3,7 +3,7 @@
 	import { selectedCard } from '$stores/marketplace';
 	import { goto } from '$app/navigation';
 	import EthIcon from '$icons/eth.svelte';
-	import HeartIcon from '$icons/heart.svelte';
+	import HeartIcon from '$icons/Vector.svg';
 
 	export let metadata;
 

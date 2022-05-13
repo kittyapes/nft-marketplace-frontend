@@ -1,27 +1,37 @@
 <script lang="ts">
 	import NftCard from './NftCard.svelte';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
+	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 
 	export let data: NftCardOptions[];
+
+	let updateData = async () => {
+		const favorites = await getUserFavoriteNfts();
+		data.forEach((t) => favorites?.includes(t.id));
+	};
 </script>
 
-{#if data === null}
+{#await updateData()}
 	<div class="placeholder">Loading...</div>
-{/if}
+{:then _}
+	{#if data === null}
+		<div class="placeholder">Loading...</div>
+	{/if}
 
-{#if data?.length === 0}
-	<div class="placeholder">Nothing to see here, move along.</div>
-{/if}
+	{#if data?.length === 0}
+		<div class="placeholder">Nothing to see here, move along.</div>
+	{/if}
 
-{#if data?.length}
-	<div class="nftGrid">
-		{#each data as tokenData}
-			{#if tokenData.title}
-				<NftCard options={tokenData} />
-			{/if}
-		{/each}
-	</div>
-{/if}
+	{#if data?.length}
+		<div class="nftGrid">
+			{#each data as tokenData}
+				{#if tokenData.title}
+					<NftCard options={tokenData} />
+				{/if}
+			{/each}
+		</div>
+	{/if}
+{/await}
 
 <style type="postcss">
 	.placeholder {

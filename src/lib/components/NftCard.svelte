@@ -4,13 +4,17 @@
 	import ThreeDots from '$icons/three-dots.svelte';
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
+	import { favoriteNft } from '$utils/nfts/favoriteNft';
+	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 	import { setPopup } from '$utils/popup';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
+	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import NftDisplayPopup from './profile/NFTDisplayPopup.svelte';
 
 	export let options: NftCardOptions;
 
+	let likes = options?.likes;
 	let dotsOpened = false;
 	let imgLoaded = false;
 
@@ -27,7 +31,15 @@
 		});
 	}
 
-	function favoriteNFT() {}
+	async function favNFT() {
+		if (options.favorite) likes = likes - 1;
+		else if (!options.favorite) likes = likes + 1;
+		options.favorite = !options.favorite;
+		const res = await favoriteNft(options.id);
+		console.log(res);
+	}
+
+	console.log(options);
 </script>
 
 <div class="relative p-4 overflow-hidden border cursor-pointer rounded-2xl" in:fade on:click={handleClick}>
@@ -42,11 +54,11 @@
 
 		<div class="flex-grow" />
 
-		<div class="btn text-white" on:click={favoriteNFT}>
+		<div class="btn text-white" class:text-color-red={options?.favorite} on:click|stopPropagation={favNFT}>
 			<Heart />
 		</div>
 		<!-- TODO Likes -->
-		<div class="font-medium select-none">{options?.likes || 0}</div>
+		<div class="font-medium select-none">{options ? likes : 0}</div>
 	</div>
 
 	<div class="w-full mx-auto mt-2 overflow-hidden transition bg-gray-100 rounded-lg aspect-1" class:animate-pulse={!imgLoaded}>

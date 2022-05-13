@@ -4,7 +4,7 @@
 	import { setPopup } from '$utils/popup';
 	import CommonProperties from '$lib/components/create/CommonProperties.svelte';
 	import Royalties from '$lib/components/create/Royalties.svelte';
-	import { newDropProperties } from '$stores/create';
+	import { newDropProperties, newNFTs } from '$stores/create';
 	import ConfirmListingPopup from '$lib/components/create/ConfirmListingPopup.svelte';
 	import Back from '$icons/back_.svelte';
 	import { goBack } from '$utils/navigation';
@@ -18,6 +18,9 @@
 	import { getNft, GetNftResponse } from '$utils/api/nft';
 	import { onMount } from 'svelte';
 	import { getBundle } from '$utils/api/bundle';
+	import axios from 'axios';
+	import { getApiUrl } from '$utils/api';
+	import { getAxiosConfig } from '$utils/auth/axiosConfig';
 
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
 		sale: ['price', 'startDate', 'quantity', 'duration']
@@ -26,30 +29,35 @@
 	const fetchedNftData = writable<GetNftResponse>(null);
 
 	onMount(async () => {
-		const bundleRes = await getBundle($page.params.bundleId);
-		const nftRes = await getNft(bundleRes.nft_ids[0]);
-
+		//const bundleRes = await getBundle($page.params.bundleId);
+		const nftRes = await getNft($newNFTs[0]?.nftId);
 		fetchedNftData.set(nftRes);
-
-		console.log(nftRes);
 	});
 
 	let isListing = false;
 
 	async function listForSale() {
 		isListing = true;
-
+		const nftRes = await getNft($newNFTs[0]?.nftId);
+		console.log(nftRes);
 		const duration = listingPropValues.duration.value * 60 * 60 * 24;
-
 		// Create listing on the server
 		const apiCreateListingRes = await postCreateListing({
-			bundleId: $page.params.bundleId,
-			creator: $currentUserAddress,
-			listingType: 'UNIQUE_FIXED_PRICE',
+			nfts: $newNFTs,
+			paymentTokenAddress: $page.params.bundleId,
+			title: nftRes.name,
+			description: JSON.parse(nftRes.metadata).description,
+			listingType: 'sale',
 			price: listingPropValues.price,
-			startedAt: listingPropValues.date,
-			duration: duration.toString()
+			quantity: listingPropValues.quantity,
+			startTime: listingPropValues.startDate,
+			duration: duration
 		});
+
+		console.log(apiCreateListingRes);
+		console.log(apiCreateListingRes.data.data._id);
+		const listing = await axios.get(getApiUrl('latest', 'listings/' + apiCreateListingRes.data.data._id), getAxiosConfig()).catch((e) => e.response);
+		console.log(listing);
 
 		if (apiCreateListingRes.data.error) {
 			notifyError(apiCreateListingRes.data.message);
@@ -57,6 +65,7 @@
 			return;
 		}
 
+		/*
 		// Create listing on chain
 		const successListingOnChain = await contractCreateListing({
 			bundleId: $page.params.bundleId,
@@ -72,7 +81,7 @@
 			notifyError('Failed to create listing on chain.');
 			isListing = false;
 			return;
-		}
+		}*/
 
 		notifySuccess('Successfully created listing.');
 

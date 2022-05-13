@@ -9,7 +9,7 @@ import type { NFTCreationObject } from 'src/interfaces/nft/nftCreationObject';
 import type { NFTMintingObject } from 'src/interfaces/nft/nftMintingObject';
 import { get } from 'svelte/store';
 
-export const createNFTOnAPI = async ({ amount, animation, artist, contractId, creator, image, name }: NFTCreationObject) => {
+export const createNFTOnAPI = async ({ amount, animation, artist, contractId, creator, image, name, description }: NFTCreationObject) => {
 	const formData = new FormData();
 	formData.append('image', image);
 	formData.append('animation', animation);
@@ -19,7 +19,7 @@ export const createNFTOnAPI = async ({ amount, animation, artist, contractId, cr
 	formData.append('artist', artist);
 	formData.append('creator', creator);
 	formData.append('contractAddress', contractId.toString());
-	formData.append('metadata', JSON.parse(name));
+	formData.append('metadata', JSON.stringify({description: description}));
 
 
 	const res = await axios.post(getApiUrl('latest', 'nfts'), formData, getAxiosConfig()).catch((e) => {
