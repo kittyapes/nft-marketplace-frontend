@@ -57,7 +57,7 @@
 		<div class="flex-grow" />
 
 		<div class="btn text-white" class:text-color-red={options?.favorite} on:click|stopPropagation={favNFT}>
-			<Heart />
+			<Heart class="w-6 h-6" />
 		</div>
 		<!-- TODO Likes -->
 		<div class="font-medium select-none">{options ? likes : 0}</div>

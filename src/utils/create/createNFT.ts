@@ -11,8 +11,8 @@ import { get } from 'svelte/store';
 
 export const createNFTOnAPI = async ({ amount, animation, artist, contractId, creator, image, name, description }: NFTCreationObject) => {
 	const formData = new FormData();
-	formData.append('image', image);
-	formData.append('animation', animation);
+	formData.append('thumbnailUrl', image);	
+	formData.append('assetUrl', animation || null);
 	//formData.append('contractId', contractId.toString());
 	formData.append('amount', amount.toString() || '1');
 	formData.append('name', name);
