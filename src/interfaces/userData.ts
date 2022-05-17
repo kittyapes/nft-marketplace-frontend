@@ -11,7 +11,7 @@ export interface UserData {
 	address: string;
 	createdAt: string;
 	email: string;
-	imageUrl: string;
+	thumbnailUrl: string;
 	coverUrl: string;
 	loginHistories: LoginHistoryEntry[];
 	nickname: string;

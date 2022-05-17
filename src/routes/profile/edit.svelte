@@ -96,7 +96,7 @@
 				instagram: data.instagram,
 				discord: data.discord,
 				twitter: data.twitter,
-				imageUrl: data.imageUrl,
+				imageUrl: data.thumbnailUrl,
 				coverUrl: data.coverUrl,
 				profileImage: null,
 				coverImage: null,

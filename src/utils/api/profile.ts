@@ -96,7 +96,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	formData.append('bio', data.bio);
 	formData.append('username', data.username);
 	formData.append('request_time', requestTime);
-	data.profileImage && formData.append('image', data.profileImage);
+	data.profileImage && formData.append('thumbnail', data.profileImage);
 	data.coverImage && formData.append('cover', data.coverImage);
 	formData.append('discord', data.discord);
 	formData.append('instagram', data.instagram);

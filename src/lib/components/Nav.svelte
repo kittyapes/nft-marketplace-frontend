@@ -85,10 +85,10 @@
 
 				<!-- Profile image or guest user icon -->
 				<div class="w-6 h-6">
-					{#if $profileData?.imageUrl}
+					{#if $profileData?.thumbnailUrl}
 						<img
 							on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"}
-							src={$profileData.imageUrl}
+							src={$profileData.thumbnailUrl}
 							alt="Current account avatar."
 							class="w-full h-full object-cover rounded-full"
 						/>
