@@ -8,7 +8,7 @@
 	export let blob: Blob | null = null;
 	export let currentImgUrl: string = null;
 	export let previewSrc = '';
-	export let acceptedType: 'video' | 'image' = 'image';
+	export let acceptedFormats: string[] = [];
 
 	let fileInput: HTMLInputElement;
 	let files: any = [];
@@ -75,7 +75,7 @@
 		{dimensions}
 	</div>
 
-	<input type="file" accept={acceptedType === 'image' ? acceptedImages : acceptedVideos} class="hidden" bind:this={fileInput} bind:files />
+	<input type="file" accept={acceptedFormats.join(',')} class="hidden" bind:this={fileInput} bind:files />
 </div>
 
 <style lang="postcss">
