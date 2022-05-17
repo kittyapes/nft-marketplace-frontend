@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { acceptedNftFileTypes } from '$constants';
+
 	import Back from '$icons/back_.svelte';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
@@ -155,7 +157,7 @@
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
-				<DragDropImage bind:blob={animationBlob} text={dragDropText} bind:previewSrc={nftAssetPreview} acceptedType="video" />
+				<DragDropImage bind:blob={animationBlob} text={dragDropText} bind:previewSrc={nftAssetPreview} acceptedFormats={acceptedNftFileTypes} />
 			</div>
 		</div>
 
