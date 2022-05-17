@@ -52,15 +52,30 @@
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
 
-	let collectedNfts: [] = null;
+	let collectedNfts: any[] = [];
+	let createdNfts: any[] = [];
+
 	const fetchCreatedNfts = async () => {
 		try {
 			const unfiltered = (await getUserNfts(address)).result;
-			collectedNfts = unfiltered.filter((v) => v.token_uri).map(adaptTokenDataToNftCard);
 
-			console.log(collectedNfts);
-		} catch {
+			// Assign NFTs accordingly
+			unfiltered.map((nft) => {
+				if (nft.token_uri) {
+					if (nft.minted_address?.toLowerCase() === address.toLowerCase()) {
+						// User Created this
+						createdNfts.push(adaptTokenDataToNftCard(nft));
+					} else {
+						collectedNfts.push(adaptTokenDataToNftCard(nft));
+					}
+				}
+			});
+
+			console.log(createdNfts);
+		} catch (err) {
+			console.log(err);
 			collectedNfts = [];
+			createdNfts = [];
 		}
 	};
 
@@ -164,7 +179,7 @@
 		{#if selectedTab === 'COLLECTED NFTS'}
 			<NftList data={collectedNfts} />
 		{:else if selectedTab === 'CREATED NFTS'}
-			<NftList data={[]} />
+			<NftList data={createdNfts} />
 		{:else if selectedTab === 'ACTIVITY'}
 			<NftList data={[]} />
 		{:else if selectedTab === 'FAVORITES'}
