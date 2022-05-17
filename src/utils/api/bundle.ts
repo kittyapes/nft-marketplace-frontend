@@ -15,6 +15,7 @@ export interface Bundle {
 	nft_amounts: number[];
 	title: string;
 	imageUrl: string;
+	animationUrl: string;
 	description: string;
 	contractId: string;
 }

@@ -4,7 +4,7 @@ import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import HinataMarketplaceContract from '$utils/contracts/hinataMarketplace';
 import { httpErrorHandler } from '$utils/toast';
 import axios from 'axios';
-import { ethers } from 'ethers';
+import type { ethers}  from 'ethers';
 import type { NFTCreationObject } from 'src/interfaces/nft/nftCreationObject';
 import type { NFTMintingObject } from 'src/interfaces/nft/nftMintingObject';
 import { get } from 'svelte/store';
@@ -25,7 +25,7 @@ export const createNFTOnAPI = async ({ amount, animation, artist, contractId, cr
 	});
 
 	if (!res) return null;
-
+	console.log(res.data.data)
 	return res.data.data;
 };
 

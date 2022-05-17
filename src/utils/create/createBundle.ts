@@ -11,6 +11,7 @@ export interface CreateBundleOptions {
 	nftAmounts: number[];
 	creator: string;
 	image: Blob;
+	animation: Blob;
 }
 
 export interface CreateBundleResponse {
@@ -21,13 +22,13 @@ export interface CreateBundleResponse {
 	creator: string; // address
 	description: string;
 	imageUrl: string;
+	animationUrl: string;
 	title: string;
 	updatedAt: string; // Date string
 	_id: string; //"622b5edab88c6c7b95fd6c6b"
 }
 
 export async function createBundle(options: CreateBundleOptions) {
-	console.log(options.image);
 	const formData = new FormData();
 	formData.append('contractId', options.contractId.toString());
 	formData.append('description', options.description || 'No description');
@@ -36,6 +37,7 @@ export async function createBundle(options: CreateBundleOptions) {
 	formData.append('nftAmounts', options.nftAmounts.join(','));
 	formData.append('creator', options.creator);
 	formData.append('image', options.image);
+	formData.append('animation', options.animation);
 
 	const res = await axios.post(getApiUrl('latest', 'drops'), formData, getAxiosConfig()).catch((e) => {
 		httpErrorHandler(e);
@@ -43,6 +45,6 @@ export async function createBundle(options: CreateBundleOptions) {
 	});
 
 	if (!res) return null;
-
+	console.log(res.data.data)
 	return res.data.data as CreateBundleResponse;
 }
