@@ -36,8 +36,8 @@
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
 		{ at: 50, label: 'Bio' },
-		{ at: 75, label: 'Profile Image' },
-		{ at: 100, label: 'Background Image', dot: false }
+		{ at: 75, label: 'Profile Picture' },
+		{ at: 100, label: 'Banner Image', dot: false }
 	];
 
 	const fetchedDataStore = writable<EditableProfileData>(null);
