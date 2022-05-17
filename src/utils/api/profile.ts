@@ -49,14 +49,14 @@ export interface EditableProfileData {
 	coverUrl: string;
 }
 
-async function hashImage(address: string, file: Blob) {
-	const formData = new FormData();
-	formData.append('image', file);
+// async function hashImage(address: string, file: Blob) {
+// 	const formData = new FormData();
+// 	formData.append('image', file);
 
-	const res = await axios.post(getApiUrl('latest', `users/${address}/hashImage`), formData);
+// 	const res = await axios.post(getApiUrl('latest', `users/${address}/hashImage`), formData);
 
-	return res.data.data;
-}
+// 	return res.data.data;
+// }
 
 export async function checkUsernameAvailability(username: string) {
 	const res = await axios.get(getApiUrl('latest', `users/existed?username=${username}`));
@@ -69,8 +69,8 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 
 	const requestTime = Date.now().toString();
 
-	const profileImageHash = data.profileImage && (await hashImage(address, data.profileImage));
-	const coverImageHash = data.coverImage && (await hashImage(address, data.coverImage));
+	// const profileImageHash = data.profileImage && (await hashImage(address, data.profileImage));
+	// const coverImageHash = data.coverImage && (await hashImage(address, data.coverImage));
 
 	const requiredKeys = ['email', 'bio', 'username', 'discord', 'instagram', 'twitter', 'website', 'pixiv', 'deviantart', 'artstation'];
 
@@ -84,21 +84,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	// Escape stuff
 	data.bio = htmlize(data.bio);
 
-	const message = [
-		data.email,
-		data.bio,
-		data.username,
-		requestTime,
-		profileImageHash || '',
-		coverImageHash || '',
-		data.discord,
-		data.instagram,
-		data.twitter,
-		data.website,
-		data.pixiv,
-		data.deviantart,
-		data.artstation
-	]
+	const message = [data.email, data.bio, data.username, requestTime, '', '', data.discord, data.instagram, data.twitter, data.website, data.pixiv, data.deviantart, data.artstation]
 		.map((v) => v || '')
 		.join('');
 
