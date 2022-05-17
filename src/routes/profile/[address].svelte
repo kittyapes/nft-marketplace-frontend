@@ -4,7 +4,6 @@
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import NftList from '$lib/components/NftList.svelte';
-	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import { profileCompletionProgress } from '$stores/user';
@@ -17,7 +16,6 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import getUserNfts from '$utils/nfts/getUserNfts';
 	import { browser } from '$app/env';
-	import { userHasRole } from '$utils/auth/userRoles';
 	import type { UserData } from 'src/interfaces/userData';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 	import { adaptTokenDataToNftCard } from '$utils/adapters/adaptTokenDataToNftCard';
@@ -174,7 +172,7 @@
 		{/if}
 	</div>
 </div>
-
+<!-- Removed as a result of https://arcadia2.atlassian.net/browse/HINATA-603?focusedCommentId=17093
 {#if $userHasRole('admin', 'superadmin')}
 	<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
-{/if}
+{/if} -->
