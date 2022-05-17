@@ -52,7 +52,7 @@
 	<a id="marketplace-link" href="/marketplace" class="relative font-semibold text-transparent uppercase text-md bg-gradient-to-r bg-clip-text from-color-purple to-color-blue">Marketplace</a>
 
 	<!-- Staking -->
-	<a href="/stake" class="relative font-semibold uppercase text-md" class:-mr-8={!showCreate && showProfileButton}>Staking</a>
+	<a href="/stake" class="relative font-semibold uppercase text-md block mr-1" class:-mr-8={!showCreate && showProfileButton}>Staking</a>
 
 	<!-- Airdrop HIDDEN FOR NOW -->
 	<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
