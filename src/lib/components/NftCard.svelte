@@ -2,6 +2,7 @@
 	import Eth from '$icons/eth.svelte';
 	import Heart from '$icons/heart.svelte';
 	import ThreeDots from '$icons/three-dots.svelte';
+	import { currentUserAddress } from '$stores/wallet';
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { favoriteNft } from '$utils/nfts/favoriteNft';
@@ -34,11 +35,12 @@
 	}
 
 	async function favNFT() {
+		if (!$currentUserAddress) return;
 		if (options.favorite) likes = likes - 1;
 		else if (!options.favorite) likes = likes + 1;
 		options.favorite = !options.favorite;
 		const res = await favoriteNft(options.id);
-		console.log(res);
+		console.log(JSON.parse(JSON.stringify(res)));
 	}
 
 	console.log(options);

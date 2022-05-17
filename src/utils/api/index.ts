@@ -10,7 +10,7 @@ export function getApiUrl(apiVersion: ApiVersion, apiPath: string): string {
 
 	if (getEnv() === 'dev') {
 		console.warn(`[API] Ignoring '${apiVersion}' version and using dev environment`);
-		domain = `https://hinata-dev.rekt-news.xyz/api/v1`;
+		domain = `https://hinata-dev.rekt-news.xyz/api/v2`;
 	} else if (apiVersion === 'latest') {
 		domain = `https://hinata-test-v${LATEST}.rekt-news.xyz/api/v${DATABASE_ITERATION}`;
 	} else if (apiVersion.match(/^sprint-\d+$/)) {
