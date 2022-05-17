@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { acceptedImages, acceptedVideos } from '$constants';
+	import { notifyError } from '$utils/toast';
 	import { fade } from 'svelte/transition';
 
 	export let text = 'Drag and drop an image here, or click to browse';
@@ -13,23 +14,32 @@
 	let fileInput: HTMLInputElement;
 	let files: any = [];
 	let over = false;
-	let fileType = '';
+	let fileType: 'image' | 'video' = null;
 
 	$: if (browser && files.length) {
-		const reader = new FileReader();
+		const file: Blob = files[0];
 
-		reader.onload = (e) => {
-			previewSrc = e.target.result as string;
-		};
+		fileType = file.type.split('/')[0] as any;
 
-		const file = files[0];
+		if (fileType === 'image' && file.size > 25_000_000) {
+			files = [];
+			fileType = null;
+			notifyError('The image cannot be over 25 MB in size!');
+		} else if (fileType === 'video' && file.size > 50_000_000) {
+			files = [];
+			fileType = null;
+			notifyError('The video cannot be over 50 MB in size!');
+		} else {
+			const reader = new FileReader();
 
-		reader.readAsDataURL(files[0]);
+			reader.onload = (e) => {
+				previewSrc = e.target.result as string;
+			};
 
-		blob = file;
+			reader.readAsDataURL(files[0]);
 
-		fileType = file.type.split('/')[0];
-		console.log(fileType);
+			blob = file;
+		}
 	}
 
 	function onDrop(event) {
@@ -64,7 +74,7 @@
 				<source src={previewSrc || currentImgUrl} type="video/mp4" />
 				<track kind="captions" />
 			</video>
-		{:else if fileType === ''}
+		{:else if !fileType}
 			<div class="text-center text-color-black opacity-50 text-sm px-12">
 				{@html text}
 			</div>
