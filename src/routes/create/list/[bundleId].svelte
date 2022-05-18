@@ -38,8 +38,10 @@
 
 	async function listForSale() {
 		isListing = true;
+
 		const nftRes = await getNft($newNFTs[0]?.nftId);
 		console.log(nftRes);
+
 		const duration = listingPropValues.duration.value * 60 * 60 * 24;
 		// Create listing on the server
 		const apiCreateListingRes = await postCreateListing({
@@ -54,19 +56,17 @@
 			duration: duration
 		});
 
-		console.log(apiCreateListingRes);
-		console.log(apiCreateListingRes.data.data._id);
-		const listing = await axios.get(getApiUrl('latest', 'listings/' + apiCreateListingRes.data.data._id), getAxiosConfig()).catch((e) => e.response);
-		console.log(listing);
-
 		if (apiCreateListingRes.data.error) {
 			notifyError(apiCreateListingRes.data.message);
 			isListing = false;
 			return;
 		}
 
-		/*
+		const listing = await axios.get(getApiUrl('latest', 'listings/' + apiCreateListingRes.data.data._id), getAxiosConfig()).catch((e) => e.response);
+		console.log(listing);
+
 		// Create listing on chain
+		/*
 		const successListingOnChain = await contractCreateListing({
 			bundleId: $page.params.bundleId,
 			payToken: '0x0000000000000000000000000000000000000000',
@@ -83,7 +83,7 @@
 			return;
 		}*/
 
-		notifySuccess('Successfully created listing.');
+		notifySuccess('Successfully created a listing.');
 
 		isListing = false;
 	}

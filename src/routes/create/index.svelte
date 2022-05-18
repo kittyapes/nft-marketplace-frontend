@@ -40,9 +40,6 @@
 		// goto('/create/choose-listing-format');
 		// return;
 
-		// Notes:
-		// Bundle is a former drop
-
 		newBundleData.set({} as NewBundleData);
 
 		const progress = writable(0);
@@ -73,51 +70,10 @@
 
 		progress.set(33);
 
-		// Create NFT bundle on the server
-		const bundleId = await random(0, 999999999);
-		console.info('[Create] Using new Listing ID:', bundleId);
-		/*
-		const createdListingRes = await createListing({
-			paymentTokenAddress: String(bundleId),
-			description: nftDescription,
-			title: nftName,
-			nfts: [{ nftId: String(nftId), amount: nftQuantity }]
-		});
+		//TODO: create NFT on chain
 
-		if (!createdListingRes) {
-			popupHandler.close();
-			return;
-		}
-
-		// Create bundle on chain
-		const chainBundleSuccess = await createDropOnChain(bundleId);
-
-		if (chainBundleSuccess) {
-			console.info('[Create] Bundle created on chain.');
-		} else {
-			popupHandler.close();
-			notifyError('Failed to create bundle on chain.');
-			console.error('[Create] Failed to create bundle on chain.');
-			return;
-		}
-		*/
-		progress.set(66);
-
-		// Create NFT on chain
-		/*
-		const nftBundleSuccess = await createNFTOnChain({ dropId: bundleId, id: createNftRes.nftId.toString(), amount: nftQuantity });
-
-		if (nftBundleSuccess) {
-			console.info('[Create] NFT created on chain.');
-		} else {
-			popupHandler.close();
-			notifyError('Failed to create NFT on chain.');
-			console.error('[Create] Failed to create NFT on chain.');
-			return;
-		}
-		*/
 		newBundleData.update((data) => {
-			return { ...data, bundleId };
+			return { ...data, nftId };
 		});
 
 		progress.set(100);

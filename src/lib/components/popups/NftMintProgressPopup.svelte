@@ -12,8 +12,8 @@
 
 	const points = [
 		{ at: 0, label: 'Upload' },
-		{ at: 33, label: 'Bundle TX' },
-		{ at: 66, label: 'NFT TX' },
+		//{ at: 33, label: 'Bundle TX' },
+		{ at: 50, label: 'NFT TX' },
 		{ at: 100, label: 'Finished' }
 	];
 
