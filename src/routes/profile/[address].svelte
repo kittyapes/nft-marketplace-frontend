@@ -54,7 +54,7 @@
 			// Assign NFTs accordingly
 			unfiltered.map((nft) => {
 				if (nft.token_uri) {
-					if (nft.minted_address?.toLowerCase() === address.toLowerCase()) {
+					if (nft.minter_address?.toLowerCase() === address.toLowerCase()) {
 						// User Created this
 						createdNfts.push(adaptTokenDataToNftCard(nft));
 					} else {
