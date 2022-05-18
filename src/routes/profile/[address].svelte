@@ -31,9 +31,6 @@
 
 	async function fetchData(forAdress: string) {
 		$localProfileData = await fetchProfileData(forAdress);
-		if (!$localProfileData) {
-			goto('/404');
-		}
 	}
 
 	$: browser && fetchData(address);
