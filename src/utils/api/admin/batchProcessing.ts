@@ -1,10 +1,9 @@
-import { api } from '$constants/api';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
 import { getApiUrl } from '..';
 
 export async function forceBatchProcess() {
-	return await axios.post(api + '/v1/settings/processJob', {}, getAxiosConfig());
+	return await axios.post(getApiUrl('v2', 'settings/processJob'), {}, getAxiosConfig());
 }
 
 export interface BatchProcessingSettings {
