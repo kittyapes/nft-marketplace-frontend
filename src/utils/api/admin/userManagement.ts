@@ -17,7 +17,7 @@ export interface VerificationQueueItem {
 }
 
 export async function getVerificationQueue(sortBy: 'UPDATED_AT' | 'ALPHABETIC'): Promise<VerificationQueueItem[]> {
-	const res = await axios.get(getApiUrl('v2', 'users'), {
+	const res = await axios.get(getApiUrl('v2', 'admins/users'), {
 		params: { sortBy, status: 'AWAITING_VERIFIED,AWAITING_INACTIVATED' },
 		...getAxiosConfig()
 	});
