@@ -20,12 +20,6 @@ export interface UserData {
 	username: string;
 	_id: string;
 	bio: string;
-	instagram: string;
-	discord: string;
-	twitter: string;
-	website: string;
-	pixiv: string;
-	deviantart: string;
-	artstation: string;
+	social: { instagram: string; discord: string; twitter: string; website: string; pixiv: string; deviantart: string; artstation: string };
 	roles: UserRole;
 }

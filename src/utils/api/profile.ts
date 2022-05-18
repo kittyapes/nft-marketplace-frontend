@@ -38,15 +38,9 @@ export interface EditableProfileData {
 	username: string;
 	email: string;
 	bio: string;
-	instagram: string;
-	discord: string;
-	twitter: string;
-	website: string;
-	pixiv: string;
-	deviantart: string;
-	artstation: string;
-	imageUrl: string;
+	thumbnailUrl: string;
 	coverUrl: string;
+	social: { instagram: string; discord: string; twitter: string; website: string; pixiv: string; deviantart: string; artstation: string };
 }
 
 // async function hashImage(address: string, file: Blob) {
@@ -84,7 +78,21 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	// Escape stuff
 	data.bio = htmlize(data.bio);
 
-	const message = [data.email, data.bio, data.username, requestTime, '', '', data.discord, data.instagram, data.twitter, data.website, data.pixiv, data.deviantart, data.artstation]
+	const message = [
+		data.email,
+		data.bio,
+		data.username,
+		requestTime,
+		'',
+		'',
+		data.social.discord,
+		data.social.instagram,
+		data.social.twitter,
+		data.social.website,
+		data.social.pixiv,
+		data.social.deviantart,
+		data.social.artstation
+	]
 		.map((v) => v || '')
 		.join('');
 
@@ -98,13 +106,13 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	formData.append('request_time', requestTime);
 	data.profileImage && formData.append('thumbnail', data.profileImage);
 	data.coverImage && formData.append('cover', data.coverImage);
-	formData.append('discord', data.discord);
-	formData.append('instagram', data.instagram);
-	formData.append('twitter', data.twitter);
-	formData.append('website', data.website);
-	formData.append('pixiv', data.pixiv);
-	formData.append('deviantart', data.deviantart);
-	formData.append('artstation', data.artstation);
+	formData.append('discord', data.social.discord);
+	formData.append('instagram', data.social.instagram);
+	formData.append('twitter', data.social.twitter);
+	formData.append('website', data.social.website);
+	formData.append('pixiv', data.social.pixiv);
+	formData.append('deviantart', data.social.deviantart);
+	formData.append('artstation', data.social.artstation);
 	formData.append('signature', signature);
 
 	await axios.put(getApiUrl('latest', `users`), formData, getAxiosConfig());
