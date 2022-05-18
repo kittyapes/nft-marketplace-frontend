@@ -1,6 +1,7 @@
 import { api } from '$constants/api';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
+import { getApiUrl } from '..';
 
 export async function postVerificationQueueAdd(address: string) {
 	return await axios.post(api + '/v1/accounts/' + address + '/promote', {}, getAxiosConfig());
@@ -15,10 +16,8 @@ export interface VerificationQueueItem {
 	dateAdded: string;
 }
 
-export async function getVerificationQueue(
-	sortBy: 'UPDATED_AT' | 'ALPHABETIC'
-): Promise<VerificationQueueItem[]> {
-	const res = await axios.get(api + '/v1/accounts', {
+export async function getVerificationQueue(sortBy: 'UPDATED_AT' | 'ALPHABETIC'): Promise<VerificationQueueItem[]> {
+	const res = await axios.get(getApiUrl('v2', 'users'), {
 		params: { sortBy, status: 'AWAITING_VERIFIED,AWAITING_INACTIVATED' },
 		...getAxiosConfig()
 	});
@@ -26,11 +25,7 @@ export async function getVerificationQueue(
 	return res.data.data;
 }
 
-export async function getVerifiedCreators(
-	verificationStatus: string,
-	sortBy: 'UPDATED_AT' | 'ALPHABETIC',
-	query?: string
-) {
+export async function getVerifiedCreators(verificationStatus: string, sortBy: 'UPDATED_AT' | 'ALPHABETIC', query?: string) {
 	return await axios.get(api + '/v1/accounts', {
 		params: { status: verificationStatus, sortBy, query: query || null },
 		...getAxiosConfig()
