@@ -15,7 +15,7 @@ export interface BatchProcessingSettings {
 export async function putBatchProcessSettings(options: BatchProcessingSettings) {
 	const cronString = `0 0 * * ${options.processingDayIndex + 1}`;
 
-	return await axios.put(api + '/v1/settings/job', { isEnableProcessingJob: options.enabled, intervalTime: cronString }, getAxiosConfig());
+	return await axios.put(getApiUrl('v2', 'settings/job'), { isEnableProcessingJob: options.enabled, intervalTime: cronString }, getAxiosConfig());
 }
 
 export async function getBatchProcessSettings() {
@@ -23,6 +23,10 @@ export async function getBatchProcessSettings() {
 	const info = res.data.data.info;
 
 	const dayIndex = parseInt(info.intervalTime.split(' ')[4]) - 1;
+
+	if (dayIndex.toString() === 'NaN') {
+		throw new Error('Cannot parse batch processing day!');
+	}
 
 	return {
 		enabled: info.isEnableProcessingJob,
