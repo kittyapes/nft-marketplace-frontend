@@ -4,11 +4,11 @@ import axios from 'axios';
 import { getApiUrl } from '..';
 
 export async function postVerificationQueueAdd(address: string) {
-	return await axios.post(api + '/v1/accounts/' + address + '/promote', {}, getAxiosConfig());
+	return await axios.post(getApiUrl('v2', 'users/' + address + '/promote'), {}, getAxiosConfig());
 }
 
 export async function postInactivationQueueAdd(address: string) {
-	return await axios.post(api + '/v1/accounts/' + address + '/inactivate', {}, getAxiosConfig());
+	return await axios.post(getApiUrl('v2', 'users/' + address + '/inactivate'), {}, getAxiosConfig());
 }
 
 export interface VerificationQueueItem {

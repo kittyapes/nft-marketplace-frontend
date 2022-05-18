@@ -19,6 +19,8 @@
 	import type { UserData } from 'src/interfaces/userData';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 	import { adaptTokenDataToNftCard } from '$utils/adapters/adaptTokenDataToNftCard';
+	import { userHasRole } from '$utils/auth/userRoles';
+	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 
 	const tabs = ['COLLECTED NFTS', 'CREATED NFTS', 'FAVORITES'];
 	let selectedTab = 'COLLECTED NFTS';
@@ -179,7 +181,7 @@
 		{/if}
 	</div>
 </div>
-<!-- Removed as a result of https://arcadia2.atlassian.net/browse/HINATA-603?focusedCommentId=17093
+
 {#if $userHasRole('admin', 'superadmin')}
 	<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
-{/if} -->
+{/if}
