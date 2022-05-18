@@ -50,7 +50,7 @@
 		"dayjs": "^1.10.7",
 		"ethers": "^5.5.2",
 		"graphql": "^16.0.1",
-		"graphql-request": "^3.6.1",
+		"graphql-request": "^3.7.0",
 		"hash.js": "^1.1.7",
 		"jwt-decode": "^3.1.2",
 		"lodash-es": "^4.17.21",
@@ -64,7 +64,8 @@
 	"pnpm": {
 		"peerDependencyRules": {
 			"ignoreMissing": [
-				"react-is"
+				"react-is",
+				"graphql"
 			]
 		}
 	}
