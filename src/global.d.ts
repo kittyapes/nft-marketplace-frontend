@@ -63,3 +63,22 @@ interface PopupRowInfo {
 	imageUrl: string;
 	amount: number;
 }
+
+interface MoralisNft {
+	token_address: string;
+	token_id: string;
+	amount: string;
+	owner_of: string;
+	token_hash: string;
+	block_number_minted: string;
+	block_number: string;
+	contract_type: string;
+	name: string;
+	symbol: string;
+	token_uri: string | null;
+	metadata: string | null; // JSON String
+	synced_at: string; // ISOString
+	last_token_uri_sync: string | null; // ISO String
+	last_metadata_sync: string | null; // ISO String
+	minter_address: string;
+}

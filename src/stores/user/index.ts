@@ -17,9 +17,5 @@ export async function refreshProfileData() {
 export const profileCompletionProgress = derived(profileData, ($profileData) => {
 	if (!$profileData) return null;
 
-	return (
-		[$profileData?.email, $profileData?.bio, $profileData.imageUrl, $profileData.coverUrl].filter(
-			(v) => !!v
-		).length * 25
-	);
+	return [$profileData?.email, $profileData?.bio, $profileData.thumbnailUrl, $profileData.coverUrl].filter((v) => !!v).length * 25;
 });

@@ -38,25 +38,19 @@ export interface EditableProfileData {
 	username: string;
 	email: string;
 	bio: string;
-	instagram: string;
-	discord: string;
-	twitter: string;
-	website: string;
-	pixiv: string;
-	deviantart: string;
-	artstation: string;
-	imageUrl: string;
+	thumbnailUrl: string;
 	coverUrl: string;
+	social: { instagram: string; discord: string; twitter: string; website: string; pixiv: string; deviantart: string; artstation: string };
 }
 
-async function hashImage(address: string, file: Blob) {
-	const formData = new FormData();
-	formData.append('image', file);
+// async function hashImage(address: string, file: Blob) {
+// 	const formData = new FormData();
+// 	formData.append('image', file);
 
-	const res = await axios.post(getApiUrl('latest', `users/${address}/hashImage`), formData);
+// 	const res = await axios.post(getApiUrl('latest', `users/${address}/hashImage`), formData);
 
-	return res.data.data;
-}
+// 	return res.data.data;
+// }
 
 export async function checkUsernameAvailability(username: string) {
 	const res = await axios.get(getApiUrl('latest', `users/existed?username=${username}`));
@@ -69,8 +63,8 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 
 	const requestTime = Date.now().toString();
 
-	const profileImageHash = data.profileImage && (await hashImage(address, data.profileImage));
-	const coverImageHash = data.coverImage && (await hashImage(address, data.coverImage));
+	// const profileImageHash = data.profileImage && (await hashImage(address, data.profileImage));
+	// const coverImageHash = data.coverImage && (await hashImage(address, data.coverImage));
 
 	const requiredKeys = ['email', 'bio', 'username', 'discord', 'instagram', 'twitter', 'website', 'pixiv', 'deviantart', 'artstation'];
 
@@ -89,15 +83,15 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 		data.bio,
 		data.username,
 		requestTime,
-		profileImageHash || '',
-		coverImageHash || '',
-		data.discord,
-		data.instagram,
-		data.twitter,
-		data.website,
-		data.pixiv,
-		data.deviantart,
-		data.artstation
+		'',
+		'',
+		data.social.discord,
+		data.social.instagram,
+		data.social.twitter,
+		data.social.website,
+		data.social.pixiv,
+		data.social.deviantart,
+		data.social.artstation
 	]
 		.map((v) => v || '')
 		.join('');
@@ -110,16 +104,16 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	formData.append('bio', data.bio);
 	formData.append('username', data.username);
 	formData.append('request_time', requestTime);
-	data.profileImage && formData.append('image', data.profileImage);
+	data.profileImage && formData.append('thumbnail', data.profileImage);
 	data.coverImage && formData.append('cover', data.coverImage);
-	formData.append('discord', data.discord);
-	formData.append('instagram', data.instagram);
-	formData.append('twitter', data.twitter);
-	formData.append('website', data.website);
-	formData.append('pixiv', data.pixiv);
-	formData.append('deviantart', data.deviantart);
-	formData.append('artstation', data.artstation);
+	formData.append('discord', data.social.discord);
+	formData.append('instagram', data.social.instagram);
+	formData.append('twitter', data.social.twitter);
+	formData.append('website', data.social.website);
+	formData.append('pixiv', data.social.pixiv);
+	formData.append('deviantart', data.social.deviantart);
+	formData.append('artstation', data.social.artstation);
 	formData.append('signature', signature);
 
-	await axios.put(getApiUrl('latest', `users/${address}`), formData, getAxiosConfig());
+	await axios.put(getApiUrl('latest', `users`), formData, getAxiosConfig());
 }

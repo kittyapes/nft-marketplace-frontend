@@ -4,7 +4,6 @@
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import NftList from '$lib/components/NftList.svelte';
-	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import { profileCompletionProgress } from '$stores/user';
@@ -17,7 +16,6 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import getUserNfts from '$utils/nfts/getUserNfts';
 	import { browser } from '$app/env';
-	import { userHasRole } from '$utils/auth/userRoles';
 	import type { UserData } from 'src/interfaces/userData';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 	import { adaptTokenDataToNftCard } from '$utils/adapters/adaptTokenDataToNftCard';
@@ -38,15 +36,7 @@
 
 	$: browser && fetchData(address);
 
-	$: socialLinks = {
-		twitter: $localProfileData?.twitter,
-		instagram: $localProfileData?.instagram,
-		discord: $localProfileData?.discord,
-		website: $localProfileData?.website,
-		pixiv: $localProfileData?.pixiv,
-		deviantart: $localProfileData?.deviantart,
-		artstation: $localProfileData?.artstation
-	};
+	$: socialLinks = $localProfileData?.social || { instagram: '', discord: '', twitter: '', website: '', pixiv: '', deviantart: '', artstation: '' };
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
 	$: firstTimeUser = $localProfileData?.createdAt === $localProfileData?.updatedAt;
@@ -54,15 +44,30 @@
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
 
-	let collectedNfts: [] = null;
+	let collectedNfts: any[] = [];
+	let createdNfts: any[] = [];
+
 	const fetchCreatedNfts = async () => {
 		try {
 			const unfiltered = (await getUserNfts(address)).result;
-			collectedNfts = unfiltered.filter((v) => v.token_uri).map(adaptTokenDataToNftCard);
 
-			console.log(collectedNfts);
-		} catch {
+			// Assign NFTs accordingly
+			unfiltered.map((nft) => {
+				if (nft.token_uri) {
+					if (nft.minter_address?.toLowerCase() === address.toLowerCase()) {
+						// User Created this
+						createdNfts.push(adaptTokenDataToNftCard(nft));
+					} else {
+						collectedNfts.push(adaptTokenDataToNftCard(nft));
+					}
+				}
+			});
+
+			console.log(createdNfts);
+		} catch (err) {
+			console.log(err);
 			collectedNfts = [];
+			createdNfts = [];
 		}
 	};
 
@@ -71,7 +76,7 @@
 
 <div class="h-72 bg-color-gray-light">
 	{#if $localProfileData?.coverUrl}
-		<img src={$localProfileData?.coverUrl} alt="User cover." class="h-full w-full object-cover" />
+		<div style="background-image: url({$localProfileData?.coverUrl})" class="h-full w-full bg-cover bg-center bg-no-repeat" />
 	{/if}
 </div>
 
@@ -81,8 +86,8 @@
 		class="border-white border-4 w-32 h-32 absolute top-0 transform -translate-y-1/2 rounded-full bg-white
 		grid place-items-center shadow overflow-hidden"
 	>
-		{#if $localProfileData?.imageUrl}
-			<img src={$localProfileData?.imageUrl} class="rounded-full h-full" alt="User avatar." />
+		{#if $localProfileData?.thumbnailUrl}
+			<img src={$localProfileData?.thumbnailUrl} class="rounded-full h-full" alt="User avatar." />
 		{:else}
 			<GuestUserAvatar />
 		{/if}
@@ -166,7 +171,7 @@
 		{#if selectedTab === 'COLLECTED NFTS'}
 			<NftList data={collectedNfts} />
 		{:else if selectedTab === 'CREATED NFTS'}
-			<NftList data={[]} />
+			<NftList data={createdNfts} />
 		{:else if selectedTab === 'ACTIVITY'}
 			<NftList data={[]} />
 		{:else if selectedTab === 'FAVORITES'}
@@ -174,7 +179,7 @@
 		{/if}
 	</div>
 </div>
-
+<!-- Removed as a result of https://arcadia2.atlassian.net/browse/HINATA-603?focusedCommentId=17093
 {#if $userHasRole('admin', 'superadmin')}
 	<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
-{/if}
+{/if} -->

@@ -17,7 +17,7 @@
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { profileData, refreshProfileData } from '$stores/user';
-	import { appSigner, currentUserAddress, welcomeNftClaimedOnChain, welcomeNftClaimedOnServer, welcomeNftMessage } from '$stores/wallet';
+	import { appSigner, currentUserAddress, welcomeNftClaimedOnChain } from '$stores/wallet';
 	import { hasClaimedFreeNft } from '$utils/api/freeNft';
 	import { checkUsernameAvailability, EditableProfileData, updateProfile } from '$utils/api/profile';
 	import { inputize } from '$utils/misc/inputize';
@@ -36,8 +36,8 @@
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
 		{ at: 50, label: 'Bio' },
-		{ at: 75, label: 'Profile Image' },
-		{ at: 100, label: 'Background Image', dot: false }
+		{ at: 75, label: 'Profile Picture' },
+		{ at: 100, label: 'Banner Image', dot: false }
 	];
 
 	const fetchedDataStore = writable<EditableProfileData>(null);
@@ -94,17 +94,11 @@
 				username: data.username,
 				email: data.email,
 				bio: inputize(data.bio),
-				instagram: data.instagram,
-				discord: data.discord,
-				twitter: data.twitter,
-				imageUrl: data.imageUrl,
+				thumbnailUrl: data.thumbnailUrl,
 				coverUrl: data.coverUrl,
 				profileImage: null,
 				coverImage: null,
-				website: data.website,
-				pixiv: data.pixiv,
-				deviantart: data.deviantart,
-				artstation: data.artstation
+				social: data.social
 			} as EditableProfileData;
 
 			fetchedDataStore.set(cloneDeep(localData));
@@ -112,7 +106,7 @@
 
 			// We have to explicitly set this because reactive statements
 			// do not react to changes in async functions.
-			isProfileImage = localData.imageUrl;
+			isProfileImage = localData.thumbnailUrl;
 			isCoverImage = localData.coverUrl;
 
 			if (data.updatedAt === data.createdAt) {
@@ -124,12 +118,12 @@
 		}
 	}
 
-	$: isProfileImage = $localDataStore?.profileImage || $localDataStore?.imageUrl;
+	$: isProfileImage = $localDataStore?.profileImage || $localDataStore?.thumbnailUrl;
 	$: isCoverImage = $localDataStore?.coverImage || $localDataStore?.coverUrl;
 
 	$: browser && $profileData && useProfileData($profileData);
 
-	$: console.log($profileData);
+	$: console.log('Profile Data: ', $profileData);
 
 	function isBioValid(bio: string) {
 		return bio && bio.trim().split(' ').length > 2;
@@ -196,7 +190,7 @@
 	}
 
 	$: bioValid = isValidBio($localDataStore?.bio) || !$localDataStore?.bio;
-	$: websiteValid = browser && (!$localDataStore.website || isUrl($localDataStore.website));
+	$: websiteValid = browser && (!$localDataStore.social.website || isUrl($localDataStore.social.website));
 	$: if (websiteValid) {
 		// console.log(websiteValid);
 	}
@@ -307,7 +301,7 @@
 						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
 					</div>
 					<div class="flex w-full flex-col">
-						<DragDropImage bind:blob={$localDataStore.profileImage} currentImgUrl={$fetchedDataStore.imageUrl} dimensions="180x180 px" class="!w-48 !h-44 mx-auto" />
+						<DragDropImage bind:blob={$localDataStore.profileImage} currentImgUrl={$fetchedDataStore.thumbnailUrl} dimensions="180x180 px" class="!w-48 !h-44 mx-auto" />
 					</div>
 				</div>
 
@@ -330,17 +324,17 @@
 					<div id="socials-container" class="grid gap-y-3 peer">
 						<div>
 							<Instagram />
-							<input type="text" class="input input-gray-outline" placeholder="Instagram link" bind:value={$localDataStore.instagram} />
+							<input type="text" class="input input-gray-outline" placeholder="Instagram link" bind:value={$localDataStore.social.instagram} />
 						</div>
 
 						<div>
 							<Discord />
-							<input type="text" class="input input-gray-outline" placeholder="Discord link" bind:value={$localDataStore.discord} />
+							<input type="text" class="input input-gray-outline" placeholder="Discord link" bind:value={$localDataStore.social.discord} />
 						</div>
 
 						<div>
 							<Twitter />
-							<input type="text" class="input input-gray-outline" placeholder="Twitter link" bind:value={$localDataStore.twitter} />
+							<input type="text" class="input input-gray-outline" placeholder="Twitter link" bind:value={$localDataStore.social.twitter} />
 						</div>
 
 						<div>
@@ -350,23 +344,23 @@
 								pattern={'^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?'}
 								class="input input-gray-outline"
 								placeholder="Personal Website"
-								bind:value={$localDataStore.website}
+								bind:value={$localDataStore.social.website}
 							/>
 						</div>
 
 						<div>
 							<Pixiv />
-							<input type="text" class="input input-gray-outline" placeholder="Pixiv link" bind:value={$localDataStore.pixiv} />
+							<input type="text" class="input input-gray-outline" placeholder="Pixiv link" bind:value={$localDataStore.social.pixiv} />
 						</div>
 
 						<div>
 							<Deviantart />
-							<input type="text" class="input input-gray-outline" placeholder="Deviantart link" bind:value={$localDataStore.deviantart} />
+							<input type="text" class="input input-gray-outline" placeholder="Deviantart link" bind:value={$localDataStore.social.deviantart} />
 						</div>
 
 						<div>
 							<Artstation />
-							<input type="text" class="input input-gray-outline" placeholder="Artstation link" bind:value={$localDataStore.artstation} />
+							<input type="text" class="input input-gray-outline" placeholder="Artstation link" bind:value={$localDataStore.social.artstation} />
 						</div>
 					</div>
 				</div>
