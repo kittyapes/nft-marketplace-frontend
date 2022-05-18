@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/env';
-	import { acceptedImages } from '$constants';
+	import { acceptedImages, acceptedVideos } from '$constants';
+	import { notifyError } from '$utils/toast';
 	import { fade } from 'svelte/transition';
 
 	export let text = 'Drag and drop an image here, or click to browse';
@@ -8,33 +9,45 @@
 	export let blob: Blob | null = null;
 	export let currentImgUrl: string = null;
 	export let previewSrc = '';
+	export let acceptedFormats: string[] = [];
 
 	let fileInput: HTMLInputElement;
 	let files: any = [];
 	let over = false;
+	let fileType: 'image' | 'video' = null;
 
 	$: if (browser && files.length) {
-		const reader = new FileReader();
+		const file: Blob = files[0];
 
-		reader.onload = (e) => {
-			previewSrc = e.target.result as string;
-		};
+		fileType = file.type.split('/')[0] as any;
 
-		const file = files[0];
+		if (fileType === 'image' && file.size > 25_000_000) {
+			files = [];
+			fileType = null;
+			notifyError('The image cannot be over 25 MB in size!');
+		} else if (fileType === 'video' && file.size > 50_000_000) {
+			files = [];
+			fileType = null;
+			notifyError('The video cannot be over 50 MB in size!');
+		} else {
+			const reader = new FileReader();
 
-		reader.readAsDataURL(files[0]);
+			reader.onload = (e) => {
+				previewSrc = e.target.result as string;
+			};
 
-		blob = file;
+			reader.readAsDataURL(files[0]);
+
+			blob = file;
+		}
 	}
 
 	function onDrop(event) {
-		event.preventDefault();
 		files = event.dataTransfer.files;
 		over = false;
 	}
 
-	function onDragOver(event) {
-		event.preventDefault();
+	function onDragOver() {
 		over = true;
 	}
 
@@ -49,19 +62,19 @@
 		class="h-full w-full border-2 rounded-2xl border-dashed flex items-center justify-center overflow-hidden
 		select-none {$$props.class}"
 		on:click={() => fileInput.click()}
-		on:drop={onDrop}
-		on:dragover={onDragOver}
+		on:drop|preventDefault={onDrop}
+		on:dragover|preventDefault={onDragOver}
 		on:dragleave={onDragLeave}
 		class:over
 	>
-		{#if previewSrc || currentImgUrl}
-			<img
-				src={previewSrc || currentImgUrl}
-				alt=""
-				in:fade
-				class="max-h-full w-full object-contain rounded"
-			/>
-		{:else}
+		{#if fileType === 'image' && (previewSrc || currentImgUrl)}
+			<img src={previewSrc || currentImgUrl} alt="" in:fade class="max-h-full w-full object-contain rounded" />
+		{:else if fileType === 'video' && (previewSrc || currentImgUrl)}
+			<video class="max-w-full max-h-full rounded object-contain" autoplay loop in:fade>
+				<source src={previewSrc || currentImgUrl} type="video/mp4" />
+				<track kind="captions" />
+			</video>
+		{:else if !fileType}
 			<div class="text-center text-color-black opacity-50 text-sm px-12">
 				{@html text}
 			</div>
@@ -72,7 +85,7 @@
 		{dimensions}
 	</div>
 
-	<input type="file" accept={acceptedImages} class="hidden" bind:this={fileInput} bind:files />
+	<input type="file" accept={acceptedFormats.join(',')} class="hidden" bind:this={fileInput} bind:files />
 </div>
 
 <style lang="postcss">

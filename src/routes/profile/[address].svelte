@@ -36,15 +36,7 @@
 
 	$: browser && fetchData(address);
 
-	$: socialLinks = {
-		twitter: $localProfileData?.twitter,
-		instagram: $localProfileData?.instagram,
-		discord: $localProfileData?.discord,
-		website: $localProfileData?.website,
-		pixiv: $localProfileData?.pixiv,
-		deviantart: $localProfileData?.deviantart,
-		artstation: $localProfileData?.artstation
-	};
+	$: socialLinks = $localProfileData?.social || { instagram: '', discord: '', twitter: '', website: '', pixiv: '', deviantart: '', artstation: '' };
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
 	$: firstTimeUser = $localProfileData?.createdAt === $localProfileData?.updatedAt;
@@ -84,7 +76,7 @@
 
 <div class="h-72 bg-color-gray-light">
 	{#if $localProfileData?.coverUrl}
-		<img src={$localProfileData?.coverUrl} alt="User cover." class="h-full w-full object-cover" />
+		<div style="background-image: url({$localProfileData?.coverUrl})" class="h-full w-full bg-cover bg-center bg-no-repeat" />
 	{/if}
 </div>
 

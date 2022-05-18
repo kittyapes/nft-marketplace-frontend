@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { acceptedNftFileTypes } from '$constants';
+
 	import Back from '$icons/back_.svelte';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
@@ -26,7 +28,7 @@
 	let nftQuantity: number = 1;
 	let nftCollection = 'No collection';
 	let nftDescription = '';
-	let nftImagePreview = '';
+	let nftAssetPreview = '';
 	let nftThumbnailPreview = '';
 	let fileBlob;
 	let animationBlob;
@@ -80,7 +82,8 @@
 			title: nftName,
 			nftIds: [nftId],
 			nftAmounts: [nftQuantity],
-			image: fileBlob
+			image: fileBlob,
+			animation: animationBlob
 		});
 
 		if (!createdBundleRes) {
@@ -122,7 +125,7 @@
 	}
 
 	$: nftQuantityValid = nftQuantity > 0;
-	$: inputValid = nftName && nftCollection && nftImagePreview && nftThumbnailPreview && nftQuantityValid;
+	$: inputValid = nftName && nftCollection && nftAssetPreview && nftThumbnailPreview && nftQuantityValid;
 </script>
 
 <!-- Back button -->
@@ -154,7 +157,7 @@
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
-				<DragDropImage bind:blob={fileBlob} text={dragDropText} bind:previewSrc={nftImagePreview} />
+				<DragDropImage bind:blob={animationBlob} text={dragDropText} bind:previewSrc={nftAssetPreview} acceptedFormats={acceptedNftFileTypes} />
 			</div>
 		</div>
 
@@ -169,7 +172,7 @@
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
-				<DragDropImage bind:blob={animationBlob} text={dragDropText} bind:previewSrc={nftThumbnailPreview} />
+				<DragDropImage bind:blob={fileBlob} text={dragDropText} bind:previewSrc={nftThumbnailPreview} />
 			</div>
 		</div>
 
@@ -205,6 +208,6 @@
 	<!-- Right side -->
 	<div class="separator border-0 border-l p-8 w-80">
 		<div class="uppercase italic text-xl mb-4">Preview</div>
-		<NftCard options={{ id: null, title: nftName, imageUrl: nftImagePreview }} />
+		<NftCard options={{ id: null, title: nftName, imageUrl: nftAssetPreview }} />
 	</div>
 </div>
