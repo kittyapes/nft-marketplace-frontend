@@ -10,6 +10,7 @@
 	import { newDropProperties, newNFTs } from '$stores/create';
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
+	import { getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { NewBundleData, newBundleData } from '$utils/create';
 	import { createBundle } from '$utils/create/createBundle';
@@ -70,10 +71,13 @@
 			console.log($newNFTs);
 		}
 
-		progress.set(33);
+		const newNftDetail = await getNft(createNftRes.nftId.toString());
+		console.log(newNftDetail);
+
+		progress.set(50);
 
 		//TODO: create NFT on chain
-		batchMintNft;
+		//batchMintNft
 
 		newBundleData.update((data) => {
 			return { ...data, nftId };
