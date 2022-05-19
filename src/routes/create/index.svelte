@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { acceptedNftFileTypes } from '$constants';
-
 	import Back from '$icons/back_.svelte';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
@@ -76,7 +75,7 @@
 
 		progress.set(50);
 
-		//TODO: create NFT on chain
+		// create NFT on chain
 		const nftMintRes = await createNFTOnChain({ id: createNftRes.nftId.toString(), amount: nftQuantity });
 		if (nftMintRes) {
 			console.info('[Create] NFT created on chain.');

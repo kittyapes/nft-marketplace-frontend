@@ -2,6 +2,7 @@ import { appSigner } from '$stores/wallet';
 import { getApiUrl } from '$utils/api';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import HinataMarketplaceContract from '$utils/contracts/hinataMarketplace';
+import HinataMarketplaceStorageContract from '$utils/contracts/hinataMarketplaceStorage';
 import { httpErrorHandler } from '$utils/toast';
 import axios from 'axios';
 import type { ethers}  from 'ethers';
@@ -33,11 +34,10 @@ export const createNFTOnAPI = async ({ amount, animation, artist, contractId, cr
 };
 
 // Equivalent to minting the NFT
-// TODO: Ask Anhnt about the data that needs to be passed here or whether an empty array would do
 export const createNFTOnChain = async ({ id, amount }: NFTMintingObject) => {
 	try {
-		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
-		const nftMintingTransaction: ethers.ContractTransaction = await MarketplaceContract.mintArtistNFT(
+		const MarketplaceStorageContract = HinataMarketplaceStorageContract(get(appSigner));
+		const nftMintingTransaction: ethers.ContractTransaction = await MarketplaceStorageContract.mintArtistNFT(
 			id,
 			amount,
 			[]
