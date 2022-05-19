@@ -1,5 +1,5 @@
 // In a node.js environment
-import { connectionDetails } from '$stores/wallet';
+import { connectionDetails, currentUserAddress } from '$stores/wallet';
 import { makeHttps } from '$utils/ipfs';
 import axios from 'axios';
 import { get, writable } from 'svelte/store';
@@ -179,7 +179,7 @@ export default async (address: string, page = 1, limit = 10) => {
 			userAddress: string;
 		};
 
-		const options: Options = { chain: getCorrectChain(), userAddress: address, page, limit };
+		const options: Options = { chain: get(currentUserAddress).toLowerCase() === address.toLowerCase() ? getCorrectChain() : 'eth', userAddress: address, page, limit };
 		console.log('fetching page: ', page);
 		//const ethereumNfts = await Moralis.Web3API.account.getNFTs(options);
 
