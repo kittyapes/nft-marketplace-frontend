@@ -35,6 +35,7 @@ specifiers:
   prettier-plugin-svelte: ^2.4.0
   svelte: ^3.46.4
   svelte-check: ^2.2.6
+  svelte-loading-spinners: ^0.1.7
   svelte-preprocess: ^4.9.8
   svelte-previous: ^2.0.1
   tailwind-scrollbar-hide: ^1.1.7
@@ -59,6 +60,7 @@ dependencies:
   jwt-decode: 3.1.2
   lodash-es: 4.17.21
   no-try: 3.1.0
+  svelte-loading-spinners: 0.1.7
   svelte-previous: 2.0.1
   walletlink: 2.2.10_@babel+core@7.16.0
   web3: 1.6.1
@@ -6962,6 +6964,10 @@ packages:
     dependencies:
       svelte: 3.46.4
     dev: true
+
+  /svelte-loading-spinners/0.1.7:
+    resolution: {integrity: sha512-EKCId1DjVL2RSUVJJsvtNcqQHox03XIgh4xh/4p7r6ST7d8mut6INY9/LqK4A17PFU64+3quZmqiSfOlf480CA==}
+    dev: false
 
   /svelte-preprocess/4.9.8_artvh3kpjcpsgmjc3e4z2ibnky:
     resolution: {integrity: sha512-EQS/oRZzMtYdAprppZxY3HcysKh11w54MgA63ybtL+TAZ4hVqYOnhw41JVJjWN9dhPnNjjLzvbZ2tMhTsla1Og==}

@@ -1,15 +1,13 @@
 <script lang="ts">
 	import NftCard from './NftCard.svelte';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
+	import DiamondsLoader from './DiamondsLoader.svelte';
 
 	export let data: NftCardOptions[];
+	export let isLoading = false;
 </script>
 
-{#if data === null}
-	<div class="placeholder">Loading...</div>
-{/if}
-
-{#if data?.length === 0}
+{#if !(isLoading || data === null) && data?.length === 0}
 	<div class="placeholder">Nothing to see here, move along.</div>
 {/if}
 
@@ -21,6 +19,10 @@
 			{/if}
 		{/each}
 	</div>
+{/if}
+
+{#if isLoading || data === null}
+	<DiamondsLoader />
 {/if}
 
 <style type="postcss">
