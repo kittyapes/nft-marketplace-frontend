@@ -81,6 +81,7 @@
 			// Decide whether to fetch additional NFTs
 			totalNfts = fetchNftsResponse.total; // total nfts can be null returned when an error is encountered on the server
 
+			console.log(fetchNftsResponse);
 			if (fetchNftsResponse.total && fetchNftsResponse.total > collectedNfts.length + createdNfts.length) {
 				setTimeout(() => {
 					fetchCreatedNfts();

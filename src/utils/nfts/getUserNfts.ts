@@ -71,7 +71,6 @@ const cacheResultsLocally = (userAddress: string, data: { total: number; page: n
 		pastResults[userAddress.toLowerCase()] = { ...pastResults[userAddress.toLowerCase()], cachedOn: Date.now() };
 	}
 
-	console.log(pastResults);
 	localStorage.setItem('cachedUserNfts', JSON.stringify(pastResults));
 };
 
