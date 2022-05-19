@@ -77,7 +77,15 @@
 		progress.set(50);
 
 		//TODO: create NFT on chain
-		//batchMintNft
+		const nftMintRes = await createNFTOnChain({ id: createNftRes.nftId.toString(), amount: nftQuantity });
+		if (nftMintRes) {
+			console.info('[Create] NFT created on chain.');
+		} else {
+			popupHandler.close();
+			notifyError('Failed to create NFT on chain.');
+			console.error('[Create] Failed to create NFT on chain.');
+			return;
+		}
 
 		newBundleData.update((data) => {
 			return { ...data, nftId };

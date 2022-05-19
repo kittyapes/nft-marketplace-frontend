@@ -11,9 +11,8 @@ import { get } from 'svelte/store';
 
 export const createNFTOnAPI = async ({ amount, animation, artist, contractId, creator, image, name, description }: NFTCreationObject) => {
 	const formData = new FormData();
-	formData.append('thumbnailUrl', image);	
-	formData.append('assetUrl', animation || null);
-	//formData.append('contractId', contractId.toString());
+	formData.append('thumbnail', image);	
+	formData.append('asset', animation || null);
 	formData.append('amount', amount.toString() || '1');
 	formData.append('name', name);
 	formData.append('artist', artist);
@@ -35,11 +34,10 @@ export const createNFTOnAPI = async ({ amount, animation, artist, contractId, cr
 
 // Equivalent to minting the NFT
 // TODO: Ask Anhnt about the data that needs to be passed here or whether an empty array would do
-export const createNFTOnChain = async ({ dropId, id, amount }: NFTMintingObject) => {
+export const createNFTOnChain = async ({ id, amount }: NFTMintingObject) => {
 	try {
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
-		const nftMintingTransaction: ethers.ContractTransaction = await MarketplaceContract.mintDropNFT(
-			dropId,
+		const nftMintingTransaction: ethers.ContractTransaction = await MarketplaceContract.mintArtistNFT(
 			id,
 			amount,
 			[]
