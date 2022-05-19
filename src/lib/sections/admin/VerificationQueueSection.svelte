@@ -10,6 +10,7 @@
 	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
 	import { makeErrorHandler, makeSuccessHandler, notifyError, notifySuccess } from '$utils/toast';
 	import { writable } from 'svelte/store';
+	import { useTry, useTryAsync } from 'no-try';
 
 	const processDayOptions = [
 		{ label: 'Monday', index: 0 },
@@ -67,7 +68,13 @@
 	async function refreshBatchProcessSettings() {
 		isRefreshingBatchProcessSettings = true;
 
-		const settings = await getBatchProcessSettings();
+		const [err, settings] = await useTryAsync(getBatchProcessSettings);
+
+		if (err) {
+			notifyError(err.message);
+			isRefreshingBatchProcessSettings = false;
+			return;
+		}
 
 		isBatchProcessEnabled.set(settings.enabled);
 		batchProcessDayOption.set(processDayOptions[settings.processingDayIndex]);

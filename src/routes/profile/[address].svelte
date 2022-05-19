@@ -19,6 +19,8 @@
 	import type { UserData } from 'src/interfaces/userData';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 	import { adaptTokenDataToNftCard } from '$utils/adapters/adaptTokenDataToNftCard';
+	import { userHasRole } from '$utils/auth/userRoles';
+	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 
 	const tabs = ['COLLECTED NFTS', 'CREATED NFTS', 'FAVORITES'];
 	let selectedTab = 'COLLECTED NFTS';
@@ -29,9 +31,6 @@
 
 	async function fetchData(forAdress: string) {
 		$localProfileData = await fetchProfileData(forAdress);
-		if (!$localProfileData) {
-			goto('/404');
-		}
 	}
 
 	$: browser && fetchData(address);
@@ -44,30 +43,56 @@
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
 
-	let collectedNfts: any[] = [];
-	let createdNfts: any[] = [];
+	$: collectedNfts = [];
+	$: createdNfts = [];
+	let totalNfts: number | null = null;
+	$: totalNfts;
+
+	let nftsPage = 0;
 
 	const fetchCreatedNfts = async () => {
 		try {
-			const unfiltered = (await getUserNfts(address)).result;
+			nftsPage += 1;
+			const fetchNftsResponse = await getUserNfts(address, nftsPage);
+			const unfiltered = fetchNftsResponse.result;
+
+			// Keep these here as they help add everything to the array before trying to update the UI
+			const _createdProxy = [];
+			const _collectedProxy = [];
 
 			// Assign NFTs accordingly
 			unfiltered.map((nft) => {
 				if (nft.token_uri) {
+					const parsedNft = adaptTokenDataToNftCard(nft);
+					// if (parsedNft.imageUrl) {
 					if (nft.minter_address?.toLowerCase() === address.toLowerCase()) {
 						// User Created this
-						createdNfts.push(adaptTokenDataToNftCard(nft));
+						_createdProxy.push(parsedNft);
 					} else {
-						collectedNfts.push(adaptTokenDataToNftCard(nft));
+						_collectedProxy.push(parsedNft);
 					}
+					// }
 				}
 			});
 
-			console.log(createdNfts);
+			createdNfts = [...createdNfts, ..._createdProxy];
+			collectedNfts = [...collectedNfts, ..._collectedProxy];
+
+			// Decide whether to fetch additional NFTs
+			totalNfts = fetchNftsResponse.total; // total nfts can be null returned when an error is encountered on the server
+
+			if (fetchNftsResponse.total && fetchNftsResponse.total > collectedNfts.length + createdNfts.length) {
+				setTimeout(() => {
+					fetchCreatedNfts();
+				}, 60000);
+			} else if (!fetchNftsResponse.total) {
+				// When the server returns an error - indicated by the total property being null
+				setTimeout(() => {
+					fetchCreatedNfts();
+				}, 180000); // Wait for three minutes
+			}
 		} catch (err) {
 			console.log(err);
-			collectedNfts = [];
-			createdNfts = [];
 		}
 	};
 
@@ -169,9 +194,9 @@
 
 	<div class="max-w-screen-xl mx-auto">
 		{#if selectedTab === 'COLLECTED NFTS'}
-			<NftList data={collectedNfts} />
+			<NftList data={collectedNfts} isLoading={!totalNfts || totalNfts > collectedNfts.length + createdNfts.length} />
 		{:else if selectedTab === 'CREATED NFTS'}
-			<NftList data={createdNfts} />
+			<NftList data={createdNfts} isLoading={!totalNfts || totalNfts > collectedNfts.length + createdNfts.length} />
 		{:else if selectedTab === 'ACTIVITY'}
 			<NftList data={[]} />
 		{:else if selectedTab === 'FAVORITES'}
@@ -179,7 +204,7 @@
 		{/if}
 	</div>
 </div>
-<!-- Removed as a result of https://arcadia2.atlassian.net/browse/HINATA-603?focusedCommentId=17093
+
 {#if $userHasRole('admin', 'superadmin')}
 	<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
-{/if} -->
+{/if}

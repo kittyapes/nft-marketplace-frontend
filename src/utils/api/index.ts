@@ -3,14 +3,20 @@ import { getEnv } from '$utils/env';
 const LATEST = 2;
 const DATABASE_ITERATION = 2;
 
-export type ApiVersion = 'latest' | `sprint-${number}`;
+export type ApiVersion = 'latest' | `sprint-${number}` | 'v2';
 
 export function getApiUrl(apiVersion: ApiVersion, apiPath: string): string {
 	let domain = null;
 
-	if (getEnv() === 'dev') {
-		console.warn(`[API] Ignoring '${apiVersion}' version and using dev environment`);
-		domain = `https://hinata-dev.rekt-news.xyz/api/v2`;
+	let overrideApiUrl = import.meta.env.VITE_OVERRIDE_API_URL as string;
+
+	if (overrideApiUrl) {
+		overrideApiUrl = overrideApiUrl.replace(/\/+$/, '');
+
+		console.warn(`[API] Ignoring '${apiVersion}' version and overriding the API URL with: "${overrideApiUrl}"`);
+		domain = overrideApiUrl;
+	} else if (apiVersion === 'v2') {
+		domain = 'https://hinata-test-v2.rekt-news.xyz/';
 	} else if (apiVersion === 'latest') {
 		domain = `https://hinata-test-v${LATEST}.rekt-news.xyz/api/v${DATABASE_ITERATION}`;
 	} else if (apiVersion.match(/^sprint-\d+$/)) {
