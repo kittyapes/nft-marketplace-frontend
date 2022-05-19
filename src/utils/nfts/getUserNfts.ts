@@ -179,7 +179,8 @@ export default async (address: string, page = 1, limit = 10) => {
 			userAddress: string;
 		};
 
-		const options: Options = { chain: get(currentUserAddress).toLowerCase() === address.toLowerCase() ? getCorrectChain() : 'eth', userAddress: address, page, limit };
+		const isCurrentUser = get(currentUserAddress) && get(currentUserAddress)?.toLowerCase() === address.toLowerCase();
+		const options: Options = { chain: isCurrentUser ? getCorrectChain() : 'eth', userAddress: address, page, limit };
 		console.log('fetching page: ', page);
 		//const ethereumNfts = await Moralis.Web3API.account.getNFTs(options);
 
