@@ -1,11 +1,11 @@
 <script lang="ts">
 	import PlaceholderImage from '$icons/placeholder-image.svelte';
 
-	export let displayStyle: 'contained' | 'padded' | 'covered' = 'contained';
+	export let displayStyle: 'CONTAINED' | 'PADDED' | 'COVERED' = 'CONTAINED';
 </script>
 
 <div class="flex gap-x-8">
-	<div class="-option" on:click={() => (displayStyle = 'contained')} class:-selected={displayStyle === 'contained'}>
+	<div class="-option" on:click={() => (displayStyle = 'CONTAINED')} class:-selected={displayStyle === 'CONTAINED'}>
 		<div>Contained</div>
 		<div class="w-1/2 mx-auto"><PlaceholderImage /></div>
 		<div>
@@ -14,7 +14,7 @@
 		</div>
 	</div>
 
-	<div class="-option" on:click={() => (displayStyle = 'padded')} class:-selected={displayStyle === 'padded'}>
+	<div class="-option" on:click={() => (displayStyle = 'PADDED')} class:-selected={displayStyle === 'PADDED'}>
 		<div>Padded</div>
 		<div class="mx-4"><PlaceholderImage /></div>
 		<div>
@@ -23,7 +23,7 @@
 		</div>
 	</div>
 
-	<div class="-option" on:click={() => (displayStyle = 'covered')} class:-selected={displayStyle === 'covered'}>
+	<div class="-option" on:click={() => (displayStyle = 'COVERED')} class:-selected={displayStyle === 'COVERED'}>
 		<div>Covered</div>
 		<div><PlaceholderImage /></div>
 		<div>

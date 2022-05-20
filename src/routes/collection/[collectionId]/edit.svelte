@@ -9,11 +9,33 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
 	import { writable } from 'svelte/store';
-	import type { Collection } from '$utils/api/collection';
+	import { Collection, getInitialCollectionData } from '$utils/api/collection';
 
-	const blockchainOptions = [{ label: 'Ethereum', value: 'eth' }];
+	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
 
-	const collectionData = writable<Collection>({} as Collection);
+	const collectionData = writable<Collection>(getInitialCollectionData() as Collection);
+
+	function newLogoBlobHandler(event) {
+		const { blob } = event.detail;
+
+		collectionData.update((collection) => {
+			collection.image = blob;
+
+			return collection;
+		});
+	}
+
+	function newCoverBlobHandler(event) {
+		const { blob } = event.detail;
+
+		collectionData.update((collection) => {
+			collection.cover = blob;
+
+			return collection;
+		});
+	}
+
+	$: console.log($collectionData);
 </script>
 
 <main class="max-w-screen-xl mx-auto my-32">
@@ -37,12 +59,12 @@
 
 			<!-- File types -->
 			<div class="font-semibold mt-8">File types:</div>
-			<div class="mt-2">PNG, GIF, WEBP</div>
+			<div class="mt-2 text-sm">PNG, GIF, WEBP</div>
 		</div>
 
 		<!-- Logo image drop area -->
 		<div>
-			<DragDropImage class="w-48 h-48 rounded-full" text="">
+			<DragDropImage class="w-48 h-48 rounded-full" text="" on:new-blob={newLogoBlobHandler}>
 				<div slot="placeholder"><PlaceholderImage /></div>
 			</DragDropImage>
 		</div>
@@ -50,54 +72,54 @@
 		<!-- Featured image labels -->
 		<div class="mt-8">
 			<div class="uppercase font-semibold">Featured Image</div>
-			<div class="uppercase">Upload File</div>
+			<div class="uppercase text-sm">Upload File</div>
 
 			<!-- File types -->
 			<div class="font-semibold mt-8">File types:</div>
-			<div class="mt-2">PNG, GIF, WEBP, MP4, MP3</div>
+			<div class="mt-2 text-sm">PNG, GIF, WEBP, MP4, MP3</div>
 			<div>Max 50 mb</div>
 		</div>
 
 		<!-- Featured image drop area -->
-		<div class="max-w-md mt-8">
-			<DragDropImage class="h-48" />
+		<div class="mt-8">
+			<DragDropImage class="h-48" on:new-blob={newCoverBlobHandler} />
 		</div>
 
 		<!-- Choose display style labels -->
 		<div class="mt-16">
 			<div class="uppercase font-semibold">Choose Display Style</div>
-			<div class="mt-2">Change how your items are shown</div>
+			<div class="mt-2 text-sm">Change how your items are shown</div>
 		</div>
 
 		<!-- Choose display style switcher -->
 		<div class="mt-16">
-			<CollectionDisplayStyleSwitcher />
+			<CollectionDisplayStyleSwitcher bind:displayStyle={$collectionData.displayTheme} />
 		</div>
 
 		<div class="mr-32 mt-16">
 			<!-- Collection name -->
 			<div>
 				<div class="uppercase font-semibold">Collection Name</div>
-				<input type="text" class="input mt-2 w-full" placeholder="The Kitty Collection" />
+				<input type="text" class="input mt-2 w-full" placeholder="The Kitty Collection" bind:value={$collectionData.name} />
 			</div>
 
 			<!-- Collection URL -->
 			<div>
 				<div class="uppercase font-semibold mt-8">URL</div>
-				<input type="text" class="input mt-2 w-full" placeholder="https://hinata.io/collection/treasure-of-the-sea" />
+				<input type="text" class="input mt-2 w-full" placeholder="https://hinata.io/collection/treasure-of-the-sea" bind:value={$collectionData.url} />
 			</div>
 		</div>
 
 		<!-- Description -->
 		<div class="mt-16">
 			<div class="uppercase font-semibold mb-2">Description</div>
-			<TextArea outline placeholder="A collection of all the kitties in the world." maxChars={200} />
+			<TextArea outline placeholder="A collection of all the kitties in the world." maxChars={200} bind:value={$collectionData.description} />
 		</div>
 	</div>
 
 	<!-- Royalties -->
 	<div>
-		<Royalties />
+		<Royalties bind:values={$collectionData.royalties} />
 	</div>
 
 	<!-- Links -->
@@ -113,8 +135,8 @@
 	<!-- Blockchain -->
 	<div class="mt-16 flex flex-col">
 		<div class="uppercase font-semibold">Blockchain</div>
-		<p class="mt-2 mb-2">Select the blockchain where you'd like new items from this collection to be added by default.</p>
-		<Dropdown options={blockchainOptions} />
+		<p class="mt-2 mb-2">Your Collection will be created on the following Blockchain:</p>
+		<Dropdown options={blockchainOptions} disabled />
 	</div>
 
 	<!-- Payment tokens -->

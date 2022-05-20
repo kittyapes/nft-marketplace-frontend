@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { notifyError } from '$utils/toast';
+	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
+
+	const dispatch = createEventDispatcher();
 
 	// TODO refactor to completely remove this and use the placeholder named slot instead
 	export let text = 'Drag and drop an image here, or click to browse';
@@ -39,6 +42,8 @@
 			reader.readAsDataURL(files[0]);
 
 			blob = file;
+
+			dispatch('new-blob', { blob });
 		}
 	}
 

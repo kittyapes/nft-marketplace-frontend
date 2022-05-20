@@ -3,11 +3,12 @@ import { getApiUrl } from '.';
 
 export interface Collection {
 	name: string;
+	url: string;
 	image?: Blob;
 	cover?: Blob;
 	description?: string;
 	displayTheme: 'CONTAINED' | 'PADDED' | 'COVERED';
-	royalties?: { fees: string; address: string }[];
+	royalties?: { fees: string | number; address: string }[];
 	walletAddress?: string;
 	discordUrl?: string;
 	instagramUrl?: string;
@@ -18,6 +19,12 @@ export interface Collection {
 	paymentTokenTicker: 'eth';
 	paymentTokenAddress: string;
 	isExplicitSensitive: boolean;
+}
+
+export function getInitialCollectionData(): Partial<Collection> {
+	return {
+		royalties: []
+	};
 }
 
 export async function apiCreateCollection(options: Collection) {
