@@ -1,14 +1,19 @@
-<script>
+<script lang="ts">
 	import PlaceholderImage from '$icons/placeholder-image.svelte';
 	import CollectionDisplayStyleSwitcher from '$lib/components/collection/CollectionDisplayStyleSwitcher.svelte';
 	import PaymentTokenCard from '$lib/components/collection/PaymentTokenCard.svelte';
 	import Royalties from '$lib/components/create/Royalties.svelte';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
+	import SocialLinkInput from '$lib/components/SocialLinkInput.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
+	import { writable } from 'svelte/store';
+	import type { Collection } from '$utils/api/collection';
 
 	const blockchainOptions = [{ label: 'Ethereum', value: 'eth' }];
+
+	const collectionData = writable<Collection>({} as Collection);
 </script>
 
 <main class="max-w-screen-xl mx-auto my-32">
@@ -96,14 +101,13 @@
 	</div>
 
 	<!-- Links -->
-	<div class="mt-16 flex flex-col">
+	<div class="mt-16 flex flex-col space-y-2">
 		<div class="uppercase font-semibold">Links</div>
-		<input type="text" class="input mt-2 h-12" placeholder="Enter wallet address" />
-		<input type="text" class="input mt-2 h-12" placeholder="Enter discord URL" />
-		<input type="text" class="input mt-2 h-12" placeholder="Enter instagram URL" />
-		<input type="text" class="input mt-2 h-12" placeholder="Enter medium URL" />
-		<input type="text" class="input mt-2 h-12" placeholder="Enter instagram URL" />
-		<input type="text" class="input mt-2 h-12" placeholder="Enter telegram URL" />
+		<SocialLinkInput placeholder="Instagram link" bind:value={$collectionData.instagramUrl} iconUrl="/svg/socials/instagram.svg" />
+		<SocialLinkInput placeholder="Discord link" bind:value={$collectionData.discordUrl} iconUrl="/svg/socials/discord.svg" />
+		<SocialLinkInput placeholder="Twitter link" bind:value={$collectionData.twitterUrl} iconUrl="/svg/socials/twitter.svg" />
+		<SocialLinkInput placeholder="Website link" bind:value={$collectionData.otherUrl} iconUrl="/svg/socials/globe.svg" />
+		<SocialLinkInput placeholder="Telegram link" bind:value={$collectionData.telegramUrl} iconUrl="/svg/socials/telegram.svg" />
 	</div>
 
 	<!-- Blockchain -->

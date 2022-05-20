@@ -11,8 +11,9 @@ export interface Collection {
 	walletAddress?: string;
 	discordUrl?: string;
 	instagramUrl?: string;
-	mediumUrl?: string;
+	twitterUrl?: string;
 	otherUrl?: string;
+	telegramUrl?: string;
 	blockchain?: string;
 	paymentTokenTicker: 'eth';
 	paymentTokenAddress: string;
