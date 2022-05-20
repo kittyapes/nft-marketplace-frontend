@@ -5,6 +5,7 @@
 	import { writable } from 'svelte/store';
 	import NftList from '$lib/components/NftList.svelte';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
+	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 
 	const listings = writable<Listing[]>([]);
 	let data;
@@ -12,6 +13,11 @@
 	let getData = async () => {
 		listings.set(await getListings());
 		data = await Promise.all($listings.map(adaptListingToNftCard));
+		data = data.filter((d) => d);
+
+		//mark favourite NFTs as favourited
+		const favorites = await getUserFavoriteNfts();
+		data.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length));
 		console.log(data);
 	};
 

@@ -6,34 +6,19 @@
 
 	export let data: NftCardOptions[];
 	export let isLoading = false;
-
-	let updateData = async () => {
-		const favorites = await getUserFavoriteNfts();
-		data.forEach((t) => favorites?.includes(t.id));
-	};
 </script>
 
-{#await updateData()}
-	<div class="placeholder">Loading...</div>
-{:then _}
-	{#if !(isLoading || data === null) && data?.length === 0}
-		<div class="placeholder">Nothing to see here, move along.</div>
-	{/if}
-
-	{#if data?.length === 0}
-		<div class="placeholder">Nothing to see here, move along.</div>
-	{/if}
-
-	{#if data?.length}
-		<div class="nftGrid">
-			{#each data as tokenData}
-				{#if tokenData.title}
-					<NftCard options={tokenData} />
-				{/if}
-			{/each}
-		</div>
-	{/if}
-{/await}
+{#if !(isLoading || data === null) && data?.length === 0}
+	<div class="placeholder">Nothing to see here, move along.</div>
+{:else if data?.length}
+	<div class="nftGrid">
+		{#each data as tokenData}
+			{#if tokenData.title}
+				<NftCard options={tokenData} />
+			{/if}
+		{/each}
+	</div>
+{/if}
 
 {#if isLoading || data === null}
 	<DiamondsLoader />

@@ -21,7 +21,7 @@
 	export let progress: Readable<number> = readable(0);
 
 	function clickChooseFormat() {
-		goto('/create/choose-listing-format/' + $newBundleData.bundleId);
+		goto('/create/choose-listing-format/' + $newBundleData.id);
 		handler.close();
 	}
 </script>

@@ -32,6 +32,7 @@
 		//const bundleRes = await getBundle($page.params.bundleId);
 		const nftRes = await getNft($newNFTs[0]?.nftId);
 		fetchedNftData.set(nftRes);
+		console.log($fetchedNftData);
 	});
 
 	let isListing = false;
@@ -48,7 +49,7 @@
 			nfts: $newNFTs,
 			paymentTokenAddress: $page.params.bundleId,
 			title: nftRes.name,
-			description: JSON.parse(nftRes.metadata).description,
+			description: nftRes.metadata.description,
 			listingType: 'sale',
 			price: listingPropValues.price,
 			quantity: listingPropValues.quantity,

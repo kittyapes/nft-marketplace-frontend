@@ -15,6 +15,7 @@
 	import { createBundle } from '$utils/create/createBundle';
 	import { createDropOnChain } from '$utils/create/createDrop';
 	import { batchMintNft, createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
+	import { getNftId } from '$utils/create/getNftId';
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
@@ -48,7 +49,7 @@
 		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
 
 		// Create NFT on the server
-		const nftId = await random(0, 999999999);
+		const nftId = await getNftId();
 		console.info('[Create] Using new NFT contract ID:', nftId);
 
 		const createNftRes = await createNFTOnAPI({
@@ -67,15 +68,15 @@
 			return;
 		} else {
 			$newNFTs = [{ nftId: createNftRes.nftId, amount: nftQuantity }];
-			console.log($newNFTs);
 		}
 
+		// just for dev
 		const newNftDetail = await getNft(createNftRes.nftId.toString());
-		console.log(newNftDetail);
 
 		progress.set(50);
 
 		// create NFT on chain
+
 		const nftMintRes = await createNFTOnChain({ id: createNftRes.nftId.toString(), amount: nftQuantity });
 		if (nftMintRes) {
 			console.info('[Create] NFT created on chain.');
@@ -87,8 +88,9 @@
 		}
 
 		newBundleData.update((data) => {
-			return { ...data, nftId };
+			return { ...data, id: newNftDetail.nftId };
 		});
+		console.log($newBundleData);
 
 		progress.set(100);
 	}
