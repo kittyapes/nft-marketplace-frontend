@@ -10,10 +10,55 @@
 	import Toggle from '$lib/components/Toggle.svelte';
 	import { writable } from 'svelte/store';
 	import { Collection, getInitialCollectionData } from '$utils/api/collection';
+	import { slide } from 'svelte/transition';
+	import FormErrorList from '$lib/components/FormErrorList.svelte';
+	import { tick } from 'svelte';
 
 	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
 
+	// Data collected from the form
 	const collectionData = writable<Collection>(getInitialCollectionData() as Collection);
+
+	// An object with collection property keys and bool as values representing their validity
+	const formValidity = writable<Partial<{ [K in keyof Collection]: any }>>({});
+
+	collectionData.subscribe((data) => {
+		$formValidity.image = !!data.image || 'Missing logo image';
+		$formValidity.cover = !!data.cover || 'Missing cover image';
+		$formValidity.name = !!data.name || 'Missing collection name';
+		$formValidity.url = !!data.url || 'Missing collection url';
+	});
+
+	// Partially editable URL field
+	const urlStart = 'https://hinata.io/collections/';
+	let ignoreUrlChange = false;
+
+	collectionData.subscribe(async (data) => {
+		if (ignoreUrlChange) {
+			return;
+		}
+
+		ignoreUrlChange = true;
+
+		// Do not allow deleting the starting part
+		if (!data.url || data.url.length < urlStart.length) {
+			$collectionData.url = urlStart;
+
+			await tick();
+			ignoreUrlChange = false;
+			return;
+		}
+
+		// Without this, the user would be able to paste in any longer text
+		// than the urlStart and the urlStart would not be included
+		const withoutStart = data.url.replace(urlStart, '');
+		$collectionData.url = urlStart + withoutStart;
+
+		await tick();
+		ignoreUrlChange = false;
+	});
+
+	$: formValid = Object.values($formValidity).every((v) => v === true);
 
 	function newLogoBlobHandler(event) {
 		const { blob } = event.detail;
@@ -36,6 +81,7 @@
 	}
 
 	$: console.log($collectionData);
+	$: console.log('formValidity', $formValidity);
 </script>
 
 <main class="max-w-screen-xl mx-auto my-32">
@@ -100,7 +146,7 @@
 			<!-- Collection name -->
 			<div>
 				<div class="uppercase font-semibold">Collection Name</div>
-				<input type="text" class="input mt-2 w-full" placeholder="The Kitty Collection" bind:value={$collectionData.name} />
+				<input type="text" required class="input mt-2 w-full" placeholder="The Kitty Collection" bind:value={$collectionData.name} />
 			</div>
 
 			<!-- Collection URL -->
@@ -119,17 +165,17 @@
 
 	<!-- Royalties -->
 	<div>
-		<Royalties bind:values={$collectionData.royalties} />
+		<Royalties bind:values={$collectionData.royalties} bind:isValid={$formValidity.royalties} />
 	</div>
 
 	<!-- Links -->
 	<div class="mt-16 flex flex-col space-y-2">
 		<div class="uppercase font-semibold">Links</div>
-		<SocialLinkInput placeholder="Instagram link" bind:value={$collectionData.instagramUrl} iconUrl="/svg/socials/instagram.svg" />
-		<SocialLinkInput placeholder="Discord link" bind:value={$collectionData.discordUrl} iconUrl="/svg/socials/discord.svg" />
-		<SocialLinkInput placeholder="Twitter link" bind:value={$collectionData.twitterUrl} iconUrl="/svg/socials/twitter.svg" />
-		<SocialLinkInput placeholder="Website link" bind:value={$collectionData.otherUrl} iconUrl="/svg/socials/globe.svg" />
-		<SocialLinkInput placeholder="Telegram link" bind:value={$collectionData.telegramUrl} iconUrl="/svg/socials/telegram.svg" />
+		<SocialLinkInput placeholder="Instagram link" bind:value={$collectionData.instagramUrl} iconUrl="/svg/socials/instagram.svg" bind:valid={$formValidity.instagramUrl} />
+		<SocialLinkInput placeholder="Discord link" bind:value={$collectionData.discordUrl} iconUrl="/svg/socials/discord.svg" bind:valid={$formValidity.discordUrl} />
+		<SocialLinkInput placeholder="Twitter link" bind:value={$collectionData.twitterUrl} iconUrl="/svg/socials/twitter.svg" bind:valid={$formValidity.twitterUrl} />
+		<SocialLinkInput placeholder="Website link" bind:value={$collectionData.otherUrl} iconUrl="/svg/socials/globe.svg" bind:valid={$formValidity.otherUrl} />
+		<SocialLinkInput placeholder="Telegram link" bind:value={$collectionData.telegramUrl} iconUrl="/svg/socials/telegram.svg" bind:valid={$formValidity.telegramUrl} />
 	</div>
 
 	<!-- Blockchain -->
@@ -155,5 +201,7 @@
 		<Toggle style={{ button: 'bg-[#747474]', pill: '!w-14 bg-[#EBEBEB]' }} onInsideLabel="" offInsideLabel="" />
 	</div>
 
-	<button class="btn btn-gradient h-16 w-full rounded-3xl mt-8 uppercase">Create Collection</button>
+	<FormErrorList validity={$formValidity} />
+
+	<button class="btn btn-gradient h-16 w-full rounded-3xl mt-8 uppercase" disabled={!formValid}>Create Collection</button>
 </main>
