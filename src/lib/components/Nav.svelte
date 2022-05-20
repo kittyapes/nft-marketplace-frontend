@@ -52,7 +52,7 @@
 	<a id="marketplace-link" href="/marketplace" class="relative font-semibold text-transparent uppercase text-md bg-gradient-to-r bg-clip-text from-color-purple to-color-blue">Marketplace</a>
 
 	<!-- Staking -->
-	<a href="/stake" class="relative font-semibold uppercase text-md" class:-mr-8={!showCreate && showProfileButton}>Staking</a>
+	<a href="/stake" class="relative font-semibold uppercase text-md" class:-mr-8={!showCreate}>Staking</a>
 
 	<!-- Airdrop HIDDEN FOR NOW -->
 	<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
@@ -85,10 +85,10 @@
 
 				<!-- Profile image or guest user icon -->
 				<div class="w-6 h-6">
-					{#if $profileData?.imageUrl}
+					{#if $profileData?.thumbnailUrl}
 						<img
 							on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"}
-							src={$profileData.imageUrl}
+							src={$profileData.thumbnailUrl}
 							alt="Current account avatar."
 							class="w-full h-full object-cover rounded-full"
 						/>
@@ -108,7 +108,7 @@
 		{#if !$appSigner}
 			<button
 				on:click={async () => await connectToWallet()}
-				class="rounded-3xl text-white bg-black py-3 uppercase text-sm font-semibold w-52"
+				class="rounded-3xl text-white bg-black py-3 uppercase text-sm font-semibold w-52 ml-8"
 				out:fade
 				on:outrostart={() => (showProfileButton = false)}
 				on:outroend={() => (showProfileButton = true)}

@@ -107,7 +107,7 @@
 	{/key}
 </div>
 
-<style>
+<style type="postcss">
 	label > span {
 		@apply uppercase italic font-light block mb-2;
 	}

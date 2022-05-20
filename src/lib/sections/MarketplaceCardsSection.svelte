@@ -7,10 +7,17 @@
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 
 	const listings = writable<Listing[]>([]);
+	let data;
 
-	onMount(async () => {
+	let getData = async () => {
 		listings.set(await getListings());
-	});
+		data = await Promise.all($listings.map(adaptListingToNftCard));
+		console.log(data);
+	};
+
+	/*onMount(async () => {
+		await getData();
+	});*/
 
 	// $: {
 	// 	filteredCards = allCards;
@@ -32,9 +39,9 @@
 </script>
 
 <div class="flex flex-wrap justify-center gap-6 mt-11 cards">
-	{#if $listings.length}
-		<NftList data={$listings.map(adaptListingToNftCard)} />
-	{:else}
+	{#await getData()}
 		Loading...
-	{/if}
+	{:then _}
+		<NftList {data} />
+	{/await}
 </div>

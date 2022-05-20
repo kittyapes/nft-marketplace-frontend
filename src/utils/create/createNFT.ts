@@ -2,40 +2,42 @@ import { appSigner } from '$stores/wallet';
 import { getApiUrl } from '$utils/api';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import HinataMarketplaceContract from '$utils/contracts/hinataMarketplace';
+import HinataMarketplaceStorageContract from '$utils/contracts/hinataMarketplaceStorage';
 import { httpErrorHandler } from '$utils/toast';
 import axios from 'axios';
-import { ethers } from 'ethers';
+import type { ethers}  from 'ethers';
 import type { NFTCreationObject } from 'src/interfaces/nft/nftCreationObject';
 import type { NFTMintingObject } from 'src/interfaces/nft/nftMintingObject';
 import { get } from 'svelte/store';
 
-export const createNFTOnAPI = async ({ amount, animation, artist, contractId, creator, image, name }: NFTCreationObject) => {
+export const createNFTOnAPI = async ({ amount, animation, artist, contractId, creator, image, name, description }: NFTCreationObject) => {
 	const formData = new FormData();
-	formData.append('image', image);
-	formData.append('animation', animation);
-	formData.append('contractId', contractId.toString());
+	formData.append('thumbnail', image);	
+	formData.append('asset', animation || null);
 	formData.append('amount', amount.toString() || '1');
 	formData.append('name', name);
 	formData.append('artist', artist);
 	formData.append('creator', creator);
+	formData.append('contractAddress', contractId.toString());
+	formData.append('metadata', JSON.stringify({description: description}));
 
+	
 	const res = await axios.post(getApiUrl('latest', 'nfts'), formData, getAxiosConfig()).catch((e) => {
 		httpErrorHandler(e);
 		return null;
 	});
 
 	if (!res) return null;
-
+	
+	console.log(res.data.data)
 	return res.data.data;
 };
 
 // Equivalent to minting the NFT
-// TODO: Ask Anhnt about the data that needs to be passed here or whether an empty array would do
-export const createNFTOnChain = async ({ dropId, id, amount }: NFTMintingObject) => {
+export const createNFTOnChain = async ({ id, amount }: NFTMintingObject) => {
 	try {
-		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
-		const nftMintingTransaction: ethers.ContractTransaction = await MarketplaceContract.mintDropNFT(
-			dropId,
+		const MarketplaceStorageContract = HinataMarketplaceStorageContract(get(appSigner));
+		const nftMintingTransaction: ethers.ContractTransaction = await MarketplaceStorageContract.mintArtistNFT(
 			id,
 			amount,
 			[]

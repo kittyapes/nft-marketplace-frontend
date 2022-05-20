@@ -4,7 +4,6 @@
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import NftList from '$lib/components/NftList.svelte';
-	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import { profileCompletionProgress } from '$stores/user';
@@ -17,10 +16,11 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import getUserNfts from '$utils/nfts/getUserNfts';
 	import { browser } from '$app/env';
-	import { userHasRole } from '$utils/auth/userRoles';
 	import type { UserData } from 'src/interfaces/userData';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 	import { adaptTokenDataToNftCard } from '$utils/adapters/adaptTokenDataToNftCard';
+	import { userHasRole } from '$utils/auth/userRoles';
+	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 
 	const tabs = ['COLLECTED NFTS', 'CREATED NFTS', 'FAVORITES'];
 	let selectedTab = 'COLLECTED NFTS';
@@ -31,22 +31,11 @@
 
 	async function fetchData(forAdress: string) {
 		$localProfileData = await fetchProfileData(forAdress);
-		if (!$localProfileData) {
-			goto('/404');
-		}
 	}
 
 	$: browser && fetchData(address);
 
-	$: socialLinks = {
-		twitter: $localProfileData?.twitter,
-		instagram: $localProfileData?.instagram,
-		discord: $localProfileData?.discord,
-		website: $localProfileData?.website,
-		pixiv: $localProfileData?.pixiv,
-		deviantart: $localProfileData?.deviantart,
-		artstation: $localProfileData?.artstation
-	};
+	$: socialLinks = $localProfileData?.social || { instagram: '', discord: '', twitter: '', website: '', pixiv: '', deviantart: '', artstation: '' };
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
 	$: firstTimeUser = $localProfileData?.createdAt === $localProfileData?.updatedAt;
@@ -54,15 +43,56 @@
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
 
-	let collectedNfts: [] = null;
+	$: collectedNfts = [];
+	$: createdNfts = [];
+	let totalNfts: number | null = null;
+	$: totalNfts;
+
+	let nftsPage = 0;
+
 	const fetchCreatedNfts = async () => {
 		try {
-			const unfiltered = (await getUserNfts(address)).result;
-			collectedNfts = unfiltered.filter((v) => v.token_uri).map(adaptTokenDataToNftCard);
+			nftsPage += 1;
+			const fetchNftsResponse = await getUserNfts(address, nftsPage);
+			const unfiltered = fetchNftsResponse.result;
 
-			console.log(collectedNfts);
-		} catch {
-			collectedNfts = [];
+			// Keep these here as they help add everything to the array before trying to update the UI
+			const _createdProxy = [];
+			const _collectedProxy = [];
+
+			// Assign NFTs accordingly
+			unfiltered.map((nft) => {
+				if (nft.token_uri) {
+					const parsedNft = adaptTokenDataToNftCard(nft);
+					// if (parsedNft.imageUrl) {
+					if (nft.minter_address?.toLowerCase() === address.toLowerCase()) {
+						// User Created this
+						_createdProxy.push(parsedNft);
+					} else {
+						_collectedProxy.push(parsedNft);
+					}
+					// }
+				}
+			});
+
+			createdNfts = [...createdNfts, ..._createdProxy];
+			collectedNfts = [...collectedNfts, ..._collectedProxy];
+
+			// Decide whether to fetch additional NFTs
+			totalNfts = fetchNftsResponse.total; // total nfts can be null returned when an error is encountered on the server
+
+			if (fetchNftsResponse.total && fetchNftsResponse.total > collectedNfts.length + createdNfts.length) {
+				setTimeout(() => {
+					fetchCreatedNfts();
+				}, 60000);
+			} else if (!fetchNftsResponse.total) {
+				// When the server returns an error - indicated by the total property being null
+				setTimeout(() => {
+					fetchCreatedNfts();
+				}, 180000); // Wait for three minutes
+			}
+		} catch (err) {
+			console.log(err);
 		}
 	};
 
@@ -71,7 +101,7 @@
 
 <div class="h-72 bg-color-gray-light">
 	{#if $localProfileData?.coverUrl}
-		<img src={$localProfileData?.coverUrl} alt="User cover." class="h-full w-full object-cover" />
+		<div style="background-image: url({$localProfileData?.coverUrl})" class="h-full w-full bg-cover bg-center bg-no-repeat" />
 	{/if}
 </div>
 
@@ -81,8 +111,8 @@
 		class="border-white border-4 w-32 h-32 absolute top-0 transform -translate-y-1/2 rounded-full bg-white
 		grid place-items-center shadow overflow-hidden"
 	>
-		{#if $localProfileData?.imageUrl}
-			<img src={$localProfileData?.imageUrl} class="rounded-full h-full" alt="User avatar." />
+		{#if $localProfileData?.thumbnailUrl}
+			<img src={$localProfileData?.thumbnailUrl} class="rounded-full h-full" alt="User avatar." />
 		{:else}
 			<GuestUserAvatar />
 		{/if}
@@ -164,9 +194,9 @@
 
 	<div class="max-w-screen-xl mx-auto">
 		{#if selectedTab === 'COLLECTED NFTS'}
-			<NftList data={collectedNfts} />
+			<NftList data={collectedNfts} isLoading={!totalNfts || totalNfts > collectedNfts.length + createdNfts.length} />
 		{:else if selectedTab === 'CREATED NFTS'}
-			<NftList data={[]} />
+			<NftList data={createdNfts} isLoading={!totalNfts || totalNfts > collectedNfts.length + createdNfts.length} />
 		{:else if selectedTab === 'ACTIVITY'}
 			<NftList data={[]} />
 		{:else if selectedTab === 'FAVORITES'}

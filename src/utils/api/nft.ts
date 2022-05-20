@@ -11,6 +11,7 @@ export interface GetNftResponse {
 	creator: string;
 	createdAt: string;
 	updatedAt: string;
+	metadata: string;
 }
 
 export async function getNft(id: string) {

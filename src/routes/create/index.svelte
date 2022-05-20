@@ -1,18 +1,20 @@
 <script lang="ts">
+	import { acceptedNftFileTypes } from '$constants';
 	import Back from '$icons/back_.svelte';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
-	import { newDropProperties } from '$stores/create';
+	import { newDropProperties, newNFTs } from '$stores/create';
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
+	import { getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { NewBundleData, newBundleData } from '$utils/create';
 	import { createBundle } from '$utils/create/createBundle';
 	import { createDropOnChain } from '$utils/create/createDrop';
-	import { batchMintNft, createNFTOnAPI } from '$utils/create/createNFT';
+	import { batchMintNft, createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
@@ -26,7 +28,7 @@
 	let nftQuantity: number = 1;
 	let nftCollection = 'No collection';
 	let nftDescription = '';
-	let nftImagePreview = '';
+	let nftAssetPreview = '';
 	let nftThumbnailPreview = '';
 	let fileBlob;
 	let animationBlob;
@@ -40,9 +42,6 @@
 		// goto('/create/choose-listing-format');
 		// return;
 
-		// Notes:
-		// Bundle is a former drop
-
 		newBundleData.set({} as NewBundleData);
 
 		const progress = writable(0);
@@ -50,10 +49,11 @@
 
 		// Create NFT on the server
 		const nftId = await random(0, 999999999);
-		console.info('[Create] Using new NFT ID:', nftId);
+		console.info('[Create] Using new NFT contract ID:', nftId);
 
 		const createNftRes = await createNFTOnAPI({
 			contractId: nftId,
+			description: nftDescription,
 			amount: nftQuantity,
 			name: nftName,
 			artist: $profileData?._id,
@@ -65,47 +65,19 @@
 		if (!createNftRes) {
 			popupHandler.close();
 			return;
-		}
-
-		progress.set(33);
-
-		// Create NFT bundle on the server
-		const bundleId = await random(0, 999999999);
-		console.info('[Create] Using new Bundle ID:', bundleId);
-
-		const createdBundleRes = await createBundle({
-			contractId: bundleId,
-			creator: $currentUserAddress,
-			description: nftDescription,
-			title: nftName,
-			nftIds: [nftId],
-			nftAmounts: [nftQuantity],
-			image: fileBlob
-		});
-
-		if (!createdBundleRes) {
-			popupHandler.close();
-			return;
-		}
-
-		// Create bundle on chain
-		const chainBundleSuccess = await createDropOnChain(bundleId);
-
-		if (chainBundleSuccess) {
-			console.info('[Create] Bundle created on chain.');
 		} else {
-			popupHandler.close();
-			notifyError('Failed to create bundle on chain.');
-			console.error('[Create] Failed to create bundle on chain.');
-			return;
+			$newNFTs = [{ nftId: createNftRes.nftId, amount: nftQuantity }];
+			console.log($newNFTs);
 		}
 
-		progress.set(66);
+		const newNftDetail = await getNft(createNftRes.nftId.toString());
+		console.log(newNftDetail);
 
-		// Create NFT on chain
-		const nftBundleSuccess = await batchMintNft({ dropId: bundleId, nftIds: [nftId], nftAmounts: [nftQuantity] });
+		progress.set(50);
 
-		if (nftBundleSuccess) {
+		// create NFT on chain
+		const nftMintRes = await createNFTOnChain({ id: createNftRes.nftId.toString(), amount: nftQuantity });
+		if (nftMintRes) {
 			console.info('[Create] NFT created on chain.');
 		} else {
 			popupHandler.close();
@@ -115,14 +87,14 @@
 		}
 
 		newBundleData.update((data) => {
-			return { ...data, bundleId };
+			return { ...data, nftId };
 		});
 
 		progress.set(100);
 	}
 
 	$: nftQuantityValid = nftQuantity > 0;
-	$: inputValid = nftName && nftCollection && nftImagePreview && nftThumbnailPreview && nftQuantityValid;
+	$: inputValid = nftName && nftCollection && nftAssetPreview && nftThumbnailPreview && nftQuantityValid;
 </script>
 
 <!-- Back button -->
@@ -154,7 +126,7 @@
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
-				<DragDropImage bind:blob={fileBlob} text={dragDropText} bind:previewSrc={nftImagePreview} />
+				<DragDropImage bind:blob={animationBlob} text={dragDropText} bind:previewSrc={nftAssetPreview} acceptedFormats={acceptedNftFileTypes} />
 			</div>
 		</div>
 
@@ -169,7 +141,7 @@
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
-				<DragDropImage bind:blob={animationBlob} text={dragDropText} bind:previewSrc={nftThumbnailPreview} />
+				<DragDropImage bind:blob={fileBlob} text={dragDropText} bind:previewSrc={nftThumbnailPreview} />
 			</div>
 		</div>
 
@@ -205,6 +177,6 @@
 	<!-- Right side -->
 	<div class="separator border-0 border-l p-8 w-80">
 		<div class="uppercase italic text-xl mb-4">Preview</div>
-		<NftCard options={{ id: null, title: nftName, imageUrl: nftImagePreview }} />
+		<NftCard options={{ id: null, title: nftName, imageUrl: nftAssetPreview }} />
 	</div>
 </div>

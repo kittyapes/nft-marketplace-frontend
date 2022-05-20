@@ -2,15 +2,20 @@
 	import Eth from '$icons/eth.svelte';
 	import Heart from '$icons/heart.svelte';
 	import ThreeDots from '$icons/three-dots.svelte';
+	import { currentUserAddress } from '$stores/wallet';
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
+	import { favoriteNft } from '$utils/nfts/favoriteNft';
+	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 	import { setPopup } from '$utils/popup';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
+	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import NftDisplayPopup from './profile/NFTDisplayPopup.svelte';
 
 	export let options: NftCardOptions;
 
+	let likes = options?.likes;
 	let dotsOpened = false;
 	let imgLoaded = false;
 
@@ -20,7 +25,7 @@
 		if (!options.getUniversalPopupOptions) return;
 
 		addUrlParam('id', options.id);
-
+		console.log(options);
 		options.getUniversalPopupOptions().then((universalPopupOptions) => {
 			setPopup(NftDisplayPopup, {
 				props: { options: universalPopupOptions },
@@ -29,7 +34,18 @@
 		});
 	}
 
-	function favoriteNFT() {}
+	async function favNFT() {
+		if (!$currentUserAddress || !likes) return;
+		if (options.favorite) likes = likes - 1;
+		else if (!options.favorite) likes = likes + 1;
+
+		options.favorite = !options.favorite;
+		const res = await favoriteNft(options.id);
+
+		console.log(JSON.parse(JSON.stringify(res)));
+	}
+
+	console.log(options);
 </script>
 
 <div class="relative p-4 overflow-hidden border rounded-2xl" in:fade on:click={handleClick} class:cursor-pointer={options?.getUniversalPopupOptions}>
@@ -44,11 +60,11 @@
 
 		<div class="flex-grow" />
 
-		<div class="btn text-white" on:click={favoriteNFT}>
-			<Heart />
+		<div class="btn text-white" class:text-color-red={options?.favorite} on:click|stopPropagation={favNFT}>
+			<Heart class="w-6 h-6" />
 		</div>
 		<!-- TODO Likes -->
-		<div class="font-medium select-none">{options?.likes || 0}</div>
+		<div class="font-medium select-none">{options && likes ? likes : 'N/A'}</div>
 	</div>
 
 	<div class="w-full mx-auto mt-2 overflow-hidden transition bg-gray-100 rounded-lg aspect-1" class:animate-pulse={!imgLoaded}>

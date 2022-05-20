@@ -11,21 +11,15 @@ export interface UserData {
 	address: string;
 	createdAt: string;
 	email: string;
-	imageUrl: string;
+	thumbnailUrl: string;
 	coverUrl: string;
 	loginHistories: LoginHistoryEntry[];
 	nickname: string;
-	status: 'USER' | 'AWAITING_VERIFIED' | 'VERIFIED' | 'AWAITING_INACTIVATED';
+	status: 'USER' | 'AWAITING_VERIFIED' | 'VERIFIED' | 'AWAITING_INACTIVATED' | 'INACTIVATED';
 	updatedAt: string;
 	username: string;
 	_id: string;
 	bio: string;
-	instagram: string;
-	discord: string;
-	twitter: string;
-	website: string;
-	pixiv: string;
-	deviantart: string;
-	artstation: string;
+	social: { instagram: string; discord: string; twitter: string; website: string; pixiv: string; deviantart: string; artstation: string };
 	roles: UserRole;
 }
