@@ -32,7 +32,8 @@
 	function favoriteNFT() {}
 </script>
 
-<div class="relative p-4 overflow-hidden border rounded-2xl" in:fade on:click={handleClick} class:cursor-pointer={options?.getUniversalPopupOptions}>
+<!-- Added a maximum width to prevent the card from extending its bounds when its only one card  -->
+<div class="relative p-4 overflow-hidden border rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options?.getUniversalPopupOptions}>
 	<div class="flex items-center gap-x-2">
 		<!-- Remove && false to show options -->
 		<!-- Owned by user -->
