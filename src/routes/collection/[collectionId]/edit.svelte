@@ -10,7 +10,6 @@
 	import Toggle from '$lib/components/Toggle.svelte';
 	import { writable } from 'svelte/store';
 	import { Collection, getInitialCollectionData } from '$utils/api/collection';
-	import { slide } from 'svelte/transition';
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
 	import { tick } from 'svelte';
 
@@ -26,11 +25,12 @@
 		$formValidity.image = !!data.image || 'Missing logo image';
 		$formValidity.cover = !!data.cover || 'Missing cover image';
 		$formValidity.name = !!data.name || 'Missing collection name';
-		$formValidity.url = !!data.url || 'Missing collection url';
+		$formValidity.url = !!data.url?.match(collectionUrlPattern) || 'Collection URL is invalid';
 	});
 
 	// Partially editable URL field
 	const urlStart = 'https://hinata.io/collections/';
+	const collectionUrlPattern = `^${urlStart}[a-z0-9-]+$`;
 	let ignoreUrlChange = false;
 
 	collectionData.subscribe(async (data) => {
@@ -41,8 +41,9 @@
 		ignoreUrlChange = true;
 
 		// Do not allow deleting the starting part
-		if (!data.url || data.url.length < urlStart.length) {
+		if (!data.url || !data.url.startsWith(urlStart)) {
 			$collectionData.url = urlStart;
+			$formValidity.url = 'Missing collection URL';
 
 			await tick();
 			ignoreUrlChange = false;
@@ -53,6 +54,7 @@
 		// than the urlStart and the urlStart would not be included
 		const withoutStart = data.url.replace(urlStart, '');
 		$collectionData.url = urlStart + withoutStart;
+		$formValidity.url = true;
 
 		await tick();
 		ignoreUrlChange = false;
@@ -152,7 +154,7 @@
 			<!-- Collection URL -->
 			<div>
 				<div class="uppercase font-semibold mt-8">URL</div>
-				<input type="text" class="input mt-2 w-full" placeholder="https://hinata.io/collection/treasure-of-the-sea" bind:value={$collectionData.url} />
+				<input type="text" class="input mt-2 w-full" pattern={collectionUrlPattern} placeholder="https://hinata.io/collection/treasure-of-the-sea" bind:value={$collectionData.url} />
 			</div>
 		</div>
 
