@@ -41,9 +41,9 @@
 		isListing = true;
 
 		const nftRes = await getNft($newNFTs[0]?.nftId);
-		console.log(nftRes);
 
 		const duration = listingPropValues.duration.value * 60 * 60 * 24;
+
 		// Create listing on the server
 		const apiCreateListingRes = await postCreateListing({
 			nfts: $newNFTs,

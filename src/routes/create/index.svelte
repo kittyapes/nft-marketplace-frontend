@@ -70,13 +70,9 @@
 			$newNFTs = [{ nftId: createNftRes.nftId, amount: nftQuantity }];
 		}
 
-		// just for dev
-		const newNftDetail = await getNft(createNftRes.nftId.toString());
-
 		progress.set(50);
 
 		// create NFT on chain
-
 		const nftMintRes = await createNFTOnChain({ id: createNftRes.nftId.toString(), amount: nftQuantity });
 		if (nftMintRes) {
 			console.info('[Create] NFT created on chain.');
@@ -88,7 +84,7 @@
 		}
 
 		newBundleData.update((data) => {
-			return { ...data, id: newNftDetail.nftId };
+			return { ...data, id: createNftRes.nftId };
 		});
 		console.log($newBundleData);
 
