@@ -15,6 +15,7 @@
 	import { noTry, noTryAsync } from 'no-try';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { goto } from '$app/navigation';
+	import Loader from '$icons/loader.svelte';
 
 	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
 
@@ -86,7 +87,11 @@
 		});
 	}
 
+	let creatingCollection = false;
+
 	async function clickCreateCollection() {
+		creatingCollection = true;
+
 		const [error, res] = await noTryAsync(() => apiCreateCollection($collectionData));
 
 		if (error) {
@@ -97,10 +102,12 @@
 		notifySuccess('Collection created!');
 
 		goto('/collection/' + res.data.data._id);
+
+		creatingCollection = false;
 	}
 
-	$: console.log($collectionData);
-	$: console.log('formValidity', $formValidity);
+	// $: console.log($collectionData);
+	// $: console.log('formValidity', $formValidity);
 </script>
 
 <main class="max-w-screen-xl mx-auto my-32 px-16">
@@ -222,5 +229,9 @@
 
 	<FormErrorList validity={$formValidity} />
 
-	<button class="btn btn-gradient h-16 w-full rounded-3xl mt-8 uppercase" disabled={!formValid} on:click={clickCreateCollection}>Create Collection</button>
+	<button class="btn btn-gradient h-16 w-full rounded-3xl mt-8 uppercase" disabled={!formValid || creatingCollection} on:click={clickCreateCollection}>Create Collection</button>
+
+	{#if creatingCollection}
+		<Loader class="ml-0" />
+	{/if}
 </main>
