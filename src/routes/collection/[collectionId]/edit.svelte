@@ -128,4 +128,6 @@
 		</div>
 		<Toggle style={{ button: 'bg-[#747474]', pill: '!w-14 bg-[#EBEBEB]' }} onInsideLabel="" offInsideLabel="" />
 	</div>
+
+	<button class="btn btn-gradient h-16 w-full rounded-3xl mt-8 uppercase">Create Collection</button>
 </main>
