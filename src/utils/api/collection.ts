@@ -1,4 +1,7 @@
+import { currentUserAddress } from '$stores/wallet';
+import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
+import { get } from 'svelte/store';
 import { getApiUrl } from '.';
 
 export interface Collection {
@@ -28,9 +31,22 @@ export function getInitialCollectionData(): Partial<Collection> {
 }
 
 export async function apiCreateCollection(options: Collection) {
-	const res = await axios.post(getApiUrl('v2', 'collections'), {
-		...options
-	});
+	options = { ...options };
+
+	options.paymentTokenTicker = 'eth';
+	options.paymentTokenAddress = get(currentUserAddress);
+	options.royalties = JSON.stringify(options.royalties) as any;
+
+	const formData = new FormData();
+	Object.entries(options).forEach(([k, v]) => formData.append(k, v));
+
+	const res = await axios.post(getApiUrl('v2', 'collections'), formData, getAxiosConfig()).catch((e) => e.response);
+
+	if (res.status !== 200) {
+		throw new Error(res.data.message);
+	}
 
 	console.log(res);
+
+	return res;
 }

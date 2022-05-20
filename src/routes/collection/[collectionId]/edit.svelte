@@ -9,9 +9,12 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
 	import { writable } from 'svelte/store';
-	import { Collection, getInitialCollectionData } from '$utils/api/collection';
+	import { apiCreateCollection, Collection, getInitialCollectionData } from '$utils/api/collection';
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
 	import { tick } from 'svelte';
+	import { noTry, noTryAsync } from 'no-try';
+	import { notifyError, notifySuccess } from '$utils/toast';
+	import { goto } from '$app/navigation';
 
 	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
 
@@ -26,6 +29,7 @@
 		$formValidity.cover = !!data.cover || 'Missing cover image';
 		$formValidity.name = !!data.name || 'Missing collection name';
 		$formValidity.url = !!data.url?.match(collectionUrlPattern) || 'Collection URL is invalid';
+		$formValidity.description = !!data.description || 'Missing collection description';
 	});
 
 	// Partially editable URL field
@@ -82,11 +86,24 @@
 		});
 	}
 
+	async function clickCreateCollection() {
+		const [error, res] = await noTryAsync(() => apiCreateCollection($collectionData));
+
+		if (error) {
+			notifyError(error.message);
+			return;
+		}
+
+		notifySuccess('Collection created!');
+
+		goto('/collection/' + res.data.data._id);
+	}
+
 	$: console.log($collectionData);
 	$: console.log('formValidity', $formValidity);
 </script>
 
-<main class="max-w-screen-xl mx-auto my-32">
+<main class="max-w-screen-xl mx-auto my-32 px-16">
 	<!-- Title -->
 	<h1 class="text-2xl uppercase font-semibold">
 		Create <span class="gradient-text">New Collection</span>
@@ -161,7 +178,7 @@
 		<!-- Description -->
 		<div class="mt-16">
 			<div class="uppercase font-semibold mb-2">Description</div>
-			<TextArea outline placeholder="A collection of all the kitties in the world." maxChars={200} bind:value={$collectionData.description} />
+			<TextArea outline placeholder="A collection of all the kitties in the world." minChars={1} maxChars={200} bind:value={$collectionData.description} />
 		</div>
 	</div>
 
@@ -205,5 +222,5 @@
 
 	<FormErrorList validity={$formValidity} />
 
-	<button class="btn btn-gradient h-16 w-full rounded-3xl mt-8 uppercase" disabled={!formValid}>Create Collection</button>
+	<button class="btn btn-gradient h-16 w-full rounded-3xl mt-8 uppercase" disabled={!formValid} on:click={clickCreateCollection}>Create Collection</button>
 </main>
