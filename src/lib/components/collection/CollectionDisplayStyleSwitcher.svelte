@@ -1,0 +1,66 @@
+<script lang="ts">
+	import PlaceholderImage from '$icons/placeholder-image.svelte';
+
+	export let displayStyle: 'contained' | 'padded' | 'covered' = 'contained';
+</script>
+
+<div class="flex gap-x-8">
+	<div class="-option" on:click={() => (displayStyle = 'contained')} class:-selected={displayStyle === 'contained'}>
+		<div>Contained</div>
+		<div class="w-1/2 mx-auto"><PlaceholderImage /></div>
+		<div>
+			Recommended for <br />
+			assets that are not a 1:1 ratio
+		</div>
+	</div>
+
+	<div class="-option" on:click={() => (displayStyle = 'padded')} class:-selected={displayStyle === 'padded'}>
+		<div>Padded</div>
+		<div class="mx-4"><PlaceholderImage /></div>
+		<div>
+			Recommended <br />
+			for assets with transparent background
+		</div>
+	</div>
+
+	<div class="-option" on:click={() => (displayStyle = 'covered')} class:-selected={displayStyle === 'covered'}>
+		<div>Covered</div>
+		<div><PlaceholderImage /></div>
+		<div>
+			Recommended for <br />
+			assets that can extend to the edge
+		</div>
+	</div>
+</div>
+
+<style>
+	.-option {
+		@apply border-gray-300 border-2 h-72 rounded-md cursor-pointer flex flex-col w-1/3 select-none relative
+        active:scale-95 transition-transform;
+	}
+
+	/* Label */
+	.-option > :nth-child(1) {
+		@apply text-center uppercase mt-1 font-medium;
+	}
+
+	/* Style preview */
+	.-option > :nth-child(2) {
+		@apply flex justify-center items-center bg-neutral-100 mt-2 flex-grow;
+	}
+
+	/* Description */
+	.-option > :nth-child(3) {
+		@apply text-center text-neutral-500 my-4 px-2 text-sm;
+	}
+
+	/* Selected style */
+	.-option.-selected {
+		@apply border-neutral-500;
+	}
+
+	.-option.-selected > :nth-child(1):after {
+		content: url('/svg/gradient-checkmark.svg');
+		@apply absolute h-10 w-10 right-0 translate-x-4 -translate-y-4;
+	}
+</style>

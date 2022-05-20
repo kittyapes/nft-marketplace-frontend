@@ -16,18 +16,18 @@
 </script>
 
 <div class="pr-12">
-	<h1 class="{$$props.class} uppercase font-bold mt-8">{@html prettierFix}</h1>
+	<h1 class="{$$props.class} uppercase font-semibold mt-8">{@html prettierFix}</h1>
 
 	<div class="flex gap-x-4 mt-4">
 		<div id="percent-container" class="grid w-24">
-			<div class="text-color-black italic uppercase font-light text-sm">Fees</div>
+			<div class="text-color-black uppercase font-light text-sm">Fees</div>
 			{#each values as value}
 				<input type="number" class="input input-hide-controls mt-4 first:mt-2" placeholder="%" required={!!value.ethAddress} bind:value={value.percentage} />
 			{/each}
 		</div>
 
 		<div class="grid flex-grow">
-			<div class="text-color-black italic uppercase font-light text-sm">Wallet address</div>
+			<div class="text-color-black uppercase font-light text-sm">Wallet address</div>
 			{#each values as value}
 				<input type="text" class="input mt-4 first:mt-2" placeholder="Enter wallet address" autocomplete="nope" pattern={ethAddressRegex} required={!!value.percentage} bind:value={value.ethAddress} />
 			{/each}
