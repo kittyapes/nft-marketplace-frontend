@@ -12,5 +12,6 @@ export interface UniversalPopupOptions {
 	currentUserIsOwner: boolean;
 	price: number;
 	paymentTokenTicker: string;
+	paymentTokenAddress: string;
 	listingType: ListingType;
 }

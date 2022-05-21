@@ -12,6 +12,7 @@ export function adaptListingToUniversalPopup(listing: Listing) {
 		currentUserIsOwner: listing.paymentTokenAddress === get(currentUserAddress),
 		price: listing.listing.price,
 		paymentTokenTicker: listing.paymentTokenTicker,
+		paymentTokenAddress: listing.paymentTokenAddress,
 		listingType: listing.listingType
 	};
 

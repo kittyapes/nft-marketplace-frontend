@@ -29,7 +29,7 @@ export async function contractCreateListing(options: ContractCreateListingOption
 
 		console.log(options);
 
-		const dropCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing(
+		const tx: ethers.ContractTransaction = await MarketplaceContract.createListing(
 			options.bundleId,
 			ethers.utils.parseEther(options.startingPrice.toString()),
 			ethers.utils.parseEther(options.endingPrice.toString()),
@@ -40,11 +40,19 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		);
 
 		// Wait for at least once confirmation
-		await dropCreationTransaction.wait(1);
+		await tx.wait(1);
 	} catch (error) {
 		console.log(error);
 		return false;
 	}
 
 	return true;
+}
+
+export async function contractPurchaseListing(listingId: string) {
+	console.log(listingId);
+
+	const contract = HinataMarketplaceContract(get(appSigner));
+	const tx: ethers.ContractTransaction = await contract.purchaseListing(listingId);
+	await tx.wait(1);
 }
