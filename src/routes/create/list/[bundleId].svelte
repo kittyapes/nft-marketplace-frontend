@@ -41,7 +41,6 @@
 		isListing = true;
 
 		const duration = listingPropValues.duration.value * 60 * 60 * 24;
-		console.log($newDropProperties.listingType);
 		// Create listing on the server
 		const apiCreateListingRes = await postCreateListing({
 			nfts: [{ nftId: $fetchedNftData.nftId, amount: $fetchedNftData.amount }],
@@ -62,7 +61,6 @@
 		}
 
 		const listing = await axios.get(getApiUrl('latest', 'listings/' + apiCreateListingRes.data.data._id), getAxiosConfig()).catch((e) => e.response);
-		console.log(listing);
 
 		// Create listing on chain
 		const successListingOnChain = await contractCreateListing({
