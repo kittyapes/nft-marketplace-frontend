@@ -6,7 +6,7 @@
 	import NftCard from '$lib/components/NftCard.svelte';
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
-	import { newDropProperties, newNFTs } from '$stores/create';
+	import { newDropProperties } from '$stores/create';
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { getNft } from '$utils/api/nft';
@@ -15,7 +15,6 @@
 	import { createBundle } from '$utils/create/createBundle';
 	import { createDropOnChain } from '$utils/create/createDrop';
 	import { batchMintNft, createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
-	import { getNftId } from '$utils/create/getNftId';
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
@@ -49,7 +48,7 @@
 		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
 
 		// Create NFT on the server
-		const nftId = await getNftId();
+		const nftId = await random(0, 999999999);
 		console.info('[Create] Using new NFT contract ID:', nftId);
 
 		const createNftRes = await createNFTOnAPI({
@@ -66,9 +65,10 @@
 		if (!createNftRes) {
 			popupHandler.close();
 			return;
-		} else {
-			$newNFTs = [{ nftId: createNftRes.nftId, amount: nftQuantity }];
 		}
+
+		const newNftDetail = await getNft(createNftRes.nftId.toString());
+		console.log(newNftDetail);
 
 		progress.set(50);
 
@@ -84,9 +84,8 @@
 		}
 
 		newBundleData.update((data) => {
-			return { ...data, id: createNftRes.nftId };
+			return { ...data, nftId };
 		});
-		console.log($newBundleData);
 
 		progress.set(100);
 	}

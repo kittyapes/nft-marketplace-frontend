@@ -4,7 +4,7 @@
 	import { setPopup } from '$utils/popup';
 	import CommonProperties from '$lib/components/create/CommonProperties.svelte';
 	import Royalties from '$lib/components/create/Royalties.svelte';
-	import { newDropProperties, newNFTs } from '$stores/create';
+	import { newDropProperties } from '$stores/create';
 	import ConfirmListingPopup from '$lib/components/create/ConfirmListingPopup.svelte';
 	import Back from '$icons/back_.svelte';
 	import { goBack } from '$utils/navigation';
@@ -27,12 +27,10 @@
 	};
 	// Fetch NFT data on mount to show a preview
 	const fetchedNftData = writable<GetNftResponse>(null);
-
 	onMount(async () => {
 		//const bundleRes = await getBundle($page.params.bundleId);
-		const nftRes = await getNft($newNFTs[0]?.nftId);
+		const nftRes = await getNft($page.params.bundleId);
 		fetchedNftData.set(nftRes);
-		console.log($fetchedNftData);
 	});
 
 	let isListing = false;
@@ -40,16 +38,13 @@
 	async function listForSale() {
 		isListing = true;
 
-		const nftRes = await getNft($newNFTs[0]?.nftId);
-
 		const duration = listingPropValues.duration.value * 60 * 60 * 24;
-
 		// Create listing on the server
 		const apiCreateListingRes = await postCreateListing({
-			nfts: $newNFTs,
+			nfts: [{ nftId: $fetchedNftData.nftId, amount: $fetchedNftData.amount }],
 			paymentTokenAddress: $page.params.bundleId,
-			title: nftRes.name,
-			description: nftRes.metadata.description,
+			title: $fetchedNftData.name,
+			description: JSON.parse($fetchedNftData.metadata).description,
 			listingType: 'sale',
 			price: listingPropValues.price,
 			quantity: listingPropValues.quantity,
@@ -67,7 +62,7 @@
 		console.log(listing);
 
 		// Create listing on chain
-		/*
+
 		const successListingOnChain = await contractCreateListing({
 			bundleId: $page.params.bundleId,
 			payToken: '0x0000000000000000000000000000000000000000',
@@ -82,7 +77,7 @@
 			notifyError('Failed to create listing on chain.');
 			isListing = false;
 			return;
-		}*/
+		}
 
 		notifySuccess('Successfully created a listing.');
 

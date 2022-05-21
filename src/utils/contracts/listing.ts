@@ -1,6 +1,6 @@
-import { appSigner } from '$stores/wallet';
+import { appSigner, currentUserAddress } from '$stores/wallet';
 import type { ListingType } from '$utils/api/listing';
-import { ethers } from 'ethers';
+import type { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import HinataMarketplaceContract from './hinataMarketplace';
 
@@ -26,17 +26,18 @@ export interface ContractCreateListingOptions {
 export async function contractCreateListing(options: ContractCreateListingOptions) {
 	try {
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
-
-		console.log(options);
-
 		const dropCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing(
-			options.bundleId,
-			ethers.utils.parseEther(options.startingPrice.toString()),
-			ethers.utils.parseEther(options.endingPrice.toString()),
-			options.duration,
-			options.payToken,
-			options.quantity,
-			options.listingType
+			{
+			seller: get(currentUserAddress),
+			payToken: options.payToken,
+			price: options.startingPrice,
+			//startTime:
+			//duration:
+			quantity: options.quantity,
+			listingType: options.listingType,
+			tokenIds: [],
+			tokenAmounts: [],
+			}
 		);
 
 		// Wait for at least once confirmation
