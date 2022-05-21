@@ -14,16 +14,17 @@ export enum LISTING_TYPE {
 }
 
 export interface ContractCreateListingOptions {
-	bundleId: string;
 	startingPrice: number;
-	endingPrice: number;
 	duration: number;
 	payToken: string;
 	quantity: number;
 	listingType: LISTING_TYPE;
+	tokenIds: string[];
+	tokenAmounts: number[];
 }
 
 export async function contractCreateListing(options: ContractCreateListingOptions) {
+	console.log(options)
 	try {
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
 		const dropCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing(
@@ -31,12 +32,12 @@ export async function contractCreateListing(options: ContractCreateListingOption
 			seller: get(currentUserAddress),
 			payToken: options.payToken,
 			price: options.startingPrice,
-			//startTime:
-			//duration:
+			startTime: 0,
+			duration: 0,
 			quantity: options.quantity,
 			listingType: options.listingType,
-			tokenIds: [],
-			tokenAmounts: [],
+			tokenIds: options.tokenIds,
+			tokenAmounts: options.tokenAmounts,
 			}
 		);
 

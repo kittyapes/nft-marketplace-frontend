@@ -25,8 +25,10 @@
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
 		sale: ['price', 'startDate', 'quantity', 'duration']
 	};
-	// Fetch NFT data on mount to show a preview
+
 	const fetchedNftData = writable<GetNftResponse>(null);
+
+	// Fetch NFT data on mount to show a preview
 	onMount(async () => {
 		//const bundleRes = await getBundle($page.params.bundleId);
 		const nftRes = await getNft($page.params.bundleId);
@@ -39,13 +41,14 @@
 		isListing = true;
 
 		const duration = listingPropValues.duration.value * 60 * 60 * 24;
+		console.log($newDropProperties.listingType);
 		// Create listing on the server
 		const apiCreateListingRes = await postCreateListing({
 			nfts: [{ nftId: $fetchedNftData.nftId, amount: $fetchedNftData.amount }],
-			paymentTokenAddress: $page.params.bundleId,
+			paymentTokenAddress: '0x0000000000000000000000000000000000000000',
 			title: $fetchedNftData.name,
-			description: JSON.parse($fetchedNftData.metadata).description,
-			listingType: 'sale',
+			description: $fetchedNftData.metadata.description,
+			listingType: $newDropProperties.listingType,
 			price: listingPropValues.price,
 			quantity: listingPropValues.quantity,
 			startTime: listingPropValues.startDate,
@@ -62,14 +65,13 @@
 		console.log(listing);
 
 		// Create listing on chain
-
 		const successListingOnChain = await contractCreateListing({
-			bundleId: $page.params.bundleId,
 			payToken: '0x0000000000000000000000000000000000000000',
 			listingType: LISTING_TYPE.FIXED_PRICE,
 			startingPrice: listingPropValues.price,
-			endingPrice: listingPropValues.price,
 			duration: duration,
+			tokenIds: [$fetchedNftData.nftId],
+			tokenAmounts: [$fetchedNftData.amount],
 			quantity: 1
 		});
 

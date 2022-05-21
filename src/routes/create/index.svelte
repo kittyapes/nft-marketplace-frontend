@@ -19,7 +19,6 @@
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
-	import { random } from 'lodash-es';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -57,7 +56,6 @@
 			description: nftDescription,
 			amount: nftQuantity,
 			name: nftName,
-			artist: $profileData?._id,
 			creator: $currentUserAddress,
 			image: fileBlob,
 			animation: animationBlob
