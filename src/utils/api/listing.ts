@@ -2,7 +2,7 @@ import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
 import { getApiUrl } from '.';
 
-export type ListingType = 'UNIQUE_FIXED_PRICE' | 'INVENTORIED_FIXED_PRICE';
+export type ListingType = 'sale' | 'auction' | 'raffle';
 
 export interface CreateListingOptions {
 	bundleId: string;
@@ -32,24 +32,26 @@ export async function postCreateListing(options: CreateListingOptions) {
 
 export interface Listing {
 	_id: string;
+	listingStatus: 'ACTIVE';
+	listingType: ListingType;
+	listing: {
+		price: number;
+		quantity: number;
+	};
+	nfts: {
+		_id: string;
+		nftId: string;
+		amount: number;
+	}[];
+	paymentTokenTicker: 'ETH';
+	paymentTokenAddress: string;
+	startTime: string;
+	duration: number;
+	title: string;
+	description: string;
+	thumbnailUrl: string;
 	coverImageUrl: string;
 	createdAt: string;
-	description: string;
-	duration: number;
-	imageUrl: string;
-	listedOn: string;
-	listing: string;
-	listingStatus: string;
-	listingType: ListingType;
-	modifiedOn: string;
-	nfts: any[]; // I don't know yet
-	paymentTokenAddress: string;
-	paymentTokenTicker: string;
-	seller: string;
-	soldOn: string;
-	startTime: string;
-	successSaleTransaction: string;
-	title: string;
 	updatedAt: string;
 }
 

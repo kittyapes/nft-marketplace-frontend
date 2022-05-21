@@ -1,3 +1,5 @@
+import type { ListingType } from '$utils/api/listing';
+
 export interface UniversalPopupOptions {
 	id: string;
 	title: string;
@@ -8,4 +10,7 @@ export interface UniversalPopupOptions {
 	editionType?: string;
 	description?: string;
 	currentUserIsOwner: boolean;
+	price: number;
+	paymentTokenTicker: string;
+	listingType: ListingType;
 }
