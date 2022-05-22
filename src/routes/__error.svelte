@@ -1,38 +1,47 @@
-<script context="module" lang='ts'>
+<script context="module" lang="ts">
+	let response: number;
 
-    let response: number;
-
-    /** @type {import('@sveltejs/kit').ErrorLoad} */
-    export function load({ error, status }) {
-        response = status;
-        return {
-            props: {
-            title: `${status}: ${error.message}`
-            }
-        };
-    }
+	/** @type {import('@sveltejs/kit').ErrorLoad} */
+	export function load({ error, status }) {
+		response = status;
+		return {
+			props: {
+				title: `${status}: ${error.message}`
+			}
+		};
+	}
 </script>
-  
-<script lang='ts'>
-    import Error404 from "$icons/Error404.svelte";
-    import LoadedContent from "$lib/components/LoadedContent.svelte";
-    import { onMount } from "svelte";
 
-    let loaded = false;
+<script lang="ts">
+	import Error403 from '$icons/error403.svelte';
 
-    onMount(() => {
-        setTimeout(() => loaded = true, 0);
-    });
+	import Error404 from '$icons/error404.svelte';
+	import LoadedContent from '$lib/components/LoadedContent.svelte';
+	import { onMount } from 'svelte';
+
+	let loaded = false;
+
+	onMount(() => {
+		setTimeout(() => (loaded = true), 0);
+	});
 </script>
 
 <LoadedContent {loaded}>
-    {#if response === 404}
-        <div class='h-full w-full grid place-items-center'>
-            <div class='flex flex-col gap-10 p-20 items-center'>
-                <Error404></Error404>
-                <h1 class='text-7xl py-4 font-semibold text-color-gray-base'>Something's missing.</h1>
-                <button class='btn btn-rounded gradient-text font-semibold text-5xl' on:click={() => window.history.back()}>Go Back</button>
-            </div>
-        </div>
-    {/if}
+	{#if response === 404}
+		<div class="h-full w-full grid place-items-center">
+			<div class="flex flex-col gap-10 p-20 items-center">
+				<Error404 />
+				<h1 class="text-7xl py-4 font-semibold text-color-gray-base">Something's missing.</h1>
+				<button class="btn btn-rounded gradient-text font-semibold text-5xl" on:click={() => window.history.back()}>Go Back</button>
+			</div>
+		</div>
+	{:else if response === 403}
+		<div class="h-full w-full grid place-items-center">
+			<div class="flex flex-col gap-10 p-20 items-center">
+				<Error403 />
+				<h1 class="text-7xl py-4 font-semibold text-color-gray-base">Access Denied</h1>
+				<button class="btn btn-rounded gradient-text font-semibold text-5xl" on:click={() => window.history.back()}>Go Back</button>
+			</div>
+		</div>
+	{/if}
 </LoadedContent>

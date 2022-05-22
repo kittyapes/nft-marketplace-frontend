@@ -13,7 +13,7 @@
 
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {
-		return [RegExp('admin.*'), RegExp('create.*'), RegExp('profile/edit')];
+		return [RegExp('admin.*'), RegExp('create.*'), RegExp('profile/edit'), RegExp('management')];
 	}
 
 	function isProtectedAndExpired(path: string) {
