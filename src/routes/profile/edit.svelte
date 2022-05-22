@@ -97,10 +97,19 @@
 				coverUrl: data.coverUrl,
 				profileImage: null,
 				coverImage: null,
-				social: data.social
+				social: data.social || {
+					instagram: '',
+					discord: '',
+					twitter: '',
+					website: '',
+					pixiv: '',
+					deviantart: '',
+					artstation: ''
+				}
 			} as EditableProfileData;
 
 			fetchedDataStore.set(cloneDeep(localData));
+			console.log($fetchedDataStore);
 			localDataStore.set(localData);
 
 			// We have to explicitly set this because reactive statements
@@ -189,13 +198,13 @@
 	}
 
 	$: bioValid = isValidBio($localDataStore?.bio) || !$localDataStore?.bio;
-	$: websiteValid = browser && (!$localDataStore.social.website || isUrl($localDataStore.social.website));
+	$: websiteValid = browser && (!$localDataStore?.social?.website || isUrl($localDataStore?.social?.website));
 	$: if (websiteValid) {
 		// console.log(websiteValid);
 	}
 
 	// We setting false on SSR to avoid save button flashing
-	$: dataValid = browser && $localDataStore.username && usernameValid && bioValid && websiteValid;
+	$: dataValid = browser && $localDataStore?.username && usernameValid && bioValid && websiteValid && isEmail($localDataStore?.email);
 
 	const [currentAddress, previousAddress] = withPrevious('', { requireChange: true });
 	$: $currentAddress = $currentUserAddress;
@@ -300,7 +309,7 @@
 						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
 					</div>
 					<div class="flex w-full flex-col">
-						<DragDropImage bind:blob={$localDataStore.profileImage} currentImgUrl={$fetchedDataStore.thumbnailUrl} dimensions="180x180 px" class="!w-48 !h-44 mx-auto" />
+						<DragDropImage bind:blob={$localDataStore.profileImage} currentImgUrl={$fetchedDataStore?.thumbnailUrl} dimensions="180x180 px" class="!w-48 !h-44 mx-auto" />
 					</div>
 				</div>
 
@@ -310,7 +319,7 @@
 						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
 					</div>
 					<div class="flex w-full flex-col">
-						<DragDropImage bind:blob={$localDataStore.coverImage} currentImgUrl={$fetchedDataStore.coverUrl} dimensions="2550x290 px" class="!h-24 !px-12" />
+						<DragDropImage bind:blob={$localDataStore.coverImage} currentImgUrl={$fetchedDataStore?.coverUrl} dimensions="2550x290 px" class="!h-24 !px-12" />
 					</div>
 				</div>
 
