@@ -9,6 +9,8 @@ export interface Collection {
 	url: string;
 	image?: Blob;
 	cover?: Blob;
+	logoImageUrl?: string;
+	backgroundImageUrl?: string;
 	description?: string;
 	displayTheme: 'CONTAINED' | 'PADDED' | 'COVERED';
 	royalties?: { fees: string | number; address: string }[];
@@ -22,6 +24,7 @@ export interface Collection {
 	paymentTokenTicker: 'eth';
 	paymentTokenAddress: string;
 	isExplicitSensitive: boolean;
+	creator: string;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
@@ -49,4 +52,14 @@ export async function apiCreateCollection(options: Collection) {
 	console.log(res);
 
 	return res;
+}
+
+export async function apiGetCollection(collectinId: string) {
+	const res = await axios.get(getApiUrl('v2', 'collections/' + collectinId), getAxiosConfig());
+
+	if (res.status !== 200) {
+		throw new Error(res.data.message);
+	}
+
+	return res.data.data;
 }
