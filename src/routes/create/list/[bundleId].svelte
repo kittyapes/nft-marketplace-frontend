@@ -64,7 +64,7 @@
 
 		// Create listing on chain
 		const successListingOnChain = await contractCreateListing({
-			payToken: '0x0000000000000000000000000000000000000000',
+			payToken: '0xC758F0819f68c6C02B296dFbC6c69DeaD0900cee',
 			listingType: LISTING_TYPE.FIXED_PRICE,
 			startingPrice: listingPropValues.price,
 			duration: duration,
@@ -130,6 +130,6 @@
 
 	<div class="separator border-0 border-l p-8 w-80">
 		<div class="uppercase italic text-xl mb-4">Preview</div>
-		<NftCard name={$fetchedNftData?.name || 'N/A'} collectionName="No collection" imageUrl={$fetchedNftData?.imageUrl} />
+		<NftCard options={{ id: null, title: $fetchedNftData?.name, imageUrl: $fetchedNftData?.imageUrl }} />
 	</div>
 </div>

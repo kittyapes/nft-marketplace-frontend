@@ -18,7 +18,7 @@ export const createNFTOnAPI = async ({ amount, animation, contractId, creator, i
 	formData.append('name', name);
 	formData.append('creator', creator);
 	formData.append('contractAddress', contractId.toString());
-	formData.append('description', description);
+	if(description) formData.append('description', description);
 
 	
 	const res = await axios.post(getApiUrl('latest', 'nfts'), formData, getAxiosConfig()).catch((e) => {

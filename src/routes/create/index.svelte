@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { acceptedNftFileTypes } from '$constants';
 	import Back from '$icons/back_.svelte';
+	import type { NftCardOptions } from '$interfaces/nftCardOptions';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
@@ -32,6 +33,7 @@
 	let nftThumbnailPreview = '';
 	let fileBlob;
 	let animationBlob;
+	let nftData = writable<NftCardOptions>();
 
 	onMount(async () => {
 		profileData.set(await fetchProfileData($currentUserAddress));
@@ -60,6 +62,7 @@
 			image: fileBlob,
 			animation: animationBlob
 		});
+
 
 		if (!createNftRes) {
 			popupHandler.close();
