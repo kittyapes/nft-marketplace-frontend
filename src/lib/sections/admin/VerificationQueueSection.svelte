@@ -16,7 +16,7 @@
 		{ label: 'Monday', index: 0 },
 		{ label: 'Tuesday', index: 1 },
 		{ label: 'Wednesday', index: 2 },
-		{ label: 'Thrusday', index: 3 },
+		{ label: 'Thursday', index: 3 },
 		{ label: 'Friday', index: 4 },
 		{ label: 'Saturday', index: 5 },
 		{ label: 'Sunday', index: 6 }

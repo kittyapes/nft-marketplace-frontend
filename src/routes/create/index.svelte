@@ -1,20 +1,21 @@
 <script lang="ts">
 	import { acceptedNftFileTypes } from '$constants';
-
 	import Back from '$icons/back_.svelte';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
-	import { newDropProperties } from '$stores/create';
+	import { newDropProperties, newNFTs } from '$stores/create';
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
+	import { getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { NewBundleData, newBundleData } from '$utils/create';
 	import { createBundle } from '$utils/create/createBundle';
 	import { createDropOnChain } from '$utils/create/createDrop';
-	import { batchMintNft, createNFTOnAPI } from '$utils/create/createNFT';
+	import { batchMintNft, createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
+	import { getNftId } from '$utils/create/getNftId';
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
@@ -42,20 +43,18 @@
 		// goto('/create/choose-listing-format');
 		// return;
 
-		// Notes:
-		// Bundle is a former drop
-
 		newBundleData.set({} as NewBundleData);
 
 		const progress = writable(0);
 		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
 
 		// Create NFT on the server
-		const nftId = await random(0, 999999999);
-		console.info('[Create] Using new NFT ID:', nftId);
+		const nftId = await getNftId();
+		console.info('[Create] Using new NFT contract ID:', nftId);
 
 		const createNftRes = await createNFTOnAPI({
 			contractId: nftId,
+			description: nftDescription,
 			amount: nftQuantity,
 			name: nftName,
 			artist: $profileData?._id,
@@ -67,48 +66,15 @@
 		if (!createNftRes) {
 			popupHandler.close();
 			return;
-		}
-
-		progress.set(33);
-
-		// Create NFT bundle on the server
-		const bundleId = await random(0, 999999999);
-		console.info('[Create] Using new Bundle ID:', bundleId);
-
-		const createdBundleRes = await createBundle({
-			contractId: bundleId,
-			creator: $currentUserAddress,
-			description: nftDescription,
-			title: nftName,
-			nftIds: [nftId],
-			nftAmounts: [nftQuantity],
-			image: fileBlob,
-			animation: animationBlob
-		});
-
-		if (!createdBundleRes) {
-			popupHandler.close();
-			return;
-		}
-
-		// Create bundle on chain
-		const chainBundleSuccess = await createDropOnChain(bundleId);
-
-		if (chainBundleSuccess) {
-			console.info('[Create] Bundle created on chain.');
 		} else {
-			popupHandler.close();
-			notifyError('Failed to create bundle on chain.');
-			console.error('[Create] Failed to create bundle on chain.');
-			return;
+			$newNFTs = [{ nftId: createNftRes.nftId, amount: nftQuantity }];
 		}
 
-		progress.set(66);
+		progress.set(50);
 
-		// Create NFT on chain
-		const nftBundleSuccess = await batchMintNft({ dropId: bundleId, nftIds: [nftId], nftAmounts: [nftQuantity] });
-
-		if (nftBundleSuccess) {
+		// create NFT on chain
+		const nftMintRes = await createNFTOnChain({ id: createNftRes.nftId.toString(), amount: nftQuantity });
+		if (nftMintRes) {
 			console.info('[Create] NFT created on chain.');
 		} else {
 			popupHandler.close();
@@ -118,8 +84,9 @@
 		}
 
 		newBundleData.update((data) => {
-			return { ...data, bundleId };
+			return { ...data, id: createNftRes.nftId };
 		});
+		console.log($newBundleData);
 
 		progress.set(100);
 	}

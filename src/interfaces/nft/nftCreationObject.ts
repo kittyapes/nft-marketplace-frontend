@@ -6,4 +6,5 @@ export interface NFTCreationObject {
 	creator: string;
 	image: Blob;
 	animation: Blob;
+	description?: string;
 }

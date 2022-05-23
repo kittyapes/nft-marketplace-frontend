@@ -4,7 +4,7 @@
 	import { setPopup } from '$utils/popup';
 	import CommonProperties from '$lib/components/create/CommonProperties.svelte';
 	import Royalties from '$lib/components/create/Royalties.svelte';
-	import { newDropProperties } from '$stores/create';
+	import { newDropProperties, newNFTs } from '$stores/create';
 	import ConfirmListingPopup from '$lib/components/create/ConfirmListingPopup.svelte';
 	import Back from '$icons/back_.svelte';
 	import { goBack } from '$utils/navigation';
@@ -15,24 +15,24 @@
 	import Loader from '$icons/loader.svelte';
 	import { contractCreateListing, LISTING_TYPE } from '$utils/contracts/listing';
 	import { writable } from 'svelte/store';
-	import { GetNftResponse } from '$utils/api/nft';
+	import { getNft, GetNftResponse } from '$utils/api/nft';
 	import { onMount } from 'svelte';
-	import { getBundle, GetBundleResponse } from '$utils/api/bundle';
+	import { getBundle } from '$utils/api/bundle';
+	import axios from 'axios';
+	import { getApiUrl } from '$utils/api';
+	import { getAxiosConfig } from '$utils/auth/axiosConfig';
 
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
 		sale: ['price', 'startDate', 'quantity', 'duration']
 	};
 	// Fetch NFT data on mount to show a preview
-	const fetchedBundleData = writable<GetBundleResponse>(null);
+	const fetchedNftData = writable<GetNftResponse>(null);
 
 	onMount(async () => {
-		console.log('bundleId', $page.params.bundleId);
-
-		const bundleRes = await getBundle($page.params.bundleId);
-
-		console.log(bundleRes);
-
-		fetchedBundleData.set(bundleRes);
+		//const bundleRes = await getBundle($page.params.bundleId);
+		const nftRes = await getNft($newNFTs[0]?.nftId);
+		fetchedNftData.set(nftRes);
+		console.log($fetchedNftData);
 	});
 
 	let isListing = false;
@@ -40,16 +40,21 @@
 	async function listForSale() {
 		isListing = true;
 
+		const nftRes = await getNft($newNFTs[0]?.nftId);
+
 		const duration = listingPropValues.duration.value * 60 * 60 * 24;
 
 		// Create listing on the server
 		const apiCreateListingRes = await postCreateListing({
-			bundleId: $page.params.bundleId,
-			creator: $currentUserAddress,
-			listingType: 'UNIQUE_FIXED_PRICE',
+			nfts: $newNFTs,
+			paymentTokenAddress: $page.params.bundleId,
+			title: nftRes.name,
+			description: nftRes.metadata.description,
+			listingType: 'sale',
 			price: listingPropValues.price,
-			startedAt: listingPropValues.date,
-			duration: duration.toString()
+			quantity: listingPropValues.quantity,
+			startTime: listingPropValues.startDate,
+			duration: duration
 		});
 
 		if (apiCreateListingRes.data.error) {
@@ -58,7 +63,11 @@
 			return;
 		}
 
+		const listing = await axios.get(getApiUrl('latest', 'listings/' + apiCreateListingRes.data.data._id), getAxiosConfig()).catch((e) => e.response);
+		console.log(listing);
+
 		// Create listing on chain
+		/*
 		const successListingOnChain = await contractCreateListing({
 			bundleId: $page.params.bundleId,
 			payToken: '0x0000000000000000000000000000000000000000',
@@ -73,9 +82,9 @@
 			notifyError('Failed to create listing on chain.');
 			isListing = false;
 			return;
-		}
+		}*/
 
-		notifySuccess('Successfully created listing.');
+		notifySuccess('Successfully created a listing.');
 
 		isListing = false;
 	}
@@ -126,6 +135,6 @@
 
 	<div class="separator border-0 border-l p-8 w-80">
 		<div class="uppercase italic text-xl mb-4">Preview</div>
-		<NftCard options={{ title: $fetchedBundleData?.title, imageUrl: $fetchedBundleData?.imageUrl, id: null }} />
+		<NftCard name={$fetchedNftData?.name || 'N/A'} collectionName="No collection" imageUrl={$fetchedNftData?.imageUrl} />
 	</div>
 </div>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	export let placeholder: string = '';
+	export let minChars: number = 0;
 	export let maxChars: number = 0;
 	export let value: string = '';
 	export let containerClass = '';
@@ -9,15 +10,7 @@
 </script>
 
 <div class={containerClass}>
-	<textarea
-		id=""
-		rows="10"
-		class="w-full resize-none {textAreaClass}"
-		{placeholder}
-		maxlength={maxChars}
-		class:outline
-		bind:value
-	/>
+	<textarea id="" rows="10" class="w-full resize-none {textAreaClass}" {placeholder} class:!outline-red-500={value.length < minChars} maxlength={maxChars} class:outline bind:value />
 
 	{#if maxChars}
 		<div class="text-right text-xs font-semibold">{value?.length || 0}/{maxChars}</div>

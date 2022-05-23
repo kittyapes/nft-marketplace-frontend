@@ -12,8 +12,8 @@
 
 	const points = [
 		{ at: 0, label: 'Upload' },
-		{ at: 33, label: 'Bundle TX' },
-		{ at: 66, label: 'NFT TX' },
+		//{ at: 33, label: 'Bundle TX' },
+		{ at: 50, label: 'NFT TX' },
 		{ at: 100, label: 'Finished' }
 	];
 
@@ -21,7 +21,7 @@
 	export let progress: Readable<number> = readable(0);
 
 	function clickChooseFormat() {
-		goto('/create/choose-listing-format/' + $newBundleData.bundleId);
+		goto('/create/choose-listing-format/' + $newBundleData.id);
 		handler.close();
 	}
 </script>

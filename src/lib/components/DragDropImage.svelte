@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { browser } from '$app/env';
-	import { acceptedImages, acceptedVideos } from '$constants';
 	import { notifyError } from '$utils/toast';
+	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 
+	const dispatch = createEventDispatcher();
+
+	// TODO refactor to completely remove this and use the placeholder named slot instead
 	export let text = 'Drag and drop an image here, or click to browse';
 	export let dimensions: string = '';
 	export let blob: Blob | null = null;
@@ -39,6 +42,8 @@
 			reader.readAsDataURL(files[0]);
 
 			blob = file;
+
+			dispatch('new-blob', { blob });
 		}
 	}
 
@@ -75,9 +80,13 @@
 				<track kind="captions" />
 			</video>
 		{:else if !fileType}
-			<div class="text-center text-color-black opacity-50 text-sm px-12">
-				{@html text}
-			</div>
+			{#if text}
+				<div class="text-center text-color-black opacity-50 text-sm px-12">
+					{@html text}
+				</div>
+			{:else}
+				<slot name="placeholder" />
+			{/if}
 		{/if}
 	</button>
 
