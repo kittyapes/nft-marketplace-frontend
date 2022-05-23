@@ -5,6 +5,6 @@
 }
 
 .select {
-	@apply border border-black border-opacity-30 h-full min-h-[3rem] rounded-md px-4 opacity-50 outline-none cursor-pointer
+	@apply border border-black border-opacity-30 h-full min-h-[3rem] rounded-md px-4 outline-none cursor-pointer
 	appearance-none w-full;
 }

@@ -3,14 +3,20 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let options: { label: string; value?: any }[];
+	interface Option {
+		value: string;
+		label: string;
+		iconUrl: string;
+	}
+
+	export let options: Option[];
 	export let btnClass = '';
 
 	$: if (!options?.length) {
 		throw new Error('No options provided');
 	}
 
-	export let selected: { label: string; value?: string } = options?.[0];
+	export let selected: Option = options?.[0];
 	export let opened: boolean = false;
 	export let disabled = false;
 
@@ -31,8 +37,16 @@
 </script>
 
 <div class="relative select-container select-none transition {$$props.class}" class:opacity-50={disabled}>
-	<button class="text-left select" on:click={() => (opened = !opened)} bind:this={elemOpenButton} {disabled}>
-		{selected?.label}
+	<button class="text-left select flex items-center space-x-2" on:click={() => (opened = !opened)} bind:this={elemOpenButton} {disabled}>
+		<!-- Icon -->
+		{#if selected.iconUrl}
+			<img src={selected.iconUrl} alt="" class="w-4" />
+		{/if}
+
+		<!-- Label -->
+		<div>
+			{selected?.label}
+		</div>
 	</button>
 
 	{#if opened}

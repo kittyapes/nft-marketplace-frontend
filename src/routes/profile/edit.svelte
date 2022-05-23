@@ -98,7 +98,7 @@
 				coverUrl: data.coverUrl,
 				profileImage: null,
 				coverImage: null,
-				social: data.social
+				social: data.social || {}
 			} as EditableProfileData;
 
 			fetchedDataStore.set(cloneDeep(localData));
@@ -190,7 +190,7 @@
 	}
 
 	$: bioValid = isValidBio($localDataStore?.bio) || !$localDataStore?.bio;
-	$: websiteValid = browser && (!$localDataStore.social.website || isUrl($localDataStore.social.website));
+	$: websiteValid = browser && (!$localDataStore?.social?.website || isUrl($localDataStore.social.website));
 	$: if (websiteValid) {
 		// console.log(websiteValid);
 	}
