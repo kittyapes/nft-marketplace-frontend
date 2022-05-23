@@ -3,6 +3,7 @@ import { getApiUrl } from '.';
 
 export interface GetNftResponse {
 	_id: string;
+	nftId: number;
 	imageUrl: string;
 	animationUrl: string;
 	contractId: string;
@@ -11,6 +12,7 @@ export interface GetNftResponse {
 	creator: string;
 	createdAt: string;
 	updatedAt: string;
+	metadata: any;
 }
 
 export async function getNft(id: string) {

@@ -10,6 +10,11 @@
 	import { setPopup } from '$utils/popup';
 	import NftDisplayPopup from '$lib/components/profile/NFTDisplayPopup.svelte';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
+	import { isAuthTokenExpired } from '$utils/auth/token';
+	import { currentUserAddress } from '$stores/wallet';
+	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
+	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
+	import { browser } from '$app/env';
 
 	let sidebarOpen;
 
@@ -27,6 +32,15 @@
 			});
 		}
 	});
+
+	$: if (browser && $currentUserAddress && isAuthTokenExpired($currentUserAddress)) {
+		setPopup(AuthLoginPopup, {
+			props: {
+				onLoginSuccess: () => {},
+				adapter: userAuthLoginPopupAdapter
+			}
+		});
+	}
 </script>
 
 <div class="flex flex-col w-full h-full min-h-screen md:flex-row">

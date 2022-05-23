@@ -52,6 +52,7 @@
 	let isSaving = false;
 
 	async function onSave() {
+		console.log($fetchedDataStore);
 		if (isSaving) return;
 
 		isSaving = true;

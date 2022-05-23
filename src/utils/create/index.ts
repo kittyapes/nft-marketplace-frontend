@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 
 export interface NewBundleData {
-	bundleId: number;
+	id: number;
 }
 
 export const newBundleData = writable({} as NewBundleData);
