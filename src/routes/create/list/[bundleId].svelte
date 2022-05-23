@@ -67,6 +67,7 @@
 			payToken: '0xC758F0819f68c6C02B296dFbC6c69DeaD0900cee',
 			listingType: LISTING_TYPE.FIXED_PRICE,
 			startingPrice: listingPropValues.price,
+			startTime: listingPropValues.startDate.unix(),
 			duration: duration,
 			tokenIds: [$fetchedNftData.nftId],
 			tokenAmounts: [$fetchedNftData.amount],

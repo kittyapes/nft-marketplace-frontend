@@ -1,8 +1,9 @@
+import { HinataMarketplaceContractAddress, HinataMarketplaceStorageContractAddress } from '$constants/contractAddresses';
 import { appSigner, currentUserAddress } from '$stores/wallet';
-import type { ListingType } from '$utils/api/listing';
 import type { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import HinataMarketplaceContract from './hinataMarketplace';
+import HinataMarketplaceStorageContract from './hinataMarketplaceStorage';
 
 export enum LISTING_TYPE {
 	FIXED_PRICE,
@@ -16,6 +17,7 @@ export enum LISTING_TYPE {
 export interface ContractCreateListingOptions {
 	startingPrice: number;
 	duration: number;
+	startTime: number;
 	payToken: string;
 	quantity: number;
 	listingType: LISTING_TYPE;
@@ -24,16 +26,23 @@ export interface ContractCreateListingOptions {
 }
 
 export async function contractCreateListing(options: ContractCreateListingOptions) {
-	console.log(options)
 	try {
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
+		const MarketplaceStorageContract = HinataMarketplaceStorageContract(get(appSigner));
+		
+		let nftApproval = await MarketplaceStorageContract.setApprovalForAll(HinataMarketplaceStorageContractAddress, true);
+
+		console.log(nftApproval); // logs object
+		nftApproval = await nftApproval.wait(1);
+		console.log(nftApproval) // never gets there
+
 		const dropCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing(
 			{
 			seller: get(currentUserAddress),
 			payToken: options.payToken,
 			price: options.startingPrice,
-			startTime: 0,
-			duration: 0,
+			startTime: options.startTime,
+			duration: options.duration,
 			quantity: options.quantity,
 			listingType: options.listingType,
 			tokenIds: options.tokenIds,

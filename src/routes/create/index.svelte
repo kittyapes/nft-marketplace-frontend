@@ -77,7 +77,7 @@
 			console.error('[Create] Failed to create NFT on chain.');
 			return;
 		});
-		console.log('s');
+
 		if (nftMintRes) {
 			console.info('[Create] NFT created on chain.');
 		}
