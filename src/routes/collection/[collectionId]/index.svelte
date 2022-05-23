@@ -4,7 +4,9 @@
 	import ActionMenu from '$lib/components/ActionMenu.svelte';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
+	import NftList from '$lib/components/NftList.svelte';
 	import { currentUserAddress } from '$stores/wallet';
+	import { adaptCollectionNftToNftCard } from '$utils/adapters/adaptCollectionNftToNftCard';
 	import { apiGetCollection, Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
@@ -39,7 +41,7 @@
 	let showCollectionMenu = false;
 </script>
 
-<main class="max-w-screen-lg mx-auto px-16">
+<main class="mx-auto px-16">
 	<div class="relative mt-8">
 		<!-- Cover image -->
 		<img
@@ -76,7 +78,7 @@
 	</div>
 
 	<!-- Stats table -->
-	<div class="border border-black h-24 flex rounded-lg justify-evenly mt-8">
+	<div class="border border-black h-24 flex rounded-lg justify-evenly mt-8 max-w-3xl mx-auto">
 		{#each collectionStats as [stat, value]}
 			<div class="flex flex-col items-center justify-center border-r border-black last:border-0 w-full">
 				<div class="text-sm">{stat}</div>
@@ -97,6 +99,12 @@
 			<img src="/svg/icons/collection-menu.svg" alt="Upload." />
 		</button>
 	</div>
+
+	{#if collectionData}
+		<div class="mt-16 border-t border-[#0000004D]">
+			<NftList data={collectionData.nfts.map(adaptCollectionNftToNftCard)} />
+		</div>
+	{/if}
 </main>
 
 {#if showCollectionMenu}
@@ -105,7 +113,7 @@
 	</AttachToElement>
 {/if}
 
-<pre>
+<!-- <pre>
     {$page.params.collectionId}
     {JSON.stringify(collectionData, null, 2)}
-</pre>
+</pre> -->

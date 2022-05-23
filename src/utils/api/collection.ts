@@ -25,6 +25,7 @@ export interface Collection {
 	paymentTokenAddress: string;
 	isExplicitSensitive: boolean;
 	creator: string;
+	nfts: [];
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
