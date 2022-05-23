@@ -44,7 +44,7 @@
 		// Create listing on the server
 		const apiCreateListingRes = await postCreateListing({
 			nfts: [{ nftId: $fetchedNftData.nftId, amount: $fetchedNftData.amount }],
-			paymentTokenAddress: '0x0000000000000000000000000000000000000000',
+			paymentTokenAddress: '0xC758F0819f68c6C02B296dFbC6c69DeaD0900cee',
 			title: $fetchedNftData.name,
 			description: $fetchedNftData.metadata.description,
 			listingType: $newDropProperties.listingType,

@@ -11,6 +11,7 @@ import type { NFTMintingObject } from 'src/interfaces/nft/nftMintingObject';
 import { get } from 'svelte/store';
 
 export const createNFTOnAPI = async ({ amount, animation, contractId, creator, image, name, description }: NFTCreationObject) => {
+
 	const formData = new FormData();
 	formData.append('thumbnail', image);	
 	formData.append('asset', animation || null);

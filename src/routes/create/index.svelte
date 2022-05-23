@@ -63,7 +63,6 @@
 			animation: animationBlob
 		});
 
-
 		if (!createNftRes) {
 			popupHandler.close();
 			return;
@@ -72,14 +71,15 @@
 		progress.set(50);
 
 		// create NFT on chain
-		const nftMintRes = await createNFTOnChain({ id: createNftRes.nftId.toString(), amount: nftQuantity });
-		if (nftMintRes) {
-			console.info('[Create] NFT created on chain.');
-		} else {
+		const nftMintRes = await createNFTOnChain({ id: createNftRes.nftId.toString(), amount: nftQuantity }).catch(() => {
 			popupHandler.close();
 			notifyError('Failed to create NFT on chain.');
 			console.error('[Create] Failed to create NFT on chain.');
 			return;
+		});
+		console.log('s');
+		if (nftMintRes) {
+			console.info('[Create] NFT created on chain.');
 		}
 
 		newBundleData.update((data) => {
