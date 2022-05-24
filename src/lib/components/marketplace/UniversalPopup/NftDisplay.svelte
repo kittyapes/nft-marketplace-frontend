@@ -12,6 +12,7 @@
 	};
 
 	let videoAsset: HTMLVideoElement;
+	let fileType;
 
 	function handleShare() {
 		navigator.clipboard.writeText(options.imageUrl);
@@ -27,6 +28,8 @@
 	const preload = async (src) => {
 		const resp = await fetch(src);
 		const blob = await resp.blob();
+		fileType = blob.type.split('/')[0];
+		console.log(fileType);
 
 		return new Promise(function (resolve) {
 			let reader = new FileReader();
@@ -43,18 +46,18 @@
 <div class="w-full md:w-1/2 bg-gray-200 h-auto flex items-center justify-center">
 	<div class="m-10 text-center h-full flex flex-col justify-end">
 		<div class="w-96 h-96 flex items-center justify-center self-center">
-			{#if options.animationUrl}
-				{#await preload(options.animationUrl)}
-					<Loader />
-				{:then}
+			{#await preload(options.animationUrl)}
+				<Loader />
+			{:then}
+				{#if fileType === 'video'}
 					<video class="max-w-full max-h-full shadow-xl rounded-xl" autoplay loop bind:this={videoAsset}>
 						<source src={options.animationUrl} type="video/mp4" />
 						<track kind="captions" />
 					</video>
-				{/await}
-			{:else}
-				<img src={options.imageUrl} class="max-w-full max-h-full shadow-xl rounded-xl" alt="card artwork" />
-			{/if}
+				{:else if fileType === 'image'}
+					<img src={options.imageUrl} class="max-w-full max-h-full shadow-xl rounded-xl" alt="card artwork" />
+				{/if}
+			{/await}
 		</div>
 		<!-- NFT Name -->
 		{#if options.title}
