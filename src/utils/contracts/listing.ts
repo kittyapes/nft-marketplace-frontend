@@ -30,11 +30,13 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
 		const MarketplaceStorageContract = HinataMarketplaceStorageContract(get(appSigner));
 		
-		let nftApproval = await MarketplaceStorageContract.setApprovalForAll(HinataMarketplaceStorageContractAddress, true);
+		const isApproved = await MarketplaceStorageContract.isApprovedForAll(get(currentUserAddress), HinataMarketplaceContractAddress);
 
-		console.log(nftApproval); // logs object
-		nftApproval = await nftApproval.wait(1);
-		console.log(nftApproval) // never gets there
+		if(!isApproved) {
+			const approval: ethers.ContractTransaction = await MarketplaceStorageContract.setApprovalForAll(HinataMarketplaceContractAddress, true);
+			console.log(approval);
+			await approval.wait(1);
+		}
 
 		const dropCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing(
 			{
@@ -52,10 +54,10 @@ export async function contractCreateListing(options: ContractCreateListingOption
 
 		// Wait for at least once confirmation
 		await dropCreationTransaction.wait(1);
+
+		return true;
 	} catch (error) {
 		console.log(error);
 		return false;
 	}
-
-	return true;
 }
