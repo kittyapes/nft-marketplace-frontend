@@ -44,9 +44,7 @@ export const createNFTOnChain = async ({ id, amount }: NFTMintingObject) => {
 		);
 
 		// Wait for at least once confirmation
-		console.log(id); // logs
 		await nftMintingTransaction.wait(1);
-		console.log(id) // never gets there
 
 		return true;
 	} catch (error) {

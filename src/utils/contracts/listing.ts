@@ -34,7 +34,6 @@ export async function contractCreateListing(options: ContractCreateListingOption
 
 		if(!isApproved) {
 			const approval: ethers.ContractTransaction = await MarketplaceStorageContract.setApprovalForAll(HinataMarketplaceContractAddress, true);
-			console.log(approval);
 			await approval.wait(1);
 		}
 
