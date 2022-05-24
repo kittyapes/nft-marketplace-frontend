@@ -29,7 +29,6 @@
 		const resp = await fetch(src);
 		const blob = await resp.blob();
 		fileType = blob.type.split('/')[0];
-		console.log(fileType);
 
 		return new Promise(function (resolve) {
 			let reader = new FileReader();
@@ -68,9 +67,9 @@
 
 		<!-- Fullscreen and Share button -->
 		<div class="flex justify-center mt-8 mb-8 gap-x-4">
-			{#if options.animationUrl}
+			{#if fileType === 'video'}
 				<div class="transition-btn hover:brightness-110 cursor-pointer" on:click={openFullscreen}><Fullscreen /></div>
-			{:else}
+			{:else if fileType === 'image'}
 				<a href={options.imageUrl} target="_blank" class="transition-btn hover:brightness-110">
 					<Fullscreen />
 				</a>
