@@ -44,7 +44,7 @@
 <!-- NFT Image side-->
 <div class="w-full md:w-1/2 bg-gray-200 h-auto flex items-center justify-center">
 	<div class="m-10 text-center h-full flex flex-col justify-end">
-		<div class="w-96 h-96 flex items-center justify-center self-center">
+		<div class="w-96 h-96 flex items-center justify-center self-center object-contain">
 			{#await preload(options.animationUrl)}
 				<Loader />
 			{:then}
@@ -54,7 +54,7 @@
 						<track kind="captions" />
 					</video>
 				{:else if fileType === 'image'}
-					<img src={options.imageUrl} class="max-w-full max-h-full shadow-xl rounded-xl" alt="card artwork" />
+					<img src={options.imageUrl} class="w-full h-full shadow-xl rounded-xl object-cover" alt="card artwork" />
 				{/if}
 			{/await}
 		</div>
