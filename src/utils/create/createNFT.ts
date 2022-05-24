@@ -56,30 +56,3 @@ export const createNFTOnChain = async ({ id, amount }: NFTMintingObject) => {
 	}
 };
 
-export interface BatchMintNftOptions {
-	dropId: number;
-	nftIds: number[];
-	nftAmounts: number[];
-}
-
-export async function batchMintNft(options: BatchMintNftOptions) {
-	try {
-		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
-		const nftMintingTransaction: ethers.ContractTransaction = await MarketplaceContract.mintBatchDropNFT(
-			options.dropId,
-			options.nftIds,
-			options.nftAmounts,
-			[]
-			// Data object not added yet
-		);
-
-		// Wait for at least once confirmation
-		await nftMintingTransaction.wait(1);
-
-		return true;
-	} catch (error) {
-		console.log(error);
-		throw new Error('Failed to create NFT on chain');
-		//return false;
-	}
-}

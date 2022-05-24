@@ -14,8 +14,7 @@
 	import { fetchProfileData } from '$utils/api/profile';
 	import { NewBundleData, newBundleData } from '$utils/create';
 	import { createBundle } from '$utils/create/createBundle';
-	import { createDropOnChain } from '$utils/create/createDrop';
-	import { batchMintNft, createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
+	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { getNftId } from '$utils/create/getNftId';
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
