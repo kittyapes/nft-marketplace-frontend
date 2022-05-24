@@ -32,6 +32,12 @@ body {
 	@apply bg-gradient-to-r from-color-purple to-color-blue text-transparent bg-clip-text;
 }
 
+.text-color-gradient {
+	@apply text-transparent;
+	background: linear-gradient(88.5deg, #7300df -2.19%, #ad55ff 28.34%, #88eaff 126.89%);
+	background-clip: text;
+}
+
 .gradient-stroke {
 	background: linear-gradient(to right, #868bf7, #6cc7f8);
 	@apply bg-clip-text font-extrabold;
