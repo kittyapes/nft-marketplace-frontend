@@ -67,8 +67,7 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		);
 
 		// Wait for at least once confirmation
-		const listingCreationResponse = await listingCreationTransaction.wait(1);
-		console.log(listingCreationResponse);
+		await listingCreationTransaction.wait(1);
 
 		return true;
 	} catch (error) {
