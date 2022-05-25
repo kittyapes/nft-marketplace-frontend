@@ -19,7 +19,7 @@
 			<div class="uppercase">24h vol %</div>
 		</div>
 		{#each collections as collection, i}
-			<div class="grid w-full py-4 border-t border-black border-opacity-[0.15]" transition:slide>
+			<div class="grid w-full py-4 border-t border-black border-opacity-[0.15]" transition:slide|local>
 				<div class="grid grid-cols-[1.5fr_7fr_1.5fr_3fr_2fr_3fr] w-[95%] place-items-center">
 					<div class="text-center text-sm grid place-items-center">{i + 1}</div>
 					<div class="flex place-items-center gap-6 place-self-start">

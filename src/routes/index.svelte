@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { links } from '$constants/links';
 	import { socials } from '$constants/socials';
-	import HomeCollections from '$lib/components/collections/HomeCollections.svelte';
+	import CollectionsTable from '$lib/components/collections/CollectionsTable.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { apiGetMostActiveCollections, CollectionTableRow } from '$utils/api/collection';
 
@@ -56,8 +56,8 @@
 <div class="px-16 mt-24 mb-16">
 	<div class="flex items-end">
 		<h2 class="text-4xl font-light uppercase flex-grow">Top 10 Collections</h2>
-		<a href="" class="uppercase underline text-sm">View all</a>
+		<a href="/collections" class="uppercase underline text-sm font-bold">View all</a>
 	</div>
-	<hr class="mt-2 border-[#0000004D]" />
-	<HomeCollections {collections} />
+	<hr class="mt-4 border-[#0000004D]" />
+	<CollectionsTable {collections} />
 </div>

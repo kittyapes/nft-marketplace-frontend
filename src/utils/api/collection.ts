@@ -86,3 +86,18 @@ export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[
 
 	return res.data.data;
 }
+
+export async function apiSearchCollections() {
+	const params = {
+		limit: 100
+	};
+
+	// TODO shouldn't require token, but the backend wasn't updated yet
+	const res = await axios.get(getApiUrl('v2', 'collections/search'), { ...getAxiosConfig(), params });
+
+	if (res.status !== 200) {
+		throw new Error(res.data.message);
+	}
+
+	return res.data.data;
+}
