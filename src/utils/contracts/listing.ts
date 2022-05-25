@@ -37,7 +37,7 @@ export async function contractCreateListing(options: ContractCreateListingOption
 			await approval.wait(1);
 		}
 
-		const dropCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing(
+		const listingCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing(
 			{
 			seller: get(currentUserAddress),
 			payToken: options.payToken,
@@ -52,7 +52,8 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		);
 
 		// Wait for at least once confirmation
-		await dropCreationTransaction.wait(1);
+		const listingCreationResponse = await listingCreationTransaction.wait(1);
+		console.log(listingCreationResponse);
 
 		return true;
 	} catch (error) {
