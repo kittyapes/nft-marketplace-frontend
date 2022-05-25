@@ -1,8 +1,9 @@
+import { HinataMarketplaceContractAddress, HinataMarketplaceStorageContractAddress } from '$constants/contractAddresses';
 import { appSigner, currentUserAddress } from '$stores/wallet';
-import type { ListingType } from '$utils/api/listing';
-import { ethers } from 'ethers';
+import type { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import HinataMarketplaceContract from './hinataMarketplace';
+import HinataMarketplaceStorageContract from './hinataMarketplaceStorage';
 
 export enum LISTING_TYPE {
 	FIXED_PRICE,
@@ -14,39 +15,48 @@ export enum LISTING_TYPE {
 }
 
 export interface ContractCreateListingOptions {
-	bundleId: string;
 	startingPrice: number;
-	endingPrice: number;
 	duration: number;
+	startTime: number;
 	payToken: string;
 	quantity: number;
 	listingType: LISTING_TYPE;
+	tokenIds: string[];
+	tokenAmounts: number[];
 }
 
 export async function contractCreateListing(options: ContractCreateListingOptions) {
 	try {
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
+		const MarketplaceStorageContract = HinataMarketplaceStorageContract(get(appSigner));
 
-		console.log(options);
+		const isApproved = await MarketplaceStorageContract.isApprovedForAll(get(currentUserAddress), HinataMarketplaceContractAddress);
 
-		const tx: ethers.ContractTransaction = await MarketplaceContract.createListing(
-			options.bundleId,
-			ethers.utils.parseEther(options.startingPrice.toString()),
-			ethers.utils.parseEther(options.endingPrice.toString()),
-			options.duration,
-			options.payToken,
-			options.quantity,
-			options.listingType
-		);
+		if (!isApproved) {
+			const approval: ethers.ContractTransaction = await MarketplaceStorageContract.setApprovalForAll(HinataMarketplaceContractAddress, true);
+			await approval.wait(1);
+		}
+
+		const dropCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing({
+			seller: get(currentUserAddress),
+			payToken: options.payToken,
+			price: options.startingPrice,
+			startTime: options.startTime,
+			duration: options.duration,
+			quantity: options.quantity,
+			listingType: options.listingType,
+			tokenIds: options.tokenIds,
+			tokenAmounts: options.tokenAmounts
+		});
 
 		// Wait for at least once confirmation
-		await tx.wait(1);
+		await dropCreationTransaction.wait(1);
+
+		return true;
 	} catch (error) {
 		console.log(error);
 		return false;
 	}
-
-	return true;
 }
 
 export async function contractPurchaseListing(listingId: string) {

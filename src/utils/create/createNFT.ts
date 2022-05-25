@@ -10,16 +10,16 @@ import type { NFTCreationObject } from 'src/interfaces/nft/nftCreationObject';
 import type { NFTMintingObject } from 'src/interfaces/nft/nftMintingObject';
 import { get } from 'svelte/store';
 
-export const createNFTOnAPI = async ({ amount, animation, artist, contractId, creator, image, name, description }: NFTCreationObject) => {
+export const createNFTOnAPI = async ({ amount, animation, contractId, creator, image, name, description }: NFTCreationObject) => {
+
 	const formData = new FormData();
 	formData.append('thumbnail', image);	
 	formData.append('asset', animation || null);
 	formData.append('amount', amount.toString() || '1');
 	formData.append('name', name);
-	formData.append('artist', artist);
 	formData.append('creator', creator);
 	formData.append('contractAddress', contractId.toString());
-	formData.append('description', description);
+	if(description) formData.append('description', description);
 
 	
 	const res = await axios.post(getApiUrl('latest', 'nfts'), formData, getAxiosConfig()).catch((e) => {
@@ -29,7 +29,6 @@ export const createNFTOnAPI = async ({ amount, animation, artist, contractId, cr
 
 	if (!res) return null;
 	
-	console.log(res.data.data)
 	return res.data.data;
 };
 
@@ -55,30 +54,3 @@ export const createNFTOnChain = async ({ id, amount }: NFTMintingObject) => {
 	}
 };
 
-export interface BatchMintNftOptions {
-	dropId: number;
-	nftIds: number[];
-	nftAmounts: number[];
-}
-
-export async function batchMintNft(options: BatchMintNftOptions) {
-	try {
-		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
-		const nftMintingTransaction: ethers.ContractTransaction = await MarketplaceContract.mintBatchDropNFT(
-			options.dropId,
-			options.nftIds,
-			options.nftAmounts,
-			[]
-			// Data object not added yet
-		);
-
-		// Wait for at least once confirmation
-		await nftMintingTransaction.wait(1);
-
-		return true;
-	} catch (error) {
-		console.log(error);
-		throw new Error('Failed to create NFT on chain');
-		//return false;
-	}
-}

@@ -1,25 +1,24 @@
 <script lang="ts">
 	import { acceptedNftFileTypes } from '$constants';
 	import Back from '$icons/back_.svelte';
+	import type { NftCardOptions } from '$interfaces/nftCardOptions';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
-	import { newDropProperties, newNFTs } from '$stores/create';
+	import { newDropProperties } from '$stores/create';
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { NewBundleData, newBundleData } from '$utils/create';
 	import { createBundle } from '$utils/create/createBundle';
-	import { createDropOnChain } from '$utils/create/createDrop';
-	import { batchMintNft, createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
+	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { getNftId } from '$utils/create/getNftId';
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
-	import { random } from 'lodash-es';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -33,6 +32,7 @@
 	let nftThumbnailPreview = '';
 	let fileBlob;
 	let animationBlob;
+	let nftData = writable<NftCardOptions>();
 
 	onMount(async () => {
 		profileData.set(await fetchProfileData($currentUserAddress));
@@ -57,7 +57,6 @@
 			description: nftDescription,
 			amount: nftQuantity,
 			name: nftName,
-			artist: $profileData?._id,
 			creator: $currentUserAddress,
 			image: fileBlob,
 			animation: animationBlob
@@ -66,27 +65,25 @@
 		if (!createNftRes) {
 			popupHandler.close();
 			return;
-		} else {
-			$newNFTs = [{ nftId: createNftRes.nftId, amount: nftQuantity }];
 		}
 
 		progress.set(50);
 
 		// create NFT on chain
-		const nftMintRes = await createNFTOnChain({ id: createNftRes.nftId.toString(), amount: nftQuantity });
-		if (nftMintRes) {
-			console.info('[Create] NFT created on chain.');
-		} else {
+		const nftMintRes = await createNFTOnChain({ id: createNftRes.nftId.toString(), amount: nftQuantity }).catch(() => {
 			popupHandler.close();
 			notifyError('Failed to create NFT on chain.');
 			console.error('[Create] Failed to create NFT on chain.');
 			return;
+		});
+
+		if (nftMintRes) {
+			console.info('[Create] NFT created on chain.');
 		}
 
 		newBundleData.update((data) => {
 			return { ...data, id: createNftRes.nftId };
 		});
-		console.log($newBundleData);
 
 		progress.set(100);
 	}
@@ -175,6 +172,6 @@
 	<!-- Right side -->
 	<div class="separator border-0 border-l p-8 w-80">
 		<div class="uppercase italic text-xl mb-4">Preview</div>
-		<NftCard options={{ id: null, title: nftName, imageUrl: nftAssetPreview }} />
+		<NftCard options={{ id: null, title: nftName, imageUrl: nftThumbnailPreview }} />
 	</div>
 </div>

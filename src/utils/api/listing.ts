@@ -54,7 +54,7 @@ export interface CreateListingOptions {
 }*/
 
 export interface CreateListingOptions {
-	nfts?: {nftId: string, amount: number}[];
+	nfts: {nftId: string, amount: number}[];
 	description?: string;
 	title?: string;
 	paymentTokenTicker?: string;
