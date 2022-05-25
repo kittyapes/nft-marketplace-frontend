@@ -136,6 +136,6 @@
 
 	<div class="separator border-0 border-l p-8 w-80">
 		<div class="uppercase italic text-xl mb-4">Preview</div>
-		<NftCard options={{ id: null, title: $fetchedNftData?.name, imageUrl: $fetchedNftData?.imageUrl }} />
+		<NftCard options={{ id: null, title: $fetchedNftData?.name, imageUrl: $fetchedNftData?.thumbnailUrl }} />
 	</div>
 </div>
