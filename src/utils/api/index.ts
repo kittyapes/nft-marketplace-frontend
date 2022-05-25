@@ -16,7 +16,7 @@ export function getApiUrl(apiVersion: ApiVersion, apiPath: string): string {
 		console.warn(`[API] Ignoring '${apiVersion}' version and overriding the API URL with: "${overrideApiUrl}"`);
 		domain = overrideApiUrl;
 	} else if (apiVersion === 'v2') {
-		domain = 'https://hinata-test-v2.rekt-news.xyz/';
+		domain = 'https://hinata-test-v2.rekt-news.xyz/api/v2';
 	} else if (apiVersion === 'latest') {
 		domain = `https://hinata-test-v${LATEST}.rekt-news.xyz/api/v${DATABASE_ITERATION}`;
 	} else if (apiVersion.match(/^sprint-\d+$/)) {
