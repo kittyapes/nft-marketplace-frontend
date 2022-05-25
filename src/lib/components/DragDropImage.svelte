@@ -24,14 +24,11 @@
 
 		fileType = file.type.split('/')[0] as any;
 
-		if (fileType === 'image' && file.size > 25_000_000) {
+		if (file.size > 50_000_000) {
+			notifyError('The uploaded file must be 50 MB or less!');
 			files = [];
 			fileType = null;
-			notifyError('The image cannot be over 25 MB in size!');
-		} else if (fileType === 'video' && file.size > 50_000_000) {
-			files = [];
-			fileType = null;
-			notifyError('The video cannot be over 50 MB in size!');
+			fileInput.value = '';
 		} else {
 			const reader = new FileReader();
 
