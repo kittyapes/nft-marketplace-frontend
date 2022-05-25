@@ -1,5 +1,5 @@
 <script>
-	import Error403 from '$icons/error403.svelte';
+	import Error403 from '$icons/errors/error403.svelte';
 </script>
 
 <div class="h-full w-full grid place-items-center">

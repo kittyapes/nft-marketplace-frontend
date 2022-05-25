@@ -13,8 +13,8 @@
 </script>
 
 <script lang="ts">
-	import Error404 from '$icons/error404.svelte';
-	import Error403Page from '$lib/components/error403Page.svelte';
+	import Error404 from '$icons/errors/error404.svelte';
+	import Error403Page from '$lib/components/Error403Page.svelte';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import { onMount } from 'svelte';
 
