@@ -101,7 +101,7 @@
 
 		notifySuccess('Collection created!');
 
-		goto('/collection/' + res.data.data._id);
+		goto('/collections/' + res.data.data._id);
 
 		creatingCollection = false;
 	}
