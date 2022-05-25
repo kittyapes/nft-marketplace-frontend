@@ -34,8 +34,7 @@
 	}
 
 	async function favNFT() {
-		console.log(options);
-		if (!$currentUserAddress) return;
+		if (!$currentUserAddress || !options.getUniversalPopupOptions) return;
 		options.favorite ? (likes = likes - 1) : (likes = likes + 1);
 
 		options.favorite = !options.favorite;

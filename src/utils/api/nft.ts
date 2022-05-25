@@ -3,7 +3,7 @@ import { getApiUrl } from '.';
 
 export interface GetNftResponse {
 	_id: string;
-	nftId: number;
+	nftId: string;
 	imageUrl: string;
 	animationUrl: string;
 	contractId: string;
