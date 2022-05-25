@@ -1,26 +1,25 @@
 <script lang="ts">
 	import NftCard from '$lib/components/NftCard.svelte';
 	import type { ListingPropName } from 'src/interfaces/drops';
-	import { setPopup } from '$utils/popup';
 	import CommonProperties from '$lib/components/create/CommonProperties.svelte';
-	import Royalties from '$lib/components/create/Royalties.svelte';
 	import { newDropProperties } from '$stores/create';
-	import ConfirmListingPopup from '$lib/components/create/ConfirmListingPopup.svelte';
 	import Back from '$icons/back_.svelte';
 	import { goBack } from '$utils/navigation';
 	import { postCreateListing } from '$utils/api/listing';
 	import { page } from '$app/stores';
-	import { currentUserAddress } from '$stores/wallet';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import Loader from '$icons/loader.svelte';
 	import { contractCreateListing, LISTING_TYPE } from '$utils/contracts/listing';
 	import { writable } from 'svelte/store';
 	import { getNft, GetNftResponse } from '$utils/api/nft';
 	import { onMount } from 'svelte';
-	import { getBundle } from '$utils/api/bundle';
 	import axios from 'axios';
 	import { getApiUrl } from '$utils/api';
 	import { getAxiosConfig } from '$utils/auth/axiosConfig';
+	import { goto } from '$app/navigation';
+
+	// URL params
+	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
 
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
 		sale: ['price', 'startDate', 'quantity', 'duration']
@@ -30,8 +29,14 @@
 
 	// Fetch NFT data on mount to show a preview
 	onMount(async () => {
+		// Go back to listing type selection if the listing type is not set
+		if (!$newDropProperties.listingType) {
+			goto('/create/choose-listing-format/' + nftId);
+			return;
+		}
+
 		//const bundleRes = await getBundle($page.params.bundleId);
-		const nftRes = await getNft($page.params.bundleId);
+		const nftRes = await getNft(nftId);
 		fetchedNftData.set(nftRes);
 	});
 
