@@ -11,8 +11,6 @@
 	export let listingType: DropListingType;
 	export let handler: PopupHandler;
 
-	$: console.log($page);
-
 	function handleConfirm() {
 		$newDropProperties.listingType = listingType;
 

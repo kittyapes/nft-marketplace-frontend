@@ -96,7 +96,7 @@ export interface Listing {
 	listingStatus: string;
 	listingType: ListingType;
 	modifiedOn: string;
-	nfts: any[]; // I don't know yet
+	nfts: {nftId: string, amount: number}[];
 	paymentTokenAddress: string;
 	paymentTokenTicker: string;
 	seller: string;
