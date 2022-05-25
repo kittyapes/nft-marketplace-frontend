@@ -9,5 +9,5 @@ export interface NftCardOptions {
 	likes?: number;
 	price?: string;
 	favorite?: boolean;
-	getUniversalPopupOptions: () => Promise<UniversalPopupOptions>;
+	getUniversalPopupOptions?: () => Promise<UniversalPopupOptions>;
 }

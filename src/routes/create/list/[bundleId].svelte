@@ -11,12 +11,13 @@
 	import Loader from '$icons/loader.svelte';
 	import { contractCreateListing, LISTING_TYPE } from '$utils/contracts/listing';
 	import { writable } from 'svelte/store';
-	import { getNft, GetNftResponse } from '$utils/api/nft';
+	import { getNft } from '$utils/api/nft';
 	import { onMount } from 'svelte';
 	import axios from 'axios';
 	import { getApiUrl } from '$utils/api';
 	import { getAxiosConfig } from '$utils/auth/axiosConfig';
 	import { goto } from '$app/navigation';
+	import type { NftData } from '$interfaces/nft';
 
 	// URL params
 	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
@@ -25,7 +26,7 @@
 		sale: ['price', 'startDate', 'quantity', 'duration']
 	};
 
-	const fetchedNftData = writable<GetNftResponse>(null);
+	const fetchedNftData = writable<NftData>(null);
 
 	// Fetch NFT data on mount to show a preview
 	onMount(async () => {

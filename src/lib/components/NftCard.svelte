@@ -6,10 +6,8 @@
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { favoriteNft } from '$utils/nfts/favoriteNft';
-	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 	import { setPopup } from '$utils/popup';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
-	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import NftDisplayPopup from './profile/NFTDisplayPopup.svelte';
 
