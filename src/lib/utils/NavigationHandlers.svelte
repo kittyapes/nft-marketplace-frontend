@@ -13,7 +13,7 @@
 
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {
-		return [RegExp('admin.*'), RegExp('create.*'), RegExp('profile/edit')];
+		return [RegExp('admin.*'), RegExp('create.*'), RegExp('profile/edit'), RegExp('management')];
 	}
 
 	function isProtectedAndExpired(path: string) {
@@ -107,7 +107,7 @@
 		// Restrict create route to verified creators
 		if (to.pathname.match(/create*/)) {
 			profileData.subscribe((profile) => {
-				if (profile && profile.status !== 'VERIFIED' && !profile.roles.includes('superadmin')) goto('/');
+				if (profile && profile.status !== 'VERIFIED' && !profile.roles.includes('superadmin')) goto('/403');
 			});
 		}
 	});

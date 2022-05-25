@@ -73,20 +73,7 @@
 		else collections = event.detail.changeTo;
 	};
 
-	$: if ($currentUserAddress && mode) {
-		if (isAuthTokenExpired($currentUserAddress)) {
-			setPopup(AuthLoginPopup, {
-				props: {
-					onLoginSuccess: () => {
-						createTable();
-					},
-					adapter: userAuthLoginPopupAdapter
-				}
-			});
-		} else {
-			createTable();
-		}
-	}
+	$: if ($currentUserAddress && mode) createTable();
 
 	$: if (users)
 		tableData = [
