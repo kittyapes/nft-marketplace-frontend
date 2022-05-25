@@ -32,7 +32,8 @@
 		isBuying = true;
 
 		const [approveErr, approveRes] = await noTryAsync(() => contractApproveToken($currentUserAddress, options.price));
-		const [err, res] = await noTryAsync(() => contractPurchaseListing(options.paymentTokenAddress));
+
+		const [err, res] = await noTryAsync(() => contractPurchaseListing(options.onChainId));
 
 		if (err) {
 			console.error(err);
