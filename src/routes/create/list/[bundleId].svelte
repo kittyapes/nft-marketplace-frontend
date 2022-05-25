@@ -66,11 +66,10 @@
 			return;
 		}
 
-		const listing = await axios.get(getApiUrl('latest', 'listings/' + apiCreateListingRes.data.data._id), getAxiosConfig()).catch((e) => e.response);
-
 		// Create listing on chain
 		const successListingOnChain = await contractCreateListing({
 			payToken: '0xC758F0819f68c6C02B296dFbC6c69DeaD0900cee',
+			listingId: apiCreateListingRes.listingId,
 			listingType: LISTING_TYPE.FIXED_PRICE,
 			startingPrice: listingPropValues.price,
 			startTime: listingPropValues.startDate.unix(),

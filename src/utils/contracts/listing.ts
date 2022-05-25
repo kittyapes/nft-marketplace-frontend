@@ -20,6 +20,7 @@ export interface ContractCreateListingOptions {
 	startTime: number;
 	payToken: string;
 	quantity: number;
+	listingId: number;
 	listingType: LISTING_TYPE;
 	tokenIds: string[];
 	tokenAmounts: number[];
