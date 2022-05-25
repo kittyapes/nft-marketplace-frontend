@@ -1,6 +1,19 @@
 <script lang="ts">
 	import { links } from '$constants/links';
 	import { socials } from '$constants/socials';
+	import HomeCollections from '$lib/components/collections/HomeCollections.svelte';
+	import { currentUserAddress } from '$stores/wallet';
+	import { apiGetMostActiveCollections, CollectionTableRow } from '$utils/api/collection';
+
+	let collections: CollectionTableRow[] = [];
+
+	// Please don't ask me why we need an auth token for this...
+	currentUserAddress.subscribe(async (address) => {
+		if (!address) return;
+
+		collections = await apiGetMostActiveCollections();
+		console.log(collections);
+	});
 </script>
 
 <div
@@ -20,30 +33,31 @@
 >
 	<div class="absolute top-1/4 -translate-y-1/4 left-0 w-full grid place-items-center">
 		<div class="px-8">
-			<h1 class="uppercase text-white font-bold text-7xl">Hinata<br />Marketplace</h1>
+			<h1 class="uppercase text-white font-bold text-7xl">
+				Hinata
+				<br />
+				Marketplace
+			</h1>
 
 			<div class="text-white py-6 px-1 text-lg w-1/2 font-semibold">
-				The Hinata platform features curated collections and artists of anime, manga, and all
-				variety of illustrated work, including Art Blocks, Bored Ape Yacht Club, and more
+				The Hinata platform features curated collections and artists of anime, manga, and all variety of illustrated work, including Art Blocks, Bored Ape Yacht Club, and more
 			</div>
 
 			<div class="flex gap-x-4 mt-6 h-16 uppercase font-semibold">
-				<a
-					class="flex flex-col justify-center items-center bg-white w-48 transition-btn"
-					href={socials.twitter}
-					target="_blank"
-				>
-					Follow Us
-				</a>
+				<a class="flex flex-col justify-center items-center bg-white w-48 transition-btn" href={socials.twitter} target="_blank">Follow Us</a>
 
-				<a
-					class="flex flex-col justify-center items-center bg-white w-48 transition-btn"
-					href={links.snapshot}
-					target="_blank"
-				>
-					Our Dao
-				</a>
+				<a class="flex flex-col justify-center items-center bg-white w-48 transition-btn" href={links.snapshot} target="_blank">Our Dao</a>
 			</div>
 		</div>
 	</div>
+</div>
+
+<!-- Top collections section -->
+<div class="px-16 mt-24 mb-16">
+	<div class="flex items-end">
+		<h2 class="text-4xl font-light uppercase flex-grow">Top 10 Collections</h2>
+		<a href="" class="uppercase underline text-sm">View all</a>
+	</div>
+	<hr class="mt-2 border-[#0000004D]" />
+	<HomeCollections {collections} />
 </div>
