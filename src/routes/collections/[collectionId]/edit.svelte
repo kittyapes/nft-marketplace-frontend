@@ -16,6 +16,7 @@
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { goto } from '$app/navigation';
 	import Loader from '$icons/loader.svelte';
+	import { acceptedImages } from '$constants';
 
 	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
 
@@ -136,7 +137,7 @@
 
 		<!-- Logo image drop area -->
 		<div>
-			<DragDropImage class="w-48 h-48 rounded-full" text="" on:new-blob={newLogoBlobHandler}>
+			<DragDropImage class="w-48 h-48 rounded-full" text="" on:new-blob={newLogoBlobHandler} acceptedFormats={acceptedImages}>
 				<div slot="placeholder"><PlaceholderImage /></div>
 			</DragDropImage>
 		</div>
@@ -154,7 +155,7 @@
 
 		<!-- Featured image drop area -->
 		<div class="mt-8">
-			<DragDropImage class="h-48" on:new-blob={newCoverBlobHandler} />
+			<DragDropImage class="h-48" on:new-blob={newCoverBlobHandler} acceptedFormats={acceptedImages} />
 		</div>
 
 		<!-- Choose display style labels -->
