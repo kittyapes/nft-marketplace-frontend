@@ -72,10 +72,10 @@
 		on:dragleave={onDragLeave}
 		class:over
 	>
-		{#if fileType === 'image' && (previewSrc || currentImgUrl)}
+		{#if (fileType === 'image' && previewSrc) || currentImgUrl}
 			<img src={previewSrc || currentImgUrl} alt="" in:fade class="max-h-full w-full object-contain rounded" />
-		{:else if fileType === 'video' && (previewSrc || currentImgUrl)}
-			<video class="max-w-full max-h-full rounded object-contain" autoplay loop in:fade>
+		{:else if (fileType === 'video' && previewSrc) || currentImgUrl}
+			<video class="max-w-full max-h-full rounded object-contain" autoplay muted loop in:fade>
 				<source src={previewSrc || currentImgUrl} type="video/mp4" />
 				<track kind="captions" />
 			</video>
