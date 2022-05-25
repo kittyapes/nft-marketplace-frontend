@@ -107,7 +107,7 @@
 		// Restrict create route to verified creators
 		if (to.pathname.match(/create*/)) {
 			profileData.subscribe((profile) => {
-				if (profile && profile.status !== 'VERIFIED') goto('/403');
+				if (profile && profile.status !== 'VERIFIED' && !profile.roles.includes('superadmin')) goto('/403');
 			});
 		}
 	});

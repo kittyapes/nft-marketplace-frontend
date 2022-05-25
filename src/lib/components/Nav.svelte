@@ -33,7 +33,7 @@
 	let showCreate = false;
 
 	profileData.subscribe((profile) => {
-		showCreate = profile && profile.status === 'VERIFIED';
+		showCreate = profile && (profile.status === 'VERIFIED' || profile.roles.includes('superadmin'));
 	});
 </script>
 
