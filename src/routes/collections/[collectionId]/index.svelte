@@ -9,6 +9,7 @@
 	import { adaptCollectionNftToNftCard } from '$utils/adapters/adaptCollectionNftToNftCard';
 	import { apiGetCollection, Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
+	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
 
 	let collectionData: Collection;
@@ -71,10 +72,11 @@
 	<!-- Creator username and address -->
 	<div class="flex justify-center items-center space-x-3 mt-2">
 		<div class="text-color-gradient text-xl max-w-max font-medium font-poppins">@{creatorData?.username}</div>
-		<div class="bg-[#F5F5F5] flex rounded-full px-4 py-2 space-x-2">
+
+		<button class="btn bg-[#F5F5F5] flex rounded-full px-4 py-2 space-x-2 w-36" on:click={() => copyTextToClipboard(collectionData.creator)}>
 			<img class="w-5" src="/svg/icons/collection-gradient-eth.svg" alt="Ethereum." />
 			<div class="font-mono text-[#6E6E6E] text-sm">{shortenAddress(creatorData?.address)}</div>
-		</div>
+		</button>
 	</div>
 
 	<!-- Stats table -->
