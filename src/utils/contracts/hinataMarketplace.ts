@@ -1,4 +1,4 @@
-import { HinataMarketplaceContractAddress } from '$constants/contractAddresses';
+import { HinataMarketplaceContractAddress, HinataMarketplaceStorageContractAddress } from '$constants/contractAddresses';
 import { ethers } from 'ethers';
 import HinataMarketplaceAbi from '$constants/contracts/abis/HinataMarketplace.json';
 

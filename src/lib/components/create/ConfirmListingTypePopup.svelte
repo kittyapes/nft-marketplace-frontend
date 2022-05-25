@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import type { DropListingType } from '$interfaces/drops';
 	import Popup from '$lib/components/Popup.svelte';
 	import { newDropProperties } from '$stores/create';
 	import type { PopupHandler } from '$utils/popup';
 
 	export let imgUrl;
 	export let title;
-	export let listingType: string;
+	export let listingType: DropListingType;
 	export let handler: PopupHandler;
 
 	$: console.log($page);

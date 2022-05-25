@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { browser } from '$app/env';
-	import { acceptedImages, acceptedVideos } from '$constants';
 	import { notifyError } from '$utils/toast';
+	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 
+	const dispatch = createEventDispatcher();
+
+	// TODO refactor to completely remove this and use the placeholder named slot instead
 	export let text = 'Drag and drop an image here, or click to browse';
 	export let dimensions: string = '';
 	export let blob: Blob | null = null;
@@ -39,6 +42,8 @@
 			reader.readAsDataURL(files[0]);
 
 			blob = file;
+
+			dispatch('new-blob', { blob });
 		}
 	}
 
@@ -67,17 +72,21 @@
 		on:dragleave={onDragLeave}
 		class:over
 	>
-		{#if fileType === 'image' && (previewSrc || currentImgUrl)}
+		{#if (fileType === 'image' && previewSrc) || currentImgUrl}
 			<img src={previewSrc || currentImgUrl} alt="" in:fade class="max-h-full w-full object-contain rounded" />
-		{:else if fileType === 'video' && (previewSrc || currentImgUrl)}
-			<video class="max-w-full max-h-full rounded object-contain" autoplay loop in:fade>
+		{:else if (fileType === 'video' && previewSrc) || currentImgUrl}
+			<video class="max-w-full max-h-full rounded object-contain" autoplay muted loop in:fade>
 				<source src={previewSrc || currentImgUrl} type="video/mp4" />
 				<track kind="captions" />
 			</video>
 		{:else if !fileType}
-			<div class="text-center text-color-black opacity-50 text-sm px-12">
-				{@html text}
-			</div>
+			{#if text}
+				<div class="text-center text-color-black opacity-50 text-sm px-12">
+					{@html text}
+				</div>
+			{:else}
+				<slot name="placeholder" />
+			{/if}
 		{/if}
 	</button>
 
