@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { currentUserAddress } from '$stores/wallet';
+
 	import { contractPurchaseListing } from '$utils/contracts/listing';
+	import { contractApproveToken } from '$utils/contracts/token';
 	import { notifyError } from '$utils/toast';
 	import { noTryAsync } from 'no-try';
 	import type { UniversalPopupOptions } from 'src/interfaces/universalPopupOptions';
@@ -28,6 +31,7 @@
 	async function handleBuy() {
 		isBuying = true;
 
+		const [approveErr, approveRes] = await noTryAsync(() => contractApproveToken($currentUserAddress, options.price));
 		const [err, res] = await noTryAsync(() => contractPurchaseListing(options.paymentTokenAddress));
 
 		if (err) {

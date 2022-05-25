@@ -1,4 +1,4 @@
-import { appSigner } from '$stores/wallet';
+import { appSigner, currentUserAddress } from '$stores/wallet';
 import type { ListingType } from '$utils/api/listing';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
@@ -53,6 +53,7 @@ export async function contractPurchaseListing(listingId: string) {
 	console.log(listingId);
 
 	const contract = HinataMarketplaceContract(get(appSigner));
+
 	const tx: ethers.ContractTransaction = await contract.purchaseListing(listingId);
 	await tx.wait(1);
 }
