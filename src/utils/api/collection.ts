@@ -6,7 +6,8 @@ import { getApiUrl } from '.';
 
 export interface Collection {
 	name: string;
-	url: string;
+	slug: string;
+	url?: string;
 	image?: Blob;
 	cover?: Blob;
 	logoImageUrl?: string;
@@ -26,6 +27,7 @@ export interface Collection {
 	isExplicitSensitive: boolean;
 	creator: string;
 	nfts: [];
+	_id: string;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
@@ -35,6 +37,7 @@ export function getInitialCollectionData(): Partial<Collection> {
 }
 
 export async function apiCreateCollection(options: Collection) {
+	options.url = undefined;
 	options = { ...options };
 
 	options.paymentTokenTicker = 'eth';
@@ -55,8 +58,8 @@ export async function apiCreateCollection(options: Collection) {
 	return res;
 }
 
-export async function apiGetCollection(collectinId: string) {
-	const res = await axios.get(getApiUrl('v2', 'collections/' + collectinId), getAxiosConfig());
+export async function apiGetCollection(collectionId: string) {
+	const res = await axios.get(getApiUrl('v2', 'collections/' + collectionId), getAxiosConfig());
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);

@@ -10,6 +10,8 @@
 	import { newDropProperties } from '$stores/create';
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
+	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
+	import { apiGetCollection, apiSearchCollections, Collection } from '$utils/api/collection';
 	import { getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { NewBundleData, newBundleData } from '$utils/create';
@@ -33,8 +35,14 @@
 	let fileBlob;
 	let animationBlob;
 
+	const availableCollections = writable<{ label: string; value: string; iconUrl: string }[]>(null);
+
 	onMount(async () => {
 		profileData.set(await fetchProfileData($currentUserAddress));
+		let collections: Collection[] = await apiSearchCollections();
+		console.log(collections);
+		$availableCollections = await Promise.all(collections.map(adaptCollectionToMintingDropdown));
+		console.log($availableCollections);
 	});
 
 	async function mintAndContinue() {
@@ -151,7 +159,7 @@
 				<input type="number" class="input w-full mt-2 font-semibold input-hide-controls" bind:value={nftQuantity} min="1" />
 
 				<div class="uppercase italic text-[#1D1D1DB2] mt-8">Collection</div>
-				<Dropdown options={[{ label: 'No collections.' }]} class="mt-2" btnClass="font-semibold" />
+				<Dropdown options={[{ label: 'no' }]} class="mt-2" btnClass="font-semibold" />
 			</div>
 
 			<div class="w-1/2">

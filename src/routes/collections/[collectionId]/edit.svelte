@@ -59,6 +59,7 @@
 		// Without this, the user would be able to paste in any longer text
 		// than the urlStart and the urlStart would not be included
 		const withoutStart = data.url.replace(urlStart, '');
+		$collectionData.slug = withoutStart;
 		$collectionData.url = urlStart + withoutStart;
 		$formValidity.url = true;
 
@@ -97,12 +98,13 @@
 
 		if (error) {
 			notifyError(error.message);
+			creatingCollection = false;
 			return;
 		}
 
 		notifySuccess('Collection created!');
 
-		goto('/collections/' + res.data.data._id);
+		goto('/collections/' + res.data.data.slug);
 
 		creatingCollection = false;
 	}

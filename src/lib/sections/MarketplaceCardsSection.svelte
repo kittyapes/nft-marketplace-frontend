@@ -12,18 +12,14 @@
 
 	let getData = async () => {
 		listings.set(await getListings());
+		console.log($listings);
 		data = await Promise.all($listings.map(adaptListingToNftCard));
 		data = data.filter((d) => d);
 
 		//mark favourite NFTs as favourited
 		const favorites = await getUserFavoriteNfts();
 		data.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length));
-		console.log(data);
 	};
-
-	/*onMount(async () => {
-		await getData();
-	});*/
 
 	// $: {
 	// 	filteredCards = allCards;
