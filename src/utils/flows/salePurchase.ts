@@ -3,15 +3,14 @@ import { currentUserAddress } from '$stores/wallet';
 import { contractPurchaseListing } from '$utils/contracts/listing';
 import { contractApproveToken, contractGetTokenAllowance } from '$utils/contracts/token';
 import { notifyError, notifySuccess } from '$utils/toast';
-import type { BigNumber } from 'ethers';
-import { formatEther } from 'ethers/lib/utils';
+import { BigNumber, ethers } from 'ethers';
 import { noTryAsync } from 'no-try';
 import { get } from 'svelte/store';
 
 export async function salePurchase(listingId: string, price: BigNumber) {
 	const allowance = await contractGetTokenAllowance(get(currentUserAddress), HinataMarketplaceContractAddress);
 
-	console.info('Token allowance for contract is:', formatEther(allowance));
+	console.info('Token allowance for contract is:', ethers.utils.formatEther(allowance));
 
 	if (allowance.lt(price)) {
 		notifySuccess('Token allowance is insufficient. Please approve the token first.');

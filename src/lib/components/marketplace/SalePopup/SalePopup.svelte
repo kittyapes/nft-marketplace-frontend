@@ -2,7 +2,7 @@
 	import type { ListingPopupOptions } from '$utils/adapters/adaptListingToPopup';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import type { PopupHandler } from '$utils/popup';
-	import { parseEther } from 'ethers/lib/utils';
+	import { ethers } from 'ethers';
 	import CardBuyScreen from '../../marketplace/UniversalPopup/CardBuyScreen.svelte';
 	import CloseButtonHeader from '../../marketplace/UniversalPopup/CloseButtonHeader.svelte';
 	import GoBackHeader from '../../marketplace/UniversalPopup/GoBackHeader.svelte';
@@ -36,7 +36,7 @@
 	async function handleBuy() {
 		isBuying = true;
 
-		const price = parseEther(options.price.toString());
+		const price = ethers.utils.parseEther(options.price.toString());
 		const success = await salePurchase(options.onChainId, price);
 
 		success && (state = 'success-screen') && (bought = true);
