@@ -15,7 +15,7 @@
 	export let handler: PopupHandler;
 
 	type State = 'info-screen' | 'buy-now-screen' | 'success-screen';
-	let stateStack = ['info-screen'];
+	let stateStack: State[] = ['info-screen'];
 	let bought = false;
 
 	$: state = stateStack[stateStack.length - 1];
@@ -49,6 +49,7 @@
 	<div slot="content" class="flex-grow flex flex-col">
 		<!-- Header -->
 		{#if ['success-screen', 'buy-now-screen'].includes(state)}
+			<!-- The slice probably doesn't work, but it works -->
 			<GoBackHeader on:go-back={() => (stateStack = stateStack.slice())} />
 		{/if}
 
