@@ -1,6 +1,6 @@
 import { HinataMarketplaceContractAddress, HinataMarketplaceStorageContractAddress } from '$constants/contractAddresses';
 import { appSigner, currentUserAddress } from '$stores/wallet';
-import type { ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import HinataMarketplaceContract from './hinataMarketplace';
 import HinataMarketplaceStorageContract from './hinataMarketplaceStorage';
@@ -20,6 +20,7 @@ export interface ContractCreateListingOptions {
 	startTime: number;
 	payToken: string;
 	quantity: number;
+	listingId: number;
 	listingType: LISTING_TYPE;
 	tokenIds: string[];
 	tokenAmounts: number[];
@@ -37,7 +38,22 @@ export async function contractCreateListing(options: ContractCreateListingOption
 			await approval.wait(1);
 		}
 
-		const dropCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing({
+		console.log({
+			id: options.listingId,
+			seller: get(currentUserAddress),
+			payToken: options.payToken,
+			price: options.startingPrice,
+			startTime: options.startTime,
+			duration: options.duration,
+			quantity: options.quantity,
+			listingType: options.listingType,
+			tokenIds: options.tokenIds,
+			tokenAmounts: options.tokenAmounts,
+			})
+
+		const listingCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing(
+			{
+			id: ethers.BigNumber.from(options.listingId),
 			seller: get(currentUserAddress),
 			payToken: options.payToken,
 			price: options.startingPrice,
@@ -50,7 +66,7 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		});
 
 		// Wait for at least once confirmation
-		await dropCreationTransaction.wait(1);
+		await listingCreationTransaction.wait(1);
 
 		return true;
 	} catch (error) {

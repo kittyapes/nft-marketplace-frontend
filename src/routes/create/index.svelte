@@ -32,7 +32,6 @@
 	let nftThumbnailPreview = '';
 	let fileBlob;
 	let animationBlob;
-	let nftData = writable<NftCardOptions>();
 
 	onMount(async () => {
 		profileData.set(await fetchProfileData($currentUserAddress));

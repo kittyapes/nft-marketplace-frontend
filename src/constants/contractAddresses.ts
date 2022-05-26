@@ -9,4 +9,4 @@ export const stakingContract = '0xd00c12872dc11A8EA5CBAbAe691111dc9936854e';
 
 export const HinataTokenAddress = '0xC758F0819f68c6C02B296dFbC6c69DeaD0900cee'; //0xF43902008E23bCEDe947D9f8b253364b382cfcF4
 export const HinataMarketplaceStorageContractAddress = '0xD1Ed0A0C9f1969545BfD87E3C86d21Ad17B9f943';
-export const HinataMarketplaceContractAddress = '0x931bc6066AE7A5DA8A1c0C0887c3A50764E51783';
+export const HinataMarketplaceContractAddress = '0xb5415469df0a94e6fbbd177f8d331f00226344df';

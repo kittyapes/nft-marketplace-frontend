@@ -73,20 +73,7 @@
 		else collections = event.detail.changeTo;
 	};
 
-	$: if ($currentUserAddress && mode) {
-		if (isAuthTokenExpired($currentUserAddress)) {
-			setPopup(AuthLoginPopup, {
-				props: {
-					onLoginSuccess: () => {
-						createTable();
-					},
-					adapter: userAuthLoginPopupAdapter
-				}
-			});
-		} else {
-			createTable();
-		}
-	}
+	$: if ($currentUserAddress && mode) createTable();
 
 	$: if (users)
 		tableData = [
@@ -95,7 +82,7 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETIC' },
 				renderComponent: EntryName,
-				renderComponentProps: users.map((u) => ({ name: u.username || '', imageUrl: u.imageUrl, address: u.address }))
+				renderComponentProps: users.map((u) => ({ name: u.username || '', imageUrl: u.thumbnailUrl, address: u.address }))
 			},
 			{
 				gridSize: '3fr',
