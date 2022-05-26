@@ -4,9 +4,9 @@
 	const dispatch = createEventDispatcher();
 
 	interface Option {
-		value: string;
+		value?: string;
 		label: string;
-		iconUrl: string;
+		iconUrl?: string;
 	}
 
 	export let options: Option[];
@@ -50,7 +50,7 @@
 	</button>
 
 	{#if opened}
-		<div id="list-container" class="absolute bottom-0 z-10 w-full overflow-hidden translate-y-full bg-white rounded-lg">
+		<div id="list-container" class="absolute bottom-0 z-10 w-full overflow-hidden translate-y-full bg-white rounded-lg overflow-y-scroll max-h-32 custom-scrollbar">
 			{#each options as option}
 				<button class="w-full px-4 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded" on:click={() => handleOptionSelect(option)}>
 					{option.label}

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	import { acceptedNftFileTypes } from '$constants';
 	import Back from '$icons/back_.svelte';
 	import type { NftCardOptions } from '$interfaces/nftCardOptions';
@@ -18,6 +20,7 @@
 	import { createBundle } from '$utils/create/createBundle';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { getNftId } from '$utils/create/getNftId';
+	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
@@ -35,14 +38,13 @@
 	let fileBlob;
 	let animationBlob;
 
-	const availableCollections = writable<{ label: string; value: string; iconUrl: string }[]>(null);
+	const availableCollections = writable<{ label: string; value: string; iconUrl: string }[]>([]);
 
 	onMount(async () => {
 		profileData.set(await fetchProfileData($currentUserAddress));
+
 		let collections: Collection[] = await apiSearchCollections();
-		console.log(collections);
-		$availableCollections = await Promise.all(collections.map(adaptCollectionToMintingDropdown));
-		console.log($availableCollections);
+		$availableCollections = await Promise.all(collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown));
 	});
 
 	async function mintAndContinue() {
@@ -94,6 +96,12 @@
 
 		progress.set(100);
 	}
+
+	const handleCollectionSelection = (event) => {
+		if (event?.detail?.value) {
+			goto('collections/new/edit?to=create');
+		}
+	};
 
 	$: nftQuantityValid = nftQuantity > 0;
 	$: inputValid = nftName && nftCollection && nftAssetPreview && nftThumbnailPreview && nftQuantityValid;
@@ -159,7 +167,13 @@
 				<input type="number" class="input w-full mt-2 font-semibold input-hide-controls" bind:value={nftQuantity} min="1" />
 
 				<div class="uppercase italic text-[#1D1D1DB2] mt-8">Collection</div>
-				<Dropdown options={[{ label: 'no' }]} class="mt-2" btnClass="font-semibold" />
+				<!-- TODO: Replace first collection with Hinata base collection -->
+				<Dropdown
+					on:select={handleCollectionSelection}
+					options={[{ label: 'No collections' }, ...$availableCollections, { label: 'Create a new collection', value: 'collection/new/edit' }]}
+					class="mt-2"
+					btnClass="font-semibold"
+				/>
 			</div>
 
 			<div class="w-1/2">
