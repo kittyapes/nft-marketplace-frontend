@@ -64,3 +64,40 @@ export async function apiGetCollection(collectinId: string) {
 
 	return res.data.data;
 }
+
+export interface CollectionTableRow {
+	name: string;
+	logoImageUrl: string;
+	origin: 'EXTERNAL' | 'HINATA';
+	verified: boolean;
+	floorPrice: number;
+	totalVol: number;
+	total24hours: number;
+	'24hourPercent': number;
+}
+
+export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[]> {
+	// TODO shouldn't require token, but the backend wasn't updated yet
+	const res = await axios.get(getApiUrl('v2', 'collections'), getAxiosConfig());
+
+	if (res.status !== 200) {
+		throw new Error(res.data.message);
+	}
+
+	return res.data.data;
+}
+
+export async function apiSearchCollections() {
+	const params = {
+		limit: 100
+	};
+
+	// TODO shouldn't require token, but the backend wasn't updated yet
+	const res = await axios.get(getApiUrl('v2', 'collections/search'), { ...getAxiosConfig(), params });
+
+	if (res.status !== 200) {
+		throw new Error(res.data.message);
+	}
+
+	return res.data.data;
+}
