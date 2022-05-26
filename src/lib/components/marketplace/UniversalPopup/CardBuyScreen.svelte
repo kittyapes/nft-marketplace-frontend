@@ -14,7 +14,7 @@
 		</slot>
 	{/if}
 	<slot name="buy-input" />
-	<div class="flex flex-col place-self-start ml-3 gap-3">
+	<div class="flex flex-col place-self-start ml-3 gap-3 mt-4">
 		<div class="flex gap-2">
 			<p class="text-color-gray-base">Creator gets:</p>
 			<p class="text-color-black font-bold">0 {currencySymbol}</p>
@@ -26,10 +26,6 @@
 		</div>
 		<div class="flex gap-2">
 			<p class="text-color-gray-base">Platform fee:</p>
-			<p class="text-color-black font-bold">0 {currencySymbol}</p>
-		</div>
-		<div class="flex gap-2">
-			<p class="text-color-gray-base">Total bid:</p>
 			<p class="text-color-black font-bold">0 {currencySymbol}</p>
 		</div>
 	</div>

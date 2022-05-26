@@ -1,9 +1,12 @@
 <script lang="ts">
+	import Loader from '$icons/loader.svelte';
+	import CircularSpinner from '$lib/components/spinners/CircularSpinner.svelte';
 	import { fade } from 'svelte/transition';
 
 	export let infoText: [string, string][] = [];
 	export let buttonText: string = '';
 	export let buyButtonDisabled = false;
+	export let spin = false;
 	export let buyButtonHandler: () => void = () => {};
 </script>
 
@@ -26,7 +29,14 @@
 
 	<div class="w-full mt-3 flex flex-row gap-4" on:click>
 		<slot name="bt">
-			<button class="btn btn-gradient btn-rounded w-full mb-2" disabled={buyButtonDisabled} on:click={buyButtonHandler}>{buttonText}</button>
+			<button class="btn btn-gradient btn-rounded w-full mb-2" disabled={buyButtonDisabled} on:click={buyButtonHandler}>
+				{#if spin}
+					<div class="w-8 h-8 absolute top-0 bottom-0 my-auto -ml-6">
+						<CircularSpinner />
+					</div>
+				{/if}
+				{buttonText}
+			</button>
 		</slot>
 	</div>
 </div>

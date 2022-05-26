@@ -6,7 +6,7 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import { getListing } from '$utils/api/listing';
-	import { adaptListingToUniversalPopup } from '$utils/adapters/adaptListingToUniversalPopup';
+	import { adaptListingToPopup } from '$utils/adapters/adaptListingToPopup';
 	import { setPopup } from '$utils/popup';
 	import NftDisplayPopup from '$lib/components/profile/NFTDisplayPopup.svelte';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
@@ -23,7 +23,7 @@
 		if ($page.url.searchParams.has('id')) {
 			const id = $page.url.searchParams.get('id');
 			const listing = await getListing(id);
-			const adaptedListing = adaptListingToUniversalPopup(listing);
+			const adaptedListing = adaptListingToPopup(listing);
 
 			setPopup(NftDisplayPopup, {
 				props: { options: adaptedListing },
@@ -55,7 +55,7 @@
 			<div />
 
 			<div class="w-36 ">
-				<Dropdown options={[{ label: 'Date' }]} />
+				<Dropdown options={[{ label: 'Date', value: 'date' }]} />
 			</div>
 		</div>
 

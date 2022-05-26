@@ -1,7 +1,6 @@
 <script lang="ts">
 	import NftCard from './NftCard.svelte';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
-	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 	import DiamondsLoader from './DiamondsLoader.svelte';
 
 	export let data: NftCardOptions[];

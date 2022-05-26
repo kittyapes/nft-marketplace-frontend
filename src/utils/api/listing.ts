@@ -86,6 +86,7 @@ export async function postCreateListing(options: CreateListingOptions) {
 
 export interface Listing {
 	_id: string;
+	listingId: string;
 	listingStatus: 'ACTIVE';
 	listingType: ListingType;
 	listing: {
@@ -96,6 +97,7 @@ export interface Listing {
 		_id: string;
 		nftId: string;
 		amount: number;
+		nft: { assetUrl: string; thumbnailUrl: string };
 	}[];
 	paymentTokenTicker: 'ETH';
 	paymentTokenAddress: string;
@@ -110,7 +112,7 @@ export interface Listing {
 }
 
 export async function getListings() {
-	const res = await axios.get(getApiUrl('latest', 'listings'), { params: { limit: 500 } });
+	const res = await axios.get(getApiUrl('latest', 'listings'), { params: { limit: 100 } });
 
 	return res.data.data as Listing[];
 }
