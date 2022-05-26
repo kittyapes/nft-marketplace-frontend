@@ -17,6 +17,7 @@
 	import { goto } from '$app/navigation';
 	import Loader from '$icons/loader.svelte';
 	import { acceptedImages } from '$constants';
+	import { page } from '$app/stores';
 
 	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
 
@@ -104,7 +105,9 @@
 
 		notifySuccess('Collection created!');
 
-		goto('/collections/' + res.data.data.slug);
+		// where to go next based on URL params
+		if ($page.url.searchParams.has('to')) goto('/' + $page.url.searchParams.get('to'));
+		else goto('/collections/' + res.data.data.slug);
 
 		creatingCollection = false;
 	}

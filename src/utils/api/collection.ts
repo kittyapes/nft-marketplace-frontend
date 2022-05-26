@@ -37,7 +37,6 @@ export function getInitialCollectionData(): Partial<Collection> {
 }
 
 export async function apiCreateCollection(options: Collection) {
-	options.url = undefined;
 	options = { ...options };
 
 	options.paymentTokenTicker = 'eth';
@@ -46,6 +45,7 @@ export async function apiCreateCollection(options: Collection) {
 
 	const formData = new FormData();
 	Object.entries(options).forEach(([k, v]) => formData.append(k, v));
+	console.log(formData);
 
 	const res = await axios.post(getApiUrl('v2', 'collections'), formData, getAxiosConfig()).catch((e) => e.response);
 
