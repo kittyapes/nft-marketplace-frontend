@@ -1,7 +1,7 @@
 import type { Collection } from '$utils/api/collection';
 
 // NEEDS CHANGING
-export async function adaptCollectionToMintingDropdown(collection: Collection) {
+export function adaptCollectionToMintingDropdown(collection: Collection) {
 
 	let options = {
 		label: collection.name,

@@ -18,6 +18,7 @@
 	import Loader from '$icons/loader.svelte';
 	import { acceptedImages } from '$constants';
 	import { page } from '$app/stores';
+	import { nftDraft } from '$stores/create';
 
 	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
 
@@ -106,8 +107,10 @@
 		notifySuccess('Collection created!');
 
 		// where to go next based on URL params
-		if ($page.url.searchParams.has('to')) goto('/' + $page.url.searchParams.get('to'));
-		else goto('/collections/' + res.data.data.slug);
+		if ($page.url.searchParams.has('to')) {
+			$nftDraft.collectionName = $collectionData.name;
+			goto('/' + $page.url.searchParams.get('to'));
+		} else goto('/collections/' + res.data.data.slug);
 
 		creatingCollection = false;
 	}

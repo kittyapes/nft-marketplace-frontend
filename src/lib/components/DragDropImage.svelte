@@ -24,7 +24,6 @@
 	}
 
 	$: if (browser && files.length) {
-		console.log('yes');
 		const file: Blob = files[0];
 
 		fileType = file.type.split('/')[0] as any;

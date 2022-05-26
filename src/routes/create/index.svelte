@@ -30,12 +30,15 @@
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
 	let dumpDraft = false;
+	let selectedCollection: Collection;
+	// for displaying in the collection dropdown
+	let selectedCollectionRow;
 
 	let nftData: Partial<NftDraft> = {
 		name: '' || $nftDraft.name,
 		quantity: 1 || $nftDraft.quantity,
 		// TODO: change once hinata base collection is made
-		collectionName: 'No collection' || $nftDraft.collectionName,
+		collectionName: '' || $nftDraft.collectionName,
 		description: '' || $nftDraft.description,
 		assetPreview: '' || $nftDraft.assetPreview,
 		thumbnailPreview: '' || $nftDraft.thumbnailPreview,
@@ -49,12 +52,16 @@
 		profileData.set(await fetchProfileData($currentUserAddress));
 
 		let collections: Collection[] = await apiSearchCollections();
-		$availableCollections = await Promise.all(collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown));
+		if (nftData.collectionName) {
+			selectedCollection = collections.filter((c) => c.name === nftData.collectionName)[0];
+			selectedCollectionRow = adaptCollectionToMintingDropdown(selectedCollection);
+		}
+
+		$availableCollections = collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown);
 	});
 
 	beforeNavigate(() => {
 		dumpDraft ? nftDraft.set(null) : nftDraft.set(nftData);
-		console.log($nftDraft);
 	});
 
 	async function mintAndContinue() {
@@ -180,8 +187,9 @@
 				<div class="uppercase italic text-[#1D1D1DB2] mt-8">Collection</div>
 				<!-- TODO: Replace first collection with Hinata base collection -->
 				<Dropdown
+					selected={selectedCollectionRow || { label: 'No collection' }}
 					on:select={handleCollectionSelection}
-					options={[{ label: 'No collections' }, ...$availableCollections, { label: 'Create a new collection', value: 'collection/new/edit' }]}
+					options={[...$availableCollections, { label: 'Create a new collection', value: 'collection/new/edit' }]}
 					class="mt-2"
 					btnClass="font-semibold"
 				/>
