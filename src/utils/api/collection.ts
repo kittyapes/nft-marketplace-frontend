@@ -22,7 +22,7 @@ export interface Collection {
 	otherUrl?: string;
 	telegramUrl?: string;
 	blockchain?: string;
-	paymentTokenTicker: 'eth';
+	paymentTokenTicker: 'ETH';
 	paymentTokenAddress: string;
 	isExplicitSensitive: boolean;
 	creator: string;
@@ -38,8 +38,11 @@ export function getInitialCollectionData(): Partial<Collection> {
 
 export async function apiCreateCollection(options: Collection) {
 	options = { ...options };
+	// renaming keys to match the endpoint
+	delete Object.assign(options, {['logoImage']: options['image'] }).image;
+	delete Object.assign(options, {['backgroundImage']: options['cover'] }).cover;
 
-	options.paymentTokenTicker = 'eth';
+	options.paymentTokenTicker = 'ETH';
 	options.paymentTokenAddress = get(currentUserAddress);
 	options.royalties = JSON.stringify(options.royalties) as any;
 
