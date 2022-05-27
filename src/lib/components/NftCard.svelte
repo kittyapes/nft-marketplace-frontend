@@ -3,9 +3,12 @@
 	import Heart from '$icons/heart.svelte';
 	import ThreeDots from '$icons/three-dots.svelte';
 	import { currentUserAddress } from '$stores/wallet';
+	import { createNFTOnAPI } from '$utils/create/createNFT';
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { favoriteNft } from '$utils/nfts/favoriteNft';
+	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
+	import { getUsersThatFavoritedNft } from '$utils/nfts/getUsersThatFavoritedNft';
 	import { setPopup } from '$utils/popup';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 	import { fade } from 'svelte/transition';
@@ -33,10 +36,20 @@
 
 	async function favNFT() {
 		if (!$currentUserAddress || !options.getUniversalPopupOptions) return;
-		options.favorite ? (likes = likes - 1) : (likes = likes + 1);
 
+		// change status first for quick feedback
 		options.favorite = !options.favorite;
-		const res = await favoriteNft(options.id);
+		if (!options.favorite) {
+			likes = likes - 1;
+		} else {
+			likes = likes + 1;
+		}
+
+		const res = await favoriteNft(options.id).catch();
+		if (res.statusCode === 404) {
+			//await createNFTOnAPI();
+			await favoriteNft(options.id);
+		}
 	}
 </script>
 

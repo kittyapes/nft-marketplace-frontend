@@ -1,28 +1,22 @@
-import { getListing, Listing } from '$utils/api/listing';
-import { getNftFavoriteAmount } from '$utils/nfts/getNftFavoriteAmount';
+import type { Listing } from '$utils/api/listing';
 import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 import { adaptListingToUniversalPopup } from './adaptListingToUniversalPopup';
 
 // NEEDS CHANGING
 export async function adaptListingToNftCard(listing: Listing) {
-	let likes: number;
 
-	listing = await getListing(listing._id);
-	if(!listing) return null;
-
-	listing?.nfts ? listing.imageUrl = listing?.nfts[0]?.nft.thumbnailUrl : '';
-	listing?.nfts ? listing.coverImageUrl = listing?.nfts[0]?.nft.assetUrl : '';
-	listing?.nfts ? likes = await getNftFavoriteAmount(listing?.nfts[0]?.nftId) : likes = 0;
-
+	listing.imageUrl = listing.nfts[0]?.nft.thumbnailUrl
+	listing.coverImageUrl = listing.nfts[0]?.nft.assetUrl
 	const options: NftCardOptions = {
-		id: listing?.nfts? listing?.nfts[0]?.nftId : listing._id,
+		id: listing.nfts[0]?.nftId,
 		title: listing.title,
-		imageUrl: listing?.nfts ? listing?.nfts[0]?.nft.thumbnailUrl : listing.imageUrl,
-		animationUrl: listing?.nfts ? listing?.nfts[0]?.nft.assetUrl : listing.coverImageUrl,
-		likes,
+		imageUrl: listing.imageUrl ? listing.imageUrl : listing.nfts[0]?.nft.thumbnailUrl,
+		animationUrl: listing.coverImageUrl ? listing.coverImageUrl : listing.nfts[0]?.nft.assetUrl,
+		likes: listing.nfts[0]?.nft.favoriteCount || 0,
 		getUniversalPopupOptions: async () => {
 			return adaptListingToUniversalPopup(listing);
 		}
 	};
+
 	return options;
 }
