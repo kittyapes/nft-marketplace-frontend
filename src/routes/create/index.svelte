@@ -35,8 +35,6 @@
 	// for displaying in the collection dropdown
 	let selectedCollectionRow;
 
-	$: console.log(selectedCollectionId);
-
 	let nftData: Partial<NftDraft> = {
 		name: '' || $nftDraft.name,
 		quantity: 1 || $nftDraft.quantity,
