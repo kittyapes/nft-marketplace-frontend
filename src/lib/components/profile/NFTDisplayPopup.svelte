@@ -1,9 +1,7 @@
 <script lang="ts">
 	import type { UniversalPopupOptions } from 'src/interfaces/universalPopupOptions';
-
 	import InfoTab from '../marketplace/UniversalPopup/InfoTab.svelte';
 	import PopupContainer from '../marketplace/UniversalPopup/PopupContainer.svelte';
-
 	export let options: UniversalPopupOptions;
 </script>
 

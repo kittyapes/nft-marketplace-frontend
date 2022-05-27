@@ -4,8 +4,6 @@ export interface UniversalPopupOptions {
 	imageUrl?: string;
 	animationUrl?: string;
 	creator?: string;
-	edition?: string;
-	editionType?: string;
 	description?: string;
 	currentUserIsOwner: boolean;
 }

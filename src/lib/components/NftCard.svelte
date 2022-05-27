@@ -12,7 +12,6 @@
 	import { setPopup } from '$utils/popup';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 	import { fade } from 'svelte/transition';
-	import NftDisplayPopup from './profile/NFTDisplayPopup.svelte';
 
 	export let options: NftCardOptions;
 
@@ -23,19 +22,18 @@
 	const toggleDots = () => (dotsOpened = !dotsOpened);
 
 	function handleClick() {
-		if (!options.getUniversalPopupOptions) return;
+		if (!options.getPopupProps) return;
 
 		addUrlParam('id', options.id);
-		options.getUniversalPopupOptions().then((universalPopupOptions) => {
-			setPopup(NftDisplayPopup, {
-				props: { options: universalPopupOptions },
-				onClose: () => removeUrlParam('id')
-			});
+		options.getPopupProps().then((props) => {
+			console.log(props);
+			setPopup(options.popupComponent, { props, onClose: () => removeUrlParam('id') });
 		});
 	}
 
 	async function favNFT() {
-		if (!$currentUserAddress || !options.getUniversalPopupOptions) return;
+		if (!$currentUserAddress || !options.getPopupProps) return;
+		options.favorite ? (likes = likes - 1) : (likes = likes + 1);
 
 		// change status first for quick feedback
 		options.favorite = !options.favorite;
@@ -54,7 +52,7 @@
 </script>
 
 <!-- Added a maximum width to prevent the card from extending its bounds when its only one card  -->
-<div class="relative p-4 overflow-hidden border rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options?.getUniversalPopupOptions}>
+<div class="relative p-4 overflow-hidden border rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options?.getPopupProps}>
 	<div class="flex items-center gap-x-2">
 		<!-- Remove && false to show options -->
 		<!-- Owned by user -->

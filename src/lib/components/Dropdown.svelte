@@ -6,7 +6,7 @@
 	interface Option {
 		value: string;
 		label: string;
-		iconUrl: string;
+		iconUrl?: string;
 	}
 
 	export let options: Option[];
