@@ -1,21 +1,26 @@
 <script lang="ts">
-	import { acceptedNftFileTypes } from '$constants';
+	import { goto, beforeNavigate } from '$app/navigation';
+	import { acceptedImages, acceptedNftFileTypes, acceptedVideos } from '$constants';
 	import Back from '$icons/back_.svelte';
+	import type { NftDraft } from '$interfaces/nft/nftDraft';
 	import type { NftCardOptions } from '$interfaces/nftCardOptions';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
-	import { newDropProperties } from '$stores/create';
+	import { newDropProperties, nftDraft } from '$stores/create';
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
+	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
+	import { apiGetCollection, apiSearchCollections, Collection } from '$utils/api/collection';
 	import { getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { NewBundleData, newBundleData } from '$utils/create';
 	import { createBundle } from '$utils/create/createBundle';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { getNftId } from '$utils/create/getNftId';
+	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
@@ -24,17 +29,40 @@
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
-	let nftName = '';
-	let nftQuantity: number = 1;
-	let nftCollection = 'No collection';
-	let nftDescription = '';
-	let nftAssetPreview = '';
-	let nftThumbnailPreview = '';
-	let fileBlob;
-	let animationBlob;
+	let dumpDraft = false;
+	let selectedCollection: Collection;
+	// for displaying in the collection dropdown
+	let selectedCollectionRow;
+
+	let nftData: Partial<NftDraft> = {
+		name: '' || $nftDraft.name,
+		quantity: 1 || $nftDraft.quantity,
+		// TODO: change once hinata base collection is made
+		collectionName: '' || $nftDraft.collectionName,
+		description: '' || $nftDraft.description,
+		assetPreview: '' || $nftDraft.assetPreview,
+		thumbnailPreview: '' || $nftDraft.thumbnailPreview,
+		fileBlob: null,
+		animationBlob: null
+	};
+
+	const availableCollections = writable<{ label: string; value: string; iconUrl: string }[]>([]);
 
 	onMount(async () => {
 		profileData.set(await fetchProfileData($currentUserAddress));
+
+		let collections: Collection[] = await apiSearchCollections();
+		console.log(collections);
+		if (nftData.collectionName) {
+			selectedCollection = collections.filter((c) => c.name === nftData.collectionName)[0];
+			selectedCollectionRow = adaptCollectionToMintingDropdown(selectedCollection);
+		}
+
+		$availableCollections = collections.filter((c) => c.slug && c.creator === $currentUserAddress).map(adaptCollectionToMintingDropdown);
+	});
+
+	beforeNavigate(() => {
+		dumpDraft ? nftDraft.set(null) : nftDraft.set(nftData);
 	});
 
 	async function mintAndContinue() {
@@ -53,12 +81,12 @@
 
 		const createNftRes = await createNFTOnAPI({
 			contractId: nftId,
-			description: nftDescription,
-			amount: nftQuantity,
-			name: nftName,
+			description: nftData.description,
+			amount: nftData.quantity,
+			name: nftData.name,
 			creator: $currentUserAddress,
-			image: fileBlob,
-			animation: animationBlob
+			image: nftData.fileBlob,
+			animation: nftData.animationBlob
 		});
 
 		if (!createNftRes) {
@@ -69,7 +97,7 @@
 		progress.set(50);
 
 		// create NFT on chain
-		const nftMintRes = await createNFTOnChain({ id: createNftRes.nftId.toString(), amount: nftQuantity }).catch(() => {
+		const nftMintRes = await createNFTOnChain({ id: createNftRes.nftId.toString(), amount: nftData.quantity }).catch(() => {
 			popupHandler.close();
 			notifyError('Failed to create NFT on chain.');
 			console.error('[Create] Failed to create NFT on chain.');
@@ -85,10 +113,17 @@
 		});
 
 		progress.set(100);
+		dumpDraft = true;
 	}
 
-	$: nftQuantityValid = nftQuantity > 0;
-	$: inputValid = nftName && nftCollection && nftAssetPreview && nftThumbnailPreview && nftQuantityValid;
+	const handleCollectionSelection = (event) => {
+		if (event.detail?.value) {
+			goto('collections/new/edit?to=create');
+		}
+	};
+
+	$: quantityValid = nftData.quantity > 0;
+	$: inputValid = nftData.name && nftData.collectionName && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
 </script>
 
 <!-- Back button -->
@@ -120,7 +155,7 @@
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
-				<DragDropImage bind:blob={animationBlob} text={dragDropText} bind:previewSrc={nftAssetPreview} acceptedFormats={acceptedNftFileTypes} />
+				<DragDropImage bind:blob={nftData.animationBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos} />
 			</div>
 		</div>
 
@@ -135,7 +170,7 @@
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
-				<DragDropImage bind:blob={fileBlob} text={dragDropText} bind:previewSrc={nftThumbnailPreview} />
+				<DragDropImage bind:blob={nftData.fileBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages} />
 			</div>
 		</div>
 
@@ -145,18 +180,25 @@
 		<div class="flex space-x-32 mt-8">
 			<div class="w-1/2">
 				<div class="uppercase italic text-[#1D1D1DB2]">Create name</div>
-				<input type="text" class="input w-full mt-2 font-semibold" bind:value={nftName} />
+				<input type="text" class="input w-full mt-2 font-semibold" bind:value={nftData.name} />
 
 				<div class="uppercase italic text-[#1D1D1DB2] mt-8">NFT Quantity</div>
-				<input type="number" class="input w-full mt-2 font-semibold input-hide-controls" bind:value={nftQuantity} min="1" />
+				<input type="number" class="input w-full mt-2 font-semibold input-hide-controls" bind:value={nftData.quantity} min="1" />
 
 				<div class="uppercase italic text-[#1D1D1DB2] mt-8">Collection</div>
-				<Dropdown options={[{ label: 'No collections.' }]} class="mt-2" btnClass="font-semibold" />
+				<!-- TODO: Replace first collection with Hinata base collection -->
+				<Dropdown
+					selected={selectedCollectionRow || { label: 'No collection' }}
+					on:select={handleCollectionSelection}
+					options={[...$availableCollections, { label: 'Create a new collection', value: 'collection/new/edit' }]}
+					class="mt-2"
+					btnClass="font-semibold"
+				/>
 			</div>
 
 			<div class="w-1/2">
 				<div class="uppercase italic text-[#1D1D1DB2]">Description</div>
-				<TextArea outline containerClass="mt-2 mr-8" maxChars={200} placeholder="Enter description..." bind:value={nftDescription} />
+				<TextArea outline containerClass="mt-2 mr-8" maxChars={200} placeholder="Enter description..." bind:value={nftData.description} />
 			</div>
 		</div>
 
@@ -171,6 +213,6 @@
 	<!-- Right side -->
 	<div class="separator border-0 border-l p-8 w-80">
 		<div class="uppercase italic text-xl mb-4">Preview</div>
-		<NftCard options={{ id: null, title: nftName, imageUrl: nftThumbnailPreview }} />
+		<NftCard options={{ id: null, title: nftData.name, imageUrl: nftData.thumbnailPreview }} />
 	</div>
 </div>

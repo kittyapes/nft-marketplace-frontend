@@ -16,10 +16,6 @@
 		data = await Promise.all($listings.map(adaptListingToNftCard));
 	};
 
-	/*onMount(async () => {
-		await getData();
-	});*/
-
 	// $: {
 	// 	filteredCards = allCards;
 

@@ -6,7 +6,8 @@ import { getApiUrl } from '.';
 
 export interface Collection {
 	name: string;
-	url: string;
+	slug: string;
+	url?: string;
 	image?: Blob;
 	cover?: Blob;
 	logoImageUrl?: string;
@@ -21,11 +22,12 @@ export interface Collection {
 	otherUrl?: string;
 	telegramUrl?: string;
 	blockchain?: string;
-	paymentTokenTicker: 'eth';
+	paymentTokenTicker: 'ETH';
 	paymentTokenAddress: string;
 	isExplicitSensitive: boolean;
 	creator: string;
 	nfts: [];
+	_id: string;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
@@ -36,13 +38,17 @@ export function getInitialCollectionData(): Partial<Collection> {
 
 export async function apiCreateCollection(options: Collection) {
 	options = { ...options };
+	// renaming keys to match the endpoint
+	delete Object.assign(options, {['logoImage']: options['image'] }).image;
+	delete Object.assign(options, {['backgroundImage']: options['cover'] }).cover;
 
-	options.paymentTokenTicker = 'eth';
+	options.paymentTokenTicker = 'ETH';
 	options.paymentTokenAddress = get(currentUserAddress);
 	options.royalties = JSON.stringify(options.royalties) as any;
 
 	const formData = new FormData();
 	Object.entries(options).forEach(([k, v]) => formData.append(k, v));
+	console.log(formData);
 
 	const res = await axios.post(getApiUrl('v2', 'collections'), formData, getAxiosConfig()).catch((e) => e.response);
 
@@ -55,8 +61,8 @@ export async function apiCreateCollection(options: Collection) {
 	return res;
 }
 
-export async function apiGetCollection(collectinId: string) {
-	const res = await axios.get(getApiUrl('v2', 'collections/' + collectinId), getAxiosConfig());
+export async function apiGetCollection(collectionId: string) {
+	const res = await axios.get(getApiUrl('v2', 'collections/' + collectionId), getAxiosConfig());
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);

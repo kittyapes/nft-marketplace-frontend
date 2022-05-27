@@ -19,6 +19,10 @@
 	let over = false;
 	let fileType: 'image' | 'video' = null;
 
+	$: if (browser && previewSrc) {
+		fileType = previewSrc.split('/')[0].split(':')[1] as any;
+	}
+
 	$: if (browser && files.length) {
 		const file: Blob = files[0];
 

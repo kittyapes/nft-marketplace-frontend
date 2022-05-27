@@ -19,7 +19,7 @@
 		collectionData = await apiGetCollection($page.params.collectionId);
 		creatorData = await fetchProfileData(collectionData.creator);
 
-		console.log(creatorData);
+		console.log(collectionData);
 	}
 
 	$: $currentUserAddress && fetchCollectionData();

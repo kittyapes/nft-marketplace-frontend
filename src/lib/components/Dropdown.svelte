@@ -4,7 +4,7 @@
 	const dispatch = createEventDispatcher();
 
 	interface Option {
-		value: string;
+		value?: string;
 		label: string;
 		iconUrl?: string;
 	}
@@ -40,7 +40,7 @@
 	<button class="text-left select flex items-center space-x-2" on:click={() => (opened = !opened)} bind:this={elemOpenButton} {disabled}>
 		<!-- Icon -->
 		{#if selected.iconUrl}
-			<img src={selected.iconUrl} alt="" class="w-4" />
+			<img src={selected.iconUrl} alt="" class="w-6" />
 		{/if}
 
 		<!-- Label -->
@@ -50,9 +50,12 @@
 	</button>
 
 	{#if opened}
-		<div id="list-container" class="absolute bottom-0 z-10 w-full overflow-hidden translate-y-full bg-white rounded-lg">
+		<div id="list-container" class="absolute bottom-0 z-10 w-full overflow-hidden translate-y-full bg-white rounded-lg overflow-y-scroll max-h-32 custom-scrollbar">
 			{#each options as option}
-				<button class="w-full px-4 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded" on:click={() => handleOptionSelect(option)}>
+				<button class="w-full px-4 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded flex items-center gap-x-2" on:click={() => handleOptionSelect(option)}>
+					{#if option.iconUrl}
+						<img src={option.iconUrl} alt="" class="w-6" />
+					{/if}
 					{option.label}
 				</button>
 			{/each}
