@@ -68,27 +68,47 @@
 	</div>
 
 	<!-- Collection title -->
-	<h1 class="mx-auto max-w-max mt-8 text-2xl font-semibold">{collectionData?.name}</h1>
+	<h1 class="mx-auto max-w-max mt-8 text-2xl font-semibold">
+		{#if collectionData}
+			{collectionData?.name || 'N/A'}
+		{:else}
+			<div class="h-8 w-32 bg-gray-100 rounded-lg" />
+		{/if}
+	</h1>
 
 	<!-- Creator username and address -->
 	<div class="flex justify-center items-center space-x-3 mt-2">
-		<div class="text-color-gradient text-xl max-w-max font-medium font-poppins">@{creatorData?.username}</div>
+		<div class="text-color-gradient text-xl max-w-max font-medium font-poppins">
+			{#if creatorData}
+				@{creatorData?.username}
+			{:else}
+				<div class="h-8 w-32 bg-gray-100 rounded-lg" />
+			{/if}
+		</div>
 
 		<button class="btn bg-[#F5F5F5] flex rounded-full px-4 py-2 space-x-2 w-36" on:click={() => copyTextToClipboard(collectionData.creator)}>
 			<img class="w-5" src="/svg/icons/collection-gradient-eth.svg" alt="Ethereum." />
-			<div class="font-mono text-[#6E6E6E] text-sm">{shortenAddress(creatorData?.address)}</div>
+			{#if creatorData}
+				<div class="font-mono text-[#6E6E6E] text-sm">{shortenAddress(creatorData?.address)}</div>
+			{:else}
+				<div class="h-5 w-24 bg-gray-200 rounded-lg" />
+			{/if}
 		</button>
 	</div>
 
 	<!-- Stats table -->
-	<div class="border border-black h-24 flex rounded-lg justify-evenly mt-8 max-w-3xl mx-auto">
-		{#each collectionStats as [stat, value]}
-			<div class="flex flex-col items-center justify-center border-r border-black last:border-0 w-full">
-				<div class="text-sm">{stat}</div>
-				<div class="text-xl font-semibold mt-1">{value}</div>
-			</div>
-		{/each}
-	</div>
+	{#if collectionData}
+		<div class="border border-black h-24 flex rounded-lg justify-evenly mt-8 max-w-3xl mx-auto">
+			{#each collectionStats as [stat, value]}
+				<div class="flex flex-col items-center justify-center border-r border-black last:border-0 w-full">
+					<div class="text-sm">{stat}</div>
+					<div class="text-xl font-semibold mt-1">{value}</div>
+				</div>
+			{/each}
+		</div>
+	{:else}
+		<div class="h-24 bg-gray-100 rounded-lg mt-8 max-w-3xl mx-auto" />
+	{/if}
 
 	<!-- Share and menu buttons -->
 	<div class="flex space-x-4 mt-6 justify-center">
@@ -103,11 +123,9 @@
 		</button>
 	</div>
 
-	{#if collectionData}
-		<div class="mt-16 border-t border-[#0000004D]">
-			<NftList data={collectionData.nfts.map(adaptCollectionNftToNftCard)} />
-		</div>
-	{/if}
+	<div class="mt-16 border-t border-[#0000004D]">
+		<NftList data={collectionData ? collectionData.nfts.map(adaptCollectionNftToNftCard) : []} />
+	</div>
 </main>
 
 {#if showCollectionMenu}
