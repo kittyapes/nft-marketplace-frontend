@@ -57,7 +57,7 @@
 		<div class="font-medium select-none">{(options && likes === 0) || likes ? likes : 'N/A'}</div>
 	</div>
 
-	<div class="w-full mx-auto mt-2 overflow-hidden transition bg-gray-100 rounded-lg aspect-1" class:animate-pulse={!imgLoaded}>
+	<div class="w-full mx-auto mt-2 overflow-hidden transition bg-gray-100 rounded-lg aspect-1 select-none" class:animate-pulse={!imgLoaded}>
 		<img alt="" src={options?.imageUrl} class="object-cover object-top w-full h-full transition" class:opacity-0={!imgLoaded} on:load={() => (imgLoaded = true)} />
 	</div>
 
