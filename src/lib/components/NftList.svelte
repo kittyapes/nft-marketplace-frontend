@@ -2,27 +2,41 @@
 	import NftCard from './NftCard.svelte';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 	import DiamondsLoader from './DiamondsLoader.svelte';
+	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
+	import { onMount, tick } from 'svelte';
+	import { currentUserAddress } from '$stores/wallet';
 
 	export let data: NftCardOptions[];
 	export let isLoading = false;
-	console.log(data);
+
+	$: if (data) markFavouriteNfts;
+
+	let markFavouriteNfts = async () => {
+		if (!$currentUserAddress) return;
+		const favorites = await getUserFavoriteNfts();
+		console.log(favorites);
+
+		data.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length > 0));
+		data = data;
+		console.log(data);
+	};
 </script>
 
-{#if !(isLoading || data === null) && data?.length === 0}
-	<div class="placeholder">Nothing to see here, move along.</div>
-{:else if data?.length}
-	<div class="nftGrid">
-		{#each data as tokenData}
-			{#if tokenData.title}
-				<NftCard options={tokenData} />
-			{/if}
-		{/each}
-	</div>
-{/if}
-
-{#if isLoading || data === null}
+{#await markFavouriteNfts()}
 	<DiamondsLoader />
-{/if}
+{:then _}
+	{#if !(isLoading || data === null) && data?.length === 0}
+		<div class="placeholder">Nothing to see here, move along.</div>
+	{:else if data?.length}
+		<div class="nftGrid">
+			{#each data as tokenData}
+				{#if tokenData.title}
+					<NftCard options={tokenData} />
+				{/if}
+			{/each}
+		</div>
+	{/if}
+{/await}
 
 <style type="postcss">
 	.placeholder {

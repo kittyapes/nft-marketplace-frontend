@@ -1,10 +1,8 @@
 import SalePopup from '$lib/components/marketplace/SalePopup/SalePopup.svelte';
-import NftDisplayPopup from '$lib/components/profile/NFTDisplayPopup.svelte';
 import type { Listing } from '$utils/api/listing';
 import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 import { adaptListingToPopup } from './adaptListingToPopup';
 
-// NEEDS CHANGING
 export async function adaptListingToNftCard(listing: Listing) {
 
 	listing.thumbnailUrl = listing.nfts[0]?.nft.thumbnailUrl

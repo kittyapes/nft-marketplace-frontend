@@ -5,6 +5,7 @@ export interface TokenData {
 	contract_type: string;
 	frozen: boolean;
 	is_valid: boolean;
+	minter_address: string,
 	metadata: {
 		animation_url: string;
 		artist: string;

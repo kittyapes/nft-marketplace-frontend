@@ -14,11 +14,6 @@
 		listings.set(await getListings());
 		console.log($listings);
 		data = await Promise.all($listings.map(adaptListingToNftCard));
-
-		//mark favourite NFTs as favourited
-		const favorites = await getUserFavoriteNfts();
-		console.log(favorites);
-		data.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length > 0));
 	};
 
 	/*onMount(async () => {

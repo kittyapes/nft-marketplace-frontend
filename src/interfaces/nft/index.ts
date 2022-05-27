@@ -12,6 +12,7 @@ export interface NftData {
 	amount: number;
 	creator: string;
 	owner: string;
+	favoriteCount: number;
 	metadata: {
 		external_url: string;
 		image: string;
