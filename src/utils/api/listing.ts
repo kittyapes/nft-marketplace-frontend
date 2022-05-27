@@ -74,7 +74,7 @@ export async function postCreateListing(options: CreateListingOptions) {
 	formData.append('nfts', JSON.stringify(options.nfts));
 	formData.append('title', options.title || 'No Title');
 	formData.append('paymentTokenAddress', options.paymentTokenAddress);
-	formData.append('paymentTokenTicker', options.paymentTokenTicker || 'ETH');
+	formData.append('paymentTokenTicker', options.paymentTokenTicker || 'WETH');
 	formData.append('description', options.description || 'No Description');
 	formData.append('listingType', options.listingType);
 	formData.append('listing', JSON.stringify({ price: options.price, quantity: options.quantity }));
