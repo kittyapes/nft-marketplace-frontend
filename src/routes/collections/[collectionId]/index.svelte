@@ -10,6 +10,7 @@
 	import { apiGetCollection, Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
+	import { copyUrlToClipboard } from '$utils/misc/clipboard';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
 
 	let collectionData: Collection;
@@ -89,11 +90,11 @@
 		{/each}
 	</div>
 
-	<!-- Upload and menu buttons -->
+	<!-- Share and menu buttons -->
 	<div class="flex space-x-4 mt-6 justify-center">
-		<!-- Upload button -->
-		<button class="btn rounded-full border border-black w-14 h-14 grid place-items-center">
-			<img src="/svg/icons/collection-upload.svg" alt="Upload." />
+		<!-- Share button -->
+		<button class="btn rounded-full border border-black w-14 h-14 grid place-items-center" on:click={copyUrlToClipboard}>
+			<img src="/svg/icons/collection-upload.svg" alt="Share." />
 		</button>
 
 		<!-- Menu button -->
