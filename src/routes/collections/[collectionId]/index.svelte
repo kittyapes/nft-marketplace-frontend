@@ -57,8 +57,8 @@
 		<div class="absolute left-0 right-0 bottom-0 mx-auto w-24 h-24 translate-y-5">
 			<img
 				class="rounded-full
-					border-4 border-white"
-				src={creatorData?.thumbnailUrl}
+					border-4 border-white h-full bg-white"
+				src={creatorData?.thumbnailUrl || '/svg/icons/guest-avatar.svg'}
 				alt="Collection creator avatar."
 			/>
 
