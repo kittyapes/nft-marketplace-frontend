@@ -39,8 +39,8 @@ export function getInitialCollectionData(): Partial<Collection> {
 export async function apiCreateCollection(options: Collection) {
 	options = { ...options };
 	// renaming keys to match the endpoint
-	delete Object.assign(options, {['logoImage']: options['image'] }).image;
-	delete Object.assign(options, {['backgroundImage']: options['cover'] }).cover;
+	delete Object.assign(options, { ['logoImage']: options['image'] }).image;
+	delete Object.assign(options, { ['backgroundImage']: options['cover'] }).cover;
 
 	options.paymentTokenTicker = 'ETH';
 	options.paymentTokenAddress = get(currentUserAddress);
@@ -62,7 +62,7 @@ export async function apiCreateCollection(options: Collection) {
 }
 
 export async function apiGetCollection(collectionId: string) {
-	const res = await axios.get(getApiUrl('v2', 'collections/' + collectionId), getAxiosConfig());
+	const res = await axios.get(getApiUrl('v2', 'collections/' + collectionId));
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
