@@ -17,6 +17,8 @@
 	import { goto } from '$app/navigation';
 	import Loader from '$icons/loader.svelte';
 	import { acceptedImages } from '$constants';
+	import { page } from '$app/stores';
+	import { nftDraft } from '$stores/create';
 
 	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
 
@@ -59,6 +61,7 @@
 		// Without this, the user would be able to paste in any longer text
 		// than the urlStart and the urlStart would not be included
 		const withoutStart = data.url.replace(urlStart, '');
+		$collectionData.slug = withoutStart;
 		$collectionData.url = urlStart + withoutStart;
 		$formValidity.url = true;
 
@@ -97,12 +100,17 @@
 
 		if (error) {
 			notifyError(error.message);
+			creatingCollection = false;
 			return;
 		}
 
 		notifySuccess('Collection created!');
 
-		goto('/collections/' + res.data.data._id);
+		// where to go next based on URL params
+		if ($page.url.searchParams.has('to')) {
+			$nftDraft.collectionName = $collectionData.name;
+			goto('/' + $page.url.searchParams.get('to'));
+		} else goto('/collections/' + res.data.data.slug);
 
 		creatingCollection = false;
 	}
