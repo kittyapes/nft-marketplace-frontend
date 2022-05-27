@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	import { page } from '$app/stores';
 	import type { UserData } from '$interfaces/userData';
 	import ActionMenu from '$lib/components/ActionMenu.svelte';
@@ -35,8 +37,9 @@
 	];
 
 	const collectionMenuButtonOptions = [
-		{ label: 'Claim Ownership', action: () => {} },
-		{ label: 'Report', action: () => {} }
+		{ label: 'Claim Ownership', action: () => {}, disabled: true },
+		{ label: 'Report', action: () => {}, disabled: true },
+		{ label: 'Edit', action: () => goto(`/collections/${collectionData.slug}/edit`) }
 	];
 
 	let menuButton: HTMLButtonElement;
