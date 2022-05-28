@@ -66,7 +66,7 @@
 		{#if is('price')}
 			<label for="price-component">
 				<span>Price</span>
-				<TokenDropdown id="price-component" bind:value={propValues.price} valid={validations.price} />
+				<TokenDropdown on:select id="price-component" bind:value={propValues.price} valid={validations.price} />
 			</label>
 		{/if}
 
