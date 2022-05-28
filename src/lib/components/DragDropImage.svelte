@@ -23,10 +23,10 @@
 		fileType = previewSrc.split('/')[0].split(':')[1] as any;
 	}
 
+	$: console.log(previewSrc.slice(0, 25));
+
 	$: if (browser && files.length) {
 		const file: Blob = files[0];
-
-		fileType = file.type.split('/')[0] as any;
 
 		if (file.size > 50_000_000) {
 			notifyError('The uploaded file must be 50 MB or less!');
@@ -35,13 +35,11 @@
 			fileInput.value = '';
 		} else {
 			const reader = new FileReader();
-
-			reader.onload = (e) => {
+			reader.onloadend = (e) => {
 				previewSrc = e.target.result as string;
 			};
 
-			reader.readAsDataURL(files[0]);
-
+			reader.readAsDataURL(file);
 			blob = file;
 
 			dispatch('new-blob', { blob });
