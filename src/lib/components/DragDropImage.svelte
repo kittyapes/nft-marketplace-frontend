@@ -23,8 +23,6 @@
 		fileType = previewSrc.split('/')[0].split(':')[1] as any;
 	}
 
-	$: console.log(previewSrc.slice(0, 25));
-
 	$: if (browser && files.length) {
 		const file: Blob = files[0];
 
