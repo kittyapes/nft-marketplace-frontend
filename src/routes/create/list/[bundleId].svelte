@@ -18,7 +18,7 @@
 	import { getAxiosConfig } from '$utils/auth/axiosConfig';
 	import { goto } from '$app/navigation';
 	import type { NftData } from '$interfaces/nft';
-	import { WethContractAddress } from '$constants/contractAddresses';
+	import { HinataTokenAddress, WethContractAddress } from '$constants/contractAddresses';
 
 	// URL params
 	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
@@ -42,7 +42,7 @@
 		fetchedNftData.set(nftRes);
 	});
 
-	let currentPaymentToken: { name: string; address: string } = { name: 'ETH', address: WethContractAddress };
+	let currentPaymentToken: { name: string; address: string } = { name: 'ETH', address: HinataTokenAddress };
 
 	const handleTokenChange = (event: CustomEvent) => {
 		currentPaymentToken.name = event.detail.label.toUpperCase();

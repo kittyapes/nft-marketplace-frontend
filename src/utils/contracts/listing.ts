@@ -27,6 +27,7 @@ export interface ContractCreateListingOptions {
 }
 
 export async function contractCreateListing(options: ContractCreateListingOptions) {
+	console.log(options)
 	try {
 		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
 		const MarketplaceStorageContract = HinataMarketplaceStorageContract(get(appSigner));
