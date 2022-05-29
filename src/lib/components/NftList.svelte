@@ -6,18 +6,20 @@
 	import { onMount, tick } from 'svelte';
 	import { currentUserAddress } from '$stores/wallet';
 
-	export let data: NftCardOptions[];
+	export let options: NftCardOptions[];
 	export let isLoading = false;
 
-	$: if (data) markFavouriteNfts;
+	let data: NftCardOptions[] = [];
+
+	$: if (options) markFavouriteNfts();
 
 	let markFavouriteNfts = async () => {
 		if (!$currentUserAddress) return;
 		const favorites = await getUserFavoriteNfts();
 		console.log(favorites);
 
-		data.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length > 0));
-		data = data;
+		options.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length > 0));
+		data = options;
 		console.log(data);
 	};
 </script>

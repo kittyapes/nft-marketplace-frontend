@@ -1,6 +1,5 @@
 <script>
 	import { filters } from '$stores/marketplace';
-	import { filter } from 'lodash-es';
 
 	export let value;
 	let selected = $filters.status.has(value);
@@ -9,9 +8,11 @@
 		if (!selected) {
 			selected = true;
 			$filters.status.add(value);
+			filters.update((val) => val);
 		} else {
 			selected = false;
 			$filters.status.delete(value);
+			filters.update((val) => val);
 		}
 	};
 </script>

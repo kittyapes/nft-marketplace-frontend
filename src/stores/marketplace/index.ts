@@ -1,4 +1,5 @@
 import { currentUserAddress } from '$stores/wallet';
+import type { ListingType } from '$utils/api/listing';
 import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 import { derived, writable } from 'svelte/store';
 
@@ -6,7 +7,5 @@ import { derived, writable } from 'svelte/store';
 export const selectedCard = writable<any>(); // TODO add types
 
 // Filters
-//export const statusFilters = writable<Set<string>>(new Set());
-//export const priceFilters = writable<{ min: number; max: number }>({ min: 0, max: 0 });
 export const collectionFilters = writable<string>(null);
-export const filters = writable<{status: Set<string>, price: { min: number; max: number }, collection: string }>({status: new Set(), price: { min: 0, max: 0 }, collection: '' });
+export const filters = writable<{status: Set<ListingType>, price: { min: number; max: number }, collection: string }>({status: new Set(['sale']), price: { min: 0, max: 0 }, collection: '' });

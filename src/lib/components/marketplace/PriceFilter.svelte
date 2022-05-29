@@ -10,6 +10,7 @@
 			min: min || 0,
 			max: max || 0
 		};
+		filters.update((val) => val);
 	};
 
 	updateValues();

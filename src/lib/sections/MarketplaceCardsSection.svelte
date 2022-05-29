@@ -1,20 +1,31 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	// import { priceFilters, statusFilters } from '$stores/marketplace';
-	import { getListings, Listing } from '$utils/api/listing';
+	import { getListings, Listing, listingFetchingFilters } from '$utils/api/listing';
 	import { writable } from 'svelte/store';
 	import NftList from '$lib/components/NftList.svelte';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
-	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
+	import { filters } from '$stores/marketplace';
 
 	const listings = writable<Listing[]>([]);
 	let data;
 
+	let listingsFetchingFilters: listingFetchingFilters = {};
+
 	let getData = async () => {
-		listings.set(await getListings());
+		listings.set(await getListings(listingsFetchingFilters));
 		console.log($listings);
 		data = await Promise.all($listings.map(adaptListingToNftCard));
 	};
+
+	filters.subscribe(async (state) => {
+		console.log(state);
+		listingsFetchingFilters.collectionId = state.collection;
+		listingsFetchingFilters.type = await Array.from(state.status?.values());
+		listingsFetchingFilters.price = state.price;
+		console.log(listingsFetchingFilters);
+		await getData();
+	});
 
 	// $: {
 	// 	filteredCards = allCards;
@@ -39,6 +50,6 @@
 	{#await getData()}
 		Loading...
 	{:then _}
-		<NftList {data} />
+		<NftList options={data} />
 	{/await}
 </div>
