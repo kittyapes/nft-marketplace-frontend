@@ -4,6 +4,7 @@ import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { getHinataTokenContract } from '$utils/contracts/generalContractCalls';
 import axios from 'axios';
 import { get } from 'svelte/store';
+import { getApiUrl } from '.';
 
 /**
  * Check if the user has already claimed and get message to sign and attach to the claim route
@@ -11,7 +12,7 @@ import { get } from 'svelte/store';
  * @returns An object with the message to sign when claiming and the isClaimed boolean value
  */
 export async function hasClaimedFreeNft(address: string) {
-	const res = await axios.get(`${api}/v1/nfts/isClaimed/${address}`, getAxiosConfig());
+	const res = await axios.get(getApiUrl('latest', `nfts/isClaimed/${address}`), getAxiosConfig());
 
 	// Check if user's nonce has already claimed
 	//console.log(res.data.data);

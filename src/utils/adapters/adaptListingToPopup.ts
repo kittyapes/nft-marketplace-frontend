@@ -12,7 +12,6 @@ export interface ListingPopupOptions extends UniversalPopupOptions {
 	listingType: ListingType;
 }
 
-// NEEDS CHANGING
 export function adaptListingToPopup(listing: Listing) {
 	const options: ListingPopupOptions = {
 		id: listing._id,

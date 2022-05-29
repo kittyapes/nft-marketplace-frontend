@@ -61,19 +61,22 @@
 			const _collectedProxy = [];
 
 			// Assign NFTs accordingly
-			unfiltered.map((nft) => {
-				if (nft.token_uri) {
-					const parsedNft = adaptTokenDataToNftCard(nft);
-					// if (parsedNft.imageUrl) {
-					if (nft.minter_address?.toLowerCase() === address.toLowerCase()) {
-						// User Created this
-						_createdProxy.push(parsedNft);
-					} else {
-						_collectedProxy.push(parsedNft);
+			await Promise.all(
+				unfiltered.map(async (nft) => {
+					if (nft.token_uri) {
+						const parsedNft = await adaptTokenDataToNftCard(nft);
+
+						// if (parsedNft.imageUrl) {
+						if (nft.minter_address?.toLowerCase() === address.toLowerCase()) {
+							// User Created this
+							_createdProxy.push(parsedNft);
+						} else {
+							_collectedProxy.push(parsedNft);
+						}
+						// }
 					}
-					// }
-				}
-			});
+				})
+			);
 
 			createdNfts = [...createdNfts, ..._createdProxy];
 			collectedNfts = [...collectedNfts, ..._collectedProxy];

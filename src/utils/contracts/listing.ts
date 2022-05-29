@@ -38,19 +38,6 @@ export async function contractCreateListing(options: ContractCreateListingOption
 			await approval.wait(1);
 		}
 
-		console.log({
-			id: options.listingId,
-			seller: get(currentUserAddress),
-			payToken: options.payToken,
-			price: options.startingPrice,
-			startTime: options.startTime,
-			duration: options.duration,
-			quantity: options.quantity,
-			listingType: options.listingType,
-			tokenIds: options.tokenIds,
-			tokenAmounts: options.tokenAmounts,
-			})
-
 		const listingCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing(
 			{
 			id: ethers.BigNumber.from(options.listingId),
