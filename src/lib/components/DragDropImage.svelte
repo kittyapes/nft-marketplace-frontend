@@ -26,8 +26,6 @@
 	$: if (browser && files.length) {
 		const file: Blob = files[0];
 
-		fileType = file.type.split('/')[0] as any;
-
 		if (file.size > 50_000_000) {
 			notifyError('The uploaded file must be 50 MB or less!');
 			files = [];
@@ -35,13 +33,11 @@
 			fileInput.value = '';
 		} else {
 			const reader = new FileReader();
-
-			reader.onload = (e) => {
+			reader.onloadend = (e) => {
 				previewSrc = e.target.result as string;
 			};
 
-			reader.readAsDataURL(files[0]);
-
+			reader.readAsDataURL(file);
 			blob = file;
 
 			dispatch('new-blob', { blob });

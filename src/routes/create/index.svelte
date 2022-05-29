@@ -53,7 +53,7 @@
 		profileData.set(await fetchProfileData($currentUserAddress));
 
 		let collections: Collection[] = await apiSearchCollections();
-		console.log(collections);
+
 		if (nftData.collectionName) {
 			let selectedCollection = collections.filter((c) => c.name === nftData.collectionName)[0];
 			selectedCollectionRow = adaptCollectionToMintingDropdown(selectedCollection);
