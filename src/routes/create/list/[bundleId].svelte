@@ -18,6 +18,7 @@
 	import { getAxiosConfig } from '$utils/auth/axiosConfig';
 	import { goto } from '$app/navigation';
 	import type { NftData } from '$interfaces/nft';
+	import { WethContractAddress } from '$constants/contractAddresses';
 
 	// URL params
 	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
@@ -41,6 +42,13 @@
 		fetchedNftData.set(nftRes);
 	});
 
+	let currentPaymentToken: { name: string; address: string } = { name: 'ETH', address: WethContractAddress };
+
+	const handleTokenChange = (event: CustomEvent) => {
+		currentPaymentToken.name = event.detail.label.toUpperCase();
+		currentPaymentToken.address = event.detail.value;
+	};
+
 	let isListing = false;
 
 	async function listForSale() {
@@ -50,7 +58,8 @@
 		// Create listing on the server
 		const apiCreateListingRes = await postCreateListing({
 			nfts: [{ nftId: $fetchedNftData.nftId, amount: $fetchedNftData.amount }],
-			paymentTokenAddress: '0xC758F0819f68c6C02B296dFbC6c69DeaD0900cee',
+			paymentTokenAddress: currentPaymentToken.address,
+			paymentTokenTicker: currentPaymentToken.name,
 			title: $fetchedNftData.name,
 			description: $fetchedNftData.metadata.description,
 			listingType: $newDropProperties.listingType,
@@ -65,10 +74,10 @@
 			isListing = false;
 			return;
 		}
-		console.log(apiCreateListingRes.data.data.listingId);
+
 		// Create listing on chain
 		const successListingOnChain = await contractCreateListing({
-			payToken: '0xC758F0819f68c6C02B296dFbC6c69DeaD0900cee',
+			payToken: currentPaymentToken.address,
 			listingId: apiCreateListingRes.data.data.listingId,
 			listingType: LISTING_TYPE.FIXED_PRICE,
 			startingPrice: listingPropValues.price,
@@ -117,7 +126,7 @@
 		<hr class="separator mt-4" />
 
 		<!-- <CommonProperties class="mt-8" propNames={typeToProperties[$newDropProperties.listingType]} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} /> -->
-		<CommonProperties class="mt-8" propNames={typeToProperties['sale']} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} />
+		<CommonProperties on:select={handleTokenChange} class="mt-8" propNames={typeToProperties['sale']} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} />
 
 		<!-- <hr class="separator mt-8" /> -->
 
