@@ -30,6 +30,7 @@
 	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
 
 	// Data collected from the form or fetched from the server
+	let originalCollectionData = null; // Used to check whether data was changed during editing
 	const collectionData = writable<Collection>(getInitialCollectionData() as Collection);
 
 	// An object with collection property keys and bool as values representing their validity
@@ -141,6 +142,8 @@
 			return;
 		}
 
+		await fetchRemoteCollectionData();
+
 		notifySuccess('Collection updated!');
 	}
 
@@ -157,6 +160,19 @@
 		// Copy is needed because slug would get overwritten
 		collectionData.set({ ...res });
 		collectionUrl.set(urlStart + res.slug);
+
+		originalCollectionData = { ...res };
+	}
+
+	// Check whether data was changed
+	let dataChanged = false;
+
+	$: {
+		if (originalCollectionData === null) {
+			dataChanged = false;
+		}
+
+		dataChanged = JSON.stringify(originalCollectionData) !== JSON.stringify($collectionData);
 	}
 
 	// Utils
@@ -305,7 +321,7 @@
 
 	<FormErrorList validity={$formValidity} />
 
-	<button class="btn btn-gradient h-16 w-full rounded-3xl mt-8 uppercase" disabled={!formValid || savingCollection} on:click={clickSaveCollection}>
+	<button class="btn btn-gradient h-16 w-full rounded-3xl mt-8 uppercase" disabled={!formValid || savingCollection || !dataChanged} on:click={clickSaveCollection}>
 		{#if isNewCollection}
 			Create Collection
 		{:else}
