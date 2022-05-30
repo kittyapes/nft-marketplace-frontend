@@ -80,7 +80,7 @@ export interface UpdateCollectionOptions {
 
 export async function apiUpdateCollection(options: UpdateCollectionOptions) {
 	const formData = new FormData();
-	Object.entries(options).forEach(([k, v]) => formData.append(k, v));
+	Object.entries(options).forEach(([k, v]) => v && formData.append(k, v));
 
 	const res = await axios.put(getApiUrl('v2', 'collections/' + options.slug), formData, getAxiosConfig()).catch((e) => e.response);
 
