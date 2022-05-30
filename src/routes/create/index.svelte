@@ -60,6 +60,7 @@
 			selectedCollectionId = selectedCollection._id;
 		}
 
+		console.log(collections.filter((c) => c.slug && c.creator === $currentUserAddress));
 		$availableCollections = collections.filter((c) => c.slug && c.creator === $currentUserAddress).map(adaptCollectionToMintingDropdown);
 	});
 
