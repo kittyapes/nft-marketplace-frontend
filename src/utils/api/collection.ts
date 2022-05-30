@@ -39,6 +39,17 @@ export function getInitialCollectionData(): Partial<Collection> {
 	};
 }
 
+export async function addNftsToCollection(nftIds: string[], collectionId: string) {
+	console.log(nftIds)
+	const res = await axios.post(getApiUrl('v2', 'collections/' + collectionId + '/add-nfts'), {nfts: nftIds}, getAxiosConfig());
+
+	if (res.status !== 200) {
+		throw new Error(res.data.message);
+	}
+
+	return res.data.data;
+}
+
 export async function apiCreateCollection(options: Collection) {
 	options = { ...options };
 	// renaming keys to match the endpoint

@@ -3,9 +3,12 @@
 	import Heart from '$icons/heart.svelte';
 	import ThreeDots from '$icons/three-dots.svelte';
 	import { currentUserAddress } from '$stores/wallet';
+	import { createMintedNFTOnAPI, createNFTOnAPI } from '$utils/create/createNFT';
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { favoriteNft } from '$utils/nfts/favoriteNft';
+	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
+	import { getUsersThatFavoritedNft } from '$utils/nfts/getUsersThatFavoritedNft';
 	import { setPopup } from '$utils/popup';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 	import { fade } from 'svelte/transition';
@@ -32,8 +35,10 @@
 		if (!$currentUserAddress || !options.getPopupProps) return;
 		options.favorite ? (likes = likes - 1) : (likes = likes + 1);
 
+		// change status first for quick feedback
 		options.favorite = !options.favorite;
-		const res = await favoriteNft(options.id);
+
+		const favouriteNftRes = await favoriteNft(options.id);
 	}
 </script>
 
@@ -57,7 +62,7 @@
 		<div class="font-medium select-none">{(options && likes === 0) || likes ? likes : 'N/A'}</div>
 	</div>
 
-	<div class="w-full mx-auto mt-2 overflow-hidden transition bg-gray-100 rounded-lg aspect-1" class:animate-pulse={!imgLoaded}>
+	<div class="w-full mx-auto mt-2 overflow-hidden transition bg-gray-100 rounded-lg aspect-1 select-none" class:animate-pulse={!imgLoaded}>
 		<img alt="" src={options?.imageUrl} class="object-cover object-top w-full h-full transition" class:opacity-0={!imgLoaded} on:load={() => (imgLoaded = true)} />
 	</div>
 

@@ -13,7 +13,7 @@
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
-	import { apiGetCollection, apiSearchCollections, Collection } from '$utils/api/collection';
+	import { addNftsToCollection, apiGetCollection, apiSearchCollections, Collection } from '$utils/api/collection';
 	import { getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { NewBundleData, newBundleData } from '$utils/create';
@@ -30,7 +30,8 @@
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 
 	let dumpDraft = false;
-	let selectedCollection: Collection;
+
+	let selectedCollectionId: string;
 	// for displaying in the collection dropdown
 	let selectedCollectionRow;
 
@@ -52,10 +53,11 @@
 		profileData.set(await fetchProfileData($currentUserAddress));
 
 		let collections: Collection[] = await apiSearchCollections();
-		console.log(collections);
+
 		if (nftData.collectionName) {
-			selectedCollection = collections.filter((c) => c.name === nftData.collectionName)[0];
+			let selectedCollection = collections.filter((c) => c.name === nftData.collectionName)[0];
 			selectedCollectionRow = adaptCollectionToMintingDropdown(selectedCollection);
+			selectedCollectionId = selectedCollection._id;
 		}
 
 		$availableCollections = collections.filter((c) => c.slug && c.creator === $currentUserAddress).map(adaptCollectionToMintingDropdown);
@@ -94,6 +96,10 @@
 			return;
 		}
 
+		//add NFT to selected collection
+		const addNftsToCollectionRes = await addNftsToCollection([createNftRes.nftId], selectedCollectionId);
+		console.log(addNftsToCollectionRes);
+
 		progress.set(50);
 
 		// create NFT on chain
@@ -117,13 +123,15 @@
 	}
 
 	const handleCollectionSelection = (event) => {
-		if (event.detail?.value) {
+		nftData.collectionName = event.detail?.label;
+		selectedCollectionId = event.detail?.value;
+		if (event.detail?.label === 'Create a new collection') {
 			goto('collections/new/edit?to=create');
 		}
 	};
 
 	$: quantityValid = nftData.quantity > 0;
-	$: inputValid = nftData.name && nftData.collectionName && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
+	$: inputValid = nftData.name && selectedCollectionId && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
 </script>
 
 <!-- Back button -->
