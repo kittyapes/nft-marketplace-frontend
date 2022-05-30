@@ -74,6 +74,8 @@ export interface UpdateCollectionOptions {
 	websiteUrl: string;
 	telegramUrl: string;
 	isExplicitSenstive: boolean;
+	logoImage?: Blob;
+	backgroundImage?: Blob;
 }
 
 export async function apiUpdateCollection(options: UpdateCollectionOptions) {

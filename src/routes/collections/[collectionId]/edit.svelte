@@ -169,7 +169,9 @@
 			slug: d.slug,
 			telegramUrl: d.telegramUrl,
 			twitterUrl: d.twitterUrl,
-			websiteUrl: d.otherUrl
+			websiteUrl: d.otherUrl,
+			logoImage: collectionData.image,
+			backgroundImage: collectionData.cover
 		} as UpdateCollectionOptions;
 	}
 
