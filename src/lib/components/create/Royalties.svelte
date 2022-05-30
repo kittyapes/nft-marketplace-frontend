@@ -4,13 +4,14 @@
 	// Prettier would break this line
 	const prettierFix = `Royalties (<span class="gradient-text">Optional</span>)`;
 
-	export const values: { fees: number | string; address: string }[] = [
+	export let values: { fees: number | string; address: string }[] = [
 		{ fees: null, address: '' },
 		{ fees: null, address: '' },
 		{ fees: null, address: '' }
 	];
 
 	export let isValid = false;
+	export let disabled = false;
 
 	$: isValid = values.every((v) => (!!v.fees === !!v.address && isEthAddress(v.address)) || (v.fees == null && v.address == ''));
 </script>
@@ -22,14 +23,23 @@
 		<div id="percent-container" class="grid w-24">
 			<div class="text-color-black uppercase font-light text-sm">Fees</div>
 			{#each values as value}
-				<input type="number" class="input input-hide-controls mt-4 first:mt-2" placeholder="%" required={!!value.address} bind:value={value.fees} />
+				<input type="number" class="input input-hide-controls mt-4 first:mt-2" placeholder="%" required={!!value.address} bind:value={value.fees} {disabled} />
 			{/each}
 		</div>
 
 		<div class="grid flex-grow">
 			<div class="text-color-black uppercase font-light text-sm">Wallet address</div>
 			{#each values as value}
-				<input type="text" class="input mt-4 first:mt-2" placeholder="Enter wallet address" autocomplete="nope" pattern={ethAddressRegex} required={!!value.fees} bind:value={value.address} />
+				<input
+					type="text"
+					class="input mt-4 first:mt-2"
+					placeholder="Enter wallet address"
+					autocomplete="nope"
+					pattern={ethAddressRegex}
+					required={!!value.fees}
+					bind:value={value.address}
+					{disabled}
+				/>
 			{/each}
 		</div>
 	</div>
@@ -37,7 +47,7 @@
 
 <style>
 	input {
-		@apply w-full h-12;
+		@apply w-full h-12 disabled:text-gray-400;
 	}
 
 	#percent-container input {

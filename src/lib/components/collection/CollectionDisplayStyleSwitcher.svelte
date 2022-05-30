@@ -4,7 +4,7 @@
 	export let displayStyle: 'CONTAINED' | 'PADDED' | 'COVERED' = 'CONTAINED';
 </script>
 
-<div class="flex gap-x-8">
+<div class="flex gap-8 flex-wrap">
 	<div class="-option" on:click={() => (displayStyle = 'CONTAINED')} class:-selected={displayStyle === 'CONTAINED'}>
 		<div>Contained</div>
 		<div class="w-1/2 mx-auto"><PlaceholderImage /></div>
@@ -35,7 +35,7 @@
 
 <style>
 	.-option {
-		@apply border-gray-300 border-2 h-72 rounded-md cursor-pointer flex flex-col w-1/3 select-none relative
+		@apply border-gray-300 border-2 h-72 rounded-md cursor-pointer flex flex-col w-40 select-none relative
         active:scale-95 transition-transform;
 	}
 
