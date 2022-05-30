@@ -105,7 +105,11 @@
 		savingCollection = true;
 
 		// Create/Update collection
-		(isNewCollection && _createCollection()) || _updateCollection();
+		if (isNewCollection) {
+			await _createCollection();
+		} else {
+			await _updateCollection();
+		}
 
 		savingCollection = false;
 	}
