@@ -19,6 +19,7 @@
 	import { goto } from '$app/navigation';
 	import type { NftData } from '$interfaces/nft';
 	import { HinataTokenAddress, WethContractAddress } from '$constants/contractAddresses';
+	import { currentUserAddress } from '$stores/wallet';
 
 	// URL params
 	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
@@ -45,8 +46,11 @@
 	let currentPaymentToken: { name: string; address: string } = { name: 'ETH', address: HinataTokenAddress };
 
 	const handleTokenChange = (event: CustomEvent) => {
+		// can be uncommented once contract supports different pay tokens
+		/*
 		currentPaymentToken.name = event.detail.label.toUpperCase();
 		currentPaymentToken.address = event.detail.value;
+		*/
 	};
 
 	let isListing = false;
@@ -95,8 +99,8 @@
 		}
 
 		notifySuccess('Successfully created a listing.');
-
 		isListing = false;
+		goto('/profile/' + $currentUserAddress + '?tab=ACTIVE_LISTINGS');
 	}
 
 	let listingPropValues: Partial<Record<ListingPropName, any>>;
