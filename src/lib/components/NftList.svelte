@@ -14,7 +14,6 @@
 	let markFavouriteNfts = async () => {
 		if (!$currentUserAddress || !data.length) return;
 		const favorites = await getUserFavoriteNfts();
-		console.log(favorites);
 
 		data.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length > 0));
 		data = data;
@@ -25,7 +24,7 @@
 {#await markFavouriteNfts()}
 	<DiamondsLoader />
 {:then _}
-	{#if !(isLoading || data === null) || data?.length === 0}
+	{#if !(isLoading || data === null) && data?.length === 0}
 		<div class="placeholder">Nothing to see here, move along.</div>
 	{:else if data?.length}
 		<div class="nftGrid">
