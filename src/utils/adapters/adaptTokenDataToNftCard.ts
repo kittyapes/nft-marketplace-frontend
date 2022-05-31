@@ -11,7 +11,7 @@ import type { NftData } from '$interfaces/nft';
 export async function adaptTokenDataToNftCard(data: TokenData) {
 	// TODO maybe need to fetch some data from data.tokenUri?
 
-	console.log(data);
+	//console.log(data);
 	/*
 	const createdNftData = writable<NftData>(null);
 	// can't match any token data to any field on the database
