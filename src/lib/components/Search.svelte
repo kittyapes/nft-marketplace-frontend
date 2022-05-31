@@ -111,7 +111,7 @@
 </script>
 
 <div
-	class="flex py-2 px-4 items-center gap-x-4 border border-black border-opacity-30 rounded-md flex-grow-[0.1] relative"
+	class="flex py-2 px-4 items-center gap-x-4 border border-black border-opacity-30 rounded-md flex-grow-[0.1] relative {$$props.class}"
 	use:outsideClickCallback={{
 		cb: () => (searching = false)
 	}}

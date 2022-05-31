@@ -12,9 +12,8 @@
 	$: if (data) markFavouriteNfts;
 
 	let markFavouriteNfts = async () => {
-		if (!$currentUserAddress) return;
+		if (!$currentUserAddress || !data.length) return;
 		const favorites = await getUserFavoriteNfts();
-		console.log(favorites);
 
 		data.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length > 0));
 		data = data;
@@ -35,6 +34,9 @@
 				{/if}
 			{/each}
 		</div>
+	{/if}
+	{#if isLoading}
+		<DiamondsLoader />
 	{/if}
 {/await}
 

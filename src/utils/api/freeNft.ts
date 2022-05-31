@@ -44,8 +44,7 @@ export async function hasClaimedFreeNft(address: string) {
 export async function claimFreeNft(selectedNftIndex: number, address: string, signature: string = '') {
 	if (signature) {
 		await axios
-			.post(
-				`${api}/v1/nfts/claim`,
+			.post(getApiUrl('latest', `nfts/claim`),
 				{
 					choice: selectedNftIndex,
 					address,
