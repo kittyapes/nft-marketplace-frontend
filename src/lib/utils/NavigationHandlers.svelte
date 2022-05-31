@@ -105,11 +105,19 @@
 			}
 		});
 
-		// Restrict create route to verified creators
-		console.log(to.pathname);
+		// Restrict routes to verified creators
 		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
 			profileData.subscribe((profile) => {
 				if (profile && profile.status !== 'VERIFIED' && !profile.roles.includes('superadmin')) {
+					currentError.set(403);
+				}
+			});
+		}
+
+		// Pages only accessible by superadmins
+		if (to.pathname.match(/management*/)) {
+			profileData.subscribe((profile) => {
+				if (profile && !profile.roles.includes('superadmin')) {
 					currentError.set(403);
 				}
 			});
@@ -123,9 +131,9 @@
 	userRoles.subscribe((roles) => {
 		if (!roles) return;
 
-		// If the user is not an admin and tyring to access admin routes, redirect to the home page
+		// If the user is not an admin and trying to access admin routes, redirect to the home page
 		if ($page.url.pathname.startsWith('/admin') && !roles.includes('admin') && !roles.includes('superadmin')) {
-			goto('/');
+			currentError.set(403);
 		}
 	});
 </script>
