@@ -105,7 +105,7 @@
 	};
 
 	const fetchActiveListing = async () => {
-		let fetchedListings = await getListings($currentUserAddress);
+		let fetchedListings = await getListings(address);
 
 		activeListings = await Promise.all(fetchedListings.map(adaptListingToNftCard));
 		console.log(activeListings);
