@@ -30,6 +30,11 @@
 
 	$: address = $page.params.address;
 
+	$: if ($page.url.searchParams.has('tab')) {
+		let tabName = $page.url.searchParams.get('tab').split('_').join(' ').trim();
+		selectedTab = tabName;
+	}
+
 	const localProfileData = writable<UserData>();
 
 	async function fetchData(forAdress: string) {
@@ -105,7 +110,7 @@
 	};
 
 	const fetchActiveListing = async () => {
-		let fetchedListings = await getListings($currentUserAddress);
+		let fetchedListings = await getListings(address);
 
 		activeListings = await Promise.all(fetchedListings.map(adaptListingToNftCard));
 		console.log(activeListings);
