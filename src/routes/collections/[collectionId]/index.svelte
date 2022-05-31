@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	import { page } from '$app/stores';
 	import type { UserData } from '$interfaces/userData';
 	import ActionMenu from '$lib/components/ActionMenu.svelte';
@@ -10,6 +12,7 @@
 	import { apiGetCollection, Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
+	import { copyUrlToClipboard } from '$utils/misc/clipboard';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
 
 	let collectionData: Collection;
@@ -34,8 +37,9 @@
 	];
 
 	const collectionMenuButtonOptions = [
-		{ label: 'Claim Ownership', action: () => {} },
-		{ label: 'Report', action: () => {} }
+		{ label: 'Claim Ownership', action: () => {}, disabled: true },
+		{ label: 'Report', action: () => {}, disabled: true },
+		{ label: 'Edit', action: () => goto(`/collections/${collectionData.slug}/edit`) }
 	];
 
 	let menuButton: HTMLButtonElement;
@@ -56,8 +60,8 @@
 		<div class="absolute left-0 right-0 bottom-0 mx-auto w-24 h-24 translate-y-5">
 			<img
 				class="rounded-full
-					border-4 border-white"
-				src={creatorData?.thumbnailUrl}
+					border-4 border-white h-full bg-white"
+				src={creatorData?.thumbnailUrl || '/svg/icons/guest-avatar.svg'}
 				alt="Collection creator avatar."
 			/>
 
@@ -67,33 +71,53 @@
 	</div>
 
 	<!-- Collection title -->
-	<h1 class="mx-auto max-w-max mt-8 text-2xl font-semibold">{collectionData?.name}</h1>
+	<h1 class="mx-auto max-w-max mt-8 text-2xl font-semibold">
+		{#if collectionData}
+			{collectionData?.name || 'N/A'}
+		{:else}
+			<div class="h-8 w-32 bg-gray-100 rounded-lg" />
+		{/if}
+	</h1>
 
 	<!-- Creator username and address -->
 	<div class="flex justify-center items-center space-x-3 mt-2">
-		<div class="text-color-gradient text-xl max-w-max font-medium font-poppins">@{creatorData?.username}</div>
+		<div class="text-color-gradient text-xl max-w-max font-medium font-poppins">
+			{#if creatorData}
+				@{creatorData?.username}
+			{:else}
+				<div class="h-8 w-32 bg-gray-100 rounded-lg" />
+			{/if}
+		</div>
 
 		<button class="btn bg-[#F5F5F5] flex rounded-full px-4 py-2 space-x-2 w-36" on:click={() => copyTextToClipboard(collectionData.creator)}>
 			<img class="w-5" src="/svg/icons/collection-gradient-eth.svg" alt="Ethereum." />
-			<div class="font-mono text-[#6E6E6E] text-sm">{shortenAddress(creatorData?.address)}</div>
+			{#if creatorData}
+				<div class="font-mono text-[#6E6E6E] text-sm">{shortenAddress(creatorData?.address)}</div>
+			{:else}
+				<div class="h-5 w-24 bg-gray-200 rounded-lg" />
+			{/if}
 		</button>
 	</div>
 
 	<!-- Stats table -->
-	<div class="border border-black h-24 flex rounded-lg justify-evenly mt-8 max-w-3xl mx-auto">
-		{#each collectionStats as [stat, value]}
-			<div class="flex flex-col items-center justify-center border-r border-black last:border-0 w-full">
-				<div class="text-sm">{stat}</div>
-				<div class="text-xl font-semibold mt-1">{value}</div>
-			</div>
-		{/each}
-	</div>
+	{#if collectionData}
+		<div class="border border-black h-24 flex rounded-lg justify-evenly mt-8 max-w-3xl mx-auto">
+			{#each collectionStats as [stat, value]}
+				<div class="flex flex-col items-center justify-center border-r border-black last:border-0 w-full">
+					<div class="text-sm">{stat}</div>
+					<div class="text-xl font-semibold mt-1">{value}</div>
+				</div>
+			{/each}
+		</div>
+	{:else}
+		<div class="h-24 bg-gray-100 rounded-lg mt-8 max-w-3xl mx-auto" />
+	{/if}
 
-	<!-- Upload and menu buttons -->
+	<!-- Share and menu buttons -->
 	<div class="flex space-x-4 mt-6 justify-center">
-		<!-- Upload button -->
-		<button class="btn rounded-full border border-black w-14 h-14 grid place-items-center">
-			<img src="/svg/icons/collection-upload.svg" alt="Upload." />
+		<!-- Share button -->
+		<button class="btn rounded-full border border-black w-14 h-14 grid place-items-center" on:click={copyUrlToClipboard}>
+			<img src="/svg/icons/collection-upload.svg" alt="Share." />
 		</button>
 
 		<!-- Menu button -->
@@ -102,11 +126,9 @@
 		</button>
 	</div>
 
-	{#if collectionData}
-		<div class="mt-16 border-t border-[#0000004D]">
-			<NftList data={collectionData.nfts.map(adaptCollectionNftToNftCard)} />
-		</div>
-	{/if}
+	<div class="mt-16 border-t border-[#0000004D]">
+		<NftList data={collectionData ? collectionData.nfts.map(adaptCollectionNftToNftCard) : []} />
+	</div>
 </main>
 
 {#if showCollectionMenu}
