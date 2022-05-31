@@ -36,13 +36,13 @@
 	let selectedCollectionRow;
 
 	let nftData: Partial<NftDraft> = {
-		name: '' || $nftDraft.name,
-		quantity: 1 || $nftDraft.quantity,
+		name: '' || $nftDraft?.name,
+		quantity: 1 || $nftDraft?.quantity,
 		// TODO: change once hinata base collection is made
-		collectionName: '' || $nftDraft.collectionName,
-		description: '' || $nftDraft.description,
-		assetPreview: '' || $nftDraft.assetPreview,
-		thumbnailPreview: '' || $nftDraft.thumbnailPreview,
+		collectionName: '' || $nftDraft?.collectionName,
+		description: '' || $nftDraft?.description,
+		assetPreview: '' || $nftDraft?.assetPreview,
+		thumbnailPreview: '' || $nftDraft?.thumbnailPreview,
 		fileBlob: null,
 		animationBlob: null
 	};
