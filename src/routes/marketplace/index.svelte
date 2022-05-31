@@ -32,15 +32,6 @@
 			});
 		}
 	});
-
-	$: if (browser && $currentUserAddress && isAuthTokenExpired($currentUserAddress)) {
-		setPopup(AuthLoginPopup, {
-			props: {
-				onLoginSuccess: () => {},
-				adapter: userAuthLoginPopupAdapter
-			}
-		});
-	}
 </script>
 
 <div class="flex flex-col w-full h-full min-h-screen md:flex-row">

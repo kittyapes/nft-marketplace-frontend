@@ -40,7 +40,6 @@ export function getInitialCollectionData(): Partial<Collection> {
 }
 
 export async function addNftsToCollection(nftIds: string[], collectionId: string) {
-	console.log(nftIds)
 	const res = await axios.post(getApiUrl('v2', 'collections/' + collectionId + '/add-nfts'), {nfts: nftIds}, getAxiosConfig());
 
 	if (res.status !== 200) {
