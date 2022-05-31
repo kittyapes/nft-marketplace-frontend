@@ -36,6 +36,9 @@
 			{/each}
 		</div>
 	{/if}
+	{#if isLoading}
+		<DiamondsLoader />
+	{/if}
 {/await}
 
 <style type="postcss">
