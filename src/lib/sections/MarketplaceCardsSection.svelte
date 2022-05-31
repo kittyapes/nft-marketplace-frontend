@@ -12,7 +12,6 @@
 
 	let getData = async () => {
 		listings.set(await getListings());
-		console.log($listings);
 		data = await Promise.all($listings.map(adaptListingToNftCard));
 	};
 

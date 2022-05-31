@@ -111,8 +111,8 @@ export interface Listing {
 	updatedAt: string;
 }
 
-export async function getListings() {
-	const res = await axios.get(getApiUrl('latest', 'listings'), { params: { limit: 100 } });
+export async function getListings(userAddress: string = '') {
+	const res = await axios.get(getApiUrl('latest', 'listings'), { params: { limit: 100, seller: userAddress} });
 
 	return res.data.data as Listing[];
 }
