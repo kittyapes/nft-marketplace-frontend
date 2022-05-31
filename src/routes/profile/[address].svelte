@@ -21,8 +21,11 @@
 	import { adaptTokenDataToNftCard } from '$utils/adapters/adaptTokenDataToNftCard';
 	import { userHasRole } from '$utils/auth/userRoles';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
+	import { getListings, Listing } from '$utils/api/listing';
+	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
+	import type { NftCardOptions } from '$interfaces/nftCardOptions';
 
-	const tabs = ['COLLECTED NFTS', 'CREATED NFTS', 'FAVORITES'];
+	const tabs = ['COLLECTED NFTS', 'CREATED NFTS', 'ACTIVE LISTINGS', 'FAVORITES'];
 	let selectedTab = 'COLLECTED NFTS';
 
 	$: address = $page.params.address;
@@ -45,6 +48,8 @@
 
 	$: collectedNfts = [];
 	$: createdNfts = [];
+	let activeListings: NftCardOptions[] = [];
+
 	let totalNfts: number | null = null;
 	$: totalNfts;
 
@@ -99,7 +104,17 @@
 		}
 	};
 
-	onMount(fetchCreatedNfts);
+	const fetchActiveListing = async () => {
+		let fetchedListings = await getListings($currentUserAddress);
+
+		activeListings = await Promise.all(fetchedListings.map(adaptListingToNftCard));
+		console.log(activeListings);
+	};
+
+	onMount(() => {
+		fetchCreatedNfts();
+		fetchActiveListing();
+	});
 </script>
 
 <div class="h-72 bg-color-gray-light">
@@ -200,8 +215,8 @@
 			<NftList data={collectedNfts} isLoading={!totalNfts || totalNfts > collectedNfts.length + createdNfts.length} />
 		{:else if selectedTab === 'CREATED NFTS'}
 			<NftList data={createdNfts} isLoading={!totalNfts || totalNfts > collectedNfts.length + createdNfts.length} />
-		{:else if selectedTab === 'ACTIVITY'}
-			<NftList data={[]} />
+		{:else if selectedTab === 'ACTIVE LISTINGS'}
+			<NftList data={activeListings} />
 		{:else if selectedTab === 'FAVORITES'}
 			<NftList data={[]} />
 		{/if}
