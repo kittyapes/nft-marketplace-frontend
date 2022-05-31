@@ -105,7 +105,6 @@
 		});
 
 		// Restrict create route to verified creators
-		console.log(to.pathname);
 		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
 			profileData.subscribe((profile) => {
 				if (profile && profile.status !== 'VERIFIED' && !profile.roles.includes('superadmin')) goto('/403');
