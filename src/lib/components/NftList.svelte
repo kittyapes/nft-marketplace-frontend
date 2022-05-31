@@ -25,8 +25,6 @@
 
 		isLoading = false;
 	};
-
-	$: console.log(isLoading, data?.length === 0);
 </script>
 
 {#await markFavouriteNfts()}
