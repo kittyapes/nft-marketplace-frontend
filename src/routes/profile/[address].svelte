@@ -24,6 +24,8 @@
 	import { getListings, Listing } from '$utils/api/listing';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import type { NftCardOptions } from '$interfaces/nftCardOptions';
+	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
+	import { adaptNftDataNftCard } from '$utils/adapters/adaptNftDataToNftCard';
 
 	const tabs = ['COLLECTED NFTS', 'CREATED NFTS', 'ACTIVE LISTINGS', 'FAVORITES'];
 	let selectedTab = 'COLLECTED NFTS';
@@ -53,7 +55,9 @@
 
 	$: collectedNfts = [];
 	$: createdNfts = [];
+
 	let activeListings: NftCardOptions[] = [];
+	let favoriteNfts: NftCardOptions[] = [];
 
 	let totalNfts: number | null = null;
 	$: totalNfts;
@@ -110,15 +114,18 @@
 	};
 
 	const fetchActiveListing = async () => {
-		let fetchedListings = await getListings(address);
-
+		const fetchedListings = await getListings(address);
 		activeListings = await Promise.all(fetchedListings.map(adaptListingToNftCard));
-		console.log(activeListings);
+	};
+
+	const fetchFavoriteNfts = async (address: string) => {
+		const favorites = await getUserFavoriteNfts(address);
+		console.log(favorites);
+		favoriteNfts = await Promise.all(favorites.map((f) => adaptNftDataNftCard(f.nft)));
 	};
 
 	onMount(() => {
-		fetchCreatedNfts();
-		fetchActiveListing();
+		fetchCreatedNfts() && fetchActiveListing() && fetchFavoriteNfts(address);
 	});
 </script>
 
@@ -223,7 +230,7 @@
 		{:else if selectedTab === 'ACTIVE LISTINGS'}
 			<NftList data={activeListings} />
 		{:else if selectedTab === 'FAVORITES'}
-			<NftList data={[]} />
+			<NftList data={favoriteNfts} />
 		{/if}
 	</div>
 </div>

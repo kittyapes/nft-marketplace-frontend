@@ -3,18 +3,17 @@
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 	import DiamondsLoader from './DiamondsLoader.svelte';
 	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
-	import { onMount, tick } from 'svelte';
 	import { currentUserAddress } from '$stores/wallet';
 
 	export let data: NftCardOptions[];
 	export let isLoading = false;
 
-	$: if (data) markFavouriteNfts;
+	$: if (data) markFavouriteNfts();
 
 	let markFavouriteNfts = async () => {
 		if (!$currentUserAddress || !data.length) return;
 		const favorites = await getUserFavoriteNfts();
-
+		console.log(favorites);
 		data.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length > 0));
 		data = data;
 		console.log(data);

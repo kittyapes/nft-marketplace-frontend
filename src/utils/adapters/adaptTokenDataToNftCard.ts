@@ -3,10 +3,6 @@ import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 import { currentUserAddress } from '$stores/wallet';
 import { get, writable } from 'svelte/store';
 import NftDisplayPopup from '$lib/components/profile/NFTDisplayPopup.svelte';
-import { getNft } from '$utils/api/nft';
-import { useTry, useTryAsync } from "no-try";
-import { createMintedNFTOnAPI } from '$utils/create/createNFT';
-import type { NftData } from '$interfaces/nft';
 
 export async function adaptTokenDataToNftCard(data: TokenData) {
 	// TODO maybe need to fetch some data from data.tokenUri?

@@ -3,6 +3,7 @@
 
 	export let data: {
 		creator?: string;
+		creatorImageUrl?: string;
 		edition?: string;
 		editionType?: string;
 		externalLink?: string;
@@ -19,7 +20,8 @@
 			<img
 				alt="face"
 				class="w-6 h-6 rounded-full object-fill"
-				src="https://images.generated.photos/5Lc44DqxkR5Mhtm9SaQZgi8KBe6f0Lga7HkJAN54sGI/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92Ml8w/NTc4MDI3LmpwZw.jpg"
+				src={data.creatorImageUrl ||
+					'https://images.generated.photos/5Lc44DqxkR5Mhtm9SaQZgi8KBe6f0Lga7HkJAN54sGI/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92Ml8w/NTc4MDI3LmpwZw.jpg'}
 			/>
 
 			<span class="text-color-purple">@{data.creator}</span>

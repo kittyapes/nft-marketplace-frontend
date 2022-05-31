@@ -34,7 +34,6 @@
 	async function favNFT() {
 		if (!$currentUserAddress || !options.getPopupProps) return;
 		options.favorite ? (likes = likes - 1) : (likes = likes + 1);
-
 		// change status first for quick feedback
 		options.favorite = !options.favorite;
 
