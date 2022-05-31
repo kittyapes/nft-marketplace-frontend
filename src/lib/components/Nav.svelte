@@ -53,7 +53,7 @@
 		</a>
 
 		<!-- Staking -->
-		<a href="/stake" class="relative font-semibold uppercase text-md snap-center" class:-mr-8={!showCreate}>Staking</a>
+		<a href="/stake" class="relative font-semibold uppercase text-md snap-center min-w-fit" class:-mr-8={!showCreate}>Staking</a>
 
 		<!-- Airdrop HIDDEN FOR NOW -->
 		<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
@@ -73,7 +73,7 @@
 			{#if showProfileButton}
 				<button
 					class="text-md font-semibold whitespace-nowrap transition-btn h-full
-				flex items-center gap-x-6 w-52 max-w-max"
+				flex items-center w-52"
 					id="profile-button"
 					class:hidden={!$appSigner}
 					on:click={() => (displayProfilePopup = !displayProfilePopup)}
