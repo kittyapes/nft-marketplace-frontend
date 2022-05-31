@@ -282,12 +282,14 @@
 	</div>
 
 	<!-- Royalties -->
-	<div>
-		<Royalties bind:values={$collectionData.royalties} bind:isValid={$formValidity.royalties} disabled={!isNewCollection} />
-	</div>
+	{#if isNewCollection}
+		<div class="mb-16">
+			<Royalties bind:values={$collectionData.royalties} bind:isValid={$formValidity.royalties} disabled={!isNewCollection} />
+		</div>
+	{/if}
 
 	<!-- Links -->
-	<div class="mt-16 flex flex-col space-y-2">
+	<div class="flex flex-col space-y-2">
 		<div class="uppercase font-semibold">Links</div>
 		<SocialLinkInput placeholder="Instagram link" bind:value={$collectionData.instagramUrl} iconUrl="/svg/socials/instagram.svg" bind:valid={$formValidity.instagramUrl} />
 		<SocialLinkInput placeholder="Discord link" bind:value={$collectionData.discordUrl} iconUrl="/svg/socials/discord.svg" bind:valid={$formValidity.discordUrl} />
@@ -297,18 +299,22 @@
 	</div>
 
 	<!-- Blockchain -->
-	<div class="mt-16 flex flex-col">
-		<div class="uppercase font-semibold">Blockchain</div>
-		<p class="mt-2 mb-2">Your Collection will be created on the following Blockchain:</p>
-		<Dropdown options={blockchainOptions} disabled />
-	</div>
+	{#if isNewCollection}
+		<div class="mt-16 flex flex-col">
+			<div class="uppercase font-semibold">Blockchain</div>
+			<p class="mt-2 mb-2">Your Collection will be created on the following Blockchain:</p>
+			<Dropdown options={blockchainOptions} disabled />
+		</div>
+	{/if}
 
 	<!-- Payment tokens -->
-	<div class="mt-16 flex flex-col">
-		<div class="uppercase font-semibold">Payment tokens</div>
-		<p class="mt-2 mb-2">These tokens can be used to buy and sell your items.</p>
-		<PaymentTokenCard symbol="ETH" name="Ethereum" iconUrl="/svg/currency/eth.svg" />
-	</div>
+	{#if isNewCollection}
+		<div class="mt-16 flex flex-col">
+			<div class="uppercase font-semibold">Payment tokens</div>
+			<p class="mt-2 mb-2">These tokens can be used to buy and sell your items.</p>
+			<PaymentTokenCard symbol="ETH" name="Ethereum" iconUrl="/svg/currency/eth.svg" />
+		</div>
+	{/if}
 
 	<!-- Explicit and sensitive content -->
 	<div class="mt-16 flex items-center">
