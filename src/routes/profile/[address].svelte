@@ -30,6 +30,11 @@
 
 	$: address = $page.params.address;
 
+	$: if ($page.url.searchParams.has('tab')) {
+		let tabName = $page.url.searchParams.get('tab').split('_').join(' ').trim();
+		selectedTab = tabName;
+	}
+
 	const localProfileData = writable<UserData>();
 
 	async function fetchData(forAdress: string) {
