@@ -9,39 +9,48 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
 	import { writable } from 'svelte/store';
-	import { apiCreateCollection, Collection, getInitialCollectionData } from '$utils/api/collection';
+	import { apiCreateCollection, apiGetCollection, apiUpdateCollection, Collection, getInitialCollectionData, UpdateCollectionOptions } from '$utils/api/collection';
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
 	import { tick } from 'svelte';
-	import { noTry, noTryAsync } from 'no-try';
+	import { noTryAsync } from 'no-try';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { goto } from '$app/navigation';
 	import Loader from '$icons/loader.svelte';
 	import { acceptedImages } from '$constants';
 	import { page } from '$app/stores';
 	import { nftDraft } from '$stores/create';
+	import { browser } from '$app/env';
+
+	// Page params
+	const collectionId = $page.params.collectionId;
+
+	// Edit vs. new
+	$: isNewCollection = collectionId === 'new';
 
 	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
 
-	// Data collected from the form
+	// Data collected from the form or fetched from the server
+	let originalCollectionData = null; // Used to check whether data was changed during editing
 	const collectionData = writable<Collection>(getInitialCollectionData() as Collection);
 
 	// An object with collection property keys and bool as values representing their validity
 	const formValidity = writable<Partial<{ [K in keyof Collection]: any }>>({});
 
 	collectionData.subscribe((data) => {
-		$formValidity.image = !!data.image || 'Missing logo image';
-		$formValidity.cover = !!data.cover || 'Missing cover image';
+		$formValidity.image = !!data.image || !!data.logoImageUrl || 'Missing logo image';
+		$formValidity.cover = !!data.cover || !!data.backgroundImageUrl || 'Missing cover image';
 		$formValidity.name = !!data.name || 'Missing collection name';
-		$formValidity.url = !!data.url?.match(collectionUrlPattern) || 'Collection URL is invalid';
+		$formValidity.slug = !!data.slug || 'Collection URL is invalid';
 		$formValidity.description = !!data.description || 'Missing collection description';
 	});
 
 	// Partially editable URL field
 	const urlStart = 'https://hinata.io/collections/';
 	const collectionUrlPattern = `^${urlStart}[a-z0-9-]+$`;
+	const collectionUrl = writable(urlStart);
 	let ignoreUrlChange = false;
 
-	collectionData.subscribe(async (data) => {
+	collectionUrl.subscribe(async () => {
 		if (ignoreUrlChange) {
 			return;
 		}
@@ -49,9 +58,9 @@
 		ignoreUrlChange = true;
 
 		// Do not allow deleting the starting part
-		if (!data.url || !data.url.startsWith(urlStart)) {
-			$collectionData.url = urlStart;
-			$formValidity.url = 'Missing collection URL';
+		if (!collectionUrl || !$collectionUrl.startsWith(urlStart)) {
+			$collectionUrl = urlStart;
+			$formValidity.slug = 'Missing collection URL';
 
 			await tick();
 			ignoreUrlChange = false;
@@ -60,10 +69,10 @@
 
 		// Without this, the user would be able to paste in any longer text
 		// than the urlStart and the urlStart would not be included
-		const withoutStart = data.url.replace(urlStart, '');
+		const withoutStart = $collectionUrl.replace(urlStart, '');
 		$collectionData.slug = withoutStart;
-		$collectionData.url = urlStart + withoutStart;
-		$formValidity.url = true;
+		$collectionUrl = urlStart + withoutStart;
+		$formValidity.slug = true;
 
 		await tick();
 		ignoreUrlChange = false;
@@ -91,16 +100,27 @@
 		});
 	}
 
-	let creatingCollection = false;
+	let savingCollection = false;
 
-	async function clickCreateCollection() {
-		creatingCollection = true;
+	async function clickSaveCollection() {
+		savingCollection = true;
 
+		// Create/Update collection
+		if (isNewCollection) {
+			await _createCollection();
+		} else {
+			await _updateCollection();
+		}
+
+		savingCollection = false;
+	}
+
+	async function _createCollection() {
 		const [error, res] = await noTryAsync(() => apiCreateCollection($collectionData));
 
 		if (error) {
 			notifyError(error.message);
-			creatingCollection = false;
+			savingCollection = false;
 			return;
 		}
 
@@ -111,18 +131,81 @@
 			$nftDraft.collectionName = $collectionData.name;
 			goto('/' + $page.url.searchParams.get('to'));
 		} else goto('/collections/' + res.data.data.slug);
-
-		creatingCollection = false;
 	}
 
-	// $: console.log($collectionData);
-	// $: console.log('formValidity', $formValidity);
+	async function _updateCollection() {
+		const [error, res] = await noTryAsync(() => apiUpdateCollection(collectionToUpdateOptions($collectionData)));
+
+		if (error) {
+			notifyError(error.message);
+			savingCollection = false;
+			return;
+		}
+
+		await fetchRemoteCollectionData();
+
+		notifySuccess('Collection updated!');
+	}
+
+	// Remote collection data
+	async function fetchRemoteCollectionData() {
+		const [err, res] = await noTryAsync(() => apiGetCollection(collectionId));
+
+		if (err) {
+			notifyError('Failed to fetch collection data!');
+			console.error(err);
+			return;
+		}
+
+		// Copy is needed because slug would get overwritten
+		collectionData.set({ ...res });
+		collectionUrl.set(urlStart + res.slug);
+
+		originalCollectionData = { ...res };
+	}
+
+	// Check whether data was changed
+	let dataChanged = false;
+
+	$: {
+		if (originalCollectionData === null) {
+			dataChanged = false;
+		}
+
+		dataChanged = JSON.stringify(originalCollectionData) !== JSON.stringify($collectionData);
+	}
+
+	// Utils
+	function collectionToUpdateOptions(collectionData: Collection) {
+		const d = collectionData;
+
+		return {
+			description: d.description,
+			discordUrl: d.discordUrl,
+			displayTheme: d.displayTheme,
+			instagramUrl: d.instagramUrl,
+			isExplicitSenstive: d.isExplicitSensitive || false,
+			name: d.name,
+			slug: d.slug,
+			telegramUrl: d.telegramUrl,
+			twitterUrl: d.twitterUrl,
+			websiteUrl: d.otherUrl,
+			logoImage: collectionData.image,
+			backgroundImage: collectionData.cover
+		} as UpdateCollectionOptions;
+	}
+
+	$: browser && !isNewCollection && fetchRemoteCollectionData();
 </script>
 
 <main class="max-w-screen-xl mx-auto my-32 px-16">
 	<!-- Title -->
 	<h1 class="text-2xl uppercase font-semibold">
-		Create <span class="gradient-text">New Collection</span>
+		{#if isNewCollection}
+			Create <span class="gradient-text">New Collection</span>
+		{:else}
+			Edit <span class="gradient-text">Collection</span>
+		{/if}
 	</h1>
 
 	<!-- Two column part -->
@@ -145,7 +228,7 @@
 
 		<!-- Logo image drop area -->
 		<div>
-			<DragDropImage class="w-48 h-48 rounded-full" text="" on:new-blob={newLogoBlobHandler} acceptedFormats={acceptedImages}>
+			<DragDropImage class="w-48 h-48 rounded-full" text="" on:new-blob={newLogoBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.logoImageUrl}>
 				<div slot="placeholder"><PlaceholderImage /></div>
 			</DragDropImage>
 		</div>
@@ -163,7 +246,7 @@
 
 		<!-- Featured image drop area -->
 		<div class="mt-8">
-			<DragDropImage class="h-48" on:new-blob={newCoverBlobHandler} acceptedFormats={acceptedImages} />
+			<DragDropImage class="h-48" on:new-blob={newCoverBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.backgroundImageUrl} />
 		</div>
 
 		<!-- Choose display style labels -->
@@ -187,7 +270,7 @@
 			<!-- Collection URL -->
 			<div>
 				<div class="uppercase font-semibold mt-8">URL</div>
-				<input type="text" class="input mt-2 w-full" pattern={collectionUrlPattern} placeholder="https://hinata.io/collection/treasure-of-the-sea" bind:value={$collectionData.url} />
+				<input type="text" class="input mt-2 w-full" pattern={collectionUrlPattern} placeholder="https://hinata.io/collection/treasure-of-the-sea" bind:value={$collectionUrl} />
 			</div>
 		</div>
 
@@ -200,7 +283,7 @@
 
 	<!-- Royalties -->
 	<div>
-		<Royalties bind:values={$collectionData.royalties} bind:isValid={$formValidity.royalties} />
+		<Royalties bind:values={$collectionData.royalties} bind:isValid={$formValidity.royalties} disabled={!isNewCollection} />
 	</div>
 
 	<!-- Links -->
@@ -238,9 +321,15 @@
 
 	<FormErrorList validity={$formValidity} />
 
-	<button class="btn btn-gradient h-16 w-full rounded-3xl mt-8 uppercase" disabled={!formValid || creatingCollection} on:click={clickCreateCollection}>Create Collection</button>
+	<button class="btn btn-gradient h-16 w-full rounded-3xl mt-8 uppercase" disabled={!formValid || savingCollection || !dataChanged} on:click={clickSaveCollection}>
+		{#if isNewCollection}
+			Create Collection
+		{:else}
+			Update collection
+		{/if}
+	</button>
 
-	{#if creatingCollection}
+	{#if savingCollection}
 		<Loader class="ml-0" />
 	{/if}
 </main>
