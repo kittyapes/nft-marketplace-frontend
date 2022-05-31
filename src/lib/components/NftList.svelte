@@ -12,7 +12,7 @@
 	$: if (data) markFavouriteNfts;
 
 	let markFavouriteNfts = async () => {
-		if (!$currentUserAddress) return;
+		if (!$currentUserAddress || !data.length) return;
 		const favorites = await getUserFavoriteNfts();
 		console.log(favorites);
 
@@ -25,7 +25,7 @@
 {#await markFavouriteNfts()}
 	<DiamondsLoader />
 {:then _}
-	{#if !(isLoading || data === null) && data?.length === 0}
+	{#if !(isLoading || data === null) || data?.length === 0}
 		<div class="placeholder">Nothing to see here, move along.</div>
 	{:else if data?.length}
 		<div class="nftGrid">

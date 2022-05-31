@@ -71,12 +71,11 @@
 			await updateProfile($currentUserAddress, $localDataStore);
 			notifySuccess('Profile updated successfully.');
 
-			refreshProfileData()
+			await refreshProfileData()
 				.catch(() => notifyError('Failed to fetch new profile data.'))
-				.then(() => {
+				.then(async () => {
 					isSaving = false;
-
-					// Once done, check if the user can claim free NFT
+					await hasClaimedFreeNft($currentUserAddress);
 				});
 		} catch (err) {
 			httpErrorHandler(err);
@@ -84,9 +83,11 @@
 			isSaving = false;
 		}
 
-		// Why? - Jakub
-		await hasClaimedFreeNft($currentUserAddress);
+		// force isSynced reactivity update
+		$localDataStore = $localDataStore;
 	}
+
+	$: console.log(isSynced);
 
 	async function useProfileData(data: UserData) {
 		try {
