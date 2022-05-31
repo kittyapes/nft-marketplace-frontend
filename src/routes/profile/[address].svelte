@@ -114,7 +114,7 @@
 	};
 
 	const fetchActiveListing = async () => {
-		const fetchedListings = await getListings(address);
+		const fetchedListings = await getListings();
 		activeListings = await Promise.all(fetchedListings.map(adaptListingToNftCard));
 	};
 
@@ -224,13 +224,13 @@
 
 	<div class="max-w-screen-xl mx-auto">
 		{#if selectedTab === 'COLLECTED NFTS'}
-			<NftList data={collectedNfts} isLoading={!totalNfts || totalNfts > collectedNfts.length + createdNfts.length} />
+			<NftList options={collectedNfts} isLoading={!totalNfts || totalNfts > collectedNfts.length + createdNfts.length} />
 		{:else if selectedTab === 'CREATED NFTS'}
-			<NftList data={createdNfts} isLoading={!totalNfts || totalNfts > collectedNfts.length + createdNfts.length} />
+			<NftList options={createdNfts} isLoading={!totalNfts || totalNfts > collectedNfts.length + createdNfts.length} />
 		{:else if selectedTab === 'ACTIVE LISTINGS'}
-			<NftList data={activeListings} />
+			<NftList options={activeListings} />
 		{:else if selectedTab === 'FAVORITES'}
-			<NftList data={favoriteNfts} />
+			<NftList options={favoriteNfts} />
 		{/if}
 	</div>
 </div>

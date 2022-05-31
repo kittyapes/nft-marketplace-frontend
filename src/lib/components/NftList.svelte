@@ -10,23 +10,29 @@
 
 	let data: NftCardOptions[] = [];
 
-	$: if (options) markFavouriteNfts();
+	$: if (options && currentUserAddress) markFavouriteNfts();
 
 	let markFavouriteNfts = async () => {
-		if (!$currentUserAddress || !data.length) return;
-		const favorites = await getUserFavoriteNfts();
-		console.log(favorites);
+		isLoading = true;
+		if (!$currentUserAddress || !options.length) {
+			isLoading = false;
+			return;
+		}
 
+		const favorites = await getUserFavoriteNfts();
 		options.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length > 0));
 		data = options;
-		console.log(data);
+
+		isLoading = false;
 	};
+
+	$: console.log(isLoading, data?.length === 0);
 </script>
 
 {#await markFavouriteNfts()}
 	<DiamondsLoader />
 {:then _}
-	{#if !(isLoading || data === null) && data?.length === 0}
+	{#if !isLoading && data?.length === 0}
 		<div class="placeholder">Nothing to see here, move along.</div>
 	{:else if data?.length}
 		<div class="nftGrid">
