@@ -4,6 +4,7 @@
 	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
+	import { currentError } from '$stores/error';
 	import { profileData, refreshProfileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { isAuthTokenExpired } from '$utils/auth/token';
@@ -24,7 +25,7 @@
 	}
 
 	function getWalletRequiredRoutes() {
-		return [RegExp('create.*')];
+		return [RegExp('create.*'), RegExp('marketplace.*')];
 	}
 
 	// Check if the path needs a wallet connected. If yes, check if the user is connected.
@@ -107,7 +108,9 @@
 		// Restrict create route to verified creators
 		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
 			profileData.subscribe((profile) => {
-				if (profile && profile.status !== 'VERIFIED' && !profile.roles.includes('superadmin')) goto('/403');
+				if (profile && profile.status !== 'VERIFIED' && !profile.roles.includes('superadmin')) {
+					currentError.set(403);
+				}
 			});
 		}
 	});

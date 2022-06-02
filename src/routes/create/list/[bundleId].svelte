@@ -69,7 +69,7 @@
 			listingType: $newDropProperties.listingType,
 			price: listingPropValues.price,
 			quantity: listingPropValues.quantity,
-			startTime: listingPropValues.startDate,
+			startTime: listingPropValues.startDate.unix(),
 			duration: duration
 		});
 

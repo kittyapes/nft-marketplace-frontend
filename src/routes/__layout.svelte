@@ -14,6 +14,9 @@
 	import { ethers } from 'ethers';
 	import { getAllTokenBalances } from '$utils/contracts/tokenBalances';
 	import NavigationHandlers from '$lib/utils/NavigationHandlers.svelte';
+	import ErrorManager from '$lib/components/ErrorManager.svelte';
+	import { currentError } from '$stores/error';
+	import ErrorPage from '$lib/components/ErrorPage.svelte';
 
 	onMount(async () => {
 		// Check for whether user has access/has provided password
@@ -64,10 +67,16 @@
 	<title>Hinata</title>
 </svelte:head>
 <Nav />
-<div class="pt-16 mx-auto">
-	<slot />
-</div>
+{#if $currentError}
+	<ErrorPage />
+{:else}
+	<div class="pt-16 mx-auto">
+		<slot />
+	</div>
+{/if}
+
 <Footer />
 <Toast />
 <PopupManager />
+<ErrorManager />
 <NavigationHandlers />
