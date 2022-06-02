@@ -43,7 +43,7 @@
 
 <!-- NFT Image side-->
 <div class="w-full md:w-1/2 bg-gray-200 h-auto flex items-center justify-center">
-	<div class="m-10 text-center h-full flex flex-col justify-end">
+	<div class="m-10 text-center h-full flex flex-col justify-center">
 		<div class="w-96 h-96 flex items-center justify-center self-center object-contain">
 			{#await preload(options.animationUrl)}
 				<Loader />

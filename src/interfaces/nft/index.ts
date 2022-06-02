@@ -16,8 +16,10 @@ export interface NftData {
 	metadata: {
 		external_url: string;
 		image: string;
+		animation_url: string;
 		name: string;
 		description: string;
+		artist: string;
 	};
 	uri: string;
 	price: number;
@@ -26,4 +28,5 @@ export interface NftData {
 	createdAt: string;
 	updatedAt: string;
 	collectionId: string;
+	owner_of: string;
 }

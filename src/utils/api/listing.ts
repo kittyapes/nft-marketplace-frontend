@@ -43,16 +43,6 @@ interface RaffleParticipants {
 	tickets: number[];
 }
 
-/*
-export interface CreateListingOptions {
-	bundleId: string;
-	listingType: ListingType;
-	price: number;
-	creator: string;
-	duration?: string;
-	startedAt?: string;
-}*/
-
 export interface CreateListingOptions {
 	nfts: { nftId: string; amount: number }[];
 	description?: string;
@@ -63,7 +53,7 @@ export interface CreateListingOptions {
 	listingType: 'sale' | 'auction' | 'raffle';
 	price: number;
 	quantity: number;
-	//listing?: Sale | Auction | Raffle;
+	listing?: Sale | Auction | Raffle;
 	succesSaleTransaction?: string;
 	startTime?: Date;
 	duration?: number;
@@ -111,8 +101,20 @@ export interface Listing {
 	updatedAt: string;
 }
 
-export async function getListings(userAddress: string = '') {
-	const res = await axios.get(getApiUrl('latest', 'listings'), { params: { limit: 100, seller: userAddress} });
+export interface listingFetchingFilters {
+	collectionId?: string;
+	type?: ListingType[];
+	price?: { min: number; max: number };
+}
+
+export async function getListings(filters?: listingFetchingFilters) {
+	const params = {
+		limit: 100,
+		//type: filters?.type,
+		//collecitonId: filters?.collectionId,
+		//price: filters?.price,
+	}
+	const res = await axios.get(getApiUrl('latest', 'listings'), {params});
 
 	return res.data.data as Listing[];
 }
