@@ -5,15 +5,15 @@
 	const prettierFix = `Royalties (<span class="gradient-text">Optional</span>)`;
 
 	export let values: { fees: number | string; address: string }[] = [
-		{ fees: null, address: '' },
-		{ fees: null, address: '' },
-		{ fees: null, address: '' }
+		{ fees: '', address: '' },
+		{ fees: '', address: '' },
+		{ fees: '', address: '' }
 	];
 
 	export let isValid = false;
 	export let disabled = false;
 
-	$: isValid = values.every((v) => (!!v.fees === !!v.address && isEthAddress(v.address)) || (v.fees == null && v.address == ''));
+	$: isValid = values.every((v) => (!!v.fees === !!v.address && isEthAddress(v.address)) || (v.fees == '' && v.address == ''));
 </script>
 
 <div class="pr-12">
