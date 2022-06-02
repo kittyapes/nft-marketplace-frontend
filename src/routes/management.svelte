@@ -15,12 +15,8 @@
 	import dayjs from 'dayjs';
 	import UserManage from '$icons/user-manage.svelte';
 	import Filters from '$icons/filters.svelte';
-	import { onMount, tick } from 'svelte';
+	import { tick } from 'svelte';
 	import EntryRole from '$lib/components/management/render-components/EntryRole.svelte';
-	import { isAuthTokenExpired } from '$utils/auth/token';
-	import { setPopup } from '$utils/popup';
-	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
-	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
