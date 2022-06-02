@@ -32,6 +32,7 @@
 	import { withPrevious } from 'svelte-previous';
 	import { isUrl, urlPattern } from '$utils/validator/isUrl';
 	import { isEqual } from 'lodash-es';
+	import { acceptedImages } from '$constants';
 
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
@@ -311,7 +312,13 @@
 						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
 					</div>
 					<div class="flex w-full flex-col">
-						<DragDropImage bind:blob={$localDataStore.profileImage} currentImgUrl={$fetchedDataStore?.thumbnailUrl} dimensions="180x180 px" class="!w-48 !h-44 mx-auto" />
+						<DragDropImage
+							bind:blob={$localDataStore.profileImage}
+							currentImgUrl={$fetchedDataStore?.thumbnailUrl}
+							acceptedFormats={acceptedImages}
+							dimensions="180x180 px"
+							class="!w-48 !h-44 mx-auto"
+						/>
 					</div>
 				</div>
 
@@ -321,7 +328,7 @@
 						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
 					</div>
 					<div class="flex w-full flex-col">
-						<DragDropImage bind:blob={$localDataStore.coverImage} currentImgUrl={$fetchedDataStore?.coverUrl} dimensions="2550x290 px" class="!h-24 !px-12" />
+						<DragDropImage bind:blob={$localDataStore.coverImage} currentImgUrl={$fetchedDataStore?.coverUrl} acceptedFormats={acceptedImages} dimensions="2550x290 px" class="!h-24 !px-12" />
 					</div>
 				</div>
 
