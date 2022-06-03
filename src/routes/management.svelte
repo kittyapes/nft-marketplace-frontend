@@ -94,11 +94,13 @@
 				renderComponent: EntryRole,
 				renderComponentProps: users.map((u) => ({
 					id: u.address,
-					role: u.status === 'VERIFIED' || (u.status === 'INACTIVATED' && (u.roles[u.roles.length - 1] !== 'admin' || 'superadmin')) ? u.status : u.roles[u.roles.length - 1],
-					color: getRoleColor(u.status === 'VERIFIED' || (u.status === 'INACTIVATED' && (u.roles[u.roles.length - 1] !== 'admin' || 'superadmin')) ? u.status : u.roles[u.roles.length - 1]),
+					role: u.roles.includes('verified_creator') || (u.status === 'INACTIVATED' && (u.roles[u.roles.length - 1] !== 'admin' || 'superadmin')) ? u.status : u.roles[u.roles.length - 1],
+					color: getRoleColor(
+						u.roles.includes('verified_creator') || (u.status === 'INACTIVATED' && (u.roles[u.roles.length - 1] !== 'admin' || 'superadmin')) ? u.status : u.roles[u.roles.length - 1]
+					),
 					options: [
 						{ label: 'admin', checked: u.roles.includes('admin'), cb: (e) => e.roles.includes('admin') },
-						{ label: 'verified', checked: u.status === 'VERIFIED', cb: (e) => e.status === 'VERIFIED' },
+						{ label: 'verified', checked: u.roles.includes('verified_creator'), cb: (e) => e.roles.includes('verified_creator') },
 						{ label: 'blogger', checked: false, cb: (e) => e.roles === 'blogger' },
 						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED' }
 					]
