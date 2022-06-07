@@ -16,9 +16,6 @@ export const freeNftStatus = writable<FreeNftStatus>('unclaimable');
 export async function hasClaimedFreeNft(address: string): Promise<{ status: FreeNftStatus }> {
 	const res = await axios.get(getApiUrl('latest', `nfts/isClaimed/${address}`), getAxiosConfig()).catch((err) => err.response);
 
-	console.log({ res });
-	console.log('status', res.status);
-
 	let status: FreeNftStatus;
 	let rest = {};
 
@@ -98,7 +95,6 @@ export async function claimFreeNft(selectedNftIndex: number, address: string, si
 		const hinataContract = getHinataTokenContract(get(appSigner));
 		const tx = await hinataContract.claimNFT(address, resData.nftID, resData.nftAmount, resData.nonce, resData.signature, []);
 		const txRes = await tx.wait(1);
-		console.log(txRes);
 		welcomeNftClaimedOnServer.set(true);
 		return resData;
 	} catch (err) {

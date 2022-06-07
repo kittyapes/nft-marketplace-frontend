@@ -83,8 +83,6 @@
 		$localDataStore = $localDataStore;
 	}
 
-	$: console.log(isSynced);
-
 	async function useProfileData(data: UserData) {
 		try {
 			const localData = {
@@ -107,7 +105,6 @@
 			} as EditableProfileData;
 
 			fetchedDataStore.set(cloneDeep(localData));
-			console.log($fetchedDataStore);
 			localDataStore.set(localData);
 
 			// We have to explicitly set this because reactive statements
@@ -128,8 +125,6 @@
 	$: isCoverImage = $localDataStore?.coverImage || $localDataStore?.coverUrl;
 
 	$: browser && $profileData && useProfileData($profileData);
-
-	$: console.log('Profile Data: ', $profileData);
 
 	function isBioValid(bio: string) {
 		return bio && bio.trim().split(' ').length > 2;
@@ -178,16 +173,6 @@
 
 	$: usernameValid = $usernameAvailable && $usernameValidLength;
 
-	currentUserAddress.subscribe(async (address) => {
-		try {
-			if (address) {
-				await hasClaimedFreeNft(address);
-			}
-		} catch (err) {
-			console.log(err);
-		}
-	});
-
 	$: isSynced = isEqual($fetchedDataStore, $localDataStore);
 
 	// Bio validation
@@ -197,9 +182,6 @@
 
 	$: bioValid = isValidBio($localDataStore?.bio) || !$localDataStore?.bio;
 	$: websiteValid = browser && (!$localDataStore?.social?.website || isUrl($localDataStore?.social?.website));
-	$: if (websiteValid) {
-		// console.log(websiteValid);
-	}
 
 	// We setting false on SSR to avoid save button flashing
 	$: dataValid = browser && $localDataStore?.username && usernameValid && bioValid && websiteValid && isEmail($localDataStore?.email);
@@ -213,9 +195,6 @@
 
 	// Free NFT claiming
 	$: $currentUserAddress && hasClaimedFreeNft($currentAddress);
-
-	$: console.log('free nft', $freeNftStatus);
-	$: console.log(isSaving, $freeNftStatus, !isSynced);
 </script>
 
 <LoadedContent loaded={$localDataStore}>
