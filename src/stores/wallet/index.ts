@@ -45,4 +45,3 @@ export const privateMerkleContractIsActive = writable<boolean>(false);
 // Welcome NFT
 export const welcomeNftClaimedOnServer = writable(true);
 export const welcomeNftMessage = writable('');
-export const welcomeNftClaimedOnChain = writable(true);

@@ -8,7 +8,7 @@
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import type { PopupHandler } from '$utils/popup';
 	import { claimFreeNft } from '$utils/api/freeNft';
-	import { appSigner, currentUserAddress, welcomeNftClaimedOnChain, welcomeNftMessage } from '$stores/wallet';
+	import { appSigner, currentUserAddress, welcomeNftMessage } from '$stores/wallet';
 
 	export let handler: PopupHandler;
 
@@ -24,29 +24,25 @@
 		minting = true;
 
 		try {
-			if (!$welcomeNftClaimedOnChain) {
-				let signature = '';
+			let signature = '';
 
-				if ($welcomeNftMessage) {
-					try {
-						signature = await $appSigner.signMessage($welcomeNftMessage);
-					} catch {
-						notifyError('Failed to Sign Message');
-						return;
-					}
-				}
-
-				const claimed = await claimFreeNft(nfts[0].id, $currentUserAddress, signature);
-
-				if (!claimed) {
-					notifyError('Failed to Claim Free NFT');
+			if ($welcomeNftMessage) {
+				try {
+					signature = await $appSigner.signMessage($welcomeNftMessage);
+				} catch {
+					notifyError('Failed to Sign Message');
 					return;
 				}
-
-				notifySuccess('Successfully minted your NFT!');
-			} else {
-				notifyError($welcomeNftClaimedOnChain ? "It appears you've already claimed your free NFT, please check your wallet to confirm this" : 'Failed to mint your NFT');
 			}
+
+			const claimed = await claimFreeNft(nfts[0].id, $currentUserAddress, signature);
+
+			if (!claimed) {
+				notifyError('Failed to Claim Free NFT');
+				return;
+			}
+
+			notifySuccess('Successfully minted your NFT!');
 			minted = true;
 			handler.close();
 		} catch (err) {
