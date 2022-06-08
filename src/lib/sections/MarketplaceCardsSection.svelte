@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	// import { priceFilters, statusFilters } from '$stores/marketplace';
-	import { getListings, Listing, listingFetchingFilters } from '$utils/api/listing';
+	import { getListings } from '$utils/api/listing';
+	import type { Listing, listingFetchingFilters } from '$utils/api/listing';
 	import { writable } from 'svelte/store';
 	import NftList from '$lib/components/NftList.svelte';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
