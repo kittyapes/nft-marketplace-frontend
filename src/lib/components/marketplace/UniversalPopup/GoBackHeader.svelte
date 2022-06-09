@@ -5,9 +5,9 @@
 	const dispatch = createEventDispatcher();
 </script>
 
-<div class="border-b border-black border-opacity-30 pb-2">
-	<button class="btn flex items-center gap-2 ml-auto" on:click={() => dispatch('go-back')}>
+<div class="pb-2 border-b border-black border-opacity-30">
+	<button class="flex items-center gap-2 ml-auto btn" on:click={() => dispatch('go-back')}>
 		<LongLeftArrow />
-		<p class="text-color-black font-semibold text-sm">GO BACK</p>
+		<p class="text-sm font-semibold text-color-black">GO BACK</p>
 	</button>
 </div>

@@ -10,7 +10,7 @@
 
 	let data: NftCardOptions[] = [];
 
-	$: if (options && currentUserAddress) markFavouriteNfts();
+	$: if (options && $currentUserAddress) markFavouriteNfts();
 
 	let markFavouriteNfts = async () => {
 		isLoading = true;

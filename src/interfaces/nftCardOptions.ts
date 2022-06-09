@@ -1,4 +1,4 @@
-import type { UniversalPopupOptions } from './universalPopupOptions';
+import type { CardPopupOptions } from './cardPopupOptions';
 
 export interface NftCardOptions {
 	id: string;
@@ -10,5 +10,5 @@ export interface NftCardOptions {
 	price?: string;
 	favorite?: boolean;
 	popupComponent?: any;
-	getPopupProps?: () => Promise<{ options: UniversalPopupOptions }>;
+	popupOptions?: CardPopupOptions;
 }
