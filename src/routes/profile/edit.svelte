@@ -17,8 +17,8 @@
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { profileData, refreshProfileData } from '$stores/user';
-	import { appSigner, currentUserAddress, welcomeNftClaimedOnChain } from '$stores/wallet';
-	import { hasClaimedFreeNft } from '$utils/api/freeNft';
+	import { appSigner, currentUserAddress } from '$stores/wallet';
+	import { freeNftStatus, hasClaimedFreeNft } from '$utils/api/freeNft';
 	import { checkUsernameAvailability, EditableProfileData, updateProfile } from '$utils/api/profile';
 	import { inputize } from '$utils/misc/inputize';
 	import { setPopup } from '$utils/popup';
@@ -48,12 +48,9 @@
 
 	let firstTimeUser = false;
 
-	let pattern = urlPattern.toString();
-
 	let isSaving = false;
 
 	async function onSave() {
-		console.log($fetchedDataStore);
 		if (isSaving) return;
 
 		isSaving = true;
@@ -72,23 +69,19 @@
 			await updateProfile($currentUserAddress, $localDataStore);
 			notifySuccess('Profile updated successfully.');
 
-			await refreshProfileData()
-				.catch(() => notifyError('Failed to fetch new profile data.'))
-				.then(async () => {
-					isSaving = false;
-					await hasClaimedFreeNft($currentUserAddress);
-				});
+			await refreshProfileData().catch(() => notifyError('Failed to fetch new profile data.'));
 		} catch (err) {
 			httpErrorHandler(err);
 			console.error(err);
-			isSaving = false;
 		}
+
+		hasClaimedFreeNft($currentUserAddress);
+
+		isSaving = false;
 
 		// force isSynced reactivity update
 		$localDataStore = $localDataStore;
 	}
-
-	$: console.log(isSynced);
 
 	async function useProfileData(data: UserData) {
 		try {
@@ -112,7 +105,6 @@
 			} as EditableProfileData;
 
 			fetchedDataStore.set(cloneDeep(localData));
-			console.log($fetchedDataStore);
 			localDataStore.set(localData);
 
 			// We have to explicitly set this because reactive statements
@@ -133,8 +125,6 @@
 	$: isCoverImage = $localDataStore?.coverImage || $localDataStore?.coverUrl;
 
 	$: browser && $profileData && useProfileData($profileData);
-
-	$: console.log('Profile Data: ', $profileData);
 
 	function isBioValid(bio: string) {
 		return bio && bio.trim().split(' ').length > 2;
@@ -183,16 +173,6 @@
 
 	$: usernameValid = $usernameAvailable && $usernameValidLength;
 
-	currentUserAddress.subscribe(async (address) => {
-		try {
-			if (address) {
-				await hasClaimedFreeNft(address);
-			}
-		} catch (err) {
-			console.log(err);
-		}
-	});
-
 	$: isSynced = isEqual($fetchedDataStore, $localDataStore);
 
 	// Bio validation
@@ -202,9 +182,6 @@
 
 	$: bioValid = isValidBio($localDataStore?.bio) || !$localDataStore?.bio;
 	$: websiteValid = browser && (!$localDataStore?.social?.website || isUrl($localDataStore?.social?.website));
-	$: if (websiteValid) {
-		// console.log(websiteValid);
-	}
 
 	// We setting false on SSR to avoid save button flashing
 	$: dataValid = browser && $localDataStore?.username && usernameValid && bioValid && websiteValid && isEmail($localDataStore?.email);
@@ -215,6 +192,9 @@
 	$: browser && $currentAddress && $previousAddress && $currentAddress !== $previousAddress && goto('/profile');
 
 	appSigner.subscribe((signer) => browser && checkIfWalletConnected(signer, $page.url.pathname));
+
+	// Free NFT claiming
+	$: $currentUserAddress && hasClaimedFreeNft($currentAddress);
 </script>
 
 <LoadedContent loaded={$localDataStore}>
@@ -239,7 +219,7 @@
 				{/if}
 			</div>
 
-			{#if profileCompletionProgress === 100}
+			{#if $freeNftStatus !== 'claimed'}
 				<div class="px-16 mt-16" in:slide|local out:slide|local={{ delay: 300 }}>
 					<button
 						class="transition-btn
@@ -249,8 +229,9 @@
 						on:click={handleNftClaim}
 						in:fade|local={{ delay: 300 }}
 						out:fade|local
-						disabled={isSaving || $welcomeNftClaimedOnChain || !isSynced}
+						disabled={isSaving || $freeNftStatus === 'unclaimable'}
 					>
+						<!-- {@debug isSaving, $freeNftStatus, isSynced} -->
 						Claim your NFT
 					</button>
 				</div>
