@@ -24,6 +24,7 @@
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
+	import { filter } from 'lodash-es';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -199,7 +200,10 @@
 				<Dropdown
 					selected={selectedCollectionRow || { label: 'No collection' }}
 					on:select={handleCollectionSelection}
-					options={[...$availableCollections, { label: 'Create a new collection', value: 'collection/new/edit' }]}
+					options={[
+						...$availableCollections.filter((item) => $availableCollections.filter((_item) => _item.label === item.label).length <= 1),
+						{ label: 'Create a new collection', value: 'collection/new/edit' }
+					]}
 					class="mt-2"
 					btnClass="font-semibold"
 				/>
