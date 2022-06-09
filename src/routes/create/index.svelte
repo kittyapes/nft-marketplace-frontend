@@ -13,10 +13,10 @@
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
-	import { addNftsToCollection, apiGetCollection, apiSearchCollections, Collection } from '$utils/api/collection';
+	import { addNftsToCollection, apiGetCollection, apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
-	import { NewBundleData, newBundleData } from '$utils/create';
+	import { type NewBundleData, newBundleData } from '$utils/create';
 	import { createBundle } from '$utils/create/createBundle';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { getNftId } from '$utils/create/getNftId';

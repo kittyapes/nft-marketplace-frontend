@@ -19,7 +19,7 @@
 	import { profileData, refreshProfileData } from '$stores/user';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
 	import { freeNftStatus, hasClaimedFreeNft } from '$utils/api/freeNft';
-	import { checkUsernameAvailability, EditableProfileData, updateProfile } from '$utils/api/profile';
+	import { checkUsernameAvailability, type EditableProfileData, updateProfile } from '$utils/api/profile';
 	import { inputize } from '$utils/misc/inputize';
 	import { setPopup } from '$utils/popup';
 	import { httpErrorHandler, notifyError, notifySuccess } from '$utils/toast';

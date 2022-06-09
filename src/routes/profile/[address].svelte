@@ -21,7 +21,7 @@
 	import { adaptTokenDataToNftCard } from '$utils/adapters/adaptTokenDataToNftCard';
 	import { userHasRole } from '$utils/auth/userRoles';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
-	import { getListings, Listing } from '$utils/api/listing';
+	import { getListings, type Listing } from '$utils/api/listing';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import type { NftCardOptions } from '$interfaces/nftCardOptions';
 	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';

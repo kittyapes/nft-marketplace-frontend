@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { forceBatchProcess } from '$utils/api/admin/batchProcessing';
-	import { closePopup, PopupHandler } from '$utils/popup';
+	import { closePopup, type PopupHandler } from '$utils/popup';
 	import { httpErrorHandler, makeSuccessHandler } from '$utils/toast';
 
 	import Popup from '../Popup.svelte';
@@ -12,9 +12,7 @@
 	async function processNow() {
 		isProcessing = true;
 
-		await forceBatchProcess()
-			.then(makeSuccessHandler('Batch processing completed.'))
-			.catch(httpErrorHandler);
+		await forceBatchProcess().then(makeSuccessHandler('Batch processing completed.')).catch(httpErrorHandler);
 
 		isProcessing = false;
 
@@ -29,17 +27,12 @@
 	</div>
 
 	<div class="max-w-prose mt-4 text-center">
-		Your action has been added to the batch process queue. It will not be processed until a batch
-		process is executed. You can either execute the batch process now or wait for it to be executed
-		on schedule.
+		Your action has been added to the batch process queue. It will not be processed until a batch process is executed. You can either execute the batch process now or wait for it to be executed on
+		schedule.
 	</div>
 
 	<div class="flex mt-8 justify-center gap-x-4">
-		<button class="btn btn-secondary w-44" on:click={handler.close} disabled={isProcessing}>
-			Wait
-		</button>
-		<button class="btn-primary w-44" on:click={processNow} disabled={isProcessing}>
-			Process now
-		</button>
+		<button class="btn btn-secondary w-44" on:click={handler.close} disabled={isProcessing}>Wait</button>
+		<button class="btn-primary w-44" on:click={processNow} disabled={isProcessing}>Process now</button>
 	</div>
 </Popup>

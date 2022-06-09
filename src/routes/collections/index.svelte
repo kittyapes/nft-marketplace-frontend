@@ -1,7 +1,7 @@
 <script lang="ts">
 	import HomepageCollections from '$lib/components/collections/HomepageCollections.svelte';
 	import { currentUserAddress } from '$stores/wallet';
-	import { apiSearchCollections, CollectionTableRow } from '$utils/api/collection';
+	import { apiSearchCollections, type CollectionTableRow } from '$utils/api/collection';
 
 	let collections: CollectionTableRow[] = [];
 
