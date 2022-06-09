@@ -12,12 +12,8 @@
 	import { setPopup } from '$utils/popup';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 	import { fade } from 'svelte/transition';
-	import dayjs from 'dayjs';
-	import relativeTime from 'dayjs/plugin/relativeTime';
 	import getTimeRemaining from '$utils/timeRemaining';
 	import { onMount } from 'svelte';
-
-	dayjs.extend(relativeTime);
 
 	export let options: NftCardOptions;
 
