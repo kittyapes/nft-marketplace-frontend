@@ -17,11 +17,18 @@
 	import Filters from '$icons/filters.svelte';
 	import { tick } from 'svelte';
 	import EntryRole from '$lib/components/management/render-components/EntryRole.svelte';
+	import { debounce } from 'lodash-es';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
 	let collections = [];
 	let loaded = false;
+	let eventId;
+	let userFetchingOptions = {
+		currentFilter: {},
+		currentSort: {},
+		currentSearch: ''
+	};
 
 	let tableData: TableCol[] = [];
 
@@ -30,7 +37,7 @@
 			.then((res) => (users = res))
 			.catch((err) => console.log(err));
 		if (!users.length) return false;
-		console.log(users);
+
 		return true;
 	};
 
@@ -53,30 +60,56 @@
 			return 'text-color-orange';
 		} else if (role === 'admin') {
 			return 'gradient-text';
-		} else if (role === 'VERIFIED') {
+		} else if (role === 'verified_user') {
 			return 'text-green-400';
 		} else if (role === 'INACTIVATED') {
 			return 'text-color-gray-light';
 		}
 	};
 
-	let handleTableEvent = async (event: CustomEvent) => {
-		users = await getUsers(event.detail.sortBy, event.detail.sortReversed);
+	let getUsersFetchingOptions = () => {
+		return { ...userFetchingOptions.currentFilter, query: userFetchingOptions.currentSearch, ...userFetchingOptions.currentSort };
 	};
 
-	let handleFilter = (event: CustomEvent) => {
-		if (mode === 'USER') users = event.detail.changeTo;
+	let handleTableEvent = async (event: CustomEvent) => {
+		userFetchingOptions.currentSort = {
+			sortBy: event.detail.sortBy,
+			sortReversed: event.detail.sortReversed
+		};
+
+		users = await getUsers(getUsersFetchingOptions());
+		eventId = event.detail.id;
+	};
+
+	let handleFilter = async (event: CustomEvent) => {
+		userFetchingOptions.currentFilter = {
+			createdBefore: event.detail.createdBefore ? event.detail.createdBefore : undefined,
+			role: event.detail.role ? event.detail.role : undefined,
+			status: event.detail.status ? event.detail.status : undefined
+		};
+		if (mode === 'USER') users = await getUsers(getUsersFetchingOptions());
 		else collections = event.detail.changeTo;
 	};
 
+	const debouncedSearch = debounce(async () => await getSearchedUsers(), 500);
+
+	const getSearchedUsers = async () => {
+		users = await getUsers(getUsersFetchingOptions());
+	};
+
+	$: if (userFetchingOptions.currentSearch) {
+		debouncedSearch();
+	}
+
 	$: if ($currentUserAddress && mode) createTable();
 
-	$: if (users)
+	$: if (users) {
+		console.log(users);
 		tableData = [
 			{
 				gridSize: '3fr',
 				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETIC' },
+				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETIC', active: false },
 				renderComponent: EntryName,
 				renderComponentProps: users.map((u) => ({ name: u.username || '', imageUrl: u.thumbnailUrl, address: u.address }))
 			},
@@ -94,22 +127,20 @@
 				renderComponent: EntryRole,
 				renderComponentProps: users.map((u) => ({
 					id: u.address,
-					role: u.roles.includes('verified_creator') || (u.status === 'INACTIVATED' && (u.roles[u.roles.length - 1] !== 'admin' || 'superadmin')) ? u.status : u.roles[u.roles.length - 1],
-					color: getRoleColor(
-						u.roles.includes('verified_creator') || (u.status === 'INACTIVATED' && (u.roles[u.roles.length - 1] !== 'admin' || 'superadmin')) ? u.status : u.roles[u.roles.length - 1]
-					),
+					role: u.status === 'INACTIVATED' ? u.status : u.roles.includes('superadmin') ? 'superadmin' : u.roles[0],
+					color: getRoleColor(u.status === 'INACTIVATED' ? u.status : u.roles.includes('superadmin') ? 'superadmin' : u.roles[0]),
 					options: [
-						{ label: 'admin', checked: u.roles.includes('admin'), cb: (e) => e.roles.includes('admin') },
-						{ label: 'verified', checked: u.roles.includes('verified_creator'), cb: (e) => e.roles.includes('verified_creator') },
-						{ label: 'blogger', checked: false, cb: (e) => e.roles === 'blogger' },
-						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED' }
+						{ label: 'admin', checked: u.roles.includes('admin'), cb: (e) => e.roles.includes('admin'), value: 'admin' },
+						{ label: 'verified', checked: u.roles.includes('verified_user'), cb: (e) => e.roles.includes('verified_user'), value: 'verified_user' },
+						{ label: 'blogger', checked: false, cb: (e) => e.roles.includes('blogger'), value: 'blogger' },
+						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED', value: 'inactived_user' }
 					]
 				}))
 			},
 			{
 				gridSize: '2fr',
 				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Date Joined', sortBy: 'CREATED_AT' },
+				titleRenderComponentProps: { title: 'Date Joined', sortBy: 'CREATED_AT', active: false },
 				renderComponent: EntryGenericText,
 				renderComponentProps: users.map((u) => {
 					let date = dayjs(u.createdAt);
@@ -125,20 +156,25 @@
 				renderComponentProps: Array(users.length).map((_) => ({ active: false }))
 			}*/
 		];
+		tableData.forEach((e, i) => {
+			e.titleRenderComponentProps.id = i;
+			if (i === eventId) e.titleRenderComponentProps.active = true;
+		});
+	}
 
 	let roleFilterOptions = [
-		{ label: 'All', cb: () => true },
-		{ label: 'Super Admin', cb: (e) => e.roles === 'superadmin' },
-		{ label: 'Admin', cb: (e) => e.roles === 'admin' },
-		{ label: 'Verified Creator', cb: (e) => e.status === 'VERIFIED' },
+		{ label: 'All' },
+		{ label: 'Super Admin', role: 'superadmin' },
+		{ label: 'Admin', role: 'admin' },
+		{ label: 'Verified Creator', role: 'verified_user' },
 		{ label: 'Blogger' },
-		{ label: 'Inactive' }
+		{ label: 'Inactive', status: 'INACTIVATED' }
 	];
 	let filterOptions = [
 		{ label: 'Flagged' },
-		{ label: 'Joined 24 hrs ago', cb: (e) => dayjs().subtract(1, 'day').isBefore(e.createdAt) },
-		{ label: 'Joined 7 days ago', cb: (e) => dayjs().subtract(1, 'week').isBefore(e.createdAt) },
-		{ label: 'Joined 1 Mon ago', cb: (e) => dayjs().subtract(1, 'month').isBefore(e.createdAt) }
+		{ label: 'Joined 24 hrs ago', createdBefore: dayjs().subtract(1, 'hour').unix() },
+		{ label: 'Joined 7 days ago', createdBefore: dayjs().subtract(1, 'week').unix() },
+		{ label: 'Joined 1 Mon ago', createdBefore: dayjs().subtract(1, 'month').unix() }
 	];
 
 	$: searchPlaceholder = `Search for ${mode.toLowerCase()}`;
@@ -154,22 +190,22 @@
 		</div>
 		<div class="flex gap-4">
 			{#if mode === 'USER'}
-				<SearchBar placeholder={searchPlaceholder} />
+				<SearchBar bind:query={userFetchingOptions.currentSearch} placeholder={searchPlaceholder} />
 				<div class="flex-grow" />
 				<div class="flex gap-10">
 					<div class="">
-						<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} bind:entries={users} />
+						<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
 					</div>
 					<div class="">
-						<Filter on:filter={handleFilter} options={filterOptions} icon={Filters} bind:entries={users} defaultOption={{ label: 'Filter', cb: (e) => true }} />
+						<Filter on:filter={handleFilter} options={filterOptions} icon={Filters} defaultOption={{ label: 'Filter' }} />
 					</div>
 				</div>
 			{:else}
-				<SearchBar placeholder={searchPlaceholder} />
+				<SearchBar bind:query={userFetchingOptions.currentSearch} placeholder={searchPlaceholder} />
 				<div class="flex-grow" />
 				<div class="flex gap-10">
-					<Filter options={roleFilterOptions} icon={UserManage} bind:entries={collections} />
-					<Filter options={filterOptions} icon={Filters} bind:entries={collections} />
+					<Filter options={roleFilterOptions} icon={UserManage} />
+					<Filter options={filterOptions} icon={Filters} />
 				</div>
 			{/if}
 		</div>

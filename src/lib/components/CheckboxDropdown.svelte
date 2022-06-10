@@ -21,7 +21,7 @@
 
 	let elemOpenButton: HTMLButtonElement;
 
-	function handleOptionSelect() {
+	function handleOptionSelect(options) {
 		dispatch('change', options);
 	}
 </script>
@@ -51,7 +51,7 @@
 			<div id="list-container" class="absolute -bottom-1 left-0 w-full overflow-hidden translate-y-full bg-white rounded-lg text-color-black flex flex-col min-w-max">
 				{#each options as option}
 					<button class="px-2 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded flex gap-4 w-full min-w-max">
-						<Checkbox on:change={() => handleOptionSelect} bind:checked={option.checked} />
+						<Checkbox on:change={() => handleOptionSelect(options)} bind:checked={option.checked} />
 						<div class="first-letter:uppercase">{option.label}</div>
 					</button>
 				{/each}

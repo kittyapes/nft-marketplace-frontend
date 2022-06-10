@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ArrowDown from '$icons/arrow-down.svelte';
+	import { fade } from 'svelte/transition';
 	import { createEventDispatcher } from 'svelte';
 
 	export let props;
@@ -9,9 +10,14 @@
 	let reverse = false;
 
 	let handleClick = () => {
-		if (!props?.sortBy) return;
-		reverse = !reverse;
-		dispatch('event', { sortBy: props.sortBy, sortReversed: reverse });
+		if (props.active && reverse) {
+			props.active = false;
+			reverse = false;
+			return;
+		} else if (!props.sortBy) return;
+		else if (props.active) reverse = !reverse;
+		props.active = true;
+		dispatch('event', { sortBy: props.sortBy, sortReversed: reverse, id: props.id });
 	};
 </script>
 
@@ -22,8 +28,8 @@
 	on:click|stopPropagation={handleClick}
 >
 	<div>{props.title}</div>
-	{#if props?.sortBy}
-		<div class="transition" class:rotate-180={reverse}>
+	{#if props.active}
+		<div class="transition" class:rotate-180={reverse} transition:fade>
 			<ArrowDown />
 		</div>
 	{/if}
