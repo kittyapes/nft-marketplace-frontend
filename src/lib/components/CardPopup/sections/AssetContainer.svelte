@@ -5,11 +5,13 @@
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import { favoriteNft } from '$utils/nfts/favoriteNft';
 	import { noTryAsync } from 'no-try';
+	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 
 	export let title: string;
 	export let assetUrl: string;
 	export let id: string;
 	export let favorited: boolean;
+	export let options: CardPopupOptions;
 
 	let videoAsset: HTMLVideoElement;
 	let fileType;
@@ -20,7 +22,7 @@
 	}
 
 	async function handleLike() {
-		const [err, res] = await noTryAsync(() => favoriteNft(id));
+		const [err, res] = await noTryAsync(() => favoriteNft(options.likeIds?.[0]));
 
 		if (err) {
 			notifyError(err.message);

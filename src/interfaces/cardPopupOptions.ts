@@ -14,4 +14,5 @@ export interface CardPopupOptions {
 		price: number;
 		listingId: string;
 	};
+	likeIds?: string[];
 }

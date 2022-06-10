@@ -22,7 +22,8 @@ export async function adaptListingToNftCard(data: Listing) {
 		saleData: {
 			price: data.listing.price,
 			listingId: data.listingId
-		}
+		},
+		likeIds: [data.nfts[0].nftId]
 	};
 
 	const nftCardOptions = {
