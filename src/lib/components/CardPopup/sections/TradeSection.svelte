@@ -12,7 +12,7 @@
 		{ name: 'error', component: ErrorState }
 	];
 
-	let selectedState = states[1];
+	let selectedState = states[0];
 
 	function handleSetState(e) {
 		selectedState = states.find((s) => s.name === e.detail.name);
