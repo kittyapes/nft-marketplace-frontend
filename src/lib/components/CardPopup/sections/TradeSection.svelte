@@ -12,11 +12,13 @@
 		{ name: 'error', component: ErrorState }
 	];
 
-	let selectedState = states[2];
+	let selectedState = states[1];
 
 	function handleSetState(e) {
 		selectedState = states.find((s) => s.name === e.detail.name);
 	}
 </script>
 
-<svelte:component this={selectedState.component} {options} on:set-state={handleSetState} />
+{#if selectedState}
+	<svelte:component this={selectedState.component} {options} on:set-state={handleSetState} on:close-popup />
+{/if}

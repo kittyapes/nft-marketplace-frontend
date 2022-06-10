@@ -25,5 +25,5 @@
 		{/each}
 	</div>
 
-	<svelte:component this={selectedTab.sectionComponent} {options} />
+	<svelte:component this={selectedTab.sectionComponent} {options} on:close-popup />
 </div>

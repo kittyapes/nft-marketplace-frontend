@@ -1,8 +1,28 @@
 <script lang="ts">
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import CircularSpinner from '$lib/components/spinners/CircularSpinner.svelte';
+	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import { ethers } from 'ethers';
+	import { createEventDispatcher } from 'svelte';
+	import { writable } from 'svelte/store';
+
+	const dispatch = createEventDispatcher();
 
 	export let options: CardPopupOptions;
+
+	const purchasingState = writable(null);
+
+	async function handlePurchase() {
+		purchasingState.set('waiting-contract');
+
+		const price = ethers.utils.parseEther(options.saleData.price.toString());
+		const success = await salePurchase(options.saleData.listingId, price);
+
+		success ? dispatch('set-state', { name: 'success' }) : dispatch('set-state', { name: 'error' });
+
+		purchasingState.set(null);
+	}
 </script>
 
 <div class="flex flex-col justify-center h-[90%]">
@@ -19,6 +39,13 @@
 	</div>
 
 	<div class="grid place-items-center mt-12">
-		<button class="btn btn-gradient rounded-full h-16 w-80 uppercase font-bold text-xl">Buy Now</button>
+		<button class="btn btn-gradient btn-rounded w-80 uppercase font-bold" on:click={handlePurchase} disabled={$purchasingState}>
+			{#if $purchasingState}
+				<div class="w-8 h-8 absolute top-0 bottom-0 my-auto -ml-6">
+					<CircularSpinner />
+				</div>
+			{/if}
+			Buy Now
+		</button>
 	</div>
 </div>

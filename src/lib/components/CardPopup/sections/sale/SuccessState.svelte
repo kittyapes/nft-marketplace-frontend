@@ -1,5 +1,14 @@
 <script>
+	import { goto } from '$app/navigation';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
+
+	function handleViewProfile() {
+		dispatch('close-popup');
+		goto('/profile');
+	}
 </script>
 
 <div class="flex flex-col justify-center h-[90%]">
@@ -9,7 +18,7 @@
 	<div class="opacity-50 text-center mt-4">NFT purchase was successful.</div>
 
 	<div class="flex mt-24 gap-4">
-		<button class="btn btn-gradient btn-rounded uppercase font-bold w-1/2">View Profile</button>
-		<button class="btn btn-gradient btn-rounded uppercase font-bold w-1/2">Continue shopping</button>
+		<button class="btn btn-gradient btn-rounded uppercase font-bold w-1/2" on:click={handleViewProfile}>View Profile</button>
+		<button class="btn btn-gradient btn-rounded uppercase font-bold w-1/2" on:click={() => dispatch('close-popup')}>Continue shopping</button>
 	</div>
 </div>

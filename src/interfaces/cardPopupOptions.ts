@@ -12,5 +12,6 @@ export interface CardPopupOptions {
 	resourceType: 'nft' | 'listing';
 	saleData?: {
 		price: number;
+		listingId: string;
 	};
 }

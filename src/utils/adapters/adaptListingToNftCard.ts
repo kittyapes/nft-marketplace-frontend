@@ -3,7 +3,7 @@ import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 import type { Listing } from '$utils/api/listing';
 
 export async function adaptListingToNftCard(data: Listing) {
-	// console.log(data);
+	console.log(data);
 
 	const nft = data.nfts[0].nft;
 
@@ -20,7 +20,8 @@ export async function adaptListingToNftCard(data: Listing) {
 		favorited: false,
 		resourceType: 'listing',
 		saleData: {
-			price: data.listing.price
+			price: data.listing.price,
+			listingId: data.listingId
 		}
 	};
 

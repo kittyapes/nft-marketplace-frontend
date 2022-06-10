@@ -27,7 +27,7 @@
 
 		<!-- Right part with info and actions -->
 		<div class="h-full lg:w-3/5">
-			<RightSection {options} />
+			<RightSection {options} on:close-popup={handler.close} />
 		</div>
 	</div>
 </Popup>
