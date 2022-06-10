@@ -57,7 +57,7 @@
 		if (nftData.collectionName) {
 			let selectedCollection = collections.filter((c) => c.name === nftData.collectionName)[0];
 			selectedCollectionRow = adaptCollectionToMintingDropdown(selectedCollection);
-			selectedCollectionId = selectedCollection._id;
+			selectedCollectionId = selectedCollection.id;
 		}
 
 		console.log(collections.filter((c) => c.slug && c.creator === $currentUserAddress));
@@ -89,7 +89,7 @@
 			name: nftData.name,
 			creator: $currentUserAddress,
 			image: nftData.fileBlob,
-			animation: nftData.animationBlob
+			animation: nftData.animationBlob,
 		});
 
 		if (!createNftRes) {
@@ -124,12 +124,16 @@
 	}
 
 	const handleCollectionSelection = (event) => {
+		console.log(event);
+
 		nftData.collectionName = event.detail?.label;
 		selectedCollectionId = event.detail?.value;
 		if (event.detail?.label === 'Create a new collection') {
 			goto('collections/new/edit?to=create');
 		}
 	};
+
+	$: console.log('collectionId', selectedCollectionId);
 
 	$: quantityValid = nftData.quantity > 0;
 	$: inputValid = nftData.name && selectedCollectionId && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
