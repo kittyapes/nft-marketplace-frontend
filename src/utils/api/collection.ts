@@ -26,7 +26,7 @@ export interface Collection {
 	isExplicitSensitive: boolean;
 	creator: string;
 	nfts: [];
-	_id: string;
+	id: string;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
@@ -40,7 +40,7 @@ export function getInitialCollectionData(): Partial<Collection> {
 }
 
 export async function addNftsToCollection(nftIds: string[], collectionId: string) {
-	const res = await axios.post(getApiUrl('v2', 'collections/' + collectionId + '/add-nfts'), {nfts: nftIds}, getAxiosConfig());
+	const res = await axios.post(getApiUrl('v2', 'collections/' + collectionId + '/add-nfts'), { nfts: nftIds }, getAxiosConfig());
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
