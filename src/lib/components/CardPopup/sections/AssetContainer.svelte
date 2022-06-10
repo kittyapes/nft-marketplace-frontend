@@ -3,7 +3,6 @@
 	import Loader from '$lib/components/Loader.svelte';
 	import { reject } from 'lodash-es';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
-	import { copyUrlToClipboard } from '$utils/misc/clipboard';
 
 	export let title: string;
 	export let assetUrl: string;
@@ -20,6 +19,8 @@
 	function openFullscreen() {
 		if (videoAsset?.requestFullscreen) {
 			videoAsset.requestFullscreen();
+		} else {
+			window.open(assetUrl, '_blank');
 		}
 	}
 
@@ -43,7 +44,7 @@
 		{
 			iconUrl: getIconUrl('share'),
 			alt: 'Share',
-			onClick: () => copyUrlToClipboard()
+			onClick: handleShare
 		},
 		{
 			iconUrl: getIconUrl('like'),
@@ -53,7 +54,7 @@
 		{
 			iconUrl: getIconUrl('fullscreen'),
 			alt: 'Fullscreen',
-			onClick: () => {}
+			onClick: openFullscreen
 		}
 		// {
 		// 	iconUrl: getIconUrl('three-dot-menu'),
