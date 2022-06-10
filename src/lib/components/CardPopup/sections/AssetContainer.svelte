@@ -64,34 +64,32 @@
 </script>
 
 <!-- NFT Image side-->
-<div class="flex items-center justify-center w-full h-full">
-	<div class="flex flex-col justify-center w-full h-full text-center">
-		<!-- Asset render container -->
-		<div class="flex items-center self-center justify-center object-contain w-full max-w-lg">
-			{#await preload(assetUrl)}
-				<Loader />
-			{:then}
-				{#if fileType === 'video'}
-					<video class="max-w-full max-h-full shadow-xl rounded-xl" autoplay loop bind:this={videoAsset}>
-						<source src={assetUrl} type="video/mp4" />
-						<track kind="captions" />
-					</video>
-				{:else if fileType === 'image'}
-					<img src={assetUrl} class="object-cover w-full h-full shadow-xl rounded-xl" alt="Card asset." />
-				{/if}
-			{/await}
-		</div>
+<div class="flex flex-col justify-center w-full h-full text-center">
+	<!-- Asset render container -->
+	<div class="flex items-center self-center justify-center object-contain w-full max-w-lg">
+		{#await preload(assetUrl)}
+			<Loader />
+		{:then}
+			{#if fileType === 'video'}
+				<video class="max-w-full max-h-full shadow-xl rounded-xl" autoplay loop bind:this={videoAsset}>
+					<source src={assetUrl} type="video/mp4" />
+					<track kind="captions" />
+				</video>
+			{:else if fileType === 'image'}
+				<img src={assetUrl} class="object-cover w-full h-full shadow-xl rounded-xl" alt="Card asset." />
+			{/if}
+		{/await}
+	</div>
 
-		<!-- NFT Name -->
-		<div class="mt-4 text-2xl font-bold opacity-70 justify-self-end">
-			{title || 'No title'}
-		</div>
+	<!-- NFT Name -->
+	<div class="mt-4 text-2xl font-bold opacity-70 justify-self-end">
+		{title || 'No title'}
+	</div>
 
-		<!-- Buttons -->
-		<div class="flex justify-center mt-8 mb-8 gap-x-12">
-			{#each buttons as button}
-				<button class="w-6 h-6 btn" on:click={button.onClick}><img src={button.iconUrl} alt={button.alt} /></button>
-			{/each}
-		</div>
+	<!-- Buttons -->
+	<div class="flex justify-center mt-8 mb-8 gap-x-12">
+		{#each buttons as button}
+			<button class="w-6 h-6 btn" on:click={button.onClick}><img src={button.iconUrl} alt={button.alt} /></button>
+		{/each}
 	</div>
 </div>
