@@ -31,7 +31,7 @@ export async function adaptListingToNftCard(data: Listing) {
 		imageUrl: nft.thumbnailUrl,
 		title: data.title,
 		collectionName: 'N/A',
-		likes: 0,
+		likes: nft.favoriteCount,
 		price: data.listing.price,
 		popupComponent: CardPopup,
 		popupOptions
