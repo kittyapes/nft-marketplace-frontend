@@ -3,7 +3,7 @@ import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 
 export async function adaptTokenDataToNftCard(data: TokenData) {
-	if (data.token_id == 1178) console.log(data);
+	console.log(data);
 
 	const popupOptions: CardPopupOptions = {
 		id: data.token_id,
@@ -13,7 +13,9 @@ export async function adaptTokenDataToNftCard(data: TokenData) {
 		creator: data.minter_address,
 		symbol: data.symbol,
 		contractType: data.contract_type,
-		tokenAddress: data.token_address
+		tokenAddress: data.token_address,
+		isInternalNft: false,
+		favorited: false
 	};
 
 	const nftCardOptions = {

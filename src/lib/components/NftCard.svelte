@@ -20,7 +20,7 @@
 
 	function handleClick() {
 		addUrlParam('id', options.id);
-		setPopup(options.popupComponent, { props: { options: options.popupOptions }, onClose: () => removeUrlParam('id') });
+		setPopup(options.popupComponent, { props: { options: { ...options.popupOptions, favorited: options.favorite } }, onClose: () => removeUrlParam('id') });
 	}
 
 	async function favNFT() {

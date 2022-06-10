@@ -58,7 +58,7 @@
 				{#each options.metadata.attributes as attr}
 					<div>
 						<div class="text-xs font-semibold text-center uppercase">{attr.trait_type}</div>
-						<div class="py-2 mt-1 text-xs text-center text-white uppercase bg-black rounded-full">{attr.value}</div>
+						<div class="py-2 mt-1 text-xs text-center text-white uppercase bg-black rounded-full">{attr.value || 'N/A'}</div>
 					</div>
 				{/each}
 			</div>
@@ -69,7 +69,7 @@
 			{#each technicalProperties as prop}
 				<div class="overflow-hidden">
 					<div class="property-name">{prop.name}</div>
-					<div class="property-value">{prop.value}</div>
+					<div class="property-value">{prop.value || 'N/A'}</div>
 				</div>
 			{/each}
 		</div>

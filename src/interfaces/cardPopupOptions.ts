@@ -7,4 +7,6 @@ export interface CardPopupOptions {
 	symbol: string;
 	contractType: string;
 	tokenAddress: string;
+	isInternalNft: boolean;
+	favorited: boolean;
 }

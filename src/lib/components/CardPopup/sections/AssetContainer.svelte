@@ -1,12 +1,15 @@
 <script lang="ts">
-	import { notifySuccess } from '$utils/toast';
+	import { notifyError, notifySuccess } from '$utils/toast';
 	import Loader from '$lib/components/Loader.svelte';
 	import { reject } from 'lodash-es';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import { favoriteNft } from '$utils/nfts/favoriteNft';
+	import { noTryAsync } from 'no-try';
 
 	export let title: string;
 	export let assetUrl: string;
 	export let id: string;
+	export let favorited: boolean;
 
 	let videoAsset: HTMLVideoElement;
 	let fileType;
@@ -16,7 +19,22 @@
 		notifySuccess('Copied NFT link!');
 	}
 
-	function openFullscreen() {
+	async function handleLike() {
+		const [err, res] = await noTryAsync(() => favoriteNft(id));
+
+		if (err) {
+			notifyError(err.message);
+			console.error(err);
+		} else if (res.data.message) {
+			favorited = false;
+			notifySuccess('Unliked NFT.');
+		} else {
+			favorited = true;
+			notifySuccess('Liked NFT.');
+		}
+	}
+
+	function handleFullscreen() {
 		if (videoAsset?.requestFullscreen) {
 			videoAsset.requestFullscreen();
 		} else {
@@ -38,30 +56,6 @@
 			reader.onerror = (error) => reject(`Error: ${error}`);
 		});
 	};
-
-	// Buttons
-	const buttons = [
-		{
-			iconUrl: getIconUrl('share'),
-			alt: 'Share',
-			onClick: handleShare
-		},
-		{
-			iconUrl: getIconUrl('like'),
-			alt: 'Like',
-			onClick: () => {}
-		},
-		{
-			iconUrl: getIconUrl('fullscreen'),
-			alt: 'Fullscreen',
-			onClick: openFullscreen
-		}
-		// {
-		// 	iconUrl: getIconUrl('three-dot-menu'),
-		// 	alt: 'More',
-		// 	onClick: () => {}
-		// }
-	];
 </script>
 
 <!-- NFT Image side-->
@@ -89,8 +83,8 @@
 
 	<!-- Buttons -->
 	<div class="flex justify-center mt-8 mb-8 gap-x-12">
-		{#each buttons as button}
-			<button class="w-6 h-6 btn" on:click={button.onClick}><img src={button.iconUrl} alt={button.alt} /></button>
-		{/each}
+		<button class="w-6 h-6 btn" on:click={handleShare}><img src={getIconUrl('share')} alt="Share." /></button>
+		<button class="w-6 h-6 bt" on:click={handleLike}><img src={favorited ? getIconUrl('heart-filled') : getIconUrl('heart-outline')} alt="Heart." class:text-red-500={favorited} /></button>
+		<button class="w-6 h-6 btn" on:click={handleFullscreen}><img src={getIconUrl('fullscreen')} alt="Fullscreen." /></button>
 	</div>
 </div>
