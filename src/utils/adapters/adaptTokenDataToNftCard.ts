@@ -3,8 +3,6 @@ import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 
 export async function adaptTokenDataToNftCard(data: TokenData) {
-	console.log(data);
-
 	const popupOptions: CardPopupOptions = {
 		id: data.token_id,
 		title: data.metadata?.name,
@@ -15,7 +13,8 @@ export async function adaptTokenDataToNftCard(data: TokenData) {
 		contractType: data.contract_type,
 		tokenAddress: data.token_address,
 		isInternalNft: false,
-		favorited: false
+		favorited: false,
+		resourceType: 'nft'
 	};
 
 	const nftCardOptions = {
@@ -30,20 +29,6 @@ export async function adaptTokenDataToNftCard(data: TokenData) {
 		tokenStandard: data.contract_type,
 		popupComponent: CardPopup,
 		popupOptions
-		// getPopupProps: async () => ({
-		// 	options: {
-		// 		id: data.metadata?.id,
-		// 		title: data.metadata?.name,
-		// 		imageUrl: data.metadata?.image,
-		// 		animationUrl: data.metadata?.animation_url || data.metadata?.image,
-		// 		currentUserIsOwner: get(currentUserAddress) === data.owner_of,
-		// 		description: data.metadata?.description,
-		// 		creator: data.metadata?.artist,
-		// 		edition: data.metadata?.id && data.metadata?.supply ? `${data.metadata.id} of ${data.metadata.supply}` : '',
-		// 		editionType: data.metadata?.categories
-		// 		//externalLink: data.metadata.external_link,
-		// 	}
-		// })
 	};
 
 	return nftCardOptions;

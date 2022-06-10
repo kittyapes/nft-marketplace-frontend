@@ -1,21 +1,39 @@
-import SalePopup from '$lib/components/marketplace/SalePopup/SalePopup.svelte';
+import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 import type { Listing } from '$utils/api/listing';
-import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
-import { adaptListingToPopup } from './adaptListingToPopup';
 
-export async function adaptListingToNftCard(listing: Listing) {
+export async function adaptListingToNftCard(data: Listing) {
+	// console.log(data);
 
-	listing.thumbnailUrl = listing.nfts[0]?.nft.thumbnailUrl
-	listing.coverImageUrl = listing.nfts[0]?.nft.assetUrl
-	const options: NftCardOptions = {
-		id: listing.nfts[0]?.nftId,
-		title: listing.title,
-		imageUrl: listing.thumbnailUrl ? listing.thumbnailUrl : listing.nfts[0]?.nft.thumbnailUrl,
-		animationUrl: listing.coverImageUrl ? listing.coverImageUrl : listing.nfts[0]?.nft.assetUrl,
-		likes: listing.nfts[0]?.nft.favoriteCount || 0,
-		popupComponent: SalePopup,
-		getPopupProps: async () => adaptListingToPopup(listing),
+	const nft = data.nfts[0].nft;
+
+	const popupOptions: CardPopupOptions = {
+		id: data.listingId,
+		title: data.title,
+		assetUrl: nft.assetUrl,
+		metadata: nft.metadata,
+		creator: data.seller,
+		symbol: data.paymentTokenTicker,
+		contractType: 'ERC1155',
+		tokenAddress: data.paymentTokenAddress,
+		isInternalNft: true,
+		favorited: false,
+		resourceType: 'listing',
+		saleData: {
+			price: data.listing.price
+		}
 	};
 
-	return options;
+	const nftCardOptions = {
+		id: data.listingId,
+		imageUrl: nft.thumbnailUrl,
+		title: data.title,
+		collectionName: 'N/A',
+		likes: 0,
+		price: data.listing.price,
+		popupComponent: CardPopup,
+		popupOptions
+	};
+
+	return nftCardOptions;
 }

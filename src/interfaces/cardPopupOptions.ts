@@ -9,4 +9,8 @@ export interface CardPopupOptions {
 	tokenAddress: string;
 	isInternalNft: boolean;
 	favorited: boolean;
+	resourceType: 'nft' | 'listing';
+	saleData?: {
+		price: number;
+	};
 }
