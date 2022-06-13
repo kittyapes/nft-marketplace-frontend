@@ -26,7 +26,7 @@ export interface Collection {
 	isExplicitSensitive: boolean;
 	creator: string;
 	nfts: [];
-	_id: string;
+	id: string;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
@@ -135,9 +135,10 @@ export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[
 	return res.data.data;
 }
 
-export async function apiSearchCollections() {
+export async function apiSearchCollections(creator?: string) {
 	const params = {
-		limit: 100
+		limit: 100,
+		creator: creator ? creator : undefined
 	};
 
 	// TODO shouldn't require token, but the backend wasn't updated yet
