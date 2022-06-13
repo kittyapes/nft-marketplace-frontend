@@ -22,7 +22,7 @@
 	<div class="flex flex-col h-full mx-10 lg:flex-row">
 		<!-- Left part with image and buttons -->
 		<div class="h-full lg:w-2/5">
-			<AssetContainer assetUrl={options.assetUrl} title={options.title} id={options.id} {options} />
+			<AssetContainer assetUrl={options.assetUrl} title={options.title} id={options.id} {options} favorited={false} />
 		</div>
 
 		<!-- Right part with info and actions -->
