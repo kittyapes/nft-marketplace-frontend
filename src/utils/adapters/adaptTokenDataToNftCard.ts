@@ -7,14 +7,18 @@ export async function adaptTokenDataToNftCard(data: TokenData) {
 		id: data.token_id,
 		title: data.metadata?.name,
 		assetUrl: data.metadata?.image,
-		metadata: data.metadata,
-		creator: data.minter_address,
-		symbol: data.symbol,
-		contractType: data.contract_type,
-		tokenAddress: data.token_address,
-		isInternalNft: false,
 		favorited: false,
-		resourceType: 'nft'
+		resourceType: 'nft',
+		nftData: [
+			{
+				metadata: data.metadata,
+				isInternalNft: false,
+				contractType: data.contract_type as any,
+				creator: data.minter_address,
+				contractAddress: data.token_address // Yes, this is really the contract_address. That's how Moralis returns it.
+			}
+		],
+		rawResourceData: data
 	};
 
 	const nftCardOptions = {

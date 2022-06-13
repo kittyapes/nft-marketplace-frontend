@@ -6,20 +6,36 @@
 	// Never show the back button on this tab
 	export const showBackButton = false;
 
+	// It is possible to pass data of multiple NFTs into the popup to support
+	// the bundle section
+	$: nftData = options.nftData[0];
+
 	$: properties = [
-		{ name: 'Creator', value: options.creator },
-		{ name: 'Collection name', value: options.metadata?.name },
-		{ name: 'Edition', value: options.metadata?.edition },
-		{ name: 'Description', value: options.metadata?.description }
+		{ name: 'Creator', value: nftData.creator },
+		{ name: 'Collection name', value: nftData.metadata?.name },
+		{ name: 'Edition', value: nftData.metadata?.edition },
+		{ name: 'Description', value: nftData.metadata?.description }
 	];
 
 	$: technicalProperties = [
-		{ name: 'Contract Add', value: options.tokenAddress },
-		{ name: 'Token Standard', value: options.contractType },
+		{ name: 'Contract Add', value: nftData.contractAddress },
+		{ name: 'Token Standard', value: nftData.contractType },
 		{ name: 'Creator Fee', value: '10%' },
 		{ name: 'Token ID', value: options.id },
 		{ name: 'Blockchain', value: 'ETH' }
 	];
+
+	function parseAttributes(attributes) {
+		// In case attributes is not a list, but an object, we need to convert it to a list
+		if (attributes.length === undefined) {
+			attributes = Object.entries(attributes).map(([key, value]) => ({
+				trait_type: key,
+				value: value
+			}));
+		}
+
+		return attributes;
+	}
 </script>
 
 <div class="flex-grow h-full pb-8 pr-4 mb-8 overflow-y-auto">
@@ -32,9 +48,9 @@
 	</div>
 
 	<!-- NFT attributes -->
-	{#if options.metadata?.attributes}
+	{#if nftData.metadata?.attributes}
 		<div class="grid grid-cols-3 gap-4">
-			{#each options.metadata.attributes as attr}
+			{#each parseAttributes(nftData.metadata.attributes) as attr}
 				<div>
 					<div class="text-xs font-semibold text-center uppercase">{attr.trait_type}</div>
 					<div class="py-2 mt-1 text-xs text-center text-white uppercase bg-black rounded-full">{attr.value || 'N/A'}</div>

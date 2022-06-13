@@ -14,6 +14,8 @@
 	let showBackButton = false;
 
 	let rightSectionInstance;
+
+	$: console.log(options.rawResourceData);
 </script>
 
 <Popup class="w-full h-full rounded-none lg:rounded-xl lg:w-[64rem] lg:h-[40rem]" closeButton on:close={handler.close}>

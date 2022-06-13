@@ -11,22 +11,21 @@ export async function adaptListingToNftCard(data: Listing) {
 		id: data.listingId,
 		title: data.title,
 		assetUrl: nft.assetUrl,
-		metadata: nft.metadata,
-		creator: data.seller,
-		symbol: data.paymentTokenTicker,
-		contractType: 'ERC1155',
-		tokenAddress: data.paymentTokenAddress,
-		isInternalNft: true,
 		favorited: false,
 		resourceType: 'listing',
+		nftData: [{ metadata: nft.metadata, isInternalNft: true, contractType: 'ERC1155', creator: nft.creator, contractAddress: nft.contractAddress }],
 		saleData: {
 			price: data.listing.price,
 			listingId: data.listingId
 		},
 		listingData: {
-			sellerAddress: data.seller
+			sellerAddress: data.seller,
+			listingType: 'sale',
+			symbol: data.paymentTokenTicker,
+			tokenAddress: data.paymentTokenAddress
 		},
-		likeIds: [data.nfts[0].nftId]
+		likeIds: [data.nfts[0].nftId],
+		rawResourceData: data
 	};
 
 	const nftCardOptions = {
