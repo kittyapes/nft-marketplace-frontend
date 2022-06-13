@@ -4,7 +4,6 @@ import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 
 export async function adaptTokenDataToNftCard(data: TokenData) {
 	const popupOptions: CardPopupOptions = {
-		id: data.token_id,
 		title: data.metadata?.name,
 		assetUrl: data.metadata?.image,
 		favorited: false,
@@ -15,7 +14,8 @@ export async function adaptTokenDataToNftCard(data: TokenData) {
 				isInternalNft: false,
 				contractType: data.contract_type as any,
 				creator: data.minter_address,
-				contractAddress: data.token_address // Yes, this is really the contract_address. That's how Moralis returns it.
+				contractAddress: data.token_address, // Yes, this is really the contract_address. That's how Moralis returns it.
+				tokenId: data.token_id
 			}
 		],
 		rawResourceData: data

@@ -21,7 +21,7 @@
 		{ name: 'Contract Add', value: nftData.contractAddress },
 		{ name: 'Token Standard', value: nftData.contractType },
 		{ name: 'Creator Fee', value: '10%' },
-		{ name: 'Token ID', value: options.id },
+		{ name: 'Token ID', value: nftData.tokenId },
 		{ name: 'Blockchain', value: 'ETH' }
 	];
 

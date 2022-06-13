@@ -15,7 +15,8 @@
 
 	let rightSectionInstance;
 
-	$: console.log(options.rawResourceData);
+	// Log data that was used by the adapter to generate the CardPopup
+	$: console.debug('[Resource Data]:', options.rawResourceData);
 </script>
 
 <Popup class="w-full h-full rounded-none lg:rounded-xl lg:w-[64rem] lg:h-[40rem]" closeButton on:close={handler.close}>
@@ -29,7 +30,7 @@
 	<div class="flex flex-col h-full mx-10 lg:flex-row">
 		<!-- Left part with image and buttons -->
 		<div class="h-full lg:w-2/5">
-			<AssetContainer assetUrl={options.assetUrl} title={options.title} id={options.id} {options} favorited={false} />
+			<AssetContainer assetUrl={options.assetUrl} title={options.title} {options} favorited={false} />
 		</div>
 
 		<!-- Right part with info and actions -->

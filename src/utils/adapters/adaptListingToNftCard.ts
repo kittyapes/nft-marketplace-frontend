@@ -3,17 +3,14 @@ import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 import type { Listing } from '$utils/api/listing';
 
 export async function adaptListingToNftCard(data: Listing) {
-	console.log(data);
-
 	const nft = data.nfts[0].nft;
 
 	const popupOptions: CardPopupOptions = {
-		id: data.listingId,
 		title: data.title,
 		assetUrl: nft.assetUrl,
 		favorited: false,
 		resourceType: 'listing',
-		nftData: [{ metadata: nft.metadata, isInternalNft: true, contractType: 'ERC1155', creator: nft.creator, contractAddress: nft.contractAddress }],
+		nftData: [{ metadata: nft.metadata, isInternalNft: true, contractType: 'ERC1155', creator: nft.creator, contractAddress: nft.contractAddress, tokenId: nft.nftId }],
 		saleData: {
 			price: data.listing.price,
 			listingId: data.listingId

@@ -10,7 +10,6 @@
 
 	export let title: string;
 	export let assetUrl: string;
-	export let id: string;
 	export let favorited: boolean;
 	export let options: CardPopupOptions;
 

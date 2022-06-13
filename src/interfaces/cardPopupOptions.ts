@@ -5,9 +5,6 @@ export interface CardPopupOptions {
 	/** Title rendered on the left side of the popup. */
 	title: string;
 
-	/** TODO */
-	id: string;
-
 	/** Whether the like button should be filled or not. */
 	favorited: boolean;
 
@@ -22,6 +19,7 @@ export interface CardPopupOptions {
 			contractType: 'ERC1155';
 			creator: string;
 			contractAddress: string;
+			tokenId: string;
 		}
 	];
 
