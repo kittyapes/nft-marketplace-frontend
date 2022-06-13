@@ -24,10 +24,24 @@
 	let collections = [];
 	let loaded = false;
 	let eventId;
-	let userFetchingOptions = {
-		currentFilter: {},
-		currentSort: {},
-		currentSearch: ''
+
+	interface userFetchingOptions {
+		filter: Partial<{
+			createdBefore: number;
+			role: string;
+			status: string;
+		}>;
+		sort: Partial<{
+			sortBy: string;
+			sortReversed: boolean;
+		}>;
+		query: string;
+	}
+
+	let userFetchingOptions: userFetchingOptions = {
+		filter: {},
+		sort: {},
+		query: ''
 	};
 
 	let tableData: TableCol[] = [];
@@ -68,11 +82,11 @@
 	};
 
 	let getUsersFetchingOptions = () => {
-		return { ...userFetchingOptions.currentFilter, query: userFetchingOptions.currentSearch, ...userFetchingOptions.currentSort };
+		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort };
 	};
 
 	let handleTableEvent = async (event: CustomEvent) => {
-		userFetchingOptions.currentSort = {
+		userFetchingOptions.sort = {
 			sortBy: event.detail.sortBy,
 			sortReversed: event.detail.sortReversed
 		};
@@ -82,17 +96,12 @@
 	};
 
 	let handleFilter = async (event: CustomEvent) => {
-		userFetchingOptions.currentFilter = {
-			//createdBefore: event.detail.createdBefore ? event.detail.createdBefore : undefined,
-			role: event.detail.role ? event.detail.role : userFetchingOptions.currentFilter.role,
-			status: event.detail.status ? event.detail.status : userFetchingOptions.currentFilter.status
+		userFetchingOptions.filter = {
+			createdBefore: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdBefore,
+			role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
+			status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status
 		};
-		// 🔥 fix
-		if (mode === 'USER' && event.detail.createdBefore) {
-			console.log('LOCAL', userFetchingOptions.currentFilter);
-			users = await getUsers(getUsersFetchingOptions());
-			users = users.filter((u) => dayjs(u.createdAt).isAfter(dayjs(event.detail.createdBefore * 1000)));
-		} else if (mode === 'USER') users = await getUsers(getUsersFetchingOptions());
+		if (mode === 'USER') users = await getUsers(getUsersFetchingOptions());
 		else collections = event.detail.changeTo;
 	};
 
@@ -102,7 +111,7 @@
 		users = await getUsers(getUsersFetchingOptions());
 	};
 
-	$: if (userFetchingOptions.currentSearch) {
+	$: if (userFetchingOptions.query) {
 		debouncedSearch();
 	}
 
@@ -195,7 +204,7 @@
 		</div>
 		<div class="flex gap-4">
 			{#if mode === 'USER'}
-				<SearchBar bind:query={userFetchingOptions.currentSearch} placeholder={searchPlaceholder} />
+				<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
 				<div class="flex-grow" />
 				<div class="flex gap-10">
 					<div class="">
@@ -206,7 +215,7 @@
 					</div>
 				</div>
 			{:else}
-				<SearchBar bind:query={userFetchingOptions.currentSearch} placeholder={searchPlaceholder} />
+				<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
 				<div class="flex-grow" />
 				<div class="flex gap-10">
 					<Filter options={roleFilterOptions} icon={UserManage} />
