@@ -87,7 +87,7 @@ export interface Listing {
 		_id: string;
 		nftId: string;
 		amount: number;
-		nft: { assetUrl: string; thumbnailUrl: string; favoriteCount: number };
+		nft: { assetUrl: string; thumbnailUrl: string; favoriteCount: number; metadata: any };
 	}[];
 	paymentTokenTicker: 'ETH';
 	paymentTokenAddress: string;
@@ -99,6 +99,7 @@ export interface Listing {
 	coverImageUrl: string;
 	createdAt: string;
 	updatedAt: string;
+	seller: string;
 }
 
 export interface listingFetchingFilters {
@@ -109,12 +110,12 @@ export interface listingFetchingFilters {
 
 export async function getListings(filters?: listingFetchingFilters) {
 	const params = {
-		limit: 100,
+		limit: 100
 		//type: filters?.type,
 		//collecitonId: filters?.collectionId,
 		//price: filters?.price,
-	}
-	const res = await axios.get(getApiUrl('latest', 'listings'), {params});
+	};
+	const res = await axios.get(getApiUrl('latest', 'listings'), { params });
 
 	return res.data.data as Listing[];
 }
