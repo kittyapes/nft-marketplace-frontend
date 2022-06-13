@@ -1,20 +1,15 @@
 <script>
-	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
+	import { page } from '$app/stores';
+	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
+	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
-	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
+	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import { getListing } from '$utils/api/listing';
-	import { adaptListingToPopup } from '$utils/adapters/adaptListingToPopup';
-	import { setPopup } from '$utils/popup';
-	import NftDisplayPopup from '$lib/components/profile/NFTDisplayPopup.svelte';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
-	import { isAuthTokenExpired } from '$utils/auth/token';
-	import { currentUserAddress } from '$stores/wallet';
-	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
-	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
-	import { browser } from '$app/env';
+	import { setPopup } from '$utils/popup';
+	import { onMount } from 'svelte';
 
 	let sidebarOpen;
 
@@ -23,13 +18,9 @@
 		if ($page.url.searchParams.has('id')) {
 			const id = $page.url.searchParams.get('id');
 			const listing = await getListing(id);
-			const adaptedListing = adaptListingToPopup(listing);
+			const popupOptions = (await adaptListingToNftCard(listing)).popupOptions;
 
-			setPopup(NftDisplayPopup, {
-				props: { options: adaptedListing },
-				onClose: () => removeUrlParam('id'),
-				unique: true
-			});
+			setPopup(CardPopup, { props: { options: popupOptions }, onClose: () => removeUrlParam('id') });
 		}
 	});
 </script>

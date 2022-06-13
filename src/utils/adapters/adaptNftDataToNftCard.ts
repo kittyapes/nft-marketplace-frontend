@@ -31,4 +31,3 @@ export async function adaptNftDataNftCard(nft: NftData) {
 	
 	return options;
 }
-	
