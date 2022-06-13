@@ -83,11 +83,16 @@
 
 	let handleFilter = async (event: CustomEvent) => {
 		userFetchingOptions.currentFilter = {
-			createdBefore: event.detail.createdBefore ? event.detail.createdBefore : undefined,
-			role: event.detail.role ? event.detail.role : undefined,
-			status: event.detail.status ? event.detail.status : undefined
+			//createdBefore: event.detail.createdBefore ? event.detail.createdBefore : undefined,
+			role: event.detail.role ? event.detail.role : userFetchingOptions.currentFilter.role,
+			status: event.detail.status ? event.detail.status : userFetchingOptions.currentFilter.status
 		};
-		if (mode === 'USER') users = await getUsers(getUsersFetchingOptions());
+		// 🔥 fix
+		if (mode === 'USER' && event.detail.createdBefore) {
+			console.log('LOCAL', userFetchingOptions.currentFilter);
+			users = await getUsers(getUsersFetchingOptions());
+			users = users.filter((u) => dayjs(u.createdAt).isAfter(dayjs(event.detail.createdBefore * 1000)));
+		} else if (mode === 'USER') users = await getUsers(getUsersFetchingOptions());
 		else collections = event.detail.changeTo;
 	};
 
@@ -104,7 +109,6 @@
 	$: if ($currentUserAddress && mode) createTable();
 
 	$: if (users) {
-		console.log(users);
 		tableData = [
 			{
 				gridSize: '3fr',
@@ -163,13 +167,14 @@
 	}
 
 	let roleFilterOptions = [
-		{ label: 'All' },
+		{ label: 'All', role: '' },
 		{ label: 'Super Admin', role: 'superadmin' },
 		{ label: 'Admin', role: 'admin' },
 		{ label: 'Verified Creator', role: 'verified_user' },
 		{ label: 'Blogger' },
 		{ label: 'Inactive', status: 'INACTIVATED' }
 	];
+
 	let filterOptions = [
 		{ label: 'Flagged' },
 		{ label: 'Joined 24 hrs ago', createdBefore: dayjs().subtract(1, 'hour').unix() },
