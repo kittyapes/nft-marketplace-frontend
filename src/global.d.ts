@@ -1,11 +1,5 @@
 /// <reference types="@sveltejs/kit" />
 
-declare global {
-	interface Number {
-		noExponents: () => string;
-	}
-}
-
 interface ClaimsObject {
 	merkleRoot: string;
 	user: {

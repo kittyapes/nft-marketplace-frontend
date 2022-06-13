@@ -21,7 +21,7 @@
 	import { adaptTokenDataToNftCard } from '$utils/adapters/adaptTokenDataToNftCard';
 	import { userHasRole } from '$utils/auth/userRoles';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
-	import { getListings, Listing } from '$utils/api/listing';
+	import { getListings, type Listing } from '$utils/api/listing';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import type { NftCardOptions } from '$interfaces/nftCardOptions';
 	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
@@ -121,12 +121,16 @@
 	const fetchFavoriteNfts = async (address: string) => {
 		const favorites = await getUserFavoriteNfts(address);
 		console.log(favorites);
-		favoriteNfts = await Promise.all(favorites.map((f) => adaptNftDataNftCard(f.nft)));
+		favoriteNfts = favorites && (await Promise.all(favorites.map((f) => adaptNftDataNftCard(f.nft))));
 	};
 
 	onMount(() => {
-		fetchCreatedNfts() && fetchActiveListing() && fetchFavoriteNfts(address);
+		fetchCreatedNfts() && fetchActiveListing();
 	});
+
+	$: if ($currentUserAddress) {
+		fetchFavoriteNfts($currentUserAddress);
+	}
 </script>
 
 <div class="h-72 bg-color-gray-light">

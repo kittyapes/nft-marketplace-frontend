@@ -12,6 +12,8 @@
 	import { setPopup } from '$utils/popup';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 	import { fade } from 'svelte/transition';
+	import getTimeRemaining from '$utils/timeRemaining';
+	import { onMount } from 'svelte';
 
 	export let options: NftCardOptions;
 
@@ -39,11 +41,75 @@
 
 		const favouriteNftRes = await favoriteNft(options.id);
 	}
+
+	let time = new Date();
+	let interval = null;
+
+	onMount(() => {
+		if (options.startTime && options.isTimeActive) {
+			// Update every minute
+			interval = setInterval(() => {
+				time = new Date(Date.now());
+			}, 60000);
+		}
+		return () => {
+			clearInterval(interval);
+		};
+	});
+
+	$: saleHasStarted = false;
+
+	$: timeRemainingToSaleStart = null;
+	$: timeRemainingToSaleEnd = null;
+
+	$: ((_time) => {
+		if (_time && options.startTime && options.isTimeActive) {
+			saleHasStarted = options.isTimeActive && options.startTime.getTime() < Date.now();
+
+			timeRemainingToSaleStart = getTimeRemaining(options.startTime.toISOString(), new Date().toISOString());
+			timeRemainingToSaleEnd = getTimeRemaining(new Date().toISOString(), options.startTime.toISOString());
+
+			if (!options.startTime && !options.isTimeActive && timeRemainingToSaleStart.total < 0 && timeRemainingToSaleEnd.total < 0 && interval) {
+				clearInterval(interval);
+			}
+		}
+	})(time);
 </script>
 
 <!-- Added a maximum width to prevent the card from extending its bounds when its only one card  -->
 <div class="relative p-4 overflow-hidden border rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options?.getPopupProps}>
 	<div class="flex items-center gap-x-2">
+		<!-- Listing Timer If The Time has not Expired Yet or Listing isn't live -->
+		{#if options.startTime}
+			{#if options.isTimeActive}
+				<div class="listing-timer text-[10px] font-bold uppercase">
+					{#if !saleHasStarted && timeRemainingToSaleStart.total > 0}
+						<span class="bg-gradient-to-r bg-clip-text from-color-purple to-color-blue text-transparent">Starting In:</span>
+						{#if timeRemainingToSaleStart.days > 0}
+							{timeRemainingToSaleStart.days}D
+						{/if}
+						{#if timeRemainingToSaleStart.hours > 0}
+							{timeRemainingToSaleStart.hours}H
+						{/if}
+						{timeRemainingToSaleStart.minutes}MIN
+					{:else if timeRemainingToSaleEnd.total > 0}
+						<span class="text-color-red">Ending In:</span>
+						{#if timeRemainingToSaleEnd.days > 0}
+							{timeRemainingToSaleEnd.days}D
+						{/if}
+						{#if timeRemainingToSaleEnd.hours > 0}
+							{timeRemainingToSaleEnd.hours}H
+						{/if}
+						{timeRemainingToSaleEnd.minutes}MIN
+					{:else}
+						LIVE!
+					{/if}
+				</div>
+			{:else}
+				<div class="listing-timer text-[10px] font-bold uppercase text-color-red">Expired</div>
+			{/if}
+		{/if}
+
 		<!-- Remove && false to show options -->
 		<!-- Owned by user -->
 		{#if false}

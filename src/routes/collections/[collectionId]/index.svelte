@@ -9,7 +9,8 @@
 	import NftList from '$lib/components/NftList.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionNftToNftCard } from '$utils/adapters/adaptCollectionNftToNftCard';
-	import { apiGetCollection, Collection } from '$utils/api/collection';
+	import { apiGetCollection } from '$utils/api/collection';
+	import type { Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
