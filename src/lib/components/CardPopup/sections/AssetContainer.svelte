@@ -6,6 +6,7 @@
 	import { favoriteNft } from '$utils/nfts/favoriteNft';
 	import { noTryAsync } from 'no-try';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import { fadeImageOnLoad } from '$utils/actions/fadeImageOnLoad';
 
 	export let title: string;
 	export let assetUrl: string;
@@ -63,17 +64,17 @@
 <!-- NFT Image side-->
 <div class="flex flex-col justify-center w-full h-full text-center">
 	<!-- Asset render container -->
-	<div class="flex items-center self-center justify-center object-contain w-full max-w-lg">
+	<div class="flex items-center self-center justify-center object-contain w-full max-w-lg overflow-hidden bg-gray-100 aspect-1 rounded-xl">
 		{#await preload(assetUrl)}
 			<Loader />
 		{:then}
 			{#if fileType === 'video'}
-				<video class="max-w-full max-h-full shadow-xl rounded-xl" autoplay loop bind:this={videoAsset}>
+				<video class="max-w-full max-h-full shadow-xl" autoplay loop bind:this={videoAsset}>
 					<source src={assetUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
 			{:else if fileType === 'image'}
-				<img src={assetUrl} class="object-cover w-full h-full shadow-xl rounded-xl" alt="Card asset." />
+				<img src={assetUrl} class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
 			{/if}
 		{/await}
 	</div>
