@@ -3,6 +3,9 @@
 
 	export let options: CardPopupOptions;
 
+	// Never show the back button on this tab
+	export const showBackButton = false;
+
 	$: properties = [
 		{ name: 'Creator', value: options.creator },
 		{ name: 'Collection name', value: options.metadata?.name },

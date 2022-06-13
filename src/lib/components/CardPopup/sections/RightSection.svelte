@@ -6,12 +6,21 @@
 
 	export let options: CardPopupOptions;
 
+	// The back button is controlled by dynamic components
+	export let showBackButton: boolean;
+
 	const tabs = [
 		{ text: 'Info', icon: 'info', sectionComponent: InfoSection, visible: true },
 		{ text: 'Trade', icon: 'trade', sectionComponent: TradeSection, visible: options.resourceType === 'listing' }
 	];
 
 	let selectedTab = tabs[0];
+
+	export function goBack() {
+		tabComponentInstance.goBack?.();
+	}
+
+	let tabComponentInstance;
 </script>
 
 <div class="flex flex-col h-full pl-8 overflow-hidden">
@@ -25,5 +34,5 @@
 		{/each}
 	</div>
 
-	<svelte:component this={selectedTab.sectionComponent} {options} on:close-popup />
+	<svelte:component this={selectedTab.sectionComponent} {options} on:close-popup bind:showBackButton bind:this={tabComponentInstance} />
 </div>

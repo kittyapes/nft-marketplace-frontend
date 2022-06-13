@@ -5,6 +5,11 @@
 	import SuccessState from './sale/SuccessState.svelte';
 
 	export let options: CardPopupOptions;
+	export let showBackButton = false;
+
+	export function goBack() {
+		selectedState = states[0];
+	}
 
 	const states = [
 		{ name: 'browse', component: BrowseState },
@@ -17,6 +22,8 @@
 	function handleSetState(e) {
 		selectedState = states.find((s) => s.name === e.detail.name);
 	}
+
+	$: showBackButton = selectedState !== states[0];
 </script>
 
 {#if selectedState}
