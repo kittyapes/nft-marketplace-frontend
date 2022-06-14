@@ -4,7 +4,8 @@ export function adaptCollectionToMintingDropdown(collection: Collection) {
 	let options = {
 		label: collection.name,
 		value: collection.id,
-		iconUrl: collection.logoImageUrl,
-	}
+		iconUrl: collection.logoImageUrl
+	};
+  
 	return options;
 }

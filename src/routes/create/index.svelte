@@ -88,7 +88,7 @@
 			name: nftData.name,
 			creator: $currentUserAddress,
 			image: nftData.fileBlob,
-			animation: nftData.animationBlob
+			animation: nftData.animationBlob,
 		});
 
 		if (!createNftRes) {
@@ -123,12 +123,16 @@
 	}
 
 	const handleCollectionSelection = (event) => {
+		console.log(event);
+
 		nftData.collectionName = event.detail?.label;
 		selectedCollectionId = event.detail?.value;
 		if (event.detail?.label === 'Create new collection') {
 			goto('collections/new/edit?to=create');
 		}
 	};
+
+	$: console.log('collectionId', selectedCollectionId);
 
 	$: quantityValid = nftData.quantity > 0;
 	$: inputValid = nftData.name && selectedCollectionId && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;

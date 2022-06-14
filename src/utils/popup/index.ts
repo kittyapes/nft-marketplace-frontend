@@ -55,8 +55,6 @@ export function setPopup(component: any, options: PopupOptions = defaultOptions)
 		close: () => {
 			const canBeClosed = options.onClose ? options.onClose() !== false : true;
 
-			console.log({ canBeClosed });
-
 			if (canBeClosed) {
 				popupStack.update((stack) => {
 					return stack.filter((item) => item.id !== id);

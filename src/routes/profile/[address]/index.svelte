@@ -65,6 +65,8 @@
 	let nftsPage = 0;
 
 	const fetchCreatedNfts = async () => {
+		console.log('fetching');
+
 		try {
 			nftsPage += 1;
 			const fetchNftsResponse = await getUserNfts(address, nftsPage);
