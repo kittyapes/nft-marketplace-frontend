@@ -53,16 +53,14 @@
 	onMount(async () => {
 		profileData.set(await fetchProfileData($currentUserAddress));
 
-		let collections: Collection[] = await apiSearchCollections();
+		let collections: Collection[] = await apiSearchCollections($currentUserAddress);
 
 		if (nftData.collectionName) {
 			let selectedCollection = collections.filter((c) => c.name === nftData.collectionName)[0];
 			selectedCollectionRow = adaptCollectionToMintingDropdown(selectedCollection);
 			selectedCollectionId = selectedCollection.id;
 		}
-
-		// console.log(collections.filter((c) => c.slug && c.creator === $currentUserAddress));
-		$availableCollections = collections.filter((c) => c.slug && c.creator === $currentUserAddress).map(adaptCollectionToMintingDropdown);
+		$availableCollections = collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown);
 	});
 
 	beforeNavigate(() => {
@@ -89,7 +87,7 @@
 			name: nftData.name,
 			creator: $currentUserAddress,
 			image: nftData.fileBlob,
-			animation: nftData.animationBlob
+			animation: nftData.animationBlob,
 		});
 
 		console.log(createNftRes);
@@ -126,12 +124,16 @@
 	}
 
 	const handleCollectionSelection = (event) => {
+		console.log(event);
+
 		nftData.collectionName = event.detail?.label;
 		selectedCollectionId = event.detail?.value;
-		if (event.detail?.label === 'Create a new collection') {
+		if (event.detail?.label === 'Create new collection') {
 			goto('collections/new/edit?to=create');
 		}
 	};
+
+	$: console.log('collectionId', selectedCollectionId);
 
 	$: quantityValid = nftData.quantity > 0;
 	$: inputValid = nftData.name && selectedCollectionId && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
@@ -203,7 +205,7 @@
 					on:select={handleCollectionSelection}
 					options={[
 						...$availableCollections.filter((item) => $availableCollections.filter((_item) => _item.label === item.label).length <= 1),
-						{ label: 'Create a new collection', value: 'collection/new/edit' }
+						{ label: 'Create new collection', value: 'collection/new/edit' }
 					]}
 					class="mt-2"
 					btnClass="font-semibold"

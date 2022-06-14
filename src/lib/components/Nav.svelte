@@ -14,7 +14,11 @@
 
 	const closeModalIfNotInElement = (e) => {
 		// Click is not on the profile button or popup element
-		if (!e.target.closest('#profile-button') && !e.target.closest('#profile-popup-parent')) {
+		if (!e.target.closest('#profile-button') && !e.target.closest('#profile-popup-parent') && !e.target.closest('#profile-popup-container')) {
+			displayProfilePopup = false;
+		}
+
+		if (e.target.closest('.profile-btn-item')) {
 			displayProfilePopup = false;
 		}
 	};

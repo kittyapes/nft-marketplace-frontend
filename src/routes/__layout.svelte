@@ -1,3 +1,11 @@
+<script context="module">
+	export const load = async ({ url }) => ({
+		props: {
+			url: url.href
+		}
+	});
+</script>
+
 <script lang="ts">
 	import '$styles/app.css';
 	import Footer from '$lib/components/Footer.svelte';
@@ -17,6 +25,9 @@
 	import ErrorManager from '$lib/components/ErrorManager.svelte';
 	import { currentError } from '$stores/error';
 	import ErrorPage from '$lib/components/ErrorPage.svelte';
+	import PageTransition from '$lib/components/PageTransition.svelte';
+
+	export let url;
 
 	onMount(async () => {
 		// Check for whether user has access/has provided password
@@ -70,9 +81,11 @@
 {#if $currentError}
 	<ErrorPage />
 {:else}
-	<div class="pt-16 mx-auto">
-		<slot />
-	</div>
+	<PageTransition {url}>
+		<div class="pt-16 mx-auto">
+			<slot />
+		</div>
+	</PageTransition>
 {/if}
 
 <Footer />

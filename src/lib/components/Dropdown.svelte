@@ -54,7 +54,7 @@
 			{#each options as option}
 				<button class="w-full px-4 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded flex items-center gap-x-2" on:click={() => handleOptionSelect(option)}>
 					{#if option.iconUrl}
-						<img src={option.iconUrl} alt="" class="w-6" />
+						<img src={option.iconUrl} alt="" class="w-6 h-6 object-cover rounded-full" />
 					{/if}
 					{option.label}
 				</button>

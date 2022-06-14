@@ -3,12 +3,9 @@
 	import Heart from '$icons/heart.svelte';
 	import ThreeDots from '$icons/three-dots.svelte';
 	import { currentUserAddress } from '$stores/wallet';
-	import { createMintedNFTOnAPI, createNFTOnAPI } from '$utils/create/createNFT';
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { favoriteNft } from '$utils/nfts/favoriteNft';
-	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
-	import { getUsersThatFavoritedNft } from '$utils/nfts/getUsersThatFavoritedNft';
 	import { setPopup } from '$utils/popup';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 	import { fade } from 'svelte/transition';
@@ -24,17 +21,12 @@
 	const toggleDots = () => (dotsOpened = !dotsOpened);
 
 	function handleClick() {
-		if (!options.getPopupProps) return;
-
 		addUrlParam('id', options.id);
-		options.getPopupProps().then((props) => {
-			console.log(props);
-			setPopup(options.popupComponent, { props, onClose: () => removeUrlParam('id') });
-		});
+		setPopup(options.popupComponent, { props: { options: { ...options.popupOptions, favorited: options.favorite } }, onClose: () => removeUrlParam('id') });
 	}
 
 	async function favNFT() {
-		if (!$currentUserAddress || !options.getPopupProps) return;
+		if (!$currentUserAddress || !options.popupOptions) return;
 		options.favorite ? (likes = likes - 1) : (likes = likes + 1);
 		// change status first for quick feedback
 		options.favorite = !options.favorite;
@@ -77,7 +69,7 @@
 </script>
 
 <!-- Added a maximum width to prevent the card from extending its bounds when its only one card  -->
-<div class="relative p-4 overflow-hidden border rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options?.getPopupProps}>
+<div class="relative p-4 overflow-hidden border rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options?.popupOptions}>
 	<div class="flex items-center gap-x-2">
 		<!-- Listing Timer If The Time has not Expired Yet or Listing isn't live -->
 		{#if options.startTime}

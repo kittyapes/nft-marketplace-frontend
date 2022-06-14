@@ -1,16 +1,15 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { browser } from '$app/env';
 
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { UserData } from '$interfaces/userData';
 	import ActionMenu from '$lib/components/ActionMenu.svelte';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
-	import Dropdown from '$lib/components/Dropdown.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import { currentUserAddress } from '$stores/wallet';
-	import { adaptCollectionNftToNftCard } from '$utils/adapters/adaptCollectionNftToNftCard';
-	import { apiGetCollection } from '$utils/api/collection';
-	import type { Collection } from '$utils/api/collection';
+	import { apiNftToNftCard } from '$utils/adapters/apiNftToNftCard';
+	import { apiGetCollection, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
@@ -47,7 +46,7 @@
 	let showCollectionMenu = false;
 </script>
 
-<main class="mx-auto px-16">
+<main class="px-16 mx-auto">
 	<div class="relative mt-8">
 		<!-- Cover image -->
 		<img
@@ -58,35 +57,30 @@
 		/>
 
 		<!-- Creator profile image -->
-		<div class="absolute left-0 right-0 bottom-0 mx-auto w-24 h-24 translate-y-5">
-			<img
-				class="rounded-full
-					border-4 border-white h-full bg-white"
-				src={creatorData?.thumbnailUrl || '/svg/icons/guest-avatar.svg'}
-				alt="Collection creator avatar."
-			/>
+		<div class="absolute bottom-0 left-0 right-0 w-24 h-24 mx-auto translate-y-5">
+			<img class="h-full bg-white border-4 border-white rounded-full" src={creatorData?.thumbnailUrl || '/svg/icons/guest-avatar.svg'} alt="Collection creator avatar." />
 
 			<!-- Verified creator badge -->
-			<img class="right-0 absolute -translate-y-8" src="/svg/icons/verified-creator-badge.svg" alt="Verified creator badge." />
+			<img class="absolute right-0 -translate-y-8" src="/svg/icons/verified-creator-badge.svg" alt="Verified creator badge." />
 		</div>
 	</div>
 
 	<!-- Collection title -->
-	<h1 class="mx-auto max-w-max mt-8 text-2xl font-semibold">
+	<h1 class="mx-auto mt-8 text-2xl font-semibold max-w-max">
 		{#if collectionData}
 			{collectionData?.name || 'N/A'}
 		{:else}
-			<div class="h-8 w-32 bg-gray-100 rounded-lg" />
+			<div class="w-32 h-8 bg-gray-100 rounded-lg" />
 		{/if}
 	</h1>
 
 	<!-- Creator username and address -->
-	<div class="flex justify-center items-center space-x-3 mt-2">
-		<div class="text-color-gradient text-xl max-w-max font-medium font-poppins">
+	<div class="flex items-center justify-center mt-2 space-x-3">
+		<div class="text-xl font-medium text-color-gradient max-w-max font-poppins">
 			{#if creatorData}
 				@{creatorData?.username}
 			{:else}
-				<div class="h-8 w-32 bg-gray-100 rounded-lg" />
+				<div class="w-32 h-8 bg-gray-100 rounded-lg" />
 			{/if}
 		</div>
 
@@ -95,40 +89,40 @@
 			{#if creatorData}
 				<div class="font-mono text-[#6E6E6E] text-sm">{shortenAddress(creatorData?.address)}</div>
 			{:else}
-				<div class="h-5 w-24 bg-gray-200 rounded-lg" />
+				<div class="w-24 h-5 bg-gray-200 rounded-lg" />
 			{/if}
 		</button>
 	</div>
 
 	<!-- Stats table -->
 	{#if collectionData}
-		<div class="border border-black h-24 flex rounded-lg justify-evenly mt-8 max-w-3xl mx-auto">
+		<div class="flex h-24 max-w-3xl mx-auto mt-8 border border-black rounded-lg justify-evenly">
 			{#each collectionStats as [stat, value]}
-				<div class="flex flex-col items-center justify-center border-r border-black last:border-0 w-full">
+				<div class="flex flex-col items-center justify-center w-full border-r border-black last:border-0">
 					<div class="text-sm">{stat}</div>
-					<div class="text-xl font-semibold mt-1">{value}</div>
+					<div class="mt-1 text-xl font-semibold">{value}</div>
 				</div>
 			{/each}
 		</div>
 	{:else}
-		<div class="h-24 bg-gray-100 rounded-lg mt-8 max-w-3xl mx-auto" />
+		<div class="h-24 max-w-3xl mx-auto mt-8 bg-gray-100 rounded-lg" />
 	{/if}
 
 	<!-- Share and menu buttons -->
-	<div class="flex space-x-4 mt-6 justify-center">
+	<div class="flex justify-center mt-6 space-x-4">
 		<!-- Share button -->
-		<button class="btn rounded-full border border-black w-14 h-14 grid place-items-center" on:click={copyUrlToClipboard}>
+		<button class="grid border border-black rounded-full btn w-14 h-14 place-items-center" on:click={copyUrlToClipboard}>
 			<img src="/svg/icons/collection-upload.svg" alt="Share." />
 		</button>
 
 		<!-- Menu button -->
-		<button class="btn rounded-full border border-black w-14 h-14 grid place-items-center" bind:this={menuButton} on:click={() => (showCollectionMenu = !showCollectionMenu)}>
+		<button class="grid border border-black rounded-full btn w-14 h-14 place-items-center" bind:this={menuButton} on:click={() => (showCollectionMenu = !showCollectionMenu)}>
 			<img src="/svg/icons/collection-menu.svg" alt="Upload." />
 		</button>
 	</div>
 
 	<div class="mt-16 border-t border-[#0000004D]">
-		<NftList options={collectionData ? collectionData.nfts.map(adaptCollectionNftToNftCard) : []} />
+		<NftList options={collectionData ? collectionData.nfts.map((nftData) => apiNftToNftCard(nftData, { collection: collectionData })) : []} />
 	</div>
 </main>
 

@@ -1,0 +1,31 @@
+<script lang="ts">
+	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import BrowseState from './sale/BrowseState.svelte';
+	import ErrorState from './sale/ErrorState.svelte';
+	import SuccessState from './sale/SuccessState.svelte';
+
+	export let options: CardPopupOptions;
+	export let showBackButton = false;
+
+	export function goBack() {
+		selectedState = states[0];
+	}
+
+	const states = [
+		{ name: 'browse', component: BrowseState },
+		{ name: 'success', component: SuccessState },
+		{ name: 'error', component: ErrorState }
+	];
+
+	let selectedState = states[0];
+
+	function handleSetState(e) {
+		selectedState = states.find((s) => s.name === e.detail.name);
+	}
+
+	$: showBackButton = selectedState !== states[0];
+</script>
+
+{#if selectedState}
+	<svelte:component this={selectedState.component} {options} on:set-state={handleSetState} on:close-popup />
+{/if}
