@@ -3,10 +3,12 @@
 
 	import { page } from '$app/stores';
 	import AddIcon from '$icons/add-icon.svelte';
+	import EditIconWhite from '$icons/edit-icon-white.svelte';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import GoBackHeader from '$lib/components/marketplace/UniversalPopup/GoBackHeader.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { apiSearchCollections } from '$utils/api/collection';
+	import { log } from '$utils/debug';
 
 	let collections = [];
 	let loaded = true;
@@ -39,6 +41,13 @@
 			{/if}
 			{#each collections as collection}
 				<div class="collection-card collection-card-with-image">
+					<div class="click-zone" class:click-zone-shadow={$currentUserAddress === $page.params.address} on:click={() => goto(`/collections/${collection.name}`)} />
+					{#if $currentUserAddress === $page.params.address}
+						<button class="edit-icon" on:click|stopPropagation={() => $currentUserAddress === $page.params.address && goto(`/collections/${collection.name}/edit`)}>
+							<EditIconWhite />
+							Edit
+						</button>
+					{/if}
 					<div class="collection-banner" style="background-image: url('{collection.backgroundImageUrl}')">
 						<div class="collection-image" style="background-image: url('{collection.logoImageUrl}')" />
 					</div>
@@ -74,6 +83,28 @@
 
 	.collection-card {
 		@apply flex flex-col items-center justify-evenly min-w-[270px] min-h-[220px];
+		@apply cursor-pointer relative transition-all;
+	}
+
+	.click-zone {
+		@apply absolute top-0 left-0 right-0 bottom-0 z-10;
+	}
+
+	.edit-icon {
+		@apply absolute top-2 right-2 w-16 rounded-3xl text-sm px-2 py-1 z-10;
+		@apply hidden text-white items-center justify-evenly bg-gray-600;
+	}
+
+	.collection-card:hover {
+		@apply scale-105;
+	}
+
+	.collection-card:hover > .edit-icon {
+		@apply flex;
+	}
+
+	.collection-card:hover > .click-zone-shadow {
+		@apply bg-white bg-opacity-25;
 	}
 
 	.add-collection-btn {
