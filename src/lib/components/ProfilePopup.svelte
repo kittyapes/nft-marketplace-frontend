@@ -15,26 +15,26 @@
 	});
 </script>
 
-<div id="container" class="absolute bg-white w-72 top-20 right-4 rounded-2xl z-10 px-4 py-4 overflow-hidden" transition:slide>
+<div id="profile-popup-container" class="absolute bg-white w-72 top-20 right-4 rounded-2xl z-10 px-4 py-4 overflow-hidden" transition:slide>
 	<div class="grid gap-2">
-		<Button variant="rounded-outline" class="!w-full !py-2" on:click={() => goto(`/profile/${$currentUserAddress}`)}>My Profile</Button>
+		<Button variant="rounded-outline" class="profile-btn-item !w-full !py-2" on:click={() => goto(`/profile/${$currentUserAddress}`)}>My Profile</Button>
 		{#if showDashboard}
-			<Button variant="rounded-outline" --width="100%" --py="0.5rem" on:click={() => goto('/admin')}>Dashboard</Button>
+			<Button variant="rounded-outline" class="profile-btn-item" --width="100%" --py="0.5rem" on:click={() => goto('/admin')}>Dashboard</Button>
 		{/if}
-		<Button variant="rounded-outline" --width="100%" --py="0.5rem" on:click={() => goto(`/profile/${$profileData.address}/collections`)}>My Collections</Button>
-		<Button variant="rounded-outline" class="bg-red-200" --width="100%" --py="0.5rem" on:click={() => alert('Not Implemented Yet')}>Buy Hinata</Button>
+		<Button variant="rounded-outline" class="profile-btn-item" --width="100%" --py="0.5rem" on:click={() => goto(`/profile/${$profileData.address}/collections`)}>My Collections</Button>
+		<Button variant="rounded-outline" class="profile-btn-item bg-red-200" --width="100%" --py="0.5rem" on:click={() => alert('Not Implemented Yet')}>Buy Hinata</Button>
 	</div>
 
 	<div class="h-px bg-color-gray-light my-3" />
 
-	<button class="flex w-full transition-btn" on:click={disconnectWallet}>
+	<button class="flex w-full transition-btn profile-btn-item" id="nav-disconnect-btn" on:click={disconnectWallet}>
 		<span class="uppercase flex-grow text-left font-semibold">Disconnect</span>
 		<Disconnect />
 	</button>
 </div>
 
 <style>
-	#container {
+	#profile-popup-container {
 		box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.12);
 	}
 </style>
