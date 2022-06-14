@@ -1,14 +1,16 @@
-import { api } from '$constants/api';
+	import { api } from '$constants/api';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
 import type { UserRole } from 'src/interfaces/userData';
+import { getApiUrl } from '.';
 
-export async function addUserRole(address: string, role: UserRole) {
+export async function addUserRole(address: string, roles: UserRole[]) {
+	console.log(address, roles);
 	const res = await axios
 		.put(
-			api + '/v1/admins/' + address,
+			getApiUrl('latest', 'admins/' + address),
 			{
-				roles: role
+				roles
 			},
 			getAxiosConfig()
 		)

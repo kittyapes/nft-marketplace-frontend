@@ -128,7 +128,7 @@
 	</div>
 
 	<div class="mt-16 border-t border-[#0000004D]">
-		<NftList data={collectionData ? collectionData.nfts.map(adaptCollectionNftToNftCard) : []} />
+		<NftList options={collectionData ? collectionData.nfts.map(adaptCollectionNftToNftCard) : []} />
 	</div>
 </main>
 

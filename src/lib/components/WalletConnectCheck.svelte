@@ -1,6 +1,6 @@
 <!-- Checks whether a wallet is connected. Displays a popup if not. -->
 <script lang="ts">
-	import { PopupHandler, setPopup } from '$utils/popup';
+	import { type PopupHandler, setPopup } from '$utils/popup';
 	import { WalletState, walletState } from '$utils/wallet';
 	import LoaderPopup from './LoaderPopup.svelte';
 	import WalletNotConnectedPopup from './WalletNotConnectedPopup.svelte';
