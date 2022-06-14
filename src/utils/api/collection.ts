@@ -135,10 +135,19 @@ export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[
 	return res.data.data;
 }
 
-export async function apiSearchCollections() {
+export async function apiSearchCollections(creatorAddress: string | null = null, name: string | null = null, limit: number = 100, page: number = 1) {
 	const params = {
-		limit: 100
+		limit: limit ?? 100,
+		page: page ?? 1
 	};
+
+	if (name) {
+		params['query'] = name;
+	}
+
+	if (creatorAddress) {
+		params['creator'] = creatorAddress;
+	}
 
 	// TODO shouldn't require token, but the backend wasn't updated yet
 	const res = await axios.get(getApiUrl('v2', 'collections/search'), { ...getAxiosConfig(), params });

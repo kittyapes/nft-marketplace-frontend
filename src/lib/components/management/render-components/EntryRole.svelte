@@ -1,5 +1,8 @@
 <script lang="ts">
+	import type { UserRole } from '$interfaces/userData';
+
 	import CheckboxDropdown from '$lib/components/CheckboxDropdown.svelte';
+	import { addUserRole } from '$utils/api/addUserRole';
 	import ColumnComponentContainer from '../ColumnComponentContainer.svelte';
 
 	export let props;
@@ -10,15 +13,17 @@
 		localProps = props;
 		localProps.role = localProps.role.toLowerCase();
 		if (props.role === 'superadmin') localProps.role = 'sadmin';
-		else if (props.role === 'inactivated') localProps.role = 'inactive';
+		else if (props.role === 'inactivated_user' || props.role === 'inactivated') localProps.role = 'inactive';
+		else if (props.role === 'verified_user') localProps.role = 'verified';
 	}
 
-	let handleSelect = (event: CustomEvent) => {
-		if (event.detail.options?.label === 'admin') {
-			//promote to admin
-		} else if (event.detail.options?.label === 'verified') {
-			//promote to verified
-		}
+	let handleSelect = async (event: CustomEvent) => {
+		let roles: UserRole[] = [];
+		console.log(event);
+		event.detail?.forEach((e) => {
+			if (e.checked) roles.push(e.value);
+		});
+		const res = await addUserRole(props.id, roles);
 	};
 </script>
 

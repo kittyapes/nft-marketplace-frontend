@@ -4,10 +4,20 @@ import axios from 'axios';
 import type { UserData } from 'src/interfaces/userData';
 import { getApiUrl } from '..';
 
-export const getUsers = async (sortBy: string = 'ALPHABETIC', query?: string, sortReversed: boolean = false) => {
+export interface FetchUsersOptions  {
+    sortBy?: string,
+    query?: string,
+    sortReversed?: boolean,
+    role?: string,
+    createdBefore?: number,
+    status?: string,
+}
+
+export const getUsers = async (options?: FetchUsersOptions) => {
+    if (options && !options.query) options.query = undefined;
     try {
-        
-        const res = await axios.get(getApiUrl('latest', 'admins/users'), { params: { sortBy, sortReversed, query }, ...getAxiosConfig()});
+        console.log(options);
+        const res = await axios.get(getApiUrl('latest', 'admins/users'), { params: options , ...getAxiosConfig()});
         return res.data.data as UserData[];
     } catch {
         notifyError('Failed to fetch users');

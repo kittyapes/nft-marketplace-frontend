@@ -13,10 +13,10 @@
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
-	import { addNftsToCollection, apiGetCollection, apiSearchCollections, Collection } from '$utils/api/collection';
+	import { addNftsToCollection, apiGetCollection, apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
-	import { NewBundleData, newBundleData } from '$utils/create';
+	import { type NewBundleData, newBundleData } from '$utils/create';
 	import { createBundle } from '$utils/create/createBundle';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { getNftId } from '$utils/create/getNftId';
@@ -24,6 +24,7 @@
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
+	import { filter } from 'lodash-es';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -60,7 +61,7 @@
 			selectedCollectionId = selectedCollection.id;
 		}
 
-		console.log(collections.filter((c) => c.slug && c.creator === $currentUserAddress));
+		// console.log(collections.filter((c) => c.slug && c.creator === $currentUserAddress));
 		$availableCollections = collections.filter((c) => c.slug && c.creator === $currentUserAddress).map(adaptCollectionToMintingDropdown);
 	});
 
@@ -203,7 +204,10 @@
 				<Dropdown
 					selected={selectedCollectionRow || { label: 'No collection' }}
 					on:select={handleCollectionSelection}
-					options={[...$availableCollections, { label: 'Create a new collection', value: 'collection/new/edit' }]}
+					options={[
+						...$availableCollections.filter((item) => $availableCollections.filter((_item) => _item.label === item.label).length <= 1),
+						{ label: 'Create a new collection', value: 'collection/new/edit' }
+					]}
 					class="mt-2"
 					btnClass="font-semibold"
 				/>

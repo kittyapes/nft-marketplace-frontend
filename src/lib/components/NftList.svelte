@@ -22,7 +22,7 @@
 		const favorites = await getUserFavoriteNfts();
 		options.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length > 0));
 		data = options;
-
+		// console.log(data);
 		isLoading = false;
 	};
 </script>

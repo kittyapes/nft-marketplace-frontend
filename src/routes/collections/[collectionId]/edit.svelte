@@ -9,7 +9,8 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
 	import { writable } from 'svelte/store';
-	import { apiCreateCollection, apiGetCollection, apiUpdateCollection, Collection, getInitialCollectionData, UpdateCollectionOptions } from '$utils/api/collection';
+	import { apiCreateCollection, apiGetCollection, apiUpdateCollection, getInitialCollectionData } from '$utils/api/collection';
+	import type { Collection, UpdateCollectionOptions } from '$utils/api/collection';
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
 	import { tick } from 'svelte';
 	import { noTryAsync } from 'no-try';

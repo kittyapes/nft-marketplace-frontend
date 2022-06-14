@@ -10,7 +10,16 @@ export async function adaptListingToNftCard(data: Listing) {
 		assetUrl: nft.assetUrl,
 		favorited: false,
 		resourceType: 'listing',
-		nftData: [{ metadata: nft.metadata, isInternalNft: true, contractType: 'ERC1155', creator: nft.creator, contractAddress: nft.contractAddress, tokenId: nft.nftId }],
+		nftData: [
+			{
+				metadata: nft.metadata,
+				isInternalNft: true,
+				contractType: 'ERC1155',
+				creator: nft.creator,
+				contractAddress: nft.contractAddress,
+				tokenId: nft.nftId
+			}
+		],
 		saleData: {
 			price: data.listing.price,
 			listingId: data.listingId

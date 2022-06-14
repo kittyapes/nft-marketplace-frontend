@@ -3,7 +3,8 @@
 	import { socials } from '$constants/socials';
 	import CollectionsTable from '$lib/components/collections/CollectionsTable.svelte';
 	import { currentUserAddress } from '$stores/wallet';
-	import { apiGetMostActiveCollections, CollectionTableRow } from '$utils/api/collection';
+	import { apiGetMostActiveCollections } from '$utils/api/collection';
+	import type { CollectionTableRow } from '$utils/api/collection';
 
 	let collections: CollectionTableRow[] = [];
 
