@@ -58,7 +58,7 @@
 		if (nftData.collectionName) {
 			let selectedCollection = collections.filter((c) => c.name === nftData.collectionName)[0];
 			selectedCollectionRow = adaptCollectionToMintingDropdown(selectedCollection);
-			selectedCollectionId = selectedCollection._id;
+			selectedCollectionId = selectedCollection.id;
 		}
 
 		// console.log(collections.filter((c) => c.slug && c.creator === $currentUserAddress));
