@@ -58,7 +58,7 @@
 		if (nftData.collectionName) {
 			let selectedCollection = collections.filter((c) => c.name === nftData.collectionName)[0];
 			selectedCollectionRow = adaptCollectionToMintingDropdown(selectedCollection);
-			selectedCollectionId = selectedCollection._id;
+			selectedCollectionId = selectedCollection.id;
 		}
 
 		// console.log(collections.filter((c) => c.slug && c.creator === $currentUserAddress));
@@ -79,12 +79,11 @@
 		const progress = writable(0);
 		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
 
-		// Create NFT on the server
 		const nftId = await getNftId();
 		console.info('[Create] Using new NFT contract ID:', nftId);
 
+		// Create NFT on the server
 		const createNftRes = await createNFTOnAPI({
-			contractId: nftId,
 			description: nftData.description,
 			amount: nftData.quantity,
 			name: nftData.name,
