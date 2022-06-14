@@ -12,8 +12,10 @@ export async function adaptListingToNftCard(listing: Listing) {
 	// It has a start time and its ending time has not yet passed
 	const isTimeLive = hasAStartTime && new Date(listing.startTime).getTime() + listing.duration * 1000 > Date.now();
 
+	console.log(listing);
+
 	const options: NftCardOptions = {
-		id: listing.nfts[0]?.nftId,
+		id: listing.nfts[0]?.nft._id,
 		title: listing.title,
 		imageUrl: listing.thumbnailUrl ? listing.thumbnailUrl : listing.nfts[0]?.nft.thumbnailUrl,
 		animationUrl: listing.coverImageUrl ? listing.coverImageUrl : listing.nfts[0]?.nft.assetUrl,

@@ -87,7 +87,9 @@ export interface Listing {
 		_id: string;
 		nftId: string;
 		amount: number;
-		nft: { assetUrl: string; thumbnailUrl: string; favoriteCount: number };
+		nft: {
+			_id: string; assetUrl: string; thumbnailUrl: string; favoriteCount: number 
+};
 	}[];
 	paymentTokenTicker: 'ETH';
 	paymentTokenAddress: string;

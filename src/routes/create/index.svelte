@@ -92,13 +92,15 @@
 			animation: nftData.animationBlob
 		});
 
+		console.log(createNftRes);
+
 		if (!createNftRes) {
 			popupHandler.close();
 			return;
 		}
 
 		//add NFT to selected collection
-		const addNftsToCollectionRes = await addNftsToCollection([createNftRes.nftId], selectedCollectionId);
+		const addNftsToCollectionRes = await addNftsToCollection([createNftRes._id], selectedCollectionId);
 		console.log(addNftsToCollectionRes);
 
 		progress.set(50);
@@ -116,7 +118,7 @@
 		}
 
 		newBundleData.update((data) => {
-			return { ...data, id: createNftRes.nftId };
+			return { ...data, id: createNftRes._id };
 		});
 
 		progress.set(100);
