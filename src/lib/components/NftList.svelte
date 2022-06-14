@@ -35,9 +35,7 @@
 	{:else if data?.length}
 		<div class="nftGrid">
 			{#each data as tokenData}
-				{#if tokenData.title}
-					<NftCard options={tokenData} />
-				{/if}
+				<NftCard options={tokenData} />
 			{/each}
 		</div>
 	{/if}
