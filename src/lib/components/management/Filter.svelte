@@ -7,25 +7,11 @@
 
 	export let options: any;
 	export let icon: any;
-	export let entries: UserData[];
 	export let defaultOption = options?.[0];
 
-	let defaultEntries = entries;
-	let lastEvent;
-
 	let handleFilter = (event: CustomEvent) => {
-		lastEvent = event;
-		dispatch('filter', {
-			changeTo: defaultEntries.filter((e) => {
-				if (!event.detail.cb) return false;
-				return event.detail.cb(e);
-			})
-		});
+		dispatch('filter', event.detail);
 	};
-
-	$: if (entries && lastEvent) {
-		handleFilter(lastEvent);
-	}
 </script>
 
 <div class="w-44">
