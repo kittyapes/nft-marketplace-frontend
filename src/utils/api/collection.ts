@@ -26,7 +26,7 @@ export interface Collection {
 	isExplicitSensitive: boolean;
 	creator: string;
 	nfts: [];
-	_id: string;
+	id: string;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
