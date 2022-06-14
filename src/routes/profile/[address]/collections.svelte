@@ -5,6 +5,7 @@
 	import AddIcon from '$icons/add-icon.svelte';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import GoBackHeader from '$lib/components/marketplace/UniversalPopup/GoBackHeader.svelte';
+	import { currentUserAddress } from '$stores/wallet';
 	import { apiSearchCollections } from '$utils/api/collection';
 
 	let collections = [];
@@ -30,10 +31,12 @@
 			</div>
 		</div>
 		<div class="collection-cards">
-			<div class="collection-card add-collection-btn" on:click={() => goto('/collections/new/edit?to=create')}>
-				<AddIcon />
-				<div class="card-text">Create New Collection</div>
-			</div>
+			{#if $currentUserAddress === $page.params.address}
+				<div class="collection-card add-collection-btn" on:click={() => goto('/collections/new/edit?to=create')}>
+					<AddIcon />
+					<div class="card-text">Create New Collection</div>
+				</div>
+			{/if}
 			{#each collections as collection}
 				<div class="collection-card collection-card-with-image">
 					<div class="collection-banner" style="background-image: url('{collection.backgroundImageUrl}')">
