@@ -200,7 +200,13 @@ export default async (address: string, page = 1, limit = 10) => {
 		const apiRoute = 'https://moralis-resolver.vercel.app';
 		const userNfts = await axios
 			.post(`${apiRoute}/api/nfts/user`, options)
-			.then((res: { data: MoralisUserNftResult }) => res.data.data)
+			.then((res: { data: MoralisUserNftResult }) => {
+				if (res.data.success) {
+					return res.data.data;
+				}
+
+				throw new Error(res.data.message);
+			})
 			.catch((err) => ({
 				total: null,
 				page: null,
