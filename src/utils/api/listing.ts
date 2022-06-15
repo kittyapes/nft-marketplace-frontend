@@ -120,7 +120,7 @@ export interface listingFetchingFilters {
 
 export async function getListings(filters?: listingFetchingFilters) {
 	const params = {
-		limit: 100
+		limit: 200
 		//type: filters?.type,
 		//collecitonId: filters?.collectionId,
 		//price: filters?.price,
