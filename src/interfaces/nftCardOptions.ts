@@ -11,7 +11,7 @@ export interface NftCardOptions {
 	favorite?: boolean;
 	popupComponent?: any;
 	popupOptions?: CardPopupOptions;
-	startTime: Date;
-	duration: number; // Seconds in JS (Seconds from server * 1000)
-	isTimeActive: boolean; // If the listing should be deemed live - based on its time (start and expiry)
+	startTime?: Date;
+	duration?: number; // Seconds in JS (Seconds from server * 1000)
+	isTimeActive?: boolean; // If the listing should be deemed live - based on its time (start and expiry)
 }
