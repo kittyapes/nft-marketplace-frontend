@@ -87,10 +87,8 @@
 			name: nftData.name,
 			creator: $currentUserAddress,
 			image: nftData.fileBlob,
-			animation: nftData.animationBlob,
+			animation: nftData.animationBlob
 		});
-
-		console.log(createNftRes);
 
 		if (!createNftRes) {
 			popupHandler.close();
@@ -98,7 +96,7 @@
 		}
 
 		//add NFT to selected collection
-		const addNftsToCollectionRes = await addNftsToCollection([createNftRes._id], selectedCollectionId);
+		const addNftsToCollectionRes = await addNftsToCollection([createNftRes.nftId], selectedCollectionId);
 		console.log(addNftsToCollectionRes);
 
 		progress.set(50);
