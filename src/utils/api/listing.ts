@@ -70,6 +70,7 @@ export async function postCreateListing(options: CreateListingOptions) {
 	formData.append('listing', JSON.stringify({ price: options.price, quantity: options.quantity }));
 	formData.append('duration', options.duration.toString());
 	formData.append('startTime', options.startTime.toString());
+	formData.append('startingPrice', options.price.toString());
 
 	return await axios.post(getApiUrl('latest', 'listings'), formData, getAxiosConfig()).catch((e) => e.response);
 }
