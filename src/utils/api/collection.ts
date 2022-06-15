@@ -13,7 +13,7 @@ export interface Collection {
 	backgroundImageUrl?: string;
 	description?: string;
 	displayTheme: 'CONTAINED' | 'PADDED' | 'COVERED';
-	royalties?: { fees: string | number; address: string }[];
+	royalties?: { fees: string | number; address: string; createdAt?: string }[];
 	walletAddress?: string;
 	discordUrl?: string;
 	instagramUrl?: string;
@@ -22,6 +22,7 @@ export interface Collection {
 	telegramUrl?: string;
 	blockchain?: string;
 	paymentTokenTicker: 'ETH';
+	status?: 'INACTIVE' | 'LISTED';
 	paymentTokenAddress: string;
 	isExplicitSensitive: boolean;
 	creator: string;
@@ -32,7 +33,7 @@ export interface Collection {
 export function getInitialCollectionData(): Partial<Collection> {
 	return {
 		royalties: [
-			{ fees: '', address: '' },
+			{ fees: '', address: '', },
 			{ fees: '', address: '' },
 			{ fees: '', address: '' }
 		]

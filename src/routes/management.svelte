@@ -18,10 +18,13 @@
 	import { tick } from 'svelte';
 	import EntryRole from '$lib/components/management/render-components/EntryRole.svelte';
 	import { debounce } from 'lodash-es';
+	import { apiSearchCollections, type Collection } from '$utils/api/collection';
+	import CollectionName from '$lib/components/management/render-components/CollectionName.svelte';
+	import { fetchProfileData } from '$utils/api/profile';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
-	let collections = [];
+	let collections: Collection[] = [];
 	let loaded = false;
 	let eventId;
 
@@ -44,30 +47,47 @@
 		query: ''
 	};
 
-	let tableData: TableCol[] = [];
+	let userTableData: TableCol[] = [];
+	let collectionTableData: TableCol[] = [];
 
-	let createUserTable = async () => {
-		await getUsers()
-			.then((res) => (users = res))
-			.catch((err) => console.log(err));
-		if (!users.length) return false;
+	let handleTableEvent = async (event: CustomEvent) => {
+		userFetchingOptions.sort = {
+			sortBy: event.detail.sortBy,
+			sortReversed: event.detail.sortReversed
+		};
 
-		return true;
+		users = await getUsers(getUsersFetchingOptions());
+		eventId = event.detail.id;
 	};
 
-	let createCollectionTable = async () => {
-		return true;
-	};
-
-	let createTable = async () => {
-		if (mode === 'USER' && (await createUserTable())) {
-			await tick();
-			loaded = true;
-		} else if (await createCollectionTable()) {
-			await tick();
-			loaded = true;
+	let handleFilter = async (event: CustomEvent) => {
+		if (mode === 'USER') {
+			userFetchingOptions.filter = {
+				createdBefore: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdBefore,
+				role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
+				status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status
+			};
+			users = await getUsers(getUsersFetchingOptions());
+		} else {
+			collections = event.detail.changeTo;
 		}
 	};
+
+	let roleFilterOptions = [
+		{ label: 'All', role: '' },
+		{ label: 'Super Admin', role: 'superadmin' },
+		{ label: 'Admin', role: 'admin' },
+		{ label: 'Verified Creator', role: 'verified_user' },
+		{ label: 'Blogger' },
+		{ label: 'Inactive', status: 'INACTIVATED' }
+	];
+
+	let filterOptions = [
+		{ label: 'Flagged' },
+		{ label: 'Joined 24 hrs ago', createdBefore: dayjs().subtract(1, 'hour').unix() },
+		{ label: 'Joined 7 days ago', createdBefore: dayjs().subtract(1, 'week').unix() },
+		{ label: 'Joined 1 Mon ago', createdBefore: dayjs().subtract(1, 'month').unix() }
+	];
 
 	let getRoleColor = (role: string) => {
 		if (role === 'superadmin') {
@@ -81,28 +101,117 @@
 		}
 	};
 
+	$: if ($currentUserAddress && mode) createTable();
+
+	let createTable = async () => {
+		loaded = false;
+		mode === 'USER' ? await createUserTable() : await createCollectionTable();
+		await tick();
+		loaded = true;
+	};
+
+	//COLLECTION section
+
+	let createCollectionTable = async () => {
+		await apiSearchCollections()
+			.then((res) => (collections = res))
+			.catch((err) => console.log(err));
+		if (!users.length) return false;
+
+		return true;
+	};
+
+	let getCollectionsFetchingOptions = () => {
+		return {};
+	};
+
+	$: if (collections.length) {
+		collectionTableData = [
+			{
+				gridSize: '3fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETIC', active: false },
+				renderComponent: CollectionName,
+				renderComponentProps: collections.map((c) => ({ name: c.name || '', imageUrl: c.logoImageUrl, slug: c.slug }))
+			},
+			{
+				gridSize: '2fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Ethereum Address' },
+				renderComponent: EthAddress,
+				renderComponentProps: collections.map((c) => ({ address: c.paymentTokenAddress }))
+			},
+			{
+				gridSize: '1fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Status' },
+				renderComponent: EntryRole,
+				renderComponentProps: collections.map((u) => ({
+					id: u.id,
+					role: u.status === 'INACTIVATED' ? u.status : u.roles?.includes('superadmin') ? 'superadmin' : u.roles?.[0],
+					color: getRoleColor(u.status === 'INACTIVATED' ? u.status : u.roles?.includes('superadmin') ? 'superadmin' : u.roles?.[0]),
+					options: [
+						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin' },
+						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user' },
+						{ label: 'blogger', checked: false, cb: (e) => e.roles?.includes('blogger'), value: 'blogger' },
+						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED', value: 'inactived_user' }
+					]
+				}))
+			},
+			{
+				gridSize: '1fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Claimed' },
+				renderComponent: EntryGenericText,
+				renderComponentProps: collections.map((c) => ({
+					text: 'Claimed'
+				}))
+			},
+			{
+				gridSize: '3fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Added by' },
+				renderComponent: EntryName,
+				renderComponentProps: collections.map(async (c) => {
+					let creator = await fetchProfileData(c.creator);
+					console.log(creator);
+					return {
+						name: creator?.username || '',
+						imageUrl: creator?.thumbnailUrl,
+						address: creator?.address
+					};
+				})
+			},
+			{
+				gridSize: '2fr',
+				titleRenderComponent: TableTitle,
+				titleRenderComponentProps: { title: 'Date Joined', sortBy: 'CREATED_AT', active: false },
+				renderComponent: EntryGenericText,
+				renderComponentProps: collections.map((c) => {
+					let date = dayjs(c.royalties?.[0]?.createdAt);
+					return { text: date.format('MMM D, YYYY') };
+				})
+			}
+		];
+		collectionTableData.forEach((e, i) => {
+			e.titleRenderComponentProps.id = i;
+			if (i === eventId) e.titleRenderComponentProps.active = true;
+		});
+	}
+
+	// USER section
+
+	let createUserTable = async () => {
+		await getUsers()
+			.then((res) => (users = res))
+			.catch((err) => console.log(err));
+		if (!users.length) return false;
+
+		return true;
+	};
+
 	let getUsersFetchingOptions = () => {
 		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort };
-	};
-
-	let handleTableEvent = async (event: CustomEvent) => {
-		userFetchingOptions.sort = {
-			sortBy: event.detail.sortBy,
-			sortReversed: event.detail.sortReversed
-		};
-
-		users = await getUsers(getUsersFetchingOptions());
-		eventId = event.detail.id;
-	};
-
-	let handleFilter = async (event: CustomEvent) => {
-		userFetchingOptions.filter = {
-			createdBefore: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdBefore,
-			role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
-			status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status
-		};
-		if (mode === 'USER') users = await getUsers(getUsersFetchingOptions());
-		else collections = event.detail.changeTo;
 	};
 
 	const debouncedSearch = debounce(async () => await getSearchedUsers(), 500);
@@ -115,10 +224,8 @@
 		debouncedSearch();
 	}
 
-	$: if ($currentUserAddress && mode) createTable();
-
-	$: if (users) {
-		tableData = [
+	$: if (users.length) {
+		userTableData = [
 			{
 				gridSize: '3fr',
 				titleRenderComponent: TableTitle,
@@ -140,12 +247,12 @@
 				renderComponent: EntryRole,
 				renderComponentProps: users.map((u) => ({
 					id: u.address,
-					role: u.status === 'INACTIVATED' ? u.status : u.roles.includes('superadmin') ? 'superadmin' : u.roles[0],
-					color: getRoleColor(u.status === 'INACTIVATED' ? u.status : u.roles.includes('superadmin') ? 'superadmin' : u.roles[0]),
+					role: u.status === 'INACTIVATED' ? u.status : u.roles?.includes('superadmin') ? 'superadmin' : u.roles?.[0],
+					color: getRoleColor(u.status === 'INACTIVATED' ? u.status : u.roles?.includes('superadmin') ? 'superadmin' : u.roles?.[0]),
 					options: [
-						{ label: 'admin', checked: u.roles.includes('admin'), cb: (e) => e.roles.includes('admin'), value: 'admin' },
-						{ label: 'verified', checked: u.roles.includes('verified_user'), cb: (e) => e.roles.includes('verified_user'), value: 'verified_user' },
-						{ label: 'blogger', checked: false, cb: (e) => e.roles.includes('blogger'), value: 'blogger' },
+						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin' },
+						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user' },
+						{ label: 'blogger', checked: false, cb: (e) => e.roles?.includes('blogger'), value: 'blogger' },
 						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED', value: 'inactived_user' }
 					]
 				}))
@@ -169,64 +276,47 @@
 				renderComponentProps: Array(users.length).map((_) => ({ active: false }))
 			}*/
 		];
-		tableData.forEach((e, i) => {
+		userTableData.forEach((e, i) => {
 			e.titleRenderComponentProps.id = i;
 			if (i === eventId) e.titleRenderComponentProps.active = true;
 		});
 	}
 
-	let roleFilterOptions = [
-		{ label: 'All', role: '' },
-		{ label: 'Super Admin', role: 'superadmin' },
-		{ label: 'Admin', role: 'admin' },
-		{ label: 'Verified Creator', role: 'verified_user' },
-		{ label: 'Blogger' },
-		{ label: 'Inactive', status: 'INACTIVATED' }
-	];
-
-	let filterOptions = [
-		{ label: 'Flagged' },
-		{ label: 'Joined 24 hrs ago', createdBefore: dayjs().subtract(1, 'hour').unix() },
-		{ label: 'Joined 7 days ago', createdBefore: dayjs().subtract(1, 'week').unix() },
-		{ label: 'Joined 1 Mon ago', createdBefore: dayjs().subtract(1, 'month').unix() }
-	];
-
 	$: searchPlaceholder = `Search for ${mode.toLowerCase()}`;
 </script>
 
-<LoadedContent {loaded}>
-	<div class="flex flex-col w-full h-full p-40 gap-12">
-		<div class="flex gap-14">
-			<div class="{mode === 'USER' ? 'gradient-text gradient-underline' : 'text-color-gray-base'} font-bold text-3xl relative btn" on:click={() => (mode = 'USER')}>User Management</div>
-			<div class="{mode === 'COLLECTION' ? 'gradient-text gradient-underline' : 'text-color-gray-dark'} font-bold text-3xl relative btn" on:click={() => (mode = 'COLLECTION')}>
-				Collection Management
-			</div>
+<div class="flex flex-col w-full h-full p-40 gap-12">
+	<div class="flex gap-14">
+		<div class="{mode === 'USER' ? 'gradient-text gradient-underline' : 'text-color-gray-base'} font-bold text-3xl relative btn" on:click={() => (mode = 'USER')}>User Management</div>
+		<div class="{mode === 'COLLECTION' ? 'gradient-text gradient-underline' : 'text-color-gray-dark'} font-bold text-3xl relative btn" on:click={() => (mode = 'COLLECTION')}>
+			Collection Management
 		</div>
-		<div class="flex gap-4">
-			{#if mode === 'USER'}
-				<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
-				<div class="flex-grow" />
-				<div class="flex gap-10">
-					<div class="">
-						<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
-					</div>
-					<div class="">
-						<Filter on:filter={handleFilter} options={filterOptions} icon={Filters} defaultOption={{ label: 'Filter' }} />
-					</div>
-				</div>
-			{:else}
-				<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
-				<div class="flex-grow" />
-				<div class="flex gap-10">
-					<Filter options={roleFilterOptions} icon={UserManage} />
-					<Filter options={filterOptions} icon={Filters} />
-				</div>
-			{/if}
-		</div>
-
-		<InteractiveTable on:event={handleTableEvent} {tableData} rows={mode === 'USER' ? users.length : collections.length} />
 	</div>
-</LoadedContent>
+	<div class="flex gap-4">
+		{#if mode === 'USER'}
+			<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
+			<div class="flex-grow" />
+			<div class="flex gap-10">
+				<div class="">
+					<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
+				</div>
+				<div class="">
+					<Filter on:filter={handleFilter} options={filterOptions} icon={Filters} defaultOption={{ label: 'Filter' }} />
+				</div>
+			</div>
+		{:else}
+			<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
+			<div class="flex-grow" />
+			<div class="flex gap-10">
+				<Filter options={roleFilterOptions} icon={UserManage} />
+				<Filter options={filterOptions} icon={Filters} />
+			</div>
+		{/if}
+	</div>
+	<LoadedContent {loaded}>
+		<InteractiveTable on:event={handleTableEvent} tableData={mode === 'USER' ? userTableData : collectionTableData} rows={mode === 'USER' ? users.length : collections.length} />
+	</LoadedContent>
+</div>
 
 <style lang="postcss">
 	.gradient-underline::after {
