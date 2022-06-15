@@ -1,8 +1,8 @@
-import type { DropApiReturnValue } from "../drops/dropApiReturnValue";
+import type { Listing } from "$utils/api/listing";
 import type { UserData } from "../userData";
 
 export interface SearchResults {
     collections: any[];
     users: UserData[];
-    drops: DropApiReturnValue[];
+    listings: Listing[];
 }
