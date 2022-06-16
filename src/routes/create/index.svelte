@@ -88,7 +88,7 @@
 			name: nftData.name,
 			creator: $currentUserAddress,
 			image: nftData.fileBlob,
-			animation: nftData.animationBlob,
+			animation: nftData.animationBlob
 		});
 
 		if (!createNftRes) {
@@ -98,7 +98,6 @@
 
 		//add NFT to selected collection
 		const addNftsToCollectionRes = await addNftsToCollection([createNftRes.nftId], selectedCollectionId);
-		console.log(addNftsToCollectionRes);
 
 		progress.set(50);
 
@@ -123,16 +122,13 @@
 	}
 
 	const handleCollectionSelection = (event) => {
-		console.log(event);
-
-		nftData.collectionName = event.detail?.label;
-		selectedCollectionId = event.detail?.value;
 		if (event.detail?.label === 'Create new collection') {
-			goto('collections/new/edit?to=create');
+			goto(event.detail?.value);
+		} else {
+			nftData.collectionName = event.detail?.label;
+			selectedCollectionId = event.detail?.value;
 		}
 	};
-
-	$: console.log('collectionId', selectedCollectionId);
 
 	$: quantityValid = nftData.quantity > 0;
 	$: inputValid = nftData.name && selectedCollectionId && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
@@ -204,7 +200,7 @@
 					on:select={handleCollectionSelection}
 					options={[
 						...$availableCollections.filter((item) => $availableCollections.filter((_item) => _item.label === item.label).length <= 1),
-						{ label: 'Create new collection', value: 'collection/new/edit' }
+						{ label: 'Create new collection', value: 'collections/new/edit' }
 					]}
 					class="mt-2"
 					btnClass="font-semibold"
