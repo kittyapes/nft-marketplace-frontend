@@ -1,9 +1,8 @@
-import { api } from '$constants/api';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
-import type { DropApiReturnValue } from 'src/interfaces/drops/dropApiReturnValue';
 import type { UserData } from 'src/interfaces/userData';
 import { getApiUrl } from '..';
+import type { Collection } from '../collection';
 import type { Listing } from '../listing';
 
 
@@ -41,7 +40,7 @@ export const getCollectionsByTitle = async (query: string, limit?: number) => {
             limit: limit ? limit : undefined,
         }
         const res = await axios.get(getApiUrl('latest', 'collections/search'),  { params , ...getAxiosConfig()});
-        return res.data.data as UserData[];
+        return res.data.data as Collection[];
     } catch {    
         throw new Error('Failed to search for collections');
     }

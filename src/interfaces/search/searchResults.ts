@@ -4,5 +4,5 @@ import type { UserData } from "../userData";
 export interface SearchResults {
     collections: any[];
     users: UserData[];
-    listings: Listing[];
+    listings: any[];
 }

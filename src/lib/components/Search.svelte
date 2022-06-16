@@ -17,6 +17,7 @@
 	import AuthLoginPopup from './auth/AuthLoginPopup/AuthLoginPopup.svelte';
 	import { userAuthLoginPopupAdapter } from './auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 	import axios from 'axios';
+	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 
 	let query: string;
 	let searching = false;
@@ -34,10 +35,11 @@
 		await searchGlobally();
 	}, 500);
 
-	const searchDrops = async (query: string) => {
+	const searchListings = async (query: string) => {
 		getListingsByTitle(query, resultCategoryLimit)
 			.then(async (response) => {
-				searchResults.listings = response;
+				let listings = response;
+				searchResults.listings = await Promise.all(listings.map(adaptListingToNftCard));
 			})
 			.catch((e) => notifyError(e.message));
 	};
@@ -53,13 +55,13 @@
 	const searchCollections = async (query: string) => {
 		getCollectionsByTitle(query, resultCategoryLimit)
 			.then(async (response) => {
-				searchResults.collections = response;
+				searchResults.collections = response.filter((e) => e.slug);
 			})
 			.catch((e) => notifyError(e.message));
 	};
 
 	const searchGlobally = async () => {
-		await searchDrops(query).catch((error) => console.log(error));
+		await searchListings(query).catch((error) => console.log(error));
 		await searchUsers(query).catch((error) => console.log(error));
 		await searchCollections(query).catch((error) => console.log(error));
 
@@ -127,10 +129,10 @@
 							<div class="p-4 flex flex-col gap-4">
 								{#each searchResults[section] as result}
 									{#if section === 'listings'}
-										<div class="flex gap-4 items-center btn">
-											{#if result.nfts?.[0].nft.thumbnailUrl}
+										<div class="flex gap-4 items-center btn" on:click={() => setPopup(result.popupComponent, { props: { options: result.popupOptions } })}>
+											{#if result.imageUrl}
 												<div class="w-12 h-12 rounded-full grid place-items-center">
-													<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({result.nfts?.[0].nft.thumbnailUrl})" />
+													<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({result.imageUrl})" />
 												</div>
 											{/if}
 											<div class="font-semibold w-full max-w-full">
