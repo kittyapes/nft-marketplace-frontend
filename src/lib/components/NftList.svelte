@@ -34,9 +34,6 @@
 </script>
 
 <div>
-	<!-- {#await markFavouriteNfts()} -->
-	<!-- <DiamondsLoader /> -->
-	<!-- {:then _} -->
 	{#if !isLoading && options?.length === 0}
 		<div class="placeholder">Nothing to see here, move along.</div>
 	{/if}
@@ -58,7 +55,6 @@
 	{#if reachedEnd}
 		<div class="placeholder text-center">You have reached the end of this list.</div>
 	{/if}
-	<!-- {/await} -->
 </div>
 
 <style type="postcss">
