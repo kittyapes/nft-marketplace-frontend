@@ -141,15 +141,17 @@ const getCorrectChain = () => {
 	return network;
 };
 
-export default async (address: string, page = 1, limit = 10) => {
+export default async (address: string, page = 1, limit = 10, onResultUpdate?: () => void) => {
 	try {
 		// Fetch the current local storage store - if there are no NFTs continue, if there are some NFTs, check the date to confirm its one week past or zero before continuing
 		const allNfts = fetchCacheResultsLocally(address);
 		const cachedNfts: CachedNfts = allNfts[address.toLowerCase()];
 
-		if (cachedNfts.result.length > 0 && cachedNfts.cachedOn !== 0 && cachedNfts.cachedOn + 3600 * 24 * 7 * 1000 > Date.now()) {
-			return cachedNfts;
-		}
+		// if (cachedNfts.result.length > 0 && cachedNfts.cachedOn !== 0 && cachedNfts.cachedOn + 3600 * 24 * 7 * 1000 > Date.now()) {
+		// 	return cachedNfts;
+		// }
+
+		// return cachedNfts;
 
 		type Options = {
 			chain?:
@@ -205,6 +207,7 @@ export default async (address: string, page = 1, limit = 10) => {
 					return res.data.data;
 				}
 
+				console.error(res.data.message);
 				throw new Error(res.data.message);
 			})
 			.catch((err) => ({
@@ -216,13 +219,12 @@ export default async (address: string, page = 1, limit = 10) => {
 				result: []
 			}));
 
+		const res = [];
+
 		// Parse the metadata object to get the nft image.
 		// That is metadata.animation_url or metadata.image. We need to try with other types of nfts from different collections to make sure we cover the data expected from the urls
 		userNfts.result.map(async (item) => {
 			item.metadata = JSON.parse(item.metadata);
-
-			// Prepare store for fetched data so we can load asynchronously
-			item.token_uri_data = writable(null);
 
 			// Fix IPFS protocol
 			if (item.metadata) {
@@ -233,8 +235,9 @@ export default async (address: string, page = 1, limit = 10) => {
 			return item;
 		});
 
-		// Cache what we get
-		cacheResultsLocally(address, userNfts);
+		fetchAdditionalData(userNfts.result, applyTokenData, onResultUpdate).then(() => {
+			cacheResultsLocally(address, userNfts);
+		});
 
 		return userNfts;
 	} catch (error) {
@@ -242,3 +245,29 @@ export default async (address: string, page = 1, limit = 10) => {
 		throw new Error('Failed to process request');
 	}
 };
+
+/**
+ * Used to fetch additional data from the address contained in the token_uri field returned by Moralis.
+ * We do this, because for some NFTs, the data fetched from Moralis are not complete. This function will
+ * process those NFTs and progressively popuplate an array containing the data.
+ */
+async function fetchAdditionalData(tokens: any[], applyFunction: (token: any, tokenData: any) => void, onResultUpdate?: () => void) {
+	console.log('fetching additional data for', tokens.length);
+
+	for (const token of tokens) {
+		if (!token.token_uri) continue;
+
+		token.token_uri = token.token_uri.replace('hinata-staging.rekt-news.xyz', 'hinata-test-v2.rekt-news.xyz');
+		const tokenData = (await axios.get('https://' + token.token_uri)).data;
+
+		applyFunction(token, tokenData);
+		onResultUpdate?.();
+	}
+}
+
+async function applyTokenData(token: any, tokenData: any) {
+	console.log('applying token data', tokenData);
+
+	token.metadata = token.metadata || {};
+	token.metadata.image = tokenData.image;
+}

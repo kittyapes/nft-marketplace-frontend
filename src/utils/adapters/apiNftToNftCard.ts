@@ -4,8 +4,6 @@ import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 
 export function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ collection: Partial<ApiCollectionData> }>) {
-	console.log(data);
-
 	const popupOptions: CardPopupOptions = {
 		title: data.name,
 		assetUrl: data.assetUrl,

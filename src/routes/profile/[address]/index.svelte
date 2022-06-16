@@ -62,17 +62,22 @@
 	let totalNfts: number | null = null;
 	$: totalNfts;
 
-	let nftsPage = 0;
+	let nftsPage = 1;
 
 	let isFetchingNfts = false;
 
-	let collectedNfts = [];
-	let createdNfts = [];
+	let rawNfts = [];
+	let reachedEndOfNfts = false;
+
+	// $: console.log({ rawNfts });
+
+	$: collectedNfts = rawNfts.map((nft) => apiNftToNftCard(nft));
+	$: createdNfts = collectedNfts.filter((nft) => nft.popupOptions.rawResourceData.creator === address);
 
 	async function fetchNfts() {
 		isFetchingNfts = true;
 
-		const res = await apiGetUserNfts(address, nftsPage, 10);
+		const res = await apiGetUserNfts(address, nftsPage, 100);
 
 		if (res.err) {
 			console.error(res.err);
@@ -80,10 +85,22 @@
 			return;
 		}
 
-		collectedNfts = res.res.map((nft) => apiNftToNftCard(nft));
-		createdNfts = res.res.filter((nft) => nft.creator?.toLowerCase() === address.toLowerCase()).map((nft) => apiNftToNftCard(nft));
+		if (res.res.length === 0) {
+			reachedEndOfNfts = true;
+		} else {
+			rawNfts = [...rawNfts, ...res.res];
+		}
+
+		console.log('res', res.res);
 
 		isFetchingNfts = false;
+	}
+
+	function fetchMoreNfts() {
+		console.log('fetchMoreNfts');
+
+		nftsPage++;
+		fetchNfts();
 	}
 
 	const fetchActiveListing = async () => {
@@ -93,7 +110,6 @@
 
 	const fetchFavoriteNfts = async (address: string) => {
 		const favorites = await getUserFavoriteNfts(address);
-		console.log(favorites);
 		favoriteNfts = favorites && (await Promise.all(favorites.map((f) => adaptNftDataNftCard(f.nft))));
 	};
 
@@ -200,9 +216,9 @@
 	<div class="max-w-screen-xl mx-auto">
 		{#key createdNfts}
 			{#if selectedTab === 'COLLECTED NFTS'}
-				<NftList options={collectedNfts} isLoading={isFetchingNfts} />
+				<NftList options={collectedNfts} isLoading={isFetchingNfts} on:end-reached={fetchMoreNfts} reachedEnd={reachedEndOfNfts} />
 			{:else if selectedTab === 'CREATED NFTS'}
-				<NftList options={createdNfts} isLoading={isFetchingNfts} />
+				<NftList options={createdNfts} isLoading={isFetchingNfts} on:end-reached={fetchMoreNfts} reachedEnd={reachedEndOfNfts} />
 			{:else if selectedTab === 'ACTIVE LISTINGS'}
 				<NftList options={activeListings} />
 			{:else if selectedTab === 'FAVORITES'}

@@ -4,45 +4,69 @@
 	import DiamondsLoader from './DiamondsLoader.svelte';
 	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 	import { currentUserAddress } from '$stores/wallet';
+	import { inview } from 'svelte-inview';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let options: NftCardOptions[];
 	export let isLoading = false;
+	export let reachedEnd = false;
 
-	let data: NftCardOptions[] = [];
+	// $: if (options && $currentUserAddress) markFavouriteNfts();
 
-	$: if (options && $currentUserAddress) markFavouriteNfts();
+	// let markFavouriteNfts = async () => {
+	// 	isLoading = true;
+	// 	if (!$currentUserAddress || !options.length) {
+	// 		isLoading = false;
+	// 		return;
+	// 	}
 
-	let markFavouriteNfts = async () => {
-		isLoading = true;
-		if (!$currentUserAddress || !options.length) {
-			isLoading = false;
-			return;
+	// 	const favorites = await getUserFavoriteNfts();
+	// 	options.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length > 0));
+	// 	data = options;
+	// 	// console.log(data);
+	// 	isLoading = false;
+	// };
+
+	const inviewOptions = {};
+
+	function onChange(event) {
+		console.log(event);
+
+		if (event.detail.inView && !reachedEnd) {
+			dispatch('end-reached');
 		}
-
-		const favorites = await getUserFavoriteNfts();
-		options.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length > 0));
-		data = options;
-		// console.log(data);
-		isLoading = false;
-	};
+	}
 </script>
 
-{#await markFavouriteNfts()}
-	<DiamondsLoader />
-{:then _}
-	{#if !isLoading && data?.length === 0}
+<div>
+	<!-- {#await markFavouriteNfts()} -->
+	<!-- <DiamondsLoader /> -->
+	<!-- {:then _} -->
+	{#if !isLoading && options?.length === 0}
 		<div class="placeholder">Nothing to see here, move along.</div>
-	{:else if data?.length}
+	{/if}
+
+	{#if options?.length}
 		<div class="nftGrid">
-			{#each data as tokenData}
+			{#each options as tokenData}
 				<NftCard options={tokenData} />
 			{/each}
 		</div>
 	{/if}
+
 	{#if isLoading}
 		<DiamondsLoader />
+	{:else}
+		<div use:inview={inviewOptions} on:change={onChange} />
 	{/if}
-{/await}
+
+	{#if reachedEnd}
+		<div class="placeholder text-center">You have reached the end of this list.</div>
+	{/if}
+	<!-- {/await} -->
+</div>
 
 <style type="postcss">
 	.placeholder {
