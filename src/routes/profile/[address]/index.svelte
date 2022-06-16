@@ -53,8 +53,6 @@
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
 
-	$: console.log(collectedNfts);
-
 	let activeListings: NftCardOptions[] = [];
 
 	let totalNfts: number | null = null;
@@ -66,8 +64,6 @@
 
 	let rawNfts = [];
 	let reachedEndOfNfts = false;
-
-	// $: console.log({ rawNfts });
 
 	$: collectedNfts = rawNfts.map((nft) => apiNftToNftCard(nft));
 	$: createdNfts = collectedNfts.filter((nft) => nft.popupOptions.rawResourceData.creator === address);
@@ -89,14 +85,10 @@
 			rawNfts = [...rawNfts, ...res.res];
 		}
 
-		console.log('res', res.res);
-
 		isFetchingNfts = false;
 	}
 
 	function fetchMoreNfts() {
-		console.log('fetchMoreNfts');
-
 		nftsPage++;
 		fetchNfts();
 	}
