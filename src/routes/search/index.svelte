@@ -45,6 +45,7 @@
 	};
 
 	searchQuery.subscribe(async (query) => {
+		loaded = false;
 		await searchCollections(query).catch((error) => console.log(error));
 		await searchListings(query).catch((error) => console.log(error));
 		await searchUsers(query).catch((error) => console.log(error));
@@ -55,29 +56,29 @@
 	});
 </script>
 
-<!--<LoadedContent {loaded}>-->
-<div class="w-full h-full p-10 flex flex-col gap-10">
-	{#if searchResults.collections?.length}
-		<div class="">
-			<div class="font-semibold text-lg">
-				<h1>{searchResults.collections.length} Collection results</h1>
-			</div>
-			<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[97vw] scrollbar-hide">
-				{#each searchResults.collections as collection}
-					<LargeCollectionCard {collection} />
-				{/each}
-			</div>
-		</div>
-	{/if}
-	{#if searchResults.listings?.length}
-		<div class="w-full">
-			<div class="font-semibold text-lg">
-				<h1>{searchResults.listings.length} items</h1>
-			</div>
+<LoadedContent {loaded}>
+	<div class="w-full h-full p-10 flex flex-col gap-10 overflow-hidden">
+		{#if searchResults.collections?.length}
 			<div class="">
-				<NftList options={searchResults.listings} />
+				<div class="font-semibold text-lg">
+					<h1>{searchResults.collections.length} Collection results</h1>
+				</div>
+				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[91vw] scrollbar-hide">
+					{#each searchResults.collections as collection}
+						<LargeCollectionCard {collection} />
+					{/each}
+				</div>
 			</div>
-		</div>
-	{/if}
-</div>
-<!--</LoadedContent>-->
+		{/if}
+		{#if searchResults.listings?.length}
+			<div class="w-full">
+				<div class="font-semibold text-lg">
+					<h1>{searchResults.listings.length} items</h1>
+				</div>
+				<div class="">
+					<NftList options={searchResults.listings} />
+				</div>
+			</div>
+		{/if}
+	</div>
+</LoadedContent>
