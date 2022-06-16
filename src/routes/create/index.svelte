@@ -87,7 +87,7 @@
 			name: nftData.name,
 			creator: $currentUserAddress,
 			image: nftData.fileBlob,
-			animation: nftData.animationBlob,
+			animation: nftData.animationBlob
 		});
 
 		console.log(createNftRes);
@@ -161,8 +161,8 @@
 				<div class="uppercase italic font-light text-color-black text-xs">Upload file</div>
 
 				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
-				<div class="text-color-black font-semibold mt-1 text-sm">
-					PNG, GIF, WEBP, MP4, MP3 <br />
+				<div class="text-color-black font-semibold mt-1 text-sm w-max">
+					PNG, JPG, JPEG, GIF, WEBP, MP4, MP3 <br />
 					Max 50 MB
 				</div>
 			</div>
@@ -179,7 +179,7 @@
 
 				<div class="text-[#1D1D1DB2] mt-4 text-sm">For other marketplaces:</div>
 				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
-				<div class="text-color-black font-semibold mt-1 w-max">PNG, GIF</div>
+				<div class="text-color-black font-semibold mt-1 w-max text-sm">PNG, JPG, JPEG, GIF</div>
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
