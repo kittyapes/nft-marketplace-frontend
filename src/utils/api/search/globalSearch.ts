@@ -9,7 +9,7 @@ import type { Listing } from '../listing';
 export const getListingsByTitle = async (query: string, limit?: number) => {
     try {
         let params = {
-            //query: query ? query.toString(): undefined,
+            //query: query ? query: undefined,
             limit: limit ? limit : undefined,
         }
         const res = await axios.get(getApiUrl('latest', 'listings'), {params});
@@ -22,11 +22,12 @@ export const getListingsByTitle = async (query: string, limit?: number) => {
 export const getUsersByName = async (query: string, limit?: number) => {
     try {
         let params = {
-            query: query ? query.toString() : undefined,
+            query: query ? query : undefined,
             limit: limit ? limit : undefined,
         }
         // should be without permissions
         const res = await axios.get(getApiUrl('latest', 'admins/users'),  { params , ...getAxiosConfig()});
+        
         return res.data.data as UserData[];
     } catch {
         throw new Error('Failed to search for users');
@@ -36,7 +37,7 @@ export const getUsersByName = async (query: string, limit?: number) => {
 export const getCollectionsByTitle = async (query: string, limit?: number) => {
     try {
         let params = {
-            query: query ? query.toString() : undefined,
+            query: query ? query : undefined,
             limit: limit ? limit : undefined,
         }
         const res = await axios.get(getApiUrl('latest', 'collections/search'),  { params , ...getAxiosConfig()});

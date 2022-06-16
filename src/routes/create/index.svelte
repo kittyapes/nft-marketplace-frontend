@@ -87,7 +87,7 @@
 			name: nftData.name,
 			creator: $currentUserAddress,
 			image: nftData.fileBlob,
-			animation: nftData.animationBlob,
+			animation: nftData.animationBlob
 		});
 
 		console.log(createNftRes);

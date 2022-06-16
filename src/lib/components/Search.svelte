@@ -18,6 +18,7 @@
 	import { userAuthLoginPopupAdapter } from './auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 	import axios from 'axios';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
+	import { searchQuery } from '$stores/search';
 
 	let query: string;
 	let searching = false;
@@ -67,14 +68,13 @@
 
 		console.log(searchResults);
 		await tick();
+		$searchQuery = query;
 		show = true;
 	};
 
-	$: {
-		if (!query) {
-			searching = false;
-			debouncedSearch.flush();
-		}
+	$: if (!query) {
+		searching = false;
+		debouncedSearch.cancel();
 	}
 
 	$: if (searching) {
@@ -82,12 +82,8 @@
 	}
 
 	$: if (query) {
-		if (isAuthTokenExpired($currentUserAddress)) {
-			setPopup(AuthLoginPopup, { props: { onLoginSuccess: () => {}, adapter: userAuthLoginPopupAdapter } });
-		} else {
-			searching = true;
-			debouncedSearch();
-		}
+		searching = true;
+		debouncedSearch();
 	}
 
 	const preload = async (src) => {
@@ -198,7 +194,16 @@
 				{/each}
 				{#if Object.values(searchResults).filter((e) => e.length > 0).length > 0}
 					<div class="p-4">
-						<button class="btn btn-rounded w-full border-2 btn-gradient-border">All results</button>
+						<button
+							class="btn btn-rounded w-full border-2 btn-gradient-border"
+							on:click={() => {
+								show = false;
+								searching = false;
+								goto('/search');
+							}}
+						>
+							All results
+						</button>
 					</div>
 				{:else}
 					<div class="p-4 text-lg font-semibold">Nothing found</div>

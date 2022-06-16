@@ -69,7 +69,7 @@
 </script>
 
 <!-- Added a maximum width to prevent the card from extending its bounds when its only one card  -->
-<div class="relative p-4 overflow-hidden border rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options?.popupOptions}>
+<div class="relative p-4 overflow-hidden border border-color-gray-base border-opacity-50 rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options?.popupOptions}>
 	<div class="flex items-center gap-x-2">
 		<!-- Listing Timer If The Time has not Expired Yet or Listing isn't live -->
 		{#if options.startTime}
