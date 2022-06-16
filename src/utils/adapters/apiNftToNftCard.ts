@@ -19,7 +19,7 @@ export function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ collectio
 				tokenId: data.nftId
 			}
 		],
-		likeIds: [data.nftId],
+		likeIds: [data._id],
 		rawResourceData: data
 	};
 
@@ -29,6 +29,7 @@ export function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ collectio
 		title: data.name,
 		collectionName: fallback?.collection?.name || 'N/A',
 		likes: data.favoriteCount,
+		likeIds: [data._id],
 		popupComponent: CardPopup,
 		popupOptions
 	};

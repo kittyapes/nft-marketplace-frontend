@@ -11,6 +11,7 @@
 	import { fade } from 'svelte/transition';
 	import getTimeRemaining from '$utils/timeRemaining';
 	import { onMount } from 'svelte';
+	import { refreshLikedNfts } from '$stores/user';
 
 	export let options: NftCardOptions;
 
@@ -31,7 +32,11 @@
 		// change status first for quick feedback
 		options.favorite = !options.favorite;
 
-		const favouriteNftRes = await favoriteNft(options.id);
+		for (const id of options.likeIds) {
+			await favoriteNft(id);
+		}
+
+		await refreshLikedNfts($currentUserAddress);
 	}
 
 	let time = new Date();

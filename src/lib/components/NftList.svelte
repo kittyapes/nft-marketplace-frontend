@@ -2,10 +2,9 @@
 	import NftCard from './NftCard.svelte';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 	import DiamondsLoader from './DiamondsLoader.svelte';
-	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
-	import { currentUserAddress } from '$stores/wallet';
 	import { inview } from 'svelte-inview';
 	import { createEventDispatcher } from 'svelte';
+	import { userLikedNfts } from '$stores/user';
 
 	const dispatch = createEventDispatcher();
 
@@ -13,30 +12,24 @@
 	export let isLoading = false;
 	export let reachedEnd = false;
 
-	// $: if (options && $currentUserAddress) markFavouriteNfts();
-
-	// let markFavouriteNfts = async () => {
-	// 	isLoading = true;
-	// 	if (!$currentUserAddress || !options.length) {
-	// 		isLoading = false;
-	// 		return;
-	// 	}
-
-	// 	const favorites = await getUserFavoriteNfts();
-	// 	options.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length > 0));
-	// 	data = options;
-	// 	// console.log(data);
-	// 	isLoading = false;
-	// };
-
 	const inviewOptions = {};
 
 	function onChange(event) {
-		console.log(event);
-
 		if (event.detail.inView && !reachedEnd) {
 			dispatch('end-reached');
 		}
+	}
+
+	function markLiked() {
+		options.forEach((nft) => {
+			nft.favorite = $userLikedNfts.filter((likedNft) => likedNft.nft.nftId === nft.id).length > 0;
+		});
+	}
+
+	$: {
+		$userLikedNfts;
+		options;
+		markLiked();
 	}
 </script>
 
