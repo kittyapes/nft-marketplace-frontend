@@ -81,7 +81,7 @@
 			{#if options.isTimeActive}
 				<div class="listing-timer text-[10px] font-bold uppercase">
 					{#if !saleHasStarted && timeRemainingToSaleStart.total > 0}
-						<span class="bg-gradient-to-r bg-clip-text from-color-purple to-color-blue text-transparent">Starting In:</span>
+						<span class="text-transparent bg-gradient-to-r bg-clip-text from-color-purple to-color-blue">Starting In:</span>
 						{#if timeRemainingToSaleStart.days > 0}
 							{timeRemainingToSaleStart.days}D
 						{/if}
@@ -117,14 +117,14 @@
 
 		<div class="flex-grow" />
 
-		<div class="btn text-white" class:text-color-red={options?.favorite} on:click|stopPropagation={favNFT}>
+		<div class="text-white btn" class:text-color-red={options?.favorite} on:click|stopPropagation={favNFT}>
 			<Heart class="w-6 h-6" />
 		</div>
 		<!-- TODO Likes -->
 		<div class="font-medium select-none">{(options && likes === 0) || likes ? likes : 'N/A'}</div>
 	</div>
 
-	<div class="w-full mx-auto mt-2 overflow-hidden transition bg-gray-100 rounded-lg aspect-1 select-none" class:animate-pulse={!imgLoaded}>
+	<div class="w-full mx-auto mt-2 overflow-hidden transition bg-gray-100 rounded-lg select-none aspect-1" class:animate-pulse={!imgLoaded}>
 		<img alt="" src={options?.imageUrl} class="object-cover object-top w-full h-full transition" class:opacity-0={!imgLoaded} on:load={() => (imgLoaded = true)} />
 	</div>
 
@@ -134,7 +134,7 @@
 	</div>
 
 	<div class="flex items-center mt-2 font-semibold">
-		<div class="flex-grow">{options?.title || 'N/A'}</div>
+		<div class="flex-grow whitespace-nowrap">{options?.title || 'N/A'}</div>
 		<Eth />
 		<div class="ml-1">{options?.price || 'N/A'}</div>
 	</div>

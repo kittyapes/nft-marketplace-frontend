@@ -1,8 +1,17 @@
 import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 import type { Listing } from '$utils/api/listing';
+import { formatEther } from 'ethers/lib/utils.js';
 
 export async function adaptListingToNftCard(data: Listing) {
+	let price: string;
+
+	try {
+		price = formatEther(data.listing.price);
+	} catch {
+		price = 'N/A';
+	}
+
 	const nft = data.nfts[0].nft;
 
 	const popupOptions: CardPopupOptions = {
@@ -21,7 +30,7 @@ export async function adaptListingToNftCard(data: Listing) {
 			}
 		],
 		saleData: {
-			price: data.listing.price,
+			price,
 			listingId: data.listingId
 		},
 		listingData: {
@@ -40,7 +49,7 @@ export async function adaptListingToNftCard(data: Listing) {
 		title: data.title,
 		collectionName: 'N/A',
 		likes: nft.favoriteCount,
-		price: data.listing.price,
+		price,
 		popupComponent: CardPopup,
 		popupOptions
 	};
