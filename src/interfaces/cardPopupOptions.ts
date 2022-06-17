@@ -33,7 +33,7 @@ export interface CardPopupOptions {
 
 	/** Data used when adapting a listing of the type Sale. */
 	saleData?: {
-		price: number;
+		price: string;
 		listingId: string;
 	};
 
