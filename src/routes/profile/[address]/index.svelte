@@ -47,15 +47,14 @@
 			const id = $page.url.searchParams.get('id');
 			const listing = await getListing(id);
 			let popupOptions;
-			console.log(listing);
+
 			if (listing) {
 				popupOptions = (await adaptListingToNftCard(listing)).popupOptions;
 			} else {
 				const nft = await getNft(id);
-				console.log(nft);
-				popupOptions = (await adaptNftDataNftCard(nft)).getPopupProps();
+				popupOptions = await apiNftToNftCard(nft).popupOptions;
 			}
-			console.log(popupOptions);
+
 			setPopup(CardPopup, { props: { options: popupOptions }, onClose: () => removeUrlParam('id') });
 		}
 	});
