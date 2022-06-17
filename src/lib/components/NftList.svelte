@@ -53,7 +53,7 @@
 	{/if}
 
 	{#if reachedEnd}
-		<div class="placeholder text-center">You have reached the end of this list.</div>
+		<div class="text-center placeholder">You have reached the end of this list.</div>
 	{/if}
 </div>
 
