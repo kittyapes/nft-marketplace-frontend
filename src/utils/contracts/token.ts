@@ -10,10 +10,10 @@ export async function contractGetTokenAllowance(owner: string, spender: string):
 	return allowance;
 }
 
-export async function contractApproveToken(address: string, amount: BigNumber) {
+export async function contractApproveToken(spender: string, amount: BigNumber) {
 	const contract = getHinataTokenContract(get(appSigner));
 	console.log({ amount });
 
-	const approveTx = await contract.approve(address, ethers.utils.parseEther(amount.toString()));
+	const approveTx = await contract.approve(spender, ethers.utils.parseEther(amount.toString()));
 	await approveTx.wait(1);
 }
