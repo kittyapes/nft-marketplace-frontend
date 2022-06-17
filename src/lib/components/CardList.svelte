@@ -25,21 +25,21 @@
 		</button>
 		<h1 class="italic text-5xl font-light mt-12 mb-4">{title}</h1>
 		<div class="border-b border-black border-opacity-30" />
-		{#if commonComponentProps.length}
-			<div class="py-12 cardGrid" in:fade>
-				{#if showFirstComponent}
-					<svelte:component this={firstRenderComponent} on:click={() => dispatch('first-component-click')} />
-				{/if}
 
+		<div class="py-12 cardGrid" in:fade>
+			{#if showFirstComponent}
+				<svelte:component this={firstRenderComponent} on:click={() => dispatch('first-component-click')} />
+			{/if}
+			{#if commonComponentProps.length}
 				{#each commonComponentProps as props}
 					<svelte:component this={commonRenderComponent} {...props} on:click={() => dispatch('component-click', props)} />
 				{/each}
-			</div>
-		{:else if !commonComponentProps.length && loaded}
-			<div class="p-36 font-semibold text-lg opacity-60 text-center">Nothing to see here, move along.</div>
-		{:else}
-			<DiamondsLoader />
-		{/if}
+			{:else if !showFirstComponent && loaded && !commonComponentProps.length}
+				<div class="p-20 font-semibold text-lg opacity-60 text-center min-w-max">Nothing to see here, move along.</div>
+			{:else if !loaded}
+				<DiamondsLoader />
+			{/if}
+		</div>
 	</div>
 </div>
 

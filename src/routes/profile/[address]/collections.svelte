@@ -14,12 +14,15 @@
 		logoUrl: string;
 		bannerUrl: string;
 	}[] = [];
+	let loaded = false;
 
 	$: address = $page.params.address;
 
 	const getUserCollections = async (address: string) => {
+		loaded = false;
 		userCollections = await apiSearchCollections(address).catch((err) => []);
 		data = await Promise.all(userCollections.filter((c) => c.logoImageUrl && c.backgroundImageUrl).map((c) => adaptCollectionToCollectionCard(c, address)));
+		loaded = true;
 	};
 
 	$: address && $currentUserAddress && getUserCollections(address);
@@ -32,4 +35,5 @@
 	firstRenderComponent={CreateNewCollectionCard}
 	commonComponentProps={data}
 	showFirstComponent={$currentUserAddress === address}
+	{loaded}
 />
