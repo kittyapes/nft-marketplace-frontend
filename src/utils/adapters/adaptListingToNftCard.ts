@@ -1,7 +1,7 @@
 import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 import type { Listing } from '$utils/api/listing';
-import { formatEther } from 'ethers/lib/utils';
+import { formatEther } from 'ethers/lib/utils.js';
 
 export async function adaptListingToNftCard(data: Listing) {
 	let price: string;
