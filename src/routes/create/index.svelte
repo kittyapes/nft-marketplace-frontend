@@ -77,12 +77,11 @@
 		const progress = writable(0);
 		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
 
-		// Create NFT on the server
 		const nftId = await getNftId();
 		console.info('[Create] Using new NFT contract ID:', nftId);
 
+		// Create NFT on the server
 		const createNftRes = await createNFTOnAPI({
-			contractId: nftId,
 			description: nftData.description,
 			amount: nftData.quantity,
 			name: nftData.name,
@@ -114,7 +113,7 @@
 		}
 
 		newBundleData.update((data) => {
-			return { ...data, id: createNftRes.nftId };
+			return { ...data, id: createNftRes._id };
 		});
 
 		progress.set(100);
