@@ -4,7 +4,7 @@
 	const dispatch = createEventDispatcher();
 
 	interface Option {
-		value?: string;
+		value?: any;
 		label: string;
 		iconUrl?: string;
 	}
@@ -19,6 +19,7 @@
 	export let selected: Option = options?.[0];
 	export let opened: boolean = false;
 	export let disabled = false;
+	export let borderOpacity = 0.3;
 
 	let elemOpenButton: HTMLButtonElement;
 
@@ -37,7 +38,7 @@
 </script>
 
 <div class="relative select-container select-none transition {$$props.class}" class:opacity-50={disabled}>
-	<button class="text-left select flex items-center space-x-2" on:click={() => (opened = !opened)} bind:this={elemOpenButton} {disabled}>
+	<button style:--tw-border-opacity={borderOpacity} class="text-left select flex items-center space-x-2" on:click={() => (opened = !opened)} bind:this={elemOpenButton} {disabled}>
 		<!-- Icon -->
 		{#if selected.iconUrl}
 			<img src={selected.iconUrl} alt="" class="w-6" />
