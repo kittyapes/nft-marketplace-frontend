@@ -74,12 +74,12 @@
 
 		newBundleData.set({} as NewBundleData);
 
-		const progress = writable(0);
-		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
-
 		// Create NFT on the server
 		const nftId = await getNftId();
 		console.info('[Create] Using new NFT contract ID:', nftId);
+
+		const progress = writable(0);
+		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress, nftId }, closeByOutsideClick: false });
 
 		const createNftRes = await createNFTOnAPI({
 			contractId: nftId,

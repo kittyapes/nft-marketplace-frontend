@@ -21,11 +21,14 @@
 	import { adaptTokenDataToNftCard } from '$utils/adapters/adaptTokenDataToNftCard';
 	import { userHasRole } from '$utils/auth/userRoles';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
-	import { getListings, type Listing } from '$utils/api/listing';
+	import { getListing, getListings } from '$utils/api/listing';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import type { NftCardOptions } from '$interfaces/nftCardOptions';
 	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 	import { adaptNftDataNftCard } from '$utils/adapters/adaptNftDataToNftCard';
+	import { removeUrlParam } from '$utils/misc/removeUrlParam';
+	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
+	import { getNft } from '$utils/api/nft';
 
 	const tabs = ['COLLECTED NFTS', 'CREATED NFTS', 'ACTIVE LISTINGS', 'FAVORITES'];
 	let selectedTab = 'COLLECTED NFTS';
@@ -36,6 +39,23 @@
 		let tabName = $page.url.searchParams.get('tab').split('_').join(' ').trim();
 		selectedTab = tabName;
 	}
+
+	onMount(async () => {
+		if ($page.url.searchParams.has('id')) {
+			const id = $page.url.searchParams.get('id');
+			const listing = await getListing(id);
+			let popupOptions;
+
+			if (listing) {
+				popupOptions = (await adaptListingToNftCard(listing)).popupOptions;
+			} else {
+				const nft = await getNft(id);
+				popupOptions = (await adaptNftDataNftCard(nft)).popupOptions;
+			}
+
+			setPopup(CardPopup, { props: { options: popupOptions }, onClose: () => removeUrlParam('id') });
+		}
+	});
 
 	const localProfileData = writable<UserData>();
 

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Loader from '$icons/loader.svelte';
+	import { currentUserAddress } from '$stores/wallet';
 	import { newBundleData } from '$utils/create';
 	import type { PopupHandler } from '$utils/popup';
 
@@ -12,16 +13,21 @@
 
 	const points = [
 		{ at: 0, label: 'Upload' },
-		//{ at: 33, label: 'Bundle TX' },
 		{ at: 50, label: 'NFT TX' },
 		{ at: 100, label: 'Finished' }
 	];
 
 	export let handler: PopupHandler;
 	export let progress: Readable<number> = readable(0);
+	export let nftId: number;
 
 	function clickChooseFormat() {
 		goto('/create/choose-listing-format/' + $newBundleData.id);
+		handler.close();
+	}
+
+	function clickViewNft() {
+		goto(`/profile/${$currentUserAddress}?tab=CREATED_NFTS&id=${nftId}`);
 		handler.close();
 	}
 </script>
@@ -39,7 +45,7 @@
 		<p class="max-w-prose text-center mx-auto mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut</p>
 
 		<div class="flex justify-center gap-x-8 mt-8">
-			<button class="btn btn-rounded btn-gradient h-14 w-64 uppercase">View NFT</button>
+			<button class="btn btn-rounded btn-gradient h-14 w-64 uppercase" on:click={clickViewNft}>View NFT</button>
 			<button class="btn btn-rounded btn-gradient h-14 w-64 uppercase" on:click={clickChooseFormat}>Choose listing format</button>
 		</div>
 	{:else}
