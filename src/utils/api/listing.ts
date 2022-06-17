@@ -1,5 +1,7 @@
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
+import type { BigNumber } from 'ethers';
+import { noTryAsync } from 'no-try';
 import { getApiUrl } from '.';
 
 export type ListingType = 'sale' | 'auction' | 'raffle';
@@ -43,7 +45,7 @@ interface RaffleParticipants {
 	tickets: number[];
 }
 
-export interface CreateListingOptions {
+interface CreateListingOptions {
 	nfts: { nftId: string; amount: number }[];
 	description?: string;
 	title?: string;
@@ -51,11 +53,11 @@ export interface CreateListingOptions {
 	paymentTokenAddress: string;
 	modifiedOn?: string;
 	listingType: 'sale' | 'auction' | 'raffle';
-	price: number;
-	quantity: number;
+	price: BigNumber;
+	quantity: BigNumber;
 	listing?: Sale | Auction | Raffle;
 	succesSaleTransaction?: string;
-	startTime?: Date;
+	startTime?: number;
 	duration?: number;
 }
 
@@ -64,14 +66,17 @@ export async function postCreateListing(options: CreateListingOptions) {
 	formData.append('nfts', JSON.stringify(options.nfts));
 	formData.append('title', options.title || 'No Title');
 	formData.append('paymentTokenAddress', options.paymentTokenAddress);
-	formData.append('paymentTokenTicker', options.paymentTokenTicker || 'ETH');
+	// formData.append('paymentTokenTicker', options.paymentTokenTicker);
+	formData.append('paymentTokenTicker', 'ETH'); // Hotfix
 	formData.append('description', options.description || 'No Description');
 	formData.append('listingType', options.listingType);
-	formData.append('listing', JSON.stringify({ price: options.price, quantity: options.quantity }));
+	formData.append('listing', JSON.stringify({ price: options.price.toString(), quantity: options.quantity.toString() }));
 	formData.append('duration', options.duration.toString());
-	formData.append('startTime', options.startTime.toString());
+	options.startTime && formData.append('startTime', options.startTime.toString());
 
-	return await axios.post(getApiUrl('latest', 'listings'), formData, getAxiosConfig()).catch((e) => e.response);
+	const [err, res] = await noTryAsync(() => axios.post(getApiUrl('latest', 'listings'), formData, getAxiosConfig()));
+
+	return { res, err };
 }
 
 export interface Listing {

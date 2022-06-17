@@ -15,7 +15,7 @@ export enum LISTING_TYPE {
 }
 
 export interface ContractCreateListingOptions {
-	startingPrice: number;
+	startingPrice: string;
 	duration: number;
 	startTime: number;
 	payToken: string;
@@ -27,40 +27,32 @@ export interface ContractCreateListingOptions {
 }
 
 export async function contractCreateListing(options: ContractCreateListingOptions) {
-	console.log(options)
-	try {
-		const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
-		const MarketplaceStorageContract = HinataMarketplaceStorageContract(get(appSigner));
+	console.log(options);
+	const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
+	const MarketplaceStorageContract = HinataMarketplaceStorageContract(get(appSigner));
 
-		const isApproved = await MarketplaceStorageContract.isApprovedForAll(get(currentUserAddress), HinataMarketplaceContractAddress);
+	const isApproved = await MarketplaceStorageContract.isApprovedForAll(get(currentUserAddress), HinataMarketplaceContractAddress);
 
-		if (!isApproved) {
-			const approval: ethers.ContractTransaction = await MarketplaceStorageContract.setApprovalForAll(HinataMarketplaceContractAddress, true);
-			await approval.wait(1);
-		}
-
-		const listingCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing(
-			{
-			id: ethers.BigNumber.from(options.listingId),
-			seller: get(currentUserAddress),
-			payToken: options.payToken,
-			price: options.startingPrice,
-			startTime: options.startTime,
-			duration: options.duration,
-			quantity: options.quantity,
-			listingType: options.listingType,
-			tokenIds: options.tokenIds,
-			tokenAmounts: options.tokenAmounts
-		});
-
-		// Wait for at least once confirmation
-		await listingCreationTransaction.wait(1);
-
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
+	if (!isApproved) {
+		const approval: ethers.ContractTransaction = await MarketplaceStorageContract.setApprovalForAll(HinataMarketplaceContractAddress, true);
+		await approval.wait(1);
 	}
+
+	const listingCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing({
+		id: ethers.BigNumber.from(options.listingId),
+		seller: get(currentUserAddress),
+		payToken: options.payToken,
+		price: options.startingPrice,
+		startTime: options.startTime,
+		duration: options.duration,
+		quantity: options.quantity,
+		listingType: options.listingType,
+		tokenIds: options.tokenIds,
+		tokenAmounts: options.tokenAmounts
+	});
+
+	// Wait for at least once confirmation
+	await listingCreationTransaction.wait(1);
 }
 
 export async function contractPurchaseListing(listingId: string) {

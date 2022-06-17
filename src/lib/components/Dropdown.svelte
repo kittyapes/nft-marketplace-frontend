@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -35,10 +35,12 @@
 		selected = option;
 		dispatch('select', option);
 	}
+
+	onMount(() => handleOptionSelect(selected));
 </script>
 
 <div class="relative select-container select-none transition {$$props.class}" class:opacity-50={disabled}>
-	<button style:--tw-border-opacity={borderOpacity} class="text-left select flex items-center space-x-2" on:click={() => (opened = !opened)} bind:this={elemOpenButton} {disabled}>
+	<button style:--tw-border-opacity={borderOpacity} class="flex items-center space-x-2 text-left select" on:click={() => (opened = !opened)} bind:this={elemOpenButton} {disabled}>
 		<!-- Icon -->
 		{#if selected.iconUrl}
 			<img src={selected.iconUrl} alt="" class="w-6" />
@@ -51,11 +53,11 @@
 	</button>
 
 	{#if opened}
-		<div id="list-container" class="absolute bottom-0 z-10 w-full overflow-hidden translate-y-full bg-white rounded-lg overflow-y-scroll max-h-32 custom-scrollbar">
+		<div id="list-container" class="absolute bottom-0 z-10 w-full overflow-hidden overflow-y-scroll translate-y-full bg-white rounded-lg max-h-32 custom-scrollbar">
 			{#each options as option}
-				<button class="w-full px-4 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded flex items-center gap-x-2" on:click={() => handleOptionSelect(option)}>
+				<button class="flex items-center w-full px-4 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded gap-x-2" on:click={() => handleOptionSelect(option)}>
 					{#if option.iconUrl}
-						<img src={option.iconUrl} alt="" class="w-6 h-6 object-cover rounded-full" />
+						<img src={option.iconUrl} alt="" class="object-cover w-6 h-6 rounded-full" />
 					{/if}
 					{option.label}
 				</button>

@@ -28,12 +28,19 @@
 	}
 
 	function handleSetState(e) {
-		selectedState = states.find((s) => s.name === e.detail.name);
+		const stateName = e.detail.name;
+
+		selectedState = states.find((s) => s.name === stateName);
+		stateProps[stateName] = e.detail.props;
 	}
+
+	// We use a object with props for each state separately to avoid deleting
+	// props when switching states.
+	const stateProps = {};
 
 	$: showBackButton = ['success', 'error'].includes(selectedState.name);
 </script>
 
 {#if selectedState}
-	<svelte:component this={selectedState.component} {options} on:set-state={handleSetState} on:close-popup />
+	<svelte:component this={selectedState.component} {options} {...stateProps[selectedState.name]} on:set-state={handleSetState} on:close-popup />
 {/if}

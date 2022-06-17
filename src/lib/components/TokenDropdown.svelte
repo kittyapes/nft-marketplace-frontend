@@ -2,7 +2,7 @@
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import ArrowDown from '$icons/arrow-down.svelte';
 	import { fade, slide } from 'svelte/transition';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import { HinataTokenAddress, WethContractAddress } from '$constants/contractAddresses';
 
 	const dispatch = createEventDispatcher();
@@ -43,6 +43,8 @@
 		selected = token;
 		dispatch('select', token);
 	};
+
+	onMount(() => handleSelect(selected));
 </script>
 
 <div class="relative">
