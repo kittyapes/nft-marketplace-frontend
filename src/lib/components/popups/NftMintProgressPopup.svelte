@@ -19,7 +19,7 @@
 
 	export let handler: PopupHandler;
 	export let progress: Readable<number> = readable(0);
-	export let nftId: number;
+	export let id: string;
 
 	function clickChooseFormat() {
 		goto('/create/choose-listing-format/' + $newBundleData.id);
@@ -27,7 +27,7 @@
 	}
 
 	function clickViewNft() {
-		goto(`/profile/${$currentUserAddress}?tab=CREATED_NFTS&id=${nftId}`);
+		goto(`/profile/${$currentUserAddress}?tab=CREATED_NFTS&id=${id}`);
 		handler.close();
 	}
 </script>

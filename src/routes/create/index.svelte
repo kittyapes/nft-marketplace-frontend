@@ -22,7 +22,7 @@
 	import { getNftId } from '$utils/create/getNftId';
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { goBack } from '$utils/navigation';
-	import { setPopup } from '$utils/popup';
+	import { setPopup, updatePopupProps } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
 	import { filter } from 'lodash-es';
 	import { onMount } from 'svelte';
@@ -73,13 +73,12 @@
 		// return;
 
 		newBundleData.set({} as NewBundleData);
+		const progress = writable(0);
+		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress, id: '' }, closeByOutsideClick: false });
 
 		// Create NFT on the server
 		const nftId = await getNftId();
 		console.info('[Create] Using new NFT contract ID:', nftId);
-
-		const progress = writable(0);
-		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress, nftId }, closeByOutsideClick: false });
 
 		const createNftRes = await createNFTOnAPI({
 			contractId: nftId,
@@ -95,6 +94,9 @@
 			popupHandler.close();
 			return;
 		}
+
+		console.log(createNftRes._id);
+		updatePopupProps(popupHandler.id, { progress, id: createNftRes._id });
 
 		//add NFT to selected collection
 		const addNftsToCollectionRes = await addNftsToCollection([createNftRes.nftId], selectedCollectionId);
