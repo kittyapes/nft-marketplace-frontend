@@ -1,4 +1,3 @@
-import { api } from '$constants/api';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
 import { getApiUrl } from '..';
