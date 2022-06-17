@@ -2,47 +2,60 @@
 	import NftCard from './NftCard.svelte';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 	import DiamondsLoader from './DiamondsLoader.svelte';
-	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
-	import { currentUserAddress } from '$stores/wallet';
+	import { inview } from 'svelte-inview';
+	import { createEventDispatcher } from 'svelte';
+	import { userLikedNfts } from '$stores/user';
+
+	const dispatch = createEventDispatcher();
 
 	export let options: NftCardOptions[];
 	export let isLoading = false;
+	export let reachedEnd = false;
 
-	let data: NftCardOptions[] = [];
+	const inviewOptions = {};
 
-	$: if (options && $currentUserAddress) markFavouriteNfts();
-
-	let markFavouriteNfts = async () => {
-		isLoading = true;
-		if (!$currentUserAddress || !options.length) {
-			isLoading = false;
-			return;
+	function onChange(event) {
+		if (event.detail.inView && !reachedEnd) {
+			dispatch('end-reached');
 		}
+	}
 
-		const favorites = await getUserFavoriteNfts();
-		options.forEach((t) => (t.favorite = favorites?.filter((f) => f.nftId === t.id).length > 0));
-		data = options;
-		//console.log(data);
-		isLoading = false;
-	};
+	function markLiked() {
+		options.forEach((nft) => {
+			nft.favorite = $userLikedNfts.filter((likedNft) => likedNft.nft.nftId === nft.id).length > 0;
+		});
+	}
+
+	$: {
+		$userLikedNfts;
+		options;
+		markLiked();
+	}
 </script>
 
-{#await markFavouriteNfts()}
-	<DiamondsLoader />
-{:then _}
-	{#if !isLoading && data?.length === 0}
+<div>
+	{#if !isLoading && options?.length === 0}
 		<div class="placeholder">Nothing to see here, move along.</div>
-	{:else if data?.length}
+	{/if}
+
+	{#if options?.length}
 		<div class="nftGrid">
-			{#each data as tokenData}
+			{#each options as tokenData}
 				<NftCard options={tokenData} />
 			{/each}
 		</div>
 	{/if}
+
 	{#if isLoading}
 		<DiamondsLoader />
+	{:else}
+		<div use:inview={inviewOptions} on:change={onChange} />
 	{/if}
-{/await}
+
+	{#if reachedEnd}
+		<div class="text-center placeholder">You have reached the end of this list.</div>
+	{/if}
+</div>
 
 <style type="postcss">
 	.placeholder {
