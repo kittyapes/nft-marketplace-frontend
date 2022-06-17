@@ -1,30 +1,32 @@
 <script lang="ts">
+	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
+	import type { NftCardOptions } from '$interfaces/nftCardOptions';
+	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 	import NftList from '$lib/components/NftList.svelte';
+	import AdminTools from '$lib/components/profile/AdminTools.svelte';
+	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import { profileCompletionProgress } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
+	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
+	import { apiNftToNftCard } from '$utils/adapters/apiNftToNftCard';
+	import { getListings } from '$utils/api/listing';
+	import { apiGetUserNfts } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
+	import { userHasRole } from '$utils/auth/userRoles';
+	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 	import { setPopup } from '$utils/popup';
+	import { notifyError } from '$utils/toast';
+	import type { UserData } from 'src/interfaces/userData';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
-	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
-	import getUserNfts from '$utils/nfts/getUserNfts';
-	import { browser } from '$app/env';
-	import type { UserData } from 'src/interfaces/userData';
-	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
-	import { adaptTokenDataToNftCard } from '$utils/adapters/adaptTokenDataToNftCard';
-	import { userHasRole } from '$utils/auth/userRoles';
-	import AdminTools from '$lib/components/profile/AdminTools.svelte';
-	import { getListing, getListings } from '$utils/api/listing';
-	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
-	import type { NftCardOptions } from '$interfaces/nftCardOptions';
-	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
+	import { getListing } from '$utils/api/listing';
 	import { adaptNftDataNftCard } from '$utils/adapters/adaptNftDataToNftCard';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
@@ -74,117 +76,92 @@
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
 
-	$: collectedNfts = [];
-	$: createdNfts = [];
-
 	let activeListings: NftCardOptions[] = [];
-	let favoriteNfts: NftCardOptions[] = [];
 
 	let totalNfts: number | null = null;
 	$: totalNfts;
 
-	let nftsPage = 0;
+	let nftsPage = 1;
 
-	const fetchCreatedNfts = async () => {
-		console.log('fetching');
+	let isFetchingNfts = false;
 
-		try {
-			nftsPage += 1;
-			const fetchNftsResponse = await getUserNfts(address, nftsPage);
-			const unfiltered = fetchNftsResponse.result;
+	let rawNfts = [];
+	let reachedEndOfNfts = false;
 
-			// Keep these here as they help add everything to the array before trying to update the UI
-			const _createdProxy = [];
-			const _collectedProxy = [];
+	$: collectedNfts = rawNfts.map((nft) => apiNftToNftCard(nft));
+	$: createdNfts = collectedNfts.filter((nft) => nft.popupOptions.rawResourceData.creator === address);
 
-			// Assign NFTs accordingly
-			await Promise.all(
-				unfiltered.map(async (nft) => {
-					if (nft.token_uri) {
-						const parsedNft = await adaptTokenDataToNftCard(nft);
+	async function fetchNfts() {
+		isFetchingNfts = true;
 
-						// if (parsedNft.imageUrl) {
-						if (nft.minter_address?.toLowerCase() === address.toLowerCase()) {
-							// User Created this
-							_createdProxy.push(parsedNft);
-						} else {
-							_collectedProxy.push(parsedNft);
-						}
-						// }
-					}
-				})
-			);
+		const res = await apiGetUserNfts(address, nftsPage, 10);
 
-			createdNfts = [...createdNfts, ..._createdProxy];
-			collectedNfts = [...collectedNfts, ..._collectedProxy];
-
-			// Decide whether to fetch additional NFTs
-			totalNfts = fetchNftsResponse.total; // total nfts can be null returned when an error is encountered on the server
-
-			if (fetchNftsResponse.total && fetchNftsResponse.total > collectedNfts.length + createdNfts.length) {
-				setTimeout(() => {
-					fetchCreatedNfts();
-				}, 60000);
-			} else if (!fetchNftsResponse.total) {
-				// When the server returns an error - indicated by the total property being null
-				setTimeout(() => {
-					fetchCreatedNfts();
-				}, 180000); // Wait for three minutes
-			}
-		} catch (err) {
-			console.log(err);
+		if (res.err) {
+			console.error(res.err);
+			notifyError("Failed to fetch user's NFTs.");
+			return;
 		}
-	};
+
+		if (res.res.length === 0) {
+			reachedEndOfNfts = true;
+		} else {
+			rawNfts = [...rawNfts, ...res.res];
+		}
+
+		isFetchingNfts = false;
+	}
+
+	function fetchMoreNfts() {
+		nftsPage++;
+		fetchNfts();
+	}
 
 	const fetchActiveListing = async () => {
 		const fetchedListings = await getListings();
 		activeListings = await Promise.all(fetchedListings.map(adaptListingToNftCard));
 	};
 
-	const fetchFavoriteNfts = async (address: string) => {
-		const favorites = await getUserFavoriteNfts(address);
-		console.log(favorites);
-		favoriteNfts = favorites && (await Promise.all(favorites.map((f) => adaptNftDataNftCard(f.nft))));
-	};
+	let likedNfts = [];
+
+	async function fetchLikedNfts() {
+		const res = await getUserFavoriteNfts(address);
+
+		likedNfts = res.map((nft) => apiNftToNftCard(nft.nft));
+	}
+
+	$: selectedTab === 'FAVORITES' && fetchLikedNfts();
 
 	onMount(() => {
-		fetchCreatedNfts() && fetchActiveListing();
+		fetchActiveListing();
 	});
-
-	$: if ($currentUserAddress) {
-		fetchFavoriteNfts($currentUserAddress);
-	}
 </script>
 
 <div class="h-72 bg-color-gray-light">
 	{#if $localProfileData?.coverUrl}
-		<div style="background-image: url({$localProfileData?.coverUrl})" class="h-full w-full bg-cover bg-center bg-no-repeat" />
+		<div style="background-image: url({$localProfileData?.coverUrl})" class="w-full h-full bg-center bg-no-repeat bg-cover" />
 	{/if}
 </div>
 
-<div class="mx-auto px-32 max-w-screen-xl relative">
+<div class="relative max-w-screen-xl px-32 mx-auto">
 	<!-- Profile image -->
-	<div
-		class="border-white border-4 w-32 h-32 absolute top-0 transform -translate-y-1/2 rounded-full bg-white
-		grid place-items-center shadow overflow-hidden"
-	>
+	<div class="absolute top-0 grid w-32 h-32 overflow-hidden transform -translate-y-1/2 bg-white border-4 border-white rounded-full shadow place-items-center">
 		{#if $localProfileData?.thumbnailUrl}
-			<img src={$localProfileData?.thumbnailUrl} class="rounded-full h-full" alt="User avatar." />
+			<img src={$localProfileData?.thumbnailUrl} class="h-full rounded-full" alt="User avatar." />
 		{:else}
 			<GuestUserAvatar />
 		{/if}
 	</div>
 
 	<div class="flex items-center pt-20">
-		<span class="font-semibold text-xl mr-2 text-center w-32 whitespace-nowrap">
+		<span class="w-32 mr-2 text-xl font-semibold text-center whitespace-nowrap">
 			{#if $localProfileData?.username}
 				{$localProfileData?.username}
 			{:else}
-				<span class="opacity-50 font-bold whitespace-nowrap">No username</span>
+				<span class="font-bold opacity-50 whitespace-nowrap">No username</span>
 			{/if}
 
 			{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
-				<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED'} class="inline-block translate-y-1 translate-x-1">
+				<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED'} class="inline-block translate-x-1 translate-y-1">
 					<VerifiedBadge />
 				</div>
 			{/if}
@@ -207,12 +184,12 @@
 
 		<!-- Bio -->
 		<div class="max-w-[600px] flex-grow">
-			<div class="font-bold text-color-gray-dark pl-16">BIO</div>
-			<p class="mt-4 font-semibold h-32 break-words border-l border-r border-opacity-30 border-black px-16 overflow-y-auto">
+			<div class="pl-16 font-bold text-color-gray-dark">BIO</div>
+			<p class="h-32 px-16 mt-4 overflow-y-auto font-semibold break-words border-l border-r border-black border-opacity-30">
 				{#if $localProfileData?.bio}
 					{@html $localProfileData?.bio}
 				{:else}
-					<span class="opacity-50 font-bold">No bio.</span>
+					<span class="font-bold opacity-50">No bio.</span>
 				{/if}
 			</p>
 		</div>
@@ -221,17 +198,17 @@
 		<div class="px-16 overflow-hidden">
 			<div class="font-bold text-color-gray-dark whitespace-nowrap">SOCIAL LINKS</div>
 
-			<div class="flex mt-4 flex-wrap">
+			<div class="flex flex-wrap mt-4">
 				{#if areSocialLinks}
 					{#each Object.entries(socialLinks) as [key, link]}
 						{#if link}
-							<div class="mr-2 mb-2">
+							<div class="mb-2 mr-2">
 								<SocialButton social={key} href={link} />
 							</div>
 						{/if}
 					{/each}
 				{:else}
-					<div class="font-bold whitespace-nowrap opacity-50">No social links.</div>
+					<div class="font-bold opacity-50 whitespace-nowrap">No social links.</div>
 				{/if}
 			</div>
 		</div>
@@ -239,7 +216,7 @@
 </div>
 
 <div>
-	<div class="container mx-auto px-32 mt-16 flex space-x-8 max-w-screen-xl">
+	<div class="container flex max-w-screen-xl px-32 mx-auto mt-16 space-x-8">
 		{#each tabs as tab}
 			<TabButton on:click={() => (selectedTab = tab)} selected={selectedTab === tab}>
 				{tab}
@@ -250,15 +227,17 @@
 	<div class="h-px bg-black opacity-30" />
 
 	<div class="max-w-screen-xl mx-auto">
-		{#if selectedTab === 'COLLECTED NFTS'}
-			<NftList options={collectedNfts} isLoading={!totalNfts || totalNfts > collectedNfts.length + createdNfts.length} />
-		{:else if selectedTab === 'CREATED NFTS'}
-			<NftList options={createdNfts} isLoading={!totalNfts || totalNfts > collectedNfts.length + createdNfts.length} />
-		{:else if selectedTab === 'ACTIVE LISTINGS'}
-			<NftList options={activeListings} />
-		{:else if selectedTab === 'FAVORITES'}
-			<NftList options={favoriteNfts} />
-		{/if}
+		{#key createdNfts}
+			{#if selectedTab === 'COLLECTED NFTS'}
+				<NftList options={collectedNfts} isLoading={isFetchingNfts} on:end-reached={fetchMoreNfts} reachedEnd={reachedEndOfNfts} />
+			{:else if selectedTab === 'CREATED NFTS'}
+				<NftList options={createdNfts} isLoading={isFetchingNfts} on:end-reached={fetchMoreNfts} reachedEnd={reachedEndOfNfts} />
+			{:else if selectedTab === 'ACTIVE LISTINGS'}
+				<NftList options={activeListings} />
+			{:else if selectedTab === 'FAVORITES'}
+				<NftList options={likedNfts} />
+			{/if}
+		{/key}
 	</div>
 </div>
 
