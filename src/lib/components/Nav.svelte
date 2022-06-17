@@ -40,7 +40,7 @@
 </script>
 
 <div class="fixed z-10 w-full flex">
-	<div class="flex items-center h-16 pl-8 pr-2 gap-x-8 fixed  z-10 bg-white drop-shadow-lg w-full overflow-x-auto scrollbar-hidden snap-mandatory snap-x">
+	<div class="flex items-center h-16 pl-8 pr-2 gap-x-8 fixed z-10 bg-white drop-shadow-lg w-full overflow-x-visible scrollbar-hidden snap-mandatory snap-x">
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
 			<img src="/img/logo/logo.svg" alt="Hinata logo." />
