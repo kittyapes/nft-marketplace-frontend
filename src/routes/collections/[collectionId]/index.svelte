@@ -124,7 +124,7 @@
 	<div class="mt-16 border-t border-[#0000004D]">
 		{#if collectionData?.nfts?.length}
 			<NftList options={collectionData ? collectionData.nfts.map((nftData) => apiNftToNftCard(nftData, { collection: collectionData })) : []} />
-		{:else if collectionData && !collectionData.nfts?.length}
+		{:else if collectionData && !collectionData.nfts?.length && $currentUserAddress === collectionData.creator}
 			<div
 				class="grid place-items-center border border-dashed border-opacity-30 border-color-gray-base h-60 clickable hover:scale-105 transition-all p10 rounded-2xl max-w-[246px] my-10"
 				on:click={() => {
