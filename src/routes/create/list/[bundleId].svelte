@@ -21,6 +21,7 @@
 	import { HinataTokenAddress, WethContractAddress } from '$constants/contractAddresses';
 	import { currentUserAddress } from '$stores/wallet';
 	import { parseEther } from 'ethers/lib/utils.js';
+	import dayjs from 'dayjs';
 
 	// URL params
 	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
@@ -59,6 +60,14 @@
 	async function listForSale() {
 		isListing = true;
 
+		let startTimestamp: number;
+
+		if (listingPropValues.startDate.unix() <= dayjs().unix()) {
+			startTimestamp = dayjs().unix() + 10_000;
+		} else {
+			startTimestamp = listingPropValues.startDate();
+		}
+
 		const duration = listingPropValues.duration.value * 60 * 60 * 24;
 		// Create listing on the server
 		const apiCreateListingRes = await postCreateListing({
@@ -70,7 +79,7 @@
 			listingType: $newDropProperties.listingType,
 			price: parseEther(listingPropValues.price.toString()).toString(),
 			quantity: listingPropValues.quantity,
-			startTime: listingPropValues.startDate.unix(),
+			startTime: startTimestamp,
 			duration: duration
 		});
 

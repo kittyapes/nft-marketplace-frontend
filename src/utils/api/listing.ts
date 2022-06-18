@@ -1,4 +1,4 @@
-import type { EthAddress } from '$interfaces';
+import type { EthAddress, UnixTime } from '$interfaces';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
 import { getApiUrl } from '.';
@@ -52,11 +52,11 @@ export interface CreateListingOptions {
 	paymentTokenAddress: string;
 	modifiedOn?: string;
 	listingType: 'sale' | 'auction' | 'raffle';
-	price: number;
+	price: string;
 	quantity: number;
 	listing?: Sale | Auction | Raffle;
 	succesSaleTransaction?: string;
-	startTime?: Date;
+	startTime?: UnixTime;
 	duration?: number;
 }
 
