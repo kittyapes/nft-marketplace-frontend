@@ -33,7 +33,7 @@
 	}
 </script>
 
-<div>
+<div class="w-full">
 	{#if !isLoading && options?.length === 0}
 		<div class="placeholder">Nothing to see here, move along.</div>
 	{/if}
@@ -53,7 +53,7 @@
 	{/if}
 
 	{#if reachedEnd}
-		<div class="placeholder text-center">You have reached the end of this list.</div>
+		<div class="text-center placeholder">You have reached the end of this list.</div>
 	{/if}
 </div>
 

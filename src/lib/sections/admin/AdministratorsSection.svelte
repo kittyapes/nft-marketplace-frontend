@@ -20,6 +20,7 @@
 	async function fetchAdmins() {
 		isFetching = true;
 		admins = await getAdmins().catch(httpErrorHandler);
+		console.log(admins);
 		isFetching = false;
 	}
 

@@ -1,3 +1,4 @@
+import type { EthAddress, UnixTime } from '$interfaces';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
 import type { BigNumber } from 'ethers';
@@ -93,6 +94,7 @@ export interface Listing {
 		nftId: string;
 		amount: number;
 		nft: {
+			_id: string;
 			assetUrl: string;
 			thumbnailUrl: string;
 			favoriteCount: number;
@@ -102,6 +104,7 @@ export interface Listing {
 			nftId: string;
 		};
 	}[];
+
 	paymentTokenTicker: 'ETH';
 	paymentTokenAddress: string;
 	startTime: string;
@@ -119,14 +122,17 @@ export interface listingFetchingFilters {
 	collectionId?: string;
 	type?: ListingType[];
 	price?: { min: number; max: number };
+	seller?: EthAddress;
 }
 
-export async function getListings(filters?: listingFetchingFilters) {
+export async function getListings(filters?: listingFetchingFilters, page: number = 1, limit: number = 100) {
 	const params = {
-		limit: 100
 		//type: filters?.type,
 		//collecitonId: filters?.collectionId,
 		//price: filters?.price,
+		seller: filters?.seller,
+		page,
+		limit
 	};
 	const res = await axios.get(getApiUrl('latest', 'listings'), { params });
 

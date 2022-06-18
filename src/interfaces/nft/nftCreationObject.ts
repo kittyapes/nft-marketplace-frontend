@@ -1,5 +1,4 @@
 export interface NFTCreationObject {
-	contractId: number;
 	amount: number;
 	name: string;
 	creator: string;

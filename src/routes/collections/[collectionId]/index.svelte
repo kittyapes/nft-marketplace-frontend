@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { browser } from '$app/env';
-
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import AddCircle from '$icons/add-circle.svelte';
 	import type { UserData } from '$interfaces/userData';
 	import ActionMenu from '$lib/components/ActionMenu.svelte';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
@@ -14,6 +13,8 @@
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
+	import { nftDraft } from '$stores/create';
+	import { outsideClickCallback } from '$actions/outsideClickCallback';
 
 	let collectionData: Collection;
 	let creatorData: UserData;
@@ -122,7 +123,24 @@
 	</div>
 
 	<div class="mt-16 border-t border-[#0000004D]">
-		<NftList options={collectionData ? collectionData.nfts.map((nftData) => apiNftToNftCard(nftData, { collection: collectionData })) : []} />
+		{#if collectionData?.nfts?.length}
+			<NftList options={collectionData ? collectionData.nfts.map((nftData) => apiNftToNftCard(nftData, { collection: collectionData })) : []} />
+		{:else if collectionData && !collectionData.nfts?.length}
+			<div
+				class="grid place-items-center border border-dashed border-opacity-30 border-color-gray-base h-60 clickable hover:scale-105 transition-all p10 rounded-2xl max-w-[246px] my-10"
+				on:click={() => {
+					$nftDraft.collectionName = collectionData.name;
+					goto('/create');
+				}}
+			>
+				<div class="flex flex-col gap-4 items-center justify-center">
+					<button class="rounded-full btn">
+						<AddCircle />
+					</button>
+					<div class="text-color-gray-dark">Create a new NFT</div>
+				</div>
+			</div>
+		{/if}
 	</div>
 </main>
 

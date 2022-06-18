@@ -16,7 +16,5 @@ export const getNftId = async () => {
 		return null;
 	});
 
-	console.log('nftId', res);
-
 	return res.data.data;
 };
