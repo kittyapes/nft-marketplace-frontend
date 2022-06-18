@@ -20,6 +20,7 @@
 	import type { NftData } from '$interfaces/nft';
 	import { HinataTokenAddress, WethContractAddress } from '$constants/contractAddresses';
 	import { currentUserAddress } from '$stores/wallet';
+	import { parseEther } from 'ethers/lib/utils.js';
 
 	// URL params
 	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
@@ -67,7 +68,7 @@
 			title: $fetchedNftData.name,
 			description: $fetchedNftData.metadata.description,
 			listingType: $newDropProperties.listingType,
-			price: listingPropValues.price,
+			price: parseEther(listingPropValues.price.toString()).toString(),
 			quantity: listingPropValues.quantity,
 			startTime: listingPropValues.startDate.unix(),
 			duration: duration
@@ -112,7 +113,7 @@
 </script>
 
 <!-- Back button -->
-<button class="btn flex items-center space-x-2 uppercase font-semibold mt-16 mb-8 text-sm" on:click={goBack}>
+<button class="flex items-center mt-16 mb-8 space-x-2 text-sm font-semibold uppercase btn" on:click={goBack}>
 	<Back />
 	<div>Go Back</div>
 </button>
@@ -121,23 +122,23 @@
 
 <div class="flex mb-32">
 	<div class="flex-grow">
-		<h1 class="text-xl uppercase mt-8">
+		<h1 class="mt-8 text-xl uppercase">
 			<span class="italic font-light">Step 3: Setting details</span>
 			|
-			<span class="gradient-text font-bold italic pr-1">{$newDropProperties.listingType}</span>
+			<span class="pr-1 italic font-bold gradient-text">{$newDropProperties.listingType}</span>
 		</h1>
 
-		<hr class="separator mt-4" />
+		<hr class="mt-4 separator" />
 
 		<!-- <CommonProperties class="mt-8" propNames={typeToProperties[$newDropProperties.listingType]} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} /> -->
 		<CommonProperties on:select={handleTokenChange} class="mt-8" propNames={typeToProperties['sale']} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} />
 
-		<!-- <hr class="separator mt-8" /> -->
+		<!-- <hr class="mt-8 separator" /> -->
 
 		<!-- <Royalties bind:isValid={royaltiesValid} /> -->
 
 		<div class="pr-8">
-			<button class="btn btn-gradient btn-rounded w-full mt-8 uppercase font-semibold" on:click={listForSale} disabled={!formValid || isListing}>
+			<button class="w-full mt-8 font-semibold uppercase btn btn-gradient btn-rounded" on:click={listForSale} disabled={!formValid || isListing}>
 				List for {$newDropProperties.listingType || 'N/A'}
 			</button>
 		</div>
@@ -147,8 +148,8 @@
 		{/if}
 	</div>
 
-	<div class="separator border-0 border-l p-8 w-80">
-		<div class="uppercase italic text-xl mb-4">Preview</div>
+	<div class="p-8 border-0 border-l separator w-80">
+		<div class="mb-4 text-xl italic uppercase">Preview</div>
 		<NftCard options={{ id: null, title: $fetchedNftData?.name, imageUrl: $fetchedNftData?.thumbnailUrl }} />
 	</div>
 </div>
