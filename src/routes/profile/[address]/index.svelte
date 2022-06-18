@@ -11,7 +11,7 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
-	import { profileCompletionProgress } from '$stores/user';
+	import { profileCompletionProgress, userLikedNfts } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import { apiNftToNftCard } from '$utils/adapters/apiNftToNftCard';
@@ -27,15 +27,7 @@
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 
-	const tabs = ['COLLECTED NFTS', 'CREATED NFTS', 'ACTIVE LISTINGS', 'FAVORITES'];
-	let selectedTab = 'COLLECTED NFTS';
-
 	$: address = $page.params.address;
-
-	$: if ($page.url.searchParams.has('tab')) {
-		let tabName = $page.url.searchParams.get('tab').split('_').join(' ').trim();
-		selectedTab = tabName;
-	}
 
 	const localProfileData = writable<UserData>();
 
@@ -53,25 +45,79 @@
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
 
-	let activeListings: NftCardOptions[] = [];
-
 	let totalNfts: number | null = null;
 	$: totalNfts;
 
-	let nftsPage = 1;
+	interface FetchFunctionResult {
+		res: any;
+		err: any;
+		adapted: any;
+	}
+
+	const tabs = {
+		collected: {
+			index: 1,
+			reachedEnd: false,
+			fetchFunction: async () => {
+				const res = {} as FetchFunctionResult;
+				res.res = await apiGetUserNfts(address, 'COLLECTED', tabs.collected.index, 10);
+				res.adapted = res.res.res.map((nft) => apiNftToNftCard(nft));
+				return res;
+			},
+			data: [],
+			label: 'Collected NFTs'
+		},
+		created: {
+			index: 1,
+			reachedEnd: false,
+			fetchFunction: async () => {
+				const res = {} as FetchFunctionResult;
+				res.res = await apiGetUserNfts(address, 'MINTED', tabs.created.index, 10);
+				res.adapted = res.res.res.map((nft) => apiNftToNftCard(nft));
+				return res;
+			},
+			data: [],
+			label: 'Created NFTs'
+		},
+		listings: {
+			index: 1,
+			reachedEnd: false,
+			fetchFunction: async () => {
+				const res = {} as FetchFunctionResult;
+				res.res = await getListings({ seller: address }, tabs.listings.index, 10);
+				// The following is not async, it's just that I do not wanna break the whole app
+				// one week before release by changing an adapter. :)
+				res.adapted = await Promise.all(res.res.map(adaptListingToNftCard));
+				return res;
+			},
+			data: [],
+			label: 'Active Listings'
+		},
+		favorites: {
+			index: 1,
+			reachedEnd: false,
+			fetchFunction: async () => {
+				const res = {} as FetchFunctionResult;
+				res.adapted = [];
+				res.adapted = $userLikedNfts.map((nft) => apiNftToNftCard(nft.nft));
+
+				tabs.favorites.reachedEnd = true;
+
+				return res;
+			},
+			data: [],
+			label: 'Favorites'
+		}
+	};
+
+	let selectedTab = tabs.collected;
 
 	let isFetchingNfts = false;
 
-	let rawNfts = [];
-	let reachedEndOfNfts = false;
-
-	$: collectedNfts = rawNfts.map((nft) => apiNftToNftCard(nft));
-	$: createdNfts = collectedNfts.filter((nft) => nft.popupOptions.rawResourceData.creator === address);
-
-	async function fetchNfts() {
+	async function fetchMore() {
 		isFetchingNfts = true;
 
-		const res = await apiGetUserNfts(address, nftsPage, 10);
+		const res = await selectedTab.fetchFunction();
 
 		if (res.err) {
 			console.error(res.err);
@@ -79,38 +125,34 @@
 			return;
 		}
 
-		if (res.res.length === 0) {
-			reachedEndOfNfts = true;
+		if (res.adapted.length === 0) {
+			selectedTab.reachedEnd = true;
 		} else {
-			rawNfts = [...rawNfts, ...res.res];
+			selectedTab.data = [...selectedTab.data, ...res.adapted];
+			selectedTab.index++;
 		}
 
 		isFetchingNfts = false;
 	}
 
-	function fetchMoreNfts() {
-		nftsPage++;
-		fetchNfts();
-	}
+	// const fetchActiveListing = async () => {
+	// 	const fetchedListings = await getListings();
+	// 	activeListings = await Promise.all(fetchedListings.map(adaptListingToNftCard));
+	// };
 
-	const fetchActiveListing = async () => {
-		const fetchedListings = await getListings();
-		activeListings = await Promise.all(fetchedListings.map(adaptListingToNftCard));
-	};
+	// let likedNfts = [];
 
-	let likedNfts = [];
+	// async function fetchLikedNfts() {
+	// 	const res = await getUserFavoriteNfts(address);
 
-	async function fetchLikedNfts() {
-		const res = await getUserFavoriteNfts(address);
+	// 	likedNfts = res.map((nft) => apiNftToNftCard(nft.nft));
+	// }
 
-		likedNfts = res.map((nft) => apiNftToNftCard(nft.nft));
-	}
+	// $: selectedTab === 'FAVORITES' && fetchLikedNfts();
 
-	$: selectedTab === 'FAVORITES' && fetchLikedNfts();
-
-	onMount(() => {
-		fetchActiveListing();
-	});
+	// onMount(() => {
+	// 	fetchActiveListing();
+	// });
 </script>
 
 <div class="h-72 bg-color-gray-light">
@@ -194,9 +236,9 @@
 
 <div>
 	<div class="container flex max-w-screen-xl px-32 mx-auto mt-16 space-x-8">
-		{#each tabs as tab}
-			<TabButton on:click={() => (selectedTab = tab)} selected={selectedTab === tab}>
-				{tab}
+		{#each Object.entries(tabs) as [tabName, tab]}
+			<TabButton on:click={() => (selectedTab = tab)} selected={selectedTab === tab} uppercase>
+				{tab.label}
 			</TabButton>
 		{/each}
 	</div>
@@ -204,17 +246,7 @@
 	<div class="h-px bg-black opacity-30" />
 
 	<div class="max-w-screen-xl mx-auto">
-		{#key createdNfts}
-			{#if selectedTab === 'COLLECTED NFTS'}
-				<NftList options={collectedNfts} isLoading={isFetchingNfts} on:end-reached={fetchMoreNfts} reachedEnd={reachedEndOfNfts} />
-			{:else if selectedTab === 'CREATED NFTS'}
-				<NftList options={createdNfts} isLoading={isFetchingNfts} on:end-reached={fetchMoreNfts} reachedEnd={reachedEndOfNfts} />
-			{:else if selectedTab === 'ACTIVE LISTINGS'}
-				<NftList options={activeListings} />
-			{:else if selectedTab === 'FAVORITES'}
-				<NftList options={likedNfts} />
-			{/if}
-		{/key}
+		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={fetchMore} reachedEnd={selectedTab.reachedEnd} />
 	</div>
 </div>
 
