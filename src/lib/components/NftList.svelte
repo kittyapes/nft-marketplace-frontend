@@ -33,7 +33,7 @@
 	}
 </script>
 
-<div>
+<div class="w-full">
 	{#if !isLoading && options?.length === 0}
 		<div class="placeholder">Nothing to see here, move along.</div>
 	{/if}
