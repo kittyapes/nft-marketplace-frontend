@@ -110,7 +110,7 @@
 
 		notifySuccess('Successfully created a listing.');
 		isListing = false;
-		goto('/profile/' + $currentUserAddress + '?tab=ACTIVE_LISTINGS');
+		goto('/profile/' + $currentUserAddress + '?tab=listings');
 	}
 
 	let listingPropValues: Partial<Record<ListingPropName, any>>;

@@ -27,7 +27,7 @@
 	}
 
 	function clickViewNft() {
-		goto(`/profile/${$currentUserAddress}?tab=CREATED_NFTS&id=${id}`);
+		goto(`/profile/${$currentUserAddress}?tab=created&id=${id}`);
 		handler.close();
 	}
 </script>
