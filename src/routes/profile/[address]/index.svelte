@@ -26,8 +26,36 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
+	import { getListing } from '$utils/api/listing';
+	import { adaptNftDataNftCard } from '$utils/adapters/adaptNftDataToNftCard';
+	import { removeUrlParam } from '$utils/misc/removeUrlParam';
+	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
+	import { getNft } from '$utils/api/nft';
 
 	$: address = $page.params.address;
+
+	$: if ($page.url.searchParams.has('tab')) {
+		// needs changes
+		let tabName = $page.url.searchParams.get('tab').split('_').join(' ').trim();
+		selectedTab = tabs[tabName];
+	}
+
+	onMount(async () => {
+		if ($page.url.searchParams.has('id')) {
+			const id = $page.url.searchParams.get('id');
+			const listing = await getListing(id);
+			let popupOptions;
+
+			if (listing) {
+				popupOptions = (await adaptListingToNftCard(listing)).popupOptions;
+			} else {
+				const nft = await getNft(id);
+				popupOptions = await apiNftToNftCard(nft).popupOptions;
+			}
+
+			setPopup(CardPopup, { props: { options: popupOptions }, onClose: () => removeUrlParam('id') });
+		}
+	});
 
 	const localProfileData = writable<UserData>();
 
