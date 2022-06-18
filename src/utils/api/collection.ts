@@ -26,7 +26,7 @@ export interface Collection {
 	paymentTokenAddress: string;
 	isExplicitSensitive: boolean;
 	creator: string;
-	nfts: [];
+	nfts: any[];
 	id: string;
 }
 

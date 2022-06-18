@@ -15,3 +15,6 @@ package-lock.json
 
 # Browserify
 # static/wallets.js
+
+# Testing
+src/routes/test/*

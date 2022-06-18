@@ -8,10 +8,12 @@
 	import Button from './Button.svelte';
 
 	let showDashboard = false;
+	let showMyCollections = false;
 
 	profileData.subscribe((profile) => {
 		// Also checking for superadmin just in case a user has the role but was not assigned the admin too
 		showDashboard = profile && (profile.roles.includes('admin') || profile.roles.includes('superadmin'));
+		showMyCollections = profile && (profile.roles.includes('verified_user') || profile.roles.includes('superadmin'));
 	});
 </script>
 
@@ -21,7 +23,10 @@
 		{#if showDashboard}
 			<Button variant="rounded-outline" class="profile-btn-item" --width="100%" --py="0.5rem" on:click={() => goto('/admin')}>Dashboard</Button>
 		{/if}
-		<Button variant="rounded-outline" class="profile-btn-item" --width="100%" --py="0.5rem" on:click={() => goto(`/profile/${$profileData.address}/collections`)}>My Collections</Button>
+		{#if showMyCollections}
+			<Button variant="rounded-outline" class="profile-btn-item" --width="100%" --py="0.5rem" on:click={() => goto(`/profile/${$profileData.address}/collections`)}>My Collections</Button>
+		{/if}
+
 		<Button variant="rounded-outline" class="profile-btn-item bg-red-200" --width="100%" --py="0.5rem" on:click={() => alert('Not Implemented Yet')}>Buy Hinata</Button>
 	</div>
 

@@ -77,18 +77,17 @@
 		const progress = writable(0);
 		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
 
-		// Create NFT on the server
 		const nftId = await getNftId();
 		console.info('[Create] Using new NFT contract ID:', nftId);
 
+		// Create NFT on the server
 		const createNftRes = await createNFTOnAPI({
-			contractId: nftId,
 			description: nftData.description,
 			amount: nftData.quantity,
 			name: nftData.name,
 			creator: $currentUserAddress,
 			image: nftData.fileBlob,
-			animation: nftData.animationBlob,
+			animation: nftData.animationBlob
 		});
 
 		if (!createNftRes) {
@@ -98,7 +97,6 @@
 
 		//add NFT to selected collection
 		const addNftsToCollectionRes = await addNftsToCollection([createNftRes.nftId], selectedCollectionId);
-		console.log(addNftsToCollectionRes);
 
 		progress.set(50);
 
@@ -115,7 +113,7 @@
 		}
 
 		newBundleData.update((data) => {
-			return { ...data, id: createNftRes.nftId };
+			return { ...data, id: createNftRes._id };
 		});
 
 		progress.set(100);
@@ -123,16 +121,13 @@
 	}
 
 	const handleCollectionSelection = (event) => {
-		console.log(event);
-
-		nftData.collectionName = event.detail?.label;
-		selectedCollectionId = event.detail?.value;
 		if (event.detail?.label === 'Create new collection') {
-			goto('collections/new/edit?to=create');
+			goto(event.detail?.value);
+		} else {
+			nftData.collectionName = event.detail?.label;
+			selectedCollectionId = event.detail?.value;
 		}
 	};
-
-	$: console.log('collectionId', selectedCollectionId);
 
 	$: quantityValid = nftData.quantity > 0;
 	$: inputValid = nftData.name && selectedCollectionId && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
@@ -160,8 +155,8 @@
 				<div class="uppercase italic font-light text-color-black text-xs">Upload file</div>
 
 				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
-				<div class="text-color-black font-semibold mt-1 text-sm">
-					PNG, GIF, WEBP, MP4, MP3 <br />
+				<div class="text-color-black font-semibold mt-1 text-sm w-max">
+					PNG, JPG, JPEG, GIF, WEBP, MP4, MP3 <br />
 					Max 50 MB
 				</div>
 			</div>
@@ -178,7 +173,7 @@
 
 				<div class="text-[#1D1D1DB2] mt-4 text-sm">For other marketplaces:</div>
 				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
-				<div class="text-color-black font-semibold mt-1 w-max">PNG, GIF</div>
+				<div class="text-color-black font-semibold mt-1 w-max text-sm">PNG, JPG, JPEG, GIF</div>
 			</div>
 
 			<div class="flex-grow grid place-items-stretch">
@@ -204,7 +199,7 @@
 					on:select={handleCollectionSelection}
 					options={[
 						...$availableCollections.filter((item) => $availableCollections.filter((_item) => _item.label === item.label).length <= 1),
-						{ label: 'Create new collection', value: 'collection/new/edit' }
+						{ label: 'Create new collection', value: 'collections/new/edit' }
 					]}
 					class="mt-2"
 					btnClass="font-semibold"

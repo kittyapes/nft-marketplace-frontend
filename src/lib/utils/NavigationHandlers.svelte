@@ -25,7 +25,7 @@
 	}
 
 	function getWalletRequiredRoutes() {
-		return [RegExp('create.*'), RegExp('marketplace.*'), RegExp('my-collections.*')];
+		return [RegExp('create.*'), RegExp('marketplace.*')];
 	}
 
 	// Check if the path needs a wallet connected. If yes, check if the user is connected.

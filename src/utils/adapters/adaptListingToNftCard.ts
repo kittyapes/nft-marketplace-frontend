@@ -30,12 +30,12 @@ export async function adaptListingToNftCard(data: Listing) {
 			symbol: data.paymentTokenTicker,
 			tokenAddress: data.paymentTokenAddress
 		},
-		likeIds: [data.nfts[0].nftId],
+		likeIds: [nft._id],
 		rawResourceData: data
 	};
 
 	const nftCardOptions = {
-		id: data.listingId,
+		id: nft._id,
 		imageUrl: nft.thumbnailUrl,
 		title: data.title,
 		collectionName: 'N/A',
