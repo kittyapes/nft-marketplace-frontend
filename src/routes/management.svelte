@@ -21,12 +21,14 @@
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import CollectionName from '$lib/components/management/render-components/CollectionName.svelte';
 	import { fetchProfileData } from '$utils/api/profile';
+	import { whitelistCollection } from '$utils/api/management/whitelistCollection';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
 	let collections: Collection[] = [];
 	let loaded = false;
 	let eventId;
+	let whitelistingCollectionAddress: string;
 
 	interface userFetchingOptions {
 		filter: Partial<{
@@ -50,7 +52,7 @@
 	let userTableData: TableCol[] = [];
 	let collectionTableData: TableCol[] = [];
 
-	let handleTableEvent = async (event: CustomEvent) => {
+	const handleTableEvent = async (event: CustomEvent) => {
 		userFetchingOptions.sort = {
 			sortBy: event.detail.sortBy,
 			sortReversed: event.detail.sortReversed
@@ -60,7 +62,7 @@
 		eventId = event.detail.id;
 	};
 
-	let handleFilter = async (event: CustomEvent) => {
+	const handleFilter = async (event: CustomEvent) => {
 		if (mode === 'USER') {
 			userFetchingOptions.filter = {
 				createdBefore: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdBefore,
@@ -71,6 +73,13 @@
 		} else {
 			collections = event.detail.changeTo;
 		}
+	};
+
+	const handleVerify = async () => {
+		if (!whitelistingCollectionAddress) return;
+
+		const res = await whitelistCollection(whitelistingCollectionAddress).catch((e) => console.log(e));
+		console.log(res);
 	};
 
 	let roleFilterOptions = [
@@ -113,11 +122,11 @@
 	//COLLECTION section
 
 	let createCollectionTable = async () => {
-		await apiSearchCollections()
+		await apiSearchCollections(null, null, 10)
 			.then((res) => (collections = res))
 			.catch((err) => console.log(err));
-		if (!users.length) return false;
-
+		if (!collections.length) return false;
+		console.log(collections);
 		return true;
 	};
 
@@ -148,13 +157,11 @@
 				renderComponent: EntryRole,
 				renderComponentProps: collections.map((u) => ({
 					id: u.id,
-					role: u.status === 'INACTIVATED' ? u.status : u.roles?.includes('superadmin') ? 'superadmin' : u.roles?.[0],
-					color: getRoleColor(u.status === 'INACTIVATED' ? u.status : u.roles?.includes('superadmin') ? 'superadmin' : u.roles?.[0]),
+					role: u.status,
+					color: getRoleColor(u.status === 'INACTIVE' ? 'INACTIVATED' : 'verified_user'),
 					options: [
-						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin' },
-						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user' },
-						{ label: 'blogger', checked: false, cb: (e) => e.roles?.includes('blogger'), value: 'blogger' },
-						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED', value: 'inactived_user' }
+						{ label: 'Listed', checked: u.status === 'LISTED', value: 'LISTED' },
+						{ label: 'Inactive', checked: u.status === 'INACTIVE', value: 'INACTIVE' }
 					]
 				}))
 			},
@@ -316,6 +323,29 @@
 	<LoadedContent {loaded}>
 		<InteractiveTable on:event={handleTableEvent} tableData={mode === 'USER' ? userTableData : collectionTableData} rows={mode === 'USER' ? users.length : collections.length} />
 	</LoadedContent>
+	<!--{#if mode === 'COLLECTION'}-->
+	<div class="flex flex-col w-full gap-4 ">
+		<div class="flex gap-10 items-center">
+			<div class="flex flex-col gap-1">
+				<div class="text-color-black ">Choose Display Name</div>
+				<input type="text" class="input max-w-xl w-[36rem]" placeholder="Name" />
+			</div>
+			<div class="flex flex-col gap-1">
+				<div class="text-color-black">Choose Logo</div>
+			</div>
+		</div>
+		<div class="flex items-center">
+			<div class="flex flex-col gap-1">
+				<div class="text-color-black ">Verify Collection on Marketplace</div>
+				<div class="flex gap-10">
+					<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={whitelistingCollectionAddress} />
+					<div class="flex-grow" />
+					<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" on:click={handleVerify}>Verify</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--{/if}-->
 </div>
 
 <style lang="postcss">

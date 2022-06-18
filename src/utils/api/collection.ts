@@ -138,8 +138,8 @@ export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[
 
 export async function apiSearchCollections(creatorAddress: string | null = null, name: string | null = null, limit: number = 100, page: number = 1) {
 	const params = {
-		limit: limit ?? 100,
-		page: page ?? 1
+		limit: limit,
+		page: page
 	};
 
 	if (name) {
