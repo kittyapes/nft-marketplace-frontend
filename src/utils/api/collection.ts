@@ -88,11 +88,11 @@ export interface UpdateCollectionOptions {
 	backgroundImage?: Blob;
 }
 
-export async function apiUpdateCollection(options: UpdateCollectionOptions) {
+export async function apiUpdateCollection(options: UpdateCollectionOptions, id: string) {
 	const formData = new FormData();
 	Object.entries(options).forEach(([k, v]) => v && formData.append(k, v));
 
-	const res = await axios.put(getApiUrl('v2', 'collections/' + options.slug), formData, getAxiosConfig()).catch((e) => e.response);
+	const res = await axios.put(getApiUrl('latest', 'collections/' + id), formData, getAxiosConfig()).catch((e) => e.response);
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -104,7 +104,7 @@ export async function apiUpdateCollection(options: UpdateCollectionOptions) {
 }
 
 export async function apiGetCollection(collectionId: string) {
-	const res = await axios.get(getApiUrl('v2', 'collections/' + collectionId));
+	const res = await axios.get(getApiUrl('latest', 'collections/' + collectionId));
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
