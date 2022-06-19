@@ -323,18 +323,8 @@
 	<LoadedContent {loaded}>
 		<InteractiveTable on:event={handleTableEvent} tableData={mode === 'USER' ? userTableData : collectionTableData} rows={mode === 'USER' ? users.length : collections.length} />
 	</LoadedContent>
-	<!--{#if mode === 'COLLECTION'}-->
-	<div class="flex flex-col w-full gap-4 ">
-		<div class="flex gap-10 items-center">
-			<div class="flex flex-col gap-1">
-				<div class="text-color-black ">Choose Display Name</div>
-				<input type="text" class="input max-w-xl w-[36rem]" placeholder="Name" />
-			</div>
-			<div class="flex flex-col gap-1">
-				<div class="text-color-black">Choose Logo</div>
-			</div>
-		</div>
-		<div class="flex items-center">
+	{#if mode === 'COLLECTION'}
+		<div class="flex flex-col w-full gap-4 ">
 			<div class="flex flex-col gap-1">
 				<div class="text-color-black ">Verify Collection on Marketplace</div>
 				<div class="flex gap-10">
@@ -344,8 +334,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<!--{/if}-->
+	{/if}
 </div>
 
 <style lang="postcss">
