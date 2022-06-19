@@ -11,7 +11,7 @@
 
 	$: if (props) {
 		localProps = props;
-		localProps.role = localProps.role.toLowerCase();
+		localProps.role = localProps.role?.toLowerCase();
 		if (props.role === 'superadmin') localProps.role = 'sadmin';
 		else if (props.role === 'inactivated_user' || props.role === 'inactivated') localProps.role = 'inactive';
 		else if (props.role === 'verified_user') localProps.role = 'verified';
@@ -19,10 +19,7 @@
 
 	let handleSelect = async (event: CustomEvent) => {
 		let roles: UserRole[] = [];
-		console.log(event);
-		event.detail?.forEach((e) => {
-			if (e.checked) roles.push(e.value);
-		});
+		if (event.detail?.checked) roles.push(event.detail?.value);
 		const res = await addUserRole(props.id, roles);
 	};
 </script>
