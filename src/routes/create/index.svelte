@@ -205,7 +205,7 @@
 					on:select={handleCollectionSelection}
 					options={[
 						...$availableCollections.filter((item) => $availableCollections.filter((_item) => _item.label === item.label).length <= 1),
-						{ label: 'Create new collection', value: 'collections/new/edit' }
+						{ label: 'Create new collection', value: 'collections/new/edit?to=create' }
 					]}
 					class="mt-2"
 					btnClass="font-semibold"
