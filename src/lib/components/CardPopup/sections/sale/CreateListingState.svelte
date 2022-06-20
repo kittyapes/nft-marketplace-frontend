@@ -7,7 +7,6 @@
 	import Toggle from '$lib/components/Toggle.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
 	import type { ListingType } from '$utils/api/listing';
-	import { saleList } from '$utils/flows/saleList';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import { getTokenAddress } from '$utils/misc/getTokenAddress';
 	import { notifyError } from '$utils/toast';
