@@ -45,6 +45,7 @@ export async function adaptListingToNftCard(data: Listing) {
 
 	const nftCardOptions = {
 		id: nft._id,
+		likeIds: [nft._id],
 		imageUrl: nft.thumbnailUrl,
 		title: data.title,
 		collectionName: 'N/A',

@@ -12,6 +12,7 @@
 	import getTimeRemaining from '$utils/timeRemaining';
 	import { onMount } from 'svelte';
 	import { refreshLikedNfts } from '$stores/user';
+	import { notifyError } from '$utils/toast';
 
 	export let options: NftCardOptions;
 
@@ -28,12 +29,15 @@
 
 	async function favNFT() {
 		if (!$currentUserAddress || !options.popupOptions) return;
-		options.favorite ? (likes = likes - 1) : (likes = likes + 1);
-		// change status first for quick feedback
-		options.favorite = !options.favorite;
 
 		for (const id of options.likeIds) {
-			await favoriteNft(id);
+			const res = await favoriteNft(id);
+			if (!res || res.error) notifyError('Failed to favourite NFT');
+			else {
+				console.log(options.favorite);
+				options.favorite ? (likes = likes - 1) : (likes = likes + 1);
+				options.favorite = !options.favorite;
+			}
 		}
 
 		await refreshLikedNfts($currentUserAddress);
