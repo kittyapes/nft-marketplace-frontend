@@ -40,7 +40,7 @@
 	collectionData.subscribe((data) => {
 		$formValidity.image = !!data.image || !!data.logoImageUrl || 'Missing logo image';
 		$formValidity.cover = !!data.cover || !!data.backgroundImageUrl || 'Missing cover image';
-		$formValidity.name = !!data.name ? (data.name.startsWith('/') || data.name.startsWith('#')) && 'Collection name cannot start with # or /' : 'Missing collection name';
+		$formValidity.name = !!data.name ? ((data.name.startsWith('/') || data.name.startsWith('#')) && 'Collection name cannot start with # or /') || !!data.name : 'Missing collection name';
 		$formValidity.slug = !!data.slug || 'Collection URL is invalid';
 		$formValidity.description = !!data.description || 'Missing collection description';
 	});
