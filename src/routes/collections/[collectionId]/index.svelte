@@ -14,6 +14,7 @@
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
 	import { nftDraft } from '$stores/create';
+	import { outsideClickCallback } from '$actions/outsideClickCallback';
 
 	let collectionData: Collection;
 	let creatorData: UserData;

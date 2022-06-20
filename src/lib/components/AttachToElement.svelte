@@ -7,7 +7,20 @@
 	export let offsetX = 0;
 	export let offsetY = 0;
 
-	$: clientRect = browser && to?.getBoundingClientRect();
+	function getCoords(elem) {
+		let box = elem.getBoundingClientRect();
+
+		return {
+			top: box.top + window.pageYOffset,
+			right: box.right + window.pageXOffset,
+			bottom: box.bottom + window.pageYOffset,
+			left: box.left + window.pageXOffset,
+			height: box.height,
+			width: box.width
+		};
+	}
+
+	$: clientRect = browser && to && getCoords(to);
 </script>
 
 <div
