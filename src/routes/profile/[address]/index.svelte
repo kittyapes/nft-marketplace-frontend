@@ -127,7 +127,8 @@
 			fetchFunction: async () => {
 				const res = {} as FetchFunctionResult;
 				res.adapted = [];
-				res.adapted = $userLikedNfts.map((nft) => apiNftToNftCard(nft.nft));
+				const nfts = await getUserFavoriteNfts(address);
+				res.adapted = nfts?.map((nft) => apiNftToNftCard(nft.nft));
 
 				tabs.favorites.reachedEnd = true;
 
