@@ -96,11 +96,17 @@
 	};
 
 	let handleFilter = async (event: CustomEvent) => {
+		console.log(event);
 		userFetchingOptions.filter = {
 			createdBefore: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdBefore,
 			role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
 			status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status
 		};
+
+		if (event.detail.role === 'all') {
+			userFetchingOptions.filter.role = undefined;
+		}
+
 		if (mode === 'USER') users = await getUsers(getUsersFetchingOptions());
 		else collections = event.detail.changeTo;
 	};
@@ -176,7 +182,7 @@
 	}
 
 	let roleFilterOptions = [
-		{ label: 'All', role: '' },
+		{ label: 'All', role: 'all' },
 		{ label: 'Super Admin', role: 'superadmin' },
 		{ label: 'Admin', role: 'admin' },
 		{ label: 'Verified Creator', role: 'verified_user' },
