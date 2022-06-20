@@ -122,14 +122,26 @@ export interface listingFetchingFilters {
 
 export async function getListings(filters?: listingFetchingFilters, page: number = 1, limit: number = 100) {
 	const params = {
-		//type: filters?.type,
+		type: filters?.type,
 		//collecitonId: filters?.collectionId,
 		//price: filters?.price,
 		seller: filters?.seller,
 		page,
 		limit
 	};
-	const res = await axios.get(getApiUrl('latest', 'listings'), { params });
+
+	let queryString = '';
+
+	for(const [key, value] of Object.entries(params)) {
+		if(value && Array.isArray(value)) {
+			value.forEach(v => queryString += `${key}=${v}&`)
+		}
+		else if (value) {
+			queryString += `${key}=${value}&`
+		}
+	}
+	console.log(queryString)
+	const res = await axios.get(getApiUrl('latest', 'listings?' + queryString));
 
 	return res.data.data as Listing[];
 }
