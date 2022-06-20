@@ -2,6 +2,7 @@
 	import { WethContractAddress } from '$constants/contractAddresses';
 	import Info from '$icons/info.v2.svelte';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import Button from '$lib/components/v2/Button.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
@@ -15,12 +16,14 @@
 	import { parseEther } from 'ethers/lib/utils';
 	import { createEventDispatcher } from 'svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
+	import Input from '$lib/components/v2/Input.svelte';
+	import { createListing } from '$utils/flows/createListing';
 
 	const dispatch = createEventDispatcher();
 
 	export let options: CardPopupOptions;
 
-	let selectedListingType: ListingType = 'sale';
+	let selectedListingType: ListingType = 'auction';
 
 	const tokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.black'), value: WethContractAddress }];
 	const durationOptions = [
@@ -35,26 +38,36 @@
 	let price: any;
 	let paymentTokenTicker: string;
 	let duration: number;
+	let startingPrice: any;
+	let reservePrice: string;
 
 	$: console.log(price, paymentTokenTicker, duration);
 
-	$: formValid = price > 0;
+	// Validation
+	let formValid = false;
+
+	$: if (selectedListingType === 'sale') {
+		formValid = price > 0;
+	} else if (selectedListingType === 'auction') {
+		formValid = startingPrice > 0 && reservePriceValid;
+	}
 
 	let isListing = false;
 
 	async function completeListing() {
 		isListing = true;
 
-		const { err } = await saleList({
+		const { err } = await createListing({
 			title: options.nftData[0].metadata?.title,
 			description: options.nftData[0].metadata?.description,
 			duration,
 			price: parseEther(price.toString()),
-			nfts: [{ nftId: options.nftData[0].tokenId, amount: 1 }],
+			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(1) }],
 			paymentTokenAddress: getTokenAddress(paymentTokenTicker as any),
 			paymentTokenTicker,
 			quantity: BigNumber.from(1),
-			startTime: dayjs().unix() + 10000
+			startTime: dayjs().unix() + 10000,
+			listingType: selectedListingType
 		});
 
 		if (err) {
@@ -66,12 +79,14 @@
 
 		isListing = false;
 	}
+
+	let reservePriceValid: boolean;
 </script>
 
-<div>
+<div class="pr-6 mb-16 overflow-scroll">
 	<!-- Listing Type -->
 	<div class="mt-4 font-semibold">Listing Type</div>
-	<div class="mt-2"><ListingTypeSwitch /></div>
+	<div class="mt-2"><ListingTypeSwitch bind:selectedType={selectedListingType} /></div>
 
 	{#if selectedListingType === 'sale'}
 		<!-- Price -->
@@ -92,39 +107,69 @@
 		</div>
 
 		<!-- Duration -->
-		<div class="mt-4 font-semibold">Duration</div>
-		<div class="mt-2">
-			<Dropdown options={durationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
-		</div>
+		<div class="mt-4 mb-2 font-semibold">Duration</div>
+		<Dropdown options={durationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
 
 		<!-- Specific buyer -->
+		<!-- Not in v1 -->
 		{#if false}
 			<div class="flex mt-4 space-x-2">
 				<Toggle --width="3rem" onInsideLabel="" offInsideLabel="" />
 				<div class="font-semibold">Reserve for specific buyer</div>
 			</div>
 		{/if}
+	{:else if selectedListingType === 'auction'}
+		<!-- Process -->
+		{#if false}
+			<div class="mt-4 mb-2 font-semibold">Process</div>
+			<Button>Sell To Highest Bidder</Button>
+		{/if}
 
-		<!-- Fees -->
-		<div class="mt-4 font-semibold">Fees</div>
-		<div class="grid gap-2 mt-2 font-semibold" style:grid-template-columns="auto 6rem">
-			<div>Creator Royalties:</div>
-			<div class="flex justify-end space-x-2">
-				<div class="">0.0%</div>
-				<div class="w-6">
-					<Info />
-				</div>
-			</div>
+		<!-- Starting price -->
+		<div class="mt-4 font-semibold">Starting Price</div>
+		<div class="mt-2">
+			<TokenDropdown
+				dropdownBg="white"
+				dropdownColor="black"
+				dropdownButtonBg="white"
+				dropdownButtonColor="black"
+				showLabel
+				showArrow={false}
+				{tokens}
+				buttonDisabled
+				bind:value={startingPrice}
+				on:select={(ev) => (paymentTokenTicker = ev.detail.label)}
+			/>
+		</div>
 
-			<div class="gradient-text">Hinata Fees:</div>
-			<div class="flex justify-end space-x-2">
-				<div class="gradient-text">0%</div>
-				<div class="w-6">
-					<Info />
-				</div>
+		<!-- Duration -->
+		<div class="mt-4 mb-2 font-semibold">Duration</div>
+		<Dropdown options={durationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
+
+		<!-- Reserve price -->
+		<div class="mt-4 mb-2 font-semibold">Reserve Price (optional)</div>
+		<Input bind:value={reservePrice} placeholder="Amount" regex={/^(\d+)?$/} bind:valid={reservePriceValid} />
+	{/if}
+
+	<!-- Fees -->
+	<div class="mt-4 font-semibold">Fees</div>
+	<div class="grid gap-2 mt-2 font-semibold" style:grid-template-columns="auto 6rem">
+		<div>Creator Royalties:</div>
+		<div class="flex justify-end space-x-3">
+			<div class="">0.0%</div>
+			<div class="w-6">
+				<Info />
 			</div>
 		</div>
-	{/if}
+
+		<div class="gradient-text">Hinata Fees:</div>
+		<div class="flex justify-end space-x-3">
+			<div class="gradient-text">0%</div>
+			<div class="w-6">
+				<Info />
+			</div>
+		</div>
+	</div>
 
 	<button class="w-full mt-8 uppercase transition btn btn-gradient btn-rounded" disabled={!formValid || isListing} on:click={completeListing}>Complete Listing</button>
 </div>

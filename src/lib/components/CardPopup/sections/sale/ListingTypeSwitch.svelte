@@ -7,14 +7,7 @@
 </script>
 
 <div class="flex w-full bg-gradient-to-r from-color-purple to-color-blue h-12 rounded-lg p-[2px]">
-	<button
-		disabled
-		class="text-color-purple rounded-l-md disabled:text-gray-400 outline outline-[2px] outline-gray-300"
-		class:selected={selectedType === 'auction'}
-		on:click={() => (selectedType = 'auction')}
-	>
-		Auction
-	</button>
+	<button class="text-color-purple rounded-l-md" class:selected={selectedType === 'auction'} on:click={() => (selectedType = 'auction')}>Auction</button>
 	<button class="text-color-blue rounded-r-md" class:selected={selectedType === 'sale'} on:click={() => (selectedType = 'sale')}>Sale</button>
 </div>
 

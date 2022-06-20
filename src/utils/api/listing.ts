@@ -47,7 +47,7 @@ interface RaffleParticipants {
 }
 
 interface CreateListingOptions {
-	nfts: { nftId: string; amount: number }[];
+	nfts: { nftId: string; amount: BigNumber }[];
 	description?: string;
 	title?: string;
 	paymentTokenTicker?: string;
