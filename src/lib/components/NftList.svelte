@@ -22,7 +22,7 @@
 
 	function markLiked() {
 		options.forEach((nft) => {
-			nft.favorite = $userLikedNfts.filter((likedNft) => likedNft.nft.nftId === nft.id).length > 0;
+			nft.favorite = $userLikedNfts?.filter((likedNft) => likedNft.nft.nftId === nft.id).length > 0;
 		});
 	}
 

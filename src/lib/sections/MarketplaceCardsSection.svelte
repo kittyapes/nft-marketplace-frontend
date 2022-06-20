@@ -13,7 +13,7 @@
 
 	let listingsFetchingFilters: listingFetchingFilters = {};
 
-	let getData = async () => {
+	let getData = async (listingsFetchingFilters?: listingFetchingFilters) => {
 		listings.set(await getListings());
 		data = await Promise.all($listings.map(adaptListingToNftCard));
 	};
@@ -24,7 +24,7 @@
 		listingsFetchingFilters.type = await Array.from(state.status?.values());
 		listingsFetchingFilters.price = state.price;
 		console.log(listingsFetchingFilters);
-		await getData();
+		await getData(listingsFetchingFilters);
 	});
 
 	// $: {
