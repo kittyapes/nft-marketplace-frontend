@@ -27,7 +27,6 @@
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 	import { getListing } from '$utils/api/listing';
-	import { adaptNftDataNftCard } from '$utils/adapters/adaptNftDataToNftCard';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import { getNft } from '$utils/api/nft';
