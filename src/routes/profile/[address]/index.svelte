@@ -36,7 +36,7 @@
 
 	$: if ($page.url.searchParams.has('tab')) {
 		// needs changes
-		let tabName = $page.url.searchParams.get('tab').split('_').join(' ').trim();
+		let tabName = $page.url.searchParams.get('tab');
 		selectedTab = tabs[tabName];
 	}
 

@@ -16,7 +16,6 @@ export interface FetchUsersOptions  {
 export const getUsers = async (options?: FetchUsersOptions) => {
     if (options && !options.query) options.query = undefined;
     try {
-        console.log(options);
         const res = await axios.get(getApiUrl('latest', 'admins/users'), { params: options , ...getAxiosConfig()});
         return res.data.data as UserData[];
     } catch {

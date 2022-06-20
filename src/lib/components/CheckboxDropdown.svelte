@@ -4,6 +4,8 @@
 	import { createEventDispatcher } from 'svelte';
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import Checkbox from './Checkbox.svelte';
+	import { log } from '$utils/debug';
+	import { includes } from 'lodash-es';
 
 	const dispatch = createEventDispatcher();
 
@@ -21,8 +23,8 @@
 
 	let elemOpenButton: HTMLButtonElement;
 
-	function handleOptionSelect(options) {
-		dispatch('change', options);
+	function handleOptionSelect(option) {
+		dispatch('change', option);
 	}
 </script>
 
@@ -34,7 +36,7 @@
 		class:opacity-50={disabled}
 		bind:this={elemOpenButton}
 		on:click|stopPropagation={() => {
-			opened = true;
+			opened = !opened;
 		}}
 	>
 		{#if gradient}
@@ -46,12 +48,18 @@
 		<div class="min-w-max first-letter:uppercase">{dropdownLabel}</div>
 	</button>
 
-	<div use:outsideClickCallback={{ cb: () => (opened = false) }}>
+	<div
+		use:outsideClickCallback={{
+			cb: (e) => {
+				if (!e.composedPath().includes(elemOpenButton)) opened = false;
+			}
+		}}
+	>
 		{#if opened}
 			<div id="list-container" class="absolute -bottom-1 left-0 w-full overflow-hidden translate-y-full bg-white rounded-lg text-color-black flex flex-col min-w-max">
 				{#each options as option}
 					<button class="px-2 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded flex gap-4 w-full min-w-max">
-						<Checkbox on:change={() => handleOptionSelect(options)} bind:checked={option.checked} />
+						<Checkbox on:change={() => handleOptionSelect(option)} bind:checked={option.checked} />
 						<div class="first-letter:uppercase">{option.label}</div>
 					</button>
 				{/each}
