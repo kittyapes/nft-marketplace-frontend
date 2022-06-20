@@ -15,7 +15,7 @@
 	const inviewOptions = {};
 
 	function onChange(event) {
-		if (event.detail.inView && !reachedEnd) {
+		if (event.detail.inView) {
 			dispatch('end-reached');
 		}
 	}
@@ -49,8 +49,7 @@
 	{#if isLoading}
 		<DiamondsLoader />
 	{:else}
-		<div use:inview={inviewOptions} on:change={onChange} />
-	{/if}
+		<div use:inview={inviewOptions} on:change={onChange} />{/if}
 
 	{#if reachedEnd}
 		<div class="text-center placeholder">You have reached the end of this list.</div>
