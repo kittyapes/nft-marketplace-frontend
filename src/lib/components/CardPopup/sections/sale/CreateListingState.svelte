@@ -16,7 +16,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
 	import Input from '$lib/components/v2/Input.svelte';
-	import { createListing } from '$utils/flows/createListing';
+	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 
 	const dispatch = createEventDispatcher();
 
@@ -56,18 +56,28 @@
 	async function completeListing() {
 		isListing = true;
 
-		const { err } = await createListing({
+		const flowOptions: CreateListingFlowOptions = {
 			title: options.nftData[0].metadata?.title,
 			description: options.nftData[0].metadata?.description,
 			duration,
-			price: parseEther(price.toString()),
 			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(1) }],
 			paymentTokenAddress: getTokenAddress(paymentTokenTicker as any),
 			paymentTokenTicker,
 			quantity: BigNumber.from(1),
 			startTime: dayjs().unix() + 10000,
-			listingType: selectedListingType
-		});
+			listingType: selectedListingType,
+			sale: {} as any,
+			auction: {} as any
+		};
+
+		if (selectedListingType === 'sale') {
+			flowOptions.sale.price = parseEther(price.toString());
+		} else if (selectedListingType === 'auction') {
+			flowOptions.auction.startingPrice = parseEther(startingPrice.toString());
+			flowOptions.auction.reservePrice = parseEther(reservePrice || '0');
+		}
+
+		const { err } = await createListingFlow(flowOptions);
 
 		if (err) {
 			console.error(err);

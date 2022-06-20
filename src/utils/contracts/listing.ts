@@ -16,7 +16,7 @@ export enum LISTING_TYPE {
 }
 
 export interface ContractCreateListingOptions {
-	startingPrice: string;
+	price: BigNumber;
 	duration: number;
 	startTime: UnixTime;
 	payToken: EthAddress;
@@ -43,7 +43,7 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		id: ethers.BigNumber.from(options.listingId),
 		seller: get(currentUserAddress),
 		payToken: options.payToken,
-		price: options.startingPrice,
+		price: options.price,
 		startTime: options.startTime,
 		duration: options.duration,
 		quantity: options.quantity,

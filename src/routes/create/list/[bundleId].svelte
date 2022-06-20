@@ -22,6 +22,7 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import { parseEther } from 'ethers/lib/utils.js';
 	import dayjs from 'dayjs';
+	import { BigNumber } from 'ethers';
 
 	// URL params
 	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
@@ -83,8 +84,8 @@
 			duration: duration
 		});
 
-		if (apiCreateListingRes.data.error) {
-			notifyError(apiCreateListingRes.data.message);
+		if (apiCreateListingRes.err) {
+			notifyError(apiCreateListingRes.err.message);
 			isListing = false;
 			return;
 		}
@@ -92,13 +93,13 @@
 		// Create listing on chain
 		const successListingOnChain = await contractCreateListing({
 			payToken: currentPaymentToken.address,
-			listingId: apiCreateListingRes.data.data.listingId,
+			listingId: apiCreateListingRes.res.data.data.listingId,
 			listingType: LISTING_TYPE.FIXED_PRICE,
-			startingPrice: listingPropValues.price,
+			price: parseEther(listingPropValues.price.toString()),
 			startTime: listingPropValues.startDate.unix(),
 			duration: duration,
 			tokenIds: [$fetchedNftData.nftId],
-			tokenAmounts: [$fetchedNftData.amount],
+			tokenAmounts: [BigNumber.from($fetchedNftData.amount)],
 			quantity: 1
 		});
 

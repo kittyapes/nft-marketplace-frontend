@@ -62,6 +62,9 @@ interface CreateListingOptions {
 	duration?: number;
 }
 
+/**
+ * @deprecated
+ */
 export async function postCreateListing(options: CreateListingOptions) {
 	const formData = new FormData();
 	formData.append('nfts', JSON.stringify(options.nfts));
