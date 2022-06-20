@@ -143,6 +143,8 @@
 	let isFetchingNfts = false;
 
 	async function fetchMore() {
+		if (selectedTab.reachedEnd) return;
+
 		isFetchingNfts = true;
 
 		const res = await selectedTab.fetchFunction();
@@ -163,24 +165,7 @@
 		isFetchingNfts = false;
 	}
 
-	// const fetchActiveListing = async () => {
-	// 	const fetchedListings = await getListings();
-	// 	activeListings = await Promise.all(fetchedListings.map(adaptListingToNftCard));
-	// };
-
-	// let likedNfts = [];
-
-	// async function fetchLikedNfts() {
-	// 	const res = await getUserFavoriteNfts(address);
-
-	// 	likedNfts = res.map((nft) => apiNftToNftCard(nft.nft));
-	// }
-
-	// $: selectedTab === 'FAVORITES' && fetchLikedNfts();
-
-	// onMount(() => {
-	// 	fetchActiveListing();
-	// });
+	$: console.log(tabs);
 </script>
 
 <div class="h-72 bg-color-gray-light">
@@ -265,7 +250,14 @@
 <div>
 	<div class="container flex max-w-screen-xl px-32 mx-auto mt-16 space-x-8">
 		{#each Object.entries(tabs) as [tabName, tab]}
-			<TabButton on:click={() => (selectedTab = tab)} selected={selectedTab === tab} uppercase>
+			<TabButton
+				on:click={() => {
+					selectedTab = tab;
+					fetchMore();
+				}}
+				selected={selectedTab === tab}
+				uppercase
+			>
 				{tab.label}
 			</TabButton>
 		{/each}
