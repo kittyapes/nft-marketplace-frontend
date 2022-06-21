@@ -63,7 +63,7 @@
 		let startTimestamp: number;
 
 		if (listingPropValues.startDate.unix() <= dayjs().unix()) {
-			startTimestamp = dayjs().unix() + 10_000;
+			startTimestamp = dayjs().unix() + 10;
 		} else {
 			startTimestamp = listingPropValues.startDate();
 		}

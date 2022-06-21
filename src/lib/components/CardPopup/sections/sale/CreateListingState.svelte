@@ -64,7 +64,7 @@
 			paymentTokenAddress: getTokenAddress(paymentTokenTicker as any),
 			paymentTokenTicker,
 			quantity: BigNumber.from(1),
-			startTime: dayjs().unix() + 10000,
+			startTime: dayjs().unix() + 10,
 			listingType: selectedListingType,
 			sale: {} as any,
 			auction: {} as any
