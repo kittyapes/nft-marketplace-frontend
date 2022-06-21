@@ -96,11 +96,16 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		price = options.auction?.startingPrice;
 	}
 
+	const listingType = {
+		sale: LISTING_TYPE.FIXED_PRICE,
+		auction: LISTING_TYPE.TIME_LIMITED_WINER_TAKE_ALL_AUCTION
+	}[options.listingType];
+
 	try {
 		await contractCreateListing({
 			payToken: options.paymentTokenAddress,
 			listingId: listingId,
-			listingType: LISTING_TYPE.FIXED_PRICE,
+			listingType,
 			price,
 			startTime: options.startTime,
 			duration: options.duration,
