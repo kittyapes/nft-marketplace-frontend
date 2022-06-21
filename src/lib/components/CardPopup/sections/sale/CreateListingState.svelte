@@ -12,7 +12,7 @@
 	import { notifyError } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
-	import { parseEther } from 'ethers/lib/utils';
+	import { parseEther } from 'ethers/lib/utils.js';
 	import { createEventDispatcher } from 'svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
 	import Input from '$lib/components/v2/Input.svelte';

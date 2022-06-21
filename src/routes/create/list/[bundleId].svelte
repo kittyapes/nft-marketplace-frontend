@@ -16,7 +16,7 @@
 	import { notifySuccess } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
-	import { parseEther } from 'ethers/lib/utils';
+	import { parseEther } from 'ethers/lib/utils.js';
 	import type { ListingPropName } from 'src/interfaces/drops';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
