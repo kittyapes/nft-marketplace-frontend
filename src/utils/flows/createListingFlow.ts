@@ -98,7 +98,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 
 	const listingType = {
 		sale: LISTING_TYPE.FIXED_PRICE,
-		auction: LISTING_TYPE.TIME_LIMITED_WINER_TAKE_ALL_AUCTION
+		auction: LISTING_TYPE.TIERED_1_OF_N_AUCTION
 	}[options.listingType];
 
 	try {

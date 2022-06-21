@@ -1,12 +1,21 @@
 <script lang="ts">
+	import Eth from '$icons/eth.svelte';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import InfoBox from '$lib/components/InfoBox.svelte';
 	import CircularSpinner from '$lib/components/spinners/CircularSpinner.svelte';
+	import AuctionBidRow from '$lib/components/v2/AuctionBidRow.svelte';
+	import Button from '$lib/components/v2/Button.svelte';
+	import Input from '$lib/components/v2/Input.svelte';
 	import { currentUserAddress } from '$stores/wallet';
+	import { fetchProfileData } from '$utils/api/profile';
+	import { contractGetAuctionBid } from '$utils/contracts/auction';
+	import { placeBidFlow } from '$utils/flows/placeBidFlow';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
-	import { ethers } from 'ethers';
-	import { createEventDispatcher } from 'svelte';
+	import { isPrice } from '$utils/validator/isPrice';
+	import { BigNumber, errors, ethers } from 'ethers';
+	import { formatEther, parseEther } from 'ethers/lib/utils.js';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	const dispatch = createEventDispatcher();
@@ -15,6 +24,7 @@
 
 	const purchasingState = writable(null);
 
+	// Sale listing type
 	async function handlePurchase() {
 		purchasingState.set('waiting-contract');
 
@@ -25,6 +35,58 @@
 
 		purchasingState.set(null);
 	}
+
+	// Auction listing type
+	let bidAmount: string;
+	let bidAmountValid: boolean;
+
+	async function placeBid() {
+		await placeBidFlow(options.rawResourceData.listingId, parseEther(bidAmount));
+	}
+
+	let highestBid: { address: string; amount: BigNumber };
+
+	async function fetchHighestBid() {
+		const { err, res } = await contractGetAuctionBid(options.rawResourceData.listingId);
+
+		if (err) {
+			console.error(err);
+			return;
+		}
+
+		highestBid = { address: res[0], amount: res[1] };
+
+		console.log(highestBid);
+	}
+
+	let biddings: { bidderName: string; imageUrl: string; tokenAmount: string; timeAgo: string }[] = [];
+
+	async function updateBiddings() {
+		await fetchHighestBid();
+
+		const highestBidUser = await fetchProfileData(highestBid.address);
+
+		console.log(highestBidUser);
+
+		biddings.push({
+			bidderName: highestBidUser.username,
+			imageUrl: highestBidUser.thumbnailUrl,
+			tokenAmount: formatEther(highestBid.amount),
+			timeAgo: 'N/A'
+		});
+
+		biddings = biddings;
+	}
+
+	function bidValidator(v: string): boolean {
+		return isPrice(v) && parseEther(v).gt(highestBid.amount);
+	}
+
+	onMount(() => {
+		if (options.rawResourceData.listingType === 'auction') {
+			updateBiddings();
+		}
+	});
 </script>
 
 <div class="flex flex-col justify-center h-[90%]">
@@ -32,7 +94,7 @@
 		<div class="h-full pt-4">
 			<InfoBox>You currently cannot interact with this listing, because you are the one who created it.</InfoBox>
 		</div>
-	{:else}
+	{:else if options.rawResourceData.listingType === 'sale'}
 		<img class="h-24" src={getIconUrl('cart')} alt="" />
 
 		<div class="text-2xl font-bold text-center opacity-70">Buy the NFT</div>
@@ -54,6 +116,29 @@
 				{/if}
 				Buy Now
 			</button>
+		</div>
+	{:else if options.rawResourceData.listingType === 'auction'}
+		<div class="flex flex-col h-full pb-8 mt-4">
+			<div class="flex flex-col flex-grow p-4 overflow-hidden border rounded-lg">
+				<div class="font-medium opacity-70">Bids</div>
+				<div class="flex flex-col flex-grow gap-4 pr-4 mt-4 overflow-y-scroll">
+					{#each biddings as bid}
+						<AuctionBidRow {...bid} tokenIconComponent={Eth} />
+					{/each}
+				</div>
+			</div>
+
+			<div class="flex gap-2 mt-2">
+				<button class="grid w-12 h-12 p-2 border rounded-lg place-items-center" disabled><Eth /></button>
+				<Input class="border-opacity-20" placeholder="Enter amount" bind:value={bidAmount} validator={bidValidator} bind:valid={bidAmountValid} />
+			</div>
+
+			<div class="flex gap-2 mt-4">
+				{#if false}
+					<Button borderColor="gradient" textColor="gradient" uppercase>Cancel Bid</Button>
+				{/if}
+				<Button class="bg-gradient-to-r from-color-purple to-color-blue" uppercase on:click={placeBid} disabled={!bidAmountValid || !bidAmount}>Place Bid</Button>
+			</div>
 		</div>
 	{/if}
 </div>
