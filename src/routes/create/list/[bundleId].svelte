@@ -96,10 +96,10 @@
 		const { err, success } = await createListingFlow(flowOptions);
 
 		if (success) {
-			notifySuccess('Successfully created a listing.');
-			isListing = false;
 			goto('/profile/' + $currentUserAddress + '?tab=listings');
 		}
+
+		isListing = false;
 	}
 
 	let listingPropValues: Partial<Record<ListingPropName, any>>;
