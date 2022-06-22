@@ -135,14 +135,18 @@ export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[
 	return res.data.data;
 }
 
-export async function apiSearchCollections(creatorAddress: string | null = null, name: string | null = null, limit: number = 100, page: number = 1) {
+export async function apiSearchCollections(creatorAddress: string | null = null, name: string | null = null, slug: string | null = null, limit: number = 100, page: number = 1) {
 	const params = {
-		limit: limit ?? 100,
+		limit: limit ?? 20,
 		page: page ?? 1
 	};
 
 	if (name) {
-		params['query'] = name;
+		params['name'] = name;
+	}
+
+	if (slug) {
+		params['slug'] = slug;
 	}
 
 	if (creatorAddress) {

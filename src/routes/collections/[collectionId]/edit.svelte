@@ -9,7 +9,7 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
 	import { writable } from 'svelte/store';
-	import { apiCreateCollection, apiGetCollection, apiUpdateCollection, getInitialCollectionData } from '$utils/api/collection';
+	import { apiCreateCollection, apiGetCollection, apiSearchCollections, apiUpdateCollection, getInitialCollectionData } from '$utils/api/collection';
 	import type { Collection, UpdateCollectionOptions } from '$utils/api/collection';
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
 	import { tick } from 'svelte';
@@ -21,6 +21,8 @@
 	import { page } from '$app/stores';
 	import { nftDraft } from '$stores/create';
 	import { browser } from '$app/env';
+	import { debounce } from 'lodash-es';
+	import { withPrevious } from 'svelte-previous';
 
 	// Page params
 	const collectionId = $page.params.collectionId;
@@ -32,15 +34,31 @@
 
 	// Data collected from the form or fetched from the server
 	let originalCollectionData = null; // Used to check whether data was changed during editing
-	const collectionData = writable<Collection>(getInitialCollectionData() as Collection);
+	const [collectionData, prevCollectionData] = withPrevious<Collection>(getInitialCollectionData() as Collection);
+	const serverCollectionName = writable<string | null>(null);
 
 	// An object with collection property keys and bool as values representing their validity
 	const formValidity = writable<Partial<{ [K in keyof Collection]: any }>>({});
 
+	const debouncedSearch = debounce(async (name: string) => {
+		await searchCollectionName(name);
+	}, 500);
+
 	collectionData.subscribe((data) => {
+		console.log(data.id);
+		// Cancel first since obviously something changed
 		$formValidity.image = !!data.image || !!data.logoImageUrl || 'Missing logo image';
 		$formValidity.cover = !!data.cover || !!data.backgroundImageUrl || 'Missing cover image';
 		$formValidity.name = !!data.name ? ((data.name.startsWith('/') || data.name.startsWith('#')) && 'Collection name cannot start with # or /') || !!data.name : 'Missing collection name';
+
+		// Call search again to check the name
+		if (data.name !== $prevCollectionData?.name) {
+			debouncedSearch.cancel();
+			if (data.name && typeof $formValidity.name !== 'string') {
+				debouncedSearch(data.name);
+			}
+		}
+
 		$formValidity.slug = !!data.slug || 'Collection URL is invalid';
 		$formValidity.description = !!data.description || 'Missing collection description';
 	});
@@ -50,6 +68,16 @@
 	const collectionUrlPattern = `^${urlStart}[a-z0-9-]+$`;
 	const collectionUrl = writable(urlStart);
 	let ignoreUrlChange = false;
+
+	async function searchCollectionName(collectionName: string) {
+		const collectionMatches = await apiSearchCollections(null, collectionName);
+		const lengthToCheck = isNewCollection ? 0 : 1;
+		if (isNewCollection) {
+			// In coming collection data might have this collection name
+			// In coming collection data might have a collection that has a name that is similar to the name the user added but is not the current collection - essentially the user is overwriting another collection's name
+		}
+		$formValidity.name = collectionMatches.length > lengthToCheck && collectionMatches.some((item) => item.name === serverCollectionName) ? 'Collection Name Is Not Unique' : $formValidity.name;
+	}
 
 	collectionUrl.subscribe(async () => {
 		if (ignoreUrlChange) {
@@ -159,6 +187,7 @@
 		}
 
 		// Copy is needed because slug would get overwritten
+		serverCollectionName.set(res.name);
 		collectionData.set({ ...res });
 		collectionUrl.set(urlStart + res.slug);
 

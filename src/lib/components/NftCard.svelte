@@ -13,7 +13,6 @@
 	import { onMount } from 'svelte';
 	import { refreshLikedNfts } from '$stores/user';
 	import { notifyError } from '$utils/toast';
-	import dayjs from 'dayjs';
 
 	export let options: NftCardOptions;
 
@@ -47,7 +46,7 @@
 	let interval = null;
 
 	onMount(() => {
-		if (options.startTime && options.isListingTimeActive) {
+		if (options.popupOptions?.startTime && options.popupOptions?.isListingTimeActive) {
 			// Update every minute
 			interval = setInterval(() => {
 				time = new Date(Date.now());
@@ -66,10 +65,12 @@
 	$: ((_time) => {
 		if (_time && options.popupOptions?.startTime && options.popupOptions?.isListingTimeActive) {
 			const startTime = new Date(options.popupOptions.startTime);
+			const endTime = new Date(startTime.getTime() + (options.popupOptions.duration ?? 0));
 			saleHasStarted = options.popupOptions.isListingTimeActive && startTime.getTime() < Date.now();
 
 			timeRemainingToSaleStart = getTimeRemaining(startTime.toISOString(), new Date().toISOString());
-			timeRemainingToSaleEnd = getTimeRemaining(new Date().toISOString(), startTime.toISOString());
+
+			timeRemainingToSaleEnd = getTimeRemaining(endTime.toISOString(), new Date(Date.now()).toISOString());
 
 			if (!options.popupOptions?.startTime && !options.popupOptions?.isListingTimeActive && timeRemainingToSaleStart.total < 0 && timeRemainingToSaleEnd.total < 0 && interval) {
 				clearInterval(interval);
@@ -104,7 +105,7 @@
 						{/if}
 						{timeRemainingToSaleEnd.minutes}MIN
 					{:else}
-						LIVE!
+						<div class="listing-timer text-[10px] font-bold uppercase text-color-red">Expired</div>
 					{/if}
 				</div>
 			{:else}
