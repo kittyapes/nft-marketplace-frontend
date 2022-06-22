@@ -13,6 +13,7 @@
 	import { onMount } from 'svelte';
 	import { refreshLikedNfts } from '$stores/user';
 	import { notifyError } from '$utils/toast';
+	import dayjs from 'dayjs';
 
 	export let options: NftCardOptions;
 
@@ -46,7 +47,7 @@
 	let interval = null;
 
 	onMount(() => {
-		if (options.startTime && options.isTimeActive) {
+		if (options.startTime && options.isListingTimeActive) {
 			// Update every minute
 			interval = setInterval(() => {
 				time = new Date(Date.now());
@@ -63,13 +64,14 @@
 	$: timeRemainingToSaleEnd = null;
 
 	$: ((_time) => {
-		if (_time && options.startTime && options.isTimeActive) {
-			saleHasStarted = options.isTimeActive && options.startTime.getTime() < Date.now();
+		if (_time && options.popupOptions.startTime && options.popupOptions.isListingTimeActive) {
+			const startTime = new Date(options.popupOptions.startTime);
+			saleHasStarted = options.popupOptions.isListingTimeActive && startTime.getTime() < Date.now();
 
-			timeRemainingToSaleStart = getTimeRemaining(options.startTime.toISOString(), new Date().toISOString());
-			timeRemainingToSaleEnd = getTimeRemaining(new Date().toISOString(), options.startTime.toISOString());
+			timeRemainingToSaleStart = getTimeRemaining(startTime.toISOString(), new Date().toISOString());
+			timeRemainingToSaleEnd = getTimeRemaining(new Date().toISOString(), startTime.toISOString());
 
-			if (!options.startTime && !options.isTimeActive && timeRemainingToSaleStart.total < 0 && timeRemainingToSaleEnd.total < 0 && interval) {
+			if (!options.popupOptions.startTime && !options.popupOptions.isListingTimeActive && timeRemainingToSaleStart.total < 0 && timeRemainingToSaleEnd.total < 0 && interval) {
 				clearInterval(interval);
 			}
 		}
@@ -80,8 +82,8 @@
 <div class="relative p-4 overflow-hidden border border-color-gray-base border-opacity-50 rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options?.popupOptions}>
 	<div class="flex items-center gap-x-2">
 		<!-- Listing Timer If The Time has not Expired Yet or Listing isn't live -->
-		{#if options.startTime}
-			{#if options.isTimeActive}
+		{#if options.popupOptions.startTime}
+			{#if options.popupOptions.isListingTimeActive}
 				<div class="listing-timer text-[10px] font-bold uppercase">
 					{#if !saleHasStarted && timeRemainingToSaleStart.total > 0}
 						<span class="text-transparent bg-gradient-to-r bg-clip-text from-color-purple to-color-blue">Starting In:</span>

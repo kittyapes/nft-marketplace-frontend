@@ -65,7 +65,7 @@
 		if (listingPropValues.startDate.unix() <= dayjs().unix()) {
 			startTimestamp = dayjs().unix() + 10;
 		} else {
-			startTimestamp = listingPropValues.startDate();
+			startTimestamp = listingPropValues.startDate.unix();
 		}
 
 		const duration = listingPropValues.duration.value * 60 * 60 * 24;
