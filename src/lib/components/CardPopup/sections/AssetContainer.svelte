@@ -1,16 +1,15 @@
 <script lang="ts">
-	import { notifyError, notifySuccess } from '$utils/toast';
-	import Loader from '$lib/components/Loader.svelte';
-	import { reject } from 'lodash-es';
-	import { getIconUrl } from '$utils/misc/getIconUrl';
-	import { favoriteNft } from '$utils/nfts/favoriteNft';
-	import { noTryAsync } from 'no-try';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
-	import { fadeImageOnLoad } from '$utils/actions/fadeImageOnLoad';
+	import Loader from '$lib/components/Loader.svelte';
+	import Countdown from '$lib/components/v2/Countdown.svelte';
 	import { likedNfts, refreshLikedNfts } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
-	import AuctionCountdown from '$lib/components/v2/AuctionCountdown.svelte';
-	import { capitalize } from 'lodash-es';
+	import { fadeImageOnLoad } from '$utils/actions/fadeImageOnLoad';
+	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import { favoriteNft } from '$utils/nfts/favoriteNft';
+	import { notifyError, notifySuccess } from '$utils/toast';
+	import { capitalize, reject } from 'lodash-es';
+	import { noTryAsync } from 'no-try';
 
 	export let title: string;
 	export let assetUrl: string;
@@ -104,6 +103,6 @@
 	<!-- Auction timer -->
 	{#if countdown}
 		<div class="pb-4 font-medium opacity-50">{capitalize(options.listingData.listingType)} ending in:</div>
-		<AuctionCountdown {...countdown} />
+		<Countdown {...countdown} />
 	{/if}
 </div>
