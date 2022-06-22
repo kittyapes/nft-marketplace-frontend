@@ -12,13 +12,17 @@
 	import getTimeRemaining from '$utils/timeRemaining';
 	import { onMount } from 'svelte';
 	import { refreshLikedNfts } from '$stores/user';
-	import { notifyError } from '$utils/toast';
+	import { notifyError, notifySuccess } from '$utils/toast';
+	import dayjs from 'dayjs';
+	import { noTryAsync } from 'no-try';
 
 	export let options: NftCardOptions;
 
-	let likes = options?.likes;
+	$: likes = options?.likes;
 	let dotsOpened = false;
 	let imgLoaded = false;
+
+	$: console.log(likes);
 
 	const toggleDots = () => (dotsOpened = !dotsOpened);
 
@@ -31,11 +35,18 @@
 		if (!$currentUserAddress || !options.popupOptions) return;
 
 		for (const id of options.likeIds) {
-			const res = await favoriteNft(id);
-			if (!res || res.error) notifyError('Failed to favourite NFT');
-			else {
-				options.favorite ? (likes = likes - 1) : (likes = likes + 1);
-				options.favorite = !options.favorite;
+			const [err, res] = await noTryAsync(() => favoriteNft(id));
+			if (err) {
+				notifyError(err.message);
+				console.error(err);
+			} else if (res.data.message) {
+				likes--;
+				options.favorite = false;
+				notifySuccess('Unliked NFT.');
+			} else {
+				likes++;
+				options.favorite = true;
+				notifySuccess('Liked NFT.');
 			}
 		}
 
