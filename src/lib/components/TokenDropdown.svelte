@@ -48,7 +48,7 @@
 </script>
 
 <div class="relative">
-	<input {id} type="number" style:border-color={borderColor} class="input w-full h-12 {$$props.class} {!valid && 'border-red-300'}" class:font-semibold={value} {placeholder} bind:value />
+	<input {id} type="text" style:border-color={borderColor} class="input w-full h-12 {$$props.class} {!valid && 'border-red-300'}" class:font-semibold={value} {placeholder} bind:value />
 	<button
 		style:background={dropdownButtonBg}
 		style:color={dropdownButtonColor}
@@ -58,7 +58,7 @@
 		bind:this={elemOpenButton}
 		disabled={buttonDisabled}
 	>
-		<div class="btn flex items-center justify-center space-x-2">
+		<div class="flex items-center justify-center space-x-2 btn">
 			<img src={selected.iconUrl} alt="" class="w-4 h-4" />
 			{#if showLabel} <div>{selected.label}</div> {/if}
 			{#if showArrow} <ArrowDown /> {/if}
@@ -68,13 +68,13 @@
 	{#if open}
 		<div
 			style:background={dropdownBg}
-			class="absolute top-1 right-1 w-20 grid rounded-md p-px border border-black"
+			class="absolute grid w-20 p-px border border-black rounded-md top-1 right-1"
 			in:slide
 			out:fade={{ duration: 100 }}
 			use:outsideClickCallback={{ cb: () => (open = false) }}
 		>
 			{#each tokens as token}
-				<button style:color={dropdownColor} class="btn h-12 text-left uppercase pl-4 font-semibold" on:click={() => handleSelect(token)}>
+				<button style:color={dropdownColor} class="h-12 pl-4 font-semibold text-left uppercase btn" on:click={() => handleSelect(token)}>
 					{token.label}
 				</button>
 			{/each}

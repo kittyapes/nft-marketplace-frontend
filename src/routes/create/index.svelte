@@ -9,7 +9,7 @@
 	import NftCard from '$lib/components/NftCard.svelte';
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
-	import { newDropProperties, nftDraft } from '$stores/create';
+	import { nftDraft } from '$stores/create';
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';

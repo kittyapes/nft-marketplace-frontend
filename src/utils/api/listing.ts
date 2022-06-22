@@ -1,8 +1,5 @@
-import type { EthAddress, UnixTime } from '$interfaces';
-import { getAxiosConfig } from '$utils/auth/axiosConfig';
+import type { EthAddress } from '$interfaces';
 import axios from 'axios';
-import type { BigNumber } from 'ethers';
-import { noTryAsync } from 'no-try';
 import { getApiUrl } from '.';
 
 export type ListingType = 'sale' | 'auction' | 'raffle';
@@ -44,43 +41,6 @@ export interface Raffle {
 interface RaffleParticipants {
 	buyer: Address;
 	tickets: number[];
-}
-
-interface CreateListingOptions {
-	nfts: { nftId: string; amount: BigNumber }[];
-	description?: string;
-	title?: string;
-	paymentTokenTicker?: string;
-	paymentTokenAddress: string;
-	modifiedOn?: string;
-	listingType: 'sale' | 'auction' | 'raffle';
-	price: BigNumber;
-	quantity: BigNumber;
-	listing?: Sale | Auction | Raffle;
-	succesSaleTransaction?: string;
-	startTime?: number;
-	duration?: number;
-}
-
-/**
- * @deprecated
- */
-export async function postCreateListing(options: CreateListingOptions) {
-	const formData = new FormData();
-	formData.append('nfts', JSON.stringify(options.nfts));
-	formData.append('title', options.title || 'No Title');
-	formData.append('paymentTokenAddress', options.paymentTokenAddress);
-	// formData.append('paymentTokenTicker', options.paymentTokenTicker);
-	formData.append('paymentTokenTicker', 'ETH'); // Hotfix
-	formData.append('description', options.description || 'No Description');
-	formData.append('listingType', options.listingType);
-	formData.append('listing', JSON.stringify({ price: options.price.toString(), quantity: options.quantity.toString() }));
-	formData.append('duration', options.duration.toString());
-	options.startTime && formData.append('startTime', options.startTime.toString());
-
-	const [err, res] = await noTryAsync(() => axios.post(getApiUrl('latest', 'listings'), formData, getAxiosConfig()));
-
-	return { res, err };
 }
 
 export interface Listing {
