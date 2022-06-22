@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import { currentUserAddress } from '$stores/wallet';
 	import BrowseState from './sale/BrowseState.svelte';
 	import CreateListingState from './sale/CreateListingState.svelte';
 	import ErrorState from './sale/ErrorState.svelte';
@@ -13,15 +14,15 @@
 		selectedState = states[0];
 	}
 
-	const states = [
+	const states: { name: string; component: any }[] = [
 		{ name: 'browse', component: BrowseState },
-		{ name: 'success', component: SuccessState },
-		{ name: 'error', component: ErrorState },
 		{ name: 'create-listing', component: CreateListingState },
-		{ name: 'manage-auction', compoennt: ManageAuctionState }
+		{ name: 'manage-auction', component: ManageAuctionState },
+		{ name: 'success', component: SuccessState },
+		{ name: 'error', component: ErrorState }
 	];
 
-	let selectedState = states[0];
+	let selectedState: typeof states[0];
 
 	$: options && updateState();
 
@@ -29,11 +30,13 @@
 		let stateName: string;
 
 		if (options.resourceType === 'listing') {
-			options.rawResourceData.listingType === 'sale' &&  (stateName = 'browse');
-			// options.rawResourceData.listingType === 'auction' && (stateName = 'manage-auction');
-
-			stateName = 'browse';
-		} else {
+			if (options.listingData.sellerAddress === $currentUserAddress) {
+				if (options.listingData.listingType === 'auction') stateName = 'manage-auction';
+				if (options.listingData.listingType === 'sale') stateName = 'browse';
+			} else {
+				stateName = 'browse';
+			}
+		} else if (options.resourceType === 'nft') {
 			stateName = 'create-listing';
 		}
 
@@ -51,9 +54,11 @@
 	// props when switching states.
 	const stateProps = {};
 
-	$: showBackButton = ['success', 'error'].includes(selectedState.name);
+	$: showBackButton = selectedState && ['success', 'error'].includes(selectedState.name);
 </script>
 
 {#if selectedState}
 	<svelte:component this={selectedState.component} {options} {...stateProps[selectedState.name]} on:set-state={handleSetState} on:close-popup />
+{:else}
+	Jakub is dumb
 {/if}

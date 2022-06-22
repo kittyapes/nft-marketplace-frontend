@@ -43,7 +43,7 @@ export async function adaptListingToNftCard(data: Listing) {
 		},
 		listingData: {
 			sellerAddress: data.seller,
-			listingType: 'sale',
+			listingType: data.listingType,
 			symbol: data.paymentTokenTicker,
 			tokenAddress: data.paymentTokenAddress
 		},

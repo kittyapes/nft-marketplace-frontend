@@ -27,6 +27,10 @@ async function fetchHighestBid(listingId: string) {
 export async function getBiddingsFlow(listingId: string): Promise<BidRow[]> {
 	const highestBid = await fetchHighestBid(listingId);
 
+	if (highestBid.address === '0x0000000000000000000000000000000000000000') {
+		return [];
+	}
+
 	const highestBidUser = await fetchProfileData(highestBid.address);
 
 	console.log({ highestBidUser });

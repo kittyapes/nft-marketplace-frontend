@@ -3,6 +3,7 @@
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import InfoBox from '$lib/components/InfoBox.svelte';
 	import CircularSpinner from '$lib/components/spinners/CircularSpinner.svelte';
+	import AuctionBidList from '$lib/components/v2/AuctionBidList.svelte';
 	import AuctionBidRow from '$lib/components/v2/AuctionBidRow.svelte';
 	import Button from '$lib/components/v2/Button.svelte';
 	import Input from '$lib/components/v2/Input.svelte';
@@ -46,7 +47,7 @@
 	let biddings: BidRow[] = [];
 
 	function bidValidator(v: string): boolean {
-		return isPrice(v) && parseEther(v).gt(parseEther(biddings[0].tokenAmount));
+		return isPrice(v) && (biddings[0] ? parseEther(v).gt(parseEther(biddings[0].tokenAmount)) : true);
 	}
 
 	onMount(async () => {
@@ -88,14 +89,7 @@
 		</div>
 	{:else if options.rawResourceData.listingType === 'auction'}
 		<div class="flex flex-col h-full pb-8 mt-4">
-			<div class="flex flex-col flex-grow p-4 overflow-hidden border rounded-lg">
-				<div class="font-medium opacity-70">Bids</div>
-				<div class="flex flex-col flex-grow gap-4 pr-4 mt-4 overflow-y-scroll">
-					{#each biddings as bid}
-						<AuctionBidRow {...bid} tokenIconComponent={Eth} />
-					{/each}
-				</div>
-			</div>
+			<AuctionBidList listingId={options.rawResourceData.listingId} />
 
 			<div class="flex gap-2 mt-2">
 				<button class="grid w-12 h-12 p-2 border rounded-lg place-items-center" disabled><Eth /></button>

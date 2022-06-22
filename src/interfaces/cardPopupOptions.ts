@@ -1,4 +1,5 @@
-import type { ApiCollectionData } from "./apiCollectionData";
+import type { ApiCollectionData } from './apiCollectionData';
+import type { ListingType } from '$utils/api/listing';
 
 export interface CardPopupOptions {
 	/** Asset rendered on the left side of the popup. */
@@ -28,7 +29,7 @@ export interface CardPopupOptions {
 	/** Data used when adapting a listing. */
 	listingData?: {
 		sellerAddress: string;
-		listingType: 'sale';
+		listingType: ListingType;
 		symbol: string;
 		tokenAddress: string;
 	};
