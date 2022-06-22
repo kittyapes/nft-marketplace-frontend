@@ -34,7 +34,6 @@
 			const res = await favoriteNft(id);
 			if (!res || res.error) notifyError('Failed to favourite NFT');
 			else {
-				console.log(options.favorite);
 				options.favorite ? (likes = likes - 1) : (likes = likes + 1);
 				options.favorite = !options.favorite;
 			}
