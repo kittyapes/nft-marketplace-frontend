@@ -37,6 +37,8 @@
 	let isFetchingCreators = false;
 
 	async function fetchCreators() {
+		if (!$currentUserAddress) return;
+
 		isFetchingCreators = true;
 
 		await getVerifiedCreators($filterBy, $sortBy.value, query)
