@@ -64,14 +64,14 @@
 	$: timeRemainingToSaleEnd = null;
 
 	$: ((_time) => {
-		if (_time && options.popupOptions.startTime && options.popupOptions.isListingTimeActive) {
+		if (_time && options.popupOptions?.startTime && options.popupOptions?.isListingTimeActive) {
 			const startTime = new Date(options.popupOptions.startTime);
 			saleHasStarted = options.popupOptions.isListingTimeActive && startTime.getTime() < Date.now();
 
 			timeRemainingToSaleStart = getTimeRemaining(startTime.toISOString(), new Date().toISOString());
 			timeRemainingToSaleEnd = getTimeRemaining(new Date().toISOString(), startTime.toISOString());
 
-			if (!options.popupOptions.startTime && !options.popupOptions.isListingTimeActive && timeRemainingToSaleStart.total < 0 && timeRemainingToSaleEnd.total < 0 && interval) {
+			if (!options.popupOptions?.startTime && !options.popupOptions?.isListingTimeActive && timeRemainingToSaleStart.total < 0 && timeRemainingToSaleEnd.total < 0 && interval) {
 				clearInterval(interval);
 			}
 		}
@@ -82,8 +82,8 @@
 <div class="relative p-4 overflow-hidden border border-color-gray-base border-opacity-50 rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options?.popupOptions}>
 	<div class="flex items-center gap-x-2">
 		<!-- Listing Timer If The Time has not Expired Yet or Listing isn't live -->
-		{#if options.popupOptions.startTime}
-			{#if options.popupOptions.isListingTimeActive}
+		{#if options.popupOptions?.startTime}
+			{#if options.popupOptions?.isListingTimeActive}
 				<div class="listing-timer text-[10px] font-bold uppercase">
 					{#if !saleHasStarted && timeRemainingToSaleStart.total > 0}
 						<span class="text-transparent bg-gradient-to-r bg-clip-text from-color-purple to-color-blue">Starting In:</span>
