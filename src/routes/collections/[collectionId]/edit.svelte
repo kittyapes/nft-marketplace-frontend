@@ -160,6 +160,7 @@
 
 		// Copy is needed because slug would get overwritten
 		collectionData.set({ ...res });
+		console.log($collectionData);
 		collectionUrl.set(urlStart + res.slug);
 
 		originalCollectionData = { ...res };
@@ -192,7 +193,8 @@
 			twitterUrl: d.twitterUrl,
 			websiteUrl: d.otherUrl,
 			logoImage: collectionData.image,
-			backgroundImage: collectionData.cover
+			backgroundImage: collectionData.cover,
+			id: d.id
 		} as UpdateCollectionOptions;
 	}
 

@@ -86,20 +86,19 @@ export interface UpdateCollectionOptions {
 	isExplicitSenstive: boolean;
 	logoImage?: Blob;
 	backgroundImage?: Blob;
-	_id: string;
+	id: string;
 }
 
 export async function apiUpdateCollection(options: UpdateCollectionOptions) {
+	console.log(options)
 	const formData = new FormData();
 	Object.entries(options).forEach(([k, v]) => v && formData.append(k, v));
 
-	const res = await axios.put(getApiUrl('latest', 'collections/' + options._id), formData, getAxiosConfig()).catch((e) => e.response);
+	const res = await axios.put(getApiUrl('latest', 'collections/' + options.id), formData, getAxiosConfig()).catch((e) => e.response);
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
 	}
-
-	console.log(res);
 
 	return res;
 }
