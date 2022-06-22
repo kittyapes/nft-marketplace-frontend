@@ -22,8 +22,6 @@
 	let dotsOpened = false;
 	let imgLoaded = false;
 
-	$: console.log(likes);
-
 	const toggleDots = () => (dotsOpened = !dotsOpened);
 
 	function handleClick() {

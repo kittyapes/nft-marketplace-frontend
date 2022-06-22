@@ -15,8 +15,6 @@
 	export let favorited: boolean;
 	export let options: CardPopupOptions;
 
-	console.log(options);
-
 	let videoAsset: HTMLVideoElement;
 	let fileType;
 
