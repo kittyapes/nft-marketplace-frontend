@@ -20,10 +20,6 @@ export async function adaptListingToNftCard(data: Listing) {
 	// It has a start time and its ending time has not yet passed
 	const isTimeLive = hasAStartTime && new Date(startTime * 1000).getTime() + data.duration * 1000 > Date.now();
 
-	if (data.title === 'NFT Second') {
-		console.log(data.duration, new Date(startTime * 1000), isTimeLive, new Date(new Date(startTime * 1000).getTime() + (data.duration * 1000 ?? 0)));
-	}
-
 	const popupOptions: CardPopupOptions = {
 		title: data.title,
 		assetUrl: nft.assetUrl,
