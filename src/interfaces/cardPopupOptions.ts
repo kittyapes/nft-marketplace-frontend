@@ -46,4 +46,6 @@ export interface CardPopupOptions {
 
 	/** The raw data that was used by an adapter to generate this data object. */
 	rawResourceData: any;
+
+	collectionName: string;
 }

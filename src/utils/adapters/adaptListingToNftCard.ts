@@ -48,7 +48,8 @@ export async function adaptListingToNftCard(data: Listing) {
 		likeIds: [nft._id],
 		startTime: hasAStartTime ? new Date(startTime * 1000) : null,
 		isListingTimeActive: isTimeLive,
-		rawResourceData: data
+		rawResourceData: data,
+		collectionName: 'N/A',
 	};
 
 	const nftCardOptions = {
