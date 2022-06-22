@@ -32,6 +32,8 @@ export interface CardPopupOptions {
 		listingType: ListingType;
 		symbol: string;
 		tokenAddress: string;
+		startTime: string;
+		duration: number;
 	};
 
 	/** Data used when adapting a listing of the type Sale. */

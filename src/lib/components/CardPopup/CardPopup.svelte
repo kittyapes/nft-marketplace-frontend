@@ -21,7 +21,7 @@
 	$: console.debug('[Resource Data]:', options.rawResourceData);
 </script>
 
-<Popup class="w-full h-full rounded-none lg:rounded-xl lg:w-[64rem] lg:h-[40rem]" closeButton on:close={handler.close}>
+<Popup class="w-full h-full rounded-none lg:rounded-xl lg:w-[64rem] lg:h-[45rem]" closeButton on:close={handler.close}>
 	<!-- Back button -->
 	<button class="flex items-center flex-grow-0 gap-2 px-10 btn disabled:opacity-0" disabled={!showBackButton} on:click={rightSectionInstance.goBack()}>
 		<img src={getIconUrl('back-button')} alt="Arrow pointing left." />
@@ -32,7 +32,13 @@
 	<div class="flex flex-col h-full mx-10 lg:flex-row">
 		<!-- Left part with image and buttons -->
 		<div class="h-full lg:w-2/5">
-			<AssetContainer assetUrl={options.assetUrl} title={options.title} {options} favorited={options.favorited} />
+			<AssetContainer
+				assetUrl={options.assetUrl}
+				title={options.title}
+				{options}
+				favorited={options.favorited}
+				countdown={options.listingData.listingType === 'auction' ? { startTime: options.listingData.startTime, duration: options.listingData.duration } : null}
+			/>
 		</div>
 
 		<!-- Right part with info and actions -->

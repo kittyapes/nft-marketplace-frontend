@@ -9,11 +9,14 @@
 	import { fadeImageOnLoad } from '$utils/actions/fadeImageOnLoad';
 	import { likedNfts, refreshLikedNfts } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
+	import AuctionCountdown from '$lib/components/v2/AuctionCountdown.svelte';
+	import { capitalize } from 'lodash-es';
 
 	export let title: string;
 	export let assetUrl: string;
 	export let favorited: boolean;
 	export let options: CardPopupOptions;
+	export let countdown: { startTime: string; duration: number } = null;
 
 	let videoAsset: HTMLVideoElement;
 	let fileType;
@@ -67,9 +70,9 @@
 </script>
 
 <!-- NFT Image side-->
-<div class="flex flex-col justify-center w-full h-full text-center">
+<div class="flex flex-col w-full h-full pt-12 overflow-hidden text-center">
 	<!-- Asset render container -->
-	<div class="flex items-center self-center justify-center object-contain w-full max-w-lg overflow-hidden bg-gray-100 aspect-1 rounded-xl">
+	<div class="flex items-center self-center justify-center object-contain w-full max-w-lg mt-1 overflow-hidden bg-gray-100 aspect-1 rounded-xl">
 		{#await preload(assetUrl)}
 			<Loader />
 		{:then}
@@ -90,11 +93,17 @@
 	</div>
 
 	<!-- Buttons -->
-	<div class="flex justify-center mt-8 mb-8 gap-x-12">
+	<div class="flex justify-center mt-4 mb-6 gap-x-12">
 		<button class="w-6 h-6 btn" on:click={handleShare}><img src={getIconUrl('share')} alt="Share." /></button>
 		<button class="w-6 h-6 btn disabled:opacity-50" on:click={handleLike} disabled={!options.nftData[0].isInternalNft}>
 			<img src={favorited ? getIconUrl('heart-filled') : getIconUrl('heart-outline')} alt="Heart." class:text-color-red={favorited} />
 		</button>
 		<button class="w-6 h-6 btn" on:click={handleFullscreen}><img src={getIconUrl('fullscreen')} alt="Fullscreen." /></button>
 	</div>
+
+	<!-- Auction timer -->
+	{#if countdown}
+		<div class="pb-4 font-medium opacity-50">{capitalize(options.listingData.listingType)} ending in:</div>
+		<AuctionCountdown {...countdown} />
+	{/if}
 </div>

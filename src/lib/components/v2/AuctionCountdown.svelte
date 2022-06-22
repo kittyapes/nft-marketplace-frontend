@@ -21,7 +21,7 @@
 	onMount(() => setInterval(() => (endTime = endTime), 1000));
 </script>
 
-<div class="flex gap-4">
+<div class="flex justify-center gap-4">
 	{#each values as [label, value]}
 		<div>
 			<div class="relative grid w-16 h-16 bg-white rounded-lg place-items-center">

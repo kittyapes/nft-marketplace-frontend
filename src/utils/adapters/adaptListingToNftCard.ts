@@ -45,7 +45,9 @@ export async function adaptListingToNftCard(data: Listing) {
 			sellerAddress: data.seller,
 			listingType: data.listingType,
 			symbol: data.paymentTokenTicker,
-			tokenAddress: data.paymentTokenAddress
+			tokenAddress: data.paymentTokenAddress,
+			startTime: data.startTime,
+			duration: data.duration
 		},
 		likeIds: [nft._id],
 		startTime: hasAStartTime ? new Date(startTime * 1000) : null,
