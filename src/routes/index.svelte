@@ -56,7 +56,7 @@
 <!-- Top collections section -->
 <div class="px-16 mt-24 mb-16">
 	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Top 10 Collections</h2>
+		<h2 class="text-4xl font-light uppercase flex-grow">Most Active Collections</h2>
 		<a href="/collections" class="uppercase underline text-sm font-bold">View all</a>
 	</div>
 	<hr class="mt-4 border-[#0000004D]" />
