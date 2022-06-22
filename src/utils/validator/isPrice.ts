@@ -1,5 +1,16 @@
+import type { BigNumber } from 'ethers';
+import { parseEther } from 'ethers/lib/utils.js';
+
 export function isPrice(s: string) {
 	if (!s) return false;
 
-	return /^\d+(\.\d{1,2})?$/.test(s);
+	let price: BigNumber;
+
+	try {
+		price = parseEther(s);
+	} catch {
+		return false;
+	}
+
+	return price.gt(0);
 }

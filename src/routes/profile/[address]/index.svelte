@@ -27,7 +27,6 @@
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 	import { getListing } from '$utils/api/listing';
-	import { adaptNftDataNftCard } from '$utils/adapters/adaptNftDataToNftCard';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import { getNft } from '$utils/api/nft';
@@ -127,7 +126,8 @@
 			fetchFunction: async () => {
 				const res = {} as FetchFunctionResult;
 				res.adapted = [];
-				res.adapted = $userLikedNfts.map((nft) => apiNftToNftCard(nft.nft));
+				const nfts = await getUserFavoriteNfts(address);
+				res.adapted = nfts?.map((nft) => apiNftToNftCard(nft.nft));
 
 				tabs.favorites.reachedEnd = true;
 
@@ -143,6 +143,8 @@
 	let isFetchingNfts = false;
 
 	async function fetchMore() {
+		if (selectedTab.reachedEnd) return;
+
 		isFetchingNfts = true;
 
 		const res = await selectedTab.fetchFunction();
@@ -163,24 +165,7 @@
 		isFetchingNfts = false;
 	}
 
-	// const fetchActiveListing = async () => {
-	// 	const fetchedListings = await getListings();
-	// 	activeListings = await Promise.all(fetchedListings.map(adaptListingToNftCard));
-	// };
-
-	// let likedNfts = [];
-
-	// async function fetchLikedNfts() {
-	// 	const res = await getUserFavoriteNfts(address);
-
-	// 	likedNfts = res.map((nft) => apiNftToNftCard(nft.nft));
-	// }
-
-	// $: selectedTab === 'FAVORITES' && fetchLikedNfts();
-
-	// onMount(() => {
-	// 	fetchActiveListing();
-	// });
+	$: console.log(tabs);
 </script>
 
 <div class="h-72 bg-color-gray-light">
@@ -265,7 +250,14 @@
 <div>
 	<div class="container flex max-w-screen-xl px-32 mx-auto mt-16 space-x-8">
 		{#each Object.entries(tabs) as [tabName, tab]}
-			<TabButton on:click={() => (selectedTab = tab)} selected={selectedTab === tab} uppercase>
+			<TabButton
+				on:click={() => {
+					selectedTab = tab;
+					fetchMore();
+				}}
+				selected={selectedTab === tab}
+				uppercase
+			>
 				{tab.label}
 			</TabButton>
 		{/each}

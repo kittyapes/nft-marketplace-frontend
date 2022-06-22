@@ -1,5 +1,4 @@
 import type { ApiNftData } from '$interfaces/apiNftData';
-import type { NftData } from '$interfaces/nft';
 import axios from 'axios';
 import { noTryAsync } from 'no-try';
 import { getApiUrl } from '.';
