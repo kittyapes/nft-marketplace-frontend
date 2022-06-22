@@ -3,6 +3,7 @@
 	import BrowseState from './sale/BrowseState.svelte';
 	import CreateListingState from './sale/CreateListingState.svelte';
 	import ErrorState from './sale/ErrorState.svelte';
+	import ManageAuctionState from './sale/ManageAuctionState.svelte';
 	import SuccessState from './sale/SuccessState.svelte';
 
 	export let options: CardPopupOptions;
@@ -16,15 +17,27 @@
 		{ name: 'browse', component: BrowseState },
 		{ name: 'success', component: SuccessState },
 		{ name: 'error', component: ErrorState },
-		{ name: 'create-listing', component: CreateListingState }
+		{ name: 'create-listing', component: CreateListingState },
+		{ name: 'manage-auction', compoennt: ManageAuctionState }
 	];
 
 	let selectedState = states[0];
 
-	$: if (options.resourceType === 'listing') {
-		selectedState = states.find((s) => s.name === 'browse');
-	} else {
-		selectedState = states.find((s) => s.name === 'create-listing');
+	$: options && updateState();
+
+	function updateState() {
+		let stateName: string;
+
+		if (options.resourceType === 'listing') {
+			options.rawResourceData.listingType === 'sale' &&  (stateName = 'browse');
+			// options.rawResourceData.listingType === 'auction' && (stateName = 'manage-auction');
+
+			stateName = 'browse';
+		} else {
+			stateName = 'create-listing';
+		}
+
+		selectedState = states.find((s) => s.name === stateName);
 	}
 
 	function handleSetState(e) {

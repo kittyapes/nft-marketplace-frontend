@@ -7,14 +7,13 @@
 	import Button from '$lib/components/v2/Button.svelte';
 	import Input from '$lib/components/v2/Input.svelte';
 	import { currentUserAddress } from '$stores/wallet';
-	import { fetchProfileData } from '$utils/api/profile';
-	import { contractGetAuctionBid } from '$utils/contracts/auction';
+	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import { isPrice } from '$utils/validator/isPrice';
-	import { BigNumber, errors, ethers } from 'ethers';
-	import { formatEther, parseEther } from 'ethers/lib/utils.js';
+	import { ethers } from 'ethers';
+	import { parseEther } from 'ethers/lib/utils.js';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -44,49 +43,19 @@
 		await placeBidFlow(options.rawResourceData.listingId, parseEther(bidAmount));
 	}
 
-	let highestBid: { address: string; amount: BigNumber };
-
-	async function fetchHighestBid() {
-		const { err, res } = await contractGetAuctionBid(options.rawResourceData.listingId);
-
-		if (err) {
-			console.error(err);
-			return;
-		}
-
-		highestBid = { address: res[0], amount: res[1] };
-
-		console.log(highestBid);
-	}
-
-	let biddings: { bidderName: string; imageUrl: string; tokenAmount: string; timeAgo: string }[] = [];
-
-	async function updateBiddings() {
-		await fetchHighestBid();
-
-		const highestBidUser = await fetchProfileData(highestBid.address);
-
-		console.log(highestBidUser);
-
-		biddings.push({
-			bidderName: highestBidUser.username,
-			imageUrl: highestBidUser.thumbnailUrl,
-			tokenAmount: formatEther(highestBid.amount),
-			timeAgo: 'N/A'
-		});
-
-		biddings = biddings;
-	}
+	let biddings: BidRow[] = [];
 
 	function bidValidator(v: string): boolean {
-		return isPrice(v) && parseEther(v).gt(highestBid.amount);
+		return isPrice(v) && parseEther(v).gt(parseEther(biddings[0].tokenAmount));
 	}
 
-	onMount(() => {
+	onMount(async () => {
 		if (options.rawResourceData.listingType === 'auction') {
-			updateBiddings();
+			biddings = await getBiddingsFlow(options.rawResourceData.listingId);
 		}
 	});
+
+	$: console.log(options.rawResourceData.listingType);
 </script>
 
 <div class="flex flex-col justify-center h-[90%]">
