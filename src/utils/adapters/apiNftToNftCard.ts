@@ -4,6 +4,8 @@ import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 
 export function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ collection: Partial<ApiCollectionData> }>) {
+
+
 	const popupOptions: CardPopupOptions = {
 		title: data.name,
 		assetUrl: data.assetUrl,
@@ -20,6 +22,7 @@ export function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ collectio
 			}
 		],
 		likeIds: [data._id],
+		collectionData: fallback?.collection,
 		rawResourceData: data
 	};
 

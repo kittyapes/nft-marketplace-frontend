@@ -1,3 +1,5 @@
+import type { ApiCollectionData } from "./apiCollectionData";
+
 export interface CardPopupOptions {
 	/** Asset rendered on the left side of the popup. */
 	assetUrl: string;
@@ -48,5 +50,5 @@ export interface CardPopupOptions {
 	/** The raw data that was used by an adapter to generate this data object. */
 	rawResourceData: any;
 
-	collectionName: string;
+	collectionData: ApiCollectionData;
 }
