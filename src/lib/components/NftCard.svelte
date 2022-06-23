@@ -13,6 +13,8 @@
 	import { onMount } from 'svelte';
 	import { refreshLikedNfts } from '$stores/user';
 	import { notifyError } from '$utils/toast';
+	import { walletConnected } from '$utils/wallet';
+	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 
 	export let options: NftCardOptions;
 
@@ -28,6 +30,11 @@
 	}
 
 	async function favNFT() {
+		if (!$walletConnected) {
+			setPopup(WalletNotConnectedPopup, {
+				unique: true
+			});
+		}
 		if (!$currentUserAddress || !options.popupOptions) return;
 
 		for (const id of options.likeIds) {
