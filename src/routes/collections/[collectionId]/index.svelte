@@ -14,7 +14,6 @@
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
 	import { nftDraft } from '$stores/create';
-	import { outsideClickCallback } from '$actions/outsideClickCallback';
 
 	let collectionData: Collection;
 	let creatorData: UserData;
@@ -22,8 +21,6 @@
 	async function fetchCollectionData() {
 		collectionData = await apiGetCollection($page.params.collectionId);
 		creatorData = await fetchProfileData(collectionData.creator);
-
-		console.log(collectionData);
 	}
 
 	$: $currentUserAddress && fetchCollectionData();
@@ -59,7 +56,7 @@
 
 		<!-- Creator profile image -->
 		<div class="absolute bottom-0 left-0 right-0 w-24 h-24 mx-auto translate-y-5">
-			<img class="h-full bg-white border-4 border-white rounded-full" src={creatorData?.thumbnailUrl || '/svg/icons/guest-avatar.svg'} alt="Collection creator avatar." />
+			<img class="h-full bg-white border-4 border-white rounded-full" src={collectionData?.logoImageUrl || '/svg/icons/guest-avatar.svg'} alt="Collection creator avatar." />
 
 			<!-- Verified creator badge -->
 			<img class="absolute right-0 -translate-y-8" src="/svg/icons/verified-creator-badge.svg" alt="Verified creator badge." />
@@ -125,7 +122,7 @@
 	<div class="mt-16 border-t border-[#0000004D]">
 		{#if collectionData?.nfts?.length}
 			<NftList options={collectionData ? collectionData.nfts.map((nftData) => apiNftToNftCard(nftData, { collection: collectionData })) : []} />
-		{:else if collectionData && !collectionData.nfts?.length}
+		{:else if collectionData && !collectionData.nfts?.length && $currentUserAddress === collectionData.creator}
 			<div
 				class="grid place-items-center border border-dashed border-opacity-30 border-color-gray-base h-60 clickable hover:scale-105 transition-all p10 rounded-2xl max-w-[246px] my-10"
 				on:click={() => {

@@ -40,6 +40,11 @@ export interface CardPopupOptions {
 	/** An array of IDs that should be liked/unliked when the user clicks the like button. */
 	likeIds?: string[];
 
+	/** Start Time and IsTimeActive used to show listing's dates */
+	startTime: Date | null;
+	duration: number; // Sale Duration in Milliseconds
+	isListingTimeActive: boolean;
+
 	/** The raw data that was used by an adapter to generate this data object. */
 	rawResourceData: any;
 }

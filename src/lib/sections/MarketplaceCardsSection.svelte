@@ -19,11 +19,14 @@
 	};
 
 	filters.subscribe(async (state) => {
-		console.log(state);
+		//console.log(state);
+
 		listingsFetchingFilters.collectionId = state.collection;
 		listingsFetchingFilters.type = await Array.from(state.status?.values());
 		listingsFetchingFilters.price = state.price;
-		console.log(listingsFetchingFilters);
+
+		//console.log(listingsFetchingFilters);
+
 		await getData(listingsFetchingFilters);
 	});
 

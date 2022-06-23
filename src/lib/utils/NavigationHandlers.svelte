@@ -14,7 +14,7 @@
 
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {
-		return [RegExp('admin.*'), RegExp('create.*'), RegExp('profile/edit'), RegExp('management.*'), RegExp('collections/new/edit')];
+		return [RegExp('admin.*'), RegExp('create.*'), RegExp('profile/edit'), RegExp('management.*'), RegExp('collections/new/edit'), RegExp('marketplace.*')];
 	}
 
 	function isProtectedAndExpired(path: string) {
@@ -25,7 +25,7 @@
 	}
 
 	function getWalletRequiredRoutes() {
-		return [RegExp('create.*'), RegExp('marketplace.*')];
+		return [RegExp('create.*')];
 	}
 
 	// Check if the path needs a wallet connected. If yes, check if the user is connected.
@@ -117,7 +117,7 @@
 		// Pages only accessible by superadmins
 		if (to.pathname.match(/management*/)) {
 			profileData.subscribe((profile) => {
-				if (profile && !profile.roles.includes('superadmin')) {
+				if (profile && !profile.roles.includes('superadmin') && !profile.roles.includes('admin')) {
 					currentError.set(403);
 				}
 			});

@@ -4,7 +4,7 @@
 	import DiamondsLoader from './DiamondsLoader.svelte';
 	import { inview } from 'svelte-inview';
 	import { createEventDispatcher } from 'svelte';
-	import { userLikedNfts } from '$stores/user';
+	import { likedNfts, userLikedNfts } from '$stores/user';
 
 	const dispatch = createEventDispatcher();
 
@@ -15,15 +15,20 @@
 	const inviewOptions = {};
 
 	function onChange(event) {
-		if (event.detail.inView && !reachedEnd) {
+		if (event.detail.inView) {
 			dispatch('end-reached');
 		}
 	}
 
-	function markLiked() {
+	async function markLiked() {
 		options.forEach((nft) => {
-			nft.favorite = $userLikedNfts?.filter((likedNft) => likedNft.nft.nftId === nft.id).length > 0;
+			nft.favorite = $userLikedNfts?.filter((likedNft) => likedNft.nft._id === nft.id).length > 0;
+			if ($likedNfts[0].length && $likedNfts[1] && $likedNfts[0].find((e) => nft.id === e)) {
+				nft.likes += $likedNfts[1];
+				$likedNfts = [[], 0];
+			}
 		});
+		options = options;
 	}
 
 	$: {
@@ -49,8 +54,7 @@
 	{#if isLoading}
 		<DiamondsLoader />
 	{:else}
-		<div use:inview={inviewOptions} on:change={onChange} />
-	{/if}
+		<div use:inview={inviewOptions} on:change={onChange} />{/if}
 
 	{#if reachedEnd}
 		<div class="text-center placeholder">You have reached the end of this list.</div>

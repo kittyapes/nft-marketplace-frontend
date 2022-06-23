@@ -26,9 +26,12 @@ export const profileCompletionProgress = derived(profileData, ($profileData) => 
 });
 
 export async function refreshLikedNfts(address: string) {
-	const nfts = await getUserFavoriteNfts(address);
-
+	const nfts = await getUserFavoriteNfts(address, null, 20);
+	console.log(nfts);
 	userLikedNfts.set(nfts);
 }
 
 export const userLikedNfts = writable<{ nft: ApiNftData }[]>([]);
+
+// for favoriting state between popup and card
+export const likedNfts = writable<[string[], -1 | 1 | 0]>([[], 0]);
