@@ -9,7 +9,7 @@ export interface NftCardOptions {
 	collectionName?: string;
 	likes?: number;
 	price?: string;
-	favorite?: boolean;
+	favorited?: boolean;
 	popupComponent?: any;
 	popupOptions?: CardPopupOptions;
 	startTime?: Date;
