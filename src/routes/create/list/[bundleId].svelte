@@ -13,7 +13,6 @@
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { getTokenAddress } from '$utils/misc/getTokenAddress';
 	import { goBack } from '$utils/navigation';
-	import { notifySuccess } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
 	import { parseEther } from 'ethers/lib/utils.js';
@@ -26,7 +25,8 @@
 	const listingType = $page.url.searchParams.get('type') as ListingType;
 
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
-		sale: ['price', 'startDate', 'quantity', 'duration']
+		sale: ['price', 'startDate', 'quantity', 'duration'],
+		auction: ['startingPrice', 'startDate', 'reservePrice', 'duration']
 	};
 
 	const fetchedNftData = writable<ApiNftData>(null);
@@ -36,7 +36,6 @@
 		// Go back to listing type selection if the listing type is not set
 		if (!['sale', 'auction'].includes(listingType)) {
 			goto('/create/choose-listing-format/' + nftId);
-			console.log(listingType);
 			return;
 		}
 
@@ -129,7 +128,7 @@
 
 		<hr class="mt-4 separator" />
 
-		<CommonProperties on:select={handleTokenChange} class="mt-8" propNames={typeToProperties['sale']} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} />
+		<CommonProperties on:select={handleTokenChange} class="mt-8" propNames={typeToProperties[listingType]} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} />
 
 		<!-- <hr class="mt-8 separator" /> -->
 
