@@ -25,6 +25,7 @@ export interface ContractCreateListingOptions {
 	listingType: LISTING_TYPE;
 	tokenIds: OnChainId[];
 	tokenAmounts: BigNumber[];
+	collections: EthAddress[];
 }
 
 export async function contractCreateListing(options: ContractCreateListingOptions) {
@@ -39,6 +40,20 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		await approval.wait(1);
 	}
 
+	console.log({
+		id: ethers.BigNumber.from(options.listingId),
+		seller: get(currentUserAddress),
+		payToken: options.payToken,
+		price: options.price,
+		startTime: options.startTime,
+		duration: options.duration,
+		quantity: options.quantity,
+		listingType: options.listingType,
+		collections: options.collections,
+		tokenIds: options.tokenIds,
+		tokenAmounts: options.tokenAmounts
+	});
+
 	const listingCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing({
 		id: ethers.BigNumber.from(options.listingId),
 		seller: get(currentUserAddress),
@@ -48,6 +63,7 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		duration: options.duration,
 		quantity: options.quantity,
 		listingType: options.listingType,
+		collections: options.collections,
 		tokenIds: options.tokenIds,
 		tokenAmounts: options.tokenAmounts
 	});

@@ -1,3 +1,4 @@
+import { HinataMarketplaceStorageContractAddress } from '$constants/contractAddresses';
 import type { EthAddress, UnixTime } from '$interfaces';
 import { getApiUrl } from '$utils/api';
 import type { ListingType } from '$utils/api/listing';
@@ -9,7 +10,7 @@ import type { BigNumber } from 'ethers';
 import { noTryAsync } from 'no-try';
 
 export interface CreateListingFlowOptions {
-	nfts: { nftId: string; amount: BigNumber }[];
+	nfts: { nftId: string; amount: BigNumber; collectionAddress: EthAddress }[];
 	paymentTokenAddress: EthAddress;
 	paymentTokenTicker: string;
 	title: string;
@@ -87,6 +88,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	// Create listing on chain
 	const tokenIds = options.nfts.map((nft) => nft.nftId);
 	const tokenAmounts = options.nfts.map((nft) => nft.amount);
+	const collections = options.nfts.map((nft) => nft.collectionAddress);
 
 	let price: BigNumber;
 
@@ -111,7 +113,8 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 			duration: options.duration,
 			tokenIds,
 			tokenAmounts,
-			quantity: 1
+			quantity: 1,
+			collections
 		});
 	} catch (err) {
 		console.error(err);
