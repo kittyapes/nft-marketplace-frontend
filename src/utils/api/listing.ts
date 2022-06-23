@@ -88,7 +88,7 @@ export interface listingFetchingFilters {
 	seller?: EthAddress;
 }
 
-export async function getListings(filters?: listingFetchingFilters, page: number = 1, limit: number = 100) {
+export async function getListings(filters?: listingFetchingFilters, page: number = 1, limit: number = 20) {
 	const params = {
 		//type: filters?.type,
 		//collecitonId: filters?.collectionId,
