@@ -53,7 +53,17 @@
 	onMount(async () => {
 		profileData.set(await fetchProfileData($currentUserAddress));
 
-		let collections: Collection[] = await apiSearchCollections($currentUserAddress);
+		let collections: Collection[] = [];
+		let page = 1;
+
+		while (true) {
+			const beforeLength = collections.length;
+
+			collections.push(...(await apiSearchCollections($currentUserAddress, null, null, null, page)));
+
+			if (beforeLength === collections.length) break;
+			page++;
+		}
 
 		if (nftData.collectionName) {
 			let selectedCollection = collections.filter((c) => c.name === nftData.collectionName)[0];

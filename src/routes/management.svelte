@@ -91,12 +91,23 @@
 		{ label: 'Inactive', status: 'INACTIVATED' }
 	];
 
-	let filterOptions = [
+	let userFilterOptions = [
 		{ label: 'Flagged' },
 		{ label: 'Joined 24 hrs ago', createdBefore: dayjs().subtract(1, 'hour').unix() },
 		{ label: 'Joined 7 days ago', createdBefore: dayjs().subtract(1, 'week').unix() },
 		{ label: 'Joined 1 Mon ago', createdBefore: dayjs().subtract(1, 'month').unix() }
 	];
+
+	let statusFilterOptions = [
+		{ label: 'All', role: '' },
+		{ label: 'Super Admin', role: 'superadmin' },
+		{ label: 'Admin', role: 'admin' },
+		{ label: 'Verified Creator', role: 'verified_user' },
+		{ label: 'Blogger' },
+		{ label: 'Inactive', status: 'INACTIVATED' }
+	];
+
+	let collectionFilterOptions = [{ label: 'Unclaimed' }, { label: 'Claimed' }];
 
 	let getRoleColor = (role: string) => {
 		if (role === 'superadmin') {
@@ -331,7 +342,7 @@
 					<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
 				</div>
 				<div class="">
-					<Filter on:filter={handleFilter} options={filterOptions} icon={Filters} defaultOption={{ label: 'Filter' }} />
+					<Filter on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter' }} />
 				</div>
 			</div>
 		{:else}
@@ -339,7 +350,7 @@
 			<div class="flex-grow" />
 			<div class="flex gap-10">
 				<Filter options={roleFilterOptions} icon={UserManage} />
-				<Filter options={filterOptions} icon={Filters} />
+				<Filter options={userFilterOptions} icon={Filters} />
 			</div>
 		{/if}
 	</div>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { HinataTokenAddress } from '$constants/contractAddresses';
+	import { HinataMarketplaceStorageContractAddress, HinataTokenAddress } from '$constants/contractAddresses';
 	import Back from '$icons/back_.svelte';
 	import Loader from '$icons/loader.svelte';
 	import type { ApiNftData } from '$interfaces/apiNftData';
@@ -76,7 +76,8 @@
 			title: $fetchedNftData.name,
 			description: $fetchedNftData.metadata?.description,
 			duration,
-			nfts: [{ nftId: $fetchedNftData.nftId, amount: BigNumber.from(1) }],
+			// TODO, add support for addresses from external collections
+			nfts: [{ nftId: $fetchedNftData.nftId, amount: BigNumber.from(1), collectionAddress: HinataMarketplaceStorageContractAddress }],
 			paymentTokenAddress: getTokenAddress('WETH'),
 			paymentTokenTicker: 'WETH',
 			quantity: BigNumber.from(1),
