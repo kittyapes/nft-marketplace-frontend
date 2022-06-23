@@ -49,7 +49,7 @@
 				popupOptions = (await adaptListingToNftCard(listing)).popupOptions;
 			} else {
 				const nft = await getNft(id);
-				popupOptions = await apiNftToNftCard(nft).popupOptions;
+				popupOptions = (await apiNftToNftCard(nft)).popupOptions;
 			}
 
 			setPopup(CardPopup, { props: { options: popupOptions }, onClose: () => removeUrlParam('id') });
@@ -100,7 +100,7 @@
 			fetchFunction: async () => {
 				const res = {} as FetchFunctionResult;
 				res.res = await apiGetUserNfts(address, 'MINTED', tabs.created.index, 10);
-				res.adapted = res.res.res.map((nft) => apiNftToNftCard(nft));
+				res.adapted = await Promise.all(res.res.res.map((nft) => apiNftToNftCard(nft)));
 				return res;
 			},
 			data: [],
@@ -127,7 +127,7 @@
 				const res = {} as FetchFunctionResult;
 				res.adapted = [];
 				const nfts = await getUserFavoriteNfts(address);
-				res.adapted = nfts?.map((nft) => apiNftToNftCard(nft.nft));
+				res.adapted = await Promise.all(nfts?.map((nft) => apiNftToNftCard(nft.nft)));
 
 				tabs.favorites.reachedEnd = true;
 

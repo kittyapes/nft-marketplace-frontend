@@ -11,7 +11,7 @@
 	$: nftData = options.nftData?.[0];
 	$: properties = [
 		{ name: 'Creator', value: nftData.creator },
-		{ name: 'Collection name', value: options.collectionData.name },
+		{ name: 'Collection name', value: options.collectionData?.name },
 		{ name: 'Edition', value: nftData.metadata?.edition },
 		{ name: 'Description', value: nftData.metadata?.description }
 	];
