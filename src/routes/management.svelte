@@ -22,6 +22,7 @@
 	import CollectionName from '$lib/components/management/render-components/CollectionName.svelte';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { whitelistCollection } from '$utils/api/management/whitelistCollection';
+import { getCollectionsByTitle } from '$utils/api/search/globalSearch';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
@@ -30,7 +31,7 @@
 	let eventId;
 	let whitelistingCollectionAddress: string;
 
-	interface userFetchingOptions {
+	interface UserFetchingOptions {
 		filter: Partial<{
 			createdBefore: number;
 			role: string;
@@ -43,7 +44,24 @@
 		query: string;
 	}
 
-	let userFetchingOptions: userFetchingOptions = {
+	interface CollectionFetchingOptions {
+		filter: Partial<{
+			status: string;
+		}>;
+		sort: Partial<{
+			sortBy: string;
+			sortReversed: boolean;
+		}>;
+		query: string;
+	}
+
+	let userFetchingOptions: UserFetchingOptions = {
+		filter: {},
+		sort: {},
+		query: ''
+	};
+
+	let collectionFetchingOptions: CollectionFetchingOptions = {
 		filter: {},
 		sort: {},
 		query: ''
@@ -69,9 +87,13 @@
 				role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
 				status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status
 			};
+
+			if (event.detail.status) userFetchingOptions.filter.role = undefined;
+			else if (event.detail.role) userFetchingOptions.filter.status = undefined;
+
+			if (event.detail.role === 'all') userFetchingOptions.filter.role = undefined;
 			users = await getUsers(getUsersFetchingOptions());
 		} else {
-			collections = event.detail.changeTo;
 		}
 	};
 
@@ -83,7 +105,7 @@
 	};
 
 	let roleFilterOptions = [
-		{ label: 'All', role: '' },
+		{ label: 'All', role: 'all' },
 		{ label: 'Super Admin', role: 'superadmin' },
 		{ label: 'Admin', role: 'admin' },
 		{ label: 'Verified Creator', role: 'verified_user' },
@@ -99,12 +121,9 @@
 	];
 
 	let statusFilterOptions = [
-		{ label: 'All', role: '' },
-		{ label: 'Super Admin', role: 'superadmin' },
-		{ label: 'Admin', role: 'admin' },
-		{ label: 'Verified Creator', role: 'verified_user' },
-		{ label: 'Blogger' },
-		{ label: 'Inactive', status: 'INACTIVATED' }
+		{ label: 'All', status: 'all' },
+		{ label: 'Listed', status: 'LISTED' },
+		{ label: 'Inactive', status: 'INACTIVE' }
 	];
 
 	let collectionFilterOptions = [{ label: 'Unclaimed' }, { label: 'Claimed' }];
@@ -136,12 +155,13 @@
 			.catch((err) => console.log(err));
 
 		if (!collections.length) return;
+		console.log(collections);
 
 		await createCollectionTableData();
 	};
 
 	let getCollectionsFetchingOptions = () => {
-		return {};
+		return { ...collectionFetchingOptions.filter, query: collectionFetchingOptions.query, ...collectionFetchingOptions.sort };
 	};
 
 	const createCollectionTableData = async () => {
@@ -239,6 +259,10 @@
 		updateCollectionTableData();
 	}
 
+	const getSearchedCollections = async () => {
+		//users = await apiSearchCollections(getCollectionsFetchingOptions());
+	};
+
 	// USER section
 
 	let createUserTable = async () => {
@@ -252,14 +276,14 @@
 		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort };
 	};
 
-	const debouncedSearch = debounce(async () => await getSearchedUsers(), 500);
+	const userDebouncedSearch = debounce(async () => mode === 'USER' ? await getSearchedUsers() : , 500);
 
 	const getSearchedUsers = async () => {
 		users = await getUsers(getUsersFetchingOptions());
 	};
 
 	$: if (userFetchingOptions.query) {
-		debouncedSearch();
+		userDebouncedSearch();
 	}
 
 	$: if (users.length) {
@@ -346,11 +370,11 @@
 				</div>
 			</div>
 		{:else}
-			<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
+			<SearchBar bind:query={collectionFetchingOptions.query} placeholder={searchPlaceholder} />
 			<div class="flex-grow" />
 			<div class="flex gap-10">
-				<Filter options={roleFilterOptions} icon={UserManage} />
-				<Filter options={userFilterOptions} icon={Filters} />
+				<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
+				<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter' }} />
 			</div>
 		{/if}
 	</div>
