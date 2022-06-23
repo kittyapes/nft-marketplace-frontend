@@ -168,7 +168,7 @@
 			</div>
 
 			<div class="grid flex-grow place-items-stretch">
-				<DragDropImage bind:blob={nftData.animationBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos} />
+				<DragDropImage max_file_size={50_000_000} bind:blob={nftData.animationBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos} />
 			</div>
 		</div>
 
@@ -183,7 +183,7 @@
 			</div>
 
 			<div class="grid flex-grow place-items-stretch">
-				<DragDropImage bind:blob={nftData.fileBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages} />
+				<DragDropImage max_file_size={3_000_000} bind:blob={nftData.fileBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages} />
 			</div>
 		</div>
 

@@ -13,6 +13,7 @@
 	export let currentImgUrl: string = null;
 	export let previewSrc = '';
 	export let acceptedFormats: string[] = [];
+	export let max_file_size = 50_000_000;
 
 	let fileInput: HTMLInputElement;
 	let files: any = [];
@@ -26,8 +27,8 @@
 	$: if (browser && files.length) {
 		const file: Blob = files[0];
 
-		if (file.size > 50_000_000) {
-			notifyError('The uploaded file must be 50 MB or less!');
+		if (file.size > max_file_size) {
+			notifyError(`The uploaded file must be ${max_file_size / 1_000_000} MB or less!`);
 			files = [];
 			fileType = null;
 			fileInput.value = '';
@@ -70,15 +71,15 @@
 		class:over
 	>
 		{#if (fileType === 'image' && previewSrc) || currentImgUrl}
-			<img src={previewSrc || currentImgUrl} alt="" in:fade class="max-h-full w-full object-contain rounded" />
+			<img src={previewSrc || currentImgUrl} alt="" in:fade class="object-contain w-full max-h-full rounded" />
 		{:else if (fileType === 'video' && previewSrc) || currentImgUrl}
-			<video class="max-w-full max-h-full rounded object-contain" autoplay muted loop in:fade>
+			<video class="object-contain max-w-full max-h-full rounded" autoplay muted loop in:fade>
 				<source src={previewSrc || currentImgUrl} type="video/mp4" />
 				<track kind="captions" />
 			</video>
 		{:else if !fileType}
 			{#if text}
-				<div class="text-center text-color-black opacity-50 text-sm px-12">
+				<div class="px-12 text-sm text-center opacity-50 text-color-black">
 					{@html text}
 				</div>
 			{:else}
@@ -87,7 +88,7 @@
 		{/if}
 	</button>
 
-	<div class="text-xs text-center mt-2 text-color-gray-accent font-semibold">
+	<div class="mt-2 text-xs font-semibold text-center text-color-gray-accent">
 		{dimensions}
 	</div>
 
