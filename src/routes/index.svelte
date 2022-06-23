@@ -2,16 +2,15 @@
 	import { links } from '$constants/links';
 	import { socials } from '$constants/socials';
 	import CollectionsTable from '$lib/components/collections/CollectionsTable.svelte';
-	import { currentUserAddress } from '$stores/wallet';
 	import { apiGetMostActiveCollections } from '$utils/api/collection';
 	import type { CollectionTableRow } from '$utils/api/collection';
+	import { onMount } from 'svelte';
 
 	let collections: CollectionTableRow[] = [];
 
 	// Please don't ask me why we need an auth token for this...
-	currentUserAddress.subscribe(async (address) => {
-		if (!address) return;
-
+	// We don't anymore 🙂 🔪
+	onMount(async () => {
 		collections = await apiGetMostActiveCollections();
 		console.log(collections);
 	});
