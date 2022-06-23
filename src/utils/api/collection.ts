@@ -126,8 +126,7 @@ export interface CollectionTableRow {
 }
 
 export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[]> {
-	// TODO shouldn't require token, but the backend wasn't updated yet
-	const res = await axios.get(getApiUrl('v2', 'collections'), getAxiosConfig());
+	const res = await axios.get(getApiUrl('latest', 'collections'));
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
