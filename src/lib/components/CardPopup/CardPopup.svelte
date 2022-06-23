@@ -37,7 +37,7 @@
 				title={options.title}
 				{options}
 				favorited={options.favorited}
-				countdown={options.listingData.listingType === 'auction' ? { startTime: options.listingData.startTime, duration: options.listingData.duration } : null}
+				countdown={options.listingData?.listingType === 'auction' ? { startTime: options.listingData.startTime, duration: options.listingData.duration } : null}
 			/>
 		</div>
 
