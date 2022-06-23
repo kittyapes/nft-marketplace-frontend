@@ -115,8 +115,6 @@
 	let createTable = async () => {
 		loaded = false;
 		mode === 'USER' ? await createUserTable() : await createCollectionTable();
-		await tick();
-		loaded = true;
 	};
 
 	//COLLECTION section
@@ -125,16 +123,17 @@
 		await apiSearchCollections()
 			.then((res) => (collections = res))
 			.catch((err) => console.log(err));
-		if (!collections.length) return false;
-		console.log(collections);
-		return true;
+
+		if (!collections.length) return;
+
+		await createCollectionTableData();
 	};
 
 	let getCollectionsFetchingOptions = () => {
 		return {};
 	};
 
-	$: if (collections.length) {
+	const createCollectionTableData = async () => {
 		collectionTableData = [
 			{
 				gridSize: '3fr',
@@ -143,13 +142,13 @@
 				renderComponent: CollectionName,
 				renderComponentProps: collections.map((c) => ({ name: c.name || '', imageUrl: c.logoImageUrl, slug: c.slug }))
 			},
-			{
+			/*{
 				gridSize: '2fr',
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Ethereum Address' },
 				renderComponent: EthAddress,
 				renderComponentProps: collections.map((c) => ({ address: c.paymentTokenAddress }))
-			},
+			},*/
 			{
 				gridSize: '1fr',
 				titleRenderComponent: TableTitle,
@@ -175,19 +174,12 @@
 				}))
 			},
 			{
+				name: 'collection-owner',
 				gridSize: '3fr',
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Added by' },
 				renderComponent: EntryName,
-				renderComponentProps: collections.map(async (c) => {
-					let creator = await fetchProfileData(c.creator);
-					console.log(creator);
-					return {
-						name: creator?.username || '',
-						imageUrl: creator?.thumbnailUrl,
-						address: creator?.address
-					};
-				})
+				renderComponentProps: []
 			},
 			{
 				gridSize: '2fr',
@@ -200,10 +192,40 @@
 				})
 			}
 		];
-		collectionTableData.forEach((e, i) => {
+
+		collectionTableData.forEach(async (e, i) => {
 			e.titleRenderComponentProps.id = i;
 			if (i === eventId) e.titleRenderComponentProps.active = true;
+			if (e.name === 'collection-owner') {
+				e.renderComponentProps = Array(collectionTableData[i - 1].renderComponentProps.length);
+				e.renderComponentProps = await getCollectionOwners(collections);
+				collectionTableData = collectionTableData;
+				loaded = true;
+				console.log(e.renderComponentProps);
+			}
 		});
+	};
+
+	const getCollectionOwners = async (collections: Collection[]) => {
+		return await Promise.all(
+			collections.map(async (c) => {
+				let creator = await fetchProfileData(c.creator);
+				return {
+					name: creator?.username || '',
+					imageUrl: creator?.thumbnailUrl,
+					address: creator?.address
+				};
+			})
+		);
+	};
+
+	const updateCollectionTableData = async () => {
+		loaded = false;
+		await createCollectionTableData();
+	};
+
+	$: if (collections.length) {
+		updateCollectionTableData();
 	}
 
 	// USER section
@@ -212,9 +234,7 @@
 		await getUsers()
 			.then((res) => (users = res))
 			.catch((err) => console.log(err));
-		if (!users.length) return false;
-
-		return true;
+		if (!users.length) return;
 	};
 
 	let getUsersFetchingOptions = () => {
@@ -232,6 +252,7 @@
 	}
 
 	$: if (users.length) {
+		loaded = false;
 		userTableData = [
 			{
 				gridSize: '3fr',
@@ -287,6 +308,8 @@
 			e.titleRenderComponentProps.id = i;
 			if (i === eventId) e.titleRenderComponentProps.active = true;
 		});
+
+		loaded = true;
 	}
 
 	$: searchPlaceholder = `Search for ${mode.toLowerCase()}`;
@@ -320,9 +343,17 @@
 			</div>
 		{/if}
 	</div>
-	<LoadedContent {loaded}>
-		<InteractiveTable on:event={handleTableEvent} tableData={mode === 'USER' ? userTableData : collectionTableData} rows={mode === 'USER' ? users.length : collections.length} />
-	</LoadedContent>
+
+	{#if mode === 'USER'}
+		<LoadedContent {loaded}>
+			<InteractiveTable on:event={handleTableEvent} tableData={userTableData} rows={users.length} />
+		</LoadedContent>
+	{:else}
+		<LoadedContent {loaded}>
+			<InteractiveTable on:event={handleTableEvent} tableData={collectionTableData} rows={collections.length} />
+		</LoadedContent>
+	{/if}
+
 	{#if mode === 'COLLECTION'}
 		<div class="flex flex-col w-full gap-4 ">
 			<div class="flex flex-col gap-1">

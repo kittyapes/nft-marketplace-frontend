@@ -1,4 +1,5 @@
 export interface TableCol {
+    name?: string;
     gridSize: string
     renderComponent: any,
     titleRenderComponent: any,
