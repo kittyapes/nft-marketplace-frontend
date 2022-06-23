@@ -151,14 +151,22 @@
 	</div>
 
 	<div class="flex mt-2 text-sm font-medium text-gray-600">
-		<div class="flex-grow">{options?.collectionName || 'N/A'}</div>
-		<div>Price</div>
+		<!-- TODO REMOVE THE N/As - left the color red to indicate that this is a problem that needs fixing -->
+		<!-- Need server to return collection names -->
+		<div class={`flex-grow ${(options?.collectionName === 'N/A' || options?.collectionName) && 'text-red-400'}`}>{options?.collectionName || 'N/A'}</div>
+		<!-- Hide price info when not present/listed -->
+		{#if options?.price}
+			<div>Price</div>
+		{/if}
 	</div>
 
 	<div class="flex items-center mt-2 font-semibold">
 		<div class="flex-grow whitespace-nowrap">{options?.title || 'N/A'}</div>
-		<Eth />
-		<div class="ml-1">{options?.price || 'N/A'}</div>
+		<!-- Hide price info when not present/listed -->
+		{#if options?.price}
+			<Eth />
+			<div class="ml-1">{options?.price || 'N/A'}</div>
+		{/if}
 	</div>
 
 	<!-- TODO If owned by user -->
