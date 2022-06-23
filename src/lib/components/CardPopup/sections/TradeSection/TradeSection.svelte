@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import { currentUserAddress } from '$stores/wallet';
-	import BrowseState from './sale/BrowseState.svelte';
-	import CreateListingState from './sale/CreateListingState.svelte';
-	import ErrorState from './sale/ErrorState.svelte';
-	import ManageAuctionState from './sale/ManageAuctionState.svelte';
-	import SuccessState from './sale/SuccessState.svelte';
+	import BrowseState from './BrowseState.svelte';
+	import CreateListingState from './CreateListingState.svelte';
+	import ErrorState from './ErrorState.svelte';
+	import ManageAuctionState from './ManageAuctionState.svelte';
+	import SuccessState from './SuccessState.svelte';
 
 	export let options: CardPopupOptions;
 	export let showBackButton = false;
