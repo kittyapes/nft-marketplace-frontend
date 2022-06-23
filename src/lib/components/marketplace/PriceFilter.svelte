@@ -7,8 +7,8 @@
 
 	const updateValues = () => {
 		$filters.price = {
-			min: min || 0,
-			max: max || 0
+			priceMin: min || 0,
+			priceMax: max || 0
 		};
 		filters.update((val) => val);
 	};

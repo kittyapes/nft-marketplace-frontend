@@ -8,4 +8,4 @@ export const selectedCard = writable<any>(); // TODO add types
 
 // Filters
 export const collectionFilters = writable<string>(null);
-export const filters = writable<{status: Set<ListingType>, price: { min: number; max: number }, collection: string }>({status: new Set(['sale']), price: { min: 0, max: 0 }, collection: '' });
+export const filters = writable<{status: Set<ListingType>, price: { priceMin: number; priceMax: number }, collection: string }>({status: new Set(['sale', 'auction', 'raffle']), price: { priceMin: 0, priceMax: 0 }, collection: '' });

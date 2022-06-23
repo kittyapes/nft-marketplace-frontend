@@ -1,5 +1,7 @@
 import type { EthAddress } from '$interfaces';
 import axios from 'axios';
+import { ethers } from 'ethers';
+import {  parseEther } from 'ethers/lib/utils.js';
 import { getApiUrl } from '.';
 
 export type ListingType = 'sale' | 'auction' | 'raffle';
@@ -84,7 +86,7 @@ export interface Listing {
 export interface listingFetchingFilters {
 	collectionId?: string;
 	type?: ListingType[];
-	price?: { min: number; max: number };
+	price?: { priceMin: number; priceMax: number };
 	seller?: EthAddress;
 }
 
@@ -92,25 +94,16 @@ export async function getListings(filters?: listingFetchingFilters, page: number
 	const params = {
 		type: filters?.type,
 		//collecitonId: filters?.collectionId,
-		//price: filters?.price,
+		
+		priceMin: ethers.utils.parseEther(filters?.price.priceMin.toString()).toString(),
+		priceMax: ethers.utils.parseEther(filters?.price.priceMin.toString()).toString(),
 		seller: filters?.seller,
 		page,
 		limit
 	};
-
-	let queryString = '';
-
-	for(const [key, value] of Object.entries(params)) {
-		if(value && Array.isArray(value)) {
-			value.forEach(v => queryString += `${key}=${v}&`)
-		}
-		else if (value) {
-			queryString += `${key}=${value}&`
-		}
-	}
-	console.log(queryString)
-	const res = await axios.get(getApiUrl('latest', 'listings?' + queryString));
-
+	console.log(params)
+	const res = await axios.get(getApiUrl('latest', 'listings?'), { params });
+	console.log(res);
 	return res.data.data as Listing[];
 }
 
