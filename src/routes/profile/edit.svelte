@@ -199,13 +199,13 @@
 
 <LoadedContent loaded={$localDataStore}>
 	<div class="bg-[#f2f2f2] py-16">
-		<div class="max-w-4xl mx-auto py-16 bg-white px-16">
-			<h1 class="uppercase text-center text-5xl font-semibold">
+		<div class="max-w-4xl px-16 py-16 mx-auto bg-white">
+			<h1 class="text-5xl font-semibold text-center uppercase">
 				{firstTimeUser ? 'Setup' : 'Edit'} Your
 				<span class="gradient-text">Profile</span>
 			</h1>
 
-			<div class="font-bold text-sm text-center mt-4">
+			<div class="mt-4 text-sm font-bold text-center">
 				Profile completion progress: <span class="gradient-text">{profileCompletionProgress}%</span>
 			</div>
 
@@ -222,10 +222,7 @@
 			{#if $freeNftStatus !== 'claimed'}
 				<div class="px-16 mt-16" in:slide|local out:slide|local={{ delay: 300 }}>
 					<button
-						class="transition-btn
-						bg-gradient-to-r from-color-purple to-color-blue
-						text-white rounded-3xl font-semibold uppercase text-lg w-full
-						py-6 block disabled:opacity-50"
+						class="block w-full py-6 text-lg font-semibold text-white uppercase transition-btn bg-gradient-to-r from-color-purple to-color-blue rounded-3xl disabled:opacity-50"
 						on:click={handleNftClaim}
 						in:fade|local={{ delay: 300 }}
 						out:fade|local
@@ -237,36 +234,30 @@
 				</div>
 			{/if}
 
-			<div id="form-container" class="grid gap-y-6 mt-20">
+			<div id="form-container" class="grid mt-20 gap-y-6">
 				<div class="grid grid-cols-2">
 					<div>
 						<div class="input-label">Username</div>
-						<div class="uppercase text-xs font-medium">Mandatory</div>
+						<div class="text-xs font-medium uppercase">Mandatory</div>
 					</div>
 
 					<div>
 						<input type="text" class="input input-gray-outline" placeholder="Username" bind:value={$localDataStore.username} />
 
 						{#if $usernameAvailable === false}
-							<div class="text-xs ml-auto text-red-500 font-semibold mt-2 uppercase" transition:slide|local>Username already taken</div>
+							<div class="mt-2 ml-auto text-xs font-semibold text-red-500 uppercase" transition:slide|local>Username already taken</div>
 						{:else if $usernameValidLength === false}
-							<div class="text-xs ml-auto text-red-500 font-semibold mt-2 uppercase" transition:slide|local>Username can't be longer than 25 characters</div>
+							<div class="mt-2 ml-auto text-xs font-semibold text-red-500 uppercase" transition:slide|local>Username can't be longer than 25 characters</div>
 						{/if}
 					</div>
 				</div>
 
-				<div class="grid grid-cols-2 items-stretch">
-					<div
-						class="input-label gradient-text brightness-0
-						transition flex items-center"
-						class:brightness-100={isEmail($localDataStore.email)}
-					>
-						Email
-					</div>
+				<div class="grid items-stretch grid-cols-2">
+					<div class="flex items-center transition input-label gradient-text brightness-0" class:brightness-100={isEmail($localDataStore.email)}>Email</div>
 					<div>
 						<input type="email" class="input input-gray-outline" placeholder="example@email.com" bind:value={$localDataStore.email} />
 						{#if $localDataStore.email && !isEmail($localDataStore.email)}
-							<div transition:slide|local class="text-xs ml-auto text-red-500 font-semibold mt-2 uppercase" class:hidden={!$localDataStore.email || isEmail($localDataStore.email)}>
+							<div transition:slide|local class="mt-2 ml-auto text-xs font-semibold text-red-500 uppercase" class:hidden={!$localDataStore.email || isEmail($localDataStore.email)}>
 								Please enter a valid email address
 							</div>
 						{/if}
@@ -274,26 +265,28 @@
 				</div>
 
 				<div class="grid grid-cols-2">
-					<div class="input-label gradient-text brightness-0 transition" class:brightness-100={isBioValid($localDataStore.bio)}>Bio</div>
+					<div class="transition input-label gradient-text brightness-0" class:brightness-100={isBioValid($localDataStore.bio)}>Bio</div>
 
 					<div>
 						<TextArea outline placeholder="Enter your short bio" maxChars={200} bind:value={$localDataStore.bio} />
 						{#if $localDataStore.bio && !isValidBio($localDataStore.bio)}
-							<div class="text-xs ml-auto text-red-500 font-semibold uppercase -translate-y-3" transition:slide|local>Bio must be at least three words</div>
+							<div class="ml-auto text-xs font-semibold text-red-500 uppercase -translate-y-3" transition:slide|local>Bio must be at least three words</div>
 						{/if}
 					</div>
 				</div>
 
 				<div class="grid grid-cols-2">
 					<div>
-						<div class="input-label gradient-text brightness-0 transition" class:brightness-100={isProfileImage}>
+						<div class="transition input-label gradient-text brightness-0" class:brightness-100={isProfileImage}>
 							PROFILE <br />
 							PICTURE
 						</div>
 						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
+						<div class="text-xs text-[#A9A8A8]">Max 10MB</div>
 					</div>
-					<div class="flex w-full flex-col">
+					<div class="flex flex-col w-full">
 						<DragDropImage
+							max_file_size={10_000_000}
 							bind:blob={$localDataStore.profileImage}
 							currentImgUrl={$fetchedDataStore?.thumbnailUrl}
 							acceptedFormats={acceptedImages}
@@ -307,15 +300,23 @@
 					<div>
 						<div class="input-label gradient-text brightness-0" class:brightness-100={isCoverImage}>BANNER</div>
 						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
+						<div class="text-xs text-[#A9A8A8]">Max 10MB</div>
 					</div>
-					<div class="flex w-full flex-col">
-						<DragDropImage bind:blob={$localDataStore.coverImage} currentImgUrl={$fetchedDataStore?.coverUrl} acceptedFormats={acceptedImages} dimensions="2550x290 px" class="!h-24 !px-12" />
+					<div class="flex flex-col w-full">
+						<DragDropImage
+							max_file_size={10_000_000}
+							bind:blob={$localDataStore.coverImage}
+							currentImgUrl={$fetchedDataStore?.coverUrl}
+							acceptedFormats={acceptedImages}
+							dimensions="2550x290 px"
+							class="!h-24 !px-12"
+						/>
 					</div>
 				</div>
 
 				<div class="grid grid-cols-2">
 					<div>
-						<div class="input-label gradient-text brightness-0 peer-focus-within:brightness-100 transition">Social links</div>
+						<div class="transition input-label gradient-text brightness-0 peer-focus-within:brightness-100">Social links</div>
 						<div class="text-xs text-[#A9A8A8]">optional</div>
 					</div>
 
@@ -364,9 +365,9 @@
 				</div>
 			</div>
 
-			<div class="flex items-center opacity-0 transition" class:opacity-100={isSaving}>
+			<div class="flex items-center transition opacity-0" class:opacity-100={isSaving}>
 				<Loader class="w-6 h-6 mx-0" />
-				<div class="font-semibold ml-4 uppercase">Saving changes...</div>
+				<div class="ml-4 font-semibold uppercase">Saving changes...</div>
 			</div>
 
 			<Button rounded variant="rounded-black" stretch on:click={onSave} disabled={isSynced || !dataChanged || !dataValid} class="!font-medium">Save changes</Button>

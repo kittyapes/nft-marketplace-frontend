@@ -19,9 +19,7 @@
 
 	let handleSelect = async (event: CustomEvent) => {
 		let roles: UserRole[] = [];
-		event.detail?.forEach((e) => {
-			if (e.checked) roles.push(e.value);
-		});
+		if (event.detail?.checked) roles.push(event.detail?.value);
 		const res = await addUserRole(props.id, roles);
 	};
 </script>

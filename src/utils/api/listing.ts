@@ -1,4 +1,4 @@
-import { getAxiosConfig } from '$utils/auth/axiosConfig';
+import type { EthAddress } from '$interfaces';
 import axios from 'axios';
 import { getApiUrl } from '.';
 
@@ -43,37 +43,6 @@ interface RaffleParticipants {
 	tickets: number[];
 }
 
-export interface CreateListingOptions {
-	nfts: { nftId: string; amount: number }[];
-	description?: string;
-	title?: string;
-	paymentTokenTicker?: string;
-	paymentTokenAddress: string;
-	modifiedOn?: string;
-	listingType: 'sale' | 'auction' | 'raffle';
-	price: number;
-	quantity: number;
-	listing?: Sale | Auction | Raffle;
-	succesSaleTransaction?: string;
-	startTime?: Date;
-	duration?: number;
-}
-
-export async function postCreateListing(options: CreateListingOptions) {
-	const formData = new FormData();
-	formData.append('nfts', JSON.stringify(options.nfts));
-	formData.append('title', options.title || 'No Title');
-	formData.append('paymentTokenAddress', options.paymentTokenAddress);
-	formData.append('paymentTokenTicker', options.paymentTokenTicker || 'ETH');
-	formData.append('description', options.description || 'No Description');
-	formData.append('listingType', options.listingType);
-	formData.append('listing', JSON.stringify({ price: options.price, quantity: options.quantity }));
-	formData.append('duration', options.duration.toString());
-	formData.append('startTime', options.startTime.toString());
-
-	return await axios.post(getApiUrl('latest', 'listings'), formData, getAxiosConfig()).catch((e) => e.response);
-}
-
 export interface Listing {
 	_id: string;
 	listingId: string;
@@ -88,7 +57,7 @@ export interface Listing {
 		nftId: string;
 		amount: number;
 		nft: {
-			_id: string; 
+			_id: string;
 			assetUrl: string;
 			thumbnailUrl: string;
 			favoriteCount: number;
@@ -96,9 +65,9 @@ export interface Listing {
 			creator: string;
 			contractAddress: string;
 			nftId: string;
-			},
-		}[];
-	
+		};
+	}[];
+
 	paymentTokenTicker: 'ETH';
 	paymentTokenAddress: string;
 	startTime: string;
@@ -110,20 +79,23 @@ export interface Listing {
 	createdAt: string;
 	updatedAt: string;
 	seller: string;
-};
+}
 
 export interface listingFetchingFilters {
 	collectionId?: string;
 	type?: ListingType[];
 	price?: { min: number; max: number };
+	seller?: EthAddress;
 }
 
-export async function getListings(filters?: listingFetchingFilters) {
+export async function getListings(filters?: listingFetchingFilters, page: number = 1, limit: number = 20) {
 	const params = {
-		limit: 200
 		//type: filters?.type,
 		//collecitonId: filters?.collectionId,
 		//price: filters?.price,
+		seller: filters?.seller,
+		page,
+		limit
 	};
 	const res = await axios.get(getApiUrl('latest', 'listings'), { params });
 

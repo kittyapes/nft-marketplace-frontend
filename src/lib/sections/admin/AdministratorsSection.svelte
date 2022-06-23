@@ -18,6 +18,7 @@
 	let isFetching = false;
 
 	async function fetchAdmins() {
+		if (!$currentUserAddress) return;
 		isFetching = true;
 		admins = await getAdmins().catch(httpErrorHandler);
 		console.log(admins);

@@ -122,7 +122,7 @@
 	//COLLECTION section
 
 	let createCollectionTable = async () => {
-		await apiSearchCollections(null, null, 10)
+		await apiSearchCollections()
 			.then((res) => (collections = res))
 			.catch((err) => console.log(err));
 		if (!collections.length) return false;

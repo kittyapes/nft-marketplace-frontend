@@ -1,7 +1,7 @@
 <script>
 	export let tab;
-	const TABS = ['MARKET', 'DROPS'];
-	const ROUTES = ['marketplace', 'drops'];
+	const TABS = ['MARKET', 'COMING SOON'];
+	const ROUTES = ['marketplace', 'marketplace'];
 </script>
 
 <div class="w-full flex flex-row gap-5 text-xs z-0 items-center">

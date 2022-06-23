@@ -1,9 +1,24 @@
 import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 import type { Listing } from '$utils/api/listing';
+import dayjs from 'dayjs';
+import { formatEther } from 'ethers/lib/utils.js';
 
 export async function adaptListingToNftCard(data: Listing) {
+	let price: string;
+
+	try {
+		price = formatEther(data.listing.price);
+	} catch {
+		price = 'N/A';
+	}
+
 	const nft = data.nfts[0].nft;
+
+	const startTime = dayjs(data.startTime).unix();
+	const hasAStartTime = new Date(startTime * 1000).getUTCFullYear() !== 1970;
+	// It has a start time and its ending time has not yet passed
+	const isTimeLive = hasAStartTime && new Date(startTime * 1000).getTime() + data.duration * 1000 > Date.now();
 
 	const popupOptions: CardPopupOptions = {
 		title: data.title,
@@ -21,7 +36,7 @@ export async function adaptListingToNftCard(data: Listing) {
 			}
 		],
 		saleData: {
-			price: data.listing.price,
+			price,
 			listingId: data.listingId
 		},
 		listingData: {
@@ -31,16 +46,20 @@ export async function adaptListingToNftCard(data: Listing) {
 			tokenAddress: data.paymentTokenAddress
 		},
 		likeIds: [nft._id],
+		startTime: hasAStartTime ? new Date(startTime * 1000) : null,
+		isListingTimeActive: isTimeLive,
+		duration: data.duration * 1000,
 		rawResourceData: data
 	};
 
 	const nftCardOptions = {
 		id: nft._id,
+		likeIds: [nft._id],
 		imageUrl: nft.thumbnailUrl,
 		title: data.title,
 		collectionName: 'N/A',
 		likes: nft.favoriteCount,
-		price: data.listing.price,
+		price,
 		popupComponent: CardPopup,
 		popupOptions
 	};

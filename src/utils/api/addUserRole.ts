@@ -5,7 +5,6 @@ import type { UserRole } from 'src/interfaces/userData';
 import { getApiUrl } from '.';
 
 export async function addUserRole(address: string, roles: UserRole[]) {
-	console.log(address, roles);
 	const res = await axios
 		.put(
 			getApiUrl('latest', 'admins/' + address),

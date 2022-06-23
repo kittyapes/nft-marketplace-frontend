@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import { currentUserAddress } from '$stores/wallet';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import InfoSection from './InfoSection.svelte';
 	import TradeSection from './TradeSection.svelte';
@@ -9,12 +10,17 @@
 	// The back button is controlled by dynamic components
 	export let showBackButton: boolean;
 
-	const tabs = [
+	$: tabs = [
 		{ text: 'Info', icon: 'info', sectionComponent: InfoSection, visible: true },
-		{ text: 'Trade', icon: 'trade', sectionComponent: TradeSection, visible: options.resourceType === 'listing' }
+		{
+			text: 'Trade',
+			icon: 'trade',
+			sectionComponent: TradeSection,
+			visible: options.resourceType === 'listing' || (options.resourceType === 'nft' && options.rawResourceData.owner === $currentUserAddress)
+		}
 	];
 
-	let selectedTab = tabs[0];
+	$: selectedTab = tabs[1];
 
 	export function goBack() {
 		tabComponentInstance.goBack?.();

@@ -1,5 +1,4 @@
 import type { ApiNftData } from '$interfaces/apiNftData';
-import type { NftData } from '$interfaces/nft';
 import axios from 'axios';
 import { noTryAsync } from 'no-try';
 import { getApiUrl } from '.';
@@ -7,17 +6,13 @@ import { getApiUrl } from '.';
 export async function getNft(id: string) {
 	const res = await axios.get(getApiUrl('latest', 'nfts/' + id));
 
-	return res.data.data as NftData;
+	return res.data.data as ApiNftData;
 }
 
-export async function apiGetUserNfts(address: string, page: number, pageSize: number) {
+export async function apiGetUserNfts(address: string, type: 'COLLECTED' | 'MINTED', page: number, limit: number) {
 	const [err, res] = await noTryAsync(() =>
 		axios.get(getApiUrl('latest', 'nfts/search'), {
-			params: {
-				address,
-				page,
-				limit: pageSize
-			}
+			params: { address, page, limit, type }
 		})
 	);
 
