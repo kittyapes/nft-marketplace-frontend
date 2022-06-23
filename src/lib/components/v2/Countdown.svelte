@@ -16,7 +16,7 @@
 		['Hours', remaining.hours()],
 		['Minutes', remaining.minutes()],
 		['Seconds', remaining.seconds()]
-	];
+	].map(([unit, value]) => [unit, Math.max(0, value)]);
 
 	onMount(() => setInterval(() => (endTime = endTime), 1000));
 </script>

@@ -87,7 +87,7 @@
 			</button>
 		</div>
 	{:else if options.rawResourceData.listingType === 'auction'}
-		<div class="flex flex-col h-full pb-8 mt-4">
+		<div class="flex flex-col h-full mt-4">
 			<AuctionBidList listingId={options.rawResourceData.listingId} />
 
 			<div class="flex gap-2 mt-2">
