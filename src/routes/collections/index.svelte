@@ -1,17 +1,19 @@
 <script lang="ts">
 	import HomepageCollections from '$lib/components/collections/HomepageCollections.svelte';
-	import { currentUserAddress } from '$stores/wallet';
 	import { apiSearchCollections, type CollectionTableRow } from '$utils/api/collection';
+	import { onMount } from 'svelte';
 
 	let collections: CollectionTableRow[] = [];
+	let loaded = false;
 
 	// Please don't ask me why we need an auth token for this...
-	currentUserAddress.subscribe(async (address) => {
-		if (!address) return;
-
+	// We don't anymore 🙂 🔪
+	onMount(async () => {
+		loaded = false;
 		collections = await apiSearchCollections();
 		console.log(collections);
+		loaded = true;
 	});
 </script>
 
-<HomepageCollections {collections} />
+<HomepageCollections {collections} {loaded} />

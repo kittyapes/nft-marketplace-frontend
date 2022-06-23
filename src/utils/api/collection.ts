@@ -58,6 +58,7 @@ export async function apiCreateCollection(options: Collection) {
 	options.paymentTokenTicker = 'ETH';
 	options.paymentTokenAddress = get(currentUserAddress);
 	options.royalties = JSON.stringify(options.royalties) as any;
+	options.slug = options.slug.toLowerCase();
 
 	const formData = new FormData();
 	Object.entries(options).forEach(([k, v]) => formData.append(k, v));
@@ -86,20 +87,19 @@ export interface UpdateCollectionOptions {
 	isExplicitSenstive: boolean;
 	logoImage?: Blob;
 	backgroundImage?: Blob;
-	_id: string;
+	id: string;
 }
 
 export async function apiUpdateCollection(options: UpdateCollectionOptions) {
+	console.log(options);
 	const formData = new FormData();
 	Object.entries(options).forEach(([k, v]) => v && formData.append(k, v));
 
-	const res = await axios.put(getApiUrl('latest', 'collections/' + options._id), formData, getAxiosConfig()).catch((e) => e.response);
+	const res = await axios.put(getApiUrl('latest', 'collections/' + options.id), formData, getAxiosConfig()).catch((e) => e.response);
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
 	}
-
-	console.log(res);
 
 	return res;
 }
@@ -126,8 +126,7 @@ export interface CollectionTableRow {
 }
 
 export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[]> {
-	// TODO shouldn't require token, but the backend wasn't updated yet
-	const res = await axios.get(getApiUrl('v2', 'collections'), getAxiosConfig());
+	const res = await axios.get(getApiUrl('latest', 'collections'));
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -136,14 +135,18 @@ export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[
 	return res.data.data;
 }
 
-export async function apiSearchCollections(creatorAddress: string | null = null, name: string | null = null, limit: number = 100, page: number = 1) {
+export async function apiSearchCollections(creatorAddress: string | null = null, name: string | null = null, slug: string | null = null, limit: number = 100, page: number = 1) {
 	const params = {
-		limit: limit ?? 100,
+		limit: limit ?? 20,
 		page: page ?? 1
 	};
 
 	if (name) {
-		params['query'] = name;
+		params['name'] = name;
+	}
+
+	if (slug) {
+		params['slug'] = slug;
 	}
 
 	if (creatorAddress) {
@@ -151,11 +154,41 @@ export async function apiSearchCollections(creatorAddress: string | null = null,
 	}
 
 	// TODO shouldn't require token, but the backend wasn't updated yet
-	const res = await axios.get(getApiUrl('v2', 'collections/search'), { ...getAxiosConfig(), params });
+	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params });
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
 	}
 
 	return res.data.data;
+}
+
+export async function apiValidateCollectionNameAndSlug(name: string | null = null, slug: string | null = null) {
+	if (name || slug) {
+		const params = {};
+		const result = {
+			nameExists: null,
+			slugExists: null
+		};
+
+		if (name) {
+			params['name'] = name;
+
+			const res = await axios.get(getApiUrl('v2', 'collections/validate-name'), { params });
+
+			result['nameExists'] = !res.data.data;
+		}
+
+		if (slug) {
+			params['slug'] = slug;
+
+			const res = await axios.get(getApiUrl('v2', 'collections/validate-slug'), { params });
+
+			result['slugExists'] = !res.data.data;
+		}
+
+		return result;
+	}
+
+	return null;
 }

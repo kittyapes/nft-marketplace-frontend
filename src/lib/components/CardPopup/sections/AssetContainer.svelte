@@ -7,6 +7,8 @@
 	import { noTryAsync } from 'no-try';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import { fadeImageOnLoad } from '$utils/actions/fadeImageOnLoad';
+	import { likedNfts, refreshLikedNfts } from '$stores/user';
+	import { currentUserAddress } from '$stores/wallet';
 
 	export let title: string;
 	export let assetUrl: string;
@@ -30,10 +32,14 @@
 		} else if (res.data.message) {
 			favorited = false;
 			notifySuccess('Unliked NFT.');
+			$likedNfts = [options.likeIds, -1];
 		} else {
 			favorited = true;
 			notifySuccess('Liked NFT.');
+			$likedNfts = [options.likeIds, 1];
 		}
+
+		await refreshLikedNfts($currentUserAddress);
 	}
 
 	function handleFullscreen() {
@@ -87,7 +93,7 @@
 	<div class="flex justify-center mt-8 mb-8 gap-x-12">
 		<button class="w-6 h-6 btn" on:click={handleShare}><img src={getIconUrl('share')} alt="Share." /></button>
 		<button class="w-6 h-6 btn disabled:opacity-50" on:click={handleLike} disabled={!options.nftData[0].isInternalNft}>
-			<img src={favorited ? getIconUrl('heart-filled') : getIconUrl('heart-outline')} alt="Heart." class:text-red-500={favorited} />
+			<img src={favorited ? getIconUrl('heart-filled') : getIconUrl('heart-outline')} alt="Heart." class:text-color-red={favorited} />
 		</button>
 		<button class="w-6 h-6 btn" on:click={handleFullscreen}><img src={getIconUrl('fullscreen')} alt="Fullscreen." /></button>
 	</div>

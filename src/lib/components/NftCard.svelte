@@ -12,12 +12,15 @@
 	import getTimeRemaining from '$utils/timeRemaining';
 	import { onMount } from 'svelte';
 	import { refreshLikedNfts } from '$stores/user';
-	import { notifyError } from '$utils/toast';
+	import { walletConnected } from '$utils/wallet';
+	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
+	import { notifyError, notifySuccess } from '$utils/toast';
 	import dayjs from 'dayjs';
+	import { noTryAsync } from 'no-try';
 
 	export let options: NftCardOptions;
 
-	let likes = options?.likes;
+	$: likes = options?.likes;
 	let dotsOpened = false;
 	let imgLoaded = false;
 
@@ -29,14 +32,26 @@
 	}
 
 	async function favNFT() {
+		if (!$walletConnected) {
+			setPopup(WalletNotConnectedPopup, {
+				unique: true
+			});
+		}
 		if (!$currentUserAddress || !options.popupOptions) return;
 
 		for (const id of options.likeIds) {
-			const res = await favoriteNft(id);
-			if (!res || res.error) notifyError('Failed to favourite NFT');
-			else {
-				options.favorite ? (likes = likes - 1) : (likes = likes + 1);
-				options.favorite = !options.favorite;
+			const [err, res] = await noTryAsync(() => favoriteNft(id));
+			if (err) {
+				notifyError(err.message);
+				console.error(err);
+			} else if (res.data.message) {
+				likes--;
+				options.favorite = false;
+				notifySuccess('Unliked NFT.');
+			} else {
+				likes++;
+				options.favorite = true;
+				notifySuccess('Liked NFT.');
 			}
 		}
 
@@ -47,7 +62,7 @@
 	let interval = null;
 
 	onMount(() => {
-		if (options.startTime && options.isListingTimeActive) {
+		if (options.popupOptions?.startTime && options.popupOptions?.isListingTimeActive) {
 			// Update every minute
 			interval = setInterval(() => {
 				time = new Date(Date.now());
@@ -64,14 +79,16 @@
 	$: timeRemainingToSaleEnd = null;
 
 	$: ((_time) => {
-		if (_time && options.popupOptions.startTime && options.popupOptions.isListingTimeActive) {
+		if (_time && options.popupOptions?.startTime && options.popupOptions?.isListingTimeActive) {
 			const startTime = new Date(options.popupOptions.startTime);
+			const endTime = new Date(startTime.getTime() + (options.popupOptions.duration ?? 0));
 			saleHasStarted = options.popupOptions.isListingTimeActive && startTime.getTime() < Date.now();
 
 			timeRemainingToSaleStart = getTimeRemaining(startTime.toISOString(), new Date().toISOString());
-			timeRemainingToSaleEnd = getTimeRemaining(new Date().toISOString(), startTime.toISOString());
 
-			if (!options.popupOptions.startTime && !options.popupOptions.isListingTimeActive && timeRemainingToSaleStart.total < 0 && timeRemainingToSaleEnd.total < 0 && interval) {
+			timeRemainingToSaleEnd = getTimeRemaining(endTime.toISOString(), new Date(Date.now()).toISOString());
+
+			if (!options.popupOptions?.startTime && !options.popupOptions?.isListingTimeActive && timeRemainingToSaleStart.total < 0 && timeRemainingToSaleEnd.total < 0 && interval) {
 				clearInterval(interval);
 			}
 		}
@@ -82,8 +99,8 @@
 <div class="relative p-4 overflow-hidden border border-color-gray-base border-opacity-50 rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options?.popupOptions}>
 	<div class="flex items-center gap-x-2">
 		<!-- Listing Timer If The Time has not Expired Yet or Listing isn't live -->
-		{#if options.popupOptions.startTime}
-			{#if options.popupOptions.isListingTimeActive}
+		{#if options.popupOptions?.startTime}
+			{#if options.popupOptions?.isListingTimeActive}
 				<div class="listing-timer text-[10px] font-bold uppercase">
 					{#if !saleHasStarted && timeRemainingToSaleStart.total > 0}
 						<span class="text-transparent bg-gradient-to-r bg-clip-text from-color-purple to-color-blue">Starting In:</span>
@@ -104,7 +121,7 @@
 						{/if}
 						{timeRemainingToSaleEnd.minutes}MIN
 					{:else}
-						LIVE!
+						<div class="listing-timer text-[10px] font-bold uppercase text-color-red">Expired</div>
 					{/if}
 				</div>
 			{:else}
@@ -134,14 +151,22 @@
 	</div>
 
 	<div class="flex mt-2 text-sm font-medium text-gray-600">
-		<div class="flex-grow">{options?.collectionName || 'N/A'}</div>
-		<div>Price</div>
+		<!-- TODO REMOVE THE N/As - left the color red to indicate that this is a problem that needs fixing -->
+		<!-- Need server to return collection names -->
+		<div class={`flex-grow ${(options?.collectionName === 'N/A' || options?.collectionName) && 'text-red-400'}`}>{options?.collectionName || 'N/A'}</div>
+		<!-- Hide price info when not present/listed -->
+		{#if options?.price}
+			<div>Price</div>
+		{/if}
 	</div>
 
 	<div class="flex items-center mt-2 font-semibold">
 		<div class="flex-grow whitespace-nowrap">{options?.title || 'N/A'}</div>
-		<Eth />
-		<div class="ml-1">{options?.price || 'N/A'}</div>
+		<!-- Hide price info when not present/listed -->
+		{#if options?.price}
+			<Eth />
+			<div class="ml-1">{options?.price || 'N/A'}</div>
+		{/if}
 	</div>
 
 	<!-- TODO If owned by user -->

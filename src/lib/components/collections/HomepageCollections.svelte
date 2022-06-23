@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { CollectionTableRow } from '$utils/api/collection';
+	import DiamondsLoader from '../DiamondsLoader.svelte';
 	import CollectionsContainer from './CollectionsContainer.svelte';
 
 	export let collections: CollectionTableRow[];
+	export let loaded: boolean;
 </script>
 
 <div class="grid place-items-center w-full my-20">
@@ -12,7 +14,11 @@
 			<p class="font-semibold text-xl">The top NFT collections on Hinata, ranked by floor price, volume and other statistics.</p>
 		</div>
 		<hr class="border-t border-black border-opacity-30" />
-		<CollectionsContainer {collections} />
+		{#if loaded}
+			<CollectionsContainer {collections} />
+		{:else}
+			<DiamondsLoader />
+		{/if}
 
 		<div class="grid place-items-center">
 			<a href="/" class="uppercase underline font-bold mt-8 text-sm">Go Back</a>

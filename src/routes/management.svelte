@@ -103,10 +103,13 @@
 			status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status
 		};
 
-		if (event.detail.role === 'all') {
+		if (event.detail.role === 'all' || event.detail.status) {
 			userFetchingOptions.filter.role = undefined;
+		} else if (event.detail.role) {
+			userFetchingOptions.filter.status = undefined;
 		}
 
+		console.log(userFetchingOptions);
 		if (mode === 'USER') users = await getUsers(getUsersFetchingOptions());
 		else collections = event.detail.changeTo;
 	};

@@ -112,6 +112,13 @@
 		"type": "function"
 	},
 	{
+		"inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+		"name": "artists",
+		"outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{ "internalType": "address", "name": "account", "type": "address" },
 			{ "internalType": "uint256", "name": "id", "type": "uint256" }
@@ -202,7 +209,8 @@
 	{
 		"inputs": [
 			{ "internalType": "address[]", "name": "owners", "type": "address[]" },
-			{ "internalType": "address", "name": "_hinata", "type": "address" }
+			{ "internalType": "address", "name": "_hinata", "type": "address" },
+			{ "internalType": "address", "name": "_weth", "type": "address" }
 		],
 		"name": "initialize",
 		"outputs": [],
@@ -408,5 +416,6 @@
 		"outputs": [{ "internalType": "string", "name": "", "type": "string" }],
 		"stateMutability": "view",
 		"type": "function"
-	}
+	},
+	{ "inputs": [], "name": "weth", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }
 ]

@@ -168,7 +168,7 @@
 			</div>
 
 			<div class="grid flex-grow place-items-stretch">
-				<DragDropImage bind:blob={nftData.animationBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos} />
+				<DragDropImage max_file_size={50_000_000} bind:blob={nftData.animationBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos} />
 			</div>
 		</div>
 
@@ -179,11 +179,14 @@
 
 				<div class="text-[#1D1D1DB2] mt-4 text-sm">For other marketplaces:</div>
 				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
-				<div class="mt-1 text-sm font-semibold text-color-black w-max">PNG, JPG, JPEG, GIF</div>
+				<div class="mt-1 text-sm font-semibold text-color-black w-max">
+					PNG, JPG, JPEG, GIF <br />
+					Max 3MB
+				</div>
 			</div>
 
 			<div class="grid flex-grow place-items-stretch">
-				<DragDropImage bind:blob={nftData.fileBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages} />
+				<DragDropImage max_file_size={3_000_000} bind:blob={nftData.fileBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages} />
 			</div>
 		</div>
 

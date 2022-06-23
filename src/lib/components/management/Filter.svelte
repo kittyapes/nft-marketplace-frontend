@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { UserData } from 'src/interfaces/userData';
 	import IconDropdown from '../IconDropdown.svelte';
 	import { createEventDispatcher } from 'svelte';
 

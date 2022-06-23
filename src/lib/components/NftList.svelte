@@ -4,7 +4,7 @@
 	import DiamondsLoader from './DiamondsLoader.svelte';
 	import { inview } from 'svelte-inview';
 	import { createEventDispatcher } from 'svelte';
-	import { refreshLikedNfts, userLikedNfts } from '$stores/user';
+	import { likedNfts, userLikedNfts } from '$stores/user';
 
 	const dispatch = createEventDispatcher();
 
@@ -21,11 +21,14 @@
 	}
 
 	async function markLiked() {
-		console.log(options);
-		console.log($userLikedNfts);
 		options.forEach((nft) => {
 			nft.favorite = $userLikedNfts?.filter((likedNft) => likedNft.nft._id === nft.id).length > 0;
+			if ($likedNfts[0].length && $likedNfts[1] && $likedNfts[0].find((e) => nft.id === e)) {
+				nft.likes += $likedNfts[1];
+				$likedNfts = [[], 0];
+			}
 		});
+		options = options;
 	}
 
 	$: {
