@@ -151,9 +151,7 @@
 	</div>
 
 	<div class="flex mt-2 text-sm font-medium text-gray-600">
-		<!-- TODO REMOVE THE N/As - left the color red to indicate that this is a problem that needs fixing -->
-		<!-- Need server to return collection names -->
-		<div class={`flex-grow ${(options?.collectionName === 'N/A' || options?.collectionName) && 'text-red-400'}`}>{options?.collectionName || 'N/A'}</div>
+		<div class={`flex-grow ${options?.collectionName === 'N/A' || options?.collectionName}`}>{options?.collectionName || 'N/A'}</div>
 		<!-- Hide price info when not present/listed -->
 		{#if options?.price}
 			<div>Price</div>

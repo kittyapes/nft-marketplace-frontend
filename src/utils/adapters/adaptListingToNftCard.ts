@@ -1,6 +1,6 @@
 import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
-import { apiGetCollection } from '$utils/api/collection';
+import { apiGetCollectionBySlug, apiGetCollectionById } from '$utils/api/collection';
 import type { Listing } from '$utils/api/listing';
 import dayjs from 'dayjs';
 import { formatEther } from 'ethers/lib/utils.js';
@@ -15,7 +15,7 @@ export async function adaptListingToNftCard(data: Listing) {
 	}
 
 	const nft = data.nfts[0].nft;
-	const collectionData = await apiGetCollection(nft.collectionId)
+	const collectionData = await apiGetCollectionById(nft.collectionId)
 	console.log(collectionData)
 
 	const startTime = dayjs(data.startTime).unix();

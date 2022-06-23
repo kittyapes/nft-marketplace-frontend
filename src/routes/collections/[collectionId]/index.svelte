@@ -8,7 +8,7 @@
 	import NftList from '$lib/components/NftList.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { apiNftToNftCard } from '$utils/adapters/apiNftToNftCard';
-	import { apiGetCollection, type Collection } from '$utils/api/collection';
+	import { apiGetCollectionBySlug, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
@@ -19,7 +19,7 @@
 	let creatorData: UserData;
 
 	async function fetchCollectionData() {
-		collectionData = await apiGetCollection($page.params.collectionId);
+		collectionData = await apiGetCollectionBySlug($page.params.collectionId);
 		creatorData = await fetchProfileData(collectionData.creator);
 	}
 
