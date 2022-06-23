@@ -12,6 +12,8 @@
 	import getTimeRemaining from '$utils/timeRemaining';
 	import { onMount } from 'svelte';
 	import { refreshLikedNfts } from '$stores/user';
+	import { walletConnected } from '$utils/wallet';
+	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import { noTryAsync } from 'no-try';
@@ -30,6 +32,11 @@
 	}
 
 	async function favNFT() {
+		if (!$walletConnected) {
+			setPopup(WalletNotConnectedPopup, {
+				unique: true
+			});
+		}
 		if (!$currentUserAddress || !options.popupOptions) return;
 
 		for (const id of options.likeIds) {
