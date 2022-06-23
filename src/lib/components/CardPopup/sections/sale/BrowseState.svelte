@@ -4,7 +4,6 @@
 	import InfoBox from '$lib/components/InfoBox.svelte';
 	import CircularSpinner from '$lib/components/spinners/CircularSpinner.svelte';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList.svelte';
-	import AuctionBidRow from '$lib/components/v2/AuctionBidRow.svelte';
 	import Button from '$lib/components/v2/Button.svelte';
 	import Input from '$lib/components/v2/Input.svelte';
 	import { currentUserAddress } from '$stores/wallet';

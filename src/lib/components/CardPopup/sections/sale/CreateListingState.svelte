@@ -92,7 +92,7 @@
 	let reservePriceValid: boolean;
 </script>
 
-<div class="pr-6 mb-16 overflow-scroll">
+<div class="pr-6 flex flex-col h-full pb-8 overflow-y-auto">
 	<!-- Listing Type -->
 	<div class="mt-4 font-semibold">Listing Type</div>
 	<div class="mt-2"><ListingTypeSwitch bind:selectedType={selectedListingType} /></div>
@@ -159,6 +159,8 @@
 		<div class="mt-4 mb-2 font-semibold">Reserve Price (optional)</div>
 		<Input bind:value={reservePrice} placeholder="Amount" regex={/^(\d+)?$/} bind:valid={reservePriceValid} />
 	{/if}
+
+	<div class="flex-grow" />
 
 	<!-- Fees -->
 	<div class="mt-4 font-semibold">Fees</div>

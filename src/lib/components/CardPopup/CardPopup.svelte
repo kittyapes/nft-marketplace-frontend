@@ -21,7 +21,7 @@
 	$: console.debug('[Resource Data]:', options.rawResourceData);
 </script>
 
-<Popup class="w-full h-full rounded-none lg:rounded-xl lg:w-[64rem] lg:h-[45rem]" closeButton on:close={handler.close}>
+<Popup class="w-full rounded-none lg:rounded-xl lg:w-[64rem] h-[45rem] pb-8 transition-all duration-200" closeButton on:close={handler.close}>
 	<!-- Back button -->
 	<button class="flex items-center flex-grow-0 gap-2 px-10 btn disabled:opacity-0" disabled={!showBackButton} on:click={rightSectionInstance.goBack()}>
 		<img src={getIconUrl('back-button')} alt="Arrow pointing left." />
@@ -29,7 +29,7 @@
 	</button>
 
 	<!-- Main content -->
-	<div class="flex flex-col h-full mx-10 lg:flex-row">
+	<div class="flex flex-col h-full mx-10 lg:flex-row ">
 		<!-- Left part with image and buttons -->
 		<div class="h-full lg:w-2/5">
 			<AssetContainer
@@ -42,7 +42,7 @@
 		</div>
 
 		<!-- Right part with info and actions -->
-		<div class="h-full lg:w-3/5">
+		<div class="h-full lg:w-3/5 self-stretch">
 			<RightSection {options} on:close-popup={handler.close} bind:showBackButton bind:this={rightSectionInstance} />
 		</div>
 	</div>
