@@ -117,7 +117,7 @@
 		// Pages only accessible by superadmins
 		if (to.pathname.match(/management*/)) {
 			profileData.subscribe((profile) => {
-				if (profile && !profile.roles.includes('superadmin')) {
+				if (profile && !profile.roles.includes('superadmin') && !profile.roles.includes('admin')) {
 					currentError.set(403);
 				}
 			});
