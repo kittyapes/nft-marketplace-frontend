@@ -89,8 +89,8 @@
 		if (listingType === 'sale') {
 			flowOptions.sale.price = parseEther(listingPropValues.price.toString());
 		} else if (listingType === 'auction') {
-			// flowOptions.auction.startingPrice = parseEther(startingPrice.toString());
-			// flowOptions.auction.reservePrice = parseEther(reservePrice || '0');
+			flowOptions.auction.startingPrice = parseEther(listingPropValues.startingPrice.toString());
+			flowOptions.auction.reservePrice = parseEther(listingPropValues.reservePrice.toString() || '0');
 		}
 
 		const { err, success } = await createListingFlow(flowOptions);
