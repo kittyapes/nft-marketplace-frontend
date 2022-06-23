@@ -274,11 +274,12 @@
 			<!-- File types -->
 			<div class="mt-8 font-semibold">File types:</div>
 			<div class="mt-2 text-sm">PNG, GIF, WEBP</div>
+			<div class="mt-2 text-sm">Max 10MB</div>
 		</div>
 
 		<!-- Logo image drop area -->
 		<div>
-			<DragDropImage class="w-48 h-48 rounded-full" text="" on:new-blob={newLogoBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.logoImageUrl}>
+			<DragDropImage max_file_size={10_000_000} class="w-48 h-48 rounded-full" text="" on:new-blob={newLogoBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.logoImageUrl}>
 				<div slot="placeholder"><PlaceholderImage /></div>
 			</DragDropImage>
 		</div>
@@ -291,12 +292,12 @@
 			<!-- File types -->
 			<div class="mt-8 font-semibold">File types:</div>
 			<div class="mt-2 text-sm">PNG, GIF, WEBP, MP4, MP3</div>
-			<div>Max 50 mb</div>
+			<div>Max 10 MB</div>
 		</div>
 
 		<!-- Featured image drop area -->
 		<div class="mt-8">
-			<DragDropImage class="h-48" on:new-blob={newCoverBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.backgroundImageUrl} />
+			<DragDropImage max_file_size={10_000_000} class="h-48" on:new-blob={newCoverBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.backgroundImageUrl} />
 		</div>
 
 		<!-- Choose display style labels -->
