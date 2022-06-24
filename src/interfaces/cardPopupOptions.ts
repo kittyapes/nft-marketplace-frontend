@@ -41,9 +41,9 @@ export interface CardPopupOptions {
 	likeIds?: string[];
 
 	/** Start Time and IsTimeActive used to show listing's dates */
-	startTime: Date | null;
-	duration: number; // Sale Duration in Milliseconds
-	isListingTimeActive: boolean;
+	startTime?: Date | null;
+	duration?: number; // Sale Duration in Milliseconds
+	isListingTimeActive?: boolean;
 
 	/** The raw data that was used by an adapter to generate this data object. */
 	rawResourceData: any;

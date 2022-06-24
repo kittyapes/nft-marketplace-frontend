@@ -11,7 +11,7 @@
 	import { fade } from 'svelte/transition';
 	import getTimeRemaining from '$utils/timeRemaining';
 	import { onMount } from 'svelte';
-	import { refreshLikedNfts } from '$stores/user';
+	import { likedNfts, refreshLikedNfts } from '$stores/user';
 	import { walletConnected } from '$utils/wallet';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { notifyError, notifySuccess } from '$utils/toast';
@@ -28,7 +28,7 @@
 
 	function handleClick() {
 		addUrlParam('id', options.id);
-		setPopup(options.popupComponent, { props: { options: { ...options.popupOptions, favorited: options.favorite } }, onClose: () => removeUrlParam('id') });
+		setPopup(options.popupComponent, { props: { options: { ...options.popupOptions, favorited: options.favorited } }, onClose: () => removeUrlParam('id') });
 	}
 
 	async function favNFT() {
@@ -45,12 +45,12 @@
 				notifyError(err.message);
 				console.error(err);
 			} else if (res.data.message) {
-				likes--;
-				options.favorite = false;
+				$likedNfts = [options.likeIds, -1];
+				options.favorited = true;
 				notifySuccess('Unliked NFT.');
 			} else {
-				likes++;
-				options.favorite = true;
+				$likedNfts = [options.likeIds, 1];
+				options.favorited = true;
 				notifySuccess('Liked NFT.');
 			}
 		}
@@ -139,7 +139,7 @@
 
 		<div class="flex-grow" />
 
-		<div class="text-white btn" class:text-color-red={options?.favorite} on:click|stopPropagation={favNFT}>
+		<div class="text-white btn" class:text-color-red={options?.favorited} on:click|stopPropagation={favNFT}>
 			<Heart class="w-6 h-6" />
 		</div>
 		<!-- TODO Likes -->
