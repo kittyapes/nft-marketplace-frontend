@@ -1,6 +1,14 @@
+import { getApiUrl } from '$utils/api';
 import { fetchProfileData } from '$utils/api/profile';
 import { contractGetAuctionBid } from '$utils/contracts/auction';
+import axios from 'axios';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration.js';
+import relativeTime from 'dayjs/plugin/relativeTime.js';
 import { formatEther } from 'ethers/lib/utils.js';
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
 
 export interface BidRow {
 	bidderName: string;
@@ -43,6 +51,18 @@ export async function getBiddingsFlow(listingId: string): Promise<BidRow[]> {
 		tokenAmount: formatEther(highestBid.amount),
 		timeAgo: 'N/A'
 	});
+
+	const res = await axios.get(getApiUrl('latest', 'listings/' + listingId + '/bids'));
+	const apiBids = res.data.data;
+
+	biddings.push(
+		...apiBids.map((bid) => ({
+			bidderName: 'N/A',
+			imageUrl: '',
+			tokenAmount: 'N/A',
+			timeAgo: dayjs.duration(dayjs().diff(dayjs(bid.bidAt), 's'), 's').humanize() + ' ago'
+		}))
+	);
 
 	return biddings;
 }
