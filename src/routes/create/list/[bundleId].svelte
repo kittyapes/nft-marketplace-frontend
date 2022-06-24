@@ -26,7 +26,7 @@
 
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
 		sale: ['price', 'startDate', 'quantity', 'duration'],
-		auction: ['startingPrice', 'startDate', 'reservePrice', 'duration']
+		auction: ['startDate', 'reservePrice', 'duration']
 	};
 
 	const fetchedNftData = writable<ApiNftData>(null);
@@ -89,8 +89,9 @@
 		if (listingType === 'sale') {
 			flowOptions.sale.price = parseEther(listingPropValues.price.toString());
 		} else if (listingType === 'auction') {
-			flowOptions.auction.startingPrice = parseEther(listingPropValues.startingPrice.toString());
-			flowOptions.auction.reservePrice = parseEther(listingPropValues.reservePrice.toString() || '0');
+			// HOTFIX, assigning reservePrice to startingPrice, because that's what the contract works with
+			flowOptions.auction.startingPrice = parseEther(listingPropValues.reservePrice.toString());
+			// flowOptions.auction.reservePrice = parseEther(listingPropValues.reservePrice.toString() || '0');
 		}
 
 		const { err, success } = await createListingFlow(flowOptions);

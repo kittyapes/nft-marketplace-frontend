@@ -1,4 +1,5 @@
-import type { ApiCollectionData } from "./apiCollectionData";
+import type { ApiCollectionData } from './apiCollectionData';
+import type { ListingType } from '$utils/api/listing';
 
 export interface CardPopupOptions {
 	/** Asset rendered on the left side of the popup. */
@@ -28,15 +29,23 @@ export interface CardPopupOptions {
 	/** Data used when adapting a listing. */
 	listingData?: {
 		sellerAddress: string;
-		listingType: 'sale';
+		listingType: ListingType;
 		symbol: string;
 		tokenAddress: string;
+		startTime: string;
+		duration: number;
 	};
 
 	/** Data used when adapting a listing of the type Sale. */
 	saleData?: {
 		price: string;
 		listingId: string;
+	};
+
+	/** Data used when adapting a listing of the type Auction. */
+	auctionData?: {
+		startingPrice: string;
+		reservePrice?: string;
 	};
 
 	/** An array of IDs that should be liked/unliked when the user clicks the like button. */
