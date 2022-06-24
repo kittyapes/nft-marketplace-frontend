@@ -51,8 +51,10 @@ export interface Listing {
 	listingStatus: 'ACTIVE';
 	listingType: ListingType;
 	listing: {
-		price: number;
+		price?: number;
 		quantity: number;
+		startingPrice: string;
+		reservePrice: string;
 	};
 	nfts: {
 		_id: string;

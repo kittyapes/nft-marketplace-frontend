@@ -25,8 +25,8 @@
 	async function markLiked() {
 		data = options;
 		data?.forEach((nft) => {
-			nft.favorited = $userLikedNfts?.filter((likedNft) => likedNft.nft._id === nft.likeIds[0]).length > 0;
-			if ($likedNfts[0].length && $likedNfts[1] && $likedNfts[0].find((e) => nft.likeIds[0] === e)) {
+			nft.favorited = $userLikedNfts?.filter((likedNft) => likedNft.nft._id === nft.likeIds?.[0]).length > 0;
+			if ($likedNfts?.[0].length && $likedNfts?.[1] && $likedNfts?.[0].find((e) => nft.likeIds?.[0] === e)) {
 				nft.likes += $likedNfts[1];
 				$likedNfts = [[], 0];
 			}

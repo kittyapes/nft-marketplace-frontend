@@ -17,7 +17,7 @@
 	};
 
 	const concatAddress = (id) => {
-		return `${id.substring(0, charsFromStart)}...${id.substring(id.length - charsFromEnd, id.length)}`;
+		if (id) return `${id.substring(0, charsFromStart)}...${id.substring(id.length - charsFromEnd, id.length)}`;
 	};
 
 	$: visibleAddress = concat ? concatAddress(address) : address;

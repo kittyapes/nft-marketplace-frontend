@@ -9,19 +9,9 @@
 
 <div class="relative lg:h-72">
 	{#if !skeleton}
-		<a
-			class="flex flex-col lg:flex-row h-full overflow-hidden hover:bg-gray-100 transition duration-100 cursor-pointer"
-			href={'/blog/' + data.segment}
-			in:fade
-		>
+		<a class="flex flex-col lg:flex-row h-full overflow-hidden hover:bg-gray-100 transition duration-100 cursor-pointer" href={'/blog/' + data.segment} in:fade>
 			<div class="py-8 flex-shrink-0 h-full lg:h-72">
-				<img
-					src={data.thumbnail}
-					alt=""
-					class="object-cover h-full"
-					style="aspect-ratio: 420/250;"
-					use:fadeImageOnLoad
-				/>
+				<img src={data.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" use:fadeImageOnLoad />
 			</div>
 
 			<div class="flex flex-col lg:ml-16 py-8 flex-grow">
@@ -31,8 +21,7 @@
 
 				<!-- Where do we get this content from? -->
 				<p class="mt-4 flex-grow">
-					It’s been a while since our last Medium update and we have been working diligently to grow
-					our network of creative partners, engage with the wider community on Twitter
+					It’s been a while since our last Medium update and we have been working diligently to grow our network of creative partners, engage with the wider community on Twitter
 				</p>
 
 				<!-- Where do we get the reading time from? -->

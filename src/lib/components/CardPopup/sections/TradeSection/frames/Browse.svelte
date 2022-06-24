@@ -3,18 +3,20 @@
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import InfoBox from '$lib/components/InfoBox.svelte';
 	import CircularSpinner from '$lib/components/spinners/CircularSpinner.svelte';
-	import AuctionBidRow from '$lib/components/v2/AuctionBidRow.svelte';
-	import Button from '$lib/components/v2/Button.svelte';
-	import Input from '$lib/components/v2/Input.svelte';
+	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
+	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
+	import Input from '$lib/components/v2/Input/Input.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
 	import { currentUserAddress } from '$stores/wallet';
-	import { fetchProfileData } from '$utils/api/profile';
-	import { contractGetAuctionBid } from '$utils/contracts/auction';
+	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
-	import { isPrice } from '$utils/validator/isPrice';
+	import dayjs from 'dayjs';
 	import { BigNumber, errors, ethers } from 'ethers';
 	import { formatEther, parseEther } from 'ethers/lib/utils.js';
+	import { noTry, noTryAsync } from 'no-try';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -22,13 +24,15 @@
 
 	export let options: CardPopupOptions;
 
+	$: listingExpired = dayjs(options.listingData.startTime).add(options.listingData.duration, 'seconds').isBefore(dayjs());
+
 	const purchasingState = writable(null);
 
 	// Sale listing type
 	async function handlePurchase() {
 		purchasingState.set('waiting-contract');
 
-		const price = ethers.utils.parseEther(options.saleData.price.toString());
+		const price = BigNumber.from(options.saleData.price.toString());
 		const success = await salePurchase(options.saleData.listingId, price);
 
 		success ? dispatch('set-state', { name: 'success' }) : dispatch('set-state', { name: 'error' });
@@ -40,47 +44,43 @@
 	let bidAmount: string;
 	let bidAmountValid: boolean;
 
+	let isPlacingBid = false;
+
 	async function placeBid() {
-		await placeBidFlow(options.rawResourceData.listingId, parseEther(bidAmount));
+		isPlacingBid = true;
+
+		const [err, res] = await noTryAsync(async () => await placeBidFlow(options.rawResourceData.listingId, parseEther(bidAmount)));
+
+		isPlacingBid = false;
 	}
 
-	let highestBid: { address: string; amount: BigNumber };
-
-	async function fetchHighestBid() {
-		const { err, res } = await contractGetAuctionBid(options.rawResourceData.listingId);
-
-		if (err) {
-			console.error(err);
-			return;
-		}
-
-		highestBid = { address: res[0], amount: res[1] };
-	}
-
-	let biddings: { bidderName: string; imageUrl: string; tokenAmount: string; timeAgo: string }[] = [];
-
-	async function updateBiddings() {
-		await fetchHighestBid();
-
-		const highestBidUser = await fetchProfileData(highestBid.address);
-
-		biddings.push({
-			bidderName: highestBidUser.username,
-			imageUrl: highestBidUser.thumbnailUrl,
-			tokenAmount: formatEther(highestBid.amount),
-			timeAgo: 'N/A'
-		});
-
-		biddings = biddings;
-	}
+	let biddings: BidRow[] = [];
 
 	function bidValidator(v: string): boolean {
-		return isPrice(v) && parseEther(v).gt(highestBid.amount);
+		const [valueErr, parsedValue] = noTry(() => parseEther(v));
+
+		if (valueErr) return false;
+
+		// HOTFIX we will use the startingPrice as a reserve price for now
+		const [reservePriceErr, parsedReservePrice] = noTry(() => BigNumber.from(options.auctionData.startingPrice));
+
+		// parseEther because tokenAmount is a ETH formatted string
+		const [highestBidErr, parsedHighestBid] = noTry(() => parseEther(biddings[0].tokenAmount));
+
+		if (parsedReservePrice && parsedValue.lte(parsedReservePrice)) {
+			return false;
+		}
+
+		if (parsedHighestBid && parsedValue.lte(parsedHighestBid)) {
+			return false;
+		}
+
+		return true;
 	}
 
-	onMount(() => {
+	onMount(async () => {
 		if (options.rawResourceData.listingType === 'auction') {
-			updateBiddings();
+			biddings = await getBiddingsFlow(options.rawResourceData.listingId);
 		}
 	});
 </script>
@@ -114,26 +114,37 @@
 			</button>
 		</div>
 	{:else if options.rawResourceData.listingType === 'auction'}
-		<div class="flex flex-col h-full pb-8 mt-4">
-			<div class="flex flex-col flex-grow p-4 overflow-hidden border rounded-lg">
-				<div class="font-medium opacity-70">Bids</div>
-				<div class="flex flex-col flex-grow gap-4 pr-4 mt-4 overflow-y-scroll">
-					{#each biddings as bid}
-						<AuctionBidRow {...bid} tokenIconComponent={Eth} />
-					{/each}
-				</div>
+		<div class="flex flex-col h-full mt-4">
+			<AuctionBidList listingId={options.rawResourceData.listingId} />
+
+			<div class="mt-2 font-semibold opacity-70 text-xs">
+				Reserve price: {formatEther(options.auctionData.startingPrice)}
+				{options.listingData.symbol}
+
+				{#if listingExpired}
+					| <span class="text-red-800">EXPIRED</span>
+				{/if}
+
+				<!-- | Reserve price: {formatEther(options.auctionData.reservePrice) || 'N/A'}
+				{options.listingData.symbol} -->
 			</div>
 
 			<div class="flex gap-2 mt-2">
 				<button class="grid w-12 h-12 p-2 border rounded-lg place-items-center" disabled><Eth /></button>
-				<Input class="border-opacity-20" placeholder="Enter amount" bind:value={bidAmount} validator={bidValidator} bind:valid={bidAmountValid} />
+				<Input class="border-opacity-20" placeholder="Enter amount" bind:value={bidAmount} validator={bidValidator} bind:valid={bidAmountValid} disabled={listingExpired} />
 			</div>
 
 			<div class="flex gap-2 mt-4">
 				{#if false}
-					<Button borderColor="gradient" textColor="gradient" uppercase>Cancel Bid</Button>
+					<SecondaryButton>Cancel Bid</SecondaryButton>
 				{/if}
-				<Button class="bg-gradient-to-r from-color-purple to-color-blue" uppercase on:click={placeBid} disabled={!bidAmountValid || !bidAmount}>Place Bid</Button>
+
+				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid}>
+					{#if isPlacingBid}
+						<ButtonSpinner />
+					{/if}
+					Place Bid
+				</PrimaryButton>
 			</div>
 		</div>
 	{/if}

@@ -10,8 +10,8 @@
 	const propValidators: Record<ListingPropName, (s) => boolean> = {
 		price: isPrice,
 		startDate: (v) => v,
-		startingPrice: (v) => noTry(() => parseEther(v))[1]?.gt(0),
-		reservePrice: (v) => !v || noTry(() => parseEther(v))[1]?.gt(0),
+		startingPrice: (v) => !v || noTry(() => parseEther(v))[1]?.gt(0),
+		reservePrice: (v) => noTry(() => parseEther(v))[1]?.gt(0),
 		quantity: () => true,
 		duration: () => true
 	};
@@ -116,7 +116,7 @@
 
 		{#if is('reservePrice')}
 			<label for="reserve-price-component">
-				<span>Reserve price (Optional)</span>
+				<span>Reserve price</span>
 				<TokenDropdown id="reserve-price-component" bind:value={propValues.reservePrice} placeholder="5.00" />
 			</label>
 		{/if}

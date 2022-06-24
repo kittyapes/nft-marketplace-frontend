@@ -3,7 +3,7 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import InfoSection from './InfoSection.svelte';
-	import TradeSection from './TradeSection.svelte';
+	import TradeSection from './TradeSection/TradeSection.svelte';
 
 	export let options: CardPopupOptions;
 
@@ -20,7 +20,7 @@
 		}
 	];
 
-	$: selectedTab = tabs[1];
+	$: selectedTab = tabs[0];
 
 	export function goBack() {
 		tabComponentInstance.goBack?.();
