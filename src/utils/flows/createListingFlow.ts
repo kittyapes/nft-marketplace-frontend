@@ -67,7 +67,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	// }
 
 	// Hotfix
-	if (options.auction) {
+	if (options.listingType === 'auction') {
 		listing['reservePrice'] = '0';
 	}
 
