@@ -7,9 +7,11 @@
 	export let options: CardPopupOptions;
 
 	let biddings: BidRow[];
+
+	$: console.log('biddings', biddings);
 </script>
 
 <div class="flex flex-col h-full pb-12 mt-4">
 	<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings />
-	<PrimaryButton class="mt-4">Accept Highest Bid</PrimaryButton>
+	<PrimaryButton class="mt-4" disabled={!biddings?.length}>Accept Highest Bid</PrimaryButton>
 </div>
