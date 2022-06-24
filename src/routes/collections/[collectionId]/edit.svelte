@@ -9,7 +9,7 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
 	import { writable } from 'svelte/store';
-	import { apiCreateCollection, apiGetCollection, apiUpdateCollection, apiValidateCollectionNameAndSlug, getInitialCollectionData } from '$utils/api/collection';
+	import { apiCreateCollection, apiGetCollectionBySlug, apiUpdateCollection, apiValidateCollectionNameAndSlug, getInitialCollectionData } from '$utils/api/collection';
 	import type { Collection, UpdateCollectionOptions } from '$utils/api/collection';
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
 	import { tick } from 'svelte';
@@ -196,7 +196,7 @@
 
 	// Remote collection data
 	async function fetchRemoteCollectionData() {
-		const [err, res] = await noTryAsync(() => apiGetCollection(collectionId));
+		const [err, res] = await noTryAsync(() => apiGetCollectionBySlug(collectionId));
 
 		if (err) {
 			notifyError('Failed to fetch collection data!');

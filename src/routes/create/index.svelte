@@ -13,18 +13,15 @@
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
-	import { addNftsToCollection, apiGetCollection, apiSearchCollections, type Collection } from '$utils/api/collection';
+	import { addNftsToCollection, apiGetCollectionBySlug, apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { type NewBundleData, newBundleData } from '$utils/create';
-	import { createBundle } from '$utils/create/createBundle';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { getNftId } from '$utils/create/getNftId';
-	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { goBack } from '$utils/navigation';
 	import { setPopup, updatePopupProps } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
-	import { filter } from 'lodash-es';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
