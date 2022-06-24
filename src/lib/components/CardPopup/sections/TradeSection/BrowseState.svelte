@@ -15,6 +15,7 @@
 	import { isPrice } from '$utils/validator/isPrice';
 	import { ethers } from 'ethers';
 	import { formatEther, parseEther } from 'ethers/lib/utils.js';
+	import { noTry } from 'no-try';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -47,7 +48,22 @@
 	let biddings: BidRow[] = [];
 
 	function bidValidator(v: string): boolean {
-		return isPrice(v) && (biddings[0] ? parseEther(v).gt(parseEther(biddings[0].tokenAmount)) : true);
+		const [valueErr, parsedValue] = noTry(() => parseEther(v));
+
+		if (valueErr) return false;
+
+		const [reservePriceErr, parsedReservePrice] = noTry(() => parseEther(options.auctionData.reservePrice));
+		const [highestBidErr, parsedHighestBid] = noTry(() => parseEther(biddings[0].tokenAmount));
+
+		if (parsedReservePrice && parsedValue.lte(parsedReservePrice)) {
+			return false;
+		}
+
+		if (parsedHighestBid && parsedValue.lte(parsedHighestBid)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	onMount(async () => {
@@ -55,8 +71,6 @@
 			biddings = await getBiddingsFlow(options.rawResourceData.listingId);
 		}
 	});
-
-	$: console.log(options.rawResourceData.listingType);
 </script>
 
 <div class="flex flex-col justify-center h-[90%]">
