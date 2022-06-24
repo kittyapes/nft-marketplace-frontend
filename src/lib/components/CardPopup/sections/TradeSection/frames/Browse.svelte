@@ -32,7 +32,7 @@
 	async function handlePurchase() {
 		purchasingState.set('waiting-contract');
 
-		const price = BigNumber.from(options.saleData.price.toString());
+		const price = parseEther(options.saleData.price.toString());
 		const success = await salePurchase(options.saleData.listingId, price);
 
 		success ? dispatch('set-state', { name: 'success' }) : dispatch('set-state', { name: 'error' });
