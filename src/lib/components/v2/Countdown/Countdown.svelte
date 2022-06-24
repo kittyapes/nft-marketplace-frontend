@@ -1,7 +1,7 @@
 <script lang="ts">
 	import dayjs from 'dayjs';
 	import durationExt from 'dayjs/plugin/duration.js';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	dayjs.extend(durationExt);
 
@@ -16,9 +16,16 @@
 		['Hours', remaining.hours()],
 		['Minutes', remaining.minutes()],
 		['Seconds', remaining.seconds()]
+		// @ts-ignore
 	].map(([unit, value]) => [unit, Math.max(0, value)]);
 
-	onMount(() => setInterval(() => (endTime = endTime), 1000));
+	let interval: NodeJS.Timer;
+
+	onMount(() => {
+		interval = setInterval(() => (endTime = endTime), 1000);
+	});
+
+	onDestroy(() => clearInterval(interval));
 </script>
 
 <div class="flex justify-center gap-4">
