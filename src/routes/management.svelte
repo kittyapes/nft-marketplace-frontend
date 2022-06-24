@@ -70,7 +70,6 @@
 	let collectionTableData: TableCol[] = [];
 
 	const handleTableEvent = async (event: CustomEvent) => {
-		loaded = false;
 		if (mode === 'USER') {
 			userFetchingOptions.sort = {
 				sortBy: event.detail.sortBy,
@@ -174,7 +173,7 @@
 			{
 				gridSize: '3fr',
 				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETIC', active: false },
+				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETICAL', active: false },
 				renderComponent: CollectionName,
 				renderComponentProps: collections.map((c) => ({ name: c.name || '', imageUrl: c.logoImageUrl, slug: c.slug }))
 			},
@@ -208,7 +207,8 @@
 				titleRenderComponentProps: { title: 'Claimed' },
 				renderComponent: EntryGenericText,
 				renderComponentProps: collections.map((c) => ({
-					text: 'Claimed'
+					color: 'text-color-red',
+					text: 'Unclaimed'
 				}))
 			},
 			{
@@ -297,7 +297,7 @@
 			{
 				gridSize: '3fr',
 				titleRenderComponent: TableTitle,
-				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETIC', active: false },
+				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETICAL', active: false },
 				renderComponent: EntryName,
 				renderComponentProps: users.map((u) => ({ name: u.username || '', imageUrl: u.thumbnailUrl, address: u.address }))
 			},
