@@ -48,7 +48,8 @@
 	$: if (selectedListingType === 'sale') {
 		formValid = price > 0;
 	} else if (selectedListingType === 'auction') {
-		formValid = startingPrice > 0 && reservePriceValid;
+		// formValid = startingPrice > 0 && reservePriceValid;
+		formValid = startingPrice > 0;
 	}
 
 	let isListing = false;
@@ -74,7 +75,7 @@
 			flowOptions.sale.price = parseEther(price.toString());
 		} else if (selectedListingType === 'auction') {
 			flowOptions.auction.startingPrice = parseEther(startingPrice.toString());
-			flowOptions.auction.reservePrice = parseEther(reservePrice || '0');
+			// flowOptions.auction.reservePrice = parseEther(reservePrice || '0');
 		}
 
 		const { err } = await createListingFlow(flowOptions);
@@ -157,8 +158,10 @@
 		<Dropdown options={durationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
 
 		<!-- Reserve price -->
-		<div class="mt-4 mb-2 font-semibold">Reserve Price (optional)</div>
-		<Input bind:value={reservePrice} placeholder="Amount" regex={/^(\d+)?$/} bind:valid={reservePriceValid} />
+		{#if false}
+			<div class="mt-4 mb-2 font-semibold">Reserve Price (optional)</div>
+			<Input bind:value={reservePrice} placeholder="Amount" regex={/^(\d+)?$/} bind:valid={reservePriceValid} />
+		{/if}
 	{/if}
 
 	<div class="flex-grow" />

@@ -12,8 +12,7 @@
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
-	import { isPrice } from '$utils/validator/isPrice';
-	import { ethers } from 'ethers';
+	import { BigNumber, ethers } from 'ethers';
 	import { formatEther, parseEther } from 'ethers/lib/utils.js';
 	import { noTry } from 'no-try';
 	import { createEventDispatcher, onMount } from 'svelte';
@@ -29,7 +28,7 @@
 	async function handlePurchase() {
 		purchasingState.set('waiting-contract');
 
-		const price = ethers.utils.parseEther(options.saleData.price.toString());
+		const price = BigNumber.from(options.saleData.price.toString());
 		const success = await salePurchase(options.saleData.listingId, price);
 
 		success ? dispatch('set-state', { name: 'success' }) : dispatch('set-state', { name: 'error' });
@@ -52,10 +51,12 @@
 
 		if (valueErr) return false;
 
-		const [reservePriceErr, parsedReservePrice] = noTry(() => parseEther(options.auctionData.reservePrice));
-		const [highestBidErr, parsedHighestBid] = noTry(() => parseEther(biddings[0].tokenAmount));
+		// HOTFIX we will use the startingPrice as a reserve price for now
+		const [reservePriceErr, parsedReservePrice] = noTry(() => BigNumber.from(options.auctionData.startingPrice));
+		const [highestBidErr, parsedHighestBid] = noTry(() => BigNumber.from(biddings[0].tokenAmount));
 
 		if (parsedReservePrice && parsedValue.lte(parsedReservePrice)) {
+			console.log('this');
 			return false;
 		}
 
@@ -107,8 +108,10 @@
 
 			<div class="mt-2 font-semibold opacity-70 text-xs">
 				Starting price: {formatEther(options.auctionData.startingPrice)}
-				{options.listingData.symbol} | Reserve price: {parseEther(options.auctionData.reservePrice) || 'N/A'}
 				{options.listingData.symbol}
+
+				<!-- | Reserve price: {formatEther(options.auctionData.reservePrice) || 'N/A'}
+				{options.listingData.symbol} -->
 			</div>
 
 			<div class="flex gap-2 mt-2">

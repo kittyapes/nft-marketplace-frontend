@@ -62,8 +62,13 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		listing['startingPrice'] = options.auction.startingPrice.toString();
 	}
 
-	if (options.auction?.reservePrice) {
-		listing['reservePrice'] = options.auction.reservePrice.toString();
+	// if (options.auction?.reservePrice) {
+	// 	listing['reservePrice'] = options.auction.reservePrice.toString();
+	// }
+
+	// Hotfix
+	if (options.auction) {
+		listing['reservePrice'] = '0';
 	}
 
 	// Append listing to formData
