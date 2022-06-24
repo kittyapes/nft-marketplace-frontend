@@ -20,7 +20,7 @@
 		}
 	];
 
-	$: selectedTab = tabs[1];
+	$: selectedTab = tabs[0];
 
 	export function goBack() {
 		tabComponentInstance.goBack?.();
