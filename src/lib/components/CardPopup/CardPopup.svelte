@@ -10,6 +10,8 @@
 	export let options: CardPopupOptions;
 	export let handler: PopupHandler;
 
+	console.log(options);
+
 	// Showing of the back button is controlled by the RightSection component
 	let showBackButton = false;
 

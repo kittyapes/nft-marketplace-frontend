@@ -9,10 +9,9 @@
 	// It is possible to pass data of multiple NFTs into the popup to support
 	// the bundle section
 	$: nftData = options.nftData?.[0];
-
 	$: properties = [
 		{ name: 'Creator', value: nftData.creator },
-		{ name: 'Collection name', value: nftData.metadata?.name },
+		{ name: 'Collection name', value: options.collectionData?.name },
 		{ name: 'Edition', value: nftData.metadata?.edition },
 		{ name: 'Description', value: nftData.metadata?.description }
 	];
@@ -70,7 +69,7 @@
 	</div>
 </div>
 
-<style>
+<style type="postcss">
 	.property-name {
 		@apply text-transparent font-semibold text-lg;
 		background: linear-gradient(90deg, #8e77f7 -32.32%, rgba(142, 119, 247, 0.05) 113.47%), #67d4f8;

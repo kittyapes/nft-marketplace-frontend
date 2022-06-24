@@ -13,7 +13,7 @@
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
-	import { addNftsToCollection, apiGetCollection, apiSearchCollections, type Collection } from '$utils/api/collection';
+	import { addNftsToCollection, apiGetCollectionBySlug, apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { type NewBundleData, newBundleData } from '$utils/create';
