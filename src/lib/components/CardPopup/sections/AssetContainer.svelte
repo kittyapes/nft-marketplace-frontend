@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import Loader from '$lib/components/Loader.svelte';
-	import Countdown from '$lib/components/v2/Countdown.svelte';
+	import Countdown from '$lib/components/v2/Countdown/Countdown.svelte';
 	import { likedNfts, refreshLikedNfts } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { fadeImageOnLoad } from '$utils/actions/fadeImageOnLoad';

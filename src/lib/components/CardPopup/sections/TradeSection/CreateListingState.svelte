@@ -2,7 +2,6 @@
 	import { WethContractAddress } from '$constants/contractAddresses';
 	import Info from '$icons/info.v2.svelte';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
-	import Button from '$lib/components/v2/Button.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
@@ -15,8 +14,9 @@
 	import { parseEther } from 'ethers/lib/utils.js';
 	import { createEventDispatcher } from 'svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
-	import Input from '$lib/components/v2/Input.svelte';
+	import Input from '$lib/components/v2/Input/Input.svelte';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -131,7 +131,8 @@
 		<!-- Process -->
 		{#if false}
 			<div class="mt-4 mb-2 font-semibold">Process</div>
-			<Button>Sell To Highest Bidder</Button>
+			<!-- This apparently shouldn't be a button -->
+			<!-- <Button>Sell To Highest Bidder</Button> -->
 		{/if}
 
 		<!-- Starting price -->
@@ -182,5 +183,5 @@
 		</div>
 	</div>
 
-	<button class="w-full mt-8 uppercase transition btn btn-gradient btn-rounded" disabled={!formValid || isListing} on:click={completeListing}>Complete Listing</button>
+	<PrimaryButton class="mt-4" disabled={!formValid || isListing} on:click={completeListing}>Complete Listing</PrimaryButton>
 </div>

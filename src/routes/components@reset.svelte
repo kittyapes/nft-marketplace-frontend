@@ -1,5 +1,5 @@
 <script>
-	import Countdown from '$lib/components/v2/Countdown.svelte';
+	import Countdown from '$lib/components/v2/Countdown/Countdown.svelte';
 </script>
 
 <main class="max-w-screen-lg p-8 mx-auto my-24 border bg-gray-50 rounded-xl">
