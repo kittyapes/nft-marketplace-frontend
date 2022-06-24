@@ -27,7 +27,6 @@ export const profileCompletionProgress = derived(profileData, ($profileData) => 
 
 export async function refreshLikedNfts(address: string) {
 	const nfts = await getUserFavoriteNfts(address, null, 20);
-	console.log(nfts);
 	userLikedNfts.set(nfts);
 }
 

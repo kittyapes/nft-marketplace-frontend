@@ -28,6 +28,7 @@ export interface Collection {
 	creator: string;
 	nfts: any[];
 	id: string;
+	createdAt?: string;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
@@ -136,25 +137,20 @@ export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[
 	return res.data.data;
 }
 
-export async function apiSearchCollections(creatorAddress: string | null = null, name: string | null = null, slug: string | null = null, limit: number = 20, page: number = 1) {
-	const params = {
-		limit: limit ?? 20,
-		page: page ?? 1
-	};
+export interface collectionSearchOptions {
+	creator?: string;
+	slug?: string;
+	name?: string;
+	limit?: number;
+	page?: number;
+	sortBy?: 'ALPHABETICAL' | 'CREATED_AT';
+	sortReversed?: boolean;
+}
 
-	if (name) {
-		params['name'] = name;
-	}
+export async function apiSearchCollections(options?: collectionSearchOptions) {
+	if(options && !options.limit) options.limit = 20;
+	const params = options;
 
-	if (slug) {
-		params['slug'] = slug;
-	}
-
-	if (creatorAddress) {
-		params['creator'] = creatorAddress;
-	}
-
-	// TODO shouldn't require token, but the backend wasn't updated yet
 	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params });
 
 	if (res.status !== 200) {

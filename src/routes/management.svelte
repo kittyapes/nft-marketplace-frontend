@@ -15,14 +15,12 @@
 	import dayjs from 'dayjs';
 	import UserManage from '$icons/user-manage.svelte';
 	import Filters from '$icons/filters.svelte';
-	import { tick } from 'svelte';
 	import EntryRole from '$lib/components/management/render-components/EntryRole.svelte';
 	import { debounce } from 'lodash-es';
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import CollectionName from '$lib/components/management/render-components/CollectionName.svelte';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { whitelistCollection } from '$utils/api/management/whitelistCollection';
-import { getCollectionsByTitle } from '$utils/api/search/globalSearch';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
@@ -71,12 +69,20 @@ import { getCollectionsByTitle } from '$utils/api/search/globalSearch';
 	let collectionTableData: TableCol[] = [];
 
 	const handleTableEvent = async (event: CustomEvent) => {
-		userFetchingOptions.sort = {
-			sortBy: event.detail.sortBy,
-			sortReversed: event.detail.sortReversed
-		};
+		if (mode === 'USER') {
+			userFetchingOptions.sort = {
+				sortBy: event.detail.sortBy,
+				sortReversed: event.detail.sortReversed
+			};
+			users = await getUsers(getUsersFetchingOptions());
+		} else {
+			collectionFetchingOptions.sort = {
+				sortBy: event.detail.sortBy,
+				sortReversed: event.detail.sortReversed
+			};
+			//collections = await apiSearchCollections(getCollectionsFetchingOptions());
+		}
 
-		users = await getUsers(getUsersFetchingOptions());
 		eventId = event.detail.id;
 	};
 
@@ -94,6 +100,12 @@ import { getCollectionsByTitle } from '$utils/api/search/globalSearch';
 			if (event.detail.role === 'all') userFetchingOptions.filter.role = undefined;
 			users = await getUsers(getUsersFetchingOptions());
 		} else {
+			collectionFetchingOptions.filter = {
+				status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status
+			};
+
+			if (event.detail.status === 'all') userFetchingOptions.filter.role = undefined;
+			//collections = await apiSearchCollections(getCollectionsFetchingOptions());
 		}
 	};
 
@@ -218,7 +230,7 @@ import { getCollectionsByTitle } from '$utils/api/search/globalSearch';
 				titleRenderComponentProps: { title: 'Date Joined', sortBy: 'CREATED_AT', active: false },
 				renderComponent: EntryGenericText,
 				renderComponentProps: collections.map((c) => {
-					let date = dayjs(c.royalties?.[0]?.createdAt);
+					let date = dayjs(c.createdAt);
 					return { text: date.format('MMM D, YYYY') };
 				})
 			}
@@ -260,7 +272,7 @@ import { getCollectionsByTitle } from '$utils/api/search/globalSearch';
 	}
 
 	const getSearchedCollections = async () => {
-		//users = await apiSearchCollections(getCollectionsFetchingOptions());
+		//collections = await apiSearchCollections(getCollectionsFetchingOptions());
 	};
 
 	// USER section
@@ -276,7 +288,7 @@ import { getCollectionsByTitle } from '$utils/api/search/globalSearch';
 		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort };
 	};
 
-	const userDebouncedSearch = debounce(async () => mode === 'USER' ? await getSearchedUsers() : , 500);
+	const userDebouncedSearch = debounce(async () => (mode === 'USER' ? await getSearchedUsers() : await getSearchedCollections()), 500);
 
 	const getSearchedUsers = async () => {
 		users = await getUsers(getUsersFetchingOptions());

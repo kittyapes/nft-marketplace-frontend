@@ -20,7 +20,18 @@
 
 	const getUserCollections = async (address: string) => {
 		loaded = false;
-		userCollections = await apiSearchCollections(address).catch((err) => []);
+
+		let page = 1;
+
+		while (true) {
+			const beforeLength = userCollections.length;
+
+			userCollections.push(...(await apiSearchCollections({ creator: $currentUserAddress, page }).catch((err) => [])));
+
+			if (beforeLength === userCollections.length) break;
+			page++;
+		}
+
 		data = await Promise.all(userCollections.filter((c) => c.logoImageUrl && c.backgroundImageUrl).map((c) => adaptCollectionToCollectionCard(c, address)));
 		loaded = true;
 	};
