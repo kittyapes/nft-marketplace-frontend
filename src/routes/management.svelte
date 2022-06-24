@@ -151,8 +151,6 @@
 	};
 
 	//COLLECTION section
-	$: console.log(users);
-	$: console.log(collections);
 
 	let createCollectionTable = async () => {
 		await apiSearchCollections()

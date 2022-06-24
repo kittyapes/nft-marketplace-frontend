@@ -34,7 +34,7 @@
 				notifyError("Failed to update user's roles");
 				return;
 			}
-			console.log(res);
+
 			localProps.role = (res.status === 'INACTIVATED' || 'AWAITING_INACTIVATED' ? 'INACTIVATED' : res.roles?.includes('superadmin') ? 'superadmin' : res.roles?.[0]).toLowerCase();
 			localProps.color = getRoleColor(res.status === 'INACTIVATED' || 'AWAITING_INACTIVATED' ? 'INACTIVATED' : res.roles?.includes('superadmin') ? 'superadmin' : res.roles?.[0]);
 			localProps = localProps;
