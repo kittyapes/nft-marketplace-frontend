@@ -96,15 +96,15 @@ export async function getListings(filters?: listingFetchingFilters, page: number
 		type: filters?.type,
 		//collecitonId: filters?.collectionId,
 		
-		priceMin: ethers.utils.parseEther(filters?.price.priceMin.toString()).toString(),
-		priceMax: ethers.utils.parseEther(filters?.price.priceMin.toString()).toString(),
+		//priceMin: filters?.price?.priceMin ? undefined : ethers.utils.parseEther(filters?.price?.priceMin.toString()).toString(),
+		//priceMax: filters?.price?.priceMax ? undefined : ethers.utils.parseEther(filters?.price?.priceMax.toString()).toString(),
 		seller: filters?.seller,
 		page,
 		limit
 	};
-	console.log(params)
+	//console.log(params)
 	const res = await axios.get(getApiUrl('latest', 'listings?'), { params });
-	console.log(res);
+	//console.log(res);
 	return res.data.data as Listing[];
 }
 

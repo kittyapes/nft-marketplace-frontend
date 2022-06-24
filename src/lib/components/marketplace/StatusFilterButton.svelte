@@ -8,12 +8,11 @@
 		if (!selected) {
 			selected = true;
 			$filters.status.add(value);
-			filters.update((val) => val);
 		} else {
 			selected = false;
 			$filters.status.delete(value);
-			filters.update((val) => val);
 		}
+		filters.update((val) => val);
 	};
 </script>
 

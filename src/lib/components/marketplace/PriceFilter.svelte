@@ -10,7 +10,6 @@
 			priceMin: min || 0,
 			priceMax: max || 0
 		};
-		filters.update((val) => val);
 	};
 
 	updateValues();

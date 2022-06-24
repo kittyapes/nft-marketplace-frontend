@@ -7,50 +7,69 @@
 	import NftList from '$lib/components/NftList.svelte';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import { filters } from '$stores/marketplace';
+	import { notifyError } from '$utils/toast';
+	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
+	import { debounce } from 'lodash-es';
 
-	const listings = writable<Listing[]>([]);
-	let data;
+	let data = [];
+
+	let reachedEnd = false;
+	let isLoading = true;
+	let index = 1;
 
 	let listingsFetchingFilters: listingFetchingFilters = {};
 
-	let getData = async (listingsFetchingFilters?: listingFetchingFilters) => {
-		listings.set(await getListings(listingsFetchingFilters).catch((e) => []));
-		data = await Promise.all($listings.map(adaptListingToNftCard));
-	};
+	onMount(fetchMore);
 
-	filters.subscribe(async (state) => {
+	/*filters.subscribe(async (state) => {
 		listingsFetchingFilters.collectionId = state.collection;
 		listingsFetchingFilters.type = await Array.from(state.status?.values());
 		listingsFetchingFilters.price = state.price;
 
-		console.log(listingsFetchingFilters);
+		debouncedFetch.cancel();
+		debouncedFetch();
+	});*/
 
-		await getData(listingsFetchingFilters);
-	});
+	const debouncedFetch = debounce(async () => {
+		reachedEnd = false;
+		index = 1;
+		data = [];
+		await fetchMore();
+	}, 500);
 
-	// $: {
-	// 	filteredCards = allCards;
+	let fetchFunction = async () => {
+		const res = {} as FetchFunctionResult;
+		res.res = await getListings(listingsFetchingFilters, index, 20);
 
-	// 	// Status filter
-	// 	if (allCards && $statusFilters.size > 0) {
-	// 		filteredCards = filteredCards.filter((_card) => {
-	// 			return $statusFilters.has(_card?.status);
-	// 		});
-	// 	}
+		res.adapted = await Promise.all(res.res.map(adaptListingToNftCard));
+		return res;
+	};
 
-	// 	// Price filter
-	// 	if (allCards && $priceFilters.min < $priceFilters.max && $priceFilters.min != 0 && $priceFilters.max != 0) {
-	// 		filteredCards = filteredCards.filter((_card) => {
-	// 			return parseFloat(_card?.amount) >= $priceFilters.min && parseFloat(_card?.amount) <= $priceFilters.max;
-	// 		});
-	// 	}
-	// }
+	async function fetchMore() {
+		if (reachedEnd) return;
+		isLoading = true;
+		console.log('PAGE: ', index);
+
+		const res = await fetchFunction();
+
+		if (res.err) {
+			console.error(res.err);
+			notifyError('Failed to fetch more listings.');
+			return;
+		}
+
+		if (res.adapted.length === 0) {
+			reachedEnd = true;
+		} else {
+			data = [...data, ...res.adapted];
+			console.log(data);
+			index++;
+		}
+
+		isLoading = false;
+	}
 </script>
 
 <div class="flex flex-wrap justify-center gap-6 mt-11 cards">
-	{#await getData()}
-		Loading...
-	{:then _}
-		<NftList options={data} />
-	{/await}
+	<NftList options={data} {isLoading} {reachedEnd} on:end-reached={fetchMore} />
 </div>

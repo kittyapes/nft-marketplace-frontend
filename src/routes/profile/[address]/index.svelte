@@ -30,6 +30,7 @@
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import { getNft } from '$utils/api/nft';
+	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 
 	$: address = $page.params.address;
 
@@ -74,12 +75,6 @@
 
 	let totalNfts: number | null = null;
 	$: totalNfts;
-
-	interface FetchFunctionResult {
-		res: any;
-		err: any;
-		adapted: any;
-	}
 
 	const tabs = {
 		collected: {
