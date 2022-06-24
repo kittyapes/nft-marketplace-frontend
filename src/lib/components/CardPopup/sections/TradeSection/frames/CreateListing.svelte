@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { WethContractAddress } from '$constants/contractAddresses';
+	import { HinataMarketplaceContractAddress, HinataMarketplaceStorageContractAddress, WethContractAddress } from '$constants/contractAddresses';
 	import Info from '$icons/info.v2.svelte';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import Dropdown from '$lib/components/Dropdown.svelte';
@@ -60,7 +60,7 @@
 			title: options.nftData[0].metadata?.title,
 			description: options.nftData[0].metadata?.description,
 			duration,
-			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(1) }],
+			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(1), collectionAddress: HinataMarketplaceStorageContractAddress }],
 			paymentTokenAddress: getTokenAddress(paymentTokenTicker as any),
 			paymentTokenTicker,
 			quantity: BigNumber.from(1),
