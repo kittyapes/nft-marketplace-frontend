@@ -1,7 +1,7 @@
 import { appSigner, currentUserAddress } from '$stores/wallet';
 import { notifyError, notifySuccess } from '$utils/toast';
 import { BigNumber, ethers } from 'ethers';
-import { parseEther } from 'ethers/lib/utils';
+import { parseEther } from 'ethers/lib/utils.js';
 import { noTryAsync } from 'no-try';
 import { get } from 'svelte/store';
 import { getHinataTokenContract } from './generalContractCalls';

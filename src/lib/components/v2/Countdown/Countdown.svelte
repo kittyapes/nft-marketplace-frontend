@@ -1,6 +1,6 @@
 <script lang="ts">
 	import dayjs from 'dayjs';
-	import durationExt from 'dayjs/plugin/duration';
+	import durationExt from 'dayjs/plugin/duration.js';
 	import { onMount } from 'svelte';
 
 	dayjs.extend(durationExt);
