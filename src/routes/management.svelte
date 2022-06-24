@@ -36,7 +36,7 @@
 			status: string;
 		}>;
 		sort: Partial<{
-			sortBy: string;
+			sortBy: 'ALPHABETICAL' | 'CREATED_AT';
 			sortReversed: boolean;
 		}>;
 		query: string;
@@ -47,10 +47,10 @@
 			status: string;
 		}>;
 		sort: Partial<{
-			sortBy: string;
+			sortBy: 'ALPHABETICAL' | 'CREATED_AT';
 			sortReversed: boolean;
 		}>;
-		query: string;
+		name: string;
 	}
 
 	let userFetchingOptions: UserFetchingOptions = {
@@ -62,13 +62,14 @@
 	let collectionFetchingOptions: CollectionFetchingOptions = {
 		filter: {},
 		sort: {},
-		query: ''
+		name: ''
 	};
 
 	let userTableData: TableCol[] = [];
 	let collectionTableData: TableCol[] = [];
 
 	const handleTableEvent = async (event: CustomEvent) => {
+		loaded = false;
 		if (mode === 'USER') {
 			userFetchingOptions.sort = {
 				sortBy: event.detail.sortBy,
@@ -80,13 +81,14 @@
 				sortBy: event.detail.sortBy,
 				sortReversed: event.detail.sortReversed
 			};
-			//collections = await apiSearchCollections(getCollectionsFetchingOptions());
+			collections = await apiSearchCollections(getCollectionsFetchingOptions());
 		}
 
 		eventId = event.detail.id;
 	};
 
 	const handleFilter = async (event: CustomEvent) => {
+		loaded = false;
 		if (mode === 'USER') {
 			userFetchingOptions.filter = {
 				createdBefore: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdBefore,
@@ -105,15 +107,13 @@
 			};
 
 			if (event.detail.status === 'all') userFetchingOptions.filter.role = undefined;
-			//collections = await apiSearchCollections(getCollectionsFetchingOptions());
+			collections = await apiSearchCollections(getCollectionsFetchingOptions());
 		}
 	};
 
 	const handleVerify = async () => {
 		if (!whitelistingCollectionAddress) return;
-
 		const res = await whitelistCollection(whitelistingCollectionAddress).catch((e) => console.log(e));
-		console.log(res);
 	};
 
 	let roleFilterOptions = [
@@ -138,7 +138,7 @@
 		{ label: 'Inactive', status: 'INACTIVE' }
 	];
 
-	let collectionFilterOptions = [{ label: 'Unclaimed' }, { label: 'Claimed' }];
+	let collectionFilterOptions = [{ label: 'Claimed' }, { label: 'Unclaimed' }];
 
 	let getRoleColor = (role: string) => {
 		if (role === 'superadmin') {
@@ -167,13 +167,12 @@
 			.catch((err) => console.log(err));
 
 		if (!collections.length) return;
-		console.log(collections);
 
 		await createCollectionTableData();
 	};
 
 	let getCollectionsFetchingOptions = () => {
-		return { ...collectionFetchingOptions.filter, query: collectionFetchingOptions.query, ...collectionFetchingOptions.sort };
+		return { /*...collectionFetchingOptions.filter,*/ name: collectionFetchingOptions.name, ...collectionFetchingOptions.sort };
 	};
 
 	const createCollectionTableData = async () => {
@@ -243,8 +242,6 @@
 				e.renderComponentProps = Array(collectionTableData[i - 1].renderComponentProps.length);
 				e.renderComponentProps = await getCollectionOwners(collections);
 				collectionTableData = collectionTableData;
-				loaded = true;
-				console.log(e.renderComponentProps);
 			}
 		});
 	};
@@ -263,16 +260,18 @@
 	};
 
 	const updateCollectionTableData = async () => {
-		loaded = false;
 		await createCollectionTableData();
+		loaded = true;
+		console.log('UPDATED');
 	};
 
-	$: if (collections.length) {
+	$: if (collections) {
+		console.log('UPDATING');
 		updateCollectionTableData();
 	}
 
 	const getSearchedCollections = async () => {
-		//collections = await apiSearchCollections(getCollectionsFetchingOptions());
+		collections = await apiSearchCollections(getCollectionsFetchingOptions());
 	};
 
 	// USER section
@@ -288,18 +287,18 @@
 		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort };
 	};
 
-	const userDebouncedSearch = debounce(async () => (mode === 'USER' ? await getSearchedUsers() : await getSearchedCollections()), 500);
+	const debouncedSearch = debounce(async () => (mode === 'USER' ? await getSearchedUsers() : await getSearchedCollections()), 300);
 
 	const getSearchedUsers = async () => {
 		users = await getUsers(getUsersFetchingOptions());
 	};
 
-	$: if (userFetchingOptions.query) {
-		userDebouncedSearch();
+	$: if (userFetchingOptions.query || collectionFetchingOptions.name) {
+		loaded = false;
+		debouncedSearch();
 	}
 
-	$: if (users.length) {
-		loaded = false;
+	$: if (users) {
 		userTableData = [
 			{
 				gridSize: '3fr',
@@ -355,7 +354,6 @@
 			e.titleRenderComponentProps.id = i;
 			if (i === eventId) e.titleRenderComponentProps.active = true;
 		});
-
 		loaded = true;
 	}
 
@@ -382,7 +380,7 @@
 				</div>
 			</div>
 		{:else}
-			<SearchBar bind:query={collectionFetchingOptions.query} placeholder={searchPlaceholder} />
+			<SearchBar bind:query={collectionFetchingOptions.name} placeholder={searchPlaceholder} />
 			<div class="flex-grow" />
 			<div class="flex gap-10">
 				<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />

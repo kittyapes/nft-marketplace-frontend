@@ -19,8 +19,8 @@
 	let creatorData: UserData;
 
 	async function fetchCollectionData() {
-		collectionData = await apiGetCollection($page.params.collectionId);
-		creatorData = await fetchProfileData(collectionData.creator);
+		collectionData = await apiGetCollection($page.params.collectionId).catch((e) => undefined);
+		creatorData = await fetchProfileData(collectionData?.creator).catch((e) => undefined);
 	}
 
 	$: $currentUserAddress && fetchCollectionData();
