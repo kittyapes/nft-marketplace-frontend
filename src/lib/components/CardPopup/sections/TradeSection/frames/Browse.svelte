@@ -56,7 +56,9 @@
 
 		// HOTFIX we will use the startingPrice as a reserve price for now
 		const [reservePriceErr, parsedReservePrice] = noTry(() => BigNumber.from(options.auctionData.startingPrice));
-		const [highestBidErr, parsedHighestBid] = noTry(() => BigNumber.from(biddings[0].tokenAmount));
+
+		// parseEther because tokenAmount is a ETH formatted string
+		const [highestBidErr, parsedHighestBid] = noTry(() => parseEther(biddings[0].tokenAmount));
 
 		if (parsedReservePrice && parsedValue.lte(parsedReservePrice)) {
 			return false;
