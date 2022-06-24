@@ -13,7 +13,7 @@ export interface Collection {
 	backgroundImageUrl?: string;
 	description?: string;
 	displayTheme: 'CONTAINED' | 'PADDED' | 'COVERED';
-	royalties?: { fees: string | number; address: string }[];
+	royalties?: { fees: string | number; address: string; createdAt?: string }[];
 	walletAddress?: string;
 	discordUrl?: string;
 	instagramUrl?: string;
@@ -22,17 +22,19 @@ export interface Collection {
 	telegramUrl?: string;
 	blockchain?: string;
 	paymentTokenTicker: 'ETH';
+	status?: 'INACTIVE' | 'ACTIVE';
 	paymentTokenAddress: string;
 	isExplicitSensitive: boolean;
 	creator: string;
 	nfts: any[];
 	id: string;
+	createdAt?: string;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
 	return {
 		royalties: [
-			{ fees: '', address: '' },
+			{ fees: '', address: '', },
 			{ fees: '', address: '' },
 			{ fees: '', address: '' }
 		]
@@ -145,27 +147,22 @@ export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[
 	return res.data.data;
 }
 
-export async function apiSearchCollections(creatorAddress: string | null = null, name: string | null = null, slug: string | null = null, limit: number = 20, page: number = 1) {
-	const params = {
-		limit: limit ?? 20,
-		page: page ?? 1
-	};
+export interface collectionSearchOptions {
+	creator?: string;
+	slug?: string;
+	name?: string;
+	limit?: number;
+	page?: number;
+	sortBy?: 'ALPHABETICAL' | 'CREATED_AT';
+	sortReversed?: boolean;
+}
 
-	if (name) {
-		params['name'] = name;
-	}
+export async function apiSearchCollections(options?: collectionSearchOptions) {
 
-	if (slug) {
-		params['slug'] = slug;
-	}
+	if(options && !options.name) options.name = undefined;
+	if(options) options.limit = 20;
 
-	if (creatorAddress) {
-		params['creator'] = creatorAddress;
-	}
-
-	// TODO shouldn't require token, but the backend wasn't updated yet
-	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params });
-
+	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: options ? options : { limit: 20 } });
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
 	}
@@ -201,4 +198,16 @@ export async function apiValidateCollectionNameAndSlug(name: string | null = nul
 	}
 
 	return null;
+}
+
+
+export async function changeCollectionStatus(slug: string, status: string) {
+	
+	const res = await axios.post(getApiUrl('latest', `collections/${slug}/set-status`), { status }, getAxiosConfig() );
+
+	if (res.status !== 200) {
+		throw new Error(res.data.message);
+	}
+
+	return res.data.data;
 }

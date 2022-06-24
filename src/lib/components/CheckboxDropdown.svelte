@@ -20,11 +20,16 @@
 	export let disabled = false;
 	export let gradient = false;
 	export let id = '';
+	export let disableAllOnSelect = false;
+	export let dispatchAllOptions = false;
 
 	let elemOpenButton: HTMLButtonElement;
 
 	function handleOptionSelect(option) {
-		dispatch('change', option);
+		if (disableAllOnSelect) options.filter((o) => o !== option).forEach((o) => (o.checked = false));
+		options = options;
+		if (dispatchAllOptions) dispatch('change', options);
+		else dispatch('change', option);
 	}
 </script>
 
