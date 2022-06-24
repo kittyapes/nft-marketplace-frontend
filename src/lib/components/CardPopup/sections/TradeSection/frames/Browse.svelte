@@ -4,6 +4,7 @@
 	import InfoBox from '$lib/components/InfoBox.svelte';
 	import CircularSpinner from '$lib/components/spinners/CircularSpinner.svelte';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
+	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
@@ -138,7 +139,12 @@
 					<SecondaryButton>Cancel Bid</SecondaryButton>
 				{/if}
 
-				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid}>Place Bid</PrimaryButton>
+				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid}>
+					{#if isPlacingBid}
+						<ButtonSpinner />
+					{/if}
+					Place Bid
+				</PrimaryButton>
 			</div>
 		</div>
 	{/if}
