@@ -56,7 +56,6 @@
 		const [highestBidErr, parsedHighestBid] = noTry(() => BigNumber.from(biddings[0].tokenAmount));
 
 		if (parsedReservePrice && parsedValue.lte(parsedReservePrice)) {
-			console.log('this');
 			return false;
 		}
 
