@@ -88,7 +88,10 @@
 			fetchFunction: async () => {
 				const res = {} as FetchFunctionResult;
 				res.res = await apiGetUserNfts(address, 'COLLECTED', tabs.collected.index, 10);
-				res.adapted = res.res.res.map((nft) => apiNftToNftCard(nft));
+				res.adapted = await Promise.all(res.res.res.map((nft) => apiNftToNftCard(nft)));
+
+				console.log(res.adapted);
+
 				return res;
 			},
 			data: [],
