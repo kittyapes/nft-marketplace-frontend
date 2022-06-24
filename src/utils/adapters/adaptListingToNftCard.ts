@@ -41,6 +41,10 @@ export async function adaptListingToNftCard(data: Listing) {
 			price,
 			listingId: data.listingId
 		},
+		auctionData: {
+			startingPrice: data.listing.startingPrice,
+			reservePrice: data.listing.reservePrice
+		},
 		listingData: {
 			sellerAddress: data.seller,
 			listingType: data.listingType,

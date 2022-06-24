@@ -42,6 +42,12 @@ export interface CardPopupOptions {
 		listingId: string;
 	};
 
+	/** Data used when adapting a listing of the type Auction. */
+	auctionData?: {
+		startingPrice: string;
+		reservePrice?: string;
+	};
+
 	/** An array of IDs that should be liked/unliked when the user clicks the like button. */
 	likeIds?: string[];
 

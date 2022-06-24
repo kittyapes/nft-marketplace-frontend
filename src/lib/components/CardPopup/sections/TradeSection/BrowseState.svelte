@@ -14,7 +14,7 @@
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import { isPrice } from '$utils/validator/isPrice';
 	import { ethers } from 'ethers';
-	import { parseEther } from 'ethers/lib/utils.js';
+	import { formatEther, parseEther } from 'ethers/lib/utils.js';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -90,6 +90,12 @@
 	{:else if options.rawResourceData.listingType === 'auction'}
 		<div class="flex flex-col h-full mt-4">
 			<AuctionBidList listingId={options.rawResourceData.listingId} />
+
+			<div class="mt-2 font-semibold opacity-70 text-xs">
+				Starting price: {formatEther(options.auctionData.startingPrice)}
+				{options.listingData.symbol} | Reserve price: {parseEther(options.auctionData.reservePrice) || 'N/A'}
+				{options.listingData.symbol}
+			</div>
 
 			<div class="flex gap-2 mt-2">
 				<button class="grid w-12 h-12 p-2 border rounded-lg place-items-center" disabled><Eth /></button>
