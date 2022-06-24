@@ -13,9 +13,9 @@
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import dayjs from 'dayjs';
-	import { BigNumber, ethers } from 'ethers';
+	import { BigNumber, errors, ethers } from 'ethers';
 	import { formatEther, parseEther } from 'ethers/lib/utils.js';
-	import { noTry } from 'no-try';
+	import { noTry, noTryAsync } from 'no-try';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -43,8 +43,14 @@
 	let bidAmount: string;
 	let bidAmountValid: boolean;
 
+	let isPlacingBid = false;
+
 	async function placeBid() {
-		await placeBidFlow(options.rawResourceData.listingId, parseEther(bidAmount));
+		isPlacingBid = true;
+
+		const [err, res] = await noTryAsync(async () => await placeBidFlow(options.rawResourceData.listingId, parseEther(bidAmount)));
+
+		isPlacingBid = false;
 	}
 
 	let biddings: BidRow[] = [];
@@ -132,7 +138,7 @@
 					<SecondaryButton>Cancel Bid</SecondaryButton>
 				{/if}
 
-				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired}>Place Bid</PrimaryButton>
+				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid}>Place Bid</PrimaryButton>
 			</div>
 		</div>
 	{/if}
