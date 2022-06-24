@@ -262,11 +262,9 @@
 	const updateCollectionTableData = async () => {
 		await createCollectionTableData();
 		loaded = true;
-		console.log('UPDATED');
 	};
 
 	$: if (collections) {
-		console.log('UPDATING');
 		updateCollectionTableData();
 	}
 
