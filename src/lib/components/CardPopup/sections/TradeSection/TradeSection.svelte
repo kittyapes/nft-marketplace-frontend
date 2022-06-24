@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import { currentUserAddress } from '$stores/wallet';
-	import BrowseState from './BrowseState.svelte';
-	import CreateListingState from './CreateListingState.svelte';
-	import ErrorState from './ErrorState.svelte';
-	import ManageAuctionState from './ManageAuctionState.svelte';
-	import SuccessState from './SuccessState.svelte';
+	import Browse from './frames/Browse.svelte';
+	import CreateListing from './frames/CreateListing.svelte';
+	import Error from './frames/Error.svelte';
+	import ManageAuction from './frames/ManageAuction.svelte';
+	import Success from './frames/Success.svelte';
 
 	export let options: CardPopupOptions;
 	export let showBackButton = false;
@@ -15,11 +15,11 @@
 	}
 
 	const states: { name: string; component: any }[] = [
-		{ name: 'browse', component: BrowseState },
-		{ name: 'create-listing', component: CreateListingState },
-		{ name: 'manage-auction', component: ManageAuctionState },
-		{ name: 'success', component: SuccessState },
-		{ name: 'error', component: ErrorState }
+		{ name: 'browse', component: Browse },
+		{ name: 'create-listing', component: CreateListing },
+		{ name: 'manage-auction', component: ManageAuction },
+		{ name: 'success', component: Success },
+		{ name: 'error', component: Error }
 	];
 
 	let selectedState: typeof states[0];
