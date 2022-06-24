@@ -55,8 +55,6 @@
 		}
 
 		highestBid = { address: res[0], amount: res[1] };
-
-		console.log(highestBid);
 	}
 
 	let biddings: { bidderName: string; imageUrl: string; tokenAmount: string; timeAgo: string }[] = [];
@@ -65,8 +63,6 @@
 		await fetchHighestBid();
 
 		const highestBidUser = await fetchProfileData(highestBid.address);
-
-		console.log(highestBidUser);
 
 		biddings.push({
 			bidderName: highestBidUser.username,

@@ -19,16 +19,14 @@
 
 	let listingsFetchingFilters: listingFetchingFilters = {};
 
-	onMount(fetchMore);
-
-	/*filters.subscribe(async (state) => {
+	filters.subscribe(async (state) => {
 		listingsFetchingFilters.collectionId = state.collection;
 		listingsFetchingFilters.type = await Array.from(state.status?.values());
 		listingsFetchingFilters.price = state.price;
 
 		debouncedFetch.cancel();
 		debouncedFetch();
-	});*/
+	});
 
 	const debouncedFetch = debounce(async () => {
 		reachedEnd = false;

@@ -96,8 +96,8 @@ export async function getListings(filters?: listingFetchingFilters, page: number
 		type: filters?.type,
 		//collecitonId: filters?.collectionId,
 		
-		//priceMin: filters?.price?.priceMin ? undefined : ethers.utils.parseEther(filters?.price?.priceMin.toString()).toString(),
-		//priceMax: filters?.price?.priceMax ? undefined : ethers.utils.parseEther(filters?.price?.priceMax.toString()).toString(),
+		priceMin: filters?.price?.priceMin === 0 ? undefined : ethers.utils.parseEther(filters?.price?.priceMin.toString()).toString(),
+		priceMax: filters?.price?.priceMax === 0 ? undefined : ethers.utils.parseEther(filters?.price?.priceMax.toString()).toString(),
 		seller: filters?.seller,
 		page,
 		limit

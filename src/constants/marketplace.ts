@@ -22,8 +22,4 @@ export const DROP_STATUSES = [
 		status: 'auction',
 		selected: false
 	},
-	{
-		status: 'raffle',
-		selected: false
-	}
 ];
