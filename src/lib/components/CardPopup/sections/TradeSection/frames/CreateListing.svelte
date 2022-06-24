@@ -137,7 +137,7 @@
 		{/if}
 
 		<!-- Starting price -->
-		<div class="mt-4 font-semibold">Starting Price</div>
+		<div class="mt-4 font-semibold">Reserve Price</div>
 		<div class="mt-2">
 			<TokenDropdown
 				dropdownBg="white"

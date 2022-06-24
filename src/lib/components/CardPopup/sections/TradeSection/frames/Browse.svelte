@@ -106,7 +106,7 @@
 			<AuctionBidList listingId={options.rawResourceData.listingId} />
 
 			<div class="mt-2 font-semibold opacity-70 text-xs">
-				Starting price: {formatEther(options.auctionData.startingPrice)}
+				Reserve price: {formatEther(options.auctionData.startingPrice)}
 				{options.listingData.symbol}
 
 				<!-- | Reserve price: {formatEther(options.auctionData.reservePrice) || 'N/A'}
