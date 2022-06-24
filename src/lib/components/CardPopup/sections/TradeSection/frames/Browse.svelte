@@ -12,6 +12,7 @@
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import dayjs from 'dayjs';
 	import { BigNumber, ethers } from 'ethers';
 	import { formatEther, parseEther } from 'ethers/lib/utils.js';
 	import { noTry } from 'no-try';
@@ -21,6 +22,8 @@
 	const dispatch = createEventDispatcher();
 
 	export let options: CardPopupOptions;
+
+	$: listingExpired = dayjs(options.listingData.startTime).add(options.listingData.duration, 'seconds').isBefore(dayjs());
 
 	const purchasingState = writable(null);
 
@@ -109,13 +112,17 @@
 				Reserve price: {formatEther(options.auctionData.startingPrice)}
 				{options.listingData.symbol}
 
+				{#if listingExpired}
+					| <span class="text-red-800">EXPIRED</span>
+				{/if}
+
 				<!-- | Reserve price: {formatEther(options.auctionData.reservePrice) || 'N/A'}
 				{options.listingData.symbol} -->
 			</div>
 
 			<div class="flex gap-2 mt-2">
 				<button class="grid w-12 h-12 p-2 border rounded-lg place-items-center" disabled><Eth /></button>
-				<Input class="border-opacity-20" placeholder="Enter amount" bind:value={bidAmount} validator={bidValidator} bind:valid={bidAmountValid} />
+				<Input class="border-opacity-20" placeholder="Enter amount" bind:value={bidAmount} validator={bidValidator} bind:valid={bidAmountValid} disabled={listingExpired} />
 			</div>
 
 			<div class="flex gap-2 mt-4">
@@ -123,7 +130,7 @@
 					<SecondaryButton>Cancel Bid</SecondaryButton>
 				{/if}
 
-				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount}>Place Bid</PrimaryButton>
+				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired}>Place Bid</PrimaryButton>
 			</div>
 		</div>
 	{/if}

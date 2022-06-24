@@ -5,6 +5,7 @@
 	export let regex: RegExp = null;
 	export let valid = true;
 	export let validator: (v: string) => boolean = (): boolean => true;
+	export let disabled = false;
 
 	function validate() {
 		if (regex) {
@@ -15,4 +16,4 @@
 	}
 </script>
 
-<input type="text" bind:value {placeholder} class="w-full px-4 border rounded-lg outline-color-purple {$$props.class}" class:outline-red-400={!valid} style:height on:input={validate} />
+<input type="text" bind:value {placeholder} class="w-full px-4 border rounded-lg outline-color-purple {$$props.class}" class:outline-red-400={!valid} style:height on:input={validate} {disabled} />
