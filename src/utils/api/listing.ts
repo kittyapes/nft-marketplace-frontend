@@ -67,6 +67,7 @@ export interface Listing {
 			creator: string;
 			contractAddress: string;
 			nftId: string;
+			collectionId: string;
 		};
 	}[];
 

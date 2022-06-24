@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { apiGetCollection, type Collection } from '$utils/api/collection';
+	import { apiGetCollectionBySlug, type Collection } from '$utils/api/collection';
 	import { onMount } from 'svelte';
 	import DiamondsLoader from './DiamondsLoader.svelte';
 	import { goto } from '$app/navigation';
@@ -11,7 +11,7 @@
 
 	onMount(async () => {
 		isLoading = true;
-		collectionDetail = await apiGetCollection(collection.slug);
+		collectionDetail = await apiGetCollectionBySlug(collection.slug);
 		isLoading = false;
 	});
 </script>

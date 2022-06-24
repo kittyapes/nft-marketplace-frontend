@@ -104,8 +104,18 @@ export async function apiUpdateCollection(options: UpdateCollectionOptions) {
 	return res;
 }
 
-export async function apiGetCollection(collectionId: string) {
-	const res = await axios.get(getApiUrl('latest', 'collections/' + collectionId));
+export async function apiGetCollectionBySlug(slug: string) {
+	const res = await axios.get(getApiUrl('latest', 'collections/' + slug));
+
+	if (res.status !== 200) {
+		throw new Error(res.data.message);
+	}
+
+	return res.data.data;
+}
+
+export async function apiGetCollectionById(collectionId: string) {
+	const res = await axios.get(getApiUrl('latest', 'collections/detail-by-id/' + collectionId));
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -135,7 +145,7 @@ export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[
 	return res.data.data;
 }
 
-export async function apiSearchCollections(creatorAddress: string | null = null, name: string | null = null, slug: string | null = null, limit: number = 100, page: number = 1) {
+export async function apiSearchCollections(creatorAddress: string | null = null, name: string | null = null, slug: string | null = null, limit: number = 20, page: number = 1) {
 	const params = {
 		limit: limit ?? 20,
 		page: page ?? 1

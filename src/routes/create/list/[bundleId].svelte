@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { HinataTokenAddress } from '$constants/contractAddresses';
+	import { HinataMarketplaceStorageContractAddress, HinataTokenAddress } from '$constants/contractAddresses';
 	import Back from '$icons/back_.svelte';
 	import Loader from '$icons/loader.svelte';
 	import type { ApiNftData } from '$interfaces/apiNftData';
@@ -13,7 +13,6 @@
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { getTokenAddress } from '$utils/misc/getTokenAddress';
 	import { goBack } from '$utils/navigation';
-	import { notifySuccess } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
 	import { parseEther } from 'ethers/lib/utils.js';
@@ -26,7 +25,8 @@
 	const listingType = $page.url.searchParams.get('type') as ListingType;
 
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
-		sale: ['price', 'startDate', 'quantity', 'duration']
+		sale: ['price', 'startDate', 'quantity', 'duration'],
+		auction: ['startingPrice', 'startDate', 'reservePrice', 'duration']
 	};
 
 	const fetchedNftData = writable<ApiNftData>(null);
@@ -36,7 +36,6 @@
 		// Go back to listing type selection if the listing type is not set
 		if (!['sale', 'auction'].includes(listingType)) {
 			goto('/create/choose-listing-format/' + nftId);
-			console.log(listingType);
 			return;
 		}
 
@@ -76,7 +75,8 @@
 			title: $fetchedNftData.name,
 			description: $fetchedNftData.metadata?.description,
 			duration,
-			nfts: [{ nftId: $fetchedNftData.nftId, amount: BigNumber.from(1) }],
+			// TODO, add support for addresses from external collections
+			nfts: [{ nftId: $fetchedNftData.nftId, amount: BigNumber.from(1), collectionAddress: HinataMarketplaceStorageContractAddress }],
 			paymentTokenAddress: getTokenAddress('WETH'),
 			paymentTokenTicker: 'WETH',
 			quantity: BigNumber.from(1),
@@ -89,8 +89,8 @@
 		if (listingType === 'sale') {
 			flowOptions.sale.price = parseEther(listingPropValues.price.toString());
 		} else if (listingType === 'auction') {
-			// flowOptions.auction.startingPrice = parseEther(startingPrice.toString());
-			// flowOptions.auction.reservePrice = parseEther(reservePrice || '0');
+			flowOptions.auction.startingPrice = parseEther(listingPropValues.startingPrice.toString());
+			flowOptions.auction.reservePrice = parseEther(listingPropValues.reservePrice.toString() || '0');
 		}
 
 		const { err, success } = await createListingFlow(flowOptions);
@@ -128,7 +128,7 @@
 
 		<hr class="mt-4 separator" />
 
-		<CommonProperties on:select={handleTokenChange} class="mt-8" propNames={typeToProperties['sale']} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} />
+		<CommonProperties on:select={handleTokenChange} class="mt-8" propNames={typeToProperties[listingType]} bind:isValid={commonPropertiesValid} bind:propValues={listingPropValues} />
 
 		<!-- <hr class="mt-8 separator" /> -->
 

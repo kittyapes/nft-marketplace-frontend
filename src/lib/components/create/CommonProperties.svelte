@@ -1,14 +1,19 @@
 <script lang="ts">
 	import Datepicker from '$lib/components/Datepicker.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
-	import type { ListingPropName } from 'src/interfaces/drops';
 	import { isPrice } from '$utils/validator/isPrice';
-	import RadioGroup from '../RadioGroup.svelte';
+	import { parseEther } from 'ethers/lib/utils.js';
+	import { noTry } from 'no-try';
+	import type { ListingPropName } from 'src/interfaces/drops';
 	import Dropdown from '../Dropdown.svelte';
 
-	const propValidators: Record<string, (s) => boolean> = {
+	const propValidators: Record<ListingPropName, (s) => boolean> = {
 		price: isPrice,
-		startDate: (v) => v
+		startDate: (v) => v,
+		startingPrice: (v) => noTry(() => parseEther(v))[1]?.gt(0),
+		reservePrice: (v) => !v || noTry(() => parseEther(v))[1]?.gt(0),
+		quantity: () => true,
+		duration: () => true
 	};
 
 	export let propNames: ListingPropName[] = [];
@@ -21,11 +26,15 @@
 		return propNames?.includes(propName);
 	}
 
-	$: validations = Object.entries(propValidators).reduce((acc, [propName, validator]) => {
+	$: validations = Object.entries(propValidators).reduce((acc, [propName, validator]: [ListingPropName, (v: any) => boolean]) => {
+		if (!propNames.includes(propName)) return acc;
+
 		const value = propValues[propName];
 		acc[propName] = validator(value);
 		return acc;
 	}, {});
+
+	$: console.log(validations);
 
 	$: isValid = Object.entries(validations).every(([, isValid]) => isValid);
 
@@ -42,7 +51,7 @@
 
 <div class="{$$props.class} grid lg:grid-cols-2 gap-x-16 gap-y-8 pr-8">
 	{#key propNames}
-		{#if is('entryTickets')}
+		<!-- {#if is('entryTickets')}
 			<div>
 				<span class="uppercase italic font-light block mb-4">Entry tickets</span>
 				<RadioGroup
@@ -55,13 +64,13 @@
 			</div>
 
 			<div />
-		{/if}
+		{/if} -->
 
-		{#if is('ticketPrice')}
+		<!-- {#if is('ticketPrice')}
 			<label for="price-component">
 				<span>Ticket price</span>
 				<TokenDropdown id="price-component" bind:value={propValues.price} placeholder="Enter price for tickets" />
-			</label>{/if}
+			</label>{/if} -->
 
 		{#if is('price')}
 			<label for="price-component">
@@ -70,12 +79,12 @@
 			</label>
 		{/if}
 
-		{#if is('totalTickets')}
+		<!-- {#if is('totalTickets')}
 			<label>
 				<span>Total tickets</span>
 				<input type="text" class="input h-12 w-full" placeholder="Enter tickets number" />
 			</label>
-		{/if}
+		{/if} -->
 
 		{#if is('startDate')}
 			<label for="datepicker-component">
@@ -98,9 +107,16 @@
 			</label>
 		{/if}
 
+		{#if is('startingPrice')}
+			<label for="starting-price-component">
+				<span>Starting price</span>
+				<TokenDropdown id="starting-price-component" bind:value={propValues.startingPrice} placeholder="5.00" />
+			</label>
+		{/if}
+
 		{#if is('reservePrice')}
 			<label for="reserve-price-component">
-				<span>Reserve price</span>
+				<span>Reserve price (Optional)</span>
 				<TokenDropdown id="reserve-price-component" bind:value={propValues.reservePrice} placeholder="5.00" />
 			</label>
 		{/if}
@@ -109,7 +125,7 @@
 
 <style type="postcss">
 	label > span {
-		@apply uppercase italic font-light block mb-2;
+		@apply uppercase block mb-2;
 	}
 
 	/* :global(input),
