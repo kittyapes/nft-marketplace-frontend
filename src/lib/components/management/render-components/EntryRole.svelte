@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { UserRole } from '$interfaces/userData';
-
 	import CheckboxDropdown from '$lib/components/CheckboxDropdown.svelte';
 	import { addUserRole } from '$utils/api/addUserRole';
 	import { changeCollectionStatus } from '$utils/api/collection';
-	import { changeRole } from '$utils/api/management/changeRole';
 	import { getRoleColor } from '$utils/api/management/getRoleColor';
+	import { notifyError } from '$utils/toast';
+	import { noTryAsync } from 'no-try';
 	import ColumnComponentContainer from '../ColumnComponentContainer.svelte';
 
 	export let props;
@@ -24,12 +24,28 @@
 	let handleSelect = async (event: CustomEvent) => {
 		if (props.mode === 'USER') {
 			let roles: UserRole[] = [];
+
 			if (event.detail?.checked) roles.push(event.detail?.value);
-			const res = await addUserRole(props.id, roles);
+			const [error, res] = await noTryAsync(() => addUserRole(props.id, roles));
+
+			if (error) {
+				notifyError("Failed to update user's roles");
+				return;
+			}
+			localProps.role = (res.status === 'INACTIVATED' ? res.status : res.roles?.includes('superadmin') ? 'superadmin' : res.roles?.[0]).toLowerCase();
+			localProps.color = getRoleColor(res.status === 'INACTIVATED' ? res.status : res.roles?.includes('superadmin') ? 'superadmin' : res.roles?.[0]);
+			localProps = localProps;
 		} else if (event.detail?.checked) {
-			const res = await changeCollectionStatus(props.id, event.detail?.value);
+			const [error, res] = await noTryAsync(() => changeCollectionStatus(props.id, event.detail?.value));
+
+			if (error) {
+				notifyError("Failed to update collection's status");
+				return;
+			}
+
 			localProps.color = getRoleColor(res.status);
 			localProps.role = res.status?.toLowerCase();
+			localProps = localProps;
 		}
 	};
 </script>

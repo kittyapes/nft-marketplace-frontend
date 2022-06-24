@@ -15,5 +15,9 @@ export async function addUserRole(address: string, roles: UserRole[]) {
 		)
 		.catch(() => null);
 
-	return res?.status === 200;
+	if (res?.status !== 200) {
+		throw new Error(res?.data.message);
+	}
+
+	return res.data.data;
 }
