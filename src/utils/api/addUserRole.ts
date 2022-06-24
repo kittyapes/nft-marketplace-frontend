@@ -9,7 +9,7 @@ export async function addUserRole(address: string, roles: UserRole[]) {
 		.put(
 			getApiUrl('latest', 'admins/' + address),
 			{
-				roles
+				roles,
 			},
 			getAxiosConfig()
 		)

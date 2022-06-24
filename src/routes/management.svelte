@@ -21,6 +21,7 @@
 	import CollectionName from '$lib/components/management/render-components/CollectionName.svelte';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { whitelistCollection } from '$utils/api/management/whitelistCollection';
+	import { getRoleColor } from '$utils/api/management/getRoleColor';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
@@ -81,14 +82,13 @@
 				sortBy: event.detail.sortBy,
 				sortReversed: event.detail.sortReversed
 			};
-			collections = await apiSearchCollections(getCollectionsFetchingOptions());
+			collections = (await apiSearchCollections(getCollectionsFetchingOptions())).filter((c) => c.slug);
 		}
 
 		eventId = event.detail.id;
 	};
 
 	const handleFilter = async (event: CustomEvent) => {
-		loaded = false;
 		if (mode === 'USER') {
 			userFetchingOptions.filter = {
 				createdBefore: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdBefore,
@@ -99,15 +99,19 @@
 			if (event.detail.status) userFetchingOptions.filter.role = undefined;
 			else if (event.detail.role) userFetchingOptions.filter.status = undefined;
 
-			if (event.detail.role === 'all') userFetchingOptions.filter.role = undefined;
+			if (event.detail.role === 'all') {
+				userFetchingOptions.filter.role = undefined;
+				userFetchingOptions.filter.status = undefined;
+			}
+
 			users = await getUsers(getUsersFetchingOptions());
 		} else {
 			collectionFetchingOptions.filter = {
-				status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status
+				status: event.detail.status ? event.detail.status : collectionFetchingOptions.filter.status
 			};
 
-			if (event.detail.status === 'all') userFetchingOptions.filter.role = undefined;
-			collections = await apiSearchCollections(getCollectionsFetchingOptions());
+			if (event.detail.status === 'all') collectionFetchingOptions.filter.status = undefined;
+			collections = (await apiSearchCollections(getCollectionsFetchingOptions())).filter((c) => c.slug);
 		}
 	};
 
@@ -134,23 +138,11 @@
 
 	let statusFilterOptions = [
 		{ label: 'All', status: 'all' },
-		{ label: 'Listed', status: 'LISTED' },
+		{ label: 'Active', status: 'ACTIVE' },
 		{ label: 'Inactive', status: 'INACTIVE' }
 	];
 
 	let collectionFilterOptions = [{ label: 'Claimed' }, { label: 'Unclaimed' }];
-
-	let getRoleColor = (role: string) => {
-		if (role === 'superadmin') {
-			return 'text-color-orange';
-		} else if (role === 'admin') {
-			return 'gradient-text';
-		} else if (role === 'verified_user') {
-			return 'text-green-400';
-		} else if (role === 'INACTIVATED') {
-			return 'text-color-gray-light';
-		}
-	};
 
 	$: if ($currentUserAddress && mode) createTable();
 
@@ -160,10 +152,12 @@
 	};
 
 	//COLLECTION section
+	$: console.log(users);
+	$: console.log(collections);
 
 	let createCollectionTable = async () => {
 		await apiSearchCollections()
-			.then((res) => (collections = res))
+			.then((res) => (collections = res.filter((c) => c.slug)))
 			.catch((err) => console.log(err));
 
 		if (!collections.length) return;
@@ -197,11 +191,13 @@
 				titleRenderComponentProps: { title: 'Status' },
 				renderComponent: EntryRole,
 				renderComponentProps: collections.map((u) => ({
-					id: u.id,
+					id: u.slug,
+					mode,
+					disableAllOnSelect: true,
 					role: u.status,
 					color: getRoleColor(u.status === 'INACTIVE' ? 'INACTIVATED' : 'verified_user'),
 					options: [
-						{ label: 'Listed', checked: u.status === 'LISTED', value: 'LISTED' },
+						{ label: 'Active', checked: u.status === 'ACTIVE', value: 'ACTIVE' },
 						{ label: 'Inactive', checked: u.status === 'INACTIVE', value: 'INACTIVE' }
 					]
 				}))
@@ -269,7 +265,7 @@
 	}
 
 	const getSearchedCollections = async () => {
-		collections = await apiSearchCollections(getCollectionsFetchingOptions());
+		collections = (await apiSearchCollections(getCollectionsFetchingOptions())).filter((c) => c.slug);
 	};
 
 	// USER section
@@ -325,7 +321,7 @@
 						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin' },
 						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user' },
 						{ label: 'blogger', checked: false, cb: (e) => e.roles?.includes('blogger'), value: 'blogger' },
-						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED', value: 'inactived_user' }
+						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED', value: 'inactivated_user' }
 					]
 				}))
 			},
@@ -381,8 +377,12 @@
 			<SearchBar bind:query={collectionFetchingOptions.name} placeholder={searchPlaceholder} />
 			<div class="flex-grow" />
 			<div class="flex gap-10">
-				<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
-				<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter' }} />
+				<div class="">
+					<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
+				</div>
+				<div class="">
+					<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter' }} />
+				</div>
 			</div>
 		{/if}
 	</div>

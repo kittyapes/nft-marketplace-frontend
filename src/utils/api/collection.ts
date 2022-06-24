@@ -22,7 +22,7 @@ export interface Collection {
 	telegramUrl?: string;
 	blockchain?: string;
 	paymentTokenTicker: 'ETH';
-	status?: 'INACTIVE' | 'LISTED';
+	status?: 'INACTIVE' | 'ACTIVE';
 	paymentTokenAddress: string;
 	isExplicitSensitive: boolean;
 	creator: string;
@@ -198,4 +198,16 @@ export async function apiValidateCollectionNameAndSlug(name: string | null = nul
 	}
 
 	return null;
+}
+
+
+export async function changeCollectionStatus(slug: string, status: string) {
+	
+	const res = await axios.post(getApiUrl('latest', `collections/${slug}/set-status`), { status }, getAxiosConfig() );
+
+	if (res.status !== 200) {
+		throw new Error(res.data.message);
+	}
+
+	return res.data.data;
 }
