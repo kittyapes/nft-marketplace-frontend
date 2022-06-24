@@ -20,7 +20,7 @@
 		{/each}
 
 		{#if !biddings.length}
-			<div class="grid h-full pb-8 font-semibold opacity-50 place-items-center">This auction doesn't have any bids yet.</div>
+			<div class="grid h-full pb-8 font-semibold opacity-50 place-items-center text-sm">This auction doesn't have any bids yet.</div>
 		{/if}
 	</div>
 </div>
