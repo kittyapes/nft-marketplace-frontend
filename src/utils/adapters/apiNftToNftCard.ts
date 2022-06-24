@@ -34,7 +34,7 @@ export  async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ co
 		id: data.nftId,
 		imageUrl: data.thumbnailUrl,
 		title: data.name,
-		collectionName: fallback?.collection?.name || collectionData.name ||'N/A',
+		collectionName: fallback?.collection?.name || collectionData?.name ||'N/A',
 		likes: data.favoriteCount,
 		likeIds: [data._id],
 		popupComponent: CardPopup,

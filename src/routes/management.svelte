@@ -315,6 +315,7 @@
 				renderComponent: EntryRole,
 				renderComponentProps: users.map((u) => ({
 					id: u.address,
+					dispatchAllOptions: true,
 					mode,
 					role: u.status === 'INACTIVATED' ? u.status : u.roles?.includes('superadmin') ? 'superadmin' : u.roles?.[0],
 					color: getRoleColor(u.status === 'INACTIVATED' ? u.status : u.roles?.includes('superadmin') ? 'superadmin' : u.roles?.[0]),

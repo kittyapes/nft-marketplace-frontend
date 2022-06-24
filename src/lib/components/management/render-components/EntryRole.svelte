@@ -13,7 +13,6 @@
 	let localProps;
 
 	$: if (props) {
-		console.log(props);
 		localProps = props;
 		localProps.role = localProps.role?.toLowerCase();
 		if (props.role === 'superadmin') localProps.role = 'sadmin';
@@ -25,15 +24,19 @@
 		if (props.mode === 'USER') {
 			let roles: UserRole[] = [];
 
-			if (event.detail?.checked) roles.push(event.detail?.value);
+			event.detail.forEach((e) => {
+				if (e.checked) roles.push(e.value);
+			});
+
 			const [error, res] = await noTryAsync(() => addUserRole(props.id, roles));
 
 			if (error) {
 				notifyError("Failed to update user's roles");
 				return;
 			}
-			localProps.role = (res.status === 'INACTIVATED' ? res.status : res.roles?.includes('superadmin') ? 'superadmin' : res.roles?.[0]).toLowerCase();
-			localProps.color = getRoleColor(res.status === 'INACTIVATED' ? res.status : res.roles?.includes('superadmin') ? 'superadmin' : res.roles?.[0]);
+			console.log(res);
+			localProps.role = (res.status === 'INACTIVATED' || 'AWAITING_INACTIVATED' ? 'INACTIVATED' : res.roles?.includes('superadmin') ? 'superadmin' : res.roles?.[0]).toLowerCase();
+			localProps.color = getRoleColor(res.status === 'INACTIVATED' || 'AWAITING_INACTIVATED' ? 'INACTIVATED' : res.roles?.includes('superadmin') ? 'superadmin' : res.roles?.[0]);
 			localProps = localProps;
 		} else if (event.detail?.checked) {
 			const [error, res] = await noTryAsync(() => changeCollectionStatus(props.id, event.detail?.value));
@@ -59,5 +62,6 @@
 		dropdownLabel={localProps.role}
 		gradient={localProps.role === 'admin'}
 		disableAllOnSelect={localProps.disableAllOnSelect}
+		dispatchAllOptions={localProps.dispatchAllOptions}
 	/>
 </ColumnComponentContainer>
