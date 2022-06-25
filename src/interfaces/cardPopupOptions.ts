@@ -23,6 +23,7 @@ export interface CardPopupOptions {
 			creator: string;
 			contractAddress: string;
 			tokenId: string;
+			isExternal: boolean;
 		}
 	];
 
