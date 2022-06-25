@@ -3,6 +3,7 @@ import type { EthAddress, OnChainId, UnixTime } from '$interfaces';
 import { appSigner, currentUserAddress } from '$stores/wallet';
 import { BigNumber, ethers } from 'ethers';
 import { get } from 'svelte/store';
+import contractCaller from './contractCaller';
 import HinataMarketplaceContract from './hinataMarketplace';
 import HinataMarketplaceStorageContract from './hinataMarketplaceStorage';
 
@@ -54,7 +55,7 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		tokenAmounts: options.tokenAmounts
 	});
 
-	const listingCreationTransaction: ethers.ContractTransaction = await MarketplaceContract.createListing({
+	await contractCaller(MarketplaceContract, 'createListing', 150, 1, {
 		id: ethers.BigNumber.from(options.listingId),
 		seller: get(currentUserAddress),
 		payToken: options.payToken,
@@ -67,9 +68,6 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		tokenIds: options.tokenIds,
 		tokenAmounts: options.tokenAmounts
 	});
-
-	// Wait for at least once confirmation
-	await listingCreationTransaction.wait(1);
 }
 
 export async function contractPurchaseListing(listingId: string) {
