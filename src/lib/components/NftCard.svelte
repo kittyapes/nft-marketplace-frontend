@@ -47,11 +47,11 @@
 			} else if (res.data.message) {
 				$likedNfts = [options.likeIds, -1];
 				options.favorited = true;
-				notifySuccess('Unliked NFT.');
+				notifySuccess('Unfavorited NFT.');
 			} else {
 				$likedNfts = [options.likeIds, 1];
 				options.favorited = true;
-				notifySuccess('Liked NFT.');
+				notifySuccess('Favorited NFT.');
 			}
 		}
 
