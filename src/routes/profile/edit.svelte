@@ -71,8 +71,12 @@
 
 			await refreshProfileData().catch(() => notifyError('Failed to fetch new profile data.'));
 		} catch (err) {
-			httpErrorHandler(err);
-			console.error(err);
+			if (err.message.includes('User denied message signature')) {
+				notifyError("You have denied metamask signature. Changes weren't saved.");
+			} else {
+				httpErrorHandler(err);
+				console.error(err);
+			}
 		}
 
 		hasClaimedFreeNft($currentUserAddress);
