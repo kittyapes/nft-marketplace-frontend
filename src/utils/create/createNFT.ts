@@ -1,6 +1,7 @@
 import { appSigner } from '$stores/wallet';
 import { getApiUrl } from '$utils/api';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
+import contractCaller from '$utils/contracts/contractCaller';
 import HinataMarketplaceStorageContract from '$utils/contracts/hinataMarketplaceStorage';
 import { httpErrorHandler } from '$utils/toast';
 import axios from 'axios';
@@ -56,15 +57,8 @@ export const createMintedNFTOnAPI = async ({ amount, animation, contractAddress,
 export const createNFTOnChain = async ({ id, amount }: NFTMintingObject) => {
 	try {
 		const MarketplaceStorageContract = HinataMarketplaceStorageContract(get(appSigner));
-		const nftMintingTransaction: ethers.ContractTransaction = await MarketplaceStorageContract.mintArtistNFT(
-			id,
-			amount,
-			[]
-			// Data object not added yet
-		);
 
-		// Wait for at least once confirmation
-		await nftMintingTransaction.wait(1);
+		await contractCaller(MarketplaceStorageContract, 'mintArtistNFT', 150, 1, id, amount, []);
 
 		return true;
 	} catch (error) {
