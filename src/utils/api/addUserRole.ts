@@ -11,7 +11,7 @@ export async function addUserRole(address: string, roles: UserRole[]) {
 
 	// 🔥 fix
 	if(roles.includes('inactivated_user')) {
-		roles = roles.filter(e => e !== 'verified_user')
+		roles = roles.filter(e => e !== 'inactivated_user')
 		const res = await postInactivationQueueAdd(address).catch(httpErrorHandler);
 
 		if (res?.status !== 200) {

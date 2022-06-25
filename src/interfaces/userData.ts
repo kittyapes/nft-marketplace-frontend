@@ -21,5 +21,5 @@ export interface UserData {
 	_id: string;
 	bio: string;
 	social: { instagram: string; discord: string; twitter: string; website: string; pixiv: string; deviantart: string; artstation: string };
-	roles: UserRole;
+	roles: UserRole[];
 }
