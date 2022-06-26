@@ -15,12 +15,12 @@
 </script>
 
 <LoadedContent loaded={!!articleData}>
-	<main class="container py-16 px-8 overflow-hidden mb-32 mx-auto max-w-screen-lg">
-		<img src={articleData?.thumbnail} alt="" class="w-full object-contain" />
+	<main class="container max-w-screen-lg px-8 py-16 mx-auto mb-32 overflow-hidden">
+		<img src={articleData?.thumbnail} alt="" class="object-contain w-full" />
 
-		<div class="mt-16 gap-x-16 max-w-prose mx-auto">
+		<div class="mx-auto mt-16 gap-x-16 max-w-prose">
 			<div>
-				<h1 class="uppercase text-4xl italic font-light text-color-black">{articleData?.title}</h1>
+				<h1 class="text-4xl font-light uppercase text-color-black">{articleData?.title}</h1>
 			</div>
 
 			<div id="article-container" class="relative mt-8">

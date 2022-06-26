@@ -53,7 +53,7 @@
 	{#key propNames}
 		<!-- {#if is('entryTickets')}
 			<div>
-				<span class="uppercase italic font-light block mb-4">Entry tickets</span>
+				<span class="block mb-4 font-light uppercase">Entry tickets</span>
 				<RadioGroup
 					name="entry-tickets"
 					options={[
@@ -82,7 +82,7 @@
 		<!-- {#if is('totalTickets')}
 			<label>
 				<span>Total tickets</span>
-				<input type="text" class="input h-12 w-full" placeholder="Enter tickets number" />
+				<input type="text" class="w-full h-12 input" placeholder="Enter tickets number" />
 			</label>
 		{/if} -->
 
@@ -96,7 +96,7 @@
 		{#if is('quantity')}
 			<label for="price-component">
 				<span>Quantity</span>
-				<input type="number" class="input h-12 w-full input-hide-controls" bind:value={propValues['quantity']} />
+				<input type="number" class="w-full h-12 input input-hide-controls" bind:value={propValues['quantity']} />
 			</label>
 		{/if}
 
