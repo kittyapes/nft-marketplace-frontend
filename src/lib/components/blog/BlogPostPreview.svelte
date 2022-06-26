@@ -26,6 +26,9 @@
 
 				<!-- Where do we get the reading time from? -->
 				<div class="text-[#1D1D1DB2]">{data.pubDate} ∙ 5 min read</div>
+
+				<!-- Read more -->
+				<div class="gradient-text font-light mt-4 text-lg">Read more</div>
 			</div>
 		</a>
 	{:else}

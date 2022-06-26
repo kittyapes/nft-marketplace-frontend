@@ -5,6 +5,10 @@
 	import { apiGetMostActiveCollections } from '$utils/api/collection';
 	import type { CollectionTableRow } from '$utils/api/collection';
 	import { onMount } from 'svelte';
+	import { blogPosts } from '$stores/blog';
+	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
+	import { each } from 'svelte/internal';
+	import { slice } from 'lodash-es';
 
 	let collections: CollectionTableRow[] = [];
 
@@ -60,4 +64,19 @@
 	</div>
 	<hr class="mt-4 border-[#0000004D]" />
 	<CollectionsTable {collections} />
+</div>
+
+<!-- Latest blog posts -->
+<div class="px-16 mt-24 mb-16">
+	<div class="flex items-end">
+		<h2 class="text-4xl font-light uppercase flex-grow">Latest Blog Posts</h2>
+		<a href="https://hinatafoundation.medium.com/" target="_blank" class="uppercase underline text-sm font-bold">View Latest Posts</a>
+	</div>
+	<hr class="mt-4 border-[#0000004D]" />
+
+	{#if $blogPosts.length}
+		{#each $blogPosts.slice(0, 2) as post}
+			<BlogPostPreview data={post} />
+		{/each}
+	{/if}
 </div>
