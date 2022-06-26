@@ -4,6 +4,7 @@
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import { get } from 'svelte/store';
 	import InfoSection from './InfoSection.svelte';
 	import TradeSection from './TradeSection/TradeSection.svelte';
 
@@ -12,17 +13,25 @@
 	// The back button is controlled by dynamic components
 	export let showBackButton: boolean;
 
-	$: tabs = [
-		{ text: 'Info', icon: 'info', sectionComponent: InfoSection, visible: true },
-		{
-			text: 'Trade',
-			icon: 'trade',
-			sectionComponent: TradeSection,
-			visible: options.resourceType === 'listing' || (options.resourceType === 'nft' && options.rawResourceData.owner === $currentUserAddress)
-		}
-	];
+	let tabs: { text: string; icon: string; sectionComponent: any; visible: boolean }[] = [];
 
-	$: selectedTab = tabs[0];
+	$: options?.staleResource?.subscribe((v) => v && updateTabs());
+
+	function updateTabs() {
+		tabs = [
+			{ text: 'Info', icon: 'info', sectionComponent: InfoSection, visible: true },
+			{
+				text: 'Trade',
+				icon: 'trade',
+				sectionComponent: TradeSection,
+				visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && options.rawResourceData.owner === $currentUserAddress)) && !get(options.staleResource)
+			}
+		];
+	}
+
+	updateTabs();
+
+	let selectedTab = tabs[0];
 
 	export function goBack() {
 		tabComponentInstance.goBack?.();
@@ -48,7 +57,7 @@
 				on:pointerleave={() => (showCannotTrade = false)}
 				bind:this={tradeTab}
 			>
-				<img src={getIconUrl('card-popup-tab-icon/' + tab.icon + (tab === selectedTab ? '.selected' : ''))} alt={tab.text} />
+				<img class="h-8" src={getIconUrl('card-popup-tab-icon/' + tab.icon + (tab === selectedTab ? '.selected' : ''))} alt={tab.text} />
 				<div class="text-[#8C8C8C]" class:gradient-text={tab === selectedTab}>{tab.text}</div>
 			</button>
 		{/each}

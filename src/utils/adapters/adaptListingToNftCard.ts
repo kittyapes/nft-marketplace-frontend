@@ -4,6 +4,7 @@ import { apiGetCollectionById } from '$utils/api/collection';
 import type { Listing } from '$utils/api/listing';
 import dayjs from 'dayjs';
 import { formatEther } from 'ethers/lib/utils.js';
+import { writable } from 'svelte/store';
 
 export async function adaptListingToNftCard(data: Listing) {
 	let price: string;
@@ -60,7 +61,8 @@ export async function adaptListingToNftCard(data: Listing) {
 		isListingTimeActive: isTimeLive,
 		rawResourceData: data,
 		collectionData,
-		duration: data.duration * 1000
+		duration: data.duration * 1000,
+		staleResource: writable()
 	};
 
 	const nftCardOptions = {
