@@ -22,7 +22,8 @@ export async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ col
 				contractType: 'ERC1155',
 				creator: data.creator,
 				contractAddress: data.contractAddress,
-				tokenId: data.nftId
+				tokenId: data.nftId,
+				isExternal: data.isExternal
 			}
 		],
 		likeIds: [data._id],
