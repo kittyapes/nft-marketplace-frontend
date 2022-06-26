@@ -1,5 +1,6 @@
 import type { ApiCollectionData } from './apiCollectionData';
 import type { ListingType } from '$utils/api/listing';
+import type { Writable } from 'svelte/store';
 
 export interface CardPopupOptions {
 	/** Asset rendered on the left side of the popup. */
@@ -23,6 +24,7 @@ export interface CardPopupOptions {
 			creator: string;
 			contractAddress: string;
 			tokenId: string;
+			isExternal: boolean;
 		}
 	];
 
@@ -34,6 +36,7 @@ export interface CardPopupOptions {
 		tokenAddress: string;
 		startTime: string;
 		duration: number;
+		onChainId: string;
 	};
 
 	/** Data used when adapting a listing of the type Sale. */
@@ -58,6 +61,11 @@ export interface CardPopupOptions {
 
 	/** The raw data that was used by an adapter to generate this data object. */
 	rawResourceData: any;
+
+	/** Resource is no longer valid. For example due to cancelling or purchasing a listing. Indicates that
+	 * the resource should be reloaded and no further actions should performed on the resource.
+	 */
+	staleResource?: Writable<{ reason: string }>;
 
 	collectionData: ApiCollectionData;
 }

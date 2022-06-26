@@ -1,7 +1,5 @@
-import { currentUserAddress } from '$stores/wallet';
 import type { ListingType } from '$utils/api/listing';
-import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
-import { derived, writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 
 // popup
 export const selectedCard = writable<any>(); // TODO add types

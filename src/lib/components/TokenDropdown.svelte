@@ -26,6 +26,7 @@
 	export let showLabel = false;
 	export let showArrow = true;
 	export let buttonDisabled = false;
+	export let disabled = false;
 
 	let open = false;
 
@@ -47,8 +48,17 @@
 	onMount(() => handleSelect(selected));
 </script>
 
-<div class="relative">
-	<input {id} type="text" style:border-color={borderColor} class="input w-full h-12 {$$props.class} {!valid && 'border-red-300'}" class:font-semibold={value} {placeholder} bind:value />
+<div class="relative" class:opacity-50={disabled}>
+	<input
+		{id}
+		type="text"
+		style:border-color={borderColor}
+		class="input w-full h-12 {$$props.class} {!valid && 'border-red-300'} disabled:bg-white"
+		class:font-semibold={value}
+		{placeholder}
+		{disabled}
+		bind:value
+	/>
 	<button
 		style:background={dropdownButtonBg}
 		style:color={dropdownButtonColor}

@@ -122,9 +122,9 @@
 <div class="flex mb-32">
 	<div class="flex-grow">
 		<h1 class="mt-8 text-xl uppercase">
-			<span class="italic font-light">Step 3: Setting details</span>
+			<span class="font-light">Step 3: Setting details</span>
 			|
-			<span class="pr-1 italic font-bold gradient-text">{listingType}</span>
+			<span class="pr-1 font-bold gradient-text">{listingType}</span>
 		</h1>
 
 		<hr class="mt-4 separator" />
@@ -147,7 +147,7 @@
 	</div>
 
 	<div class="p-8 border-0 border-l separator w-80">
-		<div class="mb-4 text-xl italic uppercase">Preview</div>
+		<div class="mb-4 text-xl uppercase">Preview</div>
 		<NftCard
 			options={{ id: null, title: $fetchedNftData?.name, imageUrl: $fetchedNftData?.thumbnailUrl, price: listingPropValues?.price, collectionName: $fetchedNftData?.['collection']?.name ?? '' }}
 		/>

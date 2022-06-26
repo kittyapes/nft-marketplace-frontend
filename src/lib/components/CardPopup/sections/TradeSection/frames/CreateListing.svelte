@@ -17,22 +17,13 @@
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import { listingDurationOptions, listingTokens } from '$utils/contracts/listing';
 
 	const dispatch = createEventDispatcher();
 
 	export let options: CardPopupOptions;
 
 	let selectedListingType: ListingType = 'auction';
-
-	const tokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.black'), value: WethContractAddress }];
-	const durationOptions = [
-		{ label: '1 day', value: 1 * 24 * 3600 },
-		{ label: '3 days', value: 3 * 24 * 3600 },
-		{ label: '7 days', value: 7 * 24 * 3600 },
-		{ label: '1 month', value: 30 * 24 * 3600 },
-		{ label: '3 months', value: 90 * 24 * 3600 },
-		{ label: '6 months', value: 180 * 24 * 3600 }
-	];
 
 	let price: any;
 	let paymentTokenTicker: string;
@@ -93,7 +84,7 @@
 	let reservePriceValid: boolean;
 </script>
 
-<div class="pr-6 flex flex-col h-full pb-8 overflow-y-auto">
+<div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto">
 	<!-- Listing Type -->
 	<div class="mt-4 font-semibold">Listing Type</div>
 	<div class="mt-2"><ListingTypeSwitch bind:selectedType={selectedListingType} /></div>
@@ -109,7 +100,7 @@
 				dropdownButtonColor="black"
 				showLabel
 				showArrow={false}
-				{tokens}
+				tokens={listingTokens}
 				buttonDisabled
 				bind:value={price}
 				on:select={(ev) => (paymentTokenTicker = ev.detail.label)}
@@ -118,7 +109,7 @@
 
 		<!-- Duration -->
 		<div class="mt-4 mb-2 font-semibold">Duration</div>
-		<Dropdown options={durationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
+		<Dropdown options={listingDurationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
 
 		<!-- Specific buyer -->
 		<!-- Not in v1 -->
@@ -146,7 +137,7 @@
 				dropdownButtonColor="black"
 				showLabel
 				showArrow={false}
-				{tokens}
+				tokens={listingTokens}
 				buttonDisabled
 				bind:value={startingPrice}
 				on:select={(ev) => (paymentTokenTicker = ev.detail.label)}
@@ -155,7 +146,7 @@
 
 		<!-- Duration -->
 		<div class="mt-4 mb-2 font-semibold">Duration</div>
-		<Dropdown options={durationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
+		<Dropdown options={listingDurationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
 
 		<!-- Reserve price -->
 		{#if false}

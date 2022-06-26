@@ -4,15 +4,15 @@ import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 import { apiGetCollectionById } from '$utils/api/collection';
 
-export  async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ collection: Partial<ApiCollectionData> }>) {
+export async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ collection: Partial<ApiCollectionData> }>) {
 	let collectionData: ApiCollectionData;
 	if (!fallback) {
-		collectionData = await apiGetCollectionById(data.collectionId).catch(e => {});
+		// collectionData = await apiGetCollectionById(data.collectionId).catch((e) => {});
 	}
-	
+
 	const popupOptions: CardPopupOptions = {
 		title: data.name,
-		assetUrl: data.assetUrl,
+		assetUrl: data.assetUrl || data.thumbnailUrl,
 		favorited: false,
 		resourceType: 'nft',
 		nftData: [
@@ -22,7 +22,8 @@ export  async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ co
 				contractType: 'ERC1155',
 				creator: data.creator,
 				contractAddress: data.contractAddress,
-				tokenId: data.nftId
+				tokenId: data.nftId,
+				isExternal: data.isExternal
 			}
 		],
 		likeIds: [data._id],
@@ -34,7 +35,7 @@ export  async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ co
 		id: data.nftId,
 		imageUrl: data.thumbnailUrl,
 		title: data.name,
-		collectionName: fallback?.collection?.name || collectionData?.name ||'N/A',
+		collectionName: fallback?.collection?.name || collectionData?.name || 'N/A',
 		likes: data.favoriteCount,
 		likeIds: [data._id],
 		popupComponent: CardPopup,

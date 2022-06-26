@@ -10,6 +10,7 @@ export interface ApiNftData {
 	createdAt: IsoTime;
 	creator: EthAddress;
 	favoriteCount: number;
+	isExternal: boolean;
 	metadata: {
 		external_url: string;
 		image: string;

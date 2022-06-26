@@ -15,6 +15,7 @@
 	import { shortenAddress } from '$utils/misc/shortenAddress';
 	import { nftDraft } from '$stores/create';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
+	import { onMount } from 'svelte';
 
 	let collectionData: Collection;
 	let creatorData: UserData;
@@ -43,6 +44,10 @@
 
 	let menuButton: HTMLButtonElement;
 	let showCollectionMenu = false;
+
+	let menuAttachElement: AttachToElement;
+
+	onMount(() => document.addEventListener('scroll', () => menuAttachElement?.recalc()));
 </script>
 
 <main class="px-16 mx-auto">
@@ -57,7 +62,7 @@
 
 		<!-- Creator profile image -->
 		<div class="absolute bottom-0 left-0 right-0 w-24 h-24 mx-auto translate-y-12">
-			<img class=" bg-white border-4 border-white rounded-full w-20 h-20 object-cover" src={collectionData?.logoImageUrl || '/svg/icons/guest-avatar.svg'} alt="Collection creator avatar." />
+			<img class="object-cover w-20 h-20 bg-white border-4 border-white rounded-full " src={collectionData?.logoImageUrl || '/svg/icons/guest-avatar.svg'} alt="Collection creator avatar." />
 
 			<!-- Verified creator badge -->
 			<img class="absolute right-0 -translate-y-8" src="/svg/icons/verified-creator-badge.svg" alt="Verified creator badge." />
@@ -137,7 +142,7 @@
 					goto('/create');
 				}}
 			>
-				<div class="flex flex-col gap-4 items-center justify-center">
+				<div class="flex flex-col items-center justify-center gap-4">
 					<button class="rounded-full btn">
 						<AddCircle />
 					</button>
@@ -149,12 +154,7 @@
 </main>
 
 {#if showCollectionMenu}
-	<AttachToElement to={menuButton} bottom right>
+	<AttachToElement to={menuButton} bottom right bind:this={menuAttachElement}>
 		<ActionMenu options={collectionMenuButtonOptions} on:optionClick={() => (showCollectionMenu = false)} />
 	</AttachToElement>
 {/if}
-
-<!-- <pre>
-    {$page.params.collectionId}
-    {JSON.stringify(collectionData, null, 2)}
-</pre> -->

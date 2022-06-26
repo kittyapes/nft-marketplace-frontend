@@ -10,6 +10,7 @@
 	import { notifyError } from '$utils/toast';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import { debounce } from 'lodash-es';
+	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 
 	let data = [];
 

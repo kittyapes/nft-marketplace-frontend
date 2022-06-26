@@ -4,6 +4,7 @@ import { apiGetCollectionById } from '$utils/api/collection';
 import type { Listing } from '$utils/api/listing';
 import dayjs from 'dayjs';
 import { formatEther } from 'ethers/lib/utils.js';
+import { writable } from 'svelte/store';
 
 export async function adaptListingToNftCard(data: Listing) {
 	let price: string;
@@ -34,7 +35,8 @@ export async function adaptListingToNftCard(data: Listing) {
 				contractType: 'ERC1155',
 				creator: nft.creator,
 				contractAddress: nft.contractAddress,
-				tokenId: nft.nftId
+				tokenId: nft.nftId,
+				isExternal: nft.isExternal
 			}
 		],
 		saleData: {
@@ -51,14 +53,16 @@ export async function adaptListingToNftCard(data: Listing) {
 			symbol: data.paymentTokenTicker,
 			tokenAddress: data.paymentTokenAddress,
 			startTime: data.startTime,
-			duration: data.duration
+			duration: data.duration,
+			onChainId: data.listingId
 		},
 		likeIds: [nft._id],
 		startTime: hasAStartTime ? new Date(startTime * 1000) : null,
 		isListingTimeActive: isTimeLive,
 		rawResourceData: data,
 		collectionData,
-		duration: data.duration * 1000
+		duration: data.duration * 1000,
+		staleResource: writable()
 	};
 
 	const nftCardOptions = {
