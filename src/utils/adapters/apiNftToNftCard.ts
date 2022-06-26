@@ -7,7 +7,7 @@ import { apiGetCollectionById } from '$utils/api/collection';
 export async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ collection: Partial<ApiCollectionData> }>) {
 	let collectionData: ApiCollectionData;
 	if (!fallback) {
-		collectionData = await apiGetCollectionById(data.collectionId).catch((e) => {});
+		// collectionData = await apiGetCollectionById(data.collectionId).catch((e) => {});
 	}
 
 	const popupOptions: CardPopupOptions = {
