@@ -68,6 +68,7 @@ export interface Listing {
 			contractAddress: string;
 			nftId: string;
 			collectionId: string;
+			isExternal: boolean;
 		};
 	}[];
 

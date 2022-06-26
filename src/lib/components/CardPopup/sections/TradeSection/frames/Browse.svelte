@@ -83,6 +83,8 @@
 			biddings = await getBiddingsFlow(options.rawResourceData.listingId);
 		}
 	});
+
+	$: formattedPrice = noTry(() => formatEther(options.auctionData.startingPrice))[1] || 'N/A';
 </script>
 
 <div class="flex flex-col justify-center h-[90%]">
@@ -117,8 +119,8 @@
 		<div class="flex flex-col h-full mt-4">
 			<AuctionBidList listingId={options.rawResourceData.listingId} />
 
-			<div class="mt-2 font-semibold opacity-70 text-xs">
-				Reserve price: {formatEther(options.auctionData.startingPrice)}
+			<div class="mt-2 text-xs font-semibold opacity-70">
+				Reserve price: {formattedPrice}
 				{options.listingData.symbol}
 
 				{#if listingExpired}
