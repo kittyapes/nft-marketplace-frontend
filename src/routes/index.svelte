@@ -7,14 +7,25 @@
 	import { onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
-	import { each } from 'svelte/internal';
-	import { slice } from 'lodash-es';
+	import { writable } from 'svelte/store';
+	import { getListings, type Listing } from '$utils/api/listing';
+	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
+	import NftList from '$lib/components/NftList.svelte';
+	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 
 	let collections: CollectionTableRow[] = [];
+	let exploreListings = writable<Listing[]>([]);
+	let exploreListingsData;
+
+	const getExploreMarketData = async () => {
+		exploreListings.set(await getListings(null, 1, 10));
+		exploreListingsData = await Promise.all($exploreListings.map(adaptListingToNftCard));
+	};
 
 	// Please don't ask me why we need an auth token for this...
 	// We don't anymore 🙂 🔪
 	onMount(async () => {
+		getExploreMarketData();
 		collections = await apiGetMostActiveCollections();
 		console.log(collections);
 	});
@@ -64,6 +75,21 @@
 	</div>
 	<hr class="mt-4 border-[#0000004D]" />
 	<CollectionsTable {collections} />
+</div>
+
+<!-- Explore Market Section -->
+<div class="px-16 mt-24 mb-16">
+	<div class="flex items-end">
+		<h2 class="text-4xl font-light uppercase flex-grow">Explore Market</h2>
+		<a href="/marketplace" class="uppercase underline text-sm font-bold">View All</a>
+	</div>
+	<hr class="mt-4 border-[#0000004D]" />
+
+	{#if exploreListingsData?.length}
+		<NftList options={exploreListingsData} />
+	{:else}
+		<DiamondsLoader />
+	{/if}
 </div>
 
 <!-- Latest blog posts -->

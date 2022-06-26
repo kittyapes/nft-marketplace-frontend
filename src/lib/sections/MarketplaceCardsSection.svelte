@@ -7,6 +7,7 @@
 	import NftList from '$lib/components/NftList.svelte';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import { filters } from '$stores/marketplace';
+	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 
 	const listings = writable<Listing[]>([]);
 	let data;
@@ -51,7 +52,7 @@
 
 <div class="flex flex-wrap justify-center gap-6 mt-11 cards">
 	{#await getData()}
-		Loading...
+		<DiamondsLoader />
 	{:then _}
 		<NftList options={data} />
 	{/await}
