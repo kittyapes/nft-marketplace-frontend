@@ -130,7 +130,7 @@
 		disabled={isAddingToQueue}
 	/>
 
-	<button class="h-12 ml-8 italic btn-secondary" on:click={handleAddToQueue} disabled={isAddingToQueue || !addressToAdd}>Add to queue</button>
+	<button class="h-12 ml-8 btn-secondary" on:click={handleAddToQueue} disabled={isAddingToQueue || !addressToAdd}>Add to queue</button>
 
 	<div class="flex-grow" />
 

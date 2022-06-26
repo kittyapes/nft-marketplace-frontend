@@ -17,13 +17,13 @@
 	export let loaded = false;
 </script>
 
-<div class="w-full h-full flex justify-center " in:fade>
+<div class="flex justify-center w-full h-full " in:fade>
 	<div class="w-4/5 py-20 ">
-		<button class="clickable flex items-center gap-2 " on:click={() => backFunction()}>
+		<button class="flex items-center gap-2 clickable " on:click={() => backFunction()}>
 			<LongLeftArrow />
-			<p class="text-color-black font-semibold text-sm">GO BACK</p>
+			<p class="text-sm font-semibold text-color-black">GO BACK</p>
 		</button>
-		<h1 class="italic text-5xl font-light mt-12 mb-4">{title}</h1>
+		<h1 class="mt-12 mb-4 text-5xl font-light">{title}</h1>
 		<div class="border-b border-black border-opacity-30" />
 
 		<div class="py-12 cardGrid" in:fade>
@@ -35,7 +35,7 @@
 					<svelte:component this={commonRenderComponent} {...props} on:click={() => dispatch('component-click', props)} />
 				{/each}
 			{:else if !showFirstComponent && loaded && !commonComponentProps.length}
-				<div class="p-20 font-semibold text-lg opacity-60 text-center min-w-max">Nothing to see here, move along.</div>
+				<div class="p-20 text-lg font-semibold text-center opacity-60 min-w-max">Nothing to see here, move along.</div>
 			{:else if !loaded}
 				<DiamondsLoader />
 			{/if}

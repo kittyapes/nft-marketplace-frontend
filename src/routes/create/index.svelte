@@ -158,14 +158,14 @@
 	<!-- Left side -->
 	<div class="flex-grow">
 		<!-- Title -->
-		<h1 class="mt-8 text-xl italic font-light uppercase">Step 1: Creating your drop</h1>
+		<h1 class="mt-8 text-xl font-light uppercase">Step 1: Creating your drop</h1>
 
 		<hr class="mt-8 separator" />
 
 		<!-- File upload -->
 		<div class="flex h-56 mt-8 mr-8">
 			<div class="w-80">
-				<div class="text-xs italic font-light uppercase text-color-black">Upload file</div>
+				<div class="text-xs font-light uppercase text-color-black">Upload file</div>
 
 				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
 				<div class="mt-1 text-sm font-semibold text-color-black w-max">
@@ -182,7 +182,7 @@
 		<!-- Thumbnail upload -->
 		<div class="flex h-56 mt-8 mr-8">
 			<div class="w-80">
-				<div class="text-xs italic font-light uppercase text-color-black">Upload thumbnail</div>
+				<div class="text-xs font-light uppercase text-color-black">Upload thumbnail</div>
 
 				<div class="text-[#1D1D1DB2] mt-4 text-sm">For other marketplaces:</div>
 				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
@@ -202,13 +202,13 @@
 		<!-- NFT details -->
 		<div class="flex mt-8 space-x-32">
 			<div class="w-1/2">
-				<div class="uppercase italic text-[#1D1D1DB2]">Create name</div>
+				<div class="uppercase text-[#1D1D1DB2]">Create name</div>
 				<input type="text" class="w-full mt-2 font-semibold input" bind:value={nftData.name} />
 
-				<div class="uppercase italic text-[#1D1D1DB2] mt-8">NFT Quantity</div>
+				<div class="uppercase text-[#1D1D1DB2] mt-8">NFT Quantity</div>
 				<input type="number" class="w-full mt-2 font-semibold input input-hide-controls" bind:value={nftData.quantity} min="1" />
 
-				<div class="uppercase italic text-[#1D1D1DB2] mt-8">Collection</div>
+				<div class="uppercase text-[#1D1D1DB2] mt-8">Collection</div>
 				<!-- TODO: Replace first collection with Hinata base collection -->
 				<Dropdown
 					selected={selectedCollectionRow || { label: 'No collection' }}
@@ -223,7 +223,7 @@
 			</div>
 
 			<div class="w-1/2">
-				<div class="uppercase italic text-[#1D1D1DB2]">Description</div>
+				<div class="uppercase text-[#1D1D1DB2]">Description</div>
 				<TextArea outline containerClass="mt-2 mr-8" maxChars={200} placeholder="Enter description..." bind:value={nftData.description} />
 			</div>
 		</div>
@@ -238,7 +238,7 @@
 
 	<!-- Right side -->
 	<div class="p-8 border-0 border-l separator w-80">
-		<div class="mb-4 text-xl italic uppercase">Preview</div>
+		<div class="mb-4 text-xl uppercase">Preview</div>
 		<NftCard options={{ id: null, title: nftData.name, imageUrl: nftData.thumbnailPreview }} />
 	</div>
 </div>
