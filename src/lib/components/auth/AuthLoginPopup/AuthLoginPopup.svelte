@@ -77,24 +77,24 @@
 	$: prompt = adapter.getPrompt();
 </script>
 
-<Popup closeButton class="w-[500px] h-[220px] flex flex-col items-center" on:close>
+<Popup closeButton class="w-[500px] h-[220px] flex flex-col items-center pt-8" on:close>
 	{#if state === 'prompt'}
 		<div class="title">
 			{@html prompt.title}
 		</div>
 
-		<button class="btn btn-gradient btn-rounded mt-12 uppercase" on:click={onSignIn}>Sign In</button>
+		<button class="mt-12 uppercase btn btn-gradient btn-rounded" on:click={onSignIn}>Sign In</button>
 	{/if}
 
 	{#if state === 'loading'}
-		<div class="title mb-12">Sign this message</div>
+		<div class="mb-12 title">Sign this message</div>
 		<Loader />
 	{/if}
 
 	{#if state === 'confirm'}
 		<div class="title">Sign this message</div>
-		<div class="text-xs mt-8">{message}</div>
-		<div class="mt-6 gap-x-8 flex scale-75">
+		<div class="mt-8 text-xs">{message}</div>
+		<div class="flex mt-6 scale-75 gap-x-8">
 			<Button variant="rounded-outline" rounded on:click={onSignCancel}>Cancel</Button>
 			<Button gradient rounded on:click={onSignConfirm}>Sign</Button>
 		</div>
@@ -102,14 +102,14 @@
 
 	{#if state === 'success'}
 		<div class="title">Sign this message</div>
-		<div class="text-sm mt-8 font-bold">Signing Successful!</div>
+		<div class="mt-8 text-sm font-bold">Signing Successful!</div>
 		<Button gradient rounded class="mt-6" on:click={onSuccessClose}>Continue</Button>
 	{/if}
 
 	{#if state === 'error'}
 		<div class="title">Sign this message</div>
-		<div class="text-sm mt-8 font-bold">Signing Failed!</div>
-		<div class="mt-6 gap-x-8 flex scale-75">
+		<div class="mt-8 text-sm font-bold">Signing Failed!</div>
+		<div class="flex mt-6 scale-75 gap-x-8">
 			<Button variant="rounded-outline" rounded on:click={dispatchClose}>Cancel</Button>
 			<Button gradient rounded on:click={onSignIn}>Try again</Button>
 		</div>
