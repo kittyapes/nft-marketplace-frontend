@@ -34,7 +34,8 @@ export async function adaptListingToNftCard(data: Listing) {
 				contractType: 'ERC1155',
 				creator: nft.creator,
 				contractAddress: nft.contractAddress,
-				tokenId: nft.nftId
+				tokenId: nft.nftId,
+				isExternal: nft.isExternal,
 			}
 		],
 		saleData: {
