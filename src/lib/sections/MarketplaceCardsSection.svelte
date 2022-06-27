@@ -19,7 +19,7 @@
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await getListings(listingsFetchingFilters, index, 20);
-
+		console.log(res.res);
 		res.adapted = await Promise.all(res.res.map(adaptListingToNftCard));
 		return res;
 	};
