@@ -11,7 +11,7 @@
 	import type { ListingType } from '$utils/api/listing';
 	import { getNft } from '$utils/api/nft';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
-	import { getTokenAddress } from '$utils/misc/getTokenAddress';
+	import { contractGetTokenAddress, getTokenAddress } from '$utils/misc/getTokenAddress';
 	import { goBack } from '$utils/navigation';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
@@ -44,8 +44,6 @@
 		fetchedNftData.set(nftRes);
 	});
 
-	let currentPaymentToken: { name: string; address: string } = { name: 'ETH', address: HinataTokenAddress };
-
 	const handleTokenChange = (event: CustomEvent) => {
 		// can be uncommented once contract supports different pay tokens
 		/*
@@ -77,8 +75,8 @@
 			duration,
 			// TODO, add support for addresses from external collections
 			nfts: [{ nftId: $fetchedNftData.nftId, amount: BigNumber.from(1), collectionAddress: HinataMarketplaceStorageContractAddress }],
-			paymentTokenAddress: getTokenAddress('WETH'),
-			paymentTokenTicker: 'WETH',
+			paymentTokenAddress: await contractGetTokenAddress(listingPropValues.token.label),
+			paymentTokenTicker: listingPropValues.token.label,
 			quantity: BigNumber.from(1),
 			startTime: startTimestamp,
 			listingType: listingType,

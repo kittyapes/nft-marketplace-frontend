@@ -27,6 +27,7 @@ export const listingDurationOptions = [
 ];
 
 export const listingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.black'), value: WethContractAddress }];
+export const whiteListingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.light'), value: WethContractAddress }];
 
 export interface ContractCreateListingOptions {
 	price: BigNumber;

@@ -7,7 +7,7 @@
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
 	import type { ListingType } from '$utils/api/listing';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
-	import { getTokenAddress } from '$utils/misc/getTokenAddress';
+	import { contractGetTokenAddress, getTokenAddress } from '$utils/misc/getTokenAddress';
 	import { notifyError } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
@@ -53,7 +53,7 @@
 			description: options.nftData[0].metadata?.description,
 			duration,
 			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(1), collectionAddress: HinataMarketplaceStorageContractAddress }],
-			paymentTokenAddress: getTokenAddress(paymentTokenTicker as any),
+			paymentTokenAddress: await contractGetTokenAddress(paymentTokenTicker as any),
 			paymentTokenTicker,
 			quantity: BigNumber.from(1),
 			startTime: dayjs().unix() + 10,
