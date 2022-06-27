@@ -55,12 +55,14 @@ export async function getBiddingsFlow(listingId: string): Promise<BidRow[]> {
 	const res = await axios.get(getApiUrl('latest', 'listings/' + listingId + '/bids'));
 	const apiBids = res.data.data;
 
+	console.log(apiBids);
+
 	biddings.push(
 		...apiBids.map((bid) => ({
-			bidderName: 'N/A',
-			imageUrl: '',
-			tokenAmount: 'N/A',
-			timeAgo: dayjs.duration(dayjs().diff(dayjs(bid.bidAt), 's'), 's').humanize() + ' ago'
+			bidderName: bid.user[0].username,
+			imageUrl: bid.user[0].thumbnailUrl,
+			tokenAmount: formatEther(bid.bid),
+			timeAgo: (dayjs.duration(dayjs().diff(dayjs(bid.queueDate), 's'), 's').humanize() + ' ago').replace('a few seconds ago', 'now')
 		}))
 	);
 
