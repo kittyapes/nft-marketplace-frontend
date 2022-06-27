@@ -5,6 +5,6 @@
 
 <div class="flex flex-wrap gap-2">
 	{#each DROP_STATUSES as st}
-		<StatusFilterButton value={st.status} />
+		<StatusFilterButton status={st} />
 	{/each}
 </div>

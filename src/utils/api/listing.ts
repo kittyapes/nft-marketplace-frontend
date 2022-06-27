@@ -92,22 +92,23 @@ export interface listingFetchingFilters {
 	type?: ListingType[];
 	price?: { priceMin: number; priceMax: number };
 	seller?: EthAddress;
+	sortBy?: 'NEWEST' | 'OLDEST' | 'POPULAR' | 'END1MIN'
 }
 
 export async function getListings(filters?: listingFetchingFilters, page: number = 1, limit: number = 20) {
+	console.log(filters)
 	const params = {
 		type: filters?.type,
-		//collecitonId: filters?.collectionId,
-		
-		priceMin: filters?.price?.priceMin === 0 ? undefined : ethers.utils.parseEther(filters?.price?.priceMin.toString()).toString(),
-		priceMax: filters?.price?.priceMax === 0 ? undefined : ethers.utils.parseEther(filters?.price?.priceMax.toString()).toString(),
+		collectionId: filters?.collectionId ? filters?.collectionId : undefined,
+		priceMin: filters?.price?.priceMin === 0  || filters?.price?.priceMin ? ethers.utils.parseEther(filters?.price?.priceMin.toString()).toString() : undefined,
+		priceMax:  filters?.price?.priceMax === 0 || filters?.price?.priceMax ? ethers.utils.parseEther(filters?.price?.priceMax.toString()).toString() : undefined,
 		seller: filters?.seller,
+		sortBy: filters?.sortBy,
 		page,
-		limit
+		limit,
 	};
-	//console.log(params)
+	console.log(params)
 	const res = await axios.get(getApiUrl('latest', 'listings?'), { params });
-	//console.log(res);
 	return res.data.data as Listing[];
 }
 

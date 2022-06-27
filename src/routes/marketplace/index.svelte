@@ -1,10 +1,12 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
+	import Sort from '$icons/sort.svelte';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
+	import { filters } from '$stores/marketplace';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import { getListing } from '$utils/api/listing';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
@@ -23,6 +25,10 @@
 			setPopup(CardPopup, { props: { options: popupOptions }, onClose: () => removeUrlParam('id') });
 		}
 	});
+
+	const handleSelectSort = (event: CustomEvent) => {
+		$filters.sortBy = event.detail.value;
+	};
 </script>
 
 <div class="flex flex-col w-full h-full min-h-screen md:flex-row">
@@ -36,8 +42,17 @@
 		<div class="flex justify-between w-full mt-3">
 			<div />
 
-			<div class="w-36 ">
-				<Dropdown options={[{ label: 'Date', value: 'date' }]} />
+			<div class="w-52 ">
+				<Dropdown
+					dropdownIcon={Sort}
+					on:select={(e) => handleSelectSort(e)}
+					options={[
+						{ label: 'Newest', value: 'NEWEST' },
+						{ label: 'Oldest', value: 'OLDEST' },
+						{ label: 'Most Popular', value: 'POPULAR' },
+						{ label: 'Ending Now', value: 'END1MIN' }
+					]}
+				/>
 			</div>
 		</div>
 

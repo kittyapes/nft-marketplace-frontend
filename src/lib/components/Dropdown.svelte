@@ -20,6 +20,7 @@
 	export let opened: boolean = false;
 	export let disabled = false;
 	export let borderOpacity = 0.3;
+	export let dropdownIcon: any;
 
 	let elemOpenButton: HTMLButtonElement;
 
@@ -44,6 +45,8 @@
 		<!-- Icon -->
 		{#if selected.iconUrl}
 			<img src={selected.iconUrl} alt="" class="object-cover w-6 h-6 rounded-full" />
+		{:else if dropdownIcon}
+			<svelte:component this={dropdownIcon} />
 		{/if}
 
 		<!-- Label -->
