@@ -87,8 +87,10 @@ export async function contractPurchaseListing(listingId: string) {
 
 	const contract = HinataMarketplaceContract(get(appSigner));
 
-	const tx: ethers.ContractTransaction = await contract.purchaseListing(listingId);
-	await tx.wait(1);
+	// const tx: ethers.ContractTransaction = await contract.purchaseListing(listingId);
+	// await tx.wait(1);
+
+	await contractCaller(contract, 'purchaseListing', 150, 1, listingId);
 }
 
 export async function contractCancelListing(listingId: string) {
@@ -96,6 +98,8 @@ export async function contractCancelListing(listingId: string) {
 
 	const contract = HinataMarketplaceContract(get(appSigner));
 
-	const tx: ethers.ContractTransaction = await contract.cancelListing(listingId);
-	await tx.wait(1);
+	// const tx: ethers.ContractTransaction = await contract.cancelListing(listingId);
+	// await tx.wait(1);
+
+	await contractCaller(contract, 'cancelListing', 150, 1, listingId);
 }
