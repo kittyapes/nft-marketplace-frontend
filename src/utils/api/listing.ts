@@ -107,7 +107,7 @@ export async function getListings(filters?: listingFetchingFilters, page: number
 		page,
 		limit,
 	};
-	console.log(params)
+
 	const res = await axios.get(getApiUrl('latest', 'listings?'), { params });
 	return res.data.data as Listing[];
 }

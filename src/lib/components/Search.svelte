@@ -22,7 +22,7 @@
 
 	const resultCategoryLimit = 3;
 
-	let searchResults: SearchResults = {
+	let searchResults = {
 		collections: [],
 		listings: [],
 		users: []
@@ -109,7 +109,19 @@
 	}}
 >
 	<Search />
-	<input bind:value={query} type="text" class="w-72 focus:outline-none" placeholder="Search nfts, collections, and artists" />
+	<input
+		bind:value={query}
+		on:keyup={(e) => {
+			if (e.code === 'Enter') {
+				show = false;
+				searching = false;
+				goto('/search');
+			}
+		}}
+		type="text"
+		class="w-72 focus:outline-none"
+		placeholder="Search nfts, collections, and artists"
+	/>
 	{#if searching}
 		<div class="w-full bg-white top-16 right-0 border-black border-opacity-30 rounded-md border z-30 absolute" in:fly={{ y: -40, duration: 300 }}>
 			{#if show}
