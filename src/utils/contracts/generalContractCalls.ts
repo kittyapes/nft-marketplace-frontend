@@ -3,38 +3,28 @@ import { HinataTokenAddress, stakingContract } from '$constants/contractAddresse
 import distributorAbi from '$constants/contracts/merkleDistributor/distributorAbi.json';
 import HinataTokenABI from '$constants/contracts/abis/hinataToken.json';
 import HinataStakingABI from '$constants/contracts/abis/HinataStaking.json';
+import Erc20MockABI from '$constants/contracts/abis/Erc20Mock.json';
 
-export const getDistributorContract = (
-	distributorAddress: string,
-	providerOrSigner: ethers.providers.Provider | ethers.Signer
-) => {
-	const distributorContract = new ethers.Contract(
-		distributorAddress,
-		distributorAbi,
-		providerOrSigner
-	);
+export const getDistributorContract = (distributorAddress: string, providerOrSigner: ethers.providers.Provider | ethers.Signer) => {
+	const distributorContract = new ethers.Contract(distributorAddress, distributorAbi, providerOrSigner);
 
 	return distributorContract;
 };
 
-export const getHinataTokenContract = (
-	providerOrSigner: ethers.providers.Provider | ethers.Signer
-) => {
-	const hinataTokenContract = new ethers.Contract(
-		HinataTokenAddress,
-		HinataTokenABI,
-		providerOrSigner
-	);
+export const getHinataTokenContract = (providerOrSigner: ethers.providers.Provider | ethers.Signer) => {
+	const hinataTokenContract = new ethers.Contract(HinataTokenAddress, HinataTokenABI, providerOrSigner);
 
 	return hinataTokenContract;
 };
 
 export const getStakingContract = (providerOrSigner: ethers.providers.Provider | ethers.Signer) => {
-	const hinataTokenContract = new ethers.Contract(
-		stakingContract,
-		HinataStakingABI,
-		providerOrSigner
-	);
+	const hinataTokenContract = new ethers.Contract(stakingContract, HinataStakingABI, providerOrSigner);
 
 	return hinataTokenContract;
+};
+
+export const getMockErc20TokenContract = (providerOrSigner: ethers.providers.Provider | ethers.Signer, tokenAddress: string) => {
+	const erc20Contract = new ethers.Contract(tokenAddress, Erc20MockABI, providerOrSigner);
+
+	return erc20Contract;
 };

@@ -14,7 +14,7 @@
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import dayjs from 'dayjs';
-	import { BigNumber, errors, ethers } from 'ethers';
+	import { BigNumber } from 'ethers';
 	import { formatEther, parseEther } from 'ethers/lib/utils.js';
 	import { noTry, noTryAsync } from 'no-try';
 	import { createEventDispatcher, onMount } from 'svelte';
@@ -32,7 +32,7 @@
 	async function handlePurchase() {
 		purchasingState.set('waiting-contract');
 
-		const price = parseEther(options.saleData.price.toString());
+		const price = options.saleData.price.toString();
 		const success = await salePurchase(options.saleData.listingId, price);
 
 		success ? dispatch('set-state', { name: 'success' }) : dispatch('set-state', { name: 'error' });
@@ -49,7 +49,7 @@
 	async function placeBid() {
 		isPlacingBid = true;
 
-		const [err, res] = await noTryAsync(async () => await placeBidFlow(options.rawResourceData.listingId, parseEther(bidAmount)));
+		const [err, res] = await noTryAsync(async () => await placeBidFlow(options.rawResourceData.listingId, bidAmount));
 
 		await refreshBids();
 

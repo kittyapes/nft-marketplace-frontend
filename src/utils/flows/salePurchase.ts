@@ -1,31 +1,19 @@
 import { HinataMarketplaceContractAddress } from '$constants/contractAddresses';
-import { currentUserAddress } from '$stores/wallet';
-import { contractPurchaseListing } from '$utils/contracts/listing';
-import { contractApproveToken, contractGetTokenAllowance } from '$utils/contracts/token';
+import { contractPurchaseListing, getOnChainListing } from '$utils/contracts/listing';
+import { ensureAmountApproved } from '$utils/contracts/token';
 import { notifyError, notifySuccess } from '$utils/toast';
-import { BigNumber, ethers } from 'ethers';
 import { noTryAsync } from 'no-try';
-import { get } from 'svelte/store';
 
-export async function salePurchase(listingId: string, price: BigNumber) {
-	const allowance = await contractGetTokenAllowance(get(currentUserAddress), HinataMarketplaceContractAddress);
+export async function salePurchase(listingId: string, price: string) {
+	const listing = await getOnChainListing(listingId);
 
-	console.info('Token allowance for contract is:', ethers.utils.formatEther(allowance));
+	const contractApproved = await ensureAmountApproved(HinataMarketplaceContractAddress, price, listing.payToken);
 
-	if (allowance.lt(price)) {
-		notifySuccess('Token allowance is insufficient. Please approve the token first.');
+	if (!contractApproved) {
+		notifyError('Insufficient Allowance to Execute Transaction.');
 
-		console.info('Approving token allowance for contract.');
-		const [approveErr, approveRes] = await noTryAsync(() => contractApproveToken(HinataMarketplaceContractAddress, price));
-
-		if (approveErr) {
-			notifyError(approveErr.message);
-			return false;
-		}
-
-		notifySuccess('Updated token allowance.');
-	} else {
-		notifySuccess('Token allowance is sufficient.');
+		// No need to proceed if there's no allowance
+		return;
 	}
 
 	const [err, res] = await noTryAsync(() => contractPurchaseListing(listingId));
