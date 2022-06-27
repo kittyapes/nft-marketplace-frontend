@@ -39,11 +39,11 @@
 	});
 </script>
 
-<div class="fixed z-10 w-full flex">
-	<div class="flex items-center h-16 pl-8 pr-2 gap-x-8 fixed z-10 bg-white drop-shadow-lg w-full overflow-x-visible scrollbar-hidden snap-mandatory snap-x">
+<div class="fixed z-10 flex w-full">
+	<div class="fixed z-10 flex items-center w-full h-16 pl-8 pr-2 overflow-x-visible bg-white gap-x-8 drop-shadow-lg scrollbar-hidden snap-mandatory snap-x">
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
-			<img src="/img/logo/logo.svg" alt="Hinata logo." />
+			<img src="/svg/logo/logo.alpha.svg" alt="Hinata logo." />
 		</a>
 
 		<Search class="snap-start" />
@@ -73,11 +73,10 @@
 		{/if}
 
 		<!-- Profile -->
-		<div class="relative h-full flex items-center">
+		<div class="relative flex items-center h-full">
 			{#if showProfileButton}
 				<button
-					class="text-md font-semibold whitespace-nowrap transition-btn h-full
-				flex items-center w-52"
+					class="flex items-center h-full font-semibold text-md whitespace-nowrap transition-btn w-52"
 					id="profile-button"
 					class:hidden={!$appSigner}
 					on:click={() => (displayProfilePopup = !displayProfilePopup)}
@@ -98,7 +97,7 @@
 								on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"}
 								src={$profileData.thumbnailUrl}
 								alt="Current account avatar."
-								class="w-full h-full object-cover rounded-full"
+								class="object-cover w-full h-full rounded-full"
 							/>
 						{:else}
 							<div class="text-color-purple" in:fade>
@@ -112,7 +111,7 @@
 			{#if !$appSigner}
 				<button
 					on:click={async () => await connectToWallet()}
-					class="rounded-3xl text-white bg-black py-3 uppercase text-sm font-semibold w-52 ml-8"
+					class="py-3 ml-8 text-sm font-semibold text-white uppercase bg-black rounded-3xl w-52"
 					out:fade
 					on:outrostart={() => (showProfileButton = false)}
 					on:outroend={() => (showProfileButton = true)}
