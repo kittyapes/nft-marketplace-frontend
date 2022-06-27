@@ -16,7 +16,8 @@ export async function adaptListingToNftCard(data: Listing) {
 	}
 
 	const nft = data.nfts[0].nft;
-	const collectionData = await apiGetCollectionById(nft.collectionId).catch((e) => {});
+
+	const collectionData = nft.collectionId && (await apiGetCollectionById(nft.collectionId).catch((e) => {}));
 
 	const startTime = dayjs(data.startTime).unix();
 	const hasAStartTime = new Date(startTime * 1000).getUTCFullYear() !== 1970;
