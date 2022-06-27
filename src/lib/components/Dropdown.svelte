@@ -41,7 +41,7 @@
 </script>
 
 <div class="relative select-container select-none transition {$$props.class}" class:opacity-50={disabled}>
-	<button style:--tw-border-opacity={borderOpacity} class="flex items-center space-x-2 text-left select" on:click={() => (opened = !opened)} bind:this={elemOpenButton} {disabled}>
+	<button style:--tw-border-opacity={borderOpacity} class="flex items-center space-x-2 text-left select" on:click|stopPropagation={() => (opened = !opened)} bind:this={elemOpenButton} {disabled}>
 		<!-- Icon -->
 		{#if selected.iconUrl}
 			<img src={selected.iconUrl} alt="" class="object-cover w-6 h-6 rounded-full" />
