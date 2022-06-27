@@ -4,9 +4,10 @@
 	import ArrowDown from '$icons/arrow-down.svelte';
 	import { seperateNumberWithCommas } from '$utils/misc/seperateNumberWithSeparators';
 	import { slide } from 'svelte/transition';
-	import type { CollectionTableRow } from '$utils/api/collection';
+	import type { Collection } from '$utils/api/collection';
+	import { goto } from '$app/navigation';
 
-	export let collections: CollectionTableRow[];
+	export let collections: Collection[];
 </script>
 
 <div class="w-full flex flex-col gap-10 bg-[#FAFAFA]">
@@ -19,7 +20,7 @@
 			<div class="uppercase">24h vol %</div>
 		</div>
 		{#each collections as collection, i}
-			<div class="grid w-full py-4 border-t border-black border-opacity-[0.15]" transition:slide|local>
+			<div class="grid w-full py-4 border-t border-black border-opacity-[0.15] clickable" transition:slide|local on:click={() => goto('/collections/' + collection.slug)}>
 				<div class="grid grid-cols-[1.5fr_7fr_1.5fr_3fr_2fr_3fr] w-[95%] place-items-center">
 					<div class="text-center text-sm grid place-items-center">{i + 1}</div>
 					<div class="flex place-items-center gap-6 place-self-start">

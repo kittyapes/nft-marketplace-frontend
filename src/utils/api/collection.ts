@@ -29,6 +29,12 @@ export interface Collection {
 	nfts: any[];
 	id: string;
 	createdAt?: string;
+	origin: 'EXTERNAL' | 'HINATA';
+	verified: boolean;
+	floorPrice: number;
+	totalVol: number;
+	total24hours: number;
+	'24hourPercent': number;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
@@ -137,9 +143,9 @@ export interface CollectionTableRow {
 	'24hourPercent': number;
 }
 
-export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[]> {
-	const res = await axios.get(getApiUrl('latest', 'collections'));
-
+export async function apiGetMostActiveCollections(): Promise<Collection[]> {
+	const res = await axios.get(getApiUrl('latest', 'collections/search'));
+	console.log(res);
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
 	}
