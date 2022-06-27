@@ -82,8 +82,14 @@
 		return true;
 	}
 
+	let isRefreshingBids = false;
+
 	async function refreshBids() {
+		isRefreshingBids = true;
+
 		biddings = await getBiddingsFlow(options.rawResourceData.listingId);
+
+		isRefreshingBids = false;
 	}
 
 	onMount(async () => {
@@ -125,7 +131,7 @@
 		</div>
 	{:else if options.rawResourceData.listingType === 'auction'}
 		<div class="flex flex-col h-full mt-4">
-			<AuctionBidList {biddings} />
+			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} />
 
 			<div class="mt-2 text-xs font-semibold opacity-70">
 				Reserve price: {formattedPrice}
