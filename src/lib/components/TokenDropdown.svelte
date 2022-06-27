@@ -1,19 +1,15 @@
 <script lang="ts">
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import ArrowDown from '$icons/arrow-down.svelte';
-	import { fade, slide } from 'svelte/transition';
+	import { whiteListingTokens } from '$utils/contracts/listing';
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { HinataTokenAddress, WethContractAddress } from '$constants/contractAddresses';
+	import { fade, slide } from 'svelte/transition';
 
 	const dispatch = createEventDispatcher();
 
 	export let id = '';
 	export let value = '';
-	export let tokens: { label: string; iconUrl: string; value: string }[] = [
-		{ label: 'ETH', iconUrl: '/svg/white-eth.svg', value: WethContractAddress },
-		{ label: 'HI', iconUrl: '/svg/currency/hinata-logo-token.svg', value: HinataTokenAddress }
-		// { label: 'Sol', iconUrl: '/svg/white-eth.svg' }
-	];
+	export let tokens: { label: string; iconUrl: string; value: string }[] = whiteListingTokens;
 	export let selected = tokens[0];
 	export let placeholder = 'Enter price for NFT';
 	export let valid = true;
