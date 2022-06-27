@@ -90,8 +90,6 @@
 				res.res = await apiGetUserNfts(address, 'COLLECTED', tabs.collected.index, 10);
 				res.adapted = await Promise.all(res.res.res.map((nft) => apiNftToNftCard(nft)));
 
-				console.log(res.adapted);
-
 				return res;
 			},
 			data: [],
@@ -146,11 +144,13 @@
 	let isFetchingNfts = false;
 
 	async function fetchMore() {
-		if (selectedTab.reachedEnd) return;
+		const tab = selectedTab;
+
+		if (tab.reachedEnd) return;
 
 		isFetchingNfts = true;
 
-		const res = await selectedTab.fetchFunction();
+		const res = await tab.fetchFunction();
 
 		if (res.err) {
 			console.error(res.err);
@@ -159,16 +159,16 @@
 		}
 
 		if (res.adapted.length === 0) {
-			selectedTab.reachedEnd = true;
+			tab.reachedEnd = true;
 		} else {
-			selectedTab.data = [...selectedTab.data, ...res.adapted];
-			selectedTab.index++;
+			tab.data = [...tab.data, ...res.adapted];
+			tab.index++;
 		}
+
+		selectedTab = selectedTab;
 
 		isFetchingNfts = false;
 	}
-
-	$: console.log(tabs);
 </script>
 
 <div class="h-72 bg-color-gray-light">
