@@ -51,6 +51,10 @@
 
 		const [err, res] = await noTryAsync(async () => await placeBidFlow(options.rawResourceData.listingId, parseEther(bidAmount)));
 
+		await refreshBids();
+
+		bidAmount = '';
+
 		isPlacingBid = false;
 	}
 
@@ -78,9 +82,19 @@
 		return true;
 	}
 
+	let isRefreshingBids = false;
+
+	async function refreshBids() {
+		isRefreshingBids = true;
+
+		biddings = await getBiddingsFlow(options.rawResourceData.listingId);
+
+		isRefreshingBids = false;
+	}
+
 	onMount(async () => {
 		if (options.rawResourceData.listingType === 'auction') {
-			biddings = await getBiddingsFlow(options.rawResourceData.listingId);
+			await refreshBids();
 		}
 	});
 
@@ -117,7 +131,7 @@
 		</div>
 	{:else if options.rawResourceData.listingType === 'auction'}
 		<div class="flex flex-col h-full mt-4">
-			<AuctionBidList listingId={options.rawResourceData.listingId} />
+			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} />
 
 			<div class="mt-2 text-xs font-semibold opacity-70">
 				Reserve price: {formattedPrice}
