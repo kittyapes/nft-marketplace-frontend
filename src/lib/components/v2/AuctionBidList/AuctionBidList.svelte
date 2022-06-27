@@ -4,11 +4,13 @@
 	import { onMount } from 'svelte';
 	import AuctionBidRow from './AuctionBidRow.svelte';
 
-	export let listingId: string;
+	export let listingId: string = null;
 	export let biddings: BidRow[] = [];
 
 	onMount(async () => {
-		biddings = await getBiddingsFlow(listingId);
+		if (listingId) {
+			biddings = await getBiddingsFlow(listingId);
+		}
 	});
 </script>
 
@@ -20,7 +22,7 @@
 		{/each}
 
 		{#if !biddings.length}
-			<div class="grid h-full pb-8 font-semibold opacity-50 place-items-center text-sm">This auction doesn't have any bids yet.</div>
+			<div class="grid h-full pb-8 text-sm font-semibold opacity-50 place-items-center">This auction doesn't have any bids yet.</div>
 		{/if}
 	</div>
 </div>
