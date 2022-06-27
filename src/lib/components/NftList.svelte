@@ -12,6 +12,8 @@
 	export let isLoading = false;
 	export let reachedEnd = false;
 
+	let data = options;
+
 	const inviewOptions = {};
 
 	function onChange(event) {
@@ -21,16 +23,16 @@
 	}
 
 	async function markLiked() {
-		console.log($userLikedNfts);
-		options.forEach((nft) => {
+		data = options;
+		data?.forEach((nft) => {
 			nft.favorited = $userLikedNfts?.filter((likedNft) => likedNft.nft._id === nft.likeIds?.[0]).length > 0;
 			if ($likedNfts?.[0].length && $likedNfts?.[1] && $likedNfts?.[0].find((e) => nft.likeIds?.[0] === e)) {
 				nft.likes += $likedNfts[1];
 				$likedNfts = [[], 0];
 			}
 		});
-		options = options;
-		console.log(options);
+
+		data = data;
 	}
 
 	$: {
@@ -41,13 +43,13 @@
 </script>
 
 <div class="w-full">
-	{#if !isLoading && options?.length === 0}
+	{#if !isLoading && data?.length === 0}
 		<div class="placeholder">Nothing to see here, move along.</div>
 	{/if}
 
-	{#if options?.length}
+	{#if data?.length}
 		<div class="nftGrid">
-			{#each options as tokenData}
+			{#each data as tokenData}
 				<NftCard options={tokenData} />
 			{/each}
 		</div>
