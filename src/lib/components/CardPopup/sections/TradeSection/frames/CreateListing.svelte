@@ -49,7 +49,7 @@
 		isListing = true;
 
 		const flowOptions: CreateListingFlowOptions = {
-			title: options.nftData[0].metadata?.title,
+			title: options.nftData[0].metadata?.name,
 			description: options.nftData[0].metadata?.description,
 			duration,
 			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(1), collectionAddress: HinataMarketplaceStorageContractAddress }],
