@@ -1,7 +1,7 @@
 import type { EthAddress } from '$interfaces';
 import axios from 'axios';
 import { ethers } from 'ethers';
-import {  parseEther } from 'ethers/lib/utils.js';
+import { parseEther } from 'ethers/lib/utils.js';
 import { getApiUrl } from '.';
 
 export type ListingType = 'sale' | 'auction' | 'raffle';
@@ -74,7 +74,7 @@ export interface Listing {
 		};
 	}[];
 
-	paymentTokenTicker: 'ETH';
+	paymentTokenTicker: string;
 	paymentTokenAddress: string;
 	startTime: string;
 	duration: number;
@@ -92,22 +92,22 @@ export interface listingFetchingFilters {
 	type?: ListingType[];
 	price?: { priceMin: number; priceMax: number };
 	seller?: EthAddress;
-	sortBy?: 'NEWEST' | 'OLDEST' | 'POPULAR' | 'END1MIN'
+	sortBy?: 'NEWEST' | 'OLDEST' | 'POPULAR' | 'END1MIN';
 }
 
 export async function getListings(filters?: listingFetchingFilters, page: number = 1, limit: number = 20) {
-	console.log(filters)
+	console.log(filters);
 	const params = {
 		type: filters?.type,
 		collectionId: filters?.collectionId ? filters?.collectionId : undefined,
-		priceMin: filters?.price?.priceMin === 0  || filters?.price?.priceMin ? ethers.utils.parseEther(filters?.price?.priceMin.toString()).toString() : undefined,
-		priceMax:  filters?.price?.priceMax === 0 || filters?.price?.priceMax ? ethers.utils.parseEther(filters?.price?.priceMax.toString()).toString() : undefined,
+		priceMin: filters?.price?.priceMin === 0 || filters?.price?.priceMin ? ethers.utils.parseEther(filters?.price?.priceMin.toString()).toString() : undefined,
+		priceMax: filters?.price?.priceMax === 0 || filters?.price?.priceMax ? ethers.utils.parseEther(filters?.price?.priceMax.toString()).toString() : undefined,
 		seller: filters?.seller,
 		sortBy: filters?.sortBy,
 		page,
-		limit,
+		limit
 	};
-	console.log(params)
+	console.log(params);
 	const res = await axios.get(getApiUrl('latest', 'listings?'), { params });
 	return res.data.data as Listing[];
 }
