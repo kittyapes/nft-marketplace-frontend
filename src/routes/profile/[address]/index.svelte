@@ -85,6 +85,10 @@
 				res.res = await apiGetUserNfts(address, 'COLLECTED', tabs.collected.index, 10);
 				res.adapted = await Promise.all(res.res.res.map((nft) => apiNftToNftCard(nft)));
 
+				for (const nft of res.adapted) {
+					nft.popupOptions.rawResourceData.owner = address;
+				}
+
 				return res;
 			},
 			data: [],

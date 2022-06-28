@@ -2,13 +2,9 @@ import type { ApiCollectionData } from '$interfaces/apiCollectionData';
 import type { ApiNftData } from '$interfaces/apiNftData';
 import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
-import { apiGetCollectionById } from '$utils/api/collection';
 
 export async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ collection: Partial<ApiCollectionData> }>) {
 	let collectionData: ApiCollectionData;
-	if (!fallback) {
-		// collectionData = await apiGetCollectionById(data.collectionId).catch((e) => {});
-	}
 
 	const popupOptions: CardPopupOptions = {
 		title: data.name,
