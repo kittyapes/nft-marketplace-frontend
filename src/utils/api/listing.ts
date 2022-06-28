@@ -60,6 +60,8 @@ export interface Listing {
 		_id: string;
 		nftId: string;
 		amount: number;
+		collectionName: string;
+		collectionSlug: string;
 		nft: {
 			_id: string;
 			assetUrl: string;
