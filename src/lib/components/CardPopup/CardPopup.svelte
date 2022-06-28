@@ -10,8 +10,6 @@
 	export let options: CardPopupOptions;
 	export let handler: PopupHandler;
 
-	console.log(options);
-
 	// Showing of the back button is controlled by the RightSection component
 	let showBackButton = false;
 
@@ -23,13 +21,13 @@
 
 <Popup class="w-full rounded-none lg:rounded-xl lg:w-[64rem] h-[45rem] pb-8 transition-all duration-200" closeButton on:close={handler.close}>
 	<!-- Back button -->
-	<button class="flex items-center flex-grow-0 gap-2 px-10 btn disabled:opacity-0" disabled={!showBackButton} on:click={rightSectionInstance.goBack()}>
+	<button class="absolute flex items-center flex-grow-0 gap-2 px-10 btn disabled:opacity-0 top-4" disabled={!showBackButton} on:click={rightSectionInstance.goBack()}>
 		<img src={getIconUrl('back-button')} alt="Arrow pointing left." />
 		<p class="text-sm font-semibold text-color-black">GO BACK</p>
 	</button>
 
 	<!-- Main content -->
-	<div class="flex flex-col h-full mx-10 lg:flex-row ">
+	<div class="flex flex-col h-full mx-10 lg:flex-row">
 		<!-- Left part with image and buttons -->
 		<div class="h-full lg:w-2/5">
 			<AssetContainer
@@ -42,7 +40,7 @@
 		</div>
 
 		<!-- Right part with info and actions -->
-		<div class="h-full lg:w-3/5 self-stretch">
+		<div class="self-stretch h-full pt-4 lg:w-3/5">
 			<RightSection {options} on:close-popup={handler.close} bind:showBackButton bind:this={rightSectionInstance} />
 		</div>
 	</div>

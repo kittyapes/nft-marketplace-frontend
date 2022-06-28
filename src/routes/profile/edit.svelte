@@ -71,8 +71,12 @@
 
 			await refreshProfileData().catch(() => notifyError('Failed to fetch new profile data.'));
 		} catch (err) {
-			httpErrorHandler(err);
-			console.error(err);
+			if (err.message.includes('User denied message signature')) {
+				notifyError("You have denied metamask signature. Changes weren't saved.");
+			} else {
+				httpErrorHandler(err);
+				console.error(err);
+			}
 		}
 
 		hasClaimedFreeNft($currentUserAddress);
@@ -370,7 +374,7 @@
 				<div class="ml-4 font-semibold uppercase">Saving changes...</div>
 			</div>
 
-			<Button rounded variant="rounded-black" stretch on:click={onSave} disabled={isSynced || !dataChanged || !dataValid} class="!font-medium">Save changes</Button>
+			<Button rounded variant="rounded-black" stretch on:click={onSave} disabled={isSynced || !dataChanged || !dataValid || isSaving} class="!font-medium">Save changes</Button>
 		</div>
 	</div>
 </LoadedContent>

@@ -28,8 +28,8 @@
 </script>
 
 <div class="mt-32">
-	<div class="w-full flex justify-between items-baseline">
-		<div class="uppercase text-lg font-bold ">Administrators</div>
+	<div class="flex items-baseline justify-between w-full">
+		<div class="text-lg font-bold uppercase ">Administrators</div>
 	</div>
 
 	<div class="max-h-[900px] overflow-auto custom-scrollbar mt-5 pb-4">
@@ -37,7 +37,7 @@
 			<Loader class="ml-0" />
 		{/if}
 
-		<table class="w-full table table-auto border-t border-color-black border-opacity-30">
+		<table class="table w-full border-t table-auto border-color-black border-opacity-30">
 			{#each admins || [] as row}
 				{@const showModify = row.address !== $currentUserAddress && row.roles !== 'superadmin'}
 
@@ -61,7 +61,7 @@
 
 					<td class="px-4 w-28 whitespace-nowrap">
 						{#if showModify}
-							<button class="btn btn-rounded uppercase italic btn-gradient h-12 w-48 font-light" on:click={() => handleModifyAdmin(row)}>Modify</button>
+							<button class="w-48 h-12 font-light uppercase btn btn-rounded btn-gradient" on:click={() => handleModifyAdmin(row)}>Modify</button>
 						{/if}
 					</td>
 				</tr>

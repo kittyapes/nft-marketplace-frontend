@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import { closePopup } from '$utils/popup';
 
 	export let options: CardPopupOptions;
 
@@ -41,8 +43,21 @@
 	<!-- Properties -->
 	<div class="mt-4">
 		{#each properties as prop}
-			<div class="property-name">{prop.name}</div>
-			<div class="property-value">{prop.value || 'N/A'}</div>
+			{#if prop.name === 'Collection name' && prop.value}
+				<div
+					on:click={() => {
+						closePopup();
+						goto('/collections/' + options.collectionData.slug);
+					}}
+					class="overflow-hidden clickable"
+				>
+					<div class="property-name">{prop.name}</div>
+					<div class="property-value">{prop.value || 'N/A'}</div>
+				</div>
+			{:else}
+				<div class="property-name">{prop.name}</div>
+				<div class="property-value">{prop.value || 'N/A'}</div>
+			{/if}
 		{/each}
 	</div>
 
@@ -63,6 +78,7 @@
 		{#each technicalProperties as prop}
 			<div class="overflow-hidden">
 				<div class="property-name">{prop.name}</div>
+
 				<div class="property-value">{prop.value || 'N/A'}</div>
 			</div>
 		{/each}

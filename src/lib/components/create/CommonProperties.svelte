@@ -13,7 +13,8 @@
 		startingPrice: (v) => !v || noTry(() => parseEther(v))[1]?.gt(0),
 		reservePrice: (v) => noTry(() => parseEther(v))[1]?.gt(0),
 		quantity: () => true,
-		duration: () => true
+		duration: () => true,
+		token: () => true
 	};
 
 	export let propNames: ListingPropName[] = [];
@@ -32,7 +33,7 @@
 		const value = propValues[propName];
 		acc[propName] = validator(value);
 		return acc;
-	}, {});
+	}, {} as Record<ListingPropName, boolean>);
 
 	$: console.log(validations);
 
@@ -53,7 +54,7 @@
 	{#key propNames}
 		<!-- {#if is('entryTickets')}
 			<div>
-				<span class="uppercase italic font-light block mb-4">Entry tickets</span>
+				<span class="block mb-4 font-light uppercase">Entry tickets</span>
 				<RadioGroup
 					name="entry-tickets"
 					options={[
@@ -75,14 +76,14 @@
 		{#if is('price')}
 			<label for="price-component">
 				<span>Price</span>
-				<TokenDropdown on:select id="price-component" bind:value={propValues.price} valid={validations.price} />
+				<TokenDropdown on:select id="price-component" bind:value={propValues.price} valid={validations.price} bind:selected={propValues.token} />
 			</label>
 		{/if}
 
 		<!-- {#if is('totalTickets')}
 			<label>
 				<span>Total tickets</span>
-				<input type="text" class="input h-12 w-full" placeholder="Enter tickets number" />
+				<input type="text" class="w-full h-12 input" placeholder="Enter tickets number" />
 			</label>
 		{/if} -->
 
@@ -96,7 +97,7 @@
 		{#if is('quantity')}
 			<label for="price-component">
 				<span>Quantity</span>
-				<input type="number" class="input h-12 w-full input-hide-controls" bind:value={propValues['quantity']} />
+				<input type="number" class="w-full h-12 input input-hide-controls" bind:value={propValues['quantity']} />
 			</label>
 		{/if}
 
@@ -117,7 +118,7 @@
 		{#if is('reservePrice')}
 			<label for="reserve-price-component">
 				<span>Reserve price</span>
-				<TokenDropdown id="reserve-price-component" bind:value={propValues.reservePrice} placeholder="5.00" />
+				<TokenDropdown id="reserve-price-component" bind:value={propValues.reservePrice} placeholder="5.00" bind:selected={propValues.token} />
 			</label>
 		{/if}
 	{/key}

@@ -29,6 +29,12 @@ export interface Collection {
 	nfts: any[];
 	id: string;
 	createdAt?: string;
+	origin: 'EXTERNAL' | 'HINATA';
+	verified: boolean;
+	floorPrice: number;
+	totalVol: number;
+	total24hours: number;
+	'24hourPercent': number;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
@@ -93,7 +99,6 @@ export interface UpdateCollectionOptions {
 }
 
 export async function apiUpdateCollection(options: UpdateCollectionOptions) {
-	console.log(options);
 	const formData = new FormData();
 	Object.entries(options).forEach(([k, v]) => v && formData.append(k, v));
 
@@ -137,8 +142,8 @@ export interface CollectionTableRow {
 	'24hourPercent': number;
 }
 
-export async function apiGetMostActiveCollections(): Promise<CollectionTableRow[]> {
-	const res = await axios.get(getApiUrl('latest', 'collections'));
+export async function apiGetMostActiveCollections(): Promise<Collection[]> {
+	const res = await axios.get(getApiUrl('latest', 'collections/search'));
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -160,9 +165,9 @@ export interface collectionSearchOptions {
 export async function apiSearchCollections(options?: collectionSearchOptions) {
 
 	if(options && !options.name) options.name = undefined;
-	if(options) options.limit = 20;
+	if(options && !options.limit) options.limit = 20;
 
-	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: options ? options : { limit: 20 } });
+	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: options });
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
 	}

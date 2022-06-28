@@ -7,27 +7,38 @@
 	export let offsetX = 0;
 	export let offsetY = 0;
 
-	function getCoords(elem) {
+	let recalcHelper = 0;
+
+	export function recalc() {
+		recalcHelper++;
+	}
+
+	function getCoords(elem: HTMLElement) {
 		let box = elem.getBoundingClientRect();
 
 		return {
-			top: box.top + window.pageYOffset,
-			right: box.right + window.pageXOffset,
-			bottom: box.bottom + window.pageYOffset,
-			left: box.left + window.pageXOffset,
+			top: box.top,
+			right: box.right,
+			bottom: box.bottom,
+			left: box.left,
 			height: box.height,
 			width: box.width
 		};
 	}
 
-	$: clientRect = browser && to && getCoords(to);
+	let clientRect: { top: number; right: number; bottom: number; left: number; height: number; width: number };
+
+	$: {
+		recalcHelper;
+		clientRect = browser && to && getCoords(to);
+	}
 </script>
 
 <div
-	class="absolute"
+	class="fixed"
 	style="
-    top: {clientRect?.top + (bottom ? clientRect?.height : 0) + offsetX}px;
-    left: {clientRect?.left + (right ? clientRect?.width : 0) + offsetY}px"
+    top: {clientRect?.top + (bottom ? clientRect?.height : 0) + offsetY}px;
+    left: {clientRect?.left + (right ? clientRect?.width : 0) + offsetX}px"
 >
 	<slot />
 </div>

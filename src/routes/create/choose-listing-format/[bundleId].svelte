@@ -39,14 +39,14 @@
 </script>
 
 <!-- Back button -->
-<button class="btn flex items-center space-x-2 uppercase font-semibold mt-16 mb-8 text-sm" on:click={goBack}>
+<button class="flex items-center mt-16 mb-8 space-x-2 text-sm font-semibold uppercase btn" on:click={goBack}>
 	<Back />
 	<div>Go Back</div>
 </button>
 
 <hr class="separator" />
 
-<h1 class="italic font-light uppercase mt-8 text-xl">Step 2: Choose listing format</h1>
+<h1 class="mt-8 text-xl font-light uppercase">Step 2: Choose listing format</h1>
 
 <div class="font-poppins text-[#585858] mt-8 h-6">
 	{#if hoveredListingType}
@@ -56,7 +56,7 @@
 	{/if}
 </div>
 
-<div class="flex justify-center mt-8 mb-64 gap-16 flex-wrap">
+<div class="flex flex-wrap justify-center gap-16 mt-8 mb-64">
 	{#each listingTypes as listingType}
 		{#if listingType.show?.()}
 			<div class="w-64">

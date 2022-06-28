@@ -1,19 +1,26 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
 	import { filters } from '$stores/marketplace';
+	import { onMount } from 'svelte';
 
 	let min: number;
 	let max: number;
 
+	onMount(() => {
+		if ($filters?.price) {
+			min = $filters.price?.priceMin;
+			max = $filters.price?.priceMax;
+		}
+	});
+
 	const updateValues = () => {
 		$filters.price = {
-			min: min || 0,
-			max: max || 0
+			priceMin: min === 0 || min ? min : null,
+			priceMax: max === 0 || max ? max : null
 		};
-		filters.update((val) => val);
 	};
 
-	updateValues();
+	$: if (((min === 0 || min) && min !== $filters.price?.priceMin) || ((max === 0 || max) && max !== $filters.price?.priceMax)) updateValues();
 </script>
 
 <div>
@@ -32,8 +39,8 @@
 	</div>
 
 	<div class="w-full flex justify-between items-center gap-3 mt-4">
-		<input type="number" class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4" placeholder="MIN" bind:value={min} on:keyup={updateValues} />
+		<input type="number" class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4" placeholder="MIN" bind:value={min} min="0" />
 		TO
-		<input type="number" class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4" placeholder="MAX" bind:value={max} on:keyup={updateValues} />
+		<input type="number" class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4" placeholder="MAX" bind:value={max} min="0" />
 	</div>
 </div>

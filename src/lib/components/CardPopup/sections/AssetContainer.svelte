@@ -33,11 +33,11 @@
 			console.error(err);
 		} else if (res.data.message) {
 			favorited = false;
-			notifySuccess('Unliked NFT.');
+			notifySuccess('Unfavorited NFT.');
 			$likedNfts = [options.likeIds, -1];
 		} else {
 			favorited = true;
-			notifySuccess('Liked NFT.');
+			notifySuccess('Favorited NFT.');
 			$likedNfts = [options.likeIds, 1];
 		}
 

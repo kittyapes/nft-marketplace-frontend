@@ -11,7 +11,7 @@
 	import type { ListingType } from '$utils/api/listing';
 	import { getNft } from '$utils/api/nft';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
-	import { getTokenAddress } from '$utils/misc/getTokenAddress';
+	import { contractGetTokenAddress, getTokenAddress } from '$utils/misc/getTokenAddress';
 	import { goBack } from '$utils/navigation';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
@@ -44,8 +44,6 @@
 		fetchedNftData.set(nftRes);
 	});
 
-	let currentPaymentToken: { name: string; address: string } = { name: 'ETH', address: HinataTokenAddress };
-
 	const handleTokenChange = (event: CustomEvent) => {
 		// can be uncommented once contract supports different pay tokens
 		/*
@@ -77,8 +75,8 @@
 			duration,
 			// TODO, add support for addresses from external collections
 			nfts: [{ nftId: $fetchedNftData.nftId, amount: BigNumber.from(1), collectionAddress: HinataMarketplaceStorageContractAddress }],
-			paymentTokenAddress: getTokenAddress('WETH'),
-			paymentTokenTicker: 'WETH',
+			paymentTokenAddress: await contractGetTokenAddress(listingPropValues.token.label),
+			paymentTokenTicker: listingPropValues.token.label,
 			quantity: BigNumber.from(1),
 			startTime: startTimestamp,
 			listingType: listingType,
@@ -122,9 +120,9 @@
 <div class="flex mb-32">
 	<div class="flex-grow">
 		<h1 class="mt-8 text-xl uppercase">
-			<span class="italic font-light">Step 3: Setting details</span>
+			<span class="font-light">Step 3: Setting details</span>
 			|
-			<span class="pr-1 italic font-bold gradient-text">{listingType}</span>
+			<span class="pr-1 font-bold gradient-text">{listingType}</span>
 		</h1>
 
 		<hr class="mt-4 separator" />
@@ -147,7 +145,7 @@
 	</div>
 
 	<div class="p-8 border-0 border-l separator w-80">
-		<div class="mb-4 text-xl italic uppercase">Preview</div>
+		<div class="mb-4 text-xl uppercase">Preview</div>
 		<NftCard
 			options={{ id: null, title: $fetchedNftData?.name, imageUrl: $fetchedNftData?.thumbnailUrl, price: listingPropValues?.price, collectionName: $fetchedNftData?.['collection']?.name ?? '' }}
 		/>

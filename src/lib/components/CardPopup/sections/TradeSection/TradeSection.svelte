@@ -5,6 +5,7 @@
 	import CreateListing from './frames/CreateListing.svelte';
 	import Error from './frames/Error.svelte';
 	import ManageAuction from './frames/ManageAuction.svelte';
+	import ManageSale from './frames/ManageSale.svelte';
 	import Success from './frames/Success.svelte';
 
 	export let options: CardPopupOptions;
@@ -17,6 +18,7 @@
 	const states: { name: string; component: any }[] = [
 		{ name: 'browse', component: Browse },
 		{ name: 'create-listing', component: CreateListing },
+		{ name: 'manage-sale', component: ManageSale },
 		{ name: 'manage-auction', component: ManageAuction },
 		{ name: 'success', component: Success },
 		{ name: 'error', component: Error }
@@ -32,7 +34,7 @@
 		if (options.resourceType === 'listing') {
 			if (options.listingData.sellerAddress === $currentUserAddress) {
 				if (options.listingData.listingType === 'auction') stateName = 'manage-auction';
-				if (options.listingData.listingType === 'sale') stateName = 'browse';
+				if (options.listingData.listingType === 'sale') stateName = 'manage-sale';
 			} else {
 				stateName = 'browse';
 			}

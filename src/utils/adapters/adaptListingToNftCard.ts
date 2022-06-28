@@ -1,9 +1,9 @@
 import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
-import { apiGetCollectionById } from '$utils/api/collection';
 import type { Listing } from '$utils/api/listing';
 import dayjs from 'dayjs';
 import { formatEther } from 'ethers/lib/utils.js';
+import { writable } from 'svelte/store';
 
 export async function adaptListingToNftCard(data: Listing) {
 	let price: string;
@@ -14,8 +14,11 @@ export async function adaptListingToNftCard(data: Listing) {
 		price = 'N/A';
 	}
 
-	const nft = data.nfts[0].nft;
-	const collectionData = await apiGetCollectionById(nft.collectionId).catch((e) => {});
+	const nft = data.nfts?.[0].nft;
+	const collectionData = {
+		slug: data.nfts?.[0].collectionSlug,
+		name: data.nfts?.[0].collectionName,
+	}
 
 	const startTime = dayjs(data.startTime).unix();
 	const hasAStartTime = new Date(startTime * 1000).getUTCFullYear() !== 1970;
@@ -34,7 +37,8 @@ export async function adaptListingToNftCard(data: Listing) {
 				contractType: 'ERC1155',
 				creator: nft.creator,
 				contractAddress: nft.contractAddress,
-				tokenId: nft.nftId
+				tokenId: nft.nftId,
+				isExternal: nft.isExternal
 			}
 		],
 		saleData: {
@@ -51,14 +55,16 @@ export async function adaptListingToNftCard(data: Listing) {
 			symbol: data.paymentTokenTicker,
 			tokenAddress: data.paymentTokenAddress,
 			startTime: data.startTime,
-			duration: data.duration
+			duration: data.duration,
+			onChainId: data.listingId
 		},
 		likeIds: [nft._id],
 		startTime: hasAStartTime ? new Date(startTime * 1000) : null,
 		isListingTimeActive: isTimeLive,
 		rawResourceData: data,
 		collectionData,
-		duration: data.duration * 1000
+		duration: data.duration * 1000,
+		staleResource: writable()
 	};
 
 	const nftCardOptions = {

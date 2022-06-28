@@ -36,7 +36,7 @@
 	async function handleBuy() {
 		isBuying = true;
 
-		const price = ethers.utils.parseEther(options.price.toString());
+		const price = options.price.toString();
 		const success = await salePurchase(options.onChainId, price);
 
 		success && (state = 'success-screen') && (bought = true);

@@ -47,11 +47,11 @@
 			} else if (res.data.message) {
 				$likedNfts = [options.likeIds, -1];
 				options.favorited = true;
-				notifySuccess('Unliked NFT.');
+				notifySuccess('Unfavorited NFT.');
 			} else {
 				$likedNfts = [options.likeIds, 1];
 				options.favorited = true;
-				notifySuccess('Liked NFT.');
+				notifySuccess('Favorited NFT.');
 			}
 		}
 
@@ -151,7 +151,9 @@
 	</div>
 
 	<div class="flex mt-2 text-sm font-medium text-gray-600">
-		<div class={`flex-grow ${options?.collectionName === 'N/A' || options?.collectionName}`}>{options?.collectionName || 'N/A'}</div>
+		<div class={`flex-grow ${options?.collectionName === 'N/A' || options?.collectionName}`}>
+			{options?.collectionName?.substring(0, 15) || 'N/A'}{options?.collectionName?.length > 15 ? '...' : ''}
+		</div>
 		<!-- Hide price info when not present/listed -->
 		{#if options?.price}
 			<div>Price</div>
@@ -159,7 +161,7 @@
 	</div>
 
 	<div class="flex items-center mt-2 font-semibold">
-		<div class="flex-grow whitespace-nowrap">{options?.title || 'N/A'}</div>
+		<div class="flex-grow whitespace-nowrap">{options?.title?.substring(0, 12) || 'N/A'}{options?.title?.length > 12 ? '...' : ''}</div>
 		<!-- Hide price info when not present/listed -->
 		{#if options?.price}
 			<Eth />

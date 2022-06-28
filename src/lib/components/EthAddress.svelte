@@ -25,7 +25,7 @@
 
 <div use:hoverHint={{ text: address, targetId: `hint-target-${address}` }} on:click>
 	<div class="w-full h-full transition-all " id={tooltip ? `hint-target-${address}` : ``} />
-	<div class="flex items-center gap-6 text-[#27C9FF] font-light italic duration-200 {$$props.class}">
+	<div class="flex items-center gap-6 text-[#27C9FF] font-light duration-200 {$$props.class}">
 		{#if etherScanLink}
 			<a href="https://etherscan.io/address/{address}" target="_blank">
 				{visibleAddress}

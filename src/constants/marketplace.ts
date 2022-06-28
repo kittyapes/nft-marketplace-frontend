@@ -15,15 +15,13 @@ export const CARD_STATUSES = [
 
 export const DROP_STATUSES = [
 	{
-		status: 'sale',
+		status: 'Buy Now',
+		value: 'sale',
 		selected: false
 	},
 	{
-		status: 'auction',
+		status: 'Auctions',
+		value: 'auction',
 		selected: false
 	},
-	{
-		status: 'raffle',
-		selected: false
-	}
 ];

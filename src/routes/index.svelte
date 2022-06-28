@@ -2,17 +2,31 @@
 	import { links } from '$constants/links';
 	import { socials } from '$constants/socials';
 	import CollectionsTable from '$lib/components/collections/CollectionsTable.svelte';
-	import { apiGetMostActiveCollections } from '$utils/api/collection';
+	import { apiGetMostActiveCollections, type Collection } from '$utils/api/collection';
 	import type { CollectionTableRow } from '$utils/api/collection';
 	import { onMount } from 'svelte';
+	import { blogPosts } from '$stores/blog';
+	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
+	import { writable } from 'svelte/store';
+	import { getListings, type Listing } from '$utils/api/listing';
+	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
+	import NftList from '$lib/components/NftList.svelte';
+	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 
-	let collections: CollectionTableRow[] = [];
+	let collections: Collection[] = [];
+	let exploreListings = writable<Listing[]>([]);
+	let exploreListingsData;
+
+	const getExploreMarketData = async () => {
+		exploreListings.set(await getListings(null, 1, 10));
+		exploreListingsData = await Promise.all($exploreListings.map(adaptListingToNftCard));
+	};
 
 	// Please don't ask me why we need an auth token for this...
 	// We don't anymore 🙂 🔪
 	onMount(async () => {
+		getExploreMarketData();
 		collections = await apiGetMostActiveCollections();
-		console.log(collections);
 	});
 </script>
 
@@ -60,4 +74,34 @@
 	</div>
 	<hr class="mt-4 border-[#0000004D]" />
 	<CollectionsTable {collections} />
+</div>
+
+<!-- Explore Market Section -->
+<div class="px-16 mt-24 mb-16">
+	<div class="flex items-end">
+		<h2 class="text-4xl font-light uppercase flex-grow">Explore Market</h2>
+		<a href="/marketplace" class="uppercase underline text-sm font-bold">View All</a>
+	</div>
+	<hr class="mt-4 border-[#0000004D]" />
+
+	{#if exploreListingsData?.length}
+		<NftList options={exploreListingsData} />
+	{:else}
+		<DiamondsLoader />
+	{/if}
+</div>
+
+<!-- Latest blog posts -->
+<div class="px-16 mt-24 mb-16">
+	<div class="flex items-end">
+		<h2 class="text-4xl font-light uppercase flex-grow">Latest Blog Posts</h2>
+		<a href="https://hinatafoundation.medium.com/" target="_blank" class="uppercase underline text-sm font-bold">View Latest Posts</a>
+	</div>
+	<hr class="mt-4 border-[#0000004D]" />
+
+	{#if $blogPosts.length}
+		{#each $blogPosts.slice(0, 2) as post}
+			<BlogPostPreview data={post} />
+		{/each}
+	{/if}
 </div>

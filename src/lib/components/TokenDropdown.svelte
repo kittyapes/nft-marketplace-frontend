@@ -1,19 +1,15 @@
 <script lang="ts">
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import ArrowDown from '$icons/arrow-down.svelte';
-	import { fade, slide } from 'svelte/transition';
+	import { whiteListingTokens } from '$utils/contracts/listing';
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { HinataTokenAddress, WethContractAddress } from '$constants/contractAddresses';
+	import { fade, slide } from 'svelte/transition';
 
 	const dispatch = createEventDispatcher();
 
 	export let id = '';
 	export let value = '';
-	export let tokens: { label: string; iconUrl: string; value: string }[] = [
-		{ label: 'ETH', iconUrl: '/svg/white-eth.svg', value: WethContractAddress },
-		{ label: 'HI', iconUrl: '/svg/currency/hinata-logo-token.svg', value: HinataTokenAddress }
-		// { label: 'Sol', iconUrl: '/svg/white-eth.svg' }
-	];
+	export let tokens: { label: string; iconUrl: string; value: string }[] = whiteListingTokens;
 	export let selected = tokens[0];
 	export let placeholder = 'Enter price for NFT';
 	export let valid = true;
@@ -26,6 +22,7 @@
 	export let showLabel = false;
 	export let showArrow = true;
 	export let buttonDisabled = false;
+	export let disabled = false;
 
 	let open = false;
 
@@ -47,8 +44,17 @@
 	onMount(() => handleSelect(selected));
 </script>
 
-<div class="relative">
-	<input {id} type="text" style:border-color={borderColor} class="input w-full h-12 {$$props.class} {!valid && 'border-red-300'}" class:font-semibold={value} {placeholder} bind:value />
+<div class="relative" class:opacity-50={disabled}>
+	<input
+		{id}
+		type="text"
+		style:border-color={borderColor}
+		class="input w-full h-12 {$$props.class} {!valid && 'border-red-300'} disabled:bg-white"
+		class:font-semibold={value}
+		{placeholder}
+		{disabled}
+		bind:value
+	/>
 	<button
 		style:background={dropdownButtonBg}
 		style:color={dropdownButtonColor}
