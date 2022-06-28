@@ -56,8 +56,8 @@
 			Marketplace
 		</a>
 
-		<!-- Staking -->
-		<a href="/stake" class="relative font-semibold uppercase text-md snap-center min-w-fit" class:-mr-8={!showCreate}>Staking</a>
+		<!-- Staking - HIDDEN FOR V1 -->
+		<!-- <a href="/stake" class="relative font-semibold uppercase text-md snap-center min-w-fit" class:-mr-8={!showCreate}>Staking</a> -->
 
 		<!-- Airdrop HIDDEN FOR NOW -->
 		<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->

@@ -13,7 +13,8 @@
 		startingPrice: (v) => !v || noTry(() => parseEther(v))[1]?.gt(0),
 		reservePrice: (v) => noTry(() => parseEther(v))[1]?.gt(0),
 		quantity: () => true,
-		duration: () => true
+		duration: () => true,
+		token: () => true
 	};
 
 	export let propNames: ListingPropName[] = [];
@@ -32,7 +33,7 @@
 		const value = propValues[propName];
 		acc[propName] = validator(value);
 		return acc;
-	}, {});
+	}, {} as Record<ListingPropName, boolean>);
 
 	$: console.log(validations);
 
@@ -75,7 +76,7 @@
 		{#if is('price')}
 			<label for="price-component">
 				<span>Price</span>
-				<TokenDropdown on:select id="price-component" bind:value={propValues.price} valid={validations.price} />
+				<TokenDropdown on:select id="price-component" bind:value={propValues.price} valid={validations.price} bind:selected={propValues.token} />
 			</label>
 		{/if}
 
@@ -117,7 +118,7 @@
 		{#if is('reservePrice')}
 			<label for="reserve-price-component">
 				<span>Reserve price</span>
-				<TokenDropdown id="reserve-price-component" bind:value={propValues.reservePrice} placeholder="5.00" />
+				<TokenDropdown id="reserve-price-component" bind:value={propValues.reservePrice} placeholder="5.00" bind:selected={propValues.token} />
 			</label>
 		{/if}
 	{/key}

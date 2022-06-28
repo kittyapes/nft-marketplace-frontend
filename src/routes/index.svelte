@@ -2,7 +2,7 @@
 	import { links } from '$constants/links';
 	import { socials } from '$constants/socials';
 	import CollectionsTable from '$lib/components/collections/CollectionsTable.svelte';
-	import { apiGetMostActiveCollections } from '$utils/api/collection';
+	import { apiGetMostActiveCollections, type Collection } from '$utils/api/collection';
 	import type { CollectionTableRow } from '$utils/api/collection';
 	import { onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
@@ -13,7 +13,7 @@
 	import NftList from '$lib/components/NftList.svelte';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 
-	let collections: CollectionTableRow[] = [];
+	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
 	let exploreListingsData;
 
