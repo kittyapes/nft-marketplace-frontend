@@ -1,24 +1,28 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import InfoBox from '$lib/components/InfoBox.svelte';
 	import CircularSpinner from '$lib/components/spinners/CircularSpinner.svelte';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
+	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
 	import { currentUserAddress } from '$stores/wallet';
+	import { getTokenBalance, hasEnoughBalance } from '$utils/contracts/token';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import { createToggle } from '$utils/misc/toggle';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
 	import { formatEther, parseEther } from 'ethers/lib/utils.js';
 	import { noTry, noTryAsync } from 'no-try';
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
+	import { derived, writable } from 'svelte/store';
 
 	const dispatch = createEventDispatcher();
 
@@ -99,6 +103,18 @@
 	});
 
 	$: formattedPrice = noTry(() => formatEther(options.auctionData.startingPrice))[1] || 'N/A';
+
+	const hoveringPurchase = createToggle();
+	let purchaseButton: HTMLElement;
+
+	const hasEnoughTokens = derived(
+		currentUserAddress,
+		(address, set) => {
+			if (options.listingData.listingType !== 'sale') set(false);
+			hasEnoughBalance(options.listingData.tokenAddress, address, options.saleData.price).then(set);
+		},
+		null
+	);
 </script>
 
 <div class="flex flex-col justify-center h-[90%]">
@@ -120,11 +136,16 @@
 		</div>
 
 		<div class="grid mt-12 place-items-center">
-			<button class="font-bold uppercase btn btn-gradient btn-rounded w-80" on:click={handlePurchase} disabled={$purchasingState}>
-				{#if $purchasingState}
-					<div class="absolute top-0 bottom-0 w-8 h-8 my-auto -ml-6">
-						<CircularSpinner />
-					</div>
+			<button
+				bind:this={purchaseButton}
+				on:pointerenter={hoveringPurchase.toggle}
+				on:pointerleave={hoveringPurchase.toggle}
+				class="font-bold uppercase btn btn-gradient btn-rounded w-80"
+				on:click={handlePurchase}
+				disabled={$purchasingState || !$hasEnoughTokens}
+			>
+				{#if $purchasingState || $hasEnoughTokens === null}
+					<ButtonSpinner />
 				{/if}
 				Buy Now
 			</button>
@@ -165,3 +186,9 @@
 		</div>
 	{/if}
 </div>
+
+{#if $hoveringPurchase && $hasEnoughTokens === false}
+	<AttachToElement to={purchaseButton} bottom offsetY={20}>
+		<InfoBubble>You do not have enough {options.listingData.symbol} to purchase this item.</InfoBubble>
+	</AttachToElement>
+{/if}

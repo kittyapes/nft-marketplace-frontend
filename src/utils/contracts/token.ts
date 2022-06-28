@@ -26,6 +26,26 @@ export async function getTokenDetails(tokenAddress: string) {
 	}
 }
 
+export async function getTokenBalance(tokenAddress: string, userAddress: string, decimals?: number): Promise<BigNumber> {
+	if (!decimals) {
+		decimals = (await getTokenDetails(tokenAddress)).decimals;
+	}
+
+	const contract = getMockErc20TokenContract(get(appProvider), tokenAddress);
+	const balance = await contract.balanceOf(userAddress);
+
+	return balance;
+}
+
+export async function hasEnoughBalance(tokenAddress: string, userAddress: string, requiredBalance: string) {
+	const tokenDetails = await getTokenDetails(tokenAddress);
+	const balance = await getTokenBalance(tokenAddress, userAddress, tokenDetails.decimals);
+
+	const parsedRequired = parseUnits(requiredBalance, tokenDetails.decimals);
+
+	return balance.gte(parsedRequired);
+}
+
 export async function contractGetTokenAllowance(owner: string, spender: string, tokenAddress: string): Promise<BigNumber> {
 	const contract = getMockErc20TokenContract(get(appSigner), tokenAddress);
 
