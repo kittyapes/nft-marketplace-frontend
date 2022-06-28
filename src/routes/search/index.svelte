@@ -29,7 +29,6 @@
 				const res = await getListingsByTitle(query, fullResultsLimit, searchResults.listings.index).catch((e) => []);
 
 				if (res.length === 0) {
-					console.log('END');
 					searchResults.listings.reachedEnd = true;
 					searchResults.listings.isLoading = false;
 					searchResults = searchResults;

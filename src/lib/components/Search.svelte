@@ -53,7 +53,6 @@
 		await searchUsers(query).catch((error) => console.log(error));
 		await searchCollections(query).catch((error) => console.log(error));
 
-		console.log(searchResults);
 		await tick();
 		$searchQuery = query;
 		show = true;
