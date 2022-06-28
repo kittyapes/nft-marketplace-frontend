@@ -27,7 +27,6 @@
 	onMount(async () => {
 		getExploreMarketData();
 		collections = await apiGetMostActiveCollections();
-		console.log(collections);
 	});
 </script>
 

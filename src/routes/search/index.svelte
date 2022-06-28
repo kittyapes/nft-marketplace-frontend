@@ -16,83 +16,111 @@
 	let loaded = false;
 
 	let searchResults: SearchResults = {
-		collections: {
-			data: [],
-			index: 1,
-			reachedEnd: false
-		},
 		listings: {
 			data: [],
 			index: 1,
-			reachedEnd: false
+			reachedEnd: false,
+			isLoading: false,
+			fetchFunction: async (query: string) => {
+				if (searchResults.listings.reachedEnd) return;
+
+				searchResults.listings.isLoading = true;
+
+				const res = await getListingsByTitle(query, fullResultsLimit, searchResults.listings.index).catch((e) => []);
+
+				if (res.length === 0) {
+					console.log('END');
+					searchResults.listings.reachedEnd = true;
+					searchResults.listings.isLoading = false;
+					searchResults = searchResults;
+					return;
+				}
+
+				searchResults.listings.index++;
+				let listings = res;
+				searchResults.listings.data = [...searchResults.listings.data, ...(await Promise.all(listings.map(adaptListingToNftCard)))];
+				searchResults.listings.isLoading = false;
+
+				searchResults = searchResults;
+			}
+		},
+		collections: {
+			data: [],
+			index: 1,
+			reachedEnd: false,
+			isLoading: false,
+			fetchFunction: async (query: string) => {
+				if (searchResults.collections.reachedEnd) return;
+
+				searchResults.collections.isLoading = true;
+
+				const res = await getCollectionsByTitle(query, fullResultsLimit, searchResults.collections.index).catch((e) => []);
+
+				if (res.length === 0) {
+					searchResults.collections.reachedEnd = true;
+					searchResults.collections.isLoading = false;
+					searchResults = searchResults;
+					return;
+				}
+
+				searchResults.collections.index++;
+				searchResults.collections.data = [...searchResults.collections.data, ...res.filter((e) => e.slug)];
+				searchResults.collections.isLoading = false;
+
+				searchResults = searchResults;
+			}
 		},
 		users: {
 			data: [],
 			index: 1,
-			reachedEnd: false
+			reachedEnd: false,
+			isLoading: false,
+			fetchFunction: async (query: string) => {
+				if (searchResults.users.reachedEnd) return;
+
+				searchResults.users.isLoading = true;
+
+				const res = await getUsersByName(query, fullResultsLimit, searchResults.users.index).catch((e) => []);
+
+				if (res.length === 0) {
+					searchResults.users.reachedEnd = true;
+					searchResults = searchResults;
+					return;
+				}
+
+				searchResults.users.index++;
+				searchResults.users.data = [...searchResults.users.data, ...res];
+				searchResults.users.isLoading = false;
+
+				searchResults = searchResults;
+			}
 		}
 	};
 
-	const searchListings = async (query: string) => {
-		const res = await getListingsByTitle(query, fullResultsLimit, searchResults.listings.index).catch((e) => []);
-		searchResults.listings.index++;
-		let listings = res;
-		searchResults.listings.data = await Promise.all(listings.map(adaptListingToNftCard));
-		searchResults = searchResults;
-	};
-
-	const searchUsers = async (query: string) => {
-		const res = await getUsersByName(query, fullResultsLimit, searchResults.users.index).catch((e) => []);
-		searchResults.users.index++;
-		searchResults.users.data = res;
-		searchResults = searchResults;
-	};
-
-	const searchCollections = async (query: string) => {
-		const res = await getCollectionsByTitle(query, fullResultsLimit, searchResults.collections.index).catch((e) => []);
-		searchResults.collections.index++;
-		searchResults.collections.data = res.filter((e) => e.slug);
-		searchResults = searchResults;
-	};
-
 	const debouncedSearch = debounce(async (query: string) => {
+		loaded = false;
 		await searchGlobally(query);
 	}, 500);
 
 	const searchGlobally = async (query: string) => {
-		await searchListings(query).catch((error) => console.log(error));
-		await searchUsers(query).catch((error) => console.log(error));
-		await searchCollections(query).catch((error) => console.log(error));
-		loaded = false;
-		console.log({ ...searchResults });
+		for (const [key, value] of Object.entries(searchResults)) {
+			await value.fetchFunction(query).catch((error) => console.log(error));
+		}
 		loaded = true;
 	};
 
-	/*async function fetchMore() {
-		if (reachedEnd) return;
-		isLoading = true;
-
-		console.log('PAGE: ', index);
-		const res = await fetchFunction();
-
-		if (res.err) {
-			console.error(res.err);
-			notifyError('Failed to fetch more listings.');
-			return;
+	searchQuery.subscribe(async (val) => {
+		loaded = false;
+		for (const [key, value] of Object.entries(searchResults)) {
+			value.data = [];
+			value.index = 1;
+			value.reachedEnd = false;
 		}
 
-		if (res.adapted.length === 0) {
-			reachedEnd = true;
-		} else {
-			index++;
-			data = [...data, ...res.adapted];
-			console.log(data);
-			console.log('UPADTING DATA');
-		}
-		isLoading = false;
-	}*/
+		await debouncedSearch(val);
+	});
 
-	onMount(() => debouncedSearch($searchQuery));
+	onMount(async () => await debouncedSearch($searchQuery));
 </script>
 
 <div class="w-full h-full p-10 flex flex-col gap-10 overflow-hidden">
@@ -114,7 +142,7 @@
 				<div class="font-semibold text-lg">
 					<h1>{searchResults.users.data.length} Verified Creators</h1>
 				</div>
-				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[91vw] scrollbar-hide">
+				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[95vw] scrollbar-hide">
 					{#each searchResults.users.data as user}
 						<div class="max-w-xs w-full" on:click={() => goto('/profile/' + user.address)}>
 							<FeaturedArtistCard title={user.username} description={user.bio} coverImg={user.coverUrl} profileImg={user.thumbnailUrl} />
@@ -129,7 +157,12 @@
 					<h1>{searchResults.listings.data.length} items</h1>
 				</div>
 				<div class="">
-					<NftList options={searchResults.listings.data} />
+					<NftList
+						options={searchResults.listings.data}
+						isLoading={searchResults.listings.isLoading}
+						on:end-reached={() => searchResults.listings.fetchFunction($searchQuery)}
+						reachedEnd={searchResults.listings.reachedEnd}
+					/>
 				</div>
 			</div>
 		{/if}

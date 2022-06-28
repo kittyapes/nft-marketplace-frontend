@@ -13,7 +13,9 @@ export const getListingsByTitle = async (query: string, limit?: number, page?: n
             page: page ? page : 1,
             limit: limit ? limit : undefined,
         }
+
         const res = await axios.get(getApiUrl('latest', 'listings'), {params});
+
         return res.data.data as Listing[];
     } catch {    
         throw new Error('Failed to search for listings');
@@ -28,9 +30,10 @@ export const getUsersByName = async (query: string, limit?: number, page?: numbe
             page: page ? page : 1,
             role: 'verified_user'
         }
+
         // should be without permissions
         const res = await axios.get(getApiUrl('latest', 'admins/users'),  { params , ...getAxiosConfig()});
-        
+
         return res.data.data as UserData[];
     } catch {
         throw new Error('Failed to search for users');
@@ -44,7 +47,9 @@ export const getCollectionsByTitle = async (query: string, limit?: number, page?
             limit: limit ? limit : undefined,
             page: page ? page : 1,
         }
-        const res = await axios.get(getApiUrl('latest', 'collections/search'),  { params , ...getAxiosConfig()});
+
+        const res = await axios.get(getApiUrl('latest', 'collections/search'),  { params });
+        
         return res.data.data as Collection[];
     } catch {    
         throw new Error('Failed to search for collections');

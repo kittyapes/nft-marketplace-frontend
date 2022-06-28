@@ -33,28 +33,19 @@
 	}, 500);
 
 	const searchListings = async (query: string) => {
-		getListingsByTitle(query, resultCategoryLimit)
-			.then(async (response) => {
-				let listings = response;
-				searchResults.listings = await Promise.all(listings.map(adaptListingToNftCard));
-			})
-			.catch((e) => notifyError(e.message));
+		const response = await getListingsByTitle(query, resultCategoryLimit);
+		let listings = response;
+		searchResults.listings = await Promise.all(listings.map(adaptListingToNftCard)).catch((e) => []);
 	};
 
 	const searchUsers = async (query: string) => {
-		getUsersByName(query, resultCategoryLimit)
-			.then(async (response) => {
-				searchResults.users = response;
-			})
-			.catch((e) => notifyError(e.message));
+		const response = await getUsersByName(query, resultCategoryLimit).catch((e) => []);
+		searchResults.users = response;
 	};
 
 	const searchCollections = async (query: string) => {
-		getCollectionsByTitle(query, resultCategoryLimit)
-			.then(async (response) => {
-				searchResults.collections = response.filter((e) => e.slug);
-			})
-			.catch((e) => notifyError(e.message));
+		const response = await getCollectionsByTitle(query, resultCategoryLimit).catch((e) => []);
+		searchResults.collections = response.filter((e) => e.slug);
 	};
 
 	const searchGlobally = async () => {
@@ -73,12 +64,9 @@
 		debouncedSearch.cancel();
 	}
 
-	$: if (searching) {
-		show = false;
-	}
-
 	$: if (query) {
 		searching = true;
+		show = false;
 		debouncedSearch();
 	}
 
