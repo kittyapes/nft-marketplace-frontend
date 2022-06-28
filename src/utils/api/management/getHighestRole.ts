@@ -1,5 +1,4 @@
 export let getHighestRole = (roles: string[]) => {
-    console.log(roles)
     if (roles.includes('INACTIVATED') || roles.includes('inactivated_user') || roles.includes('AWAITING_INACTIVATED')) {
         return 'INACTIVATED';
     } else if (roles.includes('superadmin')) {

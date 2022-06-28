@@ -291,6 +291,8 @@
 		debouncedSearch();
 	}
 
+	$: console.log(users);
+
 	$: if (users) {
 		userTableData = [
 			{

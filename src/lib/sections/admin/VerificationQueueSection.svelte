@@ -108,7 +108,7 @@
 	async function refreshVerificationQueue() {
 		isRefreshingQueue = true;
 		const res = await getVerificationQueue($verificationQueueSort.value as any).catch(makeErrorHandler('Failed to fetch verification queue!'));
-
+		console.log(res);
 		queueItems = res || [];
 		isRefreshingQueue = false;
 	}
