@@ -10,7 +10,6 @@
 	}
 
 	export let options: Option[];
-	export let btnClass = '';
 
 	$: if (!options?.length) {
 		throw new Error('No options provided');

@@ -99,7 +99,6 @@ export interface UpdateCollectionOptions {
 }
 
 export async function apiUpdateCollection(options: UpdateCollectionOptions) {
-	console.log(options);
 	const formData = new FormData();
 	Object.entries(options).forEach(([k, v]) => v && formData.append(k, v));
 
@@ -145,7 +144,7 @@ export interface CollectionTableRow {
 
 export async function apiGetMostActiveCollections(): Promise<Collection[]> {
 	const res = await axios.get(getApiUrl('latest', 'collections/search'));
-	console.log(res);
+
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
 	}
@@ -167,7 +166,7 @@ export async function apiSearchCollections(options?: collectionSearchOptions) {
 
 	if(options && !options.name) options.name = undefined;
 	if(options && !options.limit) options.limit = 20;
-	console.log(options.name)
+
 	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: options });
 	if (res.status !== 200) {
 		throw new Error(res.data.message);

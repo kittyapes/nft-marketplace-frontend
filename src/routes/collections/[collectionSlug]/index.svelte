@@ -14,18 +14,17 @@
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
 	import { nftDraft } from '$stores/create';
-	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import { onMount } from 'svelte';
 
 	let collectionData: Collection;
 	let creatorData: UserData;
 
 	async function fetchCollectionData() {
-		collectionData = await apiGetCollectionBySlug($page.params.collectionId).catch((e) => undefined);
+		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => undefined);
 		creatorData = await fetchProfileData(collectionData?.creator).catch((e) => undefined);
 	}
 
-	$: $currentUserAddress && fetchCollectionData();
+	$: fetchCollectionData();
 
 	const collectionStats = [
 		['Highest Sale', '$0.2M'],
@@ -60,7 +59,7 @@
 			alt=""
 		/>
 
-		<!-- Creator profile image -->
+		<!-- Creator profile image - TODO ADD LOGIC FOR VERIFIED CREATOR BADGE -->
 		<div class="absolute bottom-0 left-0 right-0 w-24 h-24 mx-auto translate-y-12">
 			<img class="object-cover w-20 h-20 bg-white border-4 border-white rounded-full " src={collectionData?.logoImageUrl || '/svg/icons/guest-avatar.svg'} alt="Collection creator avatar." />
 

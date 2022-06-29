@@ -76,7 +76,7 @@ export interface Listing {
 		};
 	}[];
 
-	paymentTokenTicker: 'ETH';
+	paymentTokenTicker: string;
 	paymentTokenAddress: string;
 	startTime: string;
 	duration: number;

@@ -25,10 +25,10 @@
 	import { withPrevious } from 'svelte-previous';
 
 	// Page params
-	const collectionId = $page.params.collectionId;
+	const collectionSlug = $page.params.collectionSlug;
 
 	// Edit vs. new
-	$: isNewCollection = collectionId === 'new';
+	$: isNewCollection = collectionSlug === 'new';
 
 	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
 
@@ -56,8 +56,16 @@
 		const nameRegex = new RegExp(/^\w[\w+_-]+\w$/, 'gm');
 		const slugRegex = new RegExp(/^\w[\w+_-]+\w$/, 'gm');
 
-		$formValidity.name = !!data.name ? (!nameRegex.test(data.name) && 'Collection name can only contain alphanumeric characters, -, or _') || !!data.name : 'Missing collection name';
-		$formValidity.slug = !!data.slug && !slugRegex.test(data.slug) && 'Collection slug can only contain alphanumeric characters, -, or _';
+		$formValidity.name = !!data.name
+			? (!nameRegex.test(data.name) && 'Collection name can only contain alphanumeric characters, -, or _') ||
+			  (data.name.length > 25 && 'Collection name Cannot Contain More Than 25 Characters') ||
+			  !!data.name
+			: 'Missing collection name';
+		$formValidity.slug = !!data.slug
+			? (!slugRegex.test(data.slug) && 'Collection url can only contain alphanumeric characters, -, or _') ||
+			  (data.slug.length > 25 && 'Collection url Cannot Contain More Than 25 Characters') ||
+			  !!data.slug
+			: 'Collection URL is invalid';
 
 		// Call search again to check the name
 		if (data.name !== $prevCollectionData?.name) {
@@ -75,7 +83,6 @@
 			}
 		}
 
-		$formValidity.slug = !!data.slug || 'Collection URL is invalid';
 		$formValidity.description = !!data.description || 'Missing collection description';
 	});
 
@@ -196,7 +203,7 @@
 
 	// Remote collection data
 	async function fetchRemoteCollectionData() {
-		const [err, res] = await noTryAsync(() => apiGetCollectionBySlug(collectionId));
+		const [err, res] = await noTryAsync(() => apiGetCollectionBySlug(collectionSlug));
 
 		if (err) {
 			notifyError('Failed to fetch collection data!');

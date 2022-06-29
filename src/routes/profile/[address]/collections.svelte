@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	import { page } from '$app/stores';
 	import CardList from '$lib/components/CardList.svelte';
 	import CollectionCard from '$lib/components/CollectionCard.svelte';
@@ -6,6 +8,8 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToCollectionCard } from '$utils/adapters/adaptCollectionToCollectionCard';
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
+	import { notifyError } from '$utils/toast';
+	import { isEthAddress } from '$utils/validator/isEthAddress';
 
 	let userCollections: Collection[] = [];
 	let data: {
@@ -19,6 +23,12 @@
 	$: address = $page.params.address;
 
 	const getUserCollections = async (address: string) => {
+		if (!isEthAddress(address)) {
+			notifyError('Invalid Ethereum Address');
+			setTimeout(() => goto('/404'), 1500);
+			return;
+		}
+
 		loaded = false;
 
 		let page = 1;
@@ -26,7 +36,7 @@
 		while (true) {
 			const beforeLength = userCollections.length;
 
-			userCollections.push(...(await apiSearchCollections({ creator: $currentUserAddress, page }).catch((err) => [])));
+			userCollections.push(...(await apiSearchCollections({ creator: address ?? $currentUserAddress, page, sortBy: 'CREATED_AT', sortReversed: true }).catch((err) => [])));
 
 			if (beforeLength === userCollections.length) break;
 			page++;
@@ -36,11 +46,11 @@
 		loaded = true;
 	};
 
-	$: address && $currentUserAddress && getUserCollections(address);
+	$: address && getUserCollections(address);
 </script>
 
 <CardList
-	title={'My collections'}
+	title={address === $currentUserAddress ? 'My collections' : 'User Collections'}
 	backFunction={() => window.history.back()}
 	commonRenderComponent={CollectionCard}
 	firstRenderComponent={CreateNewCollectionCard}

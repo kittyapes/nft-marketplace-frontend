@@ -27,6 +27,7 @@
 	const toggleDots = () => (dotsOpened = !dotsOpened);
 
 	function handleClick() {
+		if (!options.popupOptions) return;
 		addUrlParam('id', options.id);
 		setPopup(options.popupComponent, { props: { options: { ...options.popupOptions, favorited: options.favorited } }, onClose: () => removeUrlParam('id') });
 	}

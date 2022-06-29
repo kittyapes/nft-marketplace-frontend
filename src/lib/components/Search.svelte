@@ -22,7 +22,7 @@
 
 	const resultCategoryLimit = 3;
 
-	let searchResults: SearchResults = {
+	let searchResults = {
 		collections: [],
 		listings: [],
 		users: []
@@ -33,28 +33,19 @@
 	}, 500);
 
 	const searchListings = async (query: string) => {
-		getListingsByTitle(query, resultCategoryLimit)
-			.then(async (response) => {
-				let listings = response;
-				searchResults.listings = await Promise.all(listings.map(adaptListingToNftCard));
-			})
-			.catch((e) => notifyError(e.message));
+		const response = await getListingsByTitle(query, resultCategoryLimit);
+		let listings = response;
+		searchResults.listings = await Promise.all(listings.map(adaptListingToNftCard)).catch((e) => []);
 	};
 
 	const searchUsers = async (query: string) => {
-		getUsersByName(query, resultCategoryLimit)
-			.then(async (response) => {
-				searchResults.users = response;
-			})
-			.catch((e) => notifyError(e.message));
+		const response = await getUsersByName(query, resultCategoryLimit).catch((e) => []);
+		searchResults.users = response;
 	};
 
 	const searchCollections = async (query: string) => {
-		getCollectionsByTitle(query, resultCategoryLimit)
-			.then(async (response) => {
-				searchResults.collections = response.filter((e) => e.slug);
-			})
-			.catch((e) => notifyError(e.message));
+		const response = await getCollectionsByTitle(query, resultCategoryLimit).catch((e) => []);
+		searchResults.collections = response.filter((e) => e.slug);
 	};
 
 	const searchGlobally = async () => {
@@ -62,7 +53,6 @@
 		await searchUsers(query).catch((error) => console.log(error));
 		await searchCollections(query).catch((error) => console.log(error));
 
-		console.log(searchResults);
 		await tick();
 		$searchQuery = query;
 		show = true;
@@ -73,12 +63,9 @@
 		debouncedSearch.cancel();
 	}
 
-	$: if (searching) {
-		show = false;
-	}
-
 	$: if (query) {
 		searching = true;
+		show = false;
 		debouncedSearch();
 	}
 
@@ -109,7 +96,19 @@
 	}}
 >
 	<Search />
-	<input bind:value={query} type="text" class="w-72 focus:outline-none" placeholder="Search nfts, collections, and artists" />
+	<input
+		bind:value={query}
+		on:keyup={(e) => {
+			if (e.code === 'Enter') {
+				show = false;
+				searching = false;
+				goto('/search');
+			}
+		}}
+		type="text"
+		class="w-72 focus:outline-none"
+		placeholder="Search nfts, collections, and artists"
+	/>
 	{#if searching}
 		<div class="w-full bg-white top-16 right-0 border-black border-opacity-30 rounded-md border z-30 absolute" in:fly={{ y: -40, duration: 300 }}>
 			{#if show}
