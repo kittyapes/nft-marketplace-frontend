@@ -20,7 +20,7 @@
 	export let opened: boolean = false;
 	export let disabled = false;
 	export let borderOpacity = 0.3;
-	export let dropdownIcon: any;
+	export let dropdownIcon: any = '';
 
 	let elemOpenButton: HTMLButtonElement;
 
@@ -44,7 +44,7 @@
 	<button style:--tw-border-opacity={borderOpacity} class="flex items-center space-x-2 text-left select" on:click|stopPropagation={() => (opened = !opened)} bind:this={elemOpenButton} {disabled}>
 		<!-- Icon -->
 		{#if selected.iconUrl}
-			<img src={selected.iconUrl} alt="" class="object-cover w-6 h-6 rounded-full" />
+			<img src={selected.iconUrl} alt="" class="object-contain w-6 h-6 rounded-full" />
 		{:else if dropdownIcon}
 			<svelte:component this={dropdownIcon} />
 		{/if}
@@ -60,7 +60,7 @@
 			{#each options as option}
 				<button class="flex items-center w-full px-4 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded gap-x-2" on:click={() => handleOptionSelect(option)}>
 					{#if option.iconUrl}
-						<img src={option.iconUrl} alt="" class="object-cover w-6 h-6 rounded-full" />
+						<img src={option.iconUrl} alt="" class="object-contain w-6 h-6 rounded-full" />
 					{/if}
 					{option.label}
 				</button>

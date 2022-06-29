@@ -78,7 +78,7 @@
 	<title>Hinata</title>
 </svelte:head>
 <Nav />
-{#if $currentError}
+<!-- {#if $currentError}
 	<ErrorPage />
 {:else}
 	<PageTransition {url}>
@@ -86,7 +86,11 @@
 			<slot />
 		</div>
 	</PageTransition>
-{/if}
+{/if} -->
+
+<div class="pt-16 mx-auto">
+	<slot />
+</div>
 
 <Footer />
 <Toast />
