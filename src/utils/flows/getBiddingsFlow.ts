@@ -55,8 +55,6 @@ export async function getBiddingsFlow(listingId: string): Promise<BidRow[]> {
 	const res = await axios.get(getApiUrl('latest', 'listings/' + listingId + '/bids'));
 	const apiBids = res.data.data;
 
-	console.log(apiBids);
-
 	biddings.push(
 		...apiBids.map((bid) => ({
 			bidderName: bid.user[0].username,
