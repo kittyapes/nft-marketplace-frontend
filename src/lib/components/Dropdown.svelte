@@ -20,7 +20,7 @@
 	export let opened: boolean = false;
 	export let disabled = false;
 	export let borderOpacity = 0.3;
-	export let dropdownIcon: any;
+	export let dropdownIcon: any = null; // added null to fix type issues on other components that used this
 
 	let elemOpenButton: HTMLButtonElement;
 
