@@ -38,5 +38,5 @@
 	<div class="w-7 h-7 rounded-full absolute mx-auto left-0 right-0 bottom-[15%] grid place-items-center bg-color-gray-light">
 		<img src={logoUrl} alt="Collection Logo." class="w-6 h-6 rounded-full object-cover absolute" />
 	</div>
-	<div class="font-semibold grid place-items-center w-full rounded-b-2xl h-1/5">{title}</div>
+	<div class="font-semibold grid place-items-center w-full rounded-b-2xl h-1/5">{title.substring(0, 15)}{title.length > 15 ? '...' : ''}</div>
 </button>

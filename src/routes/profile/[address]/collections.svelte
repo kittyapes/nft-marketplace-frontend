@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	import { page } from '$app/stores';
 	import CardList from '$lib/components/CardList.svelte';
 	import CollectionCard from '$lib/components/CollectionCard.svelte';
@@ -6,6 +8,8 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToCollectionCard } from '$utils/adapters/adaptCollectionToCollectionCard';
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
+	import { notifyError } from '$utils/toast';
+	import { isEthAddress } from '$utils/validator/isEthAddress';
 
 	let userCollections: Collection[] = [];
 	let data: {
@@ -19,6 +23,12 @@
 	$: address = $page.params.address;
 
 	const getUserCollections = async (address: string) => {
+		if (!isEthAddress(address)) {
+			notifyError('Invalid Ethereum Address');
+			setTimeout(() => goto('/404'), 1500);
+			return;
+		}
+
 		loaded = false;
 
 		let page = 1;
