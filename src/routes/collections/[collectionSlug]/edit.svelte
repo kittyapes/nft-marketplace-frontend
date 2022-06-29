@@ -25,10 +25,10 @@
 	import { withPrevious } from 'svelte-previous';
 
 	// Page params
-	const collectionId = $page.params.collectionId;
+	const collectionSlug = $page.params.collectionSlug;
 
 	// Edit vs. new
-	$: isNewCollection = collectionId === 'new';
+	$: isNewCollection = collectionSlug === 'new';
 
 	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
 
@@ -203,7 +203,7 @@
 
 	// Remote collection data
 	async function fetchRemoteCollectionData() {
-		const [err, res] = await noTryAsync(() => apiGetCollectionBySlug(collectionId));
+		const [err, res] = await noTryAsync(() => apiGetCollectionBySlug(collectionSlug));
 
 		if (err) {
 			notifyError('Failed to fetch collection data!');
