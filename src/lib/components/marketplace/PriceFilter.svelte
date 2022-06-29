@@ -1,46 +1,44 @@
 <script lang="ts">
-	import Eth from '$icons/eth.svelte';
-	import { filters } from '$stores/marketplace';
-	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { listingTokens } from '$utils/contracts/listing';
+	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+	import Dropdown from '../Dropdown.svelte';
 
-	let min: number;
-	let max: number;
+	const dispatch = createEventDispatcher();
 
-	onMount(() => {
-		if ($filters?.price) {
-			min = $filters.price?.priceMin;
-			max = $filters.price?.priceMax;
-		}
+	let min: string;
+	let max: string;
+	let selectedToken: typeof listingTokens[0];
+
+	function updateSearchParams() {
+		$page.url.searchParams.set('token', selectedToken.label);
+
+		min ? $page.url.searchParams.set('minPrice', min) : $page.url.searchParams.delete('minPrice');
+		max ? $page.url.searchParams.set('maxPrice', max) : $page.url.searchParams.delete('maxPrice');
+
+		goto('?' + $page.url.searchParams, { keepfocus: true });
+		dispatch('request-refresh');
+	}
+
+	onMount(updateSearchParams);
+
+	onDestroy(() => {
+		$page.url.searchParams.delete('token');
+		$page.url.searchParams.delete('minPrice');
+		$page.url.searchParams.delete('maxPrice');
+
+		goto('?' + $page.url.searchParams);
+		dispatch('request-refresh');
 	});
-
-	const updateValues = () => {
-		$filters.price = {
-			priceMin: min === 0 || min ? min : null,
-			priceMax: max === 0 || max ? max : null
-		};
-	};
-
-	$: if (((min === 0 || min) && min !== $filters.price?.priceMin) || ((max === 0 || max) && max !== $filters.price?.priceMax)) updateValues();
 </script>
 
 <div>
-	<div class="text-gray-600 focus-within:text-gray-400">
-		<button class="text-black rounded-md border-black border w-full text-sm px-4 py-2.5 text-center flex items-center justify-between">
-			<div class="flex items-center gap-3">
-				<Eth />
-				ETH
-			</div>
-			<div class="">
-				<svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-				</svg>
-			</div>
-		</button>
-	</div>
+	<Dropdown options={listingTokens} bind:selected={selectedToken} />
 
 	<div class="w-full flex justify-between items-center gap-3 mt-4">
-		<input type="number" class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4" placeholder="MIN" bind:value={min} min="0" />
+		<input type="text" class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4" placeholder="MIN" bind:value={min} min="0" on:input={updateSearchParams} />
 		TO
-		<input type="number" class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4" placeholder="MAX" bind:value={max} min="0" />
+		<input type="text" class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4" placeholder="MAX" bind:value={max} min="0" on:input={updateSearchParams} />
 	</div>
 </div>

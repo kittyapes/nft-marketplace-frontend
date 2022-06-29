@@ -1,13 +1,17 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import CloseButton from '$icons/close-button.svelte';
 	import Loader from '$icons/loader.svelte';
 	import Search from '$icons/search.svelte';
-	import { collectionQuery, filters } from '$stores/marketplace';
+	import { collectionQuery } from '$stores/marketplace';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
-	import { apiSearchCollections, type Collection } from '$utils/api/collection';
+	import { apiSearchCollections } from '$utils/api/collection';
 	import { debounce } from 'lodash-es';
-	import { onMount } from 'svelte';
+	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
+
+	const dispatch = createEventDispatcher();
 
 	let query = '';
 	let collections: any[] = [];
@@ -22,26 +26,36 @@
 	}
 
 	onMount(async () => {
-		if ($filters.collection?.label) selected = $filters.collection;
+		// if ($filters.collection?.label) selected = $filters.collection;
 		if ($collectionQuery) query = $collectionQuery;
 	});
 
 	const handleSelect = (collection: DropdownCollectionData) => {
-		$filters.collection = collection;
 		selected = collection;
 		opened = false;
 		searching = false;
+
+		console.log(collection);
+
+		$page.url.searchParams.set('collections', collection.value);
+		goto('?' + $page.url.searchParams);
+		dispatch('request-refresh');
 	};
 
 	const handleCancelSelected = () => {
 		selected = null;
-		$filters.collection = null;
+
+		$page.url.searchParams.delete('collections');
+		goto('?' + $page.url.searchParams);
+		dispatch('request-refresh');
 	};
 
 	const search = async () => {
 		searching = true;
+
 		const collectionSearchRes = await apiSearchCollections({ limit: 5, name: query });
 		collections = collectionSearchRes.map(adaptCollectionToMintingDropdown);
+
 		opened = true;
 	};
 
@@ -61,17 +75,23 @@
 	$: if (query) {
 		debouncedSearch();
 	}
+
+	onDestroy(() => {
+		$page.url.searchParams.delete('collections');
+		goto('?' + $page.url.searchParams);
+		dispatch('request-refresh');
+	});
 </script>
 
 <div class="relative text-color-gray-base ">
 	{#if selected}
-		<div class="flex gap-4 items-center">
+		<div class="flex items-center gap-4">
 			{#if selected.iconUrl}
-				<div class="w-8 h-8 rounded-full grid place-items-center">
-					<div class="w-8 h-8 rounded-full bg-cover" style="background-image: url({selected.iconUrl})" />
+				<div class="grid w-8 h-8 rounded-full place-items-center">
+					<div class="w-8 h-8 bg-cover rounded-full" style="background-image: url({selected.iconUrl})" />
 				</div>
 			{/if}
-			<div class="font-semibold w-full max-w-full">
+			<div class="w-full max-w-full font-semibold">
 				{#if selected.label?.length > 25}
 					{selected.label?.slice(0, 25)}...
 				{:else}
@@ -89,24 +109,22 @@
 				<button type="submit" class="p-1 focus:outline-none focus:shadow-outline"><Search /></button>
 			</span>
 
-			<input bind:value={query} type="text" class="py-2 text-sm text-black rounded-md pl-10 border border-black border-opacity-50 h-10  w-full" placeholder="Only show..." autocomplete="off" />
+			<input bind:value={query} type="text" class="w-full h-10 py-2 pl-10 text-sm text-black border border-black border-opacity-50 rounded-md" placeholder="Only show..." autocomplete="off" />
 		</div>
 	{/if}
 
 	{#if searching}
-		<div class="w-full bg-white rounded-md z-30 mt-2" in:fly={{ y: -40, duration: 300 }}>
+		<div class="z-30 w-full mt-2 bg-white rounded-md" in:fly={{ y: -40, duration: 300 }}>
 			{#if opened}
 				{#if collections.length > 0}
 					{#each collections as collection}
 						<div class="" on:click={() => handleSelect(collection)}>
-							<div class="py-4 flex flex-col gap-4">
-								<div class="flex gap-4 items-center btn">
-									{#if collection.iconUrl}
-										<div class="w-8 h-8 rounded-full grid place-items-center">
-											<div class="w-8 h-8 rounded-full bg-cover" style="background-image: url({collection.iconUrl})" />
-										</div>
-									{/if}
-									<div class="font-semibold w-full max-w-full">
+							<div class="flex flex-col gap-4 py-4">
+								<div class="flex items-center gap-4 btn">
+									<div class="grid w-8 h-8 bg-gray-100 rounded-full place-items-center">
+										<div class="w-8 h-8 bg-cover rounded-full shadow" style="background-image: url({collection.iconUrl})" />
+									</div>
+									<div class="w-full max-w-full font-semibold">
 										{#if collection.label?.length > 25}
 											{collection.label?.slice(0, 25)}...
 										{:else}
