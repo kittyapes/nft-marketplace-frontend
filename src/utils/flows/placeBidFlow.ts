@@ -24,6 +24,4 @@ export async function placeBidFlow(listingId: string, amount: string) {
 	}
 
 	const txRes = await res.wait(1);
-
-	console.log(txRes);
 }
