@@ -5,10 +5,10 @@ import { get } from 'svelte/store';
 export function adaptCollectionToCollectionCard(collection: Collection, address: string) {
 	let options = {
 		title: collection.name,
-        slug: collection.slug,
+		slug: collection.slug,
 		logoUrl: collection.logoImageUrl,
 		bannerUrl: collection.backgroundImageUrl,
-		showEdit: get(currentUserAddress) === address
-	}
+		ownerAddress: address
+	};
 	return options;
 }

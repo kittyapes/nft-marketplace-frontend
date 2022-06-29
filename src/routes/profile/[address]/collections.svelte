@@ -26,7 +26,7 @@
 		while (true) {
 			const beforeLength = userCollections.length;
 
-			userCollections.push(...(await apiSearchCollections({ creator: $currentUserAddress, page }).catch((err) => [])));
+			userCollections.push(...(await apiSearchCollections({ creator: address ?? $currentUserAddress, page, sortBy: 'CREATED_AT', sortReversed: true }).catch((err) => [])));
 
 			if (beforeLength === userCollections.length) break;
 			page++;
@@ -36,11 +36,11 @@
 		loaded = true;
 	};
 
-	$: address && $currentUserAddress && getUserCollections(address);
+	$: address && getUserCollections(address);
 </script>
 
 <CardList
-	title={'My collections'}
+	title={address === $currentUserAddress ? 'My collections' : 'User Collections'}
 	backFunction={() => window.history.back()}
 	commonRenderComponent={CollectionCard}
 	firstRenderComponent={CreateNewCollectionCard}
