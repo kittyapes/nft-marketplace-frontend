@@ -13,7 +13,13 @@
 	export let isValid = false;
 	export let disabled = false;
 
-	$: isValid = values.every((v) => (!!v.fees === !!v.address && isEthAddress(v.address)) || (v.fees == '' && v.address == ''));
+	$: isValid = values.every((v) => {
+		if (!parseFloat(v.fees?.toString())) {
+			v.fees = '';
+		}
+		return (!!v.fees === !!v.address && isEthAddress(v.address)) || (v.fees == '' && v.address == '');
+	});
+	$: console.log(values);
 </script>
 
 <div class="pr-12">
