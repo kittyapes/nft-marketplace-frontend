@@ -31,6 +31,7 @@
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import { getNft } from '$utils/api/nft';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
+	import { isEthAddress } from '$utils/validator/isEthAddress';
 
 	$: address = $page.params.address;
 
@@ -40,6 +41,12 @@
 	}
 
 	onMount(async () => {
+		if (!isEthAddress(address)) {
+			notifyError('Invalid Ethereum Address');
+			setTimeout(() => goto('/404'), 1500);
+			return;
+		}
+
 		if ($page.url.searchParams.has('id')) {
 			const id = $page.url.searchParams.get('id');
 			const listing = await getListing(id);
