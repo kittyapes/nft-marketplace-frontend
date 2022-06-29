@@ -110,7 +110,10 @@
 	const hasEnoughTokens = derived(
 		currentUserAddress,
 		(address, set) => {
-			if (options.listingData.listingType !== 'sale') set(false);
+			if (options.listingData.listingType !== 'sale') {
+				set(false);
+				return;
+			}
 			hasEnoughBalance(options.listingData.tokenAddress, address, options.saleData.price).then(set);
 		},
 		null
