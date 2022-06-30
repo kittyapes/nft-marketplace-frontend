@@ -53,7 +53,7 @@
 		$formValidity.image = !!data.image || !!data.logoImageUrl || 'Missing logo image';
 		$formValidity.cover = !!data.cover || !!data.backgroundImageUrl || 'Missing cover image';
 
-		const nameRegex = new RegExp(/^\w[\w+_-]+\w$/, 'gm');
+		const nameRegex = new RegExp(/^\w[\w+|\s|_-]+$/, 'gm');
 		const slugRegex = new RegExp(/^\w[\w+_-]+\w$/, 'gm');
 
 		$formValidity.name = !!data.name
@@ -95,13 +95,13 @@
 	async function validateCollectionName(collectionName: string) {
 		const res = await apiValidateCollectionNameAndSlug(collectionName, null);
 		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.name !== collectionName;
-		$formValidity.name = res?.nameExists && editCheck ? 'Collection Name Is Not Unique' : $formValidity.name;
+		$formValidity.name = res?.nameIsDuplicate && editCheck ? 'Collection Name Is Not Unique' : $formValidity.name;
 	}
 
 	async function validateCollectionSlug(collectionSlug: string) {
 		const res = await apiValidateCollectionNameAndSlug(null, collectionSlug);
 		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.slug !== collectionSlug;
-		$formValidity.slug = res?.slugExists && editCheck ? 'Collection Slug Is Not Unique' : $formValidity.slug;
+		$formValidity.slug = res?.slugIsDuplicate && editCheck ? 'Collection Slug Is Not Unique' : $formValidity.slug;
 	}
 
 	collectionUrl.subscribe(async () => {
