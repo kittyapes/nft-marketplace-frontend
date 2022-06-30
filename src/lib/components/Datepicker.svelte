@@ -16,6 +16,7 @@
 	export let placeholder = 'Select date & time';
 	export let value = dayjs();
 	export let dateOnly = false;
+	export let allowPastSelection = false;
 
 	let open = false;
 	let section: 'date' | 'time' = 'date';
@@ -68,6 +69,7 @@
 		isSelected: boolean;
 		isToday: boolean;
 		isDisabled: boolean;
+		dayjs: dayjs.Dayjs;
 	}
 
 	$: {
@@ -75,18 +77,23 @@
 			.fill(0)
 			.map((_, i) => ({
 				day: selectedDate.subtract(1, 'month').daysInMonth() - monthWeekdayOffset + i + 1,
-				isDisabled: true
+				isDisabled: true,
+				dayjs: selectedDate.subtract(1, 'month').date(i + 1)
 			}));
 
 		const currentMonthDays = Array(selectedDate.daysInMonth())
 			.fill(0)
-			.map((_, i) => ({ day: i + 1 }));
+			.map((_, i) => ({ day: i + 1, dayjs: selectedDate.clone().date(i + 1) }));
 
 		const fillAfterDays = Array(42 - fillBeforeDays.length - currentMonthDays.length)
 			.fill(0)
-			.map((_, i) => ({ day: i + 1, isDisabled: true }));
+			.map((_, i) => ({ day: i + 1, isDisabled: true, dayjs: selectedDate.add(1, 'month').date(i + 1) }));
 
 		monthDays = [...fillBeforeDays, ...currentMonthDays, ...fillAfterDays] as DayInTable[];
+
+		const now = dayjs();
+
+		monthDays = monthDays.map((d) => ({ ...d, isDisabled: d.isDisabled || d.dayjs.endOf('day').isBefore(now) }));
 	}
 </script>
 
