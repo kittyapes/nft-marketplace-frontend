@@ -76,7 +76,7 @@
 			</SecondaryButton>
 		</div>
 
-		<PrimaryButton class="mt-4" disabled={!biddings?.length || !listingExpired || isCompletingAuction} on:click={acceptHighest}>
+		<PrimaryButton class="mt-4" disabled={!biddings?.length || isCompletingAuction} on:click={acceptHighest}>
 			{#if isCompletingAuction}
 				<ButtonSpinner />
 			{/if}
