@@ -6,6 +6,7 @@ import HinataCollectionFactoryContract from "./collectionFactory";
 import type { Collection } from "$utils/api/collection";
 
 export async function contractCreateCollection(options: Collection) {
+	console.log(options)
     try {
 		const CollectionFactoryContract = HinataCollectionFactoryContract(get(appSigner));
      

@@ -179,7 +179,7 @@
 			return;
 		}
 
-		const [contractError, contractRes] = await noTryAsync(() => contractCreateCollection($collectionData));
+		const [contractError, contractRes] = await noTryAsync(() => contractCreateCollection(res.data.data));
 
 		if (contractError) {
 			notifyError(contractError.message);
