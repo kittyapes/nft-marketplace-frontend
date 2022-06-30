@@ -2,10 +2,11 @@
 	import Eth from '$icons/eth.svelte';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { onMount } from 'svelte';
-	import { fly, slide } from 'svelte/transition';
+	import { slide } from 'svelte/transition';
 	import AuctionBidRow from './AuctionBidRow.svelte';
 
 	export let listingId: string = null;
+	export let tokenDecimals: number = 18;
 	export let biddings: BidRow[] = [];
 	export let isRefreshing = false;
 
@@ -13,7 +14,7 @@
 		if (listingId) {
 			isRefreshing = true;
 
-			biddings = await getBiddingsFlow(listingId);
+			biddings = await getBiddingsFlow(listingId, tokenDecimals);
 
 			isRefreshing = false;
 		}

@@ -3,7 +3,6 @@
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import InfoBox from '$lib/components/InfoBox.svelte';
-	import CircularSpinner from '$lib/components/spinners/CircularSpinner.svelte';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
@@ -11,7 +10,7 @@
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
 	import { currentUserAddress } from '$stores/wallet';
-	import { getTokenBalance, hasEnoughBalance } from '$utils/contracts/token';
+	import { hasEnoughBalance } from '$utils/contracts/token';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
 	import { salePurchase } from '$utils/flows/salePurchase';
@@ -19,7 +18,7 @@
 	import { createToggle } from '$utils/misc/toggle';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
-	import { formatEther, parseEther } from 'ethers/lib/utils.js';
+	import { formatUnits, parseUnits } from 'ethers/lib/utils.js';
 	import { noTry, noTryAsync } from 'no-try';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { derived, writable } from 'svelte/store';
@@ -65,15 +64,15 @@
 	let biddings: BidRow[] = [];
 
 	function bidValidator(v: string): boolean {
-		const [valueErr, parsedValue] = noTry(() => parseEther(v));
+		const [valueErr, parsedValue] = noTry(() => parseUnits(v, options.listingData.tokenDecimals));
 
 		if (valueErr) return false;
 
 		// HOTFIX we will use the startingPrice as a reserve price for now
 		const [reservePriceErr, parsedReservePrice] = noTry(() => BigNumber.from(options.auctionData.startingPrice));
 
-		// parseEther because tokenAmount is a ETH formatted string
-		const [highestBidErr, parsedHighestBid] = noTry(() => parseEther(biddings[0].tokenAmount));
+		// parseUnits because tokenAmount is a ETH formatted string
+		const [highestBidErr, parsedHighestBid] = noTry(() => parseUnits(biddings[0].tokenAmount, options.listingData.tokenDecimals));
 
 		if (parsedReservePrice && parsedValue.lte(parsedReservePrice)) {
 			return false;
@@ -91,7 +90,7 @@
 	async function refreshBids() {
 		isRefreshingBids = true;
 
-		biddings = await getBiddingsFlow(options.rawResourceData.listingId);
+		biddings = await getBiddingsFlow(options.rawResourceData.listingId, options.listingData.tokenDecimals);
 
 		isRefreshingBids = false;
 	}
@@ -102,7 +101,7 @@
 		}
 	});
 
-	$: formattedPrice = noTry(() => formatEther(options.auctionData.startingPrice))[1] || 'N/A';
+	$: formattedPrice = noTry(() => formatUnits(options.auctionData.startingPrice, options.listingData.tokenDecimals))[1] || 'N/A';
 
 	const hoveringPurchase = createToggle();
 	let purchaseButton: HTMLElement;
@@ -155,7 +154,7 @@
 		</div>
 	{:else if options.rawResourceData.listingType === 'auction'}
 		<div class="flex flex-col h-full mt-4">
-			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} />
+			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenDecimals={options.listingData.tokenDecimals} />
 
 			<div class="mt-2 text-xs font-semibold opacity-70">
 				Reserve price: {formattedPrice}
