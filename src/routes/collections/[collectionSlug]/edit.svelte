@@ -23,6 +23,7 @@
 	import { browser } from '$app/env';
 	import { debounce } from 'lodash-es';
 	import { withPrevious } from 'svelte-previous';
+	import { contractCreateCollection } from '$utils/contracts/collection';
 
 	// Page params
 	const collectionSlug = $page.params.collectionSlug;
@@ -174,6 +175,14 @@
 
 		if (error) {
 			notifyError(error.message);
+			savingCollection = false;
+			return;
+		}
+
+		const [contractError, contractRes] = await noTryAsync(() => contractCreateCollection($collectionData));
+
+		if (contractError) {
+			notifyError(contractError.message);
 			savingCollection = false;
 			return;
 		}
