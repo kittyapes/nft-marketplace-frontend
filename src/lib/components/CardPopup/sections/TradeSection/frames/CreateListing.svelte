@@ -6,18 +6,18 @@
 	import Toggle from '$lib/components/Toggle.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
 	import type { ListingType } from '$utils/api/listing';
-	import { getIconUrl } from '$utils/misc/getIconUrl';
-	import { contractGetTokenAddress, getTokenAddress } from '$utils/misc/getTokenAddress';
+	import { contractGetTokenAddress } from '$utils/misc/getTokenAddress';
 	import { notifyError } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
-	import { parseEther } from 'ethers/lib/utils.js';
+	import { parseUnits } from 'ethers/lib/utils.js';
 	import { createEventDispatcher } from 'svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { listingDurationOptions, listingTokens } from '$utils/contracts/listing';
+	import { getTokenDetails } from '$utils/contracts/token';
 
 	const dispatch = createEventDispatcher();
 
@@ -62,11 +62,12 @@
 			auction: {} as any
 		};
 
+		const token = await getTokenDetails(await contractGetTokenAddress(paymentTokenTicker as any));
+
 		if (selectedListingType === 'sale') {
-			flowOptions.sale.price = parseEther(price.toString());
+			flowOptions.sale.price = parseUnits(price.toString(), token.decimals);
 		} else if (selectedListingType === 'auction') {
-			flowOptions.auction.startingPrice = parseEther(startingPrice.toString());
-			// flowOptions.auction.reservePrice = parseEther(reservePrice || '0');
+			flowOptions.auction.startingPrice = parseUnits(startingPrice.toString(), token.decimals);
 		}
 
 		const { err } = await createListingFlow(flowOptions);

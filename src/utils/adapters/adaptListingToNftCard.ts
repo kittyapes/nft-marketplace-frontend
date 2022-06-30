@@ -3,18 +3,10 @@ import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 import type { Listing } from '$utils/api/listing';
 import { getTokenDetails } from '$utils/contracts/token';
 import dayjs from 'dayjs';
-import { formatEther } from 'ethers/lib/utils.js';
+import { formatUnits } from 'ethers/lib/utils.js';
 import { writable } from 'svelte/store';
 
 export async function adaptListingToNftCard(data: Listing) {
-	let price: string;
-
-	try {
-		price = formatEther(data.listing.price);
-	} catch {
-		price = 'N/A';
-	}
-
 	const nft = data.nfts?.[0].nft;
 	const collectionData = {
 		slug: data.nfts?.[0].collectionSlug,
@@ -28,6 +20,14 @@ export async function adaptListingToNftCard(data: Listing) {
 
 	// Listing Token Info
 	const token = await getTokenDetails(data.paymentTokenAddress);
+
+	let price: string;
+
+	try {
+		price = formatUnits(data.listing.price.toString(), token.decimals);
+	} catch {
+		price = 'N/A';
+	}
 
 	const popupOptions: CardPopupOptions = {
 		title: data.title,
