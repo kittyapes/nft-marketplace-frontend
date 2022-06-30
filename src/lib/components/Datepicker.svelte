@@ -93,7 +93,7 @@
 
 		const now = dayjs();
 
-		monthDays = monthDays.map((d) => ({ ...d, isDisabled: d.isDisabled || d.dayjs.endOf('day').isBefore(now) }));
+		monthDays = monthDays.map((d) => ({ ...d, isDisabled: d.isDisabled || (d.dayjs.endOf('day').isBefore(now) && !allowPastSelection) }));
 	}
 </script>
 
