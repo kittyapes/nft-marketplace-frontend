@@ -37,7 +37,7 @@
 		name: '' || $nftDraft?.name,
 		quantity: 1 || $nftDraft?.quantity,
 		// TODO: change once hinata base collection is made
-		collectionName: '' || $nftDraft?.collectionName,
+		collectionName: '',
 		description: '' || $nftDraft?.description,
 		assetPreview: '' || $nftDraft?.assetPreview,
 		thumbnailPreview: '' || $nftDraft?.thumbnailPreview,
@@ -54,6 +54,8 @@
 
 		let collections: Collection[] = [];
 		let page = 1;
+
+		if ($nftDraft?.collectionName) nftData.collectionName = $nftDraft?.collectionName;
 
 		while (true) {
 			const beforeLength = collections.length;
