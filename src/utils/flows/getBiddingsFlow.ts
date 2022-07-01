@@ -55,7 +55,11 @@ export async function getBiddingsFlow(listingId: string, tokenDecimals: number):
 		bidderName: bid.user.username,
 		imageUrl: bid.user.thumbnailUrl,
 		tokenAmount: bid.formatted.padEnd(longestString, '0'),
-		timeAgo: (dayjs.duration(dayjs().diff(dayjs(bid.queueDate), 's'), 's').humanize() + ' ago').replace('a few seconds ago', 'now')
+		timeAgo: dayjs
+			.duration(dayjs(bid.bidAt * 1000).diff(dayjs(), 's'), 's')
+			.humanize(true)
+			.replace('a few seconds ago', 'now')
+			.replace('minutes', 'm')
 	}));
 
 	return adaptedBids;
