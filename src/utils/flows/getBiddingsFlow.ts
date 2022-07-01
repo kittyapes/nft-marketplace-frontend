@@ -5,7 +5,8 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
-import { formatUnits } from 'ethers/lib/utils.js';
+import { BigNumber } from 'ethers';
+import { formatUnits, parseUnits } from 'ethers/lib/utils.js';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -49,13 +50,29 @@ export async function getBiddingsFlow(listingId: string, tokenDecimals: number):
 	});
 
 	const res = await axios.get(getApiUrl('latest', 'listings/' + listingId + '/bids'));
-	const apiBids = res.data.data;
+	const apiBids = res.data.data as any[];
+
+	let longestString = 0;
+
+	// A hotfix for accumulating the bid amounts, because the contract emits only the differences
+	// and the backend returns only them, not accumulated
+	for (const [index, bid] of apiBids.entries()) {
+		bid.accumulated = BigNumber.from(bid.bid);
+
+		for (let i = index + 1; apiBids[i] && apiBids[i].bidder === bid.bidder; i++) {
+			bid.accumulated = bid.accumulated.add(apiBids[i].bid);
+		}
+
+		bid.formatted = formatUnits(bid.accumulated, tokenDecimals);
+
+		longestString = Math.max(longestString, bid.formatted.length);
+	}
 
 	biddings.push(
 		...apiBids.map((bid) => ({
 			bidderName: bid.user.username,
 			imageUrl: bid.user.thumbnailUrl,
-			tokenAmount: formatUnits(bid.bid.toString(), tokenDecimals),
+			tokenAmount: bid.formatted.padEnd(longestString, '0'),
 			timeAgo: (dayjs.duration(dayjs().diff(dayjs(bid.queueDate), 's'), 's').humanize() + ' ago').replace('a few seconds ago', 'now')
 		}))
 	);
