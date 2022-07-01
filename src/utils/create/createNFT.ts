@@ -29,30 +29,6 @@ export const createNFTOnAPI = async ({ amount, animation, creator, image, name, 
 	return res.data.data;
 };
 
-export const createMintedNFTOnAPI = async ({ amount, animation, contractAddress, nftId, creator, image, name, description, chain, tokenStandard, tokenAddress }) => {
-	const formData = new FormData();
-	formData.append('thumbnail', image);
-	formData.append('asset', animation || null);
-	formData.append('nftId', nftId || '');
-	formData.append('tokenAddress', tokenStandard || 'ETHEREUM');
-	formData.append('amount', amount.toString() || '1');
-	formData.append('name', name);
-	formData.append('creator', creator);
-	formData.append('chain', chain || 'ETHEREUM');
-	formData.append('tokenStandard', tokenStandard);
-	formData.append('contractAddress', contractAddress.toString());
-	formData.append('description', description || 'No description');
-
-	const res = await axios.post(getApiUrl('latest', 'nfts'), formData, getAxiosConfig()).catch((e) => {
-		httpErrorHandler(e);
-		return null;
-	});
-
-	if (!res) return null;
-
-	return res.data.data;
-};
-
 // Equivalent to minting the NFT
 export const createNFTOnChain = async ({ id, amount }: NFTMintingObject) => {
 	try {

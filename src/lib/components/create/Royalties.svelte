@@ -5,9 +5,9 @@
 	const prettierFix = `Royalties (<span class="gradient-text">Optional</span>)`;
 
 	export let values: { fees: number | string; address: string }[] = [
-		{ fees: '', address: '' },
-		{ fees: '', address: '' },
 		{ fees: '', address: '' }
+		/*	{ fees: '', address: '' },
+		{ fees: '', address: '' }*/
 	];
 
 	export let isValid = false;

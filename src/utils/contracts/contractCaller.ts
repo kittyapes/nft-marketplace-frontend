@@ -18,13 +18,13 @@ export default async function (contract: ethers.Contract, methodName: string, ga
 			throw err;
 		});
 
+
 		// Make contract call
 		const contractCall = await contract[methodName](...params, {
 			gasLimit: gasEst.mul(gasMultiple).div(100)
 		});
 
 		await contractCall.wait(confirmations);
-
 		return contractCall;
 	} catch (error) {
 		throw error;
