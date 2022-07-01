@@ -64,7 +64,7 @@
 </script>
 
 <div class="flex flex-col h-full pb-12 mt-4">
-	<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} />
+	<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} tokenDecimals={options.listingData.tokenDecimals} />
 
 	<div class="flex gap-2">
 		<div bind:this={cancelButtonContainer} class="w-full" on:pointerenter={cancelHovered.toggle} on:pointerleave={cancelHovered.toggle}>
@@ -76,7 +76,7 @@
 			</SecondaryButton>
 		</div>
 
-		<PrimaryButton class="mt-4" disabled={!biddings?.length || !listingExpired || isCompletingAuction} on:click={acceptHighest}>
+		<PrimaryButton class="mt-4" disabled={!biddings?.length || isCompletingAuction} on:click={acceptHighest}>
 			{#if isCompletingAuction}
 				<ButtonSpinner />
 			{/if}

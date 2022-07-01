@@ -40,7 +40,7 @@ export interface Collection {
 export function getInitialCollectionData(): Partial<Collection> {
 	return {
 		royalties: [
-			{ fees: '', address: '', },
+			{ fees: '', address: '' },
 			{ fees: '', address: '' },
 			{ fees: '', address: '' }
 		]
@@ -163,9 +163,8 @@ export interface collectionSearchOptions {
 }
 
 export async function apiSearchCollections(options?: collectionSearchOptions) {
-
-	if(options && !options.name) options.name = undefined;
-	if(options && !options.limit) options.limit = 20;
+	if (options && !options.name) options.name = undefined;
+	if (options && !options.limit) options.limit = 20;
 
 	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: options });
 	if (res.status !== 200) {
@@ -179,8 +178,10 @@ export async function apiValidateCollectionNameAndSlug(name: string | null = nul
 	if (name || slug) {
 		const params = {};
 		const result = {
-			nameExists: null,
-			slugExists: null
+			nameIsDuplicate: false,
+			nameisInvalid: false,
+			slugIsDuplicate: false,
+			slugIsInvalid: false
 		};
 
 		if (name) {
@@ -188,7 +189,8 @@ export async function apiValidateCollectionNameAndSlug(name: string | null = nul
 
 			const res = await axios.get(getApiUrl('v2', 'collections/validate-name'), { params });
 
-			result['nameExists'] = !res.data.data;
+			result['nameIsDuplicate'] = res.data.data.isDuplicate;
+			result['nameIsInvalid'] = res.data.data.isInvalid;
 		}
 
 		if (slug) {
@@ -196,7 +198,8 @@ export async function apiValidateCollectionNameAndSlug(name: string | null = nul
 
 			const res = await axios.get(getApiUrl('v2', 'collections/validate-slug'), { params });
 
-			result['slugExists'] = !res.data.data;
+			result['slugIsDuplicate'] = res.data.data.isDuplicate;
+			result['slugIsInvalid'] = res.data.data.isInvalid;
 		}
 
 		return result;
@@ -205,10 +208,8 @@ export async function apiValidateCollectionNameAndSlug(name: string | null = nul
 	return null;
 }
 
-
 export async function changeCollectionStatus(slug: string, status: string) {
-	
-	const res = await axios.post(getApiUrl('latest', `collections/${slug}/set-status`), { status }, getAxiosConfig() );
+	const res = await axios.post(getApiUrl('latest', `collections/${slug}/set-status`), { status }, getAxiosConfig());
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);

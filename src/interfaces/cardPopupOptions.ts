@@ -34,6 +34,8 @@ export interface CardPopupOptions {
 		listingType: ListingType;
 		symbol: string;
 		tokenAddress: string;
+		tokenDecimals: number;
+		tokenSymbol: string;
 		startTime: string;
 		duration: number;
 		onChainId: string;

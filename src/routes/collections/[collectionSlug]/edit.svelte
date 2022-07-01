@@ -24,6 +24,7 @@
 	import { debounce } from 'lodash-es';
 	import { withPrevious } from 'svelte-previous';
 	import { contractCreateCollection } from '$utils/contracts/collection';
+	import { currentUserAddress } from '$stores/wallet';
 
 	// Page params
 	const collectionSlug = $page.params.collectionSlug;
@@ -54,7 +55,7 @@
 		$formValidity.image = !!data.image || !!data.logoImageUrl || 'Missing logo image';
 		$formValidity.cover = !!data.cover || !!data.backgroundImageUrl || 'Missing cover image';
 
-		const nameRegex = new RegExp(/^\w[\w+_-]+\w$/, 'gm');
+		const nameRegex = new RegExp(/^\w[\w+|\s|_-]+$/, 'gm');
 		const slugRegex = new RegExp(/^\w[\w+_-]+\w$/, 'gm');
 
 		$formValidity.name = !!data.name
@@ -96,13 +97,13 @@
 	async function validateCollectionName(collectionName: string) {
 		const res = await apiValidateCollectionNameAndSlug(collectionName, null);
 		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.name !== collectionName;
-		$formValidity.name = res?.nameExists && editCheck ? 'Collection Name Is Not Unique' : $formValidity.name;
+		$formValidity.name = res?.nameIsDuplicate && editCheck ? 'Collection Name Is Not Unique' : $formValidity.name;
 	}
 
 	async function validateCollectionSlug(collectionSlug: string) {
 		const res = await apiValidateCollectionNameAndSlug(null, collectionSlug);
 		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.slug !== collectionSlug;
-		$formValidity.slug = res?.slugExists && editCheck ? 'Collection Slug Is Not Unique' : $formValidity.slug;
+		$formValidity.slug = res?.slugIsDuplicate && editCheck ? 'Collection Slug Is Not Unique' : $formValidity.slug;
 	}
 
 	collectionUrl.subscribe(async () => {
@@ -214,6 +215,12 @@
 	async function fetchRemoteCollectionData() {
 		const [err, res] = await noTryAsync(() => apiGetCollectionBySlug(collectionSlug));
 
+		if (res.creator?.toLowerCase() !== $currentUserAddress?.toLowerCase()) {
+			// Wish we had a 401 error page
+			goto('/403');
+			return;
+		}
+
 		if (err) {
 			notifyError('Failed to fetch collection data!');
 			console.error(err);
@@ -261,7 +268,7 @@
 		} as UpdateCollectionOptions;
 	}
 
-	$: browser && !isNewCollection && fetchRemoteCollectionData();
+	$: browser && !isNewCollection && $currentUserAddress && fetchRemoteCollectionData();
 </script>
 
 <main class="max-w-screen-xl px-16 mx-auto my-32">

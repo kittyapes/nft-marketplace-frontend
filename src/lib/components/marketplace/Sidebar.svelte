@@ -17,7 +17,7 @@
 	} h-auto md:h-screen block md:fixed border-t bg-white md:border-r border-gray-400 font-bold transition-all transform duration-200`}
 >
 	{#if isOpen}
-		<div class="p-11 border-b border-gray-400 flex justify-between">
+		<div class="flex justify-between border-b border-gray-400 p-11">
 			<div class="flex flex-row items-center gap-3">
 				<Filters />
 				FILTER
@@ -28,9 +28,7 @@
 			</button>
 		</div>
 	{:else}
-		<div
-			class="py-11 px-5 border-b border-gray-400 flex flex-row md:flex-col items-center justify-center gap-3"
-		>
+		<div class="flex flex-row items-center justify-center gap-3 px-5 border-b border-gray-400 py-11 md:flex-col">
 			<div class="text-sm">FILTERS</div>
 			<button on:click={toggle} class="-rotate-90 md:rotate-180">
 				<ArrowLeft />
@@ -41,15 +39,15 @@
 	{#if isOpen}
 		<div transition:slide={{ duration: 200 }}>
 			<SidebarItem title="Status" icon="status">
-				<StatusFilter />
+				<StatusFilter on:request-refresh />
 			</SidebarItem>
 
 			<SidebarItem title="Collections" icon="collection">
-				<CollectionsFilter />
+				<CollectionsFilter on:request-refresh />
 			</SidebarItem>
 
 			<SidebarItem title="Price" icon="price">
-				<PriceFilter />
+				<PriceFilter on:request-refresh />
 			</SidebarItem>
 		</div>
 	{/if}

@@ -19,7 +19,6 @@
 		}
 		return (!!v.fees === !!v.address && isEthAddress(v.address)) || (v.fees == '' && v.address == '');
 	});
-	$: console.log(values);
 </script>
 
 <div class="pr-12">
