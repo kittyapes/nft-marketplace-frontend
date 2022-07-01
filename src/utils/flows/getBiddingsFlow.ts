@@ -27,8 +27,6 @@ async function fetchHighestBid(listingId: string) {
 
 	const highestBid = { address: res[0], amount: res[1] };
 
-	console.log(highestBid);
-
 	return highestBid;
 }
 
