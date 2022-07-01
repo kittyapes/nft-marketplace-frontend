@@ -5,7 +5,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
-import { formatEther } from 'ethers/lib/utils.js';
+import { formatUnits } from 'ethers/lib/utils.js';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -32,7 +32,7 @@ async function fetchHighestBid(listingId: string) {
 	return highestBid;
 }
 
-export async function getBiddingsFlow(listingId: string): Promise<BidRow[]> {
+export async function getBiddingsFlow(listingId: string, tokenDecimals: number): Promise<BidRow[]> {
 	const highestBid = await fetchHighestBid(listingId);
 
 	if (highestBid.address === '0x0000000000000000000000000000000000000000') {
@@ -41,14 +41,12 @@ export async function getBiddingsFlow(listingId: string): Promise<BidRow[]> {
 
 	const highestBidUser = await fetchProfileData(highestBid.address);
 
-	console.log({ highestBidUser });
-
 	const biddings: BidRow[] = [];
 
 	biddings.push({
 		bidderName: highestBidUser.username,
 		imageUrl: highestBidUser.thumbnailUrl,
-		tokenAmount: formatEther(highestBid.amount),
+		tokenAmount: formatUnits(highestBid.amount, tokenDecimals),
 		timeAgo: 'N/A'
 	});
 
@@ -57,9 +55,9 @@ export async function getBiddingsFlow(listingId: string): Promise<BidRow[]> {
 
 	biddings.push(
 		...apiBids.map((bid) => ({
-			bidderName: bid.user[0].username,
-			imageUrl: bid.user[0].thumbnailUrl,
-			tokenAmount: formatEther(bid.bid),
+			bidderName: bid.user.username,
+			imageUrl: bid.user.thumbnailUrl,
+			tokenAmount: formatUnits(bid.bid.toString(), tokenDecimals),
 			timeAgo: (dayjs.duration(dayjs().diff(dayjs(bid.queueDate), 's'), 's').humanize() + ' ago').replace('a few seconds ago', 'now')
 		}))
 	);

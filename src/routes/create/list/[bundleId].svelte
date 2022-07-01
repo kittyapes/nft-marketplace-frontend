@@ -10,12 +10,13 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
 	import { getNft } from '$utils/api/nft';
+	import { getTokenDetails } from '$utils/contracts/token';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { contractGetTokenAddress, getTokenAddress } from '$utils/misc/getTokenAddress';
 	import { goBack } from '$utils/navigation';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
-	import { parseEther } from 'ethers/lib/utils.js';
+	import { parseUnits } from 'ethers/lib/utils.js';
 	import type { ListingPropName } from 'src/interfaces/drops';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -84,11 +85,13 @@
 			auction: {} as any
 		};
 
+		const token = await getTokenDetails(await contractGetTokenAddress(listingPropValues.token.label));
+
 		if (listingType === 'sale') {
-			flowOptions.sale.price = parseEther(listingPropValues.price.toString());
+			flowOptions.sale.price = parseUnits(listingPropValues.price.toString(), token.decimals);
 		} else if (listingType === 'auction') {
 			// HOTFIX, assigning reservePrice to startingPrice, because that's what the contract works with
-			flowOptions.auction.startingPrice = parseEther(listingPropValues.reservePrice.toString());
+			flowOptions.auction.startingPrice = parseUnits(listingPropValues.reservePrice.toString(), token.decimals);
 			// flowOptions.auction.reservePrice = parseEther(listingPropValues.reservePrice.toString() || '0');
 		}
 

@@ -16,12 +16,16 @@ export async function getTokenDetails(tokenAddress: string) {
 		// Contract Decimals
 		const decimals = await contract.decimals();
 
-		return { name, decimals };
+		// Contract Symbol
+		const symbol = await contract.symbol();
+
+		return { name, decimals, symbol };
 	} catch (error) {
 		// If we can't find token details, its likely ETH
 		return {
 			name: 'ETH',
-			decimals: 18
+			decimals: 18,
+			symbol: 'ETH'
 		};
 	}
 }

@@ -1,7 +1,6 @@
 import type { EthAddress } from '$interfaces';
 import axios from 'axios';
 import { ethers } from 'ethers';
-import { parseEther } from 'ethers/lib/utils.js';
 import { getApiUrl } from '.';
 
 export type ListingType = 'sale' | 'auction' | 'raffle';

@@ -23,6 +23,7 @@
 	import { browser } from '$app/env';
 	import { debounce } from 'lodash-es';
 	import { withPrevious } from 'svelte-previous';
+	import { currentUserAddress } from '$stores/wallet';
 
 	// Page params
 	const collectionSlug = $page.params.collectionSlug;
@@ -205,6 +206,12 @@
 	async function fetchRemoteCollectionData() {
 		const [err, res] = await noTryAsync(() => apiGetCollectionBySlug(collectionSlug));
 
+		if (res.creator?.toLowerCase() !== $currentUserAddress?.toLowerCase()) {
+			// Wish we had a 401 error page
+			goto('/403');
+			return;
+		}
+
 		if (err) {
 			notifyError('Failed to fetch collection data!');
 			console.error(err);
@@ -252,7 +259,7 @@
 		} as UpdateCollectionOptions;
 	}
 
-	$: browser && !isNewCollection && fetchRemoteCollectionData();
+	$: browser && !isNewCollection && $currentUserAddress && fetchRemoteCollectionData();
 </script>
 
 <main class="max-w-screen-xl px-16 mx-auto my-32">

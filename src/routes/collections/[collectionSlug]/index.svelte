@@ -35,11 +35,19 @@
 		['24hr Volume', '$12.4M']
 	];
 
-	const collectionMenuButtonOptions = [
+	let collectionMenuButtonOptions = [
+		// REMEMBER TO SET THESE TO TRUE
 		{ label: 'Claim Ownership', action: () => {}, disabled: true },
-		{ label: 'Report', action: () => {}, disabled: true },
-		{ label: 'Edit', action: () => goto(`/collections/${collectionData.slug}/edit`) }
+		{ label: 'Report', action: () => {}, disabled: true }
 	];
+
+	$: if ($currentUserAddress && creatorData && $currentUserAddress.toLowerCase() === creatorData.address.toLowerCase()) {
+		collectionMenuButtonOptions = [
+			{ label: 'Claim Ownership', action: () => {}, disabled: true },
+			{ label: 'Report', action: () => {}, disabled: true },
+			{ label: 'Edit', action: () => goto(`/collections/${collectionData.slug}/edit`), disabled: $currentUserAddress.toLowerCase() !== creatorData.address.toLowerCase() }
+		];
+	}
 
 	let menuButton: HTMLButtonElement;
 	let showCollectionMenu = false;
