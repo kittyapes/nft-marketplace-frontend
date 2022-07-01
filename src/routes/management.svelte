@@ -166,6 +166,8 @@
 		return { /*...collectionFetchingOptions.filter,*/ name: collectionFetchingOptions.name, ...collectionFetchingOptions.sort };
 	};
 
+	$: console.log(collections);
+
 	const createCollectionTableData = async () => {
 		collectionTableData = [
 			{
@@ -205,8 +207,7 @@
 				titleRenderComponentProps: { title: 'Claimed' },
 				renderComponent: EntryGenericText,
 				renderComponentProps: collections.map((c) => ({
-					color: 'text-color-red',
-					text: 'Unclaimed'
+					text: c.isClaimed ? 'Claimed' : 'Unclaimed'
 				}))
 			},
 			{
