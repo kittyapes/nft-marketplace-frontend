@@ -25,7 +25,6 @@ export default async function (contract: ethers.Contract, methodName: string, ga
 		});
 
 		await contractCall.wait(confirmations);
-		console.log(contractCall);
 		return contractCall;
 	} catch (error) {
 		throw error;

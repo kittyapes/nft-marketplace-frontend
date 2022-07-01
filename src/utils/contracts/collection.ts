@@ -1,16 +1,14 @@
-import HinataMarketplaceStorageContract from "./hinataMarketplaceStorage";
 import { get } from 'svelte/store';
-import { appSigner } from '$stores/wallet';
+import { appSigner, currentUserAddress } from '$stores/wallet';
 import contractCaller from "./contractCaller";
 import HinataCollectionFactoryContract from "./collectionFactory";
 import type { Collection } from "$utils/api/collection";
 
 export async function contractCreateCollection(options: Collection) {
-	console.log(options)
     try {
 		const CollectionFactoryContract = HinataCollectionFactoryContract(get(appSigner));
-     
-		await contractCaller(CollectionFactoryContract, 'spawn', 150, 1, options.name, options.paymentTokenTicker, 'hinata', options.royalties, false);
+		
+		await contractCaller(CollectionFactoryContract, 'spawn', 150, 1, options.name, options.paymentTokenTicker, options.slug, options.royalties[0].address ? options.royalties[0].address : '0x0000000000000000000000000000000000000000', options.royalties[0].fees ?? 0, false);
 
 		return true;
 	} catch (error) {

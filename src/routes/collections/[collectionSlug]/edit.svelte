@@ -230,7 +230,6 @@
 		// Copy is needed because slug would get overwritten
 		serverCollectionToUpdate.set({ ...res });
 		collectionData.set({ ...res });
-		console.log($collectionData);
 		collectionUrl.set(urlStart + res.slug);
 
 		originalCollectionData = { ...res };
