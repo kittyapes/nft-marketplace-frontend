@@ -8,6 +8,7 @@
 	import { debounce } from 'lodash-es';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
+	import dayjs from 'dayjs';
 
 	let data = [];
 
@@ -22,6 +23,17 @@
 		const res = {} as FetchFunctionResult;
 		res.res = await getListings({ ...fetchOptions }, index, 20);
 		res.adapted = await Promise.all(res.res.map(adaptListingToNftCard));
+
+		// Hotfix to hide expired listings
+		res.adapted = res.adapted.filter((l) => {
+			try {
+				const endingDate = dayjs(l.popupOptions.rawResourceData.startTime).add(l.popupOptions.rawResourceData.duration, 's');
+				return endingDate.isAfter(dayjs());
+			} catch {
+				return true;
+			}
+		});
+
 		return res;
 	};
 

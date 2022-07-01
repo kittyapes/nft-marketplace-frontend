@@ -12,6 +12,7 @@ export interface Collection {
 	logoImageUrl?: string;
 	backgroundImageUrl?: string;
 	description?: string;
+	isClaimed?: boolean;
 	displayTheme: 'CONTAINED' | 'PADDED' | 'COVERED';
 	royalties?: { fees: string | number; address: string; createdAt?: string }[];
 	walletAddress?: string;

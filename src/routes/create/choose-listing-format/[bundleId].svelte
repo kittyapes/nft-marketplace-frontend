@@ -12,7 +12,8 @@
 			listingType: 'sale',
 			title: 'Sale',
 			imgUrl: '/img/create/drop-type-sale.svg',
-			hoverText: 'No description.',
+			hoverText: 'Allows users to sell an NFT for a Fixed Cost and Time-Frame.',
+			confirmDetail: 'Listing an NFT for sale posts the item to the Marketplace for a fixed price.',
 			show: () => true
 		},
 		{
@@ -20,6 +21,7 @@
 			title: 'Auction',
 			imgUrl: '/img/create/drop-type-auction.svg',
 			hoverText: 'Allow other users to make bids on your NFT.',
+			confirmDetail: 'Listing an NFT for Auction allows any user to bid with Weth. Select the duration and reserve price for your item.',
 			show: () => true
 		},
 		{

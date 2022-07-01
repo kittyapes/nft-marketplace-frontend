@@ -88,11 +88,10 @@
 		const token = await getTokenDetails(await contractGetTokenAddress(listingPropValues.token.label));
 
 		if (listingType === 'sale') {
-			flowOptions.sale.price = parseUnits(listingPropValues.price.toString(), token.decimals);
+			flowOptions.sale.price = listingPropValues.price.toString();
 		} else if (listingType === 'auction') {
 			// HOTFIX, assigning reservePrice to startingPrice, because that's what the contract works with
-			flowOptions.auction.startingPrice = parseUnits(listingPropValues.reservePrice.toString(), token.decimals);
-			// flowOptions.auction.reservePrice = parseEther(listingPropValues.reservePrice.toString() || '0');
+			flowOptions.auction.startingPrice = listingPropValues.reservePrice.toString();
 		}
 
 		const { err, success } = await createListingFlow(flowOptions);
