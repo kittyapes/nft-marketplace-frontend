@@ -9,6 +9,7 @@
 	export let title;
 	export let listingType: DropListingType;
 	export let handler: PopupHandler;
+	export let confirmDetail: string;
 
 	function handleConfirm() {
 		handler.close();
@@ -23,8 +24,8 @@
 			<div class="mt-2 text-lg font-bold">{title}</div>
 		</div>
 
-		<div class="mt-8 text-2xl font-bold text-center">Lorem Ipsum dolor sit amet, consectetur</div>
-		<div class="mt-2 text-center max-w-prose">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut</div>
+		<div class="mt-8 text-2xl font-bold text-center">Confirm Your Selection</div>
+		<div class="mt-2 text-center max-w-prose">{confirmDetail || 'N/A'}</div>
 
 		<button class="mt-16 font-bold uppercase btn btn-gradient btn-rounded" on:click={handleConfirm}>Confirm</button>
 	</div>
