@@ -2,6 +2,7 @@ import { HinataMarketplaceContractAddress, WethContractAddress } from '$constant
 import type { EthAddress, OnChainId, UnixTime } from '$interfaces';
 import { appSigner, currentUserAddress } from '$stores/wallet';
 import { getIconUrl } from '$utils/misc/getIconUrl';
+import { parseToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
 import { BigNumber, ethers } from 'ethers';
 import { get } from 'svelte/store';
@@ -33,7 +34,8 @@ export const listingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.black'),
 export const whiteListingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.light'), value: WethContractAddress }];
 
 export interface ContractCreateListingOptions {
-	price: BigNumber;
+	price: string;
+	reservePrice: string;
 	duration: number;
 	startTime: UnixTime;
 	payToken: EthAddress;
@@ -57,11 +59,12 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		await approval.wait(1);
 	}
 
-	console.log({
+	const callOptions = {
 		id: ethers.BigNumber.from(options.listingId),
 		seller: get(currentUserAddress),
 		payToken: options.payToken,
-		price: options.price,
+		price: parseToken(options.price, options.payToken),
+		reservePrice: parseToken(options.price, options.payToken),
 		startTime: options.startTime,
 		duration: options.duration,
 		quantity: options.quantity,
@@ -69,21 +72,11 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		collections: options.collections,
 		tokenIds: options.tokenIds,
 		tokenAmounts: options.tokenAmounts
-	});
+	};
 
-	await contractCaller(MarketplaceContract, 'createListing', 150, 1, {
-		id: ethers.BigNumber.from(options.listingId),
-		seller: get(currentUserAddress),
-		payToken: options.payToken,
-		price: options.price,
-		startTime: options.startTime,
-		duration: options.duration,
-		quantity: options.quantity,
-		listingType: options.listingType,
-		collections: options.collections,
-		tokenIds: options.tokenIds,
-		tokenAmounts: options.tokenAmounts
-	});
+	console.debug('[Info] Will call createListing on contract with the following parameters.', callOptions);
+
+	await contractCaller(MarketplaceContract, 'createListing', 150, 1, callOptions);
 }
 
 export async function contractPurchaseListing(listingId: string) {
@@ -130,7 +123,7 @@ export async function getOnChainListing(listingId: string) {
 		price: ethers.utils.formatUnits(onChainListing.price, token.decimals),
 		quantity: ethers.utils.formatUnits(onChainListing.quantity, 0),
 		seller: onChainListing.seller,
-		startTime: ethers.utils.formatUnits(onChainListing.startTime, 0)
+		startTime: onChainListing.startTime ? ethers.utils.formatUnits(onChainListing.startTime, 0) : null
 	};
 }
 
