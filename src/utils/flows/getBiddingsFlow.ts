@@ -32,35 +32,18 @@ async function fetchHighestBid(listingId: string) {
 }
 
 export async function getBiddingsFlow(listingId: string, tokenDecimals: number): Promise<BidRow[]> {
-	const highestBid = await fetchHighestBid(listingId);
-
-	if (highestBid.address === '0x0000000000000000000000000000000000000000') {
-		return [];
-	}
-
-	const highestBidUser = await fetchProfileData(highestBid.address);
-
-	const biddings: BidRow[] = [];
-
-	biddings.push({
-		bidderName: highestBidUser.username,
-		imageUrl: highestBidUser.thumbnailUrl,
-		tokenAmount: formatUnits(highestBid.amount, tokenDecimals),
-		timeAgo: 'N/A'
-	});
-
 	const res = await axios.get(getApiUrl('latest', 'listings/' + listingId + '/bids'));
-	const apiBids = res.data.data as any[];
+	const bids = res.data.data as any[];
 
 	let longestString = 0;
 
 	// A hotfix for accumulating the bid amounts, because the contract emits only the differences
 	// and the backend returns only them, not accumulated
-	for (const [index, bid] of apiBids.entries()) {
+	for (const [index, bid] of bids.entries()) {
 		bid.accumulated = BigNumber.from(bid.bid);
 
-		for (let i = index + 1; apiBids[i] && apiBids[i].bidder === bid.bidder; i++) {
-			bid.accumulated = bid.accumulated.add(apiBids[i].bid);
+		for (let i = index + 1; bids[i] && bids[i].bidder === bid.bidder; i++) {
+			bid.accumulated = bid.accumulated.add(bids[i].bid);
 		}
 
 		bid.formatted = formatUnits(bid.accumulated, tokenDecimals);
@@ -68,14 +51,12 @@ export async function getBiddingsFlow(listingId: string, tokenDecimals: number):
 		longestString = Math.max(longestString, bid.formatted.length);
 	}
 
-	biddings.push(
-		...apiBids.map((bid) => ({
-			bidderName: bid.user.username,
-			imageUrl: bid.user.thumbnailUrl,
-			tokenAmount: bid.formatted.padEnd(longestString, '0'),
-			timeAgo: (dayjs.duration(dayjs().diff(dayjs(bid.queueDate), 's'), 's').humanize() + ' ago').replace('a few seconds ago', 'now')
-		}))
-	);
+	const adaptedBids = bids.map((bid) => ({
+		bidderName: bid.user.username,
+		imageUrl: bid.user.thumbnailUrl,
+		tokenAmount: bid.formatted.padEnd(longestString, '0'),
+		timeAgo: (dayjs.duration(dayjs().diff(dayjs(bid.queueDate), 's'), 's').humanize() + ' ago').replace('a few seconds ago', 'now')
+	}));
 
-	return biddings;
+	return adaptedBids;
 }
