@@ -154,7 +154,7 @@
 		</div>
 	{:else if options.rawResourceData.listingType === 'auction'}
 		<div class="flex flex-col h-full mt-4">
-			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenDecimals={options.listingData.tokenDecimals} />
+			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenDecimals={options.listingData.tokenDecimals} on:request-refresh={refreshBids} />
 
 			<div class="mt-2 text-xs font-semibold opacity-70">
 				Reserve price: {formattedPrice}
