@@ -58,17 +58,7 @@
 	async function listForSale() {
 		isListing = true;
 
-		let startTimestamp: number;
-
-		if (listingPropValues.startDate.unix() <= dayjs().unix()) {
-			startTimestamp = dayjs().unix() + 10;
-		} else {
-			startTimestamp = listingPropValues.startDate.unix();
-		}
-
 		const duration = listingPropValues.duration.value * 60 * 60 * 24;
-
-		console.log($fetchedNftData);
 
 		const flowOptions: CreateListingFlowOptions = {
 			title: $fetchedNftData.name,
@@ -79,7 +69,7 @@
 			paymentTokenAddress: await contractGetTokenAddress(listingPropValues.token.label),
 			paymentTokenTicker: listingPropValues.token.label,
 			quantity: BigNumber.from(1),
-			startTime: startTimestamp,
+			startTime: listingPropValues.startDate.isAfter(dayjs()) ? listingPropValues.startDate.unix() : null,
 			listingType: listingType,
 			sale: {} as any,
 			auction: {} as any

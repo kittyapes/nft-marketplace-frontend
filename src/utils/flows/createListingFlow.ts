@@ -6,6 +6,7 @@ import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { contractCreateListing, LISTING_TYPE } from '$utils/contracts/listing';
 import { notifyError, notifySuccess } from '$utils/toast';
 import axios from 'axios';
+import dayjs from 'dayjs';
 import type { BigNumber } from 'ethers';
 import { noTryAsync } from 'no-try';
 
@@ -45,9 +46,12 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		paymentTokenTicker: 'ETH', // hotfix options.paymentTokenTicker,
 		description: options.description || 'No Description',
 		listingType: options.listingType,
-		duration: options.duration.toString(),
-		startTime: options.startTime.toString()
+		duration: options.duration.toString()
 	};
+
+	if (options.startTime) {
+		fields['startTime'] = options.startTime.toString();
+	}
 
 	const listing = {};
 
@@ -114,7 +118,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 			listingId: listingId,
 			listingType,
 			price,
-			startTime: options.startTime,
+			startTime: options.startTime || dayjs().unix(),
 			duration: options.duration,
 			tokenIds,
 			tokenAmounts,
