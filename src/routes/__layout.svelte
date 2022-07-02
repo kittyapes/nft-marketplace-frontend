@@ -23,6 +23,9 @@
 	import { getAllTokenBalances } from '$utils/contracts/tokenBalances';
 	import NavigationHandlers from '$lib/utils/NavigationHandlers.svelte';
 	import ErrorManager from '$lib/components/ErrorManager.svelte';
+	import ErrorPage from '$lib/components/ErrorPage.svelte';
+	import PageTransition from '$lib/components/PageTransition.svelte';
+	import { currentError } from '$stores/error';
 
 	export let url;
 
@@ -75,7 +78,7 @@
 	<title>Hinata</title>
 </svelte:head>
 <Nav />
-<!-- {#if $currentError}
+{#if $currentError}
 	<ErrorPage />
 {:else}
 	<PageTransition {url}>
@@ -83,11 +86,7 @@
 			<slot />
 		</div>
 	</PageTransition>
-{/if} -->
-
-<div class="pt-16 mx-auto">
-	<slot />
-</div>
+{/if}
 
 <Footer />
 <Toast />

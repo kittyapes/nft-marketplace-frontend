@@ -4,14 +4,13 @@
 	import { page } from '$app/stores';
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
-	import type { NftCardOptions } from '$interfaces/nftCardOptions';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
-	import { profileCompletionProgress, userLikedNfts } from '$stores/user';
+	import { profileCompletionProgress } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import { apiNftToNftCard } from '$utils/adapters/apiNftToNftCard';
@@ -67,6 +66,7 @@
 
 	async function fetchData(forAdress: string) {
 		$localProfileData = await fetchProfileData(forAdress);
+		console.log(address);
 	}
 
 	$: browser && fetchData(address);
