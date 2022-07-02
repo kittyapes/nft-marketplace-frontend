@@ -95,7 +95,7 @@
 <div class="px-16 mt-24 mb-16">
 	<div class="flex items-end">
 		<h2 class="text-4xl font-light uppercase flex-grow">Latest Blog Posts</h2>
-		<a href="https://hinatafoundation.medium.com/" target="_blank" class="uppercase underline text-sm font-bold">View Latest Posts</a>
+		<a href="/blog" class="uppercase underline text-sm font-bold">View Latest Posts</a>
 	</div>
 	<hr class="mt-4 border-[#0000004D]" />
 
