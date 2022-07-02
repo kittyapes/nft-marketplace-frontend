@@ -46,7 +46,7 @@
 			<img src="/svg/logo/logo.alpha.svg" alt="Hinata logo." />
 		</a>
 
-		<Search class="snap-start" />
+		<!-- <Search class="snap-start" /> -->
 
 		<!-- Flex filler -->
 		<div class="flex-grow" />
