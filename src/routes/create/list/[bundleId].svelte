@@ -6,7 +6,9 @@
 	import Loader from '$icons/loader.svelte';
 	import type { ApiNftData } from '$interfaces/apiNftData';
 	import CommonProperties from '$lib/components/create/CommonProperties.svelte';
+	import Modal from '$lib/components/Modal.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
+	import ListingSuccessPopup from '$lib/components/popups/ListingSuccessPopup.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
 	import { getNft } from '$utils/api/nft';
@@ -14,6 +16,7 @@
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { contractGetTokenAddress, getTokenAddress } from '$utils/misc/getTokenAddress';
 	import { goBack } from '$utils/navigation';
+	import { setPopup } from '$utils/popup';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
 	import { parseUnits } from 'ethers/lib/utils.js';
@@ -97,10 +100,14 @@
 		const { err, success } = await createListingFlow(flowOptions);
 
 		if (success) {
-			goto('/profile/' + $currentUserAddress + '?tab=listings');
+			setPopup(ListingSuccessPopup, { props: { viewCallback: goViewNft }, closeByOutsideClick: false });
 		}
 
 		isListing = false;
+	}
+
+	function goViewNft() {
+		goto('/profile/' + $currentUserAddress + '?tab=listings');
 	}
 
 	let listingPropValues: Partial<Record<ListingPropName, any>>;
