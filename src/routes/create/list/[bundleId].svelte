@@ -14,6 +14,7 @@
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { contractGetTokenAddress, getTokenAddress } from '$utils/misc/getTokenAddress';
 	import { goBack } from '$utils/navigation';
+	import { notifyError } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
 	import { parseUnits } from 'ethers/lib/utils.js';
@@ -86,6 +87,10 @@
 		}
 
 		const { err, success } = await createListingFlow(flowOptions);
+
+		if (err) {
+			notifyError('Failed to list NFT!');
+		}
 
 		if (success) {
 			goto('/profile/' + $currentUserAddress + '?tab=listings');
