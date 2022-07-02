@@ -36,12 +36,15 @@ export interface Collection {
 	totalVol: number;
 	total24hours: number;
 	'24hourPercent': number;
+	items: number;
+	owners: number;
+	highestSale: number;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
 	return {
 		royalties: [
-			{ fees: '', address: '' },
+			{ fees: '', address: '' }
 			// TODO uncomment once contract supports it
 			/*{ fees: '', address: '' },
 			{ fees: '', address: '' }*/
