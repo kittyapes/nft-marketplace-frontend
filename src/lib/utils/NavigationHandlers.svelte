@@ -4,7 +4,6 @@
 	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
-	import { currentError } from '$stores/error';
 	import { profileData, refreshProfileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { isAuthTokenExpired } from '$utils/auth/token';
@@ -109,7 +108,7 @@
 		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
 			profileData.subscribe((profile) => {
 				if (profile && profile.status !== 'VERIFIED' && !profile.roles.includes('superadmin')) {
-					currentError.set(403);
+					goto('/403');
 				}
 			});
 		}
@@ -118,7 +117,7 @@
 		if (to.pathname.match(/management*/)) {
 			profileData.subscribe((profile) => {
 				if (profile && !profile.roles.includes('superadmin') && !profile.roles.includes('admin')) {
-					currentError.set(403);
+					goto('/403');
 				}
 			});
 		}
@@ -133,7 +132,7 @@
 
 		// If the user is not an admin and trying to access admin routes, redirect to the home page
 		if ($page.url.pathname.startsWith('/admin') && !roles.includes('admin') && !roles.includes('superadmin')) {
-			currentError.set(403);
+			goto('/403');
 		}
 	});
 </script>
