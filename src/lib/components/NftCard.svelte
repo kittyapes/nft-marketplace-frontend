@@ -28,7 +28,11 @@
 
 	function handleClick() {
 		if (!options.popupOptions) return;
-		addUrlParam('id', options.id);
+		let id = options.popupOptions.rawResourceData._id;
+		if (options.popupOptions.resourceType === 'listing') {
+			id = options.popupOptions.listingData.onChainId;
+		}
+		addUrlParam('id', id);
 		setPopup(options.popupComponent, { props: { options: { ...options.popupOptions, favorited: options.favorited } }, onClose: () => removeUrlParam('id') });
 	}
 

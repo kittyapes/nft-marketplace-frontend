@@ -115,7 +115,6 @@ export async function getListings(filters?: ListingFetchOptions, page: number = 
 
 export async function getListing(id: string) {
 	const res = await axios.get(getApiUrl('latest', 'listings/' + id)).catch((e) => e.response);
-
 	if (!res) return null;
 	return res.data.data as Listing;
 }

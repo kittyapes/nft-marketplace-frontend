@@ -58,6 +58,8 @@
 				popupOptions = (await apiNftToNftCard(nft)).popupOptions;
 			}
 
+			console.log(popupOptions);
+
 			setPopup(CardPopup, { props: { options: popupOptions }, onClose: () => removeUrlParam('id') });
 		}
 	});
