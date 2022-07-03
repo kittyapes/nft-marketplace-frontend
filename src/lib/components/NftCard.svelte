@@ -15,7 +15,6 @@
 	import { walletConnected } from '$utils/wallet';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { notifyError, notifySuccess } from '$utils/toast';
-	import dayjs from 'dayjs';
 	import { noTryAsync } from 'no-try';
 
 	export let options: NftCardOptions;
