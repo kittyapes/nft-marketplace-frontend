@@ -9,7 +9,7 @@
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
 	import { writable } from 'svelte/store';
-	import { getListings, type Listing } from '$utils/api/listing';
+	import { getRandomListings, type Listing } from '$utils/api/listing';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import NftList from '$lib/components/NftList.svelte';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
@@ -26,7 +26,7 @@
 	};
 
 	const getExploreMarketData = async () => {
-		exploreListings.set(await getListings(null, 1, 10));
+		exploreListings.set(await getRandomListings(10));
 		exploreListingsData = await Promise.all($exploreListings.map(adaptListingToNftCard));
 	};
 

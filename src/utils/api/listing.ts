@@ -113,6 +113,14 @@ export async function getListings(filters?: ListingFetchOptions, page: number = 
 	return res.data.data as Listing[];
 }
 
+export async function getRandomListings(limit: number = 10) {
+	const params = {
+		limit
+	};
+	const res = await axios.get(getApiUrl('latest', 'listings?'), { params });
+	return res.data.data as Listing[];
+}
+
 export async function getListing(id: string) {
 	const res = await axios.get(getApiUrl('latest', 'listings/' + id)).catch((e) => e.response);
 	if (!res) return null;
