@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { goto, beforeNavigate } from '$app/navigation';
-	import { acceptedImages, acceptedNftFileTypes, acceptedVideos } from '$constants';
+	import { acceptedImages, acceptedVideos } from '$constants';
 	import Back from '$icons/back_.svelte';
 	import type { NftDraft } from '$interfaces/nft/nftDraft';
-	import type { NftCardOptions } from '$interfaces/nftCardOptions';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
@@ -50,6 +49,14 @@
 	const availableCollections = writable<{ label: string; value: string; iconUrl: string }[]>([]);
 
 	onMount(async () => {
+		await prepData();
+	});
+
+	beforeNavigate(() => {
+		dumpDraft ? nftDraft.set(null) : nftDraft.set(nftData);
+	});
+
+	async function prepData() {
 		profileData.set(await fetchProfileData($currentUserAddress));
 
 		let collections: Collection[] = [];
@@ -76,11 +83,7 @@
 		}
 
 		$availableCollections = collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown);
-	});
-
-	beforeNavigate(() => {
-		dumpDraft ? nftDraft.set(null) : nftDraft.set(nftData);
-	});
+	}
 
 	async function mintAndContinue() {
 		// Keep for skipping mint
@@ -148,6 +151,12 @@
 
 	$: quantityValid = nftData.quantity > 0;
 	$: inputValid = nftData.name && nftData.name.length <= 25 && selectedCollectionId && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
+
+	currentUserAddress.subscribe(async (userAddress) => {
+		if (userAddress) {
+			await prepData();
+		}
+	});
 
 	$: if (nftData) {
 		$formValidity.name = !!nftData.name ? (nftData.name.length > 25 ? 'Name Cannot be more than 25 characters' : true) : !nftData.name ? 'Name is Required' : true;
