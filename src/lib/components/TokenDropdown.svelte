@@ -49,7 +49,7 @@
 		{id}
 		type="text"
 		style:border-color={borderColor}
-		class="input w-full h-12 {$$props.class} {!valid && 'border-red-300'} disabled:bg-white"
+		class="input w-full h-12 {$$props.class} {!valid && '!border-red-300'} disabled:bg-white"
 		class:font-semibold={value}
 		{placeholder}
 		{disabled}
@@ -59,7 +59,7 @@
 		style:background={dropdownButtonBg}
 		style:color={dropdownButtonColor}
 		style:border-color={borderColor}
-		class="absolute top-px right-px bottom-px rounded-r-md border-l-[1px] px-4"
+		class="absolute top-px right-px bottom-px rounded-r-md border-l-[1px] px-4 {!valid && '!border-red-300'}"
 		on:click|stopPropagation|preventDefault={() => (open = !open)}
 		bind:this={elemOpenButton}
 		disabled={buttonDisabled}
