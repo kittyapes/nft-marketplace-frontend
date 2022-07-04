@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { HinataMarketplaceStorageContractAddress, HinataTokenAddress } from '$constants/contractAddresses';
+	import { HinataMarketplaceStorageContractAddress } from '$constants/contractAddresses';
 	import Back from '$icons/back_.svelte';
 	import Loader from '$icons/loader.svelte';
 	import type { ApiNftData } from '$interfaces/apiNftData';
 	import CommonProperties from '$lib/components/create/CommonProperties.svelte';
-	import Modal from '$lib/components/Modal.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import ListingSuccessPopup from '$lib/components/popups/ListingSuccessPopup.svelte';
 	import { currentUserAddress } from '$stores/wallet';
@@ -14,12 +13,12 @@
 	import { getNft } from '$utils/api/nft';
 	import { getTokenDetails } from '$utils/contracts/token';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
-	import { contractGetTokenAddress, getTokenAddress } from '$utils/misc/getTokenAddress';
+	import { contractGetTokenAddress } from '$utils/misc/getTokenAddress';
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
+	import { notifyError } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
-	import { parseUnits } from 'ethers/lib/utils.js';
 	import type { ListingPropName } from 'src/interfaces/drops';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -61,17 +60,7 @@
 	async function listForSale() {
 		isListing = true;
 
-		let startTimestamp: number;
-
-		if (listingPropValues.startDate.unix() <= dayjs().unix()) {
-			startTimestamp = dayjs().unix() + 10;
-		} else {
-			startTimestamp = listingPropValues.startDate.unix();
-		}
-
 		const duration = listingPropValues.duration.value * 60 * 60 * 24;
-
-		console.log($fetchedNftData);
 
 		const flowOptions: CreateListingFlowOptions = {
 			title: $fetchedNftData.name,
@@ -82,7 +71,7 @@
 			paymentTokenAddress: await contractGetTokenAddress(listingPropValues.token.label),
 			paymentTokenTicker: listingPropValues.token.label,
 			quantity: BigNumber.from(1),
-			startTime: startTimestamp,
+			startTime: listingPropValues.startDate.isAfter(dayjs()) ? listingPropValues.startDate.unix() : null,
 			listingType: listingType,
 			sale: {} as any,
 			auction: {} as any
@@ -98,6 +87,10 @@
 		}
 
 		const { err, success } = await createListingFlow(flowOptions);
+
+		if (err) {
+			notifyError('Failed to list NFT!');
+		}
 
 		if (success) {
 			setPopup(ListingSuccessPopup, { props: { viewCallback: goViewNft }, closeByOutsideClick: false });
