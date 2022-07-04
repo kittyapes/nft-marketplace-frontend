@@ -209,6 +209,12 @@
 		await fetchRemoteCollectionData();
 
 		notifySuccess('Collection updated!');
+
+		// where to go next based on URL params
+		if ($page.url.searchParams.has('to')) {
+			$nftDraft.collectionName = $collectionData.name;
+			goto('/' + $page.url.searchParams.get('to'));
+		} else goto('/collections/' + $collectionData.slug);
 	}
 
 	// Remote collection data
