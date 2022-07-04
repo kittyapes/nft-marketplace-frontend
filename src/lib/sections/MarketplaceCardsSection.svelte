@@ -76,6 +76,7 @@
 		const params = $page.url.searchParams;
 
 		fetchOptions.type = params.get('types')?.split('+') as ListingType[];
+		fetchOptions.sortBy = params.get('sortBy') as any;
 		fetchOptions.collectionId = params.get('collections');
 		fetchOptions.priceMin = params.get('minPrice');
 		fetchOptions.priceMax = params.get('maxPrice');

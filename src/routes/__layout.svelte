@@ -81,11 +81,11 @@
 {#if $currentError}
 	<ErrorPage />
 {:else}
-	<PageTransition {url}>
-		<div class="pt-16 mx-auto">
-			<slot />
-		</div>
-	</PageTransition>
+	<!-- <PageTransition {url}> -->
+	<div class="pt-16 mx-auto">
+		<slot />
+	</div>
+	<!-- </PageTransition> -->
 {/if}
 
 <Footer />
