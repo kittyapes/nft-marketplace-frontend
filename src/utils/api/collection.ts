@@ -45,10 +45,9 @@ export interface Collection {
 export function getInitialCollectionData(): Partial<Collection> {
 	return {
 		royalties: [
+			{ fees: '', address: '' },
+			{ fees: '', address: '' },
 			{ fees: '', address: '' }
-			// TODO uncomment once contract supports it
-			/*{ fees: '', address: '' },
-			{ fees: '', address: '' }*/
 		]
 	};
 }
