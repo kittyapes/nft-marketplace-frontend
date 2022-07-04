@@ -38,15 +38,11 @@ export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: 
 export function parseToken(amount: string, tokenAddress: string) {
 	const tokenDetails = getKnownTokenDetails({ tokenAddress: tokenAddress });
 
-	console.log({ tokenDetails });
-
 	return parseUnits(amount, tokenDetails.decimals);
 }
 
 export function formatToken(amount: string, tokenAddress: string) {
 	const tokenDetails = getKnownTokenDetails({ tokenAddress: tokenAddress });
-
-	console.log({ tokenDetails });
 
 	return formatUnits(amount, tokenDetails.decimals);
 }

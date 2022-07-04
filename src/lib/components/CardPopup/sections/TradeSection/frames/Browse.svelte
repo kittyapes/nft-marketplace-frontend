@@ -15,6 +15,7 @@
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import { formatToken, parseToken } from '$utils/misc/priceUtils';
 	import { createToggle } from '$utils/misc/toggle';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import dayjs from 'dayjs';
@@ -65,17 +66,16 @@
 	let biddings: BidRow[] = [];
 
 	function bidValidator(v: string): boolean {
-		const [valueErr, parsedValue] = noTry(() => parseUnits(v, options.listingData.tokenDecimals));
+		const [valueErr, parsedValue] = noTry(() => parseToken(v, options.listingData.tokenAddress));
 
 		if (valueErr) return false;
 
-		// HOTFIX we will use the startingPrice as a reserve price for now
-		const [reservePriceErr, parsedReservePrice] = noTry(() => BigNumber.from(options.auctionData.startingPrice));
+		const [reservePriceErr, parsedReservePrice] = noTry(() => parseToken(options.auctionData.reservePrice, options.listingData.tokenAddress));
 
 		// parseUnits because tokenAmount is a ETH formatted string
-		const [highestBidErr, parsedHighestBid] = noTry(() => parseUnits(biddings[0].tokenAmount, options.listingData.tokenDecimals));
+		const [highestBidErr, parsedHighestBid] = noTry(() => parseUnits(biddings?.[0]?.tokenAmount || '0', options.listingData.tokenDecimals));
 
-		if (parsedReservePrice && parsedValue.lte(parsedReservePrice)) {
+		if (parsedReservePrice && parsedValue.lt(parsedReservePrice)) {
 			return false;
 		}
 
@@ -101,8 +101,6 @@
 			await refreshBids();
 		}
 	});
-
-	$: formattedPrice = noTry(() => formatUnits(options.auctionData.startingPrice, options.listingData.tokenDecimals))[1] || 'N/A';
 
 	const hoveringPurchase = createToggle();
 	let purchaseButton: HTMLElement;
@@ -162,15 +160,15 @@
 			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenDecimals={options.listingData.tokenDecimals} on:request-refresh={refreshBids} />
 
 			<div class="mt-2 text-xs font-semibold opacity-70">
-				Reserve price: {formattedPrice}
+				Reserve price: {options.auctionData.reservePrice || 'N/A'}
 				{options.listingData.symbol}
 
 				{#if listingExpired}
 					| <span class="text-red-800">EXPIRED</span>
 				{/if}
 
-				<!-- | Reserve price: {formatEther(options.auctionData.reservePrice) || 'N/A'}
-				{options.listingData.symbol} -->
+				| Starting price: {options.auctionData.startingPrice || 'N/A'}
+				{options.listingData.symbol}
 			</div>
 
 			<div class="flex gap-2 mt-2">
