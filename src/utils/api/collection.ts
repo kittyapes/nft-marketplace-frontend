@@ -5,6 +5,7 @@ import { get } from 'svelte/store';
 import { getApiUrl } from '.';
 
 export interface Collection {
+	mintedFrom: string;
 	name: string;
 	slug: string;
 	image?: Blob;
