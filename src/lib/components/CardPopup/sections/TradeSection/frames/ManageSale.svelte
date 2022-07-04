@@ -1,14 +1,19 @@
 <script lang="ts">
 	import Info from '$icons/info.v2.svelte';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import OfferAndAsk from '$lib/components/CardPopup/lib/OfferAndAsk.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
+	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { contractCancelListing, listingDurationOptions, listingTokens } from '$utils/contracts/listing';
-	import { notifyError } from '$utils/toast';
-	import { noTryAsync } from 'no-try';
+	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
+	import { contractCancelListing, contractUpdateListing, listingDurationOptions, listingTokens } from '$utils/contracts/listing';
+	import { parseToken } from '$utils/misc/priceUtils';
+	import { createToggle } from '$utils/misc/toggle';
+	import { notifyError, notifySuccess } from '$utils/toast';
+	import { noTry, noTryAsync } from 'no-try';
 	import { createEventDispatcher } from 'svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
 
@@ -37,8 +42,50 @@
 		isCancellingListing = false;
 	}
 
+	const isUpdatingListing = createToggle();
+
+	async function updateListing() {
+		isUpdatingListing.toggle();
+
+		const [err, res] = await noTryAsync(() =>
+			contractUpdateListing(options.listingData.onChainId, {
+				sale: { price },
+				payTokenAddress: options.listingData.tokenAddress
+			})
+		);
+
+		if (err) {
+			console.error(err);
+			notifyError('Failed to update listing.');
+		} else {
+			notifySuccess('Successfully updated listing.');
+		}
+
+		isUpdatingListing.toggle();
+	}
+
+	// Listing properties
 	let price = options.saleData.price;
 	let duration = listingDurationOptions.find((l) => l.value === options.listingData.duration);
+
+	let newPriceValid = false;
+
+	$: try {
+		const parsedNewPrice = parseToken(price, options.listingData.tokenAddress);
+		const parsedOldPrice = parseToken(options.saleData.price, options.listingData.tokenAddress);
+
+		newPriceValid = parsedNewPrice.lt(parsedOldPrice) && parsedNewPrice.gt(0);
+	} catch {
+		newPriceValid = false;
+	}
+
+	$: newPropertiesValid = newPriceValid;
+
+	// Update listing button
+	let updatebuttonContainer: HTMLElement;
+	const isUpdateHovered = createToggle();
+
+	$: console.log({ newPriceValid });
 </script>
 
 <div class="flex flex-col h-full pb-8">
@@ -50,7 +97,6 @@
 	<div class="mt-4 font-semibold">Price</div>
 	<div class="mt-2">
 		<TokenDropdown
-			disabled
 			dropdownBg="white"
 			dropdownColor="black"
 			dropdownButtonBg="white"
@@ -60,6 +106,7 @@
 			buttonDisabled
 			bind:value={price}
 			tokens={listingTokens}
+			valid={newPriceValid}
 		/>
 	</div>
 
@@ -91,10 +138,27 @@
 
 	<OfferAndAsk offer="N/A" ask="N/A" />
 
-	<PrimaryButton class="mt-4" disabled={isCancellingListing} on:click={cancelListing}>
-		{#if isCancellingListing}
-			<ButtonSpinner />
-		{/if}
-		Cancel Listing
-	</PrimaryButton>
+	<div class="flex gap-2 mt-4">
+		<SecondaryButton disabled={isCancellingListing} on:click={cancelListing}>
+			{#if isCancellingListing}
+				<ButtonSpinner />
+			{/if}
+			Cancel Listing
+		</SecondaryButton>
+
+		<div bind:this={updatebuttonContainer} class="w-full" on:pointerenter={isUpdateHovered.toggle} on:pointerleave={isUpdateHovered.toggle}>
+			<PrimaryButton on:click={updateListing} disabled={$isUpdatingListing || !newPropertiesValid}>
+				{#if $isUpdatingListing}
+					<ButtonSpinner />
+				{/if}
+				Update Listing
+			</PrimaryButton>
+		</div>
+	</div>
 </div>
+
+{#if $isUpdateHovered && !newPriceValid}
+	<AttachToElement to={updatebuttonContainer} bottom>
+		<InfoBubble>New price must be lower than the current price.</InfoBubble>
+	</AttachToElement>
+{/if}

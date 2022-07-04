@@ -1,6 +1,7 @@
 import { HinataMarketplaceContractAddress, WethContractAddress } from '$constants/contractAddresses';
 import type { EthAddress, OnChainId, UnixTime } from '$interfaces';
 import { appSigner, currentUserAddress } from '$stores/wallet';
+import { getContract } from '$utils/misc/getContract';
 import { getIconUrl } from '$utils/misc/getIconUrl';
 import { parseToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
@@ -138,4 +139,21 @@ export async function contractCancelListing(listingId: string) {
 	// await tx.wait(1);
 
 	await contractCaller(contract, 'cancelListing', 150, 1, listingId);
+}
+
+export async function contractUpdateListing(
+	listingId: string,
+	options: {
+		sale: {
+			price: string;
+		};
+		payTokenAddress: string;
+	}
+) {
+	console.debug(`[Info] Will update listing with ID ${listingId} with the following options:`, options);
+
+	const parsedPrice = parseToken(options.sale.price, options.payTokenAddress);
+
+	const contract = getContract('marketplace');
+	await contractCaller(contract, 'updateListing', 150, 1, listingId, parsedPrice);
 }
