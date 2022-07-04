@@ -88,7 +88,7 @@
 
 	async function pushBatchProcessSettings() {
 		isPushingBatchProcessSettings = true;
-
+		console.log($isBatchProcessEnabled, $batchProcessDayOption.index);
 		await putBatchProcessSettings({
 			enabled: $isBatchProcessEnabled,
 			processingDayIndex: $batchProcessDayOption.index
@@ -191,6 +191,7 @@
 				class="w-36"
 				options={processDayOptions}
 				disabled={isPushingBatchProcessSettings || isRefreshingBatchProcessSettings}
+				dispatchOnMount={false}
 				bind:selected={$batchProcessDayOption}
 				on:select={pushBatchProcessSettings}
 			/>
