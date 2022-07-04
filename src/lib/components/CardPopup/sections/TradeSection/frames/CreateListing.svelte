@@ -1,11 +1,15 @@
 <script lang="ts">
-	import { HinataMarketplaceContractAddress, HinataMarketplaceStorageContractAddress, WethContractAddress } from '$constants/contractAddresses';
+	import { HinataMarketplaceStorageContractAddress } from '$constants/contractAddresses';
 	import Info from '$icons/info.v2.svelte';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import type { ListingType } from '$utils/api/listing';
+	import { listingDurationOptions, listingTokens } from '$utils/contracts/listing';
+	import { getTokenDetails } from '$utils/contracts/token';
+	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { contractGetTokenAddress } from '$utils/misc/getTokenAddress';
 	import { notifyError } from '$utils/toast';
 	import dayjs from 'dayjs';
@@ -13,11 +17,6 @@
 	import { parseUnits } from 'ethers/lib/utils.js';
 	import { createEventDispatcher } from 'svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
-	import Input from '$lib/components/v2/Input/Input.svelte';
-	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
-	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { listingDurationOptions, listingTokens } from '$utils/contracts/listing';
-	import { getTokenDetails } from '$utils/contracts/token';
 
 	const dispatch = createEventDispatcher();
 
@@ -28,10 +27,8 @@
 	let price: any;
 	let paymentTokenTicker: string;
 	let duration: number;
-	let startingPrice: any;
+	let startingPrice: string;
 	let reservePrice: string;
-
-	$: console.log(price, paymentTokenTicker, duration);
 
 	// Validation
 	let formValid = false;
@@ -39,8 +36,11 @@
 	$: if (selectedListingType === 'sale') {
 		formValid = price > 0;
 	} else if (selectedListingType === 'auction') {
-		// formValid = startingPrice > 0 && reservePriceValid;
-		formValid = startingPrice > 0;
+		try {
+			formValid = parseUnits(startingPrice, 18).gt(0) && parseUnits(reservePrice, 18).gt(0);
+		} catch {
+			formValid = false;
+		}
 	}
 
 	let isListing = false;
@@ -62,12 +62,11 @@
 			auction: {} as any
 		};
 
-		const token = await getTokenDetails(await contractGetTokenAddress(paymentTokenTicker as any));
-
 		if (selectedListingType === 'sale') {
-			flowOptions.sale.price = parseUnits(price.toString(), token.decimals);
+			flowOptions.sale.price = price;
 		} else if (selectedListingType === 'auction') {
-			flowOptions.auction.startingPrice = parseUnits(startingPrice.toString(), token.decimals);
+			flowOptions.auction.startingPrice = startingPrice;
+			flowOptions.auction.reservePrice = reservePrice;
 		}
 
 		const { err } = await createListingFlow(flowOptions);
@@ -128,8 +127,23 @@
 			<!-- <Button>Sell To Highest Bidder</Button> -->
 		{/if}
 
+		<!-- Reserve price -->
+		<div class="mt-4 mb-2 font-semibold">Reserve Price</div>
+		<TokenDropdown
+			dropdownBg="white"
+			dropdownColor="black"
+			dropdownButtonBg="white"
+			dropdownButtonColor="black"
+			showLabel
+			showArrow={false}
+			tokens={listingTokens}
+			buttonDisabled
+			bind:value={reservePrice}
+			on:select={(ev) => (paymentTokenTicker = ev.detail.label)}
+		/>
+
 		<!-- Starting price -->
-		<div class="mt-4 font-semibold">Reserve Price</div>
+		<div class="mt-4 font-semibold">Starting Price</div>
 		<div class="mt-2">
 			<TokenDropdown
 				dropdownBg="white"
@@ -148,12 +162,6 @@
 		<!-- Duration -->
 		<div class="mt-4 mb-2 font-semibold">Duration</div>
 		<Dropdown options={listingDurationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
-
-		<!-- Reserve price -->
-		{#if false}
-			<div class="mt-4 mb-2 font-semibold">Reserve Price (optional)</div>
-			<Input bind:value={reservePrice} placeholder="Amount" regex={/^(\d+)?$/} bind:valid={reservePriceValid} />
-		{/if}
 	{/if}
 
 	<div class="flex-grow" />

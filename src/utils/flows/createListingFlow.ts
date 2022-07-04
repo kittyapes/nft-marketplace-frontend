@@ -66,13 +66,8 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		listing['startingPrice'] = options.auction.startingPrice.toString();
 	}
 
-	// if (options.auction?.reservePrice) {
-	// 	listing['reservePrice'] = options.auction.reservePrice.toString();
-	// }
-
-	// Hotfix
-	if (options.listingType === 'auction') {
-		listing['reservePrice'] = '0';
+	if (options.auction?.reservePrice) {
+		listing['reservePrice'] = options.auction.reservePrice.toString();
 	}
 
 	// Append listing to formData
@@ -99,14 +94,6 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	const tokenAmounts = options.nfts.map((nft) => nft.amount);
 	const collections = options.nfts.map((nft) => nft.collectionAddress);
 
-	let price: string;
-
-	if (options.listingType === 'sale') {
-		price = options.sale?.price;
-	} else if (options.listingType === 'auction') {
-		price = options.auction?.startingPrice;
-	}
-
 	const listingType = {
 		sale: LISTING_TYPE.FIXED_PRICE,
 		auction: LISTING_TYPE.TIME_LIMITED_WINER_TAKE_ALL_AUCTION
@@ -117,9 +104,9 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 			payToken: options.paymentTokenAddress,
 			listingId: listingId,
 			listingType,
-			price,
+			price: options.sale?.price || options.auction.startingPrice || '0',
 			startTime: options.startTime || dayjs().unix(),
-			reservePrice: price,
+			reservePrice: options.auction?.reservePrice || '0',
 			duration: options.duration,
 			tokenIds,
 			tokenAmounts,

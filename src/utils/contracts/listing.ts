@@ -65,7 +65,7 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		seller: get(currentUserAddress),
 		payToken: options.payToken,
 		price: parseToken(options.price, options.payToken),
-		reservePrice: parseToken(options.price, options.payToken),
+		reservePrice: parseToken(options.reservePrice, options.payToken),
 		startTime: options.startTime,
 		duration: options.duration,
 		quantity: options.quantity,
