@@ -15,7 +15,6 @@
 			{ "indexed": true, "internalType": "uint256", "name": "id", "type": "uint256" },
 			{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" },
 			{ "indexed": true, "internalType": "address", "name": "collection", "type": "address" },
-			{ "indexed": false, "internalType": "address", "name": "beneficiary", "type": "address" },
 			{ "indexed": false, "internalType": "uint256", "name": "royalty", "type": "uint256" },
 			{ "indexed": false, "internalType": "bool", "name": "is721", "type": "bool" }
 		],
@@ -62,7 +61,6 @@
 		"outputs": [
 			{ "internalType": "address", "name": "owner", "type": "address" },
 			{ "internalType": "address", "name": "collection", "type": "address" },
-			{ "internalType": "address", "name": "beneficiary", "type": "address" },
 			{ "internalType": "uint256", "name": "royalty", "type": "uint256" },
 			{ "internalType": "bool", "name": "is721", "type": "bool" }
 		],
@@ -77,7 +75,6 @@
 				"components": [
 					{ "internalType": "address", "name": "owner", "type": "address" },
 					{ "internalType": "address", "name": "collection", "type": "address" },
-					{ "internalType": "address", "name": "beneficiary", "type": "address" },
 					{ "internalType": "uint256", "name": "royalty", "type": "uint256" },
 					{ "internalType": "bool", "name": "is721", "type": "bool" }
 				],
@@ -104,7 +101,6 @@
 	{
 		"inputs": [
 			{ "internalType": "address", "name": "collection", "type": "address" },
-			{ "internalType": "address", "name": "beneficiary", "type": "address" },
 			{ "internalType": "uint256", "name": "royalty", "type": "uint256" }
 		],
 		"name": "register",
@@ -113,16 +109,6 @@
 		"type": "function"
 	},
 	{ "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
-	{
-		"inputs": [
-			{ "internalType": "address", "name": "collection", "type": "address" },
-			{ "internalType": "address", "name": "beneficiary", "type": "address" }
-		],
-		"name": "setRoyaltyBeneficiary",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
 	{
 		"inputs": [
 			{ "internalType": "address", "name": "collection", "type": "address" },
@@ -138,7 +124,6 @@
 			{ "internalType": "string", "name": "name", "type": "string" },
 			{ "internalType": "string", "name": "symbol", "type": "string" },
 			{ "internalType": "string", "name": "uri", "type": "string" },
-			{ "internalType": "address", "name": "beneficiary", "type": "address" },
 			{ "internalType": "uint256", "name": "royalty", "type": "uint256" },
 			{ "internalType": "bool", "name": "is721", "type": "bool" }
 		],
