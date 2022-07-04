@@ -15,7 +15,6 @@
 	import { walletConnected } from '$utils/wallet';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { notifyError, notifySuccess } from '$utils/toast';
-	import dayjs from 'dayjs';
 	import { noTryAsync } from 'no-try';
 
 	export let options: NftCardOptions;
@@ -28,7 +27,11 @@
 
 	function handleClick() {
 		if (!options.popupOptions) return;
-		addUrlParam('id', options.id);
+		let id = options.popupOptions.rawResourceData._id;
+		if (options.popupOptions.resourceType === 'listing') {
+			id = options.popupOptions.listingData.onChainId;
+		}
+		addUrlParam('id', id);
 		setPopup(options.popupComponent, { props: { options: { ...options.popupOptions, favorited: options.favorited } }, onClose: () => removeUrlParam('id') });
 	}
 

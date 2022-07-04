@@ -1,13 +1,24 @@
 import { appProvider, appSigner, currentUserAddress } from '$stores/wallet';
 import { notifyError, notifySuccess, notifyWarning } from '$utils/toast';
 import type { BigNumber } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils.js';
+import { formatUnits, parseUnits } from 'ethers/lib/utils.js';
 import { noTryAsync } from 'no-try';
 import { get } from 'svelte/store';
 import { getMockErc20TokenContract } from './generalContractCalls';
 
+export function isEther(tokenAddress: string) {
+	return tokenAddress === '0x0000000000000000000000000000000000000000';
+}
+
 export async function getTokenDetails(tokenAddress: string) {
 	try {
+		if (isEther(tokenAddress)) {
+			return {
+				name: 'ETH',
+				decimals: 18,
+				symbol: 'ETH'
+			};
+		}
 		const contract = getMockErc20TokenContract(get(appProvider), tokenAddress);
 
 		// Contract Name
@@ -31,6 +42,10 @@ export async function getTokenDetails(tokenAddress: string) {
 }
 
 export async function getTokenBalance(tokenAddress: string, userAddress: string, decimals?: number): Promise<BigNumber> {
+	if (isEther(tokenAddress)) {
+		return await get(appProvider).getBalance(userAddress);
+	}
+
 	if (!decimals) {
 		decimals = (await getTokenDetails(tokenAddress)).decimals;
 	}
@@ -51,14 +66,21 @@ export async function hasEnoughBalance(tokenAddress: string, userAddress: string
 }
 
 export async function contractGetTokenAllowance(owner: string, spender: string, tokenAddress: string): Promise<BigNumber> {
+	if (isEther(tokenAddress)) {
+		return parseUnits('999999999999999999999999999999999999000000000000000000', 18);
+	}
 	const contract = getMockErc20TokenContract(get(appSigner), tokenAddress);
 
 	const allowance = await contract.allowance(owner, spender);
+	console.log(allowance);
 
 	return allowance;
 }
 
 export async function contractApproveToken(spender: string, amount: BigNumber, tokenAddress: string, tokenDecimals: number) {
+	if (isEther(tokenAddress)) {
+		return;
+	}
 	const contract = getMockErc20TokenContract(get(appSigner), tokenAddress);
 
 	// We can't assume the token is ethereum
@@ -67,6 +89,10 @@ export async function contractApproveToken(spender: string, amount: BigNumber, t
 }
 
 export async function ensureAmountApproved(spender: string, amount: string, tokenAddress: string) {
+	if (isEther(tokenAddress)) {
+		return true;
+	}
+
 	const approved = await contractGetTokenAllowance(get(currentUserAddress), spender, tokenAddress);
 	const token = await getTokenDetails(tokenAddress);
 	const amountBigNumber = parseUnits(amount.toString(), token.decimals);

@@ -14,11 +14,6 @@
 	let overlay;
 </script>
 
-<div
-	class="grid place-items-center fixed top-0 w-screen h-screen bg-color-gray-dark z-20"
-	on:click={close}
-	bind:this={overlay}
-	transition:fade={{ duration: 200, easing: expoOut }}
->
+<div class="fixed top-0 left-0 z-20 grid w-screen h-screen place-items-center bg-color-gray-dark" on:click={close} bind:this={overlay} transition:fade={{ duration: 200, easing: expoOut }}>
 	<slot />
 </div>

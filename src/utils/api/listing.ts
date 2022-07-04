@@ -102,8 +102,8 @@ export async function getListings(filters?: ListingFetchOptions, page: number = 
 		type: filters?.type,
 		collectionId: filters?.collectionId ? filters?.collectionId : undefined,
 		// TODO convert to parseUnits
-		priceMin: filters.priceMin && ethers.utils.parseEther(filters?.priceMin.toString()).toString(),
-		priceMax: filters.priceMax && ethers.utils.parseEther(filters?.priceMax.toString()).toString(),
+		priceMin: filters?.priceMin && ethers.utils.parseEther(filters?.priceMin.toString()).toString(),
+		priceMax: filters?.priceMax && ethers.utils.parseEther(filters?.priceMax.toString()).toString(),
 		seller: filters?.seller,
 		sortBy: filters?.sortBy,
 		page,
@@ -115,7 +115,6 @@ export async function getListings(filters?: ListingFetchOptions, page: number = 
 
 export async function getListing(id: string) {
 	const res = await axios.get(getApiUrl('latest', 'listings/' + id)).catch((e) => e.response);
-
 	if (!res) return null;
 	return res.data.data as Listing;
 }

@@ -19,21 +19,54 @@
 	let collectionData: Collection;
 	let creatorData: UserData;
 
+	const collectionStats = {
+		highestSale: {
+			stat: 'Highest Sale',
+			value: 0,
+			symbol: 'ETH'
+		},
+		floorPrice: {
+			stat: 'Floor Price',
+			value: 0,
+			symbol: 'ETH'
+		},
+		totalVol: {
+			stat: 'Total Volume',
+			value: 0,
+			symbol: ''
+		},
+		items: {
+			stat: 'Items',
+			value: 0,
+			symbol: ''
+		},
+		owners: {
+			stat: 'Owners',
+			value: 0,
+			symbol: ''
+		},
+		total24hours: {
+			stat: '24Hr Volume',
+			value: 0,
+			symbol: 'ETH'
+		}
+	};
+
 	async function fetchCollectionData() {
 		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => undefined);
+
+		// Populate collection stats
+		let formatter = Intl.NumberFormat('en', { notation: 'compact' });
+		Object.keys(collectionStats).map((key) => {
+			if (collectionData[key]) {
+				collectionStats[key].value = formatter.format(collectionData[key]);
+			}
+		});
+
 		creatorData = await fetchProfileData(collectionData?.creator).catch((e) => undefined);
 	}
 
 	$: fetchCollectionData();
-
-	const collectionStats = [
-		['Highest Sale', '$0.2M'],
-		['Floor Price', '100 ETH'],
-		['Total Volume', '$3.5B'],
-		['Items', '9.8K'],
-		['Owners', '6.5K'],
-		['24hr Volume', '$12.4M']
-	];
 
 	let collectionMenuButtonOptions = [
 		// REMEMBER TO SET THESE TO TRUE
@@ -108,10 +141,10 @@
 	<!-- Stats table -->
 	{#if collectionData}
 		<div class="flex h-24 max-w-3xl mx-auto mt-8 border border-black rounded-lg justify-evenly">
-			{#each collectionStats as [stat, value]}
+			{#each Object.keys(collectionStats) as statKey}
 				<div class="flex flex-col items-center justify-center w-full border-r border-black last:border-0">
-					<div class="text-sm">{stat}</div>
-					<div class="mt-1 text-xl font-semibold">{value}</div>
+					<div class="text-sm">{collectionStats[statKey].stat}</div>
+					<div class="mt-1 text-xl font-semibold">{collectionStats[statKey].value} {collectionStats[statKey].symbol}</div>
 				</div>
 			{/each}
 		</div>

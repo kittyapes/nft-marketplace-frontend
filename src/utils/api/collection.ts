@@ -12,6 +12,7 @@ export interface Collection {
 	logoImageUrl?: string;
 	backgroundImageUrl?: string;
 	description?: string;
+	isClaimed?: boolean;
 	displayTheme: 'CONTAINED' | 'PADDED' | 'COVERED';
 	royalties?: { fees: string | number; address: string; createdAt?: string }[];
 	walletAddress?: string;
@@ -35,14 +36,18 @@ export interface Collection {
 	totalVol: number;
 	total24hours: number;
 	'24hourPercent': number;
+	items: number;
+	owners: number;
+	highestSale: number;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
 	return {
 		royalties: [
-			{ fees: '', address: '' },
-			{ fees: '', address: '' },
 			{ fees: '', address: '' }
+			// TODO uncomment once contract supports it
+			/*{ fees: '', address: '' },
+			{ fees: '', address: '' }*/
 		]
 	};
 }
@@ -76,8 +81,6 @@ export async function apiCreateCollection(options: Collection) {
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
 	}
-
-	console.log(res);
 
 	return res;
 }

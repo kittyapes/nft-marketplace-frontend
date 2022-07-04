@@ -23,6 +23,7 @@
 	import { browser } from '$app/env';
 	import { debounce } from 'lodash-es';
 	import { withPrevious } from 'svelte-previous';
+	import { contractCreateCollection } from '$utils/contracts/collection';
 	import { currentUserAddress } from '$stores/wallet';
 
 	// Page params
@@ -179,6 +180,14 @@
 			return;
 		}
 
+		const [contractError, contractRes] = await noTryAsync(() => contractCreateCollection(res.data.data));
+
+		if (contractError) {
+			notifyError(contractError.message);
+			savingCollection = false;
+			return;
+		}
+
 		notifySuccess('Collection created!');
 
 		// where to go next based on URL params
@@ -221,7 +230,6 @@
 		// Copy is needed because slug would get overwritten
 		serverCollectionToUpdate.set({ ...res });
 		collectionData.set({ ...res });
-		console.log($collectionData);
 		collectionUrl.set(urlStart + res.slug);
 
 		originalCollectionData = { ...res };

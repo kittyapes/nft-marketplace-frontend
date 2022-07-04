@@ -24,12 +24,12 @@ export interface CreateListingFlowOptions {
 	duration: number;
 
 	sale?: {
-		price: BigNumber;
+		price: string;
 	};
 
 	auction?: {
-		startingPrice: BigNumber;
-		reservePrice: BigNumber;
+		startingPrice: string;
+		reservePrice: string;
 	};
 }
 
@@ -99,7 +99,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	const tokenAmounts = options.nfts.map((nft) => nft.amount);
 	const collections = options.nfts.map((nft) => nft.collectionAddress);
 
-	let price: BigNumber;
+	let price: string;
 
 	if (options.listingType === 'sale') {
 		price = options.sale?.price;
@@ -119,6 +119,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 			listingType,
 			price,
 			startTime: options.startTime || dayjs().unix(),
+			reservePrice: price,
 			duration: options.duration,
 			tokenIds,
 			tokenAmounts,

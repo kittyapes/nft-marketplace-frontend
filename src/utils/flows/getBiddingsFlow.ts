@@ -5,7 +5,8 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
-import { formatUnits } from 'ethers/lib/utils.js';
+import { BigNumber } from 'ethers';
+import { formatUnits, parseUnits } from 'ethers/lib/utils.js';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -27,40 +28,39 @@ async function fetchHighestBid(listingId: string) {
 
 	const highestBid = { address: res[0], amount: res[1] };
 
-	console.log(highestBid);
-
 	return highestBid;
 }
 
 export async function getBiddingsFlow(listingId: string, tokenDecimals: number): Promise<BidRow[]> {
-	const highestBid = await fetchHighestBid(listingId);
+	const res = await axios.get(getApiUrl('latest', 'listings/' + listingId + '/bids'));
+	const bids = res.data.data as any[];
 
-	if (highestBid.address === '0x0000000000000000000000000000000000000000') {
-		return [];
+	let longestString = 0;
+
+	// A hotfix for accumulating the bid amounts, because the contract emits only the differences
+	// and the backend returns only them, not accumulated
+	for (const [index, bid] of bids.entries()) {
+		bid.accumulated = BigNumber.from(bid.bid);
+
+		for (let i = index + 1; bids[i] && bids[i].bidder === bid.bidder; i++) {
+			bid.accumulated = bid.accumulated.add(bids[i].bid);
+		}
+
+		bid.formatted = formatUnits(bid.accumulated, tokenDecimals);
+
+		longestString = Math.max(longestString, bid.formatted.length);
 	}
 
-	const highestBidUser = await fetchProfileData(highestBid.address);
+	const adaptedBids = bids.map((bid) => ({
+		bidderName: bid.user.username,
+		imageUrl: bid.user.thumbnailUrl,
+		tokenAmount: bid.formatted.padEnd(longestString, '0'),
+		timeAgo: dayjs
+			.duration(dayjs(bid.bidAt * 1000).diff(dayjs(), 's'), 's')
+			.humanize(true)
+			.replace('a few seconds ago', 'now')
+			.replace('minutes', 'm')
+	}));
 
-	const biddings: BidRow[] = [];
-
-	biddings.push({
-		bidderName: highestBidUser.username,
-		imageUrl: highestBidUser.thumbnailUrl,
-		tokenAmount: formatUnits(highestBid.amount, tokenDecimals),
-		timeAgo: 'N/A'
-	});
-
-	const res = await axios.get(getApiUrl('latest', 'listings/' + listingId + '/bids'));
-	const apiBids = res.data.data;
-
-	biddings.push(
-		...apiBids.map((bid) => ({
-			bidderName: bid.user.username,
-			imageUrl: bid.user.thumbnailUrl,
-			tokenAmount: formatUnits(bid.bid.toString(), tokenDecimals),
-			timeAgo: (dayjs.duration(dayjs().diff(dayjs(bid.queueDate), 's'), 's').humanize() + ' ago').replace('a few seconds ago', 'now')
-		}))
-	);
-
-	return biddings;
+	return adaptedBids;
 }

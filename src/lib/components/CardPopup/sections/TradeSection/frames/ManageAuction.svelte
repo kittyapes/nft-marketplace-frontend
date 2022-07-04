@@ -24,6 +24,7 @@
 	let biddings: BidRow[];
 
 	let isCompletingAuction = false;
+	let completedAuction = false;
 
 	async function acceptHighest() {
 		isCompletingAuction = true;
@@ -33,6 +34,8 @@
 		if (err) {
 			console.error(err);
 			notifyError('Failed to complete auction.');
+		} else {
+			completedAuction = true;
 		}
 
 		isCompletingAuction = false;
@@ -76,7 +79,7 @@
 			</SecondaryButton>
 		</div>
 
-		<PrimaryButton class="mt-4" disabled={!biddings?.length || !listingExpired || isCompletingAuction} on:click={acceptHighest}>
+		<PrimaryButton class="mt-4" disabled={!biddings?.length || isCompletingAuction || completedAuction} on:click={acceptHighest}>
 			{#if isCompletingAuction}
 				<ButtonSpinner />
 			{/if}

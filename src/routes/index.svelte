@@ -3,7 +3,8 @@
 	import { socials } from '$constants/socials';
 	import CollectionsTable from '$lib/components/collections/CollectionsTable.svelte';
 	import { apiGetMostActiveCollections, type Collection } from '$utils/api/collection';
-	import type { CollectionTableRow } from '$utils/api/collection';
+	import { fadeImageOnLoad } from '$utils/actions/fadeImageOnLoad';
+	import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
@@ -16,6 +17,13 @@
 	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
 	let exploreListingsData;
+
+	const aidrop = {
+		title: 'Claim your monthly airdrop',
+		textPreview:
+			'The Hinata marketplace will be doing an airdrop for active users in the coming months. Buyers, sellers and minters will all be eligible to claim tokens after the token generation event later this year.',
+		thumbnail: '/img/png/airdrop-banner.png'
+	};
 
 	const getExploreMarketData = async () => {
 		exploreListings.set(await getListings(null, 1, 10));
@@ -95,7 +103,7 @@
 <div class="px-16 mt-24 mb-16">
 	<div class="flex items-end">
 		<h2 class="text-4xl font-light uppercase flex-grow">Latest Blog Posts</h2>
-		<a href="https://hinatafoundation.medium.com/" target="_blank" class="uppercase underline text-sm font-bold">View Latest Posts</a>
+		<a href="/blog" class="uppercase underline text-sm font-bold">View Latest Posts</a>
 	</div>
 	<hr class="mt-4 border-[#0000004D]" />
 
@@ -104,4 +112,33 @@
 			<BlogPostPreview data={post} />
 		{/each}
 	{/if}
+</div>
+
+<!-- Monthly airdrop -->
+<div class="px-16 mt-24 mb-16">
+	<div class="flex items-end">
+		<h2 class="text-4xl font-light uppercase flex-grow">Monthly Airdrop</h2>
+	</div>
+	<hr class="mt-4 border-[#0000004D]" />
+
+	<div class="flex flex-col h-full overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-gray-100" in:fade>
+		<div class="flex-shrink-0 h-full py-8 lg:h-72">
+			<img src={aidrop.thumbnail} alt="" class="object-cover h-full" use:fadeImageOnLoad />
+		</div>
+
+		<div class="flex flex-col flex-grow py-8 lg:ml-16">
+			<div class="text-3xl font-light uppercase text-color-black line-clamp-2">
+				{aidrop.title}
+			</div>
+
+			<!-- Where do we get this content from? -->
+			<p class="flex-grow mt-4">
+				{aidrop.textPreview}
+			</p>
+
+			<!-- Read more
+			<div class="mt-4 text-lg font-light gradient-text">Read more</div>
+			 -->
+		</div>
+	</div>
 </div>

@@ -4,6 +4,10 @@ import { get } from 'svelte/store';
 import { getContract } from './getContract';
 
 // TODO: REPLACE WITH RELEVANT TOKEN ADDRESSES
+/**
+ * @deprecated
+ * Please use getKnownTokenDetails from priceUtils.ts
+ */
 export function getTokenAddress(tokenTicker: 'WETH' | 'HI') {
 	return {
 		// WETH: WethContractAddress,
@@ -12,6 +16,10 @@ export function getTokenAddress(tokenTicker: 'WETH' | 'HI') {
 	}[tokenTicker];
 }
 
+/**
+ * @deprecated
+ * Please use getKnownTokenDetails from priceUtils.ts
+ */
 export async function contractGetTokenAddress(tokenTicker: 'WETH') {
 	const provider = get(appProvider);
 	const network = await provider.getNetwork();

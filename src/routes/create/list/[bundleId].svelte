@@ -1,23 +1,24 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { HinataMarketplaceStorageContractAddress, HinataTokenAddress } from '$constants/contractAddresses';
+	import { HinataMarketplaceStorageContractAddress } from '$constants/contractAddresses';
 	import Back from '$icons/back_.svelte';
 	import Loader from '$icons/loader.svelte';
 	import type { ApiNftData } from '$interfaces/apiNftData';
 	import CommonProperties from '$lib/components/create/CommonProperties.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
+	import ListingSuccessPopup from '$lib/components/popups/ListingSuccessPopup.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
 	import { getNft } from '$utils/api/nft';
 	import { getTokenDetails } from '$utils/contracts/token';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
-	import { contractGetTokenAddress, getTokenAddress } from '$utils/misc/getTokenAddress';
+	import { contractGetTokenAddress } from '$utils/misc/getTokenAddress';
 	import { goBack } from '$utils/navigation';
+	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
-	import { parseUnits } from 'ethers/lib/utils.js';
 	import type { ListingPropName } from 'src/interfaces/drops';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -79,11 +80,10 @@
 		const token = await getTokenDetails(await contractGetTokenAddress(listingPropValues.token.label));
 
 		if (listingType === 'sale') {
-			flowOptions.sale.price = parseUnits(listingPropValues.price.toString(), token.decimals);
+			flowOptions.sale.price = listingPropValues.price.toString();
 		} else if (listingType === 'auction') {
 			// HOTFIX, assigning reservePrice to startingPrice, because that's what the contract works with
-			flowOptions.auction.startingPrice = parseUnits(listingPropValues.reservePrice.toString(), token.decimals);
-			// flowOptions.auction.reservePrice = parseEther(listingPropValues.reservePrice.toString() || '0');
+			flowOptions.auction.startingPrice = listingPropValues.reservePrice.toString();
 		}
 
 		const { err, success } = await createListingFlow(flowOptions);
@@ -93,10 +93,14 @@
 		}
 
 		if (success) {
-			goto('/profile/' + $currentUserAddress + '?tab=listings');
+			setPopup(ListingSuccessPopup, { props: { viewCallback: goViewNft }, closeByOutsideClick: false });
 		}
 
 		isListing = false;
+	}
+
+	function goViewNft() {
+		goto('/profile/' + $currentUserAddress + '?tab=listings');
 	}
 
 	let listingPropValues: Partial<Record<ListingPropName, any>>;
