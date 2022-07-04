@@ -9,13 +9,14 @@
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
-	import { currentUserAddress } from '$stores/wallet';
+	import { appSigner, currentUserAddress } from '$stores/wallet';
 	import { hasEnoughBalance } from '$utils/contracts/token';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import { createToggle } from '$utils/misc/toggle';
+	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
 	import { formatUnits, parseUnits } from 'ethers/lib/utils.js';
@@ -138,19 +139,23 @@
 		</div>
 
 		<div class="grid mt-12 place-items-center">
-			<button
-				bind:this={purchaseButton}
-				on:pointerenter={hoveringPurchase.toggle}
-				on:pointerleave={hoveringPurchase.toggle}
-				class="font-bold uppercase btn btn-gradient btn-rounded w-80"
-				on:click={handlePurchase}
-				disabled={$purchasingState || !$hasEnoughTokens}
-			>
-				{#if $purchasingState || $hasEnoughTokens === null}
-					<ButtonSpinner />
-				{/if}
-				Buy Now
-			</button>
+			{#if $appSigner}
+				<button
+					bind:this={purchaseButton}
+					on:pointerenter={hoveringPurchase.toggle}
+					on:pointerleave={hoveringPurchase.toggle}
+					class="font-bold uppercase btn btn-gradient btn-rounded w-80"
+					on:click={handlePurchase}
+					disabled={$purchasingState || !$hasEnoughTokens}
+				>
+					{#if $purchasingState || $hasEnoughTokens === null}
+						<ButtonSpinner />
+					{/if}
+					Buy Now
+				</button>
+			{:else}
+				<button bind:this={purchaseButton} class="font-bold uppercase btn btn-gradient btn-rounded w-80" on:click={connectToWallet}>Connect To Wallet</button>
+			{/if}
 		</div>
 	{:else if options.rawResourceData.listingType === 'auction'}
 		<div class="flex flex-col h-full mt-4">
@@ -174,16 +179,20 @@
 			</div>
 
 			<div class="flex gap-2 mt-4">
-				{#if false}
-					<SecondaryButton>Cancel Bid</SecondaryButton>
-				{/if}
-
-				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid}>
-					{#if isPlacingBid}
-						<ButtonSpinner />
+				{#if $appSigner}
+					{#if false}
+						<SecondaryButton>Cancel Bid</SecondaryButton>
 					{/if}
-					Place Bid
-				</PrimaryButton>
+
+					<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid}>
+						{#if isPlacingBid}
+							<ButtonSpinner />
+						{/if}
+						Place Bid
+					</PrimaryButton>
+				{:else}
+					<PrimaryButton on:click={connectToWallet}>Connect To Wallet</PrimaryButton>
+				{/if}
 			</div>
 		</div>
 	{/if}

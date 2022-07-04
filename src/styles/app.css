@@ -53,5 +53,5 @@ body {
 }
 
 #WEB3_CONNECT_MODAL_ID {
-	@apply z-[1000];
+	@apply z-[10000] absolute;
 }
