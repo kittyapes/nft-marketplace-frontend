@@ -20,6 +20,7 @@
 	export let disabled = false;
 	export let borderOpacity = 0.3;
 	export let dropdownIcon: any = '';
+	export let dispatchOnMount = true;
 
 	let elemOpenButton: HTMLButtonElement;
 
@@ -36,7 +37,9 @@
 		dispatch('select', option);
 	}
 
-	onMount(() => handleOptionSelect(selected));
+	onMount(() => {
+		if (dispatchOnMount) handleOptionSelect(selected);
+	});
 </script>
 
 <div class="relative select-container select-none transition {$$props.class}" class:opacity-50={disabled}>
