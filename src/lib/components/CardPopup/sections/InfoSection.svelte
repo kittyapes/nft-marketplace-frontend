@@ -7,8 +7,10 @@
 	import { onMount } from 'svelte';
 
 	export let options: CardPopupOptions;
+
 	let marketFee = 0;
 	let nftBalance = 0;
+
 	$: ownedOrListedNfts = options?.listingData ? options?.listingData?.quantity ?? 1 : nftBalance;
 	$: totalNfts = options?.rawResourceData?.amount ? options?.rawResourceData?.amount ?? 1 : options?.rawResourceData?.nfts?.[0]?.nft.amount ?? 1;
 
@@ -30,9 +32,7 @@
 		{ name: 'Token Standard', value: nftData.contractType },
 		{
 			name: 'Fees and Royalties',
-			value: options.collectionData?.royalties?.reduce((acum, value) => acum + Number(value.fees), 0)
-				? marketFee + ' % Fee - ' + options.collectionData.royalties.reduce((acum, value) => acum + Number(value.fees), 0) + ' % Royalty'
-				: '0 % Fee - 0 % Royalty'
+			value: marketFee + ' % Fee | ' + (options.collectionData?.royalties?.reduce((acum, value) => acum + Number(value.fees ?? 0), 0) || 0) + ' % Royalty'
 		},
 		{ name: 'Token ID', value: nftData.tokenId },
 		{ name: 'Blockchain', value: options.listingData?.tokenSymbol || options.rawResourceData.chain },
