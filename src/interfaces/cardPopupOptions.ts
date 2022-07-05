@@ -1,6 +1,7 @@
 import type { ApiCollectionData } from './apiCollectionData';
 import type { ListingType } from '$utils/api/listing';
 import type { Writable } from 'svelte/store';
+import type { Collection } from '$utils/api/collection';
 
 export interface CardPopupOptions {
 	/** Asset rendered on the left side of the popup. */
@@ -69,5 +70,5 @@ export interface CardPopupOptions {
 	 */
 	staleResource?: Writable<{ reason: string }>;
 
-	collectionData: ApiCollectionData;
+	collectionData: Partial<Collection>;
 }

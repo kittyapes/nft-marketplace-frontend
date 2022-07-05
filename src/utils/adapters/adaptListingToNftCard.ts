@@ -8,9 +8,11 @@ import { writable } from 'svelte/store';
 
 export async function adaptListingToNftCard(data: Listing) {
 	const nft = data.nfts?.[0].nft;
+
 	const collectionData = {
 		slug: data.nfts?.[0].collectionSlug,
-		name: data.nfts?.[0].collectionName
+		name: data.nfts?.[0].collectionName,
+		id: nft.collectionId
 	};
 
 	const startTime = dayjs(data.startTime).unix();
