@@ -27,15 +27,17 @@
 	let duration: number;
 	let startingPrice: string;
 	let reservePrice: string;
+	let quantity: string = '1';
+	let maxQuantity = options.nftData[0]?.userNftBalance ?? 1;
 
 	// Validation
 	let formValid = false;
 
 	$: if (selectedListingType === 'sale') {
-		formValid = price > 0;
+		formValid = price > 0 || +quantity > maxQuantity;
 	} else if (selectedListingType === 'auction') {
 		try {
-			formValid = parseUnits(startingPrice, 18).gt(0) && parseUnits(reservePrice, 18).gt(0);
+			formValid = (parseUnits(startingPrice, 18).gt(0) && parseUnits(reservePrice, 18).gt(0)) || +quantity > maxQuantity;
 		} catch {
 			formValid = false;
 		}
@@ -50,7 +52,7 @@
 			title: options.nftData[0].metadata?.name,
 			description: options.nftData[0].metadata?.description,
 			duration,
-			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(1), collectionAddress: getContractData('storage').address }],
+			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(quantity ?? 1), collectionAddress: getContractData('storage').address }],
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker,
 			quantity: BigNumber.from(1),
@@ -105,9 +107,22 @@
 			/>
 		</div>
 
-		<!-- Duration -->
-		<div class="mt-4 mb-2 font-semibold">Duration</div>
-		<Dropdown options={listingDurationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
+		<div class="flex items-center justify-between gap-x-1">
+			{#if maxQuantity > 1}
+				<div class="flex flex-col flex-grow">
+					<div class="mt-4 font-semibold">Quantity</div>
+					<div class="mt-2">
+						<input type="number" class="w-full h-12 input input-hide-controls border border-black" bind:value={quantity} max={maxQuantity} min={1} />
+					</div>
+				</div>
+			{/if}
+
+			<!-- Duration -->
+			<div class="flex flex-col flex-grow">
+				<div class="mt-4 mb-2 font-semibold">Duration</div>
+				<Dropdown options={listingDurationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
+			</div>
+		</div>
 
 		<!-- Specific buyer -->
 		<!-- Not in v1 -->
@@ -157,9 +172,22 @@
 			/>
 		</div>
 
-		<!-- Duration -->
-		<div class="mt-4 mb-2 font-semibold">Duration</div>
-		<Dropdown options={listingDurationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
+		<div class="flex items-center justify-between gap-x-1">
+			{#if maxQuantity > 1}
+				<div class="flex flex-col flex-grow">
+					<div class="mt-4 font-semibold">Quantity</div>
+					<div class="mt-2">
+						<input type="number" class="w-full h-12 input input-hide-controls  border border-black" bind:value={quantity} max={maxQuantity} min={1} />
+					</div>
+				</div>
+			{/if}
+
+			<!-- Duration -->
+			<div class="flex flex-col flex-grow">
+				<div class="mt-4 mb-2 font-semibold">Duration</div>
+				<Dropdown options={listingDurationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
+			</div>
+		</div>
 	{/if}
 
 	<div class="flex-grow" />
