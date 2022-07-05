@@ -1,7 +1,9 @@
 <script lang="ts">
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import type { PopupHandler } from '$utils/popup';
+	import { onMount } from 'svelte';
 
 	import Popup from '../Popup.svelte';
 	import AssetContainer from './sections/AssetContainer.svelte';
@@ -14,6 +16,16 @@
 	let showBackButton = false;
 
 	let rightSectionInstance;
+
+	onMount(async () => {
+		if (options) {
+			if (options.nftData[0].contractType === 'ERC1155') {
+				options.nftData[0].userNftBalance = await getUserNftBalance(options.nftData[0].contractAddress, options.nftData[0].tokenId);
+			} else {
+				options.nftData[0].userNftBalance = 1;
+			}
+		}
+	});
 
 	// Log data that was used by the adapter to generate the CardPopup
 	$: console.debug('[Resource Data]:', options.rawResourceData);

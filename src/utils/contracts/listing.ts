@@ -147,3 +147,14 @@ export async function contractUpdateListing(
 	const contract = getContract('marketplace');
 	await contractCaller(contract, 'updateListing', 150, 1, listingId, parsedPrice);
 }
+
+export async function getMarketFee() {
+	try {
+		const marketplaceContract = getContract('marketplace', true);
+		const fee = await marketplaceContract.marketFee();
+
+		return +ethers.utils.formatUnits(fee, 2);
+	} catch (error) {
+		return 0;
+	}
+}

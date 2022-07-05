@@ -36,7 +36,10 @@
 
 	$: if ($page.url.searchParams.has('tab')) {
 		let tabName = $page.url.searchParams.get('tab');
-		selectedTab = tabs[tabName];
+		if (tabs[tabName]) {
+			selectedTab = tabs[tabName];
+		}
+		$page.url.searchParams.delete('tab');
 	}
 
 	onMount(async () => {

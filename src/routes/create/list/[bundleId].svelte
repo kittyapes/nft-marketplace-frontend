@@ -13,6 +13,7 @@
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { getContractData } from '$utils/misc/getContract';
 	import { goBack } from '$utils/navigation';
+	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
 	import dayjs from 'dayjs';
@@ -27,10 +28,12 @@
 
 	const typeToProperties: { [key: string]: ListingPropName[] } = {
 		sale: ['price', 'startDate', 'quantity', 'duration'],
-		auction: ['startDate', 'startingPrice', 'reservePrice', 'duration']
+		auction: ['startDate', 'quantity', 'startingPrice', 'reservePrice', 'duration']
 	};
 
 	const fetchedNftData = writable<ApiNftData>(null);
+
+	let maxQuantity = 1;
 
 	// Fetch NFT data on mount to show a preview
 	onMount(async () => {
@@ -42,6 +45,19 @@
 
 		//const bundleRes = await getBundle($page.params.bundleId);
 		const nftRes = await getNft(nftId);
+
+		if (nftRes) {
+			if (nftRes.tokenStandard === 'ERC1155') {
+				maxQuantity = await getUserNftBalance(nftRes.contractAddress, nftRes.nftId);
+			} else {
+				maxQuantity = 1;
+			}
+
+			if (maxQuantity > 1 && typeToProperties[listingType].some((item) => item !== 'quantity')) {
+				typeToProperties[listingType].push('quantity');
+			}
+		}
+
 		fetchedNftData.set(nftRes);
 	});
 
@@ -56,6 +72,15 @@
 	let isListing = false;
 
 	async function listForSale() {
+		if (listingPropValues.quantity > maxQuantity) {
+			notifyError(`Error: You Can Only List a Maximum of ${maxQuantity} Tokens`);
+			return;
+		}
+
+		if (!listingPropValues.quantity || listingPropValues.quantity <= 1) {
+			listingPropValues.quantity = 1;
+		}
+
 		isListing = true;
 
 		const duration = listingPropValues.duration.value * 60 * 60 * 24;
@@ -65,7 +90,7 @@
 			description: $fetchedNftData.metadata?.description,
 			duration,
 			// TODO, add support for addresses from external collections
-			nfts: [{ nftId: $fetchedNftData.nftId, amount: BigNumber.from(1), collectionAddress: getContractData('storage').address }],
+			nfts: [{ nftId: $fetchedNftData.nftId, amount: BigNumber.from(listingPropValues.quantity ?? 1), collectionAddress: getContractData('storage').address }],
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: listingPropValues.token.label,
 			quantity: BigNumber.from(1),

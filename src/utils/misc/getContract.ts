@@ -45,9 +45,9 @@ export function getContractData(name: ContractName) {
 	return contractData;
 }
 
-export function getContract(name: ContractName) {
+export function getContract(name: ContractName, canUseFallback: boolean = false) {
 	const contractData = getContractData(name);
-	const contract = new ethers.Contract(contractData.address, contractData.abi, get(appSigner));
+	const contract = new ethers.Contract(contractData.address, contractData.abi, canUseFallback ? ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK ?? 4) : get(appSigner));
 
 	return contract;
 }
