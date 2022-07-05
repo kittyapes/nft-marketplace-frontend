@@ -59,8 +59,6 @@ export interface Listing {
 		_id: string;
 		nftId: string;
 		amount: number;
-		collectionName: string;
-		collectionSlug: string;
 		nft: {
 			_id: string;
 			assetUrl: string;
@@ -72,6 +70,8 @@ export interface Listing {
 			nftId: string;
 			collectionId: string;
 			isExternal: boolean;
+			collectionName: string;
+			collectionSlug: string;
 		};
 	}[];
 
