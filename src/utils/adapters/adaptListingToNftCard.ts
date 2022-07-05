@@ -8,6 +8,7 @@ import { writable } from 'svelte/store';
 
 export async function adaptListingToNftCard(data: Listing) {
 	const nft = data.nfts?.[0].nft;
+	const nftsInListing = data.nfts?.[0].amount;
 
 	const collectionData = {
 		slug: data.nfts?.[0].collectionSlug,
@@ -31,6 +32,8 @@ export async function adaptListingToNftCard(data: Listing) {
 		price = 'N/A';
 	}
 
+	console.log(nft);
+
 	const popupOptions: CardPopupOptions = {
 		title: data.title,
 		assetUrl: nft.assetUrl,
@@ -40,7 +43,7 @@ export async function adaptListingToNftCard(data: Listing) {
 			{
 				metadata: nft.metadata,
 				isInternalNft: true,
-				contractType: 'ERC1155',
+				contractType: nft.tokenStandard ?? 'ERC1155',
 				creator: nft.creator,
 				contractAddress: nft.contractAddress,
 				tokenId: nft.nftId,
@@ -64,7 +67,8 @@ export async function adaptListingToNftCard(data: Listing) {
 			tokenSymbol: token.symbol,
 			startTime: data.startTime,
 			duration: data.duration,
-			onChainId: data.listingId
+			onChainId: data.listingId,
+			quantity: nftsInListing
 		},
 		likeIds: [nft._id],
 		startTime: hasAStartTime ? new Date(startTime * 1000) : null,

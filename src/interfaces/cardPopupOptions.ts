@@ -41,6 +41,7 @@ export interface CardPopupOptions {
 		startTime: string;
 		duration: number;
 		onChainId: string;
+		quantity: number;
 	};
 
 	/** Data used when adapting a listing of the type Sale. */
