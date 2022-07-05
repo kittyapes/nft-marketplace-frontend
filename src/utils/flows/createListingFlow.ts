@@ -1,4 +1,3 @@
-import { HinataMarketplaceStorageContractAddress } from '$constants/contractAddresses';
 import type { EthAddress, UnixTime } from '$interfaces';
 import { getApiUrl } from '$utils/api';
 import type { ListingType } from '$utils/api/listing';

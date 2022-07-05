@@ -1,13 +1,14 @@
-import { HinataMarketplaceContractAddress } from '$constants/contractAddresses';
 import { contractPurchaseListing, getOnChainListing } from '$utils/contracts/listing';
 import { ensureAmountApproved } from '$utils/contracts/token';
+import { getContractData } from '$utils/misc/getContract';
 import { notifyError, notifySuccess } from '$utils/toast';
 import { noTryAsync } from 'no-try';
 
 export async function salePurchase(listingId: string, price: string) {
 	const listing = await getOnChainListing(listingId);
 
-	const contractApproved = await ensureAmountApproved(HinataMarketplaceContractAddress, price, listing.payToken);
+	const marketplaceAddress = getContractData('marketplace').address;
+	const contractApproved = await ensureAmountApproved(marketplaceAddress, price, listing.payToken);
 
 	if (!contractApproved) {
 		notifyError('Insufficient Allowance to Execute Transaction.');
