@@ -6,8 +6,6 @@
 	export let valid: boolean = true;
 
 	$: valid = !value || (!!value && !!value.match(pattern));
-
-	$: console.log(valid);
 </script>
 
 <div class="flex space-x-2">

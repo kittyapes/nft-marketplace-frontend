@@ -253,7 +253,6 @@ export const initProviderEvents = (provider: any) => {
 };
 
 export const deregisterEvents = () => {
-	// console.log(get(externalProvider), get(appProvider));
 
 	return get(externalProvider).removeAllListeners();
 };
@@ -285,7 +284,6 @@ export const refreshConnection = async () => {
 
 			walletState.set(WalletState.CONNECTED);
 		} else {
-			console.log('Hey 2');
 			notifyError('You can only connect to mainnet or Rinkeby Test Network');
 		}
 	} else {

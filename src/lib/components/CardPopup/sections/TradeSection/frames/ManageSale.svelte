@@ -84,8 +84,6 @@
 	// Update listing button
 	let updatebuttonContainer: HTMLElement;
 	const isUpdateHovered = createToggle();
-
-	$: console.log({ newPriceValid });
 </script>
 
 <div class="flex flex-col h-full pb-8">

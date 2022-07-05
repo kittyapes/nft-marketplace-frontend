@@ -35,8 +35,6 @@
 		return acc;
 	}, {} as Record<ListingPropName, boolean>);
 
-	$: console.log(validations);
-
 	$: isValid = Object.entries(validations).every(([, isValid]) => isValid);
 
 	// Duration
