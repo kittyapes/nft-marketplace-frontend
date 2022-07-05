@@ -19,7 +19,7 @@ export const whitelistCollection = async (address: string) => {
 	const factoryContract = getContract('factory');
 
     let royalties = [];
-
+    royalties = res.data.data.royalties;
     let beneficiaries = royalties.length > 0 ? royalties.map((item) => item.address) : ['0x0000000000000000000000000000000000000000']
     let percentages = royalties.length > 0 ? royalties.map((item) => parseUnits(item.fees.toString(), 2)) : [parseUnits('0', 2)]
 
