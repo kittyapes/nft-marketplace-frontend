@@ -60,7 +60,7 @@
 	{:else}
 		<div use:inview={inviewOptions} on:change={onChange} />{/if}
 
-	{#if reachedEnd}
+	{#if reachedEnd && data?.length !== 0}
 		<div class="text-center placeholder">You have reached the end of this list.</div>
 	{/if}
 </div>
