@@ -40,6 +40,7 @@ export interface Collection {
 	items: number;
 	owners: number;
 	highestSale: number;
+	collectionAddress: string;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {

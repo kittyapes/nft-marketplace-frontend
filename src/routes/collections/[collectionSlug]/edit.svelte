@@ -172,18 +172,29 @@
 	}
 
 	async function _createCollection() {
-		const [error, res] = await noTryAsync(() => apiCreateCollection($collectionData));
+		const [contractError, contractRes] = await noTryAsync(() =>
+			contractCreateCollection({
+				name: $collectionData.name,
+				paymentTokenTicker: 'WETH',
+				royalties: $collectionData.royalties,
+				slug: $collectionData.slug
+			})
+		);
 
-		if (error) {
-			notifyError(error.message);
+		if (contractError) {
+			console.error(contractError);
+			notifyError(contractError.message);
 			savingCollection = false;
 			return;
 		}
 
-		const [contractError, contractRes] = await noTryAsync(() => contractCreateCollection(res.data.data));
+		$collectionData.collectionAddress = contractRes.contractAddress;
 
-		if (contractError) {
-			notifyError(contractError.message);
+		const [apiError, apiRes] = await noTryAsync(() => apiCreateCollection($collectionData));
+
+		if (apiError) {
+			console.error(apiError);
+			notifyError(apiError.message);
 			savingCollection = false;
 			return;
 		}
@@ -194,7 +205,7 @@
 		if ($page.url.searchParams.has('to')) {
 			$nftDraft.collectionName = $collectionData.name;
 			goto('/' + $page.url.searchParams.get('to'));
-		} else goto('/collections/' + res.data.data.slug);
+		} else goto('/collections/' + apiRes.data.data.slug);
 	}
 
 	async function _updateCollection() {

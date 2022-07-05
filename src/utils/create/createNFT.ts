@@ -1,11 +1,15 @@
 import { getApiUrl } from '$utils/api';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import contractCaller from '$utils/contracts/contractCaller';
-import { getContract } from '$utils/misc/getContract';
 import { httpErrorHandler } from '$utils/toast';
 import axios from 'axios';
+import { ethers } from 'ethers';
 import type { NFTCreationObject } from 'src/interfaces/nft/nftCreationObject';
-import type { NFTMintingObject } from 'src/interfaces/nft/nftMintingObject';
+import erc1155Abi from '$constants/contracts/abis/erc1155.json';
+import storageAbi from '$constants/contracts/abis/HinataMarketplaceStorage.json';
+import { getContract } from '$utils/misc/getContract';
+import { get } from 'svelte/store';
+import { appSigner, currentUserAddress } from '$stores/wallet';
 
 export const createNFTOnAPI = async ({ amount, animation, creator, image, name, description }: NFTCreationObject) => {
 	const formData = new FormData();
@@ -26,11 +30,29 @@ export const createNFTOnAPI = async ({ amount, animation, creator, image, name, 
 	return res.data.data;
 };
 
-// Equivalent to minting the NFT
-export const createNFTOnChain = async ({ id, amount }: NFTMintingObject) => {
+export const createNFTOnChain = async (options: { id: string; amount: string; contractAddress: string }) => {
 	try {
-		const contract = getContract('storage');
-		await contractCaller(contract, 'mintArtistNFT', 150, 1, id, amount, []);
+		const contract = new ethers.Contract(
+			options.contractAddress,
+			[
+				{
+					inputs: [
+						{ internalType: 'address', name: 'account', type: 'address' },
+						{ internalType: 'uint256', name: 'id', type: 'uint256' },
+						{ internalType: 'uint256', name: 'amount', type: 'uint256' },
+						{ internalType: 'bytes', name: 'data', type: 'bytes' }
+					],
+					name: 'mint',
+					outputs: [],
+					stateMutability: 'nonpayable',
+					type: 'function'
+				}
+			],
+			get(appSigner)
+		);
+		// const contract = new ethers.Contract(options.contractAddress, storageAbi);
+		// const contract = getContract('storage', );
+		await contractCaller(contract, 'mint', 150, 1, get(currentUserAddress), options.id, options.amount, []);
 
 		return true;
 	} catch (error) {
