@@ -49,14 +49,13 @@ export interface ContractCreateListingOptions {
 }
 
 export async function contractCreateListing(options: ContractCreateListingOptions) {
-	console.log(options);
-	const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
-	const MarketplaceStorageContract = HinataMarketplaceStorageContract(get(appSigner));
+	const marketplaceContract = getContract('marketplace');
+	const storageContract = getContract('storage');
 
-	const isApproved = await MarketplaceStorageContract.isApprovedForAll(get(currentUserAddress), HinataMarketplaceContractAddress);
+	const isApproved = await storageContract.isApprovedForAll(get(currentUserAddress), HinataMarketplaceContractAddress);
 
 	if (!isApproved) {
-		const approval: ethers.ContractTransaction = await MarketplaceStorageContract.setApprovalForAll(HinataMarketplaceContractAddress, true);
+		const approval: ethers.ContractTransaction = await storageContract.setApprovalForAll(HinataMarketplaceContractAddress, true);
 		await approval.wait(1);
 	}
 
@@ -77,7 +76,7 @@ export async function contractCreateListing(options: ContractCreateListingOption
 
 	console.debug('[Info] Will call createListing on contract with the following parameters.', callOptions);
 
-	await contractCaller(MarketplaceContract, 'createListing', 150, 1, callOptions);
+	await contractCaller(marketplaceContract, 'createListing', 150, 1, callOptions);
 }
 
 export async function contractPurchaseListing(listingId: string) {

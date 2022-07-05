@@ -3,6 +3,7 @@ import { getApiUrl } from '$utils/api';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import contractCaller from '$utils/contracts/contractCaller';
 import HinataMarketplaceStorageContract from '$utils/contracts/hinataMarketplaceStorage';
+import { getContract } from '$utils/misc/getContract';
 import { httpErrorHandler } from '$utils/toast';
 import axios from 'axios';
 import type { ethers } from 'ethers';
@@ -32,9 +33,8 @@ export const createNFTOnAPI = async ({ amount, animation, creator, image, name, 
 // Equivalent to minting the NFT
 export const createNFTOnChain = async ({ id, amount }: NFTMintingObject) => {
 	try {
-		const MarketplaceStorageContract = HinataMarketplaceStorageContract(get(appSigner));
-
-		await contractCaller(MarketplaceStorageContract, 'mintArtistNFT', 150, 1, id, amount, []);
+		const contract = getContract('storage');
+		await contractCaller(contract, 'mintArtistNFT', 150, 1, id, amount, []);
 
 		return true;
 	} catch (error) {
