@@ -23,9 +23,7 @@
 		{ name: 'Token Standard', value: nftData.contractType },
 		{
 			name: 'Creator Royalty',
-			value: options.collectionData?.royalties?.reduce((acum, value) => acum + Number(value.fees), 0)
-				? options.collectionData.royalties.reduce((acum, value) => acum + Number(value.fees), 0) + ' %'
-				: '0 %'
+			value: (options.collectionData?.royalties?.reduce((acum, value) => acum + Number(value.fees ?? 0), 0) || 0) + ' %'
 		},
 		{ name: 'Token ID', value: nftData.tokenId },
 		{ name: 'Blockchain', value: options.listingData?.tokenSymbol || options.rawResourceData.chain }
@@ -42,8 +40,6 @@
 
 		return attributes;
 	}
-
-	$: console.log(options);
 </script>
 
 <div class="flex-grow h-full pb-8 pr-4 mb-8 overflow-y-auto">
