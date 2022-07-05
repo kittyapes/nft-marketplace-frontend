@@ -61,8 +61,6 @@
 
 		return attributes;
 	}
-
-	$: console.log(options);
 </script>
 
 <div class="flex-grow h-full pb-8 pr-4 mb-8 overflow-y-auto">

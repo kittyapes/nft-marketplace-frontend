@@ -123,7 +123,7 @@
 
 	<div class="flex flex-col h-full overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-gray-100" in:fade>
 		<div class="flex-shrink-0 h-full py-8 lg:h-72">
-			<img src={aidrop.thumbnail} alt="" class="object-cover h-full" use:fadeImageOnLoad />
+			<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
 		</div>
 
 		<div class="flex flex-col flex-grow py-8 lg:ml-16">
@@ -131,7 +131,6 @@
 				{aidrop.title}
 			</div>
 
-			<!-- Where do we get this content from? -->
 			<p class="flex-grow mt-4">
 				{aidrop.textPreview}
 			</p>
