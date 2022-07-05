@@ -45,7 +45,6 @@
 	onMount(async () => {
 		// When its not a listing
 		marketFee = await getMarketFee();
-		console.log(marketFee);
 		if (!options.listingData) {
 			nftBalance = await getUserNftBalance(options.nftData[0].contractAddress, options.nftData[0].tokenId);
 		}
