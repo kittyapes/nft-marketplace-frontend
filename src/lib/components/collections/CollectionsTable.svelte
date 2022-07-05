@@ -34,18 +34,18 @@
 					</div>
 					<div class="flex place-items-center gap-2 text-sm">
 						<Eth />
-						{seperateNumberWithCommas(Math.round((collection.floorPrice + Number.EPSILON) * 100) / 100)}
+						{seperateNumberWithCommas(Math.round((collection.floorPrice ?? 0 + Number.EPSILON) * 100) / 100)}
 					</div>
 					<div class="flex place-items-center gap-2 text-sm">
 						<Eth />
-						{seperateNumberWithCommas(Math.round((collection.totalVol + Number.EPSILON) * 100) / 100)}
+						{seperateNumberWithCommas(Math.round((collection.totalVol ?? 0 + Number.EPSILON) * 100) / 100)}
 					</div>
 					<div class="flex place-items-center gap-2 text-sm">
 						<Eth />
-						{seperateNumberWithCommas(Math.round((collection.total24hours + Number.EPSILON) * 100) / 100)}
+						{seperateNumberWithCommas(Math.round((collection.total24hours ?? 0 + Number.EPSILON) * 100) / 100)}
 					</div>
 					<div class="flex place-items-center text-sm text-color-green" class:text-color-red={collection['24hourPercent'] < 0}>
-						{(Math.round((collection['24hourPercent'] + Number.EPSILON) * 100) / 100).toLocaleString()}%
+						{(Math.round((collection['24hourPercent'] ?? 0 + Number.EPSILON) * 100) / 100).toLocaleString()}%
 						<div class:rotate-180={collection['24hourPercent'] >= 0}>
 							<ArrowDown />
 						</div>

@@ -19,6 +19,10 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby'; address: stri
 	{ name: 'weth', network: 'rinkeby', address: '0xf2155859d31C5EA79F45a55C6ad9A44e7f257700', abi: erc20Abi },
 
 	// Eth
+	{ name: 'marketplace', network: 'eth', address: '0x9A986d8B2cB50e827393Ec329cb0003535b5Ff75', abi: marketplaceAbi },
+	{ name: 'storage', network: 'eth', address: '0x88129f1931ecc44678b68c4c25393059b4bcfca7', abi: storageAbi },
+	{ name: 'factory', network: 'eth', address: '0x41a508E15F391b2AA3129c9fE054f9A48226AC4F', abi: factoryAbi },
+	{ name: 'token', network: 'eth', address: '0x91a09acc7a76624f593990c4456fc318d705c761', abi: tokenAbi },
 	{ name: 'weth', network: 'eth', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', abi: erc20Abi }
 ];
 

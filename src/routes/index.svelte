@@ -81,7 +81,11 @@
 		<a href="/collections" class="uppercase underline text-sm font-bold">View all</a>
 	</div>
 	<hr class="mt-4 border-[#0000004D]" />
+	{#if collections.length > 0}
 	<CollectionsTable {collections} />
+	{:else}
+		<DiamondsLoader />
+	{/if}
 </div>
 
 <!-- Explore Market Section -->
