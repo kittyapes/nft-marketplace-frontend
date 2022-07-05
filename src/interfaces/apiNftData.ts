@@ -28,5 +28,7 @@ export interface ApiNftData {
 	tokenStandard: TokenStandard;
 	updatedAt: IsoTime;
 	uri: string;
+	collectionName: string;
+	collectionSlug: string;
 	_id: MongoId;
 }

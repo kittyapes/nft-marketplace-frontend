@@ -6,9 +6,11 @@ import type { Collection } from '$utils/api/collection';
 
 export async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ collection: Partial<ApiCollectionData> }>) {
 	let collectionData: Partial<Collection> = {
-		id: data.collectionId
+		id: data.collectionId,
+		name: data.collectionName,
+		slug: data.collectionSlug,
 	}
-
+	console.log(data);
 	const popupOptions: CardPopupOptions = {
 		title: data.name,
 		assetUrl: data.assetUrl || data.thumbnailUrl,
