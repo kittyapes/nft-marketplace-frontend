@@ -1,12 +1,11 @@
 import { getApiUrl } from '$utils/api';
-import { fetchProfileData } from '$utils/api/profile';
 import { contractGetAuctionBid } from '$utils/contracts/auction';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
 import { BigNumber } from 'ethers';
-import { formatUnits, parseUnits } from 'ethers/lib/utils.js';
+import { formatUnits } from 'ethers/lib/utils.js';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);

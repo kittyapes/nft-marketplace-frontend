@@ -71,8 +71,6 @@
 	}, 1000);
 
 	export function refreshWithFilters() {
-		console.log('filter update');
-
 		const params = $page.url.searchParams;
 
 		fetchOptions.type = params.get('types')?.split('+') as ListingType[];
@@ -82,22 +80,9 @@
 		fetchOptions.priceMax = params.get('maxPrice');
 
 		debouncedFetchMore();
-
-		console.log({ fetchOptions });
 	}
 
 	onMount(refreshWithFilters);
-
-	// filters.subscribe(async (state) => {
-	// 	console.log('UPADTING FILTERS');
-	// 	listingsFetchingFilters.collectionId = state.collection?.value;
-	// 	listingsFetchingFilters.type = await Array.from(state.status?.values());
-	// 	listingsFetchingFilters.price = state.price;
-	// 	listingsFetchingFilters.sortBy = state.sortBy;
-
-	// 	debouncedFetch.cancel();
-	// 	debouncedFetch();
-	// });
 </script>
 
 <div class="flex flex-wrap justify-center gap-6 mt-11 cards">

@@ -26,7 +26,6 @@
 	}
 
 	onMount(async () => {
-		// if ($filters.collection?.label) selected = $filters.collection;
 		if ($collectionQuery) query = $collectionQuery;
 	});
 
@@ -34,8 +33,6 @@
 		selected = collection;
 		opened = false;
 		searching = false;
-
-		console.log(collection);
 
 		$page.url.searchParams.set('collections', collection.value);
 		goto('?' + $page.url.searchParams);

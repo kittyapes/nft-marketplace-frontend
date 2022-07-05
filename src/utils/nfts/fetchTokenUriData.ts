@@ -2,8 +2,6 @@ import { makeHttps } from '$utils/ipfs';
 import type { TokenUriData } from 'src/interfaces/tokenUriData';
 
 export async function fetchTokenUriData(uri: string): Promise<TokenUriData | null> {
-	console.log(uri);
-
 	if (!uri) {
 		return null;
 	}
@@ -15,8 +13,6 @@ export async function fetchTokenUriData(uri: string): Promise<TokenUriData | nul
 	if (!json) {
 		return null;
 	}
-
-	console.log(json.image);
 
 	return {
 		image: makeHttps(json.image),
