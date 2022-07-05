@@ -24,7 +24,6 @@
 	import NavigationHandlers from '$lib/utils/NavigationHandlers.svelte';
 	import ErrorManager from '$lib/components/ErrorManager.svelte';
 	import ErrorPage from '$lib/components/ErrorPage.svelte';
-	import PageTransition from '$lib/components/PageTransition.svelte';
 	import { currentError } from '$stores/error';
 
 	export let url;

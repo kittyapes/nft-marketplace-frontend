@@ -10,8 +10,6 @@ export async function adaptListingToNftCard(data: Listing) {
 	const nft = data.nfts?.[0].nft;
 	const nftsInListing = data.nfts?.[0].amount;
 
-	console.log(data);
-
 	const collectionData = {
 		slug: nft.collectionSlug,
 		name: nft.collectionName,
@@ -33,8 +31,6 @@ export async function adaptListingToNftCard(data: Listing) {
 	} catch {
 		price = 'N/A';
 	}
-
-	console.log(nft);
 
 	const popupOptions: CardPopupOptions = {
 		title: data.title,
