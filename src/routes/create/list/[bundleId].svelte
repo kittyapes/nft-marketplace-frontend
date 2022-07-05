@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { HinataMarketplaceStorageContractAddress } from '$constants/contractAddresses';
 	import Back from '$icons/back_.svelte';
 	import Loader from '$icons/loader.svelte';
 	import type { ApiNftData } from '$interfaces/apiNftData';
@@ -11,9 +10,8 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
 	import { getNft } from '$utils/api/nft';
-	import { getTokenDetails } from '$utils/contracts/token';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
-	import { contractGetTokenAddress } from '$utils/misc/getTokenAddress';
+	import { getContractData } from '$utils/misc/getContract';
 	import { goBack } from '$utils/navigation';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
@@ -67,8 +65,8 @@
 			description: $fetchedNftData.metadata?.description,
 			duration,
 			// TODO, add support for addresses from external collections
-			nfts: [{ nftId: $fetchedNftData.nftId, amount: BigNumber.from(1), collectionAddress: HinataMarketplaceStorageContractAddress }],
-			paymentTokenAddress: await contractGetTokenAddress(listingPropValues.token.label),
+			nfts: [{ nftId: $fetchedNftData.nftId, amount: BigNumber.from(1), collectionAddress: getContractData('storage').address }],
+			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: listingPropValues.token.label,
 			quantity: BigNumber.from(1),
 			startTime: listingPropValues.startDate.isAfter(dayjs()) ? listingPropValues.startDate.unix() : null,

@@ -1,8 +1,8 @@
-import { appSigner, welcomeNftClaimedOnServer, welcomeNftMessage } from '$stores/wallet';
+import { welcomeNftClaimedOnServer, welcomeNftMessage } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
-import { getHinataTokenContract } from '$utils/contracts/generalContractCalls';
+import { getContract } from '$utils/misc/getContract';
 import axios from 'axios';
-import { get, writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { getApiUrl } from '.';
 
 export type FreeNftStatus = 'unclaimable' | 'claimable' | 'claimed';
@@ -92,7 +92,7 @@ export async function claimFreeNft(selectedNftIndex: number, address: string, si
 	const resData: ClaimData = res;
 
 	try {
-		const hinataContract = getHinataTokenContract(get(appSigner));
+		const hinataContract = getContract('token');
 		const tx = await hinataContract.claimNFT(address, resData.nftID, resData.nftAmount, resData.nonce, resData.signature, []);
 		const txRes = await tx.wait(1);
 		welcomeNftClaimedOnServer.set(true);

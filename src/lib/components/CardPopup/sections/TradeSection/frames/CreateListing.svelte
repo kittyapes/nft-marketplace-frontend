@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { HinataMarketplaceStorageContractAddress } from '$constants/contractAddresses';
 	import Info from '$icons/info.v2.svelte';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import Dropdown from '$lib/components/Dropdown.svelte';
@@ -8,9 +7,8 @@
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import type { ListingType } from '$utils/api/listing';
 	import { listingDurationOptions, listingTokens } from '$utils/contracts/listing';
-	import { getTokenDetails } from '$utils/contracts/token';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
-	import { contractGetTokenAddress } from '$utils/misc/getTokenAddress';
+	import { getContractData } from '$utils/misc/getContract';
 	import { notifyError } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
@@ -52,8 +50,8 @@
 			title: options.nftData[0].metadata?.name,
 			description: options.nftData[0].metadata?.description,
 			duration,
-			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(1), collectionAddress: HinataMarketplaceStorageContractAddress }],
-			paymentTokenAddress: await contractGetTokenAddress(paymentTokenTicker as any),
+			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(1), collectionAddress: getContractData('storage').address }],
+			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker,
 			quantity: BigNumber.from(1),
 			startTime: dayjs().unix() + 10,

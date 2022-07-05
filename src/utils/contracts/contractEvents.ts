@@ -5,31 +5,19 @@ import {
 	seedVestingMerkleDistributorLockContract
 } from '$constants/contractAddresses';
 import { appProvider, currentUserAddress } from '$stores/wallet';
+import { getContract } from '$utils/misc/getContract';
 import { get } from 'svelte/store';
 import { checkClaimEligibility } from './airdropDistribution';
-import {
-	getDistributorContract,
-	getHinataTokenContract,
-	getStakingContract
-} from './generalContractCalls';
+import { getDistributorContract, getStakingContract } from './generalContractCalls';
 import { checkHinataAllowance, getAllTokenBalances } from './tokenBalances';
 
 export default () => {
 	const provider = get(appProvider);
-	const hinataContract = getHinataTokenContract(provider);
+	const hinataContract = getContract('token');
 	const stakingContract = getStakingContract(provider);
-	const communityAirdropContract = getDistributorContract(
-		communityMerkleDistributorLockContract,
-		provider
-	);
-	const seedAirdropContract = getDistributorContract(
-		seedVestingMerkleDistributorLockContract,
-		provider
-	);
-	const privateAirdropContract = getDistributorContract(
-		privateVestingMerkleDistributorLockContract,
-		provider
-	);
+	const communityAirdropContract = getDistributorContract(communityMerkleDistributorLockContract, provider);
+	const seedAirdropContract = getDistributorContract(seedVestingMerkleDistributorLockContract, provider);
+	const privateAirdropContract = getDistributorContract(privateVestingMerkleDistributorLockContract, provider);
 	const idoAirdropContract = getDistributorContract(idoMerkleDistributorLockContract, provider);
 
 	if (provider) {

@@ -1,17 +1,14 @@
-import { get } from 'svelte/store';
-import { appSigner } from '$stores/wallet';
 import contractCaller from './contractCaller';
-import HinataCollectionFactoryContract from './collectionFactory';
 import type { Collection } from '$utils/api/collection';
 import { parseUnits } from 'ethers/lib/utils';
+import { getContract } from '$utils/misc/getContract';
 
 export async function contractCreateCollection(options: Collection) {
 	try {
-		const CollectionFactoryContract = HinataCollectionFactoryContract(get(appSigner));
-		console.log(options);
+		const contract = getContract('factory');
 		options.royalties = options.royalties.filter((item) => item.fees && item.address);
 		await contractCaller(
-			CollectionFactoryContract,
+			contract,
 			'spawn',
 			150,
 			1,
@@ -19,7 +16,7 @@ export async function contractCreateCollection(options: Collection) {
 			options.paymentTokenTicker,
 			options.slug,
 			options.royalties.length > 0 ? options.royalties.map((item) => item.address) : ['0x0000000000000000000000000000000000000000'],
-			options.royalties.length > 0 ? options.royalties.map((item) => parseUnits(item.fees.toString(), 2)) : [ parseUnits('0', 2) ],
+			options.royalties.length > 0 ? options.royalties.map((item) => parseUnits(item.fees.toString(), 2)) : [parseUnits('0', 2)],
 			false
 		);
 
