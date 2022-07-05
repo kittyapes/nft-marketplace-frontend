@@ -101,16 +101,16 @@
 		/>
 
 		<!-- Creator profile image - TODO ADD LOGIC FOR VERIFIED CREATOR BADGE -->
-		<div class="absolute bottom-0 left-0 right-0 w-24 h-24 mx-auto translate-y-12">
+		<div class="absolute bottom-0 left-0 right-0 w-24 h-24 mx-auto translate-y-12 grid place-items-center">
 			<img class="object-cover w-20 h-20 bg-white border-4 border-white rounded-full " src={collectionData?.logoImageUrl || '/svg/icons/guest-avatar.svg'} alt="Collection creator avatar." />
 
 			<!-- Verified creator badge -->
-			<img class="absolute right-0 -translate-y-8" src="/svg/icons/verified-creator-badge.svg" alt="Verified creator badge." />
+			<img class="absolute right-0 translate-y-6" src="/svg/icons/verified-creator-badge.svg" alt="Verified creator badge." />
 		</div>
 	</div>
 
 	<!-- Collection title -->
-	<h1 class="mx-auto mt-8 text-2xl font-semibold max-w-max">
+	<h1 class="mx-auto mt-12 text-2xl font-semibold max-w-max">
 		{#if collectionData}
 			{collectionData?.name || 'N/A'}
 		{:else}
