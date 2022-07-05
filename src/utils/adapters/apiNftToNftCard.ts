@@ -8,9 +8,9 @@ export async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ col
 	let collectionData: Partial<Collection> = {
 		id: data.collectionId,
 		name: data.collectionName,
-		slug: data.collectionSlug,
-	}
-	console.log(data);
+		slug: data.collectionSlug
+	};
+
 	const popupOptions: CardPopupOptions = {
 		title: data.name,
 		assetUrl: data.assetUrl || data.thumbnailUrl,
