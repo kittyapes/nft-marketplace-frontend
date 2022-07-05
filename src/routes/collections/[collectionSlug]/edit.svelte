@@ -95,7 +95,7 @@
 	let ignoreUrlChange = false;
 
 	async function validateCollectionName(collectionName: string) {
-		if (collectionSlug.toLowerCase() === 'new') {
+		if (collectionName.toLowerCase() === 'new') {
 			$formValidity.name = 'Collection Name is Not Unique';
 			return;
 		}
