@@ -20,7 +20,7 @@ export async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ col
 			{
 				metadata: data.metadata,
 				isInternalNft: true,
-				contractType: 'ERC1155',
+				contractType: data.tokenStandard ?? 'ERC1155',
 				creator: data.creator,
 				contractAddress: data.contractAddress,
 				tokenId: data.nftId,

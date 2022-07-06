@@ -23,8 +23,7 @@ export default async function (contract: ethers.Contract, methodName: string, ga
 			gasLimit: gasEst.mul(gasMultiple).div(100)
 		});
 
-		await contractCall.wait(confirmations);
-		return contractCall;
+		return await contractCall.wait(confirmations);
 	} catch (error) {
 		throw error;
 	}

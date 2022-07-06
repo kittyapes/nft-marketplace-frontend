@@ -5,4 +5,5 @@ export interface NFTCreationObject {
 	image: Blob;
 	animation: Blob;
 	description?: string;
+	collectionId: string;
 }

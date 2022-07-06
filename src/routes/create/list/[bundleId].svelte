@@ -90,7 +90,7 @@
 			description: $fetchedNftData.metadata?.description,
 			duration,
 			// TODO, add support for addresses from external collections
-			nfts: [{ nftId: $fetchedNftData.nftId, amount: BigNumber.from(listingPropValues.quantity ?? 1), collectionAddress: getContractData('storage').address }],
+			nfts: [{ nftId: $fetchedNftData.nftId, amount: BigNumber.from(listingPropValues.quantity ?? 1), collectionAddress: $fetchedNftData.contractAddress ?? getContractData('storage').address }],
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: listingPropValues.token.label,
 			quantity: BigNumber.from(1),
