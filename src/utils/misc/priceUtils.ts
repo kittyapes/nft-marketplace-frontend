@@ -23,7 +23,7 @@ export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: 
 	}
 
 	if (!network) {
-		network = 'rinkeby';
+		network = 'eth';
 	}
 
 	const token = knownTokens.find((t) => (t.ticker === ticker || t.address.toLowerCase() === tokenAddress.toLowerCase()) && t.network === network);
