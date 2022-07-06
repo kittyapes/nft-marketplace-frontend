@@ -3,7 +3,6 @@
 	import { socials } from '$constants/socials';
 	import CollectionsTable from '$lib/components/collections/CollectionsTable.svelte';
 	import { apiGetMostActiveCollections, type Collection } from '$utils/api/collection';
-	import { fadeImageOnLoad } from '$utils/actions/fadeImageOnLoad';
 	import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
@@ -82,7 +81,7 @@
 	</div>
 	<hr class="mt-4 border-[#0000004D]" />
 	{#if collections.length > 0}
-	<CollectionsTable {collections} />
+		<CollectionsTable {collections} />
 	{:else}
 		<DiamondsLoader />
 	{/if}
