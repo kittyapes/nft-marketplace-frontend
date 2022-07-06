@@ -95,14 +95,22 @@
 	let ignoreUrlChange = false;
 
 	async function validateCollectionName(collectionName: string) {
+		if (collectionName.toLowerCase() === 'new') {
+			$formValidity.name = 'Collection Name is Not Unique';
+			return;
+		}
 		const res = await apiValidateCollectionNameAndSlug(collectionName, null);
 		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.name !== collectionName;
 		$formValidity.name = res?.nameIsDuplicate && editCheck ? 'Collection Name Is Not Unique' : $formValidity.name;
 	}
 
-	async function validateCollectionSlug(collectionSlug: string) {
-		const res = await apiValidateCollectionNameAndSlug(null, collectionSlug);
-		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.slug !== collectionSlug;
+	async function validateCollectionSlug(collectionSlugEdited: string) {
+		if (collectionSlugEdited.toLowerCase() === 'new') {
+			$formValidity.slug = 'Collection Slug is Not Unique';
+			return;
+		}
+		const res = await apiValidateCollectionNameAndSlug(null, collectionSlugEdited);
+		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.slug !== collectionSlugEdited;
 		$formValidity.slug = res?.slugIsDuplicate && editCheck ? 'Collection Slug Is Not Unique' : $formValidity.slug;
 	}
 

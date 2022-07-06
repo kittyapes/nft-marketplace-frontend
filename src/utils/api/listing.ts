@@ -1,4 +1,4 @@
-import type { EthAddress } from '$interfaces';
+import type { EthAddress, TokenStandard } from '$interfaces';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { getApiUrl } from '.';
@@ -59,8 +59,6 @@ export interface Listing {
 		_id: string;
 		nftId: string;
 		amount: number;
-		collectionName: string;
-		collectionSlug: string;
 		nft: {
 			_id: string;
 			assetUrl: string;
@@ -72,6 +70,9 @@ export interface Listing {
 			nftId: string;
 			collectionId: string;
 			isExternal: boolean;
+			collectionName: string;
+			collectionSlug: string;
+			tokenStandard: TokenStandard;
 		};
 	}[];
 

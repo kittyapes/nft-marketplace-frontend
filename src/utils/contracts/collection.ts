@@ -1,5 +1,6 @@
 import contractCaller from './contractCaller';
-import { parseUnits } from 'ethers/lib/utils';
+import type { Collection } from '$utils/api/collection';
+import { parseUnits } from 'ethers/lib/utils.js';
 import { getContract } from '$utils/misc/getContract';
 
 export async function contractCreateCollection(options: {

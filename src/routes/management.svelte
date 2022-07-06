@@ -166,8 +166,6 @@
 		return { /*...collectionFetchingOptions.filter,*/ name: collectionFetchingOptions.name, ...collectionFetchingOptions.sort };
 	};
 
-	$: console.log(collections);
-
 	const createCollectionTableData = async () => {
 		collectionTableData = [
 			{

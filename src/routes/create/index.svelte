@@ -112,7 +112,6 @@
 			return;
 		}
 
-		console.log(createNftRes._id);
 		updatePopupProps(popupHandler.id, { progress, id: createNftRes._id });
 
 		//add NFT to selected collection

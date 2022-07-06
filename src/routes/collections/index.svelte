@@ -11,7 +11,6 @@
 	onMount(async () => {
 		loaded = false;
 		collections = await apiSearchCollections();
-		console.log(collections);
 		loaded = true;
 	});
 </script>
