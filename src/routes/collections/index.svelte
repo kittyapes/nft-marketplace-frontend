@@ -14,9 +14,10 @@
 	let isLoading = true;
 	let loaded = false;
 	let page = 1;
+	const limit = 10;
 
 	let fetchFunction = async () => {
-		const res = await apiSearchCollections({ limit: 20, page });
+		const res = await apiSearchCollections({ limit, page });
 		return res;
 	};
 

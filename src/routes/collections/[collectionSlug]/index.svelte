@@ -8,16 +8,60 @@
 	import NftList from '$lib/components/NftList.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { apiNftToNftCard } from '$utils/adapters/apiNftToNftCard';
-	import { apiGetCollectionBySlug, type Collection } from '$utils/api/collection';
+	import { apiGetCollectionBySlug, apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
 	import { nftDraft } from '$stores/create';
 	import { onMount } from 'svelte';
+	import { notifyError } from '$utils/toast';
+	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 
 	let collectionData: Collection;
+	let nfts = [];
 	let creatorData: UserData;
+
+	let reachedEnd = false;
+	let isLoading = true;
+
+	let index = 1;
+	const limit = 15;
+
+	let fetchFunction = async () => {
+		const res = {} as FetchFunctionResult;
+		res.res = await apiGetCollectionBySlug($page.params.collectionSlug, limit, index);
+		res.adapted = await Promise.all(res.res.nfts.map((nft) => apiNftToNftCard(nft)));
+		return res;
+	};
+
+	async function fetchMore() {
+		if (reachedEnd) return;
+		isLoading = true;
+
+		const res = await fetchFunction();
+
+		if (res.err) {
+			console.error(res.err);
+			notifyError('Failed to fetch more collections.');
+			return;
+		}
+
+		console.log(res);
+		if (res.adapted.length === 0) {
+			reachedEnd = true;
+		} else {
+			nfts = [...nfts, ...res.adapted];
+			console.log(nfts);
+			index++;
+		}
+
+		isLoading = false;
+	}
+
+	onMount(async () => {
+		await fetchMore();
+	});
 
 	const collectionStats = {
 		highestSale: {
@@ -86,8 +130,6 @@
 	let showCollectionMenu = false;
 
 	let menuAttachElement: AttachToElement;
-
-	onMount(() => document.addEventListener('scroll', () => menuAttachElement?.recalc()));
 </script>
 
 <main class="px-16 mx-auto">
@@ -166,15 +208,9 @@
 	</div>
 
 	<div class="mt-16 border-t border-[#0000004D]">
-		{#if collectionData?.nfts?.length}
-			{#if collectionData}
-				{#await Promise.all(collectionData.nfts.map((nftData) => apiNftToNftCard(nftData, { collection: collectionData }))) then nfts}
-					<NftList options={nfts} />
-				{/await}
-			{:else}
-				<NftList options={[]} />
-			{/if}
-		{:else if collectionData && !collectionData.nfts?.length && $currentUserAddress === collectionData.creator}
+		{#if nfts.length}
+			<NftList options={nfts} {isLoading} {reachedEnd} on:end-reached={fetchMore} />
+		{:else if collectionData && !nfts.length && $currentUserAddress === collectionData.creator}
 			<div
 				class="grid place-items-center border border-dashed border-opacity-30 border-color-gray-base h-60 clickable hover:scale-105 transition-all p10 rounded-2xl max-w-[246px] my-10"
 				on:click={() => {
