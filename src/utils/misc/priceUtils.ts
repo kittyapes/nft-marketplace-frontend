@@ -26,7 +26,7 @@ export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: 
 
 	if (get(connectionDetails)?.chainId === 1) {
 		network = 'eth';
-	} else {
+	} else if (get(connectionDetails)?.chainId === 4) {
 		network = 'rinkeby';
 	}
 
