@@ -5,6 +5,8 @@
 
 	export let collections: CollectionTableRow[];
 	export let loaded: boolean;
+	export let isLoading: boolean;
+	export let reachedEnd: boolean;
 </script>
 
 <div class="grid place-items-center w-full my-20">
@@ -15,13 +17,15 @@
 		</div>
 		<hr class="border-t border-black border-opacity-30" />
 		{#if loaded}
-			<CollectionsContainer {collections} />
+			<CollectionsContainer {collections} {isLoading} on:end-reached />
 		{:else}
 			<DiamondsLoader />
 		{/if}
 
-		<div class="grid place-items-center">
-			<a href="/" class="uppercase underline font-bold mt-8 text-sm">Go Back</a>
-		</div>
+		{#if reachedEnd}
+			<div class="grid place-items-center">
+				<a href="/" class="uppercase underline font-bold mt-8 text-sm">Go Back</a>
+			</div>
+		{/if}
 	</div>
 </div>

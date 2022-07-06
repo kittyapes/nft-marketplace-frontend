@@ -6,8 +6,22 @@
 	import { slide } from 'svelte/transition';
 	import type { Collection } from '$utils/api/collection';
 	import { goto } from '$app/navigation';
+	import { inview } from 'svelte-inview';
+	import { createEventDispatcher } from 'svelte';
+	import DiamondsLoader from '../DiamondsLoader.svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let collections: Collection[];
+	export let isLoading = false;
+
+	const inviewOptions = {};
+
+	function onChange(event) {
+		if (event.detail.inView) {
+			dispatch('end-reached');
+		}
+	}
 </script>
 
 <div class="w-full flex flex-col gap-10 bg-[#FAFAFA]">
@@ -55,6 +69,12 @@
 		{/each}
 	</div>
 </div>
+
+{#if isLoading}
+	<DiamondsLoader />
+{:else}
+	<div use:inview={inviewOptions} on:change={onChange} />
+{/if}
 
 <style lang="postcss">
 	.profile-pic {
