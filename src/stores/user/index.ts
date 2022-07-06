@@ -9,7 +9,7 @@ export const profileData = writable<UserData>(null);
 
 currentUserAddress.subscribe((address) => {
 	if (!address) return;
-	
+
 	refreshProfileData();
 	refreshLikedNfts(address);
 });

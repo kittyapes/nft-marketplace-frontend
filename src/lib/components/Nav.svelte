@@ -1,5 +1,5 @@
 <script>
-	import Search from './Search.svelte';
+	// import Search from './Search.svelte';
 	import ProfilePopup from './ProfilePopup.svelte';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { appSigner } from '$stores/wallet';
@@ -23,7 +23,7 @@
 		}
 	};
 
-	onMount(() => {
+	onMount(async () => {
 		window.addEventListener('click', closeModalIfNotInElement);
 	});
 
@@ -33,10 +33,7 @@
 	let imageFailedToLoad = false;
 
 	let showCreate = false;
-
-	profileData.subscribe((profile) => {
-		showCreate = profile && (profile.status === 'VERIFIED' || profile.roles.includes('superadmin'));
-	});
+	$: $profileData && ($profileData.status === 'VERIFIED' || $profileData.roles.includes('superadmin'));
 </script>
 
 <div class="fixed z-10 flex w-full">
@@ -100,7 +97,7 @@
 								class="object-cover w-full h-full rounded-full"
 							/>
 						{:else}
-							<div class="text-color-purple" in:fade>
+							<div class="text-color-purple" in:fade|local>
 								<UserCircle />
 							</div>
 						{/if}

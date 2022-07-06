@@ -5,8 +5,6 @@ import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import Web3Modal from 'web3modal';
 import { WalletState, walletState } from '.';
-import { page } from '$app/stores';
-import { browser } from '$app/env';
 
 const infuraId = '456e115b04624699aa0e776f6f2ee65c';
 const appName = 'Hinata Marketplace';
@@ -223,8 +221,8 @@ export const initProviderEvents = (provider: any) => {
 	});
 
 	// Subscribe to chainId change
-	provider.on('chainChanged', async (_chainId: number) => {
-		// console.log('Chain Changed: ', chainId);
+	provider.on('chainChanged', async (chainId: number) => {
+		console.log('Chain Changed: ', chainId);
 		deregisterEvents();
 		await refreshConnection();
 	});
@@ -253,7 +251,6 @@ export const initProviderEvents = (provider: any) => {
 };
 
 export const deregisterEvents = () => {
-
 	return get(externalProvider).removeAllListeners();
 };
 
