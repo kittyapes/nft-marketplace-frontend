@@ -4,5 +4,6 @@ export const socials = {
 	telegram: 'https://t.me/hinataio',
 	discord: 'https://discord.com/invite/zXKPdNN9AE',
 	medium: 'https://medium.com/@hinatafoundation',
-	careers: 'https://jobs.lever.co/hinata'
+	careers: 'https://jobs.lever.co/hinata',
+	docs: 'https://docs.hinata.io/'
 };

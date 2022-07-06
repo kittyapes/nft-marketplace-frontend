@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Eth from '$icons/eth.svelte';
+
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
@@ -68,6 +70,26 @@
 
 <div class="flex flex-col h-full pb-12 mt-4">
 	<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} tokenDecimals={options.listingData.tokenDecimals} />
+
+	<div class="mt-2 font-semibold flex">
+		<div class="flex flex-col font-semibold">
+			<div class="">Reserve price</div>
+			<div class="flex items-center gap-2">
+				<Eth />
+				{options.auctionData.reservePrice || 'N/A'}
+			</div>
+		</div>
+
+		<div class="flex-grow" />
+
+		<div class="flex flex-col font-semibold">
+			<div class="">Starting price</div>
+			<div class="flex items-center gap-2">
+				<Eth />
+				{options.auctionData.startingPrice || 'N/A'}
+			</div>
+		</div>
+	</div>
 
 	<div class="flex gap-2">
 		<div bind:this={cancelButtonContainer} class="w-full" on:pointerenter={cancelHovered.toggle} on:pointerleave={cancelHovered.toggle}>
