@@ -42,7 +42,7 @@
 		<button class="opacity-70 active:opacity-50 transition" on:click={onRefreshClick}><Refresh class="scale-75" /></button>
 	</div>
 
-	<div class="flex flex-col flex-grow gap-4 pr-4 mt-4 overflow-y-scroll">
+	<div class="flex flex-col flex-grow gap-4 pr-4 mt-4 overflow-y-scroll blue-scrollbar">
 		{#each biddings as bid}
 			<AuctionBidRow {...bid} tokenIconComponent={Eth} />
 		{/each}

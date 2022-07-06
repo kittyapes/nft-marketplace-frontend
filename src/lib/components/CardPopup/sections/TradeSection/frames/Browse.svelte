@@ -159,16 +159,24 @@
 		<div class="flex flex-col h-full mt-4">
 			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenDecimals={options.listingData.tokenDecimals} on:request-refresh={refreshBids} />
 
-			<div class="mt-2 text-xs font-semibold opacity-70">
-				Reserve price: {options.auctionData.reservePrice || 'N/A'}
-				{options.listingData.symbol}
+			<div class="mt-2 font-semibold flex">
+				<div class="flex flex-col font-semibold">
+					<div class="">Reserve price</div>
+					<div class="flex items-center gap-2">
+						<Eth />
+						{options.auctionData.reservePrice || 'N/A'}
+					</div>
+				</div>
 
-				{#if listingExpired}
-					| <span class="text-red-800">EXPIRED</span>
-				{/if}
+				<div class="flex-grow" />
 
-				| Starting price: {options.auctionData.startingPrice || 'N/A'}
-				{options.listingData.symbol}
+				<div class="flex flex-col font-semibold">
+					<div class="">Starting price</div>
+					<div class="flex items-center gap-2">
+						<Eth />
+						{options.auctionData.startingPrice || 'N/A'}
+					</div>
+				</div>
 			</div>
 
 			<div class="flex gap-2 mt-2">
