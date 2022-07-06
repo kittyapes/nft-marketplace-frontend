@@ -52,7 +52,7 @@
 			title: options.nftData[0].metadata?.name,
 			description: options.nftData[0].metadata?.description,
 			duration,
-			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(quantity ?? 1), collectionAddress: getContractData('storage').address }],
+			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(quantity ?? 1), collectionAddress: options.nftData[0]?.contractAddress ?? getContractData('storage').address }],
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker,
 			quantity: BigNumber.from(1),

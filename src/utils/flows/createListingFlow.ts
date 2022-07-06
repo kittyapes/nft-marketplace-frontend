@@ -110,7 +110,8 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 			tokenIds,
 			tokenAmounts,
 			quantity: 1,
-			collections
+			collections,
+			nfts: options.nfts
 		});
 	} catch (err) {
 		console.error(err);

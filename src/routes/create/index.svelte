@@ -13,7 +13,7 @@
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
-	import { addNftsToCollection, apiSearchCollections, type Collection } from '$utils/api/collection';
+	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { type NewBundleData, newBundleData } from '$utils/create';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
@@ -46,7 +46,7 @@
 
 	const formValidity = writable<Partial<{ [K in keyof NftDraft]: any }>>({});
 
-	const availableCollections = writable<{ label: string; value: string; iconUrl: string; contractAddress: string }[]>([]);
+	const availableCollections = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }[]>([]);
 
 	onMount(async () => {
 		await prepData();
@@ -98,13 +98,16 @@
 		console.info('[Create] Using new NFT contract ID:', nftId);
 
 		// Create NFT on the server
+		const selectedCollection = $availableCollections.find((c) => c.value === selectedCollectionId);
+
 		const createNftRes = await createNFTOnAPI({
 			description: nftData.description,
 			amount: nftData.quantity,
 			name: nftData.name,
 			creator: $currentUserAddress,
 			image: nftData.fileBlob,
-			animation: nftData.animationBlob
+			animation: nftData.animationBlob,
+			collectionId: selectedCollection.value
 		});
 
 		if (!createNftRes) {
@@ -115,7 +118,7 @@
 		updatePopupProps(popupHandler.id, { progress, id: createNftRes._id });
 
 		//add NFT to selected collection
-		const addNftsToCollectionRes = await addNftsToCollection([createNftRes.nftId], selectedCollectionId);
+		// const addNftsToCollectionRes = await addNftsToCollection([createNftRes.nftId], selectedCollectionId);
 
 		progress.set(50);
 
@@ -123,7 +126,7 @@
 		const nftMintRes = await createNFTOnChain({
 			id: createNftRes.nftId.toString(),
 			amount: nftData.quantity.toString(),
-			contractAddress: $availableCollections.find((c) => c.value === selectedCollectionId).contractAddress
+			collectionAddress: selectedCollection.collectionAddress
 		}).catch(() => {
 			popupHandler.close();
 			notifyError('Failed to create NFT on chain.');

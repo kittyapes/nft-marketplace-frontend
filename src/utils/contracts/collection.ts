@@ -1,6 +1,12 @@
 import contractCaller from './contractCaller';
 import { parseUnits } from 'ethers/lib/utils.js';
 import { getContract } from '$utils/misc/getContract';
+import { ethers } from 'ethers';
+import { get } from 'svelte/store';
+import { appSigner } from '$stores/wallet';
+import erc1155Abi from '$constants/contracts/abis/Erc1155Mock.json';
+import erc721Abi from '$constants/contracts/abis/Erc721Mock.json';
+import storageAbi from '$constants/contracts/abis/HinataMarketplaceStorage.json';
 
 export async function contractCreateCollection(options: {
 	royalties: {
@@ -29,4 +35,58 @@ export async function contractCreateCollection(options: {
 	);
 
 	return { contractAddress: res.events[0].args[2] };
+}
+
+export async function getContractInterface(address: string, provider: ethers.Signer | ethers.providers.Provider) {
+	const ERC165Abi: any = [
+		{
+			inputs: [
+				{
+					internalType: 'bytes4',
+					name: 'interfaceId',
+					type: 'bytes4'
+				}
+			],
+			name: 'supportsInterface',
+			outputs: [
+				{
+					internalType: 'bool',
+					name: '',
+					type: 'bool'
+				}
+			],
+			stateMutability: 'view',
+			type: 'function'
+		}
+	];
+	const ERC1155InterfaceId: string = '0xd9b67a26';
+	const ERC721InterfaceId: string = '0x80ac58cd';
+
+	const contract = new ethers.Contract(address, ERC165Abi, provider);
+	try {
+		if (!provider) {
+			throw 'No Provider Supplied';
+		}
+		const isErc1155 = await contract.supportsInterface(ERC1155InterfaceId);
+		const isErc721 = await contract.supportsInterface(ERC721InterfaceId);
+		if (isErc1155) {
+			return 'ERC1155';
+		} else if (isErc721) {
+			return 'ERC721';
+		} else {
+			throw 'No Provider Supplied';
+		}
+	} catch (error) {
+		return 'UNKNOWN';
+	}
+}
+
+export async function getCollectionContract(address: string) {
+	const storageAddress = getContract('storage')?.address;
+	address = address ?? storageAddress;
+	const contractType = await getContractInterface(address, get(appSigner));
+	const contractAbi = address === storageAddress ? storageAbi : contractType === 'ERC721' ? erc721Abi : erc1155Abi;
+	const contract = new ethers.Contract(address, contractAbi, get(appSigner));
+
+	return contract;
 }

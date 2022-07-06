@@ -6,6 +6,7 @@ import { parseToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
 import { BigNumber, ethers } from 'ethers';
 import { get } from 'svelte/store';
+import { getCollectionContract } from './collection';
 import contractCaller from './contractCaller';
 import { ensureAmountApproved, getTokenDetails } from './token';
 
@@ -42,16 +43,18 @@ export interface ContractCreateListingOptions {
 	tokenIds: OnChainId[];
 	tokenAmounts: BigNumber[];
 	collections: EthAddress[];
+	nfts: { nftId: string; amount: BigNumber; collectionAddress: EthAddress }[];
 }
 
 export async function contractCreateListing(options: ContractCreateListingOptions) {
 	const marketplaceContract = getContract('marketplace');
-	const storageContract = getContract('storage');
+	const collectionContract = await getCollectionContract(options.nfts[0].collectionAddress);
 
-	const isApproved = await storageContract.isApprovedForAll(get(currentUserAddress), marketplaceContract.address);
+	// TODO: Check Approval for All NFTS being listed - loop
+	const isApproved = await collectionContract.isApprovedForAll(get(currentUserAddress), marketplaceContract.address);
 
 	if (!isApproved) {
-		const approval: ethers.ContractTransaction = await storageContract.setApprovalForAll(marketplaceContract.address, true);
+		const approval: ethers.ContractTransaction = await collectionContract.setApprovalForAll(marketplaceContract.address, true);
 		await approval.wait(1);
 	}
 
