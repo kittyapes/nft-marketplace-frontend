@@ -167,6 +167,7 @@
 	};
 
 	const createCollectionTableData = async () => {
+		console.log(collections);
 		collectionTableData = [
 			{
 				gridSize: '3fr',
@@ -175,13 +176,13 @@
 				renderComponent: CollectionName,
 				renderComponentProps: collections.map((c) => ({ name: c.name || '', imageUrl: c.logoImageUrl, slug: c.slug, badge: c.mintedFrom === 'Hinata' }))
 			},
-			/*{
+			{
 				gridSize: '2fr',
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Ethereum Address' },
 				renderComponent: EthAddress,
-				renderComponentProps: collections.map((c) => ({ address: c.paymentTokenAddress }))
-			},*/
+				renderComponentProps: collections.map((c) => ({ address: c.collectionAddress || 'N/A' }))
+			},
 			{
 				gridSize: '1fr',
 				titleRenderComponent: TableTitle,
