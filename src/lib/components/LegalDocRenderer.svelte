@@ -49,8 +49,7 @@
 			}
 		}
 
-		const visibleHash =
-			titles[visibleTitleIndex] && titleToHash(titles[visibleTitleIndex].innerText);
+		const visibleHash = (titles[visibleTitleIndex] && titleToHash(titles[visibleTitleIndex].querySelector('div').querySelector('span').innerText)) || titleToHash(titles[visibleTitleIndex].innerText);
 
 		if (visibleHash) {
 			currentHash = visibleHash;
@@ -74,16 +73,13 @@
 		}, 1000);
 
 		const target = document.querySelector(sectionHash + '-section-title');
-
 		if (target) {
 			target.scrollIntoView({ block: 'center' });
 		}
 	}
 
 	let menuHeight = 0;
-	$: translateMenuPx = browser
-		? Math.min(0, document.body.clientHeight - menuHeight - scrollY - 600)
-		: 0;
+	$: translateMenuPx = browser ? Math.min(0, document.body.clientHeight - menuHeight - scrollY - 600) : 0;
 </script>
 
 <svelte:window bind:scrollY />
@@ -92,22 +88,13 @@
 	<div class="font-semibold text-center py-32 text-lg">Loading document...</div>
 {:then doc}
 	<!-- Desktop Menu -->
-	<div
-		id="menu-container"
-		class="hidden lg:block"
-		style="--translate-px: {translateMenuPx}px"
-		in:fade
-		bind:clientHeight={menuHeight}
-	>
+	<div id="menu-container" class="hidden lg:block" style="--translate-px: {translateMenuPx}px" in:fade bind:clientHeight={menuHeight}>
 		<h1>{menuTitle}</h1>
 
 		<ul id="section-links-container">
 			{#each doc.terms as section}
 				<li class="section-link" class:highlight={currentHash === titleToHash(section.title)}>
-					<a
-						href={titleToHash(section.title)}
-						on:click={(ev) => updateHash(ev, titleToHash(section.title))}
-					>
+					<a href={titleToHash(section.title)} on:click={(ev) => updateHash(ev, titleToHash(section.title))}>
 						{section.title}
 					</a>
 				</li>
@@ -121,24 +108,23 @@
 	<div class="max-w-4xl mx-auto px-4 lg:px-0 lg:pr-16 lg:ml-[30rem] lg:mt-40 mb-32" in:fade>
 		{#each doc.terms as section, index}
 			<!-- Desktop title -->
-			<h2
-				id="{titleToHash(section.title, true)}-section-title"
-				class="section-title hidden lg:block"
-				bind:this={titles[index]}
-			>
-				{section.title}
+			<h2 id="{titleToHash(section.title, true)}-section-title" class="section-title hidden lg:block" bind:this={titles[index]}>
+				<div class="" class:text-center={section.center}>
+					{#if section.numbered}
+						{index}.&emsp;
+						<span>{section.title}</span>
+					{:else}
+						{section.title}
+					{/if}
+				</div>
+				{#if section.break}
+					<div class=" mt-6 w-full h-[2px] bg-[#0c1011] opacity-80" />
+				{/if}
 			</h2>
 
 			<!-- Mobile title and dropdown -->
-			<input
-				type="checkbox"
-				id="{titleToHash(section.title, true)}-section-title-mobile"
-				class="mobile-section"
-			/>
-			<label
-				for="{titleToHash(section.title, true)}-section-title-mobile"
-				class="mobile-section lg:!hidden"
-			>
+			<input type="checkbox" id="{titleToHash(section.title, true)}-section-title-mobile" class="mobile-section" />
+			<label for="{titleToHash(section.title, true)}-section-title-mobile" class="mobile-section lg:!hidden">
 				{section.title}
 
 				<div class="dropdown-arrow">
@@ -158,7 +144,7 @@
 	Error loading document.
 {/await}
 
-<style lang='postcss'>
+<style lang="postcss">
 	/* Mobile and Desktop content */
 	.section-markup {
 		@apply leading-9;
@@ -190,11 +176,6 @@
 	}
 
 	.section-title::after {
-		@apply mt-6 w-full block;
-		content: '';
-		height: 2px;
-		background-color: #0c1011;
-		opacity: 0.8;
 	}
 
 	/* Desktop menu container */

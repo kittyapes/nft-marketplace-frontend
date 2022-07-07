@@ -1,4 +1,3 @@
-import { HinataMarketplaceStorageContractAddress } from '$constants/contractAddresses';
 import type { EthAddress, UnixTime } from '$interfaces';
 import { getApiUrl } from '$utils/api';
 import type { ListingType } from '$utils/api/listing';
@@ -6,6 +5,7 @@ import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { contractCreateListing, LISTING_TYPE } from '$utils/contracts/listing';
 import { notifyError, notifySuccess } from '$utils/toast';
 import axios from 'axios';
+import dayjs from 'dayjs';
 import type { BigNumber } from 'ethers';
 import { noTryAsync } from 'no-try';
 
@@ -23,12 +23,12 @@ export interface CreateListingFlowOptions {
 	duration: number;
 
 	sale?: {
-		price: BigNumber;
+		price: string;
 	};
 
 	auction?: {
-		startingPrice: BigNumber;
-		reservePrice: BigNumber;
+		startingPrice: string;
+		reservePrice: string;
 	};
 }
 
@@ -45,9 +45,12 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		paymentTokenTicker: 'ETH', // hotfix options.paymentTokenTicker,
 		description: options.description || 'No Description',
 		listingType: options.listingType,
-		duration: options.duration.toString(),
-		startTime: options.startTime.toString()
+		duration: options.duration.toString()
 	};
+
+	if (options.startTime) {
+		fields['startTime'] = options.startTime.toString();
+	}
 
 	const listing = {};
 
@@ -62,13 +65,8 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		listing['startingPrice'] = options.auction.startingPrice.toString();
 	}
 
-	// if (options.auction?.reservePrice) {
-	// 	listing['reservePrice'] = options.auction.reservePrice.toString();
-	// }
-
-	// Hotfix
-	if (options.listingType === 'auction') {
-		listing['reservePrice'] = '0';
+	if (options.auction?.reservePrice) {
+		listing['reservePrice'] = options.auction.reservePrice.toString();
 	}
 
 	// Append listing to formData
@@ -95,14 +93,6 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	const tokenAmounts = options.nfts.map((nft) => nft.amount);
 	const collections = options.nfts.map((nft) => nft.collectionAddress);
 
-	let price: BigNumber;
-
-	if (options.listingType === 'sale') {
-		price = options.sale?.price;
-	} else if (options.listingType === 'auction') {
-		price = options.auction?.startingPrice;
-	}
-
 	const listingType = {
 		sale: LISTING_TYPE.FIXED_PRICE,
 		auction: LISTING_TYPE.TIME_LIMITED_WINER_TAKE_ALL_AUCTION
@@ -113,13 +103,15 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 			payToken: options.paymentTokenAddress,
 			listingId: listingId,
 			listingType,
-			price,
-			startTime: options.startTime,
+			price: options.sale?.price || options.auction.startingPrice || '0',
+			startTime: options.startTime || dayjs().unix(),
+			reservePrice: options.auction?.reservePrice || '0',
 			duration: options.duration,
 			tokenIds,
 			tokenAmounts,
 			quantity: 1,
-			collections
+			collections,
+			nfts: options.nfts
 		});
 	} catch (err) {
 		console.error(err);

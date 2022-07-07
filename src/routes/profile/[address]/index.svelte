@@ -4,14 +4,13 @@
 	import { page } from '$app/stores';
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
-	import type { NftCardOptions } from '$interfaces/nftCardOptions';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
-	import { profileCompletionProgress, userLikedNfts } from '$stores/user';
+	import { profileCompletionProgress } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import { apiNftToNftCard } from '$utils/adapters/apiNftToNftCard';
@@ -31,15 +30,25 @@
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import { getNft } from '$utils/api/nft';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
+	import { isEthAddress } from '$utils/validator/isEthAddress';
 
 	$: address = $page.params.address;
 
 	$: if ($page.url.searchParams.has('tab')) {
 		let tabName = $page.url.searchParams.get('tab');
-		selectedTab = tabs[tabName];
+		if (tabs[tabName]) {
+			selectedTab = tabs[tabName];
+		}
+		$page.url.searchParams.delete('tab');
 	}
 
 	onMount(async () => {
+		if (!isEthAddress(address)) {
+			notifyError('Invalid Ethereum Address');
+			setTimeout(() => goto('/404'), 1500);
+			return;
+		}
+
 		if ($page.url.searchParams.has('id')) {
 			const id = $page.url.searchParams.get('id');
 			const listing = await getListing(id);

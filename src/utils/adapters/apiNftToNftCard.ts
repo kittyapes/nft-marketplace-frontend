@@ -2,9 +2,14 @@ import type { ApiCollectionData } from '$interfaces/apiCollectionData';
 import type { ApiNftData } from '$interfaces/apiNftData';
 import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
+import type { Collection } from '$utils/api/collection';
 
 export async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ collection: Partial<ApiCollectionData> }>) {
-	let collectionData: ApiCollectionData;
+	let collectionData: Partial<Collection> = {
+		id: data.collectionId,
+		name: data.collectionName,
+		slug: data.collectionSlug
+	};
 
 	const popupOptions: CardPopupOptions = {
 		title: data.name,
@@ -15,7 +20,7 @@ export async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ col
 			{
 				metadata: data.metadata,
 				isInternalNft: true,
-				contractType: 'ERC1155',
+				contractType: data.tokenStandard ?? 'ERC1155',
 				creator: data.creator,
 				contractAddress: data.contractAddress,
 				tokenId: data.nftId,

@@ -7,27 +7,3 @@ export const sidebarItems = [
 	{ title: 'User Management', href: '/admin/users', icon: 'users-manage', arrow: true },
 	{ title: 'Analytics', href: '/admin/analytics', icon: 'analytics', arrow: true }
 ];
-
-// TODO remove, deprecated
-// export const permissions = [
-// 	'Add Accounts',
-// 	'Remove Accounts',
-// 	'Ban Accounts',
-// 	'Mint NFTs',
-// 	'Verify Creators'
-// ];
-
-// export type AdminPermissionKey =
-// 	| 'addAccounts'
-// 	| 'removeAccounts'
-// 	| 'banAccounts'
-// 	| 'mintNfts'
-// 	| 'verifyCreators';
-
-// export const adminPermissions: { label: string; key: AdminPermissionKey }[] = [
-// 	{ label: 'Add Accounts', key: 'addAccounts' },
-// 	{ label: 'Remove Accounts', key: 'removeAccounts' },
-// 	{ label: 'Ban Accoutnts', key: 'banAccounts' },
-// 	{ label: 'Mints NFTs', key: 'mintNfts' },
-// 	{ label: 'Verify Creators', key: 'verifyCreators' }
-// ];

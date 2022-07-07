@@ -71,7 +71,6 @@
 
 	const preload = async (src) => {
 		try {
-			console.log(src);
 			const res = await axios.get(src);
 			const blob = await new Blob(res.data);
 

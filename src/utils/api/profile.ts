@@ -21,6 +21,8 @@ export interface LoginHistoryEntry {
  * @returns Profile data or `null` in case of an error.
  */
 export async function fetchProfileData(address: string) {
+	if(!address) return null;
+	
 	const res = await axios.get(getApiUrl('latest', 'users/' + address)).catch(() => null);
 
 	if (!res) {

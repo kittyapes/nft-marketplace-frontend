@@ -1,12 +1,11 @@
 import type { OnChainId } from '$interfaces';
 import type { ContractError } from '$interfaces/contractError';
-import { getSigner } from '$utils/misc/getters';
+import { getContract } from '$utils/misc/getContract';
 import type { BigNumber, ContractTransaction } from 'ethers';
 import { noTryAsync } from 'no-try';
-import HinataMarketplaceContract from './hinataMarketplace';
 
 export async function contractAuctionBid(listingId: OnChainId, amount: BigNumber) {
-	const contract = HinataMarketplaceContract(getSigner());
+	const contract = getContract('marketplace');
 	const [err, res]: [any, ContractTransaction] = await noTryAsync(() => contract.bid(listingId, amount));
 
 	if (res) {
@@ -17,14 +16,14 @@ export async function contractAuctionBid(listingId: OnChainId, amount: BigNumber
 }
 
 export async function contractGetAuctionBid(listingId: OnChainId) {
-	const contract = HinataMarketplaceContract(getSigner());
+	const contract = getContract('marketplace');
 	const [err, res] = await noTryAsync(() => contract.biddings(listingId));
 
 	return { err: err as ContractError, res };
 }
 
 export async function contractCompleteAuction(listingId: OnChainId) {
-	const contract = HinataMarketplaceContract(getSigner());
+	const contract = getContract('marketplace');
 	const [err, res]: [any, ContractTransaction] = await noTryAsync(() => contract.completeAuction(listingId));
 
 	if (res) {

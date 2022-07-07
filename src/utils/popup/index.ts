@@ -29,11 +29,11 @@ const defaultOptions: PopupOptions = {
 
 export const popupStack = writable<PopupStackItem[]>([]);
 
-export function updatePopupProps(id: string, props: {[key: string]: any}) {
+export function updatePopupProps(id: string, props: { [key: string]: any }) {
 	popupStack.update((stack) => {
-		stack.find(e => e.id === id).options.props = props;
+		stack.find((e) => e.id === id).options.props = props;
 		return stack;
-	 })
+	});
 }
 
 export function setPopup(component: any, options: PopupOptions = defaultOptions) {

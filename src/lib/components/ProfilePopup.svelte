@@ -21,7 +21,7 @@
 	<div class="grid gap-2">
 		<Button variant="rounded-outline" class="profile-btn-item !w-full !py-2" on:click={() => goto(`/profile/${$currentUserAddress}`)}>My Profile</Button>
 		{#if showDashboard}
-			<Button variant="rounded-outline" class="profile-btn-item" --width="100%" --py="0.5rem" on:click={() => goto('/admin')}>Dashboard</Button>
+			<Button variant="rounded-outline" class="profile-btn-item" --width="100%" --py="0.5rem" on:click={() => goto('/management')}>Dashboard</Button>
 		{/if}
 		{#if showMyCollections}
 			<Button variant="rounded-outline" class="profile-btn-item" --width="100%" --py="0.5rem" on:click={() => goto(`/profile/${$profileData.address}/collections`)}>My Collections</Button>

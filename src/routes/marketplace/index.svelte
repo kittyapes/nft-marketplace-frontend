@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	import { page } from '$app/stores';
 	import Sort from '$icons/sort.svelte';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
@@ -6,7 +8,6 @@
 	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
-	import { filters } from '$stores/marketplace';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import { getListing } from '$utils/api/listing';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
@@ -27,12 +28,16 @@
 	});
 
 	const handleSelectSort = (event: CustomEvent) => {
-		$filters.sortBy = event.detail.value;
+		$page.url.searchParams.set('sortBy', event.detail.value);
+		goto('?' + $page.url.searchParams);
+		refreshWithFilters();
 	};
+
+	let refreshWithFilters: () => void;
 </script>
 
 <div class="flex flex-col w-full h-full min-h-screen md:flex-row">
-	<Sidebar bind:isOpen={sidebarOpen} />
+	<Sidebar bind:isOpen={sidebarOpen} on:request-refresh={() => refreshWithFilters()} />
 
 	<div class={`p-11 w-full ml-0 ${!sidebarOpen ? 'md:ml-24' : 'md:ml-72'} transform transition-all duration-200`}>
 		<MainTabs tab={0} />
@@ -57,7 +62,7 @@
 		</div>
 
 		<div>
-			<CardsSection />
+			<CardsSection bind:refreshWithFilters />
 		</div>
 	</div>
 </div>

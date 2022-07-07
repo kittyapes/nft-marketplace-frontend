@@ -3,23 +3,24 @@
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import InfoBox from '$lib/components/InfoBox.svelte';
-	import CircularSpinner from '$lib/components/spinners/CircularSpinner.svelte';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
-	import { currentUserAddress } from '$stores/wallet';
-	import { getTokenBalance, hasEnoughBalance } from '$utils/contracts/token';
+	import { appSigner, currentUserAddress } from '$stores/wallet';
+	import { hasEnoughBalance } from '$utils/contracts/token';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import { formatToken, parseToken } from '$utils/misc/priceUtils';
 	import { createToggle } from '$utils/misc/toggle';
+	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
-	import { formatEther, parseEther } from 'ethers/lib/utils.js';
+	import { formatUnits, parseUnits } from 'ethers/lib/utils.js';
 	import { noTry, noTryAsync } from 'no-try';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { derived, writable } from 'svelte/store';
@@ -65,17 +66,16 @@
 	let biddings: BidRow[] = [];
 
 	function bidValidator(v: string): boolean {
-		const [valueErr, parsedValue] = noTry(() => parseEther(v));
+		const [valueErr, parsedValue] = noTry(() => parseToken(v, options.listingData.tokenAddress));
 
 		if (valueErr) return false;
 
-		// HOTFIX we will use the startingPrice as a reserve price for now
-		const [reservePriceErr, parsedReservePrice] = noTry(() => BigNumber.from(options.auctionData.startingPrice));
+		const [reservePriceErr, parsedReservePrice] = noTry(() => parseToken(options.auctionData.reservePrice, options.listingData.tokenAddress));
 
-		// parseEther because tokenAmount is a ETH formatted string
-		const [highestBidErr, parsedHighestBid] = noTry(() => parseEther(biddings[0].tokenAmount));
+		// parseUnits because tokenAmount is a ETH formatted string
+		const [highestBidErr, parsedHighestBid] = noTry(() => parseUnits(biddings?.[0]?.tokenAmount || '0', options.listingData.tokenDecimals));
 
-		if (parsedReservePrice && parsedValue.lte(parsedReservePrice)) {
+		if (parsedReservePrice && parsedValue.lt(parsedReservePrice)) {
 			return false;
 		}
 
@@ -91,7 +91,7 @@
 	async function refreshBids() {
 		isRefreshingBids = true;
 
-		biddings = await getBiddingsFlow(options.rawResourceData.listingId);
+		biddings = await getBiddingsFlow(options.rawResourceData.listingId, options.listingData.tokenDecimals);
 
 		isRefreshingBids = false;
 	}
@@ -102,15 +102,16 @@
 		}
 	});
 
-	$: formattedPrice = noTry(() => formatEther(options.auctionData.startingPrice))[1] || 'N/A';
-
 	const hoveringPurchase = createToggle();
 	let purchaseButton: HTMLElement;
 
 	const hasEnoughTokens = derived(
 		currentUserAddress,
 		(address, set) => {
-			if (options.listingData.listingType !== 'sale') set(false);
+			if (options.listingData.listingType !== 'sale') {
+				set(false);
+				return;
+			}
 			hasEnoughBalance(options.listingData.tokenAddress, address, options.saleData.price).then(set);
 		},
 		null
@@ -136,34 +137,46 @@
 		</div>
 
 		<div class="grid mt-12 place-items-center">
-			<button
-				bind:this={purchaseButton}
-				on:pointerenter={hoveringPurchase.toggle}
-				on:pointerleave={hoveringPurchase.toggle}
-				class="font-bold uppercase btn btn-gradient btn-rounded w-80"
-				on:click={handlePurchase}
-				disabled={$purchasingState || !$hasEnoughTokens}
-			>
-				{#if $purchasingState || $hasEnoughTokens === null}
-					<ButtonSpinner />
-				{/if}
-				Buy Now
-			</button>
+			{#if $appSigner}
+				<button
+					bind:this={purchaseButton}
+					on:pointerenter={hoveringPurchase.toggle}
+					on:pointerleave={hoveringPurchase.toggle}
+					class="font-bold uppercase btn btn-gradient btn-rounded w-80"
+					on:click={handlePurchase}
+					disabled={$purchasingState || !$hasEnoughTokens}
+				>
+					{#if $purchasingState || $hasEnoughTokens === null}
+						<ButtonSpinner />
+					{/if}
+					Buy Now
+				</button>
+			{:else}
+				<button bind:this={purchaseButton} class="font-bold uppercase btn btn-gradient btn-rounded w-80" on:click={connectToWallet}>Connect To Wallet</button>
+			{/if}
 		</div>
 	{:else if options.rawResourceData.listingType === 'auction'}
 		<div class="flex flex-col h-full mt-4">
-			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} />
+			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenDecimals={options.listingData.tokenDecimals} on:request-refresh={refreshBids} />
 
-			<div class="mt-2 text-xs font-semibold opacity-70">
-				Reserve price: {formattedPrice}
-				{options.listingData.symbol}
+			<div class="mt-2 font-semibold flex">
+				<div class="flex flex-col font-semibold">
+					<div class="">Reserve price</div>
+					<div class="flex items-center gap-2">
+						<Eth />
+						{options.auctionData.reservePrice || 'N/A'}
+					</div>
+				</div>
 
-				{#if listingExpired}
-					| <span class="text-red-800">EXPIRED</span>
-				{/if}
+				<div class="flex-grow" />
 
-				<!-- | Reserve price: {formatEther(options.auctionData.reservePrice) || 'N/A'}
-				{options.listingData.symbol} -->
+				<div class="flex flex-col font-semibold">
+					<div class="">Starting price</div>
+					<div class="flex items-center gap-2">
+						<Eth />
+						{options.auctionData.startingPrice || 'N/A'}
+					</div>
+				</div>
 			</div>
 
 			<div class="flex gap-2 mt-2">
@@ -172,16 +185,20 @@
 			</div>
 
 			<div class="flex gap-2 mt-4">
-				{#if false}
-					<SecondaryButton>Cancel Bid</SecondaryButton>
-				{/if}
-
-				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid}>
-					{#if isPlacingBid}
-						<ButtonSpinner />
+				{#if $appSigner}
+					{#if false}
+						<SecondaryButton>Cancel Bid</SecondaryButton>
 					{/if}
-					Place Bid
-				</PrimaryButton>
+
+					<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid}>
+						{#if isPlacingBid}
+							<ButtonSpinner />
+						{/if}
+						Place Bid
+					</PrimaryButton>
+				{:else}
+					<PrimaryButton on:click={connectToWallet}>Connect To Wallet</PrimaryButton>
+				{/if}
 			</div>
 		</div>
 	{/if}

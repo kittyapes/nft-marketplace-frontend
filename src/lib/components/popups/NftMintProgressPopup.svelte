@@ -42,7 +42,7 @@
 	{#if $progress === 100}
 		<div class="text-2xl font-semibold text-center mt-16">Proceed to List your Drop?</div>
 
-		<p class="max-w-prose text-center mx-auto mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut</p>
+		<p class="max-w-prose text-center mx-auto mt-2">Listing an NFT will reqiure a small network fee. Once you choose the listing format you will be prompted to send an Ethereum transaction.</p>
 
 		<div class="flex justify-center gap-x-8 mt-8">
 			<button class="btn btn-rounded btn-gradient h-14 w-64 uppercase" on:click={clickViewNft}>View NFT</button>

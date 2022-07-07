@@ -8,46 +8,128 @@
 	import NftList from '$lib/components/NftList.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { apiNftToNftCard } from '$utils/adapters/apiNftToNftCard';
-	import { apiGetCollectionBySlug, type Collection } from '$utils/api/collection';
+	import { apiGetCollectionBySlug, apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
 	import { nftDraft } from '$stores/create';
-	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import { onMount } from 'svelte';
+	import { notifyError } from '$utils/toast';
+	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 
 	let collectionData: Collection;
+	let nfts = [];
 	let creatorData: UserData;
 
+	let reachedEnd = false;
+	let isLoading = true;
+
+	let index = 1;
+	const limit = 15;
+
+	let fetchFunction = async () => {
+		const res = {} as FetchFunctionResult;
+		res.res = await apiGetCollectionBySlug($page.params.collectionSlug, limit, index);
+		res.adapted = await Promise.all(res.res.nfts.map((nft) => apiNftToNftCard(nft)));
+		return res;
+	};
+
+	async function fetchMore() {
+		if (reachedEnd) return;
+		isLoading = true;
+
+		const res = await fetchFunction();
+
+		if (res.err) {
+			console.error(res.err);
+			notifyError('Failed to fetch more collections.');
+			return;
+		}
+
+		console.log(res);
+		if (res.adapted.length === 0) {
+			reachedEnd = true;
+		} else {
+			nfts = [...nfts, ...res.adapted];
+			console.log(nfts);
+			index++;
+		}
+
+		isLoading = false;
+	}
+
+	onMount(async () => {
+		await fetchMore();
+	});
+
+	const collectionStats = {
+		highestSale: {
+			stat: 'Highest Sale',
+			value: 0,
+			symbol: 'ETH'
+		},
+		floorPrice: {
+			stat: 'Floor Price',
+			value: 0,
+			symbol: 'ETH'
+		},
+		totalVol: {
+			stat: 'Total Volume',
+			value: 0,
+			symbol: ''
+		},
+		items: {
+			stat: 'Items',
+			value: 0,
+			symbol: ''
+		},
+		owners: {
+			stat: 'Owners',
+			value: 0,
+			symbol: ''
+		},
+		total24hours: {
+			stat: '24Hr Volume',
+			value: 0,
+			symbol: 'ETH'
+		}
+	};
+
 	async function fetchCollectionData() {
-		collectionData = await apiGetCollectionBySlug($page.params.collectionId).catch((e) => undefined);
+		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => undefined);
+
+		// Populate collection stats
+		let formatter = Intl.NumberFormat('en', { notation: 'compact' });
+		Object.keys(collectionStats).map((key) => {
+			if (collectionData[key]) {
+				collectionStats[key].value = formatter.format(collectionData[key]);
+			}
+		});
+
 		creatorData = await fetchProfileData(collectionData?.creator).catch((e) => undefined);
 	}
 
-	$: $currentUserAddress && fetchCollectionData();
+	$: fetchCollectionData();
 
-	const collectionStats = [
-		['Highest Sale', '$0.2M'],
-		['Floor Price', '100 ETH'],
-		['Total Volume', '$3.5B'],
-		['Items', '9.8K'],
-		['Owners', '6.5K'],
-		['24hr Volume', '$12.4M']
-	];
-
-	const collectionMenuButtonOptions = [
+	let collectionMenuButtonOptions = [
+		// REMEMBER TO SET THESE TO TRUE
 		{ label: 'Claim Ownership', action: () => {}, disabled: true },
-		{ label: 'Report', action: () => {}, disabled: true },
-		{ label: 'Edit', action: () => goto(`/collections/${collectionData.slug}/edit`) }
+		{ label: 'Report', action: () => {}, disabled: true }
 	];
+
+	$: if ($currentUserAddress && creatorData && $currentUserAddress.toLowerCase() === creatorData.address.toLowerCase()) {
+		collectionMenuButtonOptions = [
+			{ label: 'Claim Ownership', action: () => {}, disabled: true },
+			{ label: 'Report', action: () => {}, disabled: true },
+			{ label: 'Edit', action: () => goto(`/collections/${collectionData.slug}/edit`), disabled: $currentUserAddress.toLowerCase() !== creatorData.address.toLowerCase() }
+		];
+	}
 
 	let menuButton: HTMLButtonElement;
 	let showCollectionMenu = false;
 
 	let menuAttachElement: AttachToElement;
-
-	onMount(() => document.addEventListener('scroll', () => menuAttachElement?.recalc()));
 </script>
 
 <main class="px-16 mx-auto">
@@ -60,17 +142,17 @@
 			alt=""
 		/>
 
-		<!-- Creator profile image -->
-		<div class="absolute bottom-0 left-0 right-0 w-24 h-24 mx-auto translate-y-12">
+		<!-- Creator profile image - TODO ADD LOGIC FOR VERIFIED CREATOR BADGE -->
+		<div class="absolute bottom-0 left-0 right-0 w-24 h-24 mx-auto translate-y-12 grid place-items-center">
 			<img class="object-cover w-20 h-20 bg-white border-4 border-white rounded-full " src={collectionData?.logoImageUrl || '/svg/icons/guest-avatar.svg'} alt="Collection creator avatar." />
 
 			<!-- Verified creator badge -->
-			<img class="absolute right-0 -translate-y-8" src="/svg/icons/verified-creator-badge.svg" alt="Verified creator badge." />
+			<img class="absolute right-0 translate-y-6" src="/svg/icons/verified-creator-badge.svg" alt="Verified creator badge." />
 		</div>
 	</div>
 
 	<!-- Collection title -->
-	<h1 class="mx-auto mt-8 text-2xl font-semibold max-w-max">
+	<h1 class="mx-auto mt-12 text-2xl font-semibold max-w-max">
 		{#if collectionData}
 			{collectionData?.name || 'N/A'}
 		{:else}
@@ -101,10 +183,10 @@
 	<!-- Stats table -->
 	{#if collectionData}
 		<div class="flex h-24 max-w-3xl mx-auto mt-8 border border-black rounded-lg justify-evenly">
-			{#each collectionStats as [stat, value]}
+			{#each Object.keys(collectionStats) as statKey}
 				<div class="flex flex-col items-center justify-center w-full border-r border-black last:border-0">
-					<div class="text-sm">{stat}</div>
-					<div class="mt-1 text-xl font-semibold">{value}</div>
+					<div class="text-sm">{collectionStats[statKey].stat}</div>
+					<div class="mt-1 text-xl font-semibold">{collectionStats[statKey].value} {collectionStats[statKey].symbol}</div>
 				</div>
 			{/each}
 		</div>
@@ -126,15 +208,9 @@
 	</div>
 
 	<div class="mt-16 border-t border-[#0000004D]">
-		{#if collectionData?.nfts?.length}
-			{#if collectionData}
-				{#await Promise.all(collectionData.nfts.map((nftData) => apiNftToNftCard(nftData, { collection: collectionData }))) then nfts}
-					<NftList options={nfts} />
-				{/await}
-			{:else}
-				<NftList options={[]} />
-			{/if}
-		{:else if collectionData && !collectionData.nfts?.length && $currentUserAddress === collectionData.creator}
+		{#if nfts.length}
+			<NftList options={nfts} {isLoading} {reachedEnd} on:end-reached={fetchMore} />
+		{:else if collectionData && !nfts.length && $currentUserAddress === collectionData.creator}
 			<div
 				class="grid place-items-center border border-dashed border-opacity-30 border-color-gray-base h-60 clickable hover:scale-105 transition-all p10 rounded-2xl max-w-[246px] my-10"
 				on:click={() => {

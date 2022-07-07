@@ -26,15 +26,7 @@
 	border rounded text-color-blue transition relative
 	{checked ? 'border-color-blue' : 'border-[#989898] border-opacity-40'}"
 >
-	<input
-		type="checkbox"
-		class="hidden"
-		{id}
-		{name}
-		{disabled}
-		bind:checked
-		on:change={handleChange}
-	/>
+	<input type="checkbox" class="hidden" {id} {name} {disabled} bind:checked on:change={handleChange} />
 	{#if checked}
 		<div class="absolute grid w-6 -m-px place-items-center">
 			<Tick />

@@ -5,6 +5,8 @@ export function adaptCollectionToMintingDropdown(collection: Collection) {
 		label: collection.name,
 		value: collection.id,
 		iconUrl: collection.logoImageUrl,
-	}
+		collectionAddress: collection.collectionAddress,
+		collectionId: collection.id
+	};
 	return options;
 }

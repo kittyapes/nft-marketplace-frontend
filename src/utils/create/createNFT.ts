@@ -1,16 +1,19 @@
-import { appSigner } from '$stores/wallet';
 import { getApiUrl } from '$utils/api';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import contractCaller from '$utils/contracts/contractCaller';
-import HinataMarketplaceStorageContract from '$utils/contracts/hinataMarketplaceStorage';
 import { httpErrorHandler } from '$utils/toast';
 import axios from 'axios';
-import type { ethers } from 'ethers';
+import { ethers } from 'ethers';
 import type { NFTCreationObject } from 'src/interfaces/nft/nftCreationObject';
-import type { NFTMintingObject } from 'src/interfaces/nft/nftMintingObject';
+import erc1155Abi from '$constants/contracts/abis/Erc1155Mock.json';
+import erc721Abi from '$constants/contracts/abis/Erc721Mock.json';
 import { get } from 'svelte/store';
+import { appProvider, appSigner, currentUserAddress } from '$stores/wallet';
+import { getContract } from '$utils/misc/getContract';
+import storageAbi from '$constants/contracts/abis/HinataMarketplaceStorage.json';
+import { getContractInterface } from '$utils/contracts/collection';
 
-export const createNFTOnAPI = async ({ amount, animation, creator, image, name, description }: NFTCreationObject) => {
+export const createNFTOnAPI = async ({ amount, animation, creator, image, name, description, collectionId }: NFTCreationObject) => {
 	const formData = new FormData();
 	formData.append('thumbnail', image);
 	formData.append('asset', animation || null);
@@ -18,6 +21,7 @@ export const createNFTOnAPI = async ({ amount, animation, creator, image, name, 
 	formData.append('name', name);
 	formData.append('creator', creator);
 	formData.append('description', description || 'No description');
+	formData.append('collectionId', collectionId);
 
 	const res = await axios.post(getApiUrl('latest', 'nfts'), formData, getAxiosConfig()).catch((e) => {
 		httpErrorHandler(e);
@@ -29,36 +33,28 @@ export const createNFTOnAPI = async ({ amount, animation, creator, image, name, 
 	return res.data.data;
 };
 
-export const createMintedNFTOnAPI = async ({ amount, animation, contractAddress, nftId, creator, image, name, description, chain, tokenStandard, tokenAddress }) => {
-	const formData = new FormData();
-	formData.append('thumbnail', image);
-	formData.append('asset', animation || null);
-	formData.append('nftId', nftId || '');
-	formData.append('tokenAddress', tokenStandard || 'ETHEREUM');
-	formData.append('amount', amount.toString() || '1');
-	formData.append('name', name);
-	formData.append('creator', creator);
-	formData.append('chain', chain || 'ETHEREUM');
-	formData.append('tokenStandard', tokenStandard);
-	formData.append('contractAddress', contractAddress.toString());
-	formData.append('description', description || 'No description');
-
-	const res = await axios.post(getApiUrl('latest', 'nfts'), formData, getAxiosConfig()).catch((e) => {
-		httpErrorHandler(e);
-		return null;
-	});
-
-	if (!res) return null;
-
-	return res.data.data;
-};
-
-// Equivalent to minting the NFT
-export const createNFTOnChain = async ({ id, amount }: NFTMintingObject) => {
+export const createNFTOnChain = async (options: { id: string; amount: string; collectionAddress: string }) => {
 	try {
-		const MarketplaceStorageContract = HinataMarketplaceStorageContract(get(appSigner));
+		const storageAddress = getContract('storage')?.address;
+		options.collectionAddress = options.collectionAddress ?? storageAddress;
+		const contractType = await getContractInterface(options.collectionAddress, get(appProvider));
+		const contractAbi = options.collectionAddress === storageAddress ? storageAbi : contractType === 'ERC721' ? erc721Abi : erc1155Abi;
+		const contract = new ethers.Contract(options.collectionAddress, contractAbi, get(appSigner));
 
-		await contractCaller(MarketplaceStorageContract, 'mintArtistNFT', 150, 1, id, amount, []);
+		if (storageAddress === options.collectionAddress) {
+			await contractCaller(contract, 'mintArtistNFT', 150, 1, options.id, options.amount, []);
+		} else {
+			// Check what type of contract that is
+			if (contractType === 'ERC721') {
+				await contractCaller(contract, 'mint', 150, 1, get(currentUserAddress));
+			} else if (contractType === 'ERC1155') {
+				// This is the default for most collections on the marketplace - erc1155
+				await contractCaller(contract, 'mint', 150, 1, get(currentUserAddress), options.id, options.amount);
+			} else {
+				// UNKNOWN type
+				throw new Error('Failed to create NFT on chain');
+			}
+		}
 
 		return true;
 	} catch (error) {

@@ -5,6 +5,7 @@ import { get } from 'svelte/store';
 import { getApiUrl } from '.';
 
 export interface Collection {
+	mintedFrom: string;
 	name: string;
 	slug: string;
 	image?: Blob;
@@ -12,6 +13,7 @@ export interface Collection {
 	logoImageUrl?: string;
 	backgroundImageUrl?: string;
 	description?: string;
+	isClaimed?: boolean;
 	displayTheme: 'CONTAINED' | 'PADDED' | 'COVERED';
 	royalties?: { fees: string | number; address: string; createdAt?: string }[];
 	walletAddress?: string;
@@ -35,12 +37,16 @@ export interface Collection {
 	totalVol: number;
 	total24hours: number;
 	'24hourPercent': number;
+	items: number;
+	owners: number;
+	highestSale: number;
+	collectionAddress: string;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {
 	return {
 		royalties: [
-			{ fees: '', address: '', },
+			{ fees: '', address: '' },
 			{ fees: '', address: '' },
 			{ fees: '', address: '' }
 		]
@@ -77,8 +83,6 @@ export async function apiCreateCollection(options: Collection) {
 		throw new Error(res.data.message);
 	}
 
-	console.log(res);
-
 	return res;
 }
 
@@ -111,8 +115,8 @@ export async function apiUpdateCollection(options: UpdateCollectionOptions) {
 	return res;
 }
 
-export async function apiGetCollectionBySlug(slug: string) {
-	const res = await axios.get(getApiUrl('latest', 'collections/' + slug));
+export async function apiGetCollectionBySlug(slug: string, limit?: number, page?: number) {
+	const res = await axios.get(getApiUrl('latest', 'collections/' + slug), {params: {limit, page}});
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -163,9 +167,8 @@ export interface collectionSearchOptions {
 }
 
 export async function apiSearchCollections(options?: collectionSearchOptions) {
-
-	if(options && !options.name) options.name = undefined;
-	if(options && !options.limit) options.limit = 20;
+	if (options && !options.name) options.name = undefined;
+	if (options && !options.limit) options.limit = 20;
 
 	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: options });
 	if (res.status !== 200) {
@@ -179,8 +182,10 @@ export async function apiValidateCollectionNameAndSlug(name: string | null = nul
 	if (name || slug) {
 		const params = {};
 		const result = {
-			nameExists: null,
-			slugExists: null
+			nameIsDuplicate: false,
+			nameisInvalid: false,
+			slugIsDuplicate: false,
+			slugIsInvalid: false
 		};
 
 		if (name) {
@@ -188,7 +193,8 @@ export async function apiValidateCollectionNameAndSlug(name: string | null = nul
 
 			const res = await axios.get(getApiUrl('v2', 'collections/validate-name'), { params });
 
-			result['nameExists'] = !res.data.data;
+			result['nameIsDuplicate'] = res.data.data.isDuplicate;
+			result['nameIsInvalid'] = res.data.data.isInvalid;
 		}
 
 		if (slug) {
@@ -196,7 +202,8 @@ export async function apiValidateCollectionNameAndSlug(name: string | null = nul
 
 			const res = await axios.get(getApiUrl('v2', 'collections/validate-slug'), { params });
 
-			result['slugExists'] = !res.data.data;
+			result['slugIsDuplicate'] = res.data.data.isDuplicate;
+			result['slugIsInvalid'] = res.data.data.isInvalid;
 		}
 
 		return result;
@@ -205,10 +212,8 @@ export async function apiValidateCollectionNameAndSlug(name: string | null = nul
 	return null;
 }
 
-
 export async function changeCollectionStatus(slug: string, status: string) {
-	
-	const res = await axios.post(getApiUrl('latest', `collections/${slug}/set-status`), { status }, getAxiosConfig() );
+	const res = await axios.post(getApiUrl('latest', `collections/${slug}/set-status`), { status }, getAxiosConfig());
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);

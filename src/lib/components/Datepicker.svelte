@@ -5,7 +5,7 @@
 	import ChevronRight from '$icons/chevron-right.svelte';
 	import Time from '$icons/time.svelte';
 	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
-	import dayjs from 'dayjs';
+	import dayjs, { Dayjs } from 'dayjs';
 	import isoWeek from 'dayjs/plugin/isoWeek.js';
 	import { onMount } from 'svelte';
 	import Toggle from './Toggle.svelte';
@@ -16,41 +16,41 @@
 	export let placeholder = 'Select date & time';
 	export let value = dayjs();
 	export let dateOnly = false;
+	export let allowPastSelection = false;
 
 	let open = false;
 	let section: 'date' | 'time' = 'date';
 
 	const days = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
-	let selectedDate: dayjs.Dayjs = dayjs();
-
-	$: value = selectedDate;
+	let viewedDate: dayjs.Dayjs = dayjs();
 
 	function resetToday() {
-		selectedDate = dayjs();
+		viewedDate = dayjs();
 		handleDone();
 	}
 
 	function nextMonth() {
-		selectedDate = selectedDate.add(1, 'month');
+		viewedDate = viewedDate.add(1, 'month');
 	}
 
 	function previousMonth() {
-		selectedDate = selectedDate.subtract(1, 'month');
+		viewedDate = viewedDate.subtract(1, 'month');
 	}
 
 	function handleDone() {
+		open = false;
+	}
+
+	function selectDate(date: Dayjs) {
 		if (dateOnly) {
-			selectedDate = selectedDate.set('hour', 0).set('minute', 0).set('second', 0).set('millisecond', 0);
+			value = date.startOf('day');
 		} else {
-			selectedDate = selectedDate.hour(hours).minute(minutes);
+			value = date.hour(hours).minute(minutes);
 
 			if (isPm) {
-				selectedDate = selectedDate.add(12, 'hour');
+				value = viewedDate.add(12, 'hour');
 			}
 		}
-
-		inputText = formatDatetimeFromISO(selectedDate);
-		open = false;
 	}
 
 	onMount(resetToday);
@@ -58,35 +58,58 @@
 	let hours = 6;
 	let minutes = 30;
 	let monthDays = [];
-	let inputText = '';
 	let isPm = false;
 
-	$: monthWeekdayOffset = selectedDate.date(1).isoWeekday() - 1;
+	$: inputText = formatDatetimeFromISO(value);
+
+	$: monthWeekdayOffset = viewedDate.date(1).isoWeekday() - 1;
 
 	interface DayInTable {
 		day: number;
 		isSelected: boolean;
 		isToday: boolean;
 		isDisabled: boolean;
+		dayjs: dayjs.Dayjs;
 	}
 
 	$: {
 		const fillBeforeDays = Array(monthWeekdayOffset)
 			.fill(0)
 			.map((_, i) => ({
-				day: selectedDate.subtract(1, 'month').daysInMonth() - monthWeekdayOffset + i + 1,
-				isDisabled: true
+				day: viewedDate.subtract(1, 'month').daysInMonth() - monthWeekdayOffset + i + 1,
+				isDisabled: true,
+				dayjs: viewedDate
+					.subtract(1, 'month')
+					.date(i + 1)
+					.startOf('day')
 			}));
 
-		const currentMonthDays = Array(selectedDate.daysInMonth())
+		const currentMonthDays = Array(viewedDate.daysInMonth())
 			.fill(0)
-			.map((_, i) => ({ day: i + 1 }));
+			.map((_, i) => ({
+				day: i + 1,
+				dayjs: viewedDate
+					.clone()
+					.date(i + 1)
+					.startOf('day')
+			}));
 
 		const fillAfterDays = Array(42 - fillBeforeDays.length - currentMonthDays.length)
 			.fill(0)
-			.map((_, i) => ({ day: i + 1, isDisabled: true }));
+			.map((_, i) => ({
+				day: i + 1,
+				isDisabled: true,
+				dayjs: viewedDate
+					.add(1, 'month')
+					.date(i + 1)
+					.startOf('day')
+			}));
 
 		monthDays = [...fillBeforeDays, ...currentMonthDays, ...fillAfterDays] as DayInTable[];
+
+		const now = dayjs();
+
+		monthDays = monthDays.map((d) => ({ ...d, isDisabled: d.isDisabled || (d.dayjs.endOf('day').isBefore(now) && !allowPastSelection) }));
 	}
 </script>
 
@@ -129,8 +152,8 @@
 			{#if section === 'date'}
 				<div class="flex mt-4">
 					<div class="flex-grow font-bold">
-						{selectedDate.format('MMM')}
-						{selectedDate.year()}
+						{viewedDate.format('MMM')}
+						{viewedDate.year()}
 					</div>
 					<div class="flex space-x-2">
 						<button class="btn" on:click={previousMonth}><ChevronLeft /></button>
@@ -148,10 +171,10 @@
 					{#each monthDays as day}
 						<button
 							class="btn flex-grow text-center aspect-1 bg-white grid place-items-center text-sm font-medium
-							{day.day === selectedDate.date() ? 'bg-[#388DFC] text-white' : ''}
+							{day.dayjs.toISOString() === value.toISOString() ? 'bg-[#388DFC] text-white' : ''}
 							{day.isDisabled ? 'text-[#747474] bg-[#FCFCFC]' : ''}"
 							class:font-bold={day.isToday}
-							on:click={() => (selectedDate = selectedDate.date(day.day))}
+							on:click={() => selectDate(day.dayjs)}
 							disabled={day.isDisabled}
 						>
 							{day.day}

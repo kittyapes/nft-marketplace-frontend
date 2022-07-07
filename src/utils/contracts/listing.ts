@@ -1,14 +1,13 @@
-import { HinataMarketplaceContractAddress, WethContractAddress } from '$constants/contractAddresses';
 import type { EthAddress, OnChainId, UnixTime } from '$interfaces';
-import { appSigner, currentUserAddress } from '$stores/wallet';
+import { currentUserAddress } from '$stores/wallet';
+import { getContract } from '$utils/misc/getContract';
 import { getIconUrl } from '$utils/misc/getIconUrl';
+import { parseToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
 import { BigNumber, ethers } from 'ethers';
 import { get } from 'svelte/store';
+import { getCollectionContract } from './collection';
 import contractCaller from './contractCaller';
-import { getMockErc20TokenContract } from './generalContractCalls';
-import HinataMarketplaceContract from './hinataMarketplace';
-import HinataMarketplaceStorageContract from './hinataMarketplaceStorage';
 import { ensureAmountApproved, getTokenDetails } from './token';
 
 export enum LISTING_TYPE {
@@ -29,11 +28,12 @@ export const listingDurationOptions = [
 	{ label: '6 months', value: 180 * 24 * 3600 }
 ];
 
-export const listingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.black'), value: WethContractAddress }];
-export const whiteListingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.light'), value: WethContractAddress }];
+export const listingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.black') }];
+export const whiteListingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.light') }];
 
 export interface ContractCreateListingOptions {
-	price: BigNumber;
+	price: string;
+	reservePrice: string;
 	duration: number;
 	startTime: UnixTime;
 	payToken: EthAddress;
@@ -43,25 +43,27 @@ export interface ContractCreateListingOptions {
 	tokenIds: OnChainId[];
 	tokenAmounts: BigNumber[];
 	collections: EthAddress[];
+	nfts: { nftId: string; amount: BigNumber; collectionAddress: EthAddress }[];
 }
 
 export async function contractCreateListing(options: ContractCreateListingOptions) {
-	console.log(options);
-	const MarketplaceContract = HinataMarketplaceContract(get(appSigner));
-	const MarketplaceStorageContract = HinataMarketplaceStorageContract(get(appSigner));
+	const marketplaceContract = getContract('marketplace');
+	const collectionContract = await getCollectionContract(options.nfts[0].collectionAddress);
 
-	const isApproved = await MarketplaceStorageContract.isApprovedForAll(get(currentUserAddress), HinataMarketplaceContractAddress);
+	// TODO: Check Approval for All NFTS being listed - loop
+	const isApproved = await collectionContract.isApprovedForAll(get(currentUserAddress), marketplaceContract.address);
 
 	if (!isApproved) {
-		const approval: ethers.ContractTransaction = await MarketplaceStorageContract.setApprovalForAll(HinataMarketplaceContractAddress, true);
+		const approval: ethers.ContractTransaction = await collectionContract.setApprovalForAll(marketplaceContract.address, true);
 		await approval.wait(1);
 	}
 
-	console.log({
+	const callOptions = {
 		id: ethers.BigNumber.from(options.listingId),
 		seller: get(currentUserAddress),
 		payToken: options.payToken,
-		price: options.price,
+		price: parseToken(options.price, options.payToken),
+		reservePrice: parseToken(options.reservePrice, options.payToken),
 		startTime: options.startTime,
 		duration: options.duration,
 		quantity: options.quantity,
@@ -69,31 +71,20 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		collections: options.collections,
 		tokenIds: options.tokenIds,
 		tokenAmounts: options.tokenAmounts
-	});
+	};
 
-	await contractCaller(MarketplaceContract, 'createListing', 150, 1, {
-		id: ethers.BigNumber.from(options.listingId),
-		seller: get(currentUserAddress),
-		payToken: options.payToken,
-		price: options.price,
-		startTime: options.startTime,
-		duration: options.duration,
-		quantity: options.quantity,
-		listingType: options.listingType,
-		collections: options.collections,
-		tokenIds: options.tokenIds,
-		tokenAmounts: options.tokenAmounts
-	});
+	console.debug('[Info] Will call createListing on contract with the following parameters.', callOptions);
+
+	await contractCaller(marketplaceContract, 'createListing', 150, 1, callOptions);
 }
 
 export async function contractPurchaseListing(listingId: string) {
 	console.debug('[Listing] Purchasing listing with ID: ' + listingId);
 
-	const contract = HinataMarketplaceContract(get(appSigner));
-
+	const contract = getContract('marketplace');
 	const listing = await getOnChainListing(listingId);
 
-	const contractApproved = await ensureAmountApproved(HinataMarketplaceContractAddress, listing.price, listing.payToken);
+	const contractApproved = await ensureAmountApproved(contract.address, listing.price, listing.payToken);
 
 	if (!contractApproved) {
 		notifyError('Insufficient Allowance to Execute Transaction.');
@@ -116,7 +107,7 @@ export async function getOnChainListing(listingId: string) {
 		startTime: BigNumber;
 	}
 
-	const contract = HinataMarketplaceContract(get(appSigner));
+	const contract = getContract('marketplace');
 	const onChainListing: OnChainListing = await contract.listings(listingId);
 
 	const token = await getTokenDetails(onChainListing.payToken);
@@ -130,7 +121,7 @@ export async function getOnChainListing(listingId: string) {
 		price: ethers.utils.formatUnits(onChainListing.price, token.decimals),
 		quantity: ethers.utils.formatUnits(onChainListing.quantity, 0),
 		seller: onChainListing.seller,
-		startTime: ethers.utils.formatUnits(onChainListing.startTime, 0)
+		startTime: onChainListing.startTime ? ethers.utils.formatUnits(onChainListing.startTime, 0) : null
 	};
 }
 
@@ -139,10 +130,34 @@ export async function checkListing() {}
 export async function contractCancelListing(listingId: string) {
 	console.debug('[Listing] Cancelling listing with ID: ' + listingId);
 
-	const contract = HinataMarketplaceContract(get(appSigner));
-
-	// const tx: ethers.ContractTransaction = await contract.cancelListing(listingId);
-	// await tx.wait(1);
-
+	const contract = getContract('marketplace');
 	await contractCaller(contract, 'cancelListing', 150, 1, listingId);
+}
+
+export async function contractUpdateListing(
+	listingId: string,
+	options: {
+		sale: {
+			price: string;
+		};
+		payTokenAddress: string;
+	}
+) {
+	console.debug(`[Info] Will update listing with ID ${listingId} with the following options:`, options);
+
+	const parsedPrice = parseToken(options.sale.price, options.payTokenAddress);
+
+	const contract = getContract('marketplace');
+	await contractCaller(contract, 'updateListing', 150, 1, listingId, parsedPrice);
+}
+
+export async function getMarketFee() {
+	try {
+		const marketplaceContract = getContract('marketplace', true);
+		const fee = await marketplaceContract.marketFee();
+
+		return +ethers.utils.formatUnits(fee, 2);
+	} catch (error) {
+		return 0;
+	}
 }

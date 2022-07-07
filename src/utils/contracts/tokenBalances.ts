@@ -1,21 +1,14 @@
-import { getHinataTokenContract } from '$utils/contracts/generalContractCalls';
-import {
-	appProvider,
-	appSigner,
-	currentUserAddress,
-	hinataStakingAllowance,
-	stakedHinataBalance,
-	userHinataBalance
-} from '$stores/wallet';
+import { stakingContract } from '$constants/contractAddresses';
+import { currentUserAddress, hinataStakingAllowance, stakedHinataBalance, userHinataBalance } from '$stores/wallet';
+import { getContract } from '$utils/misc/getContract';
+import { notifyError, notifySuccess } from '$utils/toast';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import { getTotalStakedRewardsBalance, getTotalStakedTokens } from './staking';
-import { stakingContract } from '$constants/contractAddresses';
-import { notifyError, notifySuccess } from '$utils/toast';
 
 export const hinataTokensBalance = async (userAddress: string) => {
 	try {
-		const hinataContract = getHinataTokenContract(get(appProvider));
+		const hinataContract = getContract('token');
 		const balanceBigNumber = await hinataContract.balanceOf(userAddress);
 
 		userHinataBalance.set(parseFloat(ethers.utils.formatEther(balanceBigNumber)));
@@ -28,7 +21,7 @@ export const hinataTokensBalance = async (userAddress: string) => {
 
 export const checkHinataAllowance = async (address: string) => {
 	try {
-		const hinataContract = getHinataTokenContract(get(appProvider));
+		const hinataContract = getContract('token');
 
 		const allowance = await hinataContract.allowance(address, stakingContract);
 
@@ -43,12 +36,9 @@ export const checkHinataAllowance = async (address: string) => {
 
 export const increaseHinataAllowance = async () => {
 	try {
-		const hinataContract = getHinataTokenContract(get(appSigner));
+		const hinataContract = getContract('token');
 
-		const txt = await hinataContract.approve(
-			stakingContract,
-			ethers.utils.parseEther('999999999999999999999999999999999999000000000000000000')
-		);
+		const txt = await hinataContract.approve(stakingContract, ethers.utils.parseEther('999999999999999999999999999999999999000000000000000000'));
 
 		await txt.wait(1);
 

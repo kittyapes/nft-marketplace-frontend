@@ -49,7 +49,7 @@
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Total Volume</div>
-			<div class="text-lg font-semibold">${collection.totalVolume || 0}B</div>
+			<div class="text-lg font-semibold">${collection.totalVol || 0}B</div>
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Items</div>

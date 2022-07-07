@@ -1,4 +1,3 @@
-import { HinataMarketplaceContractAddress } from '$constants/contractAddresses';
 import type { ContractError } from '$interfaces/contractError';
 import { getOnChainListing } from '$utils/contracts/listing';
 import { ensureAmountApproved, getTokenDetails } from '$utils/contracts/token';
@@ -8,13 +7,13 @@ import { ethers } from 'ethers';
 import { noTryAsync } from 'no-try';
 
 export async function placeBidFlow(listingId: string, amount: string) {
-	await ensureAmountApproved(HinataMarketplaceContractAddress, amount, '');
-
-	// Get Listing
 	const listing = await getOnChainListing(listingId);
-	const token = await getTokenDetails(listing.payToken);
 
 	const contract = getContract('marketplace');
+
+	await ensureAmountApproved(contract.address, amount, listing.payToken);
+
+	const token = await getTokenDetails(listing.payToken);
 
 	const [err, res] = (await noTryAsync(async () => contract.bid(listingId, ethers.utils.parseUnits(amount, token.decimals)))) as [ContractError, any];
 
@@ -25,6 +24,4 @@ export async function placeBidFlow(listingId: string, amount: string) {
 	}
 
 	const txRes = await res.wait(1);
-
-	console.log(txRes);
 }

@@ -6,8 +6,22 @@
 	import { slide } from 'svelte/transition';
 	import type { Collection } from '$utils/api/collection';
 	import { goto } from '$app/navigation';
+	import { inview } from 'svelte-inview';
+	import { createEventDispatcher } from 'svelte';
+	import DiamondsLoader from '../DiamondsLoader.svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let collections: Collection[];
+	export let isLoading = false;
+
+	const inviewOptions = {};
+
+	function onChange(event) {
+		if (event.detail.inView) {
+			dispatch('end-reached');
+		}
+	}
 </script>
 
 <div class="w-full flex flex-col gap-10 bg-[#FAFAFA]">
@@ -34,18 +48,18 @@
 					</div>
 					<div class="flex place-items-center gap-2 text-sm">
 						<Eth />
-						{seperateNumberWithCommas(Math.round((collection.floorPrice + Number.EPSILON) * 100) / 100)}
+						{seperateNumberWithCommas(Math.round((collection.floorPrice ?? 0 + Number.EPSILON) * 100) / 100)}
 					</div>
 					<div class="flex place-items-center gap-2 text-sm">
 						<Eth />
-						{seperateNumberWithCommas(Math.round((collection.totalVol + Number.EPSILON) * 100) / 100)}
+						{seperateNumberWithCommas(Math.round((collection.totalVol ?? 0 + Number.EPSILON) * 100) / 100)}
 					</div>
 					<div class="flex place-items-center gap-2 text-sm">
 						<Eth />
-						{seperateNumberWithCommas(Math.round((collection.total24hours + Number.EPSILON) * 100) / 100)}
+						{seperateNumberWithCommas(Math.round((collection.total24hours ?? 0 + Number.EPSILON) * 100) / 100)}
 					</div>
 					<div class="flex place-items-center text-sm text-color-green" class:text-color-red={collection['24hourPercent'] < 0}>
-						{(Math.round((collection['24hourPercent'] + Number.EPSILON) * 100) / 100).toLocaleString()}%
+						{(Math.round((collection['24hourPercent'] ?? 0 + Number.EPSILON) * 100) / 100).toLocaleString()}%
 						<div class:rotate-180={collection['24hourPercent'] >= 0}>
 							<ArrowDown />
 						</div>
@@ -55,6 +69,12 @@
 		{/each}
 	</div>
 </div>
+
+{#if isLoading}
+	<DiamondsLoader />
+{:else}
+	<div use:inview={inviewOptions} on:change={onChange} />
+{/if}
 
 <style lang="postcss">
 	.profile-pic {

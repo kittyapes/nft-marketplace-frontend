@@ -24,3 +24,17 @@
 .scrollbar-hidden::-webkit-scrollbar { 
     display: none;  /* Safari and Chrome */
 }
+
+.blue-scrollbar::-webkit-scrollbar {
+	/* @apply hidden; */
+	@apply block w-1;
+}
+
+.blue-scrollbar::-webkit-scrollbar-track {
+	@apply bg-color-gray-lighter rounded-full;
+}
+
+.blue-scrollbar::-webkit-scrollbar-thumb {
+	@apply bg-gradient-to-b from-color-purple to-color-blue rounded-full;
+	box-shadow: inset 0 0 2px #c6c6c6;
+}

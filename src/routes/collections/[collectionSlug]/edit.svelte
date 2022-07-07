@@ -23,12 +23,14 @@
 	import { browser } from '$app/env';
 	import { debounce } from 'lodash-es';
 	import { withPrevious } from 'svelte-previous';
+	import { contractCreateCollection } from '$utils/contracts/collection';
+	import { currentUserAddress } from '$stores/wallet';
 
 	// Page params
-	const collectionId = $page.params.collectionId;
+	const collectionSlug = $page.params.collectionSlug;
 
 	// Edit vs. new
-	$: isNewCollection = collectionId === 'new';
+	$: isNewCollection = collectionSlug === 'new';
 
 	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
 
@@ -53,11 +55,19 @@
 		$formValidity.image = !!data.image || !!data.logoImageUrl || 'Missing logo image';
 		$formValidity.cover = !!data.cover || !!data.backgroundImageUrl || 'Missing cover image';
 
-		const nameRegex = new RegExp(/^\w[\w+_-]+\w$/, 'gm');
+		const nameRegex = new RegExp(/^\w[\w+|\s|_-]+$/, 'gm');
 		const slugRegex = new RegExp(/^\w[\w+_-]+\w$/, 'gm');
 
-		$formValidity.name = !!data.name ? (!nameRegex.test(data.name) && 'Collection name can only contain alphanumeric characters, -, or _') || !!data.name : 'Missing collection name';
-		$formValidity.slug = !!data.slug && !slugRegex.test(data.slug) && 'Collection slug can only contain alphanumeric characters, -, or _';
+		$formValidity.name = !!data.name
+			? (!nameRegex.test(data.name) && 'Collection name can only contain alphanumeric characters, -, or _') ||
+			  (data.name.length > 25 && 'Collection name Cannot Contain More Than 25 Characters') ||
+			  !!data.name
+			: 'Missing collection name';
+		$formValidity.slug = !!data.slug
+			? (!slugRegex.test(data.slug) && 'Collection url can only contain alphanumeric characters, -, or _') ||
+			  (data.slug.length > 25 && 'Collection url Cannot Contain More Than 25 Characters') ||
+			  !!data.slug
+			: 'Collection URL is invalid';
 
 		// Call search again to check the name
 		if (data.name !== $prevCollectionData?.name) {
@@ -75,7 +85,6 @@
 			}
 		}
 
-		$formValidity.slug = !!data.slug || 'Collection URL is invalid';
 		$formValidity.description = !!data.description || 'Missing collection description';
 	});
 
@@ -86,15 +95,23 @@
 	let ignoreUrlChange = false;
 
 	async function validateCollectionName(collectionName: string) {
+		if (collectionName.toLowerCase() === 'new') {
+			$formValidity.name = 'Collection Name is Not Unique';
+			return;
+		}
 		const res = await apiValidateCollectionNameAndSlug(collectionName, null);
 		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.name !== collectionName;
-		$formValidity.name = res?.nameExists && editCheck ? 'Collection Name Is Not Unique' : $formValidity.name;
+		$formValidity.name = res?.nameIsDuplicate && editCheck ? 'Collection Name Is Not Unique' : $formValidity.name;
 	}
 
-	async function validateCollectionSlug(collectionSlug: string) {
-		const res = await apiValidateCollectionNameAndSlug(null, collectionSlug);
-		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.slug !== collectionSlug;
-		$formValidity.slug = res?.slugExists && editCheck ? 'Collection Slug Is Not Unique' : $formValidity.slug;
+	async function validateCollectionSlug(collectionSlugEdited: string) {
+		if (collectionSlugEdited.toLowerCase() === 'new') {
+			$formValidity.slug = 'Collection Slug is Not Unique';
+			return;
+		}
+		const res = await apiValidateCollectionNameAndSlug(null, collectionSlugEdited);
+		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.slug !== collectionSlugEdited;
+		$formValidity.slug = res?.slugIsDuplicate && editCheck ? 'Collection Slug Is Not Unique' : $formValidity.slug;
 	}
 
 	collectionUrl.subscribe(async () => {
@@ -163,10 +180,29 @@
 	}
 
 	async function _createCollection() {
-		const [error, res] = await noTryAsync(() => apiCreateCollection($collectionData));
+		const [contractError, contractRes] = await noTryAsync(() =>
+			contractCreateCollection({
+				name: $collectionData.name,
+				paymentTokenTicker: 'WETH',
+				royalties: $collectionData.royalties,
+				slug: $collectionData.slug
+			})
+		);
 
-		if (error) {
-			notifyError(error.message);
+		if (contractError) {
+			console.error(contractError);
+			notifyError(contractError.message);
+			savingCollection = false;
+			return;
+		}
+
+		$collectionData.collectionAddress = contractRes.contractAddress;
+
+		const [apiError, apiRes] = await noTryAsync(() => apiCreateCollection($collectionData));
+
+		if (apiError) {
+			console.error(apiError);
+			notifyError(apiError.message);
 			savingCollection = false;
 			return;
 		}
@@ -177,7 +213,7 @@
 		if ($page.url.searchParams.has('to')) {
 			$nftDraft.collectionName = $collectionData.name;
 			goto('/' + $page.url.searchParams.get('to'));
-		} else goto('/collections/' + res.data.data.slug);
+		} else goto('/collections/' + apiRes.data.data.slug);
 	}
 
 	async function _updateCollection() {
@@ -192,11 +228,23 @@
 		await fetchRemoteCollectionData();
 
 		notifySuccess('Collection updated!');
+
+		// where to go next based on URL params
+		if ($page.url.searchParams.has('to')) {
+			$nftDraft.collectionName = $collectionData.name;
+			goto('/' + $page.url.searchParams.get('to'));
+		} else goto('/collections/' + $collectionData.slug);
 	}
 
 	// Remote collection data
 	async function fetchRemoteCollectionData() {
-		const [err, res] = await noTryAsync(() => apiGetCollectionBySlug(collectionId));
+		const [err, res] = await noTryAsync(() => apiGetCollectionBySlug(collectionSlug));
+
+		if (res.creator?.toLowerCase() !== $currentUserAddress?.toLowerCase()) {
+			// Wish we had a 401 error page
+			goto('/403');
+			return;
+		}
 
 		if (err) {
 			notifyError('Failed to fetch collection data!');
@@ -207,7 +255,6 @@
 		// Copy is needed because slug would get overwritten
 		serverCollectionToUpdate.set({ ...res });
 		collectionData.set({ ...res });
-		console.log($collectionData);
 		collectionUrl.set(urlStart + res.slug);
 
 		originalCollectionData = { ...res };
@@ -245,7 +292,7 @@
 		} as UpdateCollectionOptions;
 	}
 
-	$: browser && !isNewCollection && fetchRemoteCollectionData();
+	$: browser && !isNewCollection && $currentUserAddress && fetchRemoteCollectionData();
 </script>
 
 <main class="max-w-screen-xl px-16 mx-auto my-32">

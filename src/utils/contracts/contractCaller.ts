@@ -11,6 +11,7 @@ import type { ethers } from 'ethers';
  */
 
 export default async function (contract: ethers.Contract, methodName: string, gasMultiple: number = 110, confirmations: number = 1, ...params: any) {
+	console.log(params)
 	try {
 		// Estimate Gas First
 		const gasEst = await contract.estimateGas[methodName](...params).catch((err) => {
@@ -23,9 +24,7 @@ export default async function (contract: ethers.Contract, methodName: string, ga
 			gasLimit: gasEst.mul(gasMultiple).div(100)
 		});
 
-		await contractCall.wait(confirmations);
-
-		return contractCall;
+		return await contractCall.wait(confirmations);
 	} catch (error) {
 		throw error;
 	}

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
+	import HinataBadge from '$icons/hinata-badge.svelte';
 	import ColumnComponentContainer from '../ColumnComponentContainer.svelte';
 
 	export let props;
@@ -18,5 +19,8 @@
 			<GuestUserAvatar class="w-12 scale-110" />
 		{/if}
 		<div class="text-color-black font-bold clickable">{props.name}</div>
+		{#if props.badge}
+			<HinataBadge class="w-6 h-6" />
+		{/if}
 	</div>
 </ColumnComponentContainer>

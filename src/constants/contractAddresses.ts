@@ -6,11 +6,3 @@ export const idoMerkleDistributorLockContract = '0x2016b695010039f7f7f5bEAAd21ED
 
 // Staking Contract
 export const stakingContract = '0xd00c12872dc11A8EA5CBAbAe691111dc9936854e';
-
-export const HinataTokenAddress = '0x04013fA3b72E82489d434FD64E3f4142647413cA'; //0xF43902008E23bCEDe947D9f8b253364b382cfcF4
-export const HinataMarketplaceStorageContractAddress = '0xbfF4E404ACacd49c55Cc9A04e871D8a738af7095';
-export const HinataMarketplaceContractAddress = '0x1F3e7b34eF15196b44d80d0B948CeDDDA381Cea2';
-export const HinataCollectionFactoryContractAddress = '0x42e09AE11aA31B954b6a8D3F9E844C134A38B3CA';
-
-//External token addresses
-export const WethContractAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';

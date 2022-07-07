@@ -1,6 +1,7 @@
-import type { ApiCollectionData } from './apiCollectionData';
 import type { ListingType } from '$utils/api/listing';
 import type { Writable } from 'svelte/store';
+import type { Collection } from '$utils/api/collection';
+import type { TokenStandard } from '$interfaces';
 
 export interface CardPopupOptions {
 	/** Asset rendered on the left side of the popup. */
@@ -20,11 +21,12 @@ export interface CardPopupOptions {
 		{
 			metadata?: any;
 			isInternalNft: boolean;
-			contractType: 'ERC1155';
+			contractType: TokenStandard;
 			creator: string;
 			contractAddress: string;
 			tokenId: string;
 			isExternal: boolean;
+			userNftBalance?: number;
 		}
 	];
 
@@ -34,9 +36,12 @@ export interface CardPopupOptions {
 		listingType: ListingType;
 		symbol: string;
 		tokenAddress: string;
+		tokenDecimals: number;
+		tokenSymbol: string;
 		startTime: string;
 		duration: number;
 		onChainId: string;
+		quantity: number;
 	};
 
 	/** Data used when adapting a listing of the type Sale. */
@@ -67,5 +72,5 @@ export interface CardPopupOptions {
 	 */
 	staleResource?: Writable<{ reason: string }>;
 
-	collectionData: ApiCollectionData;
+	collectionData: Partial<Collection>;
 }

@@ -1,23 +1,20 @@
 <script lang="ts">
-	import { HinataMarketplaceContractAddress, HinataMarketplaceStorageContractAddress, WethContractAddress } from '$constants/contractAddresses';
 	import Info from '$icons/info.v2.svelte';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import type { ListingType } from '$utils/api/listing';
-	import { getIconUrl } from '$utils/misc/getIconUrl';
-	import { contractGetTokenAddress, getTokenAddress } from '$utils/misc/getTokenAddress';
+	import { listingDurationOptions, listingTokens } from '$utils/contracts/listing';
+	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
+	import { getContractData } from '$utils/misc/getContract';
 	import { notifyError } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
-	import { parseEther } from 'ethers/lib/utils.js';
+	import { parseUnits } from 'ethers/lib/utils.js';
 	import { createEventDispatcher } from 'svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
-	import Input from '$lib/components/v2/Input/Input.svelte';
-	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
-	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { listingDurationOptions, listingTokens } from '$utils/contracts/listing';
 
 	const dispatch = createEventDispatcher();
 
@@ -28,19 +25,22 @@
 	let price: any;
 	let paymentTokenTicker: string;
 	let duration: number;
-	let startingPrice: any;
+	let startingPrice: string;
 	let reservePrice: string;
-
-	$: console.log(price, paymentTokenTicker, duration);
+	let quantity: string = '1';
+	let maxQuantity = options.nftData[0]?.userNftBalance ?? 1;
 
 	// Validation
 	let formValid = false;
 
 	$: if (selectedListingType === 'sale') {
-		formValid = price > 0;
+		formValid = price > 0 || +quantity > maxQuantity;
 	} else if (selectedListingType === 'auction') {
-		// formValid = startingPrice > 0 && reservePriceValid;
-		formValid = startingPrice > 0;
+		try {
+			formValid = (parseUnits(startingPrice, 18).gt(0) && parseUnits(reservePrice, 18).gt(0)) || +quantity > maxQuantity;
+		} catch {
+			formValid = false;
+		}
 	}
 
 	let isListing = false;
@@ -52,8 +52,8 @@
 			title: options.nftData[0].metadata?.name,
 			description: options.nftData[0].metadata?.description,
 			duration,
-			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(1), collectionAddress: HinataMarketplaceStorageContractAddress }],
-			paymentTokenAddress: await contractGetTokenAddress(paymentTokenTicker as any),
+			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(quantity ?? 1), collectionAddress: options.nftData[0]?.contractAddress ?? getContractData('storage').address }],
+			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker,
 			quantity: BigNumber.from(1),
 			startTime: dayjs().unix() + 10,
@@ -63,10 +63,10 @@
 		};
 
 		if (selectedListingType === 'sale') {
-			flowOptions.sale.price = parseEther(price.toString());
+			flowOptions.sale.price = price;
 		} else if (selectedListingType === 'auction') {
-			flowOptions.auction.startingPrice = parseEther(startingPrice.toString());
-			// flowOptions.auction.reservePrice = parseEther(reservePrice || '0');
+			flowOptions.auction.startingPrice = startingPrice;
+			flowOptions.auction.reservePrice = reservePrice;
 		}
 
 		const { err } = await createListingFlow(flowOptions);
@@ -107,9 +107,22 @@
 			/>
 		</div>
 
-		<!-- Duration -->
-		<div class="mt-4 mb-2 font-semibold">Duration</div>
-		<Dropdown options={listingDurationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
+		<div class="flex items-center justify-between gap-x-1">
+			{#if maxQuantity > 1}
+				<div class="flex flex-col flex-grow">
+					<div class="mt-4 font-semibold">Quantity</div>
+					<div class="mt-2">
+						<input type="number" class="w-full h-12 input input-hide-controls border border-black" bind:value={quantity} max={maxQuantity} min={1} />
+					</div>
+				</div>
+			{/if}
+
+			<!-- Duration -->
+			<div class="flex flex-col flex-grow">
+				<div class="mt-4 mb-2 font-semibold">Duration</div>
+				<Dropdown options={listingDurationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
+			</div>
+		</div>
 
 		<!-- Specific buyer -->
 		<!-- Not in v1 -->
@@ -127,8 +140,23 @@
 			<!-- <Button>Sell To Highest Bidder</Button> -->
 		{/if}
 
+		<!-- Reserve price -->
+		<div class="mt-4 mb-2 font-semibold">Reserve Price</div>
+		<TokenDropdown
+			dropdownBg="white"
+			dropdownColor="black"
+			dropdownButtonBg="white"
+			dropdownButtonColor="black"
+			showLabel
+			showArrow={false}
+			tokens={listingTokens}
+			buttonDisabled
+			bind:value={reservePrice}
+			on:select={(ev) => (paymentTokenTicker = ev.detail.label)}
+		/>
+
 		<!-- Starting price -->
-		<div class="mt-4 font-semibold">Reserve Price</div>
+		<div class="mt-4 font-semibold">Starting Price</div>
 		<div class="mt-2">
 			<TokenDropdown
 				dropdownBg="white"
@@ -144,15 +172,22 @@
 			/>
 		</div>
 
-		<!-- Duration -->
-		<div class="mt-4 mb-2 font-semibold">Duration</div>
-		<Dropdown options={listingDurationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
+		<div class="flex items-center justify-between gap-x-1">
+			{#if maxQuantity > 1}
+				<div class="flex flex-col flex-grow">
+					<div class="mt-4 font-semibold">Quantity</div>
+					<div class="mt-2">
+						<input type="number" class="w-full h-12 input input-hide-controls  border border-black" bind:value={quantity} max={maxQuantity} min={1} />
+					</div>
+				</div>
+			{/if}
 
-		<!-- Reserve price -->
-		{#if false}
-			<div class="mt-4 mb-2 font-semibold">Reserve Price (optional)</div>
-			<Input bind:value={reservePrice} placeholder="Amount" regex={/^(\d+)?$/} bind:valid={reservePriceValid} />
-		{/if}
+			<!-- Duration -->
+			<div class="flex flex-col flex-grow">
+				<div class="mt-4 mb-2 font-semibold">Duration</div>
+				<Dropdown options={listingDurationOptions} on:select={(ev) => (duration = ev.detail.value)} borderOpacity={1} />
+			</div>
+		</div>
 	{/if}
 
 	<div class="flex-grow" />
@@ -162,7 +197,9 @@
 	<div class="grid gap-2 mt-2 font-semibold" style:grid-template-columns="auto 6rem">
 		<div>Creator Royalties:</div>
 		<div class="flex justify-end space-x-3">
-			<div class="">0.0%</div>
+			<div class="">
+				{(options.collectionData?.royalties?.reduce((acum, value) => acum + Number(value.fees ?? 0), 0) || 0) + ' %'}
+			</div>
 			<div class="w-6">
 				<Info />
 			</div>

@@ -1,7 +1,6 @@
-import type { EthAddress } from '$interfaces';
+import type { EthAddress, TokenStandard } from '$interfaces';
 import axios from 'axios';
 import { ethers } from 'ethers';
-import { parseEther } from 'ethers/lib/utils.js';
 import { getApiUrl } from '.';
 
 export type ListingType = 'sale' | 'auction' | 'raffle';
@@ -60,8 +59,6 @@ export interface Listing {
 		_id: string;
 		nftId: string;
 		amount: number;
-		collectionName: string;
-		collectionSlug: string;
 		nft: {
 			_id: string;
 			assetUrl: string;
@@ -73,6 +70,9 @@ export interface Listing {
 			nftId: string;
 			collectionId: string;
 			isExternal: boolean;
+			collectionName: string;
+			collectionSlug: string;
+			tokenStandard: TokenStandard;
 		};
 	}[];
 
@@ -89,36 +89,41 @@ export interface Listing {
 	seller: string;
 }
 
-export interface listingFetchingFilters {
+export interface ListingFetchOptions {
 	collectionId?: string;
 	type?: ListingType[];
-	price?: { priceMin: number; priceMax: number };
+	priceMin?: string;
+	priceMax?: string;
 	seller?: EthAddress;
 	sortBy?: 'NEWEST' | 'OLDEST' | 'POPULAR' | 'END1MIN';
 }
 
-export async function getListings(filters?: listingFetchingFilters, page: number = 1, limit: number = 20) {
-	console.log(filters);
+export async function getListings(filters?: ListingFetchOptions, page: number = 1, limit: number = 20) {
 	const params = {
 		type: filters?.type,
 		collectionId: filters?.collectionId ? filters?.collectionId : undefined,
-		priceMin: filters?.price?.priceMin === 0 || filters?.price?.priceMin ? ethers.utils.parseEther(filters?.price?.priceMin.toString()).toString() : undefined,
-		priceMax: filters?.price?.priceMax === 0 || filters?.price?.priceMax ? ethers.utils.parseEther(filters?.price?.priceMax.toString()).toString() : undefined,
+		// TODO convert to parseUnits
+		priceMin: filters?.priceMin && ethers.utils.parseEther(filters?.priceMin.toString()).toString(),
+		priceMax: filters?.priceMax && ethers.utils.parseEther(filters?.priceMax.toString()).toString(),
 		seller: filters?.seller,
 		sortBy: filters?.sortBy,
 		page,
 		limit
 	};
-  
-	console.log(params);
-  
+	const res = await axios.get(getApiUrl('latest', 'listings?'), { params });
+	return res.data.data as Listing[];
+}
+
+export async function getRandomListings(limit: number = 10) {
+	const params = {
+		limit
+	};
 	const res = await axios.get(getApiUrl('latest', 'listings?'), { params });
 	return res.data.data as Listing[];
 }
 
 export async function getListing(id: string) {
 	const res = await axios.get(getApiUrl('latest', 'listings/' + id)).catch((e) => e.response);
-
 	if (!res) return null;
 	return res.data.data as Listing;
 }

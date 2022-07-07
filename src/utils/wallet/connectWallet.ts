@@ -196,7 +196,6 @@ export const connectToWallet = async () => {
 
 		return;
 	} else {
-		notifyError('You can only connect to mainnet or Rinkeby Test Network');
 		return;
 	}
 };
@@ -205,10 +204,26 @@ const isAllowedNetworks = async (provider: ethers.providers.ExternalProvider) =>
 	const ethersProvider = new ethers.providers.Web3Provider(provider);
 	const chainId = (await ethersProvider.getNetwork()).chainId;
 
-	if (chainId === 1 || chainId === 4 || chainId === 31337) {
+	let allowedNetworks = [1];
+
+	try {
+		allowedNetworks = import.meta.env.VITE_ALLOWED_NETWORKS.split(',').map((item) => +item);
+	} catch (error) {
+		allowedNetworks = [1];
+	}
+
+	if (allowedNetworks.some((item) => item === chainId)) {
 		// only allow rinkeby or mainnet
 		return true;
 	} else {
+		const items = [];
+		if (allowedNetworks.some((item) => item === 1)) {
+			items.push('Ethereum Mainnet');
+		}
+		if (allowedNetworks.some((item) => item === 4)) {
+			items.push('Ethereum Rinkeby');
+		}
+		notifyError(`You can only connect to these networks: ${items.join(' | ')}. Please switch your wallet network and reconnect.`);
 		return false;
 	}
 };
@@ -253,8 +268,6 @@ export const initProviderEvents = (provider: any) => {
 };
 
 export const deregisterEvents = () => {
-	// console.log(get(externalProvider), get(appProvider));
-
 	return get(externalProvider).removeAllListeners();
 };
 
@@ -285,8 +298,7 @@ export const refreshConnection = async () => {
 
 			walletState.set(WalletState.CONNECTED);
 		} else {
-			console.log('Hey 2');
-			notifyError('You can only connect to mainnet or Rinkeby Test Network');
+			// notifyError('You can only connect to mainnet or Rinkeby Test Network');
 		}
 	} else {
 		walletState.set(WalletState.DISCONNECTED);

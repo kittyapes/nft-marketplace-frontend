@@ -1,20 +1,19 @@
 <script lang="ts">
 	import { goto, beforeNavigate } from '$app/navigation';
-	import { acceptedImages, acceptedNftFileTypes, acceptedVideos } from '$constants';
+	import { acceptedImages, acceptedVideos } from '$constants';
 	import Back from '$icons/back_.svelte';
 	import type { NftDraft } from '$interfaces/nft/nftDraft';
-	import type { NftCardOptions } from '$interfaces/nftCardOptions';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
+	import FormErrorList from '$lib/components/FormErrorList.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { nftDraft } from '$stores/create';
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
-	import { addNftsToCollection, apiGetCollectionBySlug, apiSearchCollections, type Collection } from '$utils/api/collection';
-	import { getNft } from '$utils/api/nft';
+	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { type NewBundleData, newBundleData } from '$utils/create';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
@@ -37,7 +36,7 @@
 		name: '' || $nftDraft?.name,
 		quantity: 1 || $nftDraft?.quantity,
 		// TODO: change once hinata base collection is made
-		collectionName: '' || $nftDraft?.collectionName,
+		collectionName: '',
 		description: '' || $nftDraft?.description,
 		assetPreview: '' || $nftDraft?.assetPreview,
 		thumbnailPreview: '' || $nftDraft?.thumbnailPreview,
@@ -45,13 +44,25 @@
 		animationBlob: null
 	};
 
-	const availableCollections = writable<{ label: string; value: string; iconUrl: string }[]>([]);
+	const formValidity = writable<Partial<{ [K in keyof NftDraft]: any }>>({});
+
+	const availableCollections = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }[]>([]);
 
 	onMount(async () => {
+		await prepData();
+	});
+
+	beforeNavigate(() => {
+		dumpDraft ? nftDraft.set(null) : nftDraft.set(nftData);
+	});
+
+	async function prepData() {
 		profileData.set(await fetchProfileData($currentUserAddress));
 
 		let collections: Collection[] = [];
 		let page = 1;
+
+		if ($nftDraft?.collectionName) nftData.collectionName = $nftDraft?.collectionName;
 
 		while (true) {
 			const beforeLength = collections.length;
@@ -72,11 +83,7 @@
 		}
 
 		$availableCollections = collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown);
-	});
-
-	beforeNavigate(() => {
-		dumpDraft ? nftDraft.set(null) : nftDraft.set(nftData);
-	});
+	}
 
 	async function mintAndContinue() {
 		// Keep for skipping mint
@@ -91,13 +98,16 @@
 		console.info('[Create] Using new NFT contract ID:', nftId);
 
 		// Create NFT on the server
+		const selectedCollection = $availableCollections.find((c) => c.value === selectedCollectionId);
+
 		const createNftRes = await createNFTOnAPI({
 			description: nftData.description,
 			amount: nftData.quantity,
 			name: nftData.name,
 			creator: $currentUserAddress,
 			image: nftData.fileBlob,
-			animation: nftData.animationBlob
+			animation: nftData.animationBlob,
+			collectionId: selectedCollection.value
 		});
 
 		if (!createNftRes) {
@@ -105,16 +115,19 @@
 			return;
 		}
 
-		console.log(createNftRes._id);
 		updatePopupProps(popupHandler.id, { progress, id: createNftRes._id });
 
 		//add NFT to selected collection
-		const addNftsToCollectionRes = await addNftsToCollection([createNftRes.nftId], selectedCollectionId);
+		// const addNftsToCollectionRes = await addNftsToCollection([createNftRes.nftId], selectedCollectionId);
 
 		progress.set(50);
 
 		// create NFT on chain
-		const nftMintRes = await createNFTOnChain({ id: createNftRes.nftId.toString(), amount: nftData.quantity }).catch(() => {
+		const nftMintRes = await createNFTOnChain({
+			id: createNftRes.nftId.toString(),
+			amount: nftData.quantity.toString(),
+			collectionAddress: selectedCollection.collectionAddress
+		}).catch(() => {
 			popupHandler.close();
 			notifyError('Failed to create NFT on chain.');
 			console.error('[Create] Failed to create NFT on chain.');
@@ -143,7 +156,22 @@
 	};
 
 	$: quantityValid = nftData.quantity > 0;
-	$: inputValid = nftData.name && selectedCollectionId && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
+	$: inputValid = nftData.name && nftData.name.length <= 25 && selectedCollectionId && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
+
+	currentUserAddress.subscribe(async (userAddress) => {
+		if (userAddress) {
+			await prepData();
+		}
+	});
+
+	$: if (nftData) {
+		$formValidity.name = !!nftData.name ? (nftData.name.length > 25 ? 'Name Cannot be more than 25 characters' : true) : !nftData.name ? 'Name is Required' : true;
+		// Always makesure item is integer
+		if (nftData.quantity) {
+			nftData.quantity = parseInt(nftData.quantity.toString());
+		}
+		$formValidity.quantity = !!nftData.quantity && nftData.quantity > 0 ? true : !nftData.quantity ? 'NFT quantity must be a minimum of 1' : true;
+	}
 </script>
 
 <!-- Back button -->
@@ -206,7 +234,7 @@
 				<input type="text" class="w-full mt-2 font-semibold input" bind:value={nftData.name} />
 
 				<div class="uppercase text-[#1D1D1DB2] mt-8">NFT Quantity</div>
-				<input type="number" class="w-full mt-2 font-semibold input input-hide-controls" bind:value={nftData.quantity} min="1" />
+				<input type="number" class="w-full mt-2 font-semibold input input-hide-controls" step={1} bind:value={nftData.quantity} min={1} />
 
 				<div class="uppercase text-[#1D1D1DB2] mt-8">Collection</div>
 				<!-- TODO: Replace first collection with Hinata base collection -->
@@ -230,6 +258,8 @@
 
 		<hr class="mt-12 separator" />
 
+		<FormErrorList validity={$formValidity} />
+
 		<!-- Mint button -->
 		<div class="w-full pr-8">
 			<button class="w-full mt-8 font-semibold uppercase btn btn-gradient btn-rounded w- h-14" on:click={mintAndContinue} disabled={!inputValid}>Mint</button>
@@ -239,6 +269,6 @@
 	<!-- Right side -->
 	<div class="p-8 border-0 border-l separator w-80">
 		<div class="mb-4 text-xl uppercase">Preview</div>
-		<NftCard options={{ id: null, title: nftData.name, imageUrl: nftData.thumbnailPreview }} />
+		<NftCard options={{ id: null, title: nftData.name, imageUrl: nftData.thumbnailPreview, likeIds: [], likes: 0 }} />
 	</div>
 </div>

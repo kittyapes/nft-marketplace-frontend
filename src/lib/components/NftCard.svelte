@@ -6,7 +6,7 @@
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { favoriteNft } from '$utils/nfts/favoriteNft';
-	import { setPopup } from '$utils/popup';
+	import { setPopup, updatePopupProps } from '$utils/popup';
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 	import { fade } from 'svelte/transition';
 	import getTimeRemaining from '$utils/timeRemaining';
@@ -15,8 +15,8 @@
 	import { walletConnected } from '$utils/wallet';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { notifyError, notifySuccess } from '$utils/toast';
-	import dayjs from 'dayjs';
 	import { noTryAsync } from 'no-try';
+	import { apiGetCollectionById } from '$utils/api/collection';
 
 	export let options: NftCardOptions;
 
@@ -26,9 +26,25 @@
 
 	const toggleDots = () => (dotsOpened = !dotsOpened);
 
-	function handleClick() {
-		addUrlParam('id', options.id);
-		setPopup(options.popupComponent, { props: { options: { ...options.popupOptions, favorited: options.favorited } }, onClose: () => removeUrlParam('id') });
+	async function handleClick() {
+		if (!options.popupOptions) return;
+
+		let id = options.popupOptions.rawResourceData._id;
+		if (options.popupOptions.resourceType === 'listing') {
+			id = options.popupOptions.listingData.onChainId;
+		}
+
+		addUrlParam('id', id);
+
+		const popupHandler = setPopup(options.popupComponent, { props: { options: { ...options.popupOptions, favorited: options.favorited } }, onClose: () => removeUrlParam('id') });
+
+		// load in additional data after opening popup
+		const collectionData = await apiGetCollectionById(options.popupOptions?.collectionData?.id).catch((e) => {});
+
+		// replacing partial data from API with detailed collection data
+		options.popupOptions.collectionData = collectionData;
+
+		updatePopupProps(popupHandler?.id, { options: { ...options.popupOptions, favorited: options.favorited } });
 	}
 
 	async function favNFT() {
@@ -142,7 +158,6 @@
 		<div class="text-white btn" class:text-color-red={options?.favorited} on:click|stopPropagation={favNFT}>
 			<Heart class="w-6 h-6" />
 		</div>
-		<!-- TODO Likes -->
 		<div class="font-medium select-none">{(options && likes === 0) || likes ? likes : 'N/A'}</div>
 	</div>
 
