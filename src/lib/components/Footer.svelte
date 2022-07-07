@@ -30,6 +30,11 @@
 					<!-- <a href="!#">About</a> -->
 					<a href={socials.careers} target="_blank" class="ml-4 lg:ml-0">Careers</a>
 				</div>
+
+				<div class="perma-gray mt-5">Resources:</div>
+				<div class="grid gap-2 font-semibold  mt-5">
+					<a href={socials.docs} target="_blank" class="ml-4 lg:ml-0">Docs</a>
+				</div>
 			</div>
 
 			<div class="grid grid-cols-2 ml-8 gap-x-4">

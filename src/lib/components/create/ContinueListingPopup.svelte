@@ -19,22 +19,12 @@
 		</div>
 
 		<div class="text-center text-2xl font-bold mt-8">Proceed to List your Drop?</div>
-		<div class="max-w-prose text-center mt-2">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-			labore et dolore magna aliqua. Ut
-		</div>
+		<div class="max-w-prose text-center mt-2">Listing an NFT will reqiure a small network fee. Once you choose the listing format you will be prompted to send an Ethereum transaction.</div>
 
 		<div class="flex gap-8 mt-12">
-			<button class="btn btn-gradient btn-rounded uppercase font-bold w-72 h-14" on:click={viewNft}>
-				View NFT
-			</button>
+			<button class="btn btn-gradient btn-rounded uppercase font-bold w-72 h-14" on:click={viewNft}>View NFT</button>
 
-			<button
-				class="btn btn-gradient btn-rounded uppercase font-bold w-72 h-14"
-				on:click={chooseDropType}
-			>
-				Choose listing format
-			</button>
+			<button class="btn btn-gradient btn-rounded uppercase font-bold w-72 h-14" on:click={chooseDropType}>Choose listing format</button>
 		</div>
 	</div>
 </Popup>

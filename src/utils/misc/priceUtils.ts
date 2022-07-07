@@ -1,4 +1,6 @@
+import { connectionDetails } from '$stores/wallet';
 import { formatUnits, parseUnits } from 'ethers/lib/utils.js';
+import { get } from 'svelte/store';
 
 const knownTokens: { ticker: string; address: string; network: string; decimals: number }[] = [
 	{
@@ -22,11 +24,17 @@ export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: 
 		throw new Error('ticker or tokenAddress must be provided.');
 	}
 
-	if (!network) {
+	if (get(connectionDetails)?.chainId === 1) {
+		network = 'eth';
+	} else if (get(connectionDetails)?.chainId === 4) {
 		network = 'rinkeby';
 	}
 
-	const token = knownTokens.find((t) => (t.ticker === ticker || t.address === tokenAddress) && t.network === network);
+	if (!network) {
+		network = 'eth';
+	}
+
+	const token = knownTokens.find((t) => (t.ticker === ticker || t.address.toLowerCase() === tokenAddress.toLowerCase()) && t.network === network);
 
 	if (!token) {
 		throw new Error(`Couldn't find such token: ${JSON.stringify(options)}`);

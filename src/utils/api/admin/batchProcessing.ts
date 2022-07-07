@@ -3,7 +3,8 @@ import axios from 'axios';
 import { getApiUrl } from '..';
 
 export async function forceBatchProcess() {
-	return await axios.post(getApiUrl('v2', 'settings/processJob'), {}, getAxiosConfig());
+	const res = await axios.post(getApiUrl('latest', 'settings/processJob'), {}, getAxiosConfig());
+	return res;
 }
 
 export interface BatchProcessingSettings {

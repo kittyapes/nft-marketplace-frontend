@@ -115,8 +115,8 @@ export async function apiUpdateCollection(options: UpdateCollectionOptions) {
 	return res;
 }
 
-export async function apiGetCollectionBySlug(slug: string) {
-	const res = await axios.get(getApiUrl('latest', 'collections/' + slug));
+export async function apiGetCollectionBySlug(slug: string, limit?: number, page?: number) {
+	const res = await axios.get(getApiUrl('latest', 'collections/' + slug), {params: {limit, page}});
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
