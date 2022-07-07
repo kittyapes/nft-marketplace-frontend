@@ -23,8 +23,16 @@
 	import { notifyError } from '$utils/toast';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
+	const generalCollection = {
+		label: 'Hinata General Collection',
+		value: '62c6a03eab6ba24c0a729b9a',
+		iconUrl: 'https://hinata-prod.mypinata.cloud/ipfs/QmYfGgKpjULX2dsazQjkTw3scJxA6jaa21yzAn6p5vTLNn',
+		collectionAddress: '0x88129f1931ecc44678b68c4c25393059b4bcfca7',
+		collectionId: '62c6a03eab6ba24c0a729b9a'
+	};
 
 	let dumpDraft = false;
 
@@ -35,8 +43,7 @@
 	let nftData: Partial<NftDraft> = {
 		name: '' || $nftDraft?.name,
 		quantity: 1 || $nftDraft?.quantity,
-		// TODO: change once hinata base collection is made
-		collectionName: '',
+		collectionName: 'Hinata General Collection',
 		description: '' || $nftDraft?.description,
 		assetPreview: '' || $nftDraft?.assetPreview,
 		thumbnailPreview: '' || $nftDraft?.thumbnailPreview,
@@ -46,17 +53,21 @@
 
 	const formValidity = writable<Partial<{ [K in keyof NftDraft]: any }>>({});
 
-	const availableCollections = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }[]>([]);
-
-	onMount(async () => {
-		await prepData();
-	});
+	const availableCollections = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }[]>([generalCollection]);
 
 	beforeNavigate(() => {
 		dumpDraft ? nftDraft.set(null) : nftDraft.set(nftData);
 	});
 
+	onMount(prepData);
+
+	let isLoadingCollections = false;
+
 	async function prepData() {
+		if (!$currentUserAddress) return;
+
+		isLoadingCollections = true;
+
 		profileData.set(await fetchProfileData($currentUserAddress));
 
 		let collections: Collection[] = [];
@@ -71,6 +82,8 @@
 
 			if (beforeLength === collections.length) break;
 			page++;
+
+			console.log(collections);
 		}
 
 		if (nftData.collectionName) {
@@ -82,7 +95,9 @@
 			}
 		}
 
-		$availableCollections = collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown);
+		$availableCollections = [generalCollection, ...collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown)];
+
+		isLoadingCollections = false;
 	}
 
 	async function mintAndContinue() {
@@ -237,17 +252,22 @@
 				<input type="number" class="w-full mt-2 font-semibold input input-hide-controls" step={1} bind:value={nftData.quantity} min={1} />
 
 				<div class="uppercase text-[#1D1D1DB2] mt-8">Collection</div>
-				<!-- TODO: Replace first collection with Hinata base collection -->
-				<Dropdown
-					selected={selectedCollectionRow || { label: 'No collection' }}
-					on:select={handleCollectionSelection}
-					options={[
-						...$availableCollections.filter((item) => $availableCollections.filter((_item) => _item.label === item.label).length <= 1),
-						{ label: 'Create new collection', value: 'collections/new/edit?to=create' }
-					]}
-					class="mt-2"
-					btnClass="font-semibold"
-				/>
+				{#if isLoadingCollections}
+					<div class="h-12 border rounded-lg mt-2 flex items-center">
+						<div class="relative h-full w-12">
+							<ButtonSpinner secondary class="h-4 w-4 ml-4" />
+						</div>
+						<div class="text-sm font-medium">Loading...</div>
+					</div>
+				{:else}
+					<Dropdown
+						selected={selectedCollectionRow}
+						on:select={handleCollectionSelection}
+						options={[...$availableCollections, { label: 'Create new collection', value: 'collections/new/edit?to=create' }]}
+						class="mt-2"
+						btnClass="font-semibold"
+					/>
+				{/if}
 			</div>
 
 			<div class="w-1/2">

@@ -63,7 +63,7 @@
 	}
 </script>
 
-<div class="flex-grow h-full pb-8 pr-4 mb-8 overflow-y-auto">
+<div class="flex-grow h-full pb-8 pr-4 mb-8 overflow-y-auto blue-scrollbar">
 	<!-- Properties -->
 	<div class="mt-4">
 		{#each properties as prop}

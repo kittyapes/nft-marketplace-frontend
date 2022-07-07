@@ -1,11 +1,7 @@
 <script lang="ts">
-	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import HomepageCollections from '$lib/components/collections/HomepageCollections.svelte';
 	import { apiSearchCollections, type CollectionTableRow } from '$utils/api/collection';
-	import { getListings } from '$utils/api/listing';
 	import { notifyError } from '$utils/toast';
-	import dayjs from 'dayjs';
-	import { debounce } from 'lodash-es';
 	import { onMount } from 'svelte';
 
 	let collections: CollectionTableRow[] = [];

@@ -161,20 +161,18 @@
 		{/if}
 	</h1>
 
-	<!-- Creator username and address -->
+	<!-- Creator username and collection address -->
 	<div class="flex items-center justify-center mt-2 space-x-3">
 		<div class="text-xl font-medium text-color-gradient max-w-max font-poppins">
-			{#if creatorData}
+			{#if creatorData?.username}
 				@{creatorData?.username}
-			{:else}
-				<div class="w-32 h-8 bg-gray-100 rounded-lg" />
 			{/if}
 		</div>
 
 		<button class="btn bg-[#F5F5F5] flex rounded-full px-4 py-2 space-x-2 w-36" on:click={() => copyTextToClipboard(collectionData.creator)}>
 			<img class="w-5" src="/svg/icons/collection-gradient-eth.svg" alt="Ethereum." />
-			{#if creatorData}
-				<div class="font-mono text-[#6E6E6E] text-sm">{shortenAddress(creatorData?.address)}</div>
+			{#if collectionData}
+				<div class="font-mono text-[#6E6E6E] text-sm">{shortenAddress(collectionData?.collectionAddress)}</div>
 			{:else}
 				<div class="w-24 h-5 bg-gray-200 rounded-lg" />
 			{/if}
