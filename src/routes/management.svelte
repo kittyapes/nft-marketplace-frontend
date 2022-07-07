@@ -22,6 +22,7 @@
 	import { fetchProfileData } from '$utils/api/profile';
 	import { whitelistCollection } from '$utils/api/management/whitelistCollection';
 	import { getRoleColor } from '$utils/api/management/getRoleColor';
+	import { getHighestRole } from '$utils/api/management/getHighestRole';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
@@ -290,6 +291,8 @@
 		debouncedSearch();
 	}
 
+	$: console.log(users);
+
 	$: if (users) {
 		userTableData = [
 			{
@@ -315,8 +318,8 @@
 					id: u.address,
 					dispatchAllOptions: true,
 					mode,
-					role: u.status === 'INACTIVATED' ? u.status : u.roles?.includes('superadmin') ? 'superadmin' : u.roles?.[0],
-					color: getRoleColor(u.status === 'INACTIVATED' ? u.status : u.roles?.includes('superadmin') ? 'superadmin' : u.roles?.[0]),
+					role: getHighestRole([...u.roles, u.status]),
+					color: getRoleColor(getHighestRole([...u.roles, u.status])),
 					options: [
 						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin' },
 						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user' },

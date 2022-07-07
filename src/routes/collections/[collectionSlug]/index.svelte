@@ -114,13 +114,13 @@
 
 	let collectionMenuButtonOptions = [
 		// REMEMBER TO SET THESE TO TRUE
-		{ label: 'Claim Ownership', action: () => {}, disabled: true },
+		/*{ label: 'Claim Ownership', action: () => {}, disabled: true },*/
 		{ label: 'Report', action: () => {}, disabled: true }
 	];
 
 	$: if ($currentUserAddress && creatorData && $currentUserAddress.toLowerCase() === creatorData.address.toLowerCase()) {
 		collectionMenuButtonOptions = [
-			{ label: 'Claim Ownership', action: () => {}, disabled: true },
+			/*{ label: 'Claim Ownership', action: () => {}, disabled: true },*/
 			{ label: 'Report', action: () => {}, disabled: true },
 			{ label: 'Edit', action: () => goto(`/collections/${collectionData.slug}/edit`), disabled: $currentUserAddress.toLowerCase() !== creatorData.address.toLowerCase() }
 		];
@@ -130,6 +130,7 @@
 	let showCollectionMenu = false;
 
 	let menuAttachElement: AttachToElement;
+	onMount(() => document.addEventListener('scroll', () => menuAttachElement?.recalc()));
 </script>
 
 <main class="px-16 mx-auto">
