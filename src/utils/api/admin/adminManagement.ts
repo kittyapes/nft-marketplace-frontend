@@ -5,7 +5,6 @@ import { getApiUrl } from '..';
 
 export async function getAdmins() {
 	const res = await axios.get(getApiUrl('latest', 'admins/users'), {params: {role: 'admin', limit: 100},  ...getAxiosConfig()});
-	console.log(res);
 	if (res.status !== 200) {
 		return res;
 	}

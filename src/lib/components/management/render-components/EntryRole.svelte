@@ -3,6 +3,7 @@
 	import CheckboxDropdown from '$lib/components/CheckboxDropdown.svelte';
 	import { addUserRole } from '$utils/api/addUserRole';
 	import { changeCollectionStatus } from '$utils/api/collection';
+	import { getHighestRole } from '$utils/api/management/getHighestRole';
 	import { getRoleColor } from '$utils/api/management/getRoleColor';
 	import { notifyError } from '$utils/toast';
 	import { noTryAsync } from 'no-try';
@@ -34,9 +35,9 @@
 				notifyError("Failed to update user's roles");
 				return;
 			}
-
-			localProps.role = (res.status === 'INACTIVATED' || 'AWAITING_INACTIVATED' ? 'INACTIVATED' : res.roles?.includes('superadmin') ? 'superadmin' : res.roles?.[0]).toLowerCase();
-			localProps.color = getRoleColor(res.status === 'INACTIVATED' || 'AWAITING_INACTIVATED' ? 'INACTIVATED' : res.roles?.includes('superadmin') ? 'superadmin' : res.roles?.[0]);
+			console.log(res);
+			localProps.role = getHighestRole([...roles, res.status]);
+			localProps.color = getRoleColor(localProps.role);
 			localProps = localProps;
 		} else if (event.detail?.checked) {
 			const [error, res] = await noTryAsync(() => changeCollectionStatus(props.id, event.detail?.value));
