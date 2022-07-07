@@ -18,7 +18,7 @@
 	import ErrorManager from '$lib/components/ErrorManager.svelte';
 	import ErrorPage from '$lib/components/ErrorPage.svelte';
 	import { currentError } from '$stores/error';
-	import { connectionDetails, currentUserAddress } from '$stores/wallet';
+	import { appDataToTriggerReload } from '$stores/wallet';
 
 	export let url;
 
@@ -38,7 +38,7 @@
 <svelte:head>
 	<title>Hinata</title>
 </svelte:head>
-{#key $connectionDetails?.chainId || $currentUserAddress}
+{#key $appDataToTriggerReload}
 	<Nav />
 	{#if $currentError}
 		<ErrorPage />

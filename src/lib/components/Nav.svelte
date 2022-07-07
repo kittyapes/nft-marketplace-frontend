@@ -11,29 +11,31 @@
 
 	let displayProfilePopup = false;
 	let showProfileButton = false;
-
 	const closeModalIfNotInElement = (e) => {
 		// Click is not on the profile button or popup element
 		if (!e.target.closest('#profile-button') && !e.target.closest('#profile-popup-parent') && !e.target.closest('#profile-popup-container')) {
 			displayProfilePopup = false;
 		}
-
 		if (e.target.closest('.profile-btn-item')) {
 			displayProfilePopup = false;
 		}
 	};
 
-	onMount(async () => {
+	onMount(() => {
 		window.addEventListener('click', closeModalIfNotInElement);
 	});
 
 	$: displayedUsername = $profileData?.username;
-
 	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
-	let imageFailedToLoad = false;
 
+	let imageFailedToLoad = false;
 	let showCreate = false;
-	$: $profileData && ($profileData.status === 'VERIFIED' || $profileData.roles.includes('superadmin'));
+
+	profileData.subscribe((profile) => {
+		showCreate = profile && (profile.status === 'VERIFIED' || profile.roles.includes('superadmin'));
+	});
+
+	$: console.log(showProfileButton, $profileData);
 </script>
 
 <div class="fixed z-10 flex w-full">
@@ -71,7 +73,7 @@
 
 		<!-- Profile -->
 		<div class="relative flex items-center h-full">
-			{#if showProfileButton}
+			{#if showProfileButton || $appSigner}
 				<button
 					class="flex items-center h-full font-semibold text-md whitespace-nowrap transition-btn w-52"
 					id="profile-button"

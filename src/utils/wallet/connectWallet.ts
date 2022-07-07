@@ -1,6 +1,6 @@
 import { notifyError } from '$utils/toast';
 import { coinbaseLogo, metamaskLogo } from '$constants/walletIcons';
-import { appProvider, appSigner, connectionDetails, currentUserAddress, externalProvider, communityClaimsArray, web3ModalInstance } from '$stores/wallet';
+import { appProvider, appSigner, connectionDetails, currentUserAddress, externalProvider, communityClaimsArray, web3ModalInstance, appDataToTriggerReload } from '$stores/wallet';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import Web3Modal from 'web3modal';
@@ -138,7 +138,9 @@ const setProvider = async (provider: ethers.providers.ExternalProvider) => {
 	appSigner.set(ethersProvider ? ethersProvider.getSigner() : null);
 	const userAddress = ethersProvider ? await ethersProvider.getSigner().getAddress() : null;
 	currentUserAddress.set(userAddress);
-	connectionDetails.set(await ethersProvider.getNetwork());
+	const networkDetails = await ethersProvider.getNetwork();
+	connectionDetails.set(networkDetails);
+	appDataToTriggerReload.set({ address: userAddress, network: networkDetails });
 
 	// console.log(
 	//   'WALLET CONNECTED.\n BALANCE: ',

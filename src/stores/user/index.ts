@@ -1,5 +1,5 @@
 import type { ApiNftData } from '$interfaces/apiNftData';
-import { currentUserAddress } from '$stores/wallet';
+import { appDataToTriggerReload, currentUserAddress } from '$stores/wallet';
 import { fetchProfileData } from '$utils/api/profile';
 import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 import type { UserData } from 'src/interfaces/userData';
@@ -7,11 +7,14 @@ import { derived, get, writable } from 'svelte/store';
 
 export const profileData = writable<UserData>(null);
 
-currentUserAddress.subscribe((address) => {
+appDataToTriggerReload.subscribe(() => {
+	const address = get(currentUserAddress);
 	if (!address) return;
 
-	refreshProfileData();
-	refreshLikedNfts(address);
+	if (address) {
+		refreshProfileData();
+		refreshLikedNfts(address);
+	}
 });
 
 export async function refreshProfileData() {
