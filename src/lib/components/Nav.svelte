@@ -34,8 +34,6 @@
 	profileData.subscribe((profile) => {
 		showCreate = profile && (profile.status === 'VERIFIED' || profile.roles.includes('superadmin'));
 	});
-
-	$: console.log(showProfileButton, $profileData);
 </script>
 
 <div class="fixed z-10 flex w-full">

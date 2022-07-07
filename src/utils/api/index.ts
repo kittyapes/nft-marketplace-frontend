@@ -31,7 +31,5 @@ export function getApiUrl(apiVersion: ApiVersion, apiPath: string): string {
 		}
 	}
 
-	console.log(shouldUseMain, domain);
-
 	return `${domain}/${apiPath}`;
 }
