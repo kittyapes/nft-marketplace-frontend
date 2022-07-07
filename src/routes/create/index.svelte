@@ -24,13 +24,14 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
+	import { getContract } from '$utils/misc/getContract';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 	const generalCollection = {
 		label: 'Hinata General Collection',
 		value: '62c6a03eab6ba24c0a729b9a',
 		iconUrl: 'https://hinata-prod.mypinata.cloud/ipfs/QmYfGgKpjULX2dsazQjkTw3scJxA6jaa21yzAn6p5vTLNn',
-		collectionAddress: '0x88129f1931ecc44678b68c4c25393059b4bcfca7',
+		collectionAddress: getContract('storage').address,
 		collectionId: '62c6a03eab6ba24c0a729b9a'
 	};
 
