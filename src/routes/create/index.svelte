@@ -35,8 +35,7 @@
 	let nftData: Partial<NftDraft> = {
 		name: '' || $nftDraft?.name,
 		quantity: 1 || $nftDraft?.quantity,
-		// TODO: change once hinata base collection is made
-		collectionName: '',
+		collectionName: 'Hinata General Collection',
 		description: '' || $nftDraft?.description,
 		assetPreview: '' || $nftDraft?.assetPreview,
 		thumbnailPreview: '' || $nftDraft?.thumbnailPreview,
@@ -237,9 +236,14 @@
 				<input type="number" class="w-full mt-2 font-semibold input input-hide-controls" step={1} bind:value={nftData.quantity} min={1} />
 
 				<div class="uppercase text-[#1D1D1DB2] mt-8">Collection</div>
-				<!-- TODO: Replace first collection with Hinata base collection -->
 				<Dropdown
-					selected={selectedCollectionRow || { label: 'No collection' }}
+					selected={selectedCollectionRow || {
+						label: 'Hinata General Collection',
+						value: '62c6a03eab6ba24c0a729b9a',
+						iconUrl: 'https://hinata-prod.mypinata.cloud/ipfs/QmYfGgKpjULX2dsazQjkTw3scJxA6jaa21yzAn6p5vTLNn',
+						collectionAddress: '0x88129f1931ecc44678b68c4c25393059b4bcfca7',
+						collectionId: '62c6a03eab6ba24c0a729b9a'
+					}}
 					on:select={handleCollectionSelection}
 					options={[
 						...$availableCollections.filter((item) => $availableCollections.filter((_item) => _item.label === item.label).length <= 1),
