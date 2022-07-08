@@ -147,7 +147,8 @@ export interface CollectionTableRow {
 }
 
 export async function apiGetMostActiveCollections(): Promise<Collection[]> {
-	const res = await axios.get(getApiUrl('latest', 'collections/search'));
+	const limit = 7;
+	const res = await axios.get(getApiUrl('latest', 'collections/search'), { params: { limit } });
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
