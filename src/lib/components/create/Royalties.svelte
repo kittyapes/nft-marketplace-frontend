@@ -37,7 +37,7 @@
 
 	<div class="flex gap-x-4 mt-4">
 		<div id="percent-container" class="grid w-24">
-			<div class="text-color-black uppercase font-light text-sm">Fees</div>
+			<div class="text-color-black uppercase font-light text-sm">Percentage</div>
 			{#each values as value}
 				<input type="number" class="input input-hide-controls mt-4 first:mt-2" placeholder="%" required={!!value.address} bind:value={value.fees} {disabled} />
 			{/each}
