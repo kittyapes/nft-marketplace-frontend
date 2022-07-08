@@ -53,6 +53,15 @@
 		"anonymous": false,
 		"inputs": [
 			{ "indexed": true, "internalType": "uint256", "name": "listingId", "type": "uint256" },
+			{ "indexed": false, "internalType": "uint64", "name": "startTime", "type": "uint64" }
+		],
+		"name": "ListingRestarted",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{ "indexed": true, "internalType": "uint256", "name": "listingId", "type": "uint256" },
 			{ "indexed": false, "internalType": "uint128", "name": "newPrice", "type": "uint128" }
 		],
 		"name": "PriceDecreased",
@@ -97,6 +106,7 @@
 		"stateMutability": "view",
 		"type": "function"
 	},
+	{ "inputs": [], "name": "beneficiary", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" },
 	{
 		"inputs": [
 			{ "internalType": "uint256", "name": "listingId", "type": "uint256" },
@@ -178,6 +188,7 @@
 		"inputs": [
 			{ "internalType": "address[]", "name": "owners", "type": "address[]" },
 			{ "internalType": "address", "name": "factory_", "type": "address" },
+			{ "internalType": "address", "name": "beneficiary_", "type": "address" },
 			{ "internalType": "uint256", "name": "marketFee_", "type": "uint256" }
 		],
 		"name": "initialize",
@@ -253,6 +264,7 @@
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
+	{ "inputs": [{ "internalType": "uint256", "name": "listingId", "type": "uint256" }], "name": "restartListing", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
 	{
 		"inputs": [
 			{ "internalType": "bytes32", "name": "role", "type": "bytes32" },
@@ -273,6 +285,7 @@
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
+	{ "inputs": [{ "internalType": "address", "name": "beneficiary_", "type": "address" }], "name": "setBeneficiary", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
 	{ "inputs": [{ "internalType": "address", "name": "factory_", "type": "address" }], "name": "setFactory", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
 	{ "inputs": [{ "internalType": "uint256", "name": "marketFee_", "type": "uint256" }], "name": "setMarketFee", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
 	{
@@ -308,6 +321,16 @@
 		"name": "usedIDs",
 		"outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{ "internalType": "address", "name": "token", "type": "address" },
+			{ "internalType": "address", "name": "to", "type": "address" }
+		],
+		"name": "withdrawFunds",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]
