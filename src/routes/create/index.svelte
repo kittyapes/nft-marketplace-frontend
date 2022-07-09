@@ -27,13 +27,7 @@
 	import { getContract } from '$utils/misc/getContract';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
-	const generalCollection = {
-		label: 'Hinata General Collection',
-		value: '62c6a03eab6ba24c0a729b9a',
-		iconUrl: 'https://hinata-prod.mypinata.cloud/ipfs/QmYfGgKpjULX2dsazQjkTw3scJxA6jaa21yzAn6p5vTLNn',
-		collectionAddress: getContract('storage').address,
-		collectionId: '62c6a03eab6ba24c0a729b9a'
-	};
+	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }>(null);
 
 	let dumpDraft = false;
 
@@ -54,7 +48,7 @@
 
 	const formValidity = writable<Partial<{ [K in keyof NftDraft]: any }>>({});
 
-	const availableCollections = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }[]>([generalCollection]);
+	const availableCollections = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }[]>([]);
 
 	beforeNavigate(() => {
 		dumpDraft ? nftDraft.set(null) : nftDraft.set(nftData);
@@ -68,6 +62,11 @@
 		if (!$currentUserAddress) return;
 
 		isLoadingCollections = true;
+
+		// Fetch general collection
+		let genColl = await apiSearchCollections({ collectionAddress: getContract('storage', true).address });
+		genColl = genColl.map(adaptCollectionToMintingDropdown);
+		generalCollection.set(genColl[0]);
 
 		profileData.set(await fetchProfileData($currentUserAddress));
 
@@ -94,7 +93,11 @@
 			}
 		}
 
-		$availableCollections = [generalCollection, ...collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown)];
+		if ($generalCollection) {
+			$availableCollections = [$generalCollection, ...collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown)];
+		} else {
+			$availableCollections = collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown);
+		}
 
 		isLoadingCollections = false;
 	}
