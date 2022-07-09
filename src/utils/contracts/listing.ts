@@ -95,37 +95,37 @@ export async function contractPurchaseListing(listingId: string) {
 	await contractCaller(contract, 'purchaseListing', 150, 1, listingId);
 }
 
-export async function getOnChainListing(listingId: string) {
-	interface OnChainListing {
-		duration: BigNumber;
-		id: BigNumber;
-		listingType: number;
-		payToken: string;
-		price: BigNumber;
-		quantity: BigNumber;
-		seller: string; // seller adddress
-		startTime: BigNumber;
-	}
+export interface ChainListing {
+	id: string;
+	seller: string;
+	payToken: string;
+	price: string;
+	reservePrice: string;
+	startTime: number;
+	duration: number;
+	quantity: number;
+	listingType: LISTING_TYPE;
+}
 
+export async function getOnChainListing(listingId: string): Promise<ChainListing> {
 	const contract = getContract('marketplace');
-	const onChainListing: OnChainListing = await contract.listings(listingId);
+	const onChainListing = await contract.listings(listingId);
 
 	const token = await getTokenDetails(onChainListing.payToken);
 
 	// Copying over the values to remove the first array vars from chain
 	return {
-		duration: ethers.utils.formatUnits(onChainListing.duration, 0),
+		duration: onChainListing.duration.toNumber(),
 		id: ethers.utils.formatUnits(onChainListing.id, 0),
 		listingType: onChainListing.listingType,
 		payToken: onChainListing.payToken,
 		price: ethers.utils.formatUnits(onChainListing.price, token.decimals),
-		quantity: ethers.utils.formatUnits(onChainListing.quantity, 0),
+		reservePrice: ethers.utils.formatUnits(onChainListing.reservePrice),
+		quantity: onChainListing.quantity.toNumber(),
 		seller: onChainListing.seller,
-		startTime: onChainListing.startTime ? ethers.utils.formatUnits(onChainListing.startTime, 0) : null
+		startTime: onChainListing.startTime ? onChainListing.startTime.toNumber() : null
 	};
 }
-
-export async function checkListing() {}
 
 export async function contractCancelListing(listingId: string) {
 	console.debug('[Listing] Cancelling listing with ID: ' + listingId);

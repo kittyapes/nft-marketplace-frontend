@@ -10,17 +10,17 @@
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
+	import type { ChainListing } from '$utils/contracts/listing';
 	import { hasEnoughBalance } from '$utils/contracts/token';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
-	import { formatToken, parseToken } from '$utils/misc/priceUtils';
+	import { parseToken } from '$utils/misc/priceUtils';
 	import { createToggle } from '$utils/misc/toggle';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import dayjs from 'dayjs';
-	import { BigNumber } from 'ethers';
-	import { formatUnits, parseUnits } from 'ethers/lib/utils.js';
+	import { parseUnits } from 'ethers/lib/utils.js';
 	import { noTry, noTryAsync } from 'no-try';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { derived, writable } from 'svelte/store';
@@ -28,6 +28,7 @@
 	const dispatch = createEventDispatcher();
 
 	export let options: CardPopupOptions;
+	export let chainListing: ChainListing;
 
 	$: listingExpired = dayjs(options.listingData.startTime).add(options.listingData.duration, 'seconds').isBefore(dayjs());
 
@@ -164,7 +165,7 @@
 					<div class="">Reserve price</div>
 					<div class="flex items-center gap-2">
 						<Eth />
-						{options.auctionData.reservePrice || 'N/A'}
+						{chainListing?.reservePrice || 'N/A'}
 					</div>
 				</div>
 
@@ -174,7 +175,7 @@
 					<div class="">Starting price</div>
 					<div class="flex items-center gap-2">
 						<Eth />
-						{options.auctionData.startingPrice || 'N/A'}
+						{chainListing.price || 'N/A'}
 					</div>
 				</div>
 			</div>

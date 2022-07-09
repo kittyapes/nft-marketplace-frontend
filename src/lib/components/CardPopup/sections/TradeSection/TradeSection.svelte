@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import { currentUserAddress } from '$stores/wallet';
+	import type { ChainListing } from '$utils/contracts/listing';
 	import Browse from './frames/Browse.svelte';
 	import CreateListing from './frames/CreateListing.svelte';
 	import Error from './frames/Error.svelte';
@@ -9,6 +10,7 @@
 	import Success from './frames/Success.svelte';
 
 	export let options: CardPopupOptions;
+	export let chainListing: ChainListing;
 	export let showBackButton = false;
 
 	export function goBack() {
@@ -60,7 +62,7 @@
 </script>
 
 {#if selectedState}
-	<svelte:component this={selectedState.component} {options} {...stateProps[selectedState.name]} on:set-state={handleSetState} on:close-popup />
+	<svelte:component this={selectedState.component} {options} {chainListing} {...stateProps[selectedState.name]} on:set-state={handleSetState} on:close-popup />
 {:else}
 	Jakub is dumb
 {/if}
