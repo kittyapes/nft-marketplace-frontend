@@ -48,7 +48,7 @@
 
 	const formValidity = writable<Partial<{ [K in keyof NftDraft]: any }>>({});
 
-	const availableCollections = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }[]>([$generalCollection]);
+	const availableCollections = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }[]>([]);
 
 	beforeNavigate(() => {
 		dumpDraft ? nftDraft.set(null) : nftDraft.set(nftData);
@@ -64,7 +64,7 @@
 		isLoadingCollections = true;
 
 		// Fetch general collection
-		let genColl = await apiSearchCollections({ collectionAddress: (await getContract('storage')).address });
+		let genColl = await apiSearchCollections({ collectionAddress: getContract('storage', true).address });
 		genColl = genColl.map(adaptCollectionToMintingDropdown);
 		generalCollection.set(genColl[0]);
 
@@ -93,7 +93,11 @@
 			}
 		}
 
-		$availableCollections = [$generalCollection, ...collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown)];
+		if ($generalCollection) {
+			$availableCollections = [$generalCollection, ...collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown)];
+		} else {
+			$availableCollections = collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown);
+		}
 
 		isLoadingCollections = false;
 	}
