@@ -116,7 +116,7 @@ export async function apiUpdateCollection(options: UpdateCollectionOptions) {
 }
 
 export async function apiGetCollectionBySlug(slug: string, limit?: number, page?: number) {
-	const res = await axios.get(getApiUrl('latest', 'collections/' + slug), {params: {limit, page}});
+	const res = await axios.get(getApiUrl('latest', 'collections/' + slug), { params: { limit, page } });
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -165,6 +165,7 @@ export interface collectionSearchOptions {
 	page?: number;
 	sortBy?: 'ALPHABETICAL' | 'CREATED_AT';
 	sortReversed?: boolean;
+	collectionAddress?: string;
 }
 
 export async function apiSearchCollections(options?: collectionSearchOptions) {

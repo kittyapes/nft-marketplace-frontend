@@ -30,7 +30,7 @@
 	import { derived, writable } from 'svelte/store';
 	import { fade, slide } from 'svelte/transition';
 	import { withPrevious } from 'svelte-previous';
-	import { isUrl, urlPattern } from '$utils/validator/isUrl';
+	import { isUrl } from '$utils/validator/isUrl';
 	import { isEqual } from 'lodash-es';
 	import { acceptedImages } from '$constants';
 
