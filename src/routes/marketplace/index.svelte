@@ -23,7 +23,7 @@
 			const listing = await getListing(id);
 			const popupOptions = (await adaptListingToNftCard(listing)).popupOptions;
 
-			setPopup(CardPopup, { props: { options: popupOptions }, onClose: () => removeUrlParam('id') });
+			setPopup(CardPopup, { props: { options: popupOptions }, onClose: () => removeUrlParam('id'), unique: true });
 		}
 	});
 

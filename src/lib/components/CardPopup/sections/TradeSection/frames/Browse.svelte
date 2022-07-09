@@ -67,14 +67,13 @@
 	let biddings: BidRow[] = [];
 
 	function bidValidator(v: string): boolean {
-		const [valueErr, parsedValue] = noTry(() => parseToken(v, options.listingData.tokenAddress));
+		const parsedValue = parseToken(v, chainListing.payToken, null);
+		const parsedReservePrice = parseToken(chainListing.reservePrice, chainListing.payToken, null);
+		const parsedHighestBid = parseToken(biddings?.[0]?.tokenAmount || '0', chainListing.payToken, null);
 
-		if (valueErr) return false;
-
-		const [reservePriceErr, parsedReservePrice] = noTry(() => parseToken(options.auctionData.reservePrice, options.listingData.tokenAddress));
-
-		// parseUnits because tokenAmount is a ETH formatted string
-		const [highestBidErr, parsedHighestBid] = noTry(() => parseUnits(biddings?.[0]?.tokenAmount || '0', options.listingData.tokenDecimals));
+		if ([parsedValue, parsedReservePrice, parsedHighestBid].some((v) => !v)) {
+			return false;
+		}
 
 		if (parsedReservePrice && parsedValue.lt(parsedReservePrice)) {
 			return false;
