@@ -3,12 +3,22 @@
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import { currentUserAddress } from '$stores/wallet';
+	import { getOnChainListing, type ChainListing } from '$utils/contracts/listing';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import InfoSection from './InfoSection.svelte';
 	import TradeSection from './TradeSection/TradeSection.svelte';
 
 	export let options: CardPopupOptions;
+	let chainListing: ChainListing;
+
+	onMount(async () => {
+		if (options.listingData.onChainId) {
+			chainListing = await getOnChainListing(options.listingData.onChainId);
+			console.debug('[On chain listing data]:', chainListing);
+		}
+	});
 
 	// The back button is controlled by dynamic components
 	export let showBackButton: boolean;
@@ -63,7 +73,7 @@
 		{/each}
 	</div>
 
-	<svelte:component this={selectedTab.sectionComponent} {options} on:close-popup bind:showBackButton bind:this={tabComponentInstance} />
+	<svelte:component this={selectedTab.sectionComponent} {options} {chainListing} on:close-popup bind:showBackButton bind:this={tabComponentInstance} />
 </div>
 
 {#if showCannotTrade}
