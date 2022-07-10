@@ -43,10 +43,15 @@ export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: 
 	return token;
 }
 
-export function parseToken(amount: string, tokenAddress: string) {
+export function parseToken(amount: string, tokenAddress: string, fallback?: any) {
 	const tokenDetails = getKnownTokenDetails({ tokenAddress: tokenAddress });
 
-	return parseUnits(amount, tokenDetails.decimals);
+	try {
+		return parseUnits(amount, tokenDetails.decimals);
+	} catch (err) {
+		if (fallback !== undefined) return fallback;
+		throw err;
+	}
 }
 
 export function formatToken(amount: string, tokenAddress: string) {
