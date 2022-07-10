@@ -14,16 +14,29 @@
 		{ fees: '', address: '' }
 	];
 
-	export let isValid = false;
+	export let isValid: boolean | string = false;
 	export let disabled = false;
 	let titleElementTooltip: HTMLElement;
 	const titleHovered = createToggle();
 
-	$: isValid = values.every((v) => {
+	$: isValid = false;
+	$: values.forEach((v) => {
 		if (!parseFloat(v.fees?.toString())) {
 			v.fees = '';
 		}
-		return (!!v.fees === !!v.address && isEthAddress(v.address)) || (v.fees == '' && v.address == '');
+
+		let total = values.reduce((acc, b) => acc + ((b?.fees && parseFloat(b.fees.toString())) || 0), 0);
+
+		// More than one entry has this value
+		let areAddressesSimilar =
+			values.filter((item) => !!item.address && !!v.address && isEthAddress(item.address) && isEthAddress(v.address) && item.address.toLowerCase() === v.address.toLowerCase()).length > 1;
+
+		isValid =
+			total > 98.5
+				? 'Sum of Royalties Cannot Exceed 98.5%'
+				: areAddressesSimilar
+				? 'Please Enter Unique Addresses To Each Field'
+				: (!!v.fees === !!v.address && isEthAddress(v.address)) || (v.fees == '' && v.address == '');
 	});
 </script>
 
