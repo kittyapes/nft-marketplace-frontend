@@ -22,6 +22,8 @@ export default async function (nftContractAddress: string, tokenId: string) {
 				const balance = await contract.balanceOf(get(currentUserAddress), tokenId);
 
 				return { balance: +ethers.utils.formatUnits(balance, 0), supply: 1 };
+			} else {
+				return { balance: 0, supply: 1 };
 			}
 		} catch (error) {
 			return { balance: 0, supply: 1 };
