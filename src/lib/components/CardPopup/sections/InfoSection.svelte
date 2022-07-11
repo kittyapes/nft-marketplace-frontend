@@ -12,7 +12,7 @@
 	let nftBalance = 0;
 
 	$: ownedOrListedNfts = options?.listingData ? options?.listingData?.quantity ?? 1 : nftBalance;
-	$: totalNfts = options?.rawResourceData?.amount ? options?.rawResourceData?.amount ?? 1 : options?.rawResourceData?.nfts?.[0]?.nft.amount ?? 1;
+	$: totalNfts = 1;
 
 	// Never show the back button on this tab
 	export const showBackButton = false;
