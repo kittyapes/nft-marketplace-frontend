@@ -140,19 +140,16 @@
 		progress.set(50);
 
 		// create NFT on chain
-		const nftMintRes = await createNFTOnChain({
-			id: createNftRes.nftId.toString(),
-			amount: nftData.quantity.toString(),
-			collectionAddress: selectedCollection.collectionAddress
-		}).catch(() => {
+		try {
+			await createNFTOnChain({
+				id: createNftRes.nftId.toString(),
+				amount: nftData.quantity.toString(),
+				collectionAddress: selectedCollection.collectionAddress
+			});
+		} catch (err) {
+			notifyError('Failed to create NFT on chain!');
 			popupHandler.close();
-			notifyError('Failed to create NFT on chain.');
-			console.error('[Create] Failed to create NFT on chain.');
-			return;
-		});
-
-		if (nftMintRes) {
-			console.info('[Create] NFT created on chain.');
+			throw err;
 		}
 
 		newBundleData.update((data) => {
