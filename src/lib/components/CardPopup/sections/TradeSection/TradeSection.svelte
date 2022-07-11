@@ -20,6 +20,7 @@
 	const states: { name: string; component: any }[] = [
 		{ name: 'browse', component: Browse },
 		{ name: 'create-listing', component: CreateListing },
+		{ name: 'recreate-listing', component: CreateListing },
 		{ name: 'manage-sale', component: ManageSale },
 		{ name: 'manage-auction', component: ManageAuction },
 		{ name: 'success', component: Success },

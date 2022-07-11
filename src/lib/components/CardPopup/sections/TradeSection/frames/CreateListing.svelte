@@ -4,11 +4,13 @@
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
+	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import type { ListingType } from '$utils/api/listing';
 	import { listingDurationOptions, listingTokens } from '$utils/contracts/listing';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { getContractData } from '$utils/misc/getContract';
+	import { createToggle } from '$utils/misc/toggle';
 	import { notifyError } from '$utils/toast';
 	import dayjs from 'dayjs';
 	import { BigNumber } from 'ethers';
@@ -20,14 +22,14 @@
 
 	export let options: CardPopupOptions;
 
-	let selectedListingType: ListingType = 'auction';
+	export let selectedListingType: ListingType = 'auction';
 
-	let price: any;
-	let paymentTokenTicker: string;
-	let duration: number;
-	let startingPrice: string;
-	let reservePrice: string;
-	let quantity: string = '1';
+	export let price: any;
+	export let paymentTokenTicker: string;
+	export let duration: number;
+	export let startingPrice: string;
+	export let reservePrice: string;
+	export let quantity: string = '1';
 	let maxQuantity = options.nftData[0]?.userNftBalance ?? 1;
 
 	// Validation
@@ -43,10 +45,10 @@
 		}
 	}
 
-	let isListing = false;
+	let isListing = createToggle();
 
 	async function completeListing() {
-		isListing = true;
+		isListing.toggle();
 
 		const flowOptions: CreateListingFlowOptions = {
 			title: options.nftData[0].metadata?.name,
@@ -78,7 +80,7 @@
 			dispatch('set-state', { name: 'success', props: { successDescription: 'Successfully listed.', showMarketplaceButton: false } });
 		}
 
-		isListing = false;
+		isListing.toggle();
 	}
 
 	let reservePriceValid: boolean;
@@ -214,5 +216,10 @@
 		</div>
 	</div>
 
-	<PrimaryButton class="mt-4" disabled={!formValid || isListing} on:click={completeListing}>Complete Listing</PrimaryButton>
+	<PrimaryButton class="mt-4" disabled={!formValid || $isListing} on:click={completeListing}>
+		{#if $isListing}
+			<ButtonSpinner />
+		{/if}
+		Complete Listing
+	</PrimaryButton>
 </div>

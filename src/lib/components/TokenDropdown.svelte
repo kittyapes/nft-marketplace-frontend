@@ -9,7 +9,7 @@
 
 	export let id = '';
 	export let value = '';
-	export let tokens: { label: string; iconUrl: string; value: string }[] = whiteListingTokens;
+	export let tokens: { label: string; iconUrl: string; value?: string }[] = whiteListingTokens;
 	export let selected = tokens[0];
 	export let placeholder = 'Enter price for NFT';
 	export let valid = true;

@@ -14,7 +14,7 @@
 	let chainListing: ChainListing;
 
 	onMount(async () => {
-		if (options.listingData.onChainId) {
+		if (options.listingData?.onChainId) {
 			chainListing = await getOnChainListing(options.listingData.onChainId);
 			console.debug('[On chain listing data]:', chainListing);
 		}
@@ -34,9 +34,15 @@
 				text: 'Trade',
 				icon: 'trade',
 				sectionComponent: TradeSection,
-				visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && options.rawResourceData.owner === $currentUserAddress)) && !get(options.staleResource)
+				visible:
+					(options.resourceType === 'listing' || (options.resourceType === 'nft' && options.rawResourceData.owner === $currentUserAddress)) &&
+					(!get(options.staleResource) || get(options.staleResource)?.reason === 'relisting')
 			}
 		];
+
+		if (get(options.staleResource)?.reason === 'relisting') {
+			selectedTab = tabs[1];
+		}
 	}
 
 	updateTabs();
