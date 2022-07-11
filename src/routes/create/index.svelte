@@ -57,8 +57,6 @@
 	let isLoadingCollections = false;
 
 	async function prepData() {
-		await tick();
-
 		if (!$currentUserAddress) return;
 
 		isLoadingCollections = true;
@@ -102,7 +100,7 @@
 		isLoadingCollections = false;
 	}
 
-	$: $currentUserAddress && $appProvider && prepData();
+	$: $currentUserAddress && prepData();
 
 	async function mintAndContinue() {
 		// Keep for skipping mint
