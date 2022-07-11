@@ -11,7 +11,7 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { nftDraft } from '$stores/create';
 	import { profileData } from '$stores/user';
-	import { currentUserAddress } from '$stores/wallet';
+	import { appProvider, appSigner, currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
@@ -21,7 +21,7 @@
 	import { goBack } from '$utils/navigation';
 	import { setPopup, updatePopupProps } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { writable } from 'svelte/store';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import { getContract } from '$utils/misc/getContract';
@@ -54,11 +54,11 @@
 		dumpDraft ? nftDraft.set(null) : nftDraft.set(nftData);
 	});
 
-	onMount(prepData);
-
 	let isLoadingCollections = false;
 
 	async function prepData() {
+		await tick();
+
 		if (!$currentUserAddress) return;
 
 		isLoadingCollections = true;
@@ -101,6 +101,8 @@
 
 		isLoadingCollections = false;
 	}
+
+	$: $currentUserAddress && $appProvider && prepData();
 
 	async function mintAndContinue() {
 		// Keep for skipping mint
@@ -164,6 +166,9 @@
 	}
 
 	const handleCollectionSelection = (event) => {
+		// Skip this function during collection loading
+		if ($availableCollections.length < 2) return;
+
 		if (event.detail?.label === 'Create new collection') {
 			goto(event.detail?.value);
 		} else {
@@ -174,12 +179,6 @@
 
 	$: quantityValid = nftData.quantity > 0;
 	$: inputValid = nftData.name && nftData.name.length <= 25 && selectedCollectionId && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
-
-	currentUserAddress.subscribe(async (userAddress) => {
-		if (userAddress) {
-			await prepData();
-		}
-	});
 
 	$: if (nftData) {
 		$formValidity.name = !!nftData.name ? (nftData.name.length > 25 ? 'Name Cannot be more than 25 characters' : true) : !nftData.name ? 'Name is Required' : true;
