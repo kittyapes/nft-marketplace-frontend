@@ -71,7 +71,7 @@
 
 	let isListing = false;
 
-	async function listForSale() {
+	async function list() {
 		if (listingPropValues.quantity > maxQuantity) {
 			notifyError(`Error: You Can Only List a Maximum of ${maxQuantity} Tokens`);
 			return;
@@ -157,7 +157,7 @@
 		<!-- <Royalties bind:isValid={royaltiesValid} /> -->
 
 		<div class="pr-8">
-			<button class="w-full mt-8 font-semibold uppercase btn btn-gradient btn-rounded" on:click={listForSale} disabled={!formValid || isListing}>
+			<button class="w-full mt-8 font-semibold uppercase btn btn-gradient btn-rounded" on:click={list} disabled={!formValid || isListing}>
 				List for {listingType || 'N/A'}
 			</button>
 		</div>
