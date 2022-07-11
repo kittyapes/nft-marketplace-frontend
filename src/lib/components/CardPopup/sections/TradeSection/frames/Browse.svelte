@@ -68,14 +68,14 @@
 
 	function bidValidator(v: string): boolean {
 		const parsedValue = parseToken(v, chainListing.payToken, null);
-		const parsedReservePrice = parseToken(chainListing.reservePrice, chainListing.payToken, null);
+		const parsedPrice = parseToken(chainListing.price, chainListing.payToken, null);
 		const parsedHighestBid = parseToken(biddings?.[0]?.tokenAmount || '0', chainListing.payToken, null);
 
-		if ([parsedValue, parsedReservePrice, parsedHighestBid].some((v) => !v)) {
+		if ([parsedValue, parsedPrice, parsedHighestBid].some((v) => !v)) {
 			return false;
 		}
 
-		if (parsedReservePrice && parsedValue.lt(parsedReservePrice)) {
+		if (parsedValue.lt(parsedPrice)) {
 			return false;
 		}
 
