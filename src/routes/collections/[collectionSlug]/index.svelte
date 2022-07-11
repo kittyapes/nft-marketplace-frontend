@@ -169,7 +169,7 @@
 			{/if}
 		</div>
 
-		<button class="btn bg-[#F5F5F5] flex rounded-full px-4 py-2 space-x-2 w-36" on:click={() => copyTextToClipboard(collectionData.creator)}>
+		<button class="btn bg-[#F5F5F5] flex rounded-full px-4 py-2 space-x-2 w-36" on:click={() => copyTextToClipboard(collectionData?.collectionAddress)}>
 			<img class="w-5" src="/svg/icons/collection-gradient-eth.svg" alt="Ethereum." />
 			{#if collectionData}
 				<div class="font-mono text-[#6E6E6E] text-sm">{shortenAddress(collectionData?.collectionAddress)}</div>
