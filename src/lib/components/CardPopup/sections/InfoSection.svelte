@@ -9,9 +9,9 @@
 	export let options: CardPopupOptions;
 
 	let marketFee = 0;
-	let nftBalance = 0;
+	$: nftBalance = 0;
 
-	$: console.log(options);
+	$: console.log(options, totalNfts, ownedOrListedNfts, nftBalance);
 
 	$: ownedOrListedNfts = options?.listingData ? options?.listingData?.quantity ?? 1 : nftBalance;
 	$: totalNfts = 1;

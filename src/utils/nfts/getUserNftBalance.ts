@@ -19,9 +19,11 @@ export default async function (nftContractAddress: string, tokenId: string) {
 				return { balance: +ethers.utils.formatUnits(balance, 0), supply: +ethers.utils.formatUnits(supply, 0) };
 			} else if (collInterface === 'ERC721') {
 				const contract = new ethers.Contract(nftContractAddress, erc721Abi, get(appProvider));
-				const balance = await contract.balanceOf(get(currentUserAddress), tokenId);
 
-				return { balance: +ethers.utils.formatUnits(balance, 0), supply: 1 };
+				// Check if the current user is the owner of the token
+				const owner = await contract.ownerOf(tokenId);
+
+				return { balance: owner.toLowerCase() === get(currentUserAddress).toLowerCase() ? 1 : 0, supply: 1 };
 			} else {
 				return { balance: 0, supply: 1 };
 			}
