@@ -23,7 +23,7 @@
 	export let options: CardPopupOptions;
 	export let chainListing: ChainListing;
 
-	$: listingExpired = dayjs(options.listingData.startTime).add(options.listingData.duration, 'seconds').isBefore(dayjs());
+	// $: listingExpired = dayjs(options.listingData.startTime).add(options.listingData.duration, 'seconds').isBefore(dayjs());
 
 	let biddings: BidRow[] = [];
 
@@ -36,6 +36,10 @@
 		if (err) {
 			console.error(err);
 			notifyError('Failed to complete auction.');
+			dispatch('set-state', { name: 'error' });
+		} else {
+			options.staleResource.set({ reason: 'cancelled' });
+			dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Auction completed successfully.' } });
 		}
 
 		isWorking = false;
@@ -53,7 +57,7 @@
 		if (err) {
 			console.error(err);
 			notifyError('Failed to cancel listing.');
-			dispatch('set-state', { name: 'error', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Listing cancelled successfully.' } });
+			dispatch('set-state', { name: 'error' });
 		} else {
 			options.staleResource.set({ reason: 'cancelled' });
 			dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Listing cancelled successfully.' } });
