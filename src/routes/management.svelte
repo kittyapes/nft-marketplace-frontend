@@ -168,7 +168,6 @@
 	};
 
 	const createCollectionTableData = async () => {
-		console.log(collections);
 		collectionTableData = [
 			{
 				gridSize: '3fr',
@@ -290,8 +289,6 @@
 		loaded = false;
 		debouncedSearch();
 	}
-
-	$: console.log(users);
 
 	$: if (users) {
 		userTableData = [
