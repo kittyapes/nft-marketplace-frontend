@@ -9,8 +9,9 @@
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
 	import { contractCompleteAuction } from '$utils/contracts/auction';
-	import { contractCancelListing } from '$utils/contracts/listing';
+	import { contractCancelListing, type ChainListing } from '$utils/contracts/listing';
 	import type { BidRow } from '$utils/flows/getBiddingsFlow';
+	import { parseToken } from '$utils/misc/priceUtils';
 	import { createToggle } from '$utils/misc/toggle';
 	import { notifyError } from '$utils/toast';
 	import dayjs from 'dayjs';
@@ -20,34 +21,32 @@
 	const dispatch = createEventDispatcher();
 
 	export let options: CardPopupOptions;
+	export let chainListing: ChainListing;
 
 	$: listingExpired = dayjs(options.listingData.startTime).add(options.listingData.duration, 'seconds').isBefore(dayjs());
 
-	let biddings: BidRow[];
-
-	let isCompletingAuction = false;
-	let completedAuction = false;
+	let biddings: BidRow[] = [];
 
 	async function acceptHighest() {
-		isCompletingAuction = true;
+		isWorking = true;
+		isAccepting = true;
 
 		const { err, res } = await contractCompleteAuction(options.listingData.onChainId);
 
 		if (err) {
 			console.error(err);
 			notifyError('Failed to complete auction.');
-		} else {
-			completedAuction = true;
 		}
 
-		isCompletingAuction = false;
+		isWorking = false;
+		isAccepting = false;
 	}
 
 	let cancelButtonContainer: HTMLElement;
-	let isCancellingAuction = createToggle();
 
 	async function cancelAuction() {
-		isCancellingAuction.toggle();
+		isWorking = true;
+		isCancelling = true;
 
 		const [err, res] = await noTryAsync(() => contractCancelListing(options.listingData.onChainId));
 
@@ -60,12 +59,27 @@
 			dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Listing cancelled successfully.' } });
 		}
 
-		isCancellingAuction.toggle();
+		isWorking = false;
+		isCancelling = false;
 	}
 
 	const cancelHovered = createToggle();
 
 	let isRefreshingBids: boolean;
+
+	let isWorking = false;
+	let isAccepting = false;
+	let isCancelling = false;
+
+	$: highestAmount = biddings[0] && parseToken(biddings[0].tokenAmount, chainListing.payToken);
+
+	// prettier-ignore
+	$: canCancel = [
+		biddings.length < 1,
+		highestAmount && highestAmount.lt(parseToken(chainListing.reservePrice, chainListing.payToken))
+	].some((v) => v);
+
+	$: canAccept = [biddings.length > 0].some((v) => v);
 </script>
 
 <div class="flex flex-col h-full pb-12 mt-4">
@@ -93,16 +107,16 @@
 
 	<div class="flex gap-2">
 		<div bind:this={cancelButtonContainer} class="w-full" on:pointerenter={cancelHovered.toggle} on:pointerleave={cancelHovered.toggle}>
-			<SecondaryButton class="mt-4" disabled={$isCancellingAuction || biddings?.length || isRefreshingBids} on:click={cancelAuction}>
-				{#if $isCancellingAuction}
+			<SecondaryButton class="mt-4" disabled={isWorking || isRefreshingBids || !canCancel} on:click={cancelAuction}>
+				{#if isCancelling}
 					<ButtonSpinner secondary />
 				{/if}
 				Cancel Auction
 			</SecondaryButton>
 		</div>
 
-		<PrimaryButton class="mt-4" disabled={!biddings?.length || isCompletingAuction || completedAuction || !listingExpired} on:click={acceptHighest}>
-			{#if isCompletingAuction}
+		<PrimaryButton class="mt-4" disabled={isWorking || isRefreshingBids || !canAccept} on:click={acceptHighest}>
+			{#if isAccepting}
 				<ButtonSpinner />
 			{/if}
 			Accept Highest Bid
@@ -110,8 +124,8 @@
 	</div>
 </div>
 
-{#if $cancelHovered && biddings?.length}
+{#if $cancelHovered && !canCancel}
 	<AttachToElement to={cancelButtonContainer} bottom>
-		<InfoBubble>Your auction can no longer be cancelled because a bid was already made.</InfoBubble>
+		<InfoBubble>Your auction is no longer cancellable.</InfoBubble>
 	</AttachToElement>
 {/if}

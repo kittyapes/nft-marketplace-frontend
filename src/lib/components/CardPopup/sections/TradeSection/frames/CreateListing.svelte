@@ -45,7 +45,7 @@
 			flowOptions.sale.price = price;
 		} else if (listingType === 'auction') {
 			flowOptions.auction.startingPrice = startingPrice;
-			flowOptions.auction.reservePrice = reservePrice;
+			flowOptions.auction.reservePrice = reservePrice || startingPrice;
 		}
 
 		const { err } = await createListingFlow(flowOptions);

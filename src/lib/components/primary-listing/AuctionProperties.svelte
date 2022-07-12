@@ -20,9 +20,9 @@
 
 	$: tokenAddress = getKnownTokenDetails({ ticker: token }).address;
 
-	$: isReserveValid = !isPrice(startingPrice) || !isPrice(reservePrice) || parseToken(reservePrice, tokenAddress).gt(parseToken(startingPrice, tokenAddress));
+	$: isReserveValid = !isPrice(startingPrice) || !reservePrice || parseToken(reservePrice, tokenAddress).gt(parseToken(startingPrice, tokenAddress));
 	$: {
-		formValid = isPrice(startingPrice) && isPrice(reservePrice || '0');
+		formValid = isPrice(startingPrice) && isPrice(reservePrice || startingPrice);
 		formValid = formValid && isReserveValid;
 	}
 

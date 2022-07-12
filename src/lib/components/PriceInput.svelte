@@ -3,12 +3,12 @@
 
 	export let value = '';
 	export let valid = true;
-	export let validOverride = true;
+	export let validOverride = null;
 	export let placeholder = '';
 	export let disabled = false;
 	export let tokenIconClass: any;
 
-	$: valid = validOverride && isPrice(value);
+	$: valid = validOverride ?? isPrice(value);
 </script>
 
 <div class="relative">
