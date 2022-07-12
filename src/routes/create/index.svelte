@@ -80,6 +80,7 @@
 
 			if (beforeLength === collections.length) break;
 			page++;
+			console.log(collections);
 		}
 
 		if (nftData.collectionName) {
