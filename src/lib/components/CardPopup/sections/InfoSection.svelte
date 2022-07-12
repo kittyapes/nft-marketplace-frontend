@@ -11,6 +11,8 @@
 	let marketFee = 0;
 	let nftBalance = 0;
 
+	$: console.log(options);
+
 	$: ownedOrListedNfts = options?.listingData ? options?.listingData?.quantity ?? 1 : nftBalance;
 	$: totalNfts = 1;
 
@@ -21,7 +23,7 @@
 	// the bundle section
 	$: nftData = options.nftData?.[0];
 	$: properties = [
-		{ name: 'Creator', value: nftData.creator },
+		{ name: 'Creator', value: nftData.creator || options.rawResourceData.metadata?.creator?.address },
 		{ name: 'Collection name', value: options.collectionData?.name },
 		{ name: 'Edition', value: nftData.metadata?.edition },
 		{ name: 'Description', value: nftData.metadata?.description }
@@ -84,7 +86,7 @@
 				<div
 					on:click={() => {
 						closePopup();
-						goto('/profile/' + nftData.creator);
+						if (properties[0].value) goto('/profile/' + properties[0].value);
 					}}
 					class="overflow-hidden clickable"
 				>
