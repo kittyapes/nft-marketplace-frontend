@@ -47,6 +47,7 @@
 	interface CollectionFetchingOptions {
 		filter: Partial<{
 			status: string;
+			isClaimed: boolean;
 		}>;
 		sort: Partial<{
 			sortBy: 'ALPHABETICAL' | 'CREATED_AT';
@@ -107,10 +108,13 @@
 			users = await getUsers(getUsersFetchingOptions());
 		} else {
 			collectionFetchingOptions.filter = {
-				status: event.detail.status ? event.detail.status : collectionFetchingOptions.filter.status
+				status: event.detail.status ? event.detail.status : collectionFetchingOptions.filter.status,
+				isClaimed: typeof event.detail.value === 'boolean' ? event.detail.value : collectionFetchingOptions.filter.isClaimed
 			};
-
+			console.log(event);
 			if (event.detail.status === 'all') collectionFetchingOptions.filter.status = undefined;
+			if (event.detail.value === 'all') collectionFetchingOptions.filter.isClaimed = undefined;
+
 			collections = (await apiSearchCollections(getCollectionsFetchingOptions())).filter((c) => c.slug);
 		}
 	};
@@ -142,7 +146,10 @@
 		{ label: 'Inactive', status: 'INACTIVE' }
 	];
 
-	let collectionFilterOptions = [{ label: 'Claimed' }, { label: 'Unclaimed' }];
+	let collectionFilterOptions = [
+		{ label: 'Claimed', value: true },
+		{ label: 'Unclaimed', value: false }
+	];
 
 	$: if ($currentUserAddress && mode) createTable();
 
@@ -164,7 +171,7 @@
 	};
 
 	let getCollectionsFetchingOptions = () => {
-		return { /*...collectionFetchingOptions.filter,*/ name: collectionFetchingOptions.name, ...collectionFetchingOptions.sort };
+		return { ...collectionFetchingOptions.filter, name: collectionFetchingOptions.name, ...collectionFetchingOptions.sort };
 	};
 
 	const createCollectionTableData = async () => {
@@ -381,7 +388,7 @@
 					<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
 				</div>
 				<div class="">
-					<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter' }} />
+					<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'all' }} />
 				</div>
 			</div>
 		{/if}
