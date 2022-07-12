@@ -410,7 +410,7 @@
 		<div class="flex flex-col mt-16">
 			<div class="font-semibold uppercase">Payment tokens</div>
 			<p class="mt-2 mb-2">These tokens can be used to buy and sell your items.</p>
-			<PaymentTokenCard symbol="ETH" name="Ethereum" iconUrl="/svg/currency/eth.svg" />
+			<PaymentTokenCard symbol="WETH" name="Wrapped Ethereum" iconUrl="/svg/currency/eth.svg" />
 		</div>
 	{/if}
 
