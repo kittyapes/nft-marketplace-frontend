@@ -6,7 +6,7 @@
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
-	import { appSigner, currentUserAddress } from '$stores/wallet';
+	import { appSigner } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
@@ -83,7 +83,7 @@
 			<div class="">Starting price</div>
 			<div class="flex items-center gap-2 justify-end">
 				<Eth />
-				{chainListing.price || 'N/A'}
+				{chainListing?.price || 'N/A'}
 			</div>
 		</div>
 
