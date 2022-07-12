@@ -87,8 +87,8 @@
 <div class="flex flex-col h-full pb-12 mt-4">
 	<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} tokenDecimals={options.listingData.tokenDecimals} />
 
-	<div class="mt-2 font-semibold flex">
-		<div class="flex flex-col font-semibold">
+	<div class="my-4 font-semibold flex">
+		<div>
 			<div class="">Reserve price</div>
 			<div class="flex items-center gap-2">
 				<Eth />
@@ -98,9 +98,9 @@
 
 		<div class="flex-grow" />
 
-		<div class="flex flex-col font-semibold">
+		<div>
 			<div class="">Starting price</div>
-			<div class="flex items-center gap-2">
+			<div class="flex items-center gap-2 justify-end">
 				<Eth />
 				{options.auctionData.startingPrice || 'N/A'}
 			</div>

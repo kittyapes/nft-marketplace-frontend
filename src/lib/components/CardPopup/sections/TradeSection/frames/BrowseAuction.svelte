@@ -6,7 +6,7 @@
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
-	import { appSigner } from '$stores/wallet';
+	import { appSigner, currentUserAddress } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
@@ -79,27 +79,15 @@
 	<div class="flex flex-col h-full mt-4">
 		<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenDecimals={options.listingData.tokenDecimals} on:request-refresh={refreshBids} />
 
-		<div class="mt-2 font-semibold flex">
-			<div class="flex flex-col font-semibold">
-				<div class="">Reserve price</div>
-				<div class="flex items-center gap-2">
-					<Eth />
-					{chainListing?.reservePrice || 'N/A'}
-				</div>
-			</div>
-
-			<div class="flex-grow" />
-
-			<div class="flex flex-col font-semibold">
-				<div class="">Starting price</div>
-				<div class="flex items-center gap-2">
-					<Eth />
-					{chainListing.price || 'N/A'}
-				</div>
+		<div class="my-4 font-semibold ml-auto">
+			<div class="">Starting price</div>
+			<div class="flex items-center gap-2 justify-end">
+				<Eth />
+				{chainListing.price || 'N/A'}
 			</div>
 		</div>
 
-		<div class="flex gap-2 mt-2">
+		<div class="flex gap-2">
 			<button class="grid w-12 h-12 p-2 border rounded-lg place-items-center" disabled><Eth /></button>
 			<Input class="border-opacity-20" placeholder="Enter amount" bind:value={bidAmount} validator={bidValidator} bind:valid={bidAmountValid} disabled={listingExpired} />
 		</div>
