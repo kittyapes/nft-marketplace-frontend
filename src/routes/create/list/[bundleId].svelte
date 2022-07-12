@@ -6,6 +6,7 @@
 	import NftCard from '$lib/components/NftCard.svelte';
 	import ListingSuccessPopup from '$lib/components/popups/ListingSuccessPopup.svelte';
 	import AuctionProperties from '$lib/components/primary-listing/AuctionProperties.svelte';
+	import ListingPropertiesSlot from '$lib/components/primary-listing/ListingPropertiesSlot.svelte';
 	import SaleProperties from '$lib/components/primary-listing/SaleProperties.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
@@ -136,11 +137,13 @@
 		<hr class="mt-4 separator" />
 
 		<div class="mt-8 pr-8">
-			{#if listingType === 'sale'}
-				<SaleProperties {maxQuantity} bind:durationSeconds bind:quantity bind:startDateTs bind:price bind:formValid />
-			{:else if listingType === 'auction'}
-				<AuctionProperties bind:durationSeconds bind:startDateTs bind:startingPrice bind:reservePrice bind:formValid />
-			{/if}
+			<ListingPropertiesSlot compact>
+				{#if listingType === 'sale'}
+					<SaleProperties {maxQuantity} bind:durationSeconds bind:quantity bind:startDateTs bind:price bind:formValid />
+				{:else if listingType === 'auction'}
+					<AuctionProperties bind:durationSeconds bind:startDateTs bind:startingPrice bind:reservePrice bind:formValid />
+				{/if}
+			</ListingPropertiesSlot>
 		</div>
 
 		<div class="pr-8 mt-8">

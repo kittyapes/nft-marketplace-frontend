@@ -23,20 +23,18 @@
 	$: if (maxQuantity <= 1) quantity = 1;
 </script>
 
-<div class="grid grid-cols-2 gap-x-8 gap-y-4">
-	<InputSlot label="Price">
-		<PriceInput bind:value={price} placeholder="1.0" tokenIconClass={Weth} />
-	</InputSlot>
+<InputSlot label="Price">
+	<PriceInput bind:value={price} placeholder="1.0" tokenIconClass={Weth} />
+</InputSlot>
 
-	<InputSlot label="Quantity">
-		<input type="number" class="w-full h-12 input input-hide-controls" bind:value={quantity} disabled={maxQuantity <= 1} />
-	</InputSlot>
+<InputSlot label="Quantity">
+	<input type="number" class="w-full h-12 input input-hide-controls" bind:value={quantity} disabled={maxQuantity <= 1} />
+</InputSlot>
 
-	<InputSlot label="Start Date">
-		<Datepicker dateOnly on:new-value={(ev) => (startDateTs = ev.detail.unix())} />
-	</InputSlot>
+<InputSlot label="Start Date">
+	<Datepicker dateOnly on:new-value={(ev) => (startDateTs = ev.detail.unix())} />
+</InputSlot>
 
-	<InputSlot label="Duration">
-		<Dropdown options={listingDurationOptions} on:select={(ev) => (durationSeconds = ev.detail.value)} />
-	</InputSlot>
-</div>
+<InputSlot label="Duration">
+	<Dropdown options={listingDurationOptions} on:select={(ev) => (durationSeconds = ev.detail.value)} />
+</InputSlot>

@@ -29,25 +29,23 @@
 	let divPriceInput: HTMLElement;
 </script>
 
-<div class="grid grid-cols-2 gap-x-8 gap-y-4">
-	<InputSlot label="Start Date">
-		<Datepicker dateOnly on:new-value={(ev) => (startDateTs = ev.detail.unix())} />
-	</InputSlot>
+<InputSlot label="Start Date">
+	<Datepicker dateOnly on:new-value={(ev) => (startDateTs = ev.detail.unix())} />
+</InputSlot>
 
-	<InputSlot label="Duration">
-		<Dropdown options={listingDurationOptions} on:select={(ev) => (durationSeconds = ev.detail.value)} />
-	</InputSlot>
+<InputSlot label="Duration">
+	<Dropdown options={listingDurationOptions} on:select={(ev) => (durationSeconds = ev.detail.value)} />
+</InputSlot>
 
-	<InputSlot label="Starting Price">
-		<PriceInput bind:value={startingPrice} placeholder="1.0" tokenIconClass={Weth} />
-	</InputSlot>
+<InputSlot label="Starting Price">
+	<PriceInput bind:value={startingPrice} placeholder="1.0" tokenIconClass={Weth} />
+</InputSlot>
 
-	<InputSlot label="Reserve Price (Optional)">
-		<div bind:this={divPriceInput}>
-			<PriceInput bind:value={reservePrice} placeholder="5.0" tokenIconClass={Weth} validOverride={isReserveValid} />
-		</div>
-	</InputSlot>
-</div>
+<InputSlot label="Reserve Price (Optional)">
+	<div bind:this={divPriceInput}>
+		<PriceInput bind:value={reservePrice} placeholder="5.0" tokenIconClass={Weth} validOverride={isReserveValid} />
+	</div>
+</InputSlot>
 
 {#if !isReserveValid}
 	<AttachToElement to={divPriceInput} bottom>
