@@ -2,12 +2,13 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Back from '$icons/back_.svelte';
-	import Loader from '$icons/loader.svelte';
 	import type { ApiNftData } from '$interfaces/apiNftData';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import ListingSuccessPopup from '$lib/components/popups/ListingSuccessPopup.svelte';
 	import AuctionProperties from '$lib/components/primary-listing/AuctionProperties.svelte';
 	import SaleProperties from '$lib/components/primary-listing/SaleProperties.svelte';
+	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
 	import { getNft } from '$utils/api/nft';
@@ -142,15 +143,14 @@
 			{/if}
 		</div>
 
-		<div class="pr-8">
-			<button class="w-full mt-8 font-semibold uppercase btn btn-gradient btn-rounded" on:click={list} disabled={!formValid || isListing}>
+		<div class="pr-8 mt-8">
+			<PrimaryButton on:click={list} disabled={!formValid || isListing}>
 				List for {listingType || 'N/A'}
-			</button>
+				{#if isListing}
+					<ButtonSpinner />
+				{/if}
+			</PrimaryButton>
 		</div>
-
-		{#if isListing}
-			<Loader class="w-8 h-8 mx-1" />
-		{/if}
 	</div>
 
 	<div class="p-8 border-0 border-l separator w-80">
