@@ -13,5 +13,5 @@
 		<svelte:component this={tokenIconComponent} />
 		<div>{tokenAmount}</div>
 	</div>
-	<div class="opacity-50">{timeAgo}</div>
+	<div class="opacity-50 text-sm">{timeAgo}</div>
 </div>
