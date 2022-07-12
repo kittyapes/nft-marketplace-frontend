@@ -16,7 +16,7 @@
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { noTryAsync } from 'no-try';
-	import { apiGetCollectionById } from '$utils/api/collection';
+	import { apiGetCollectionById, apiGetCollectionBySlug } from '$utils/api/collection';
 
 	export let options: NftCardOptions;
 
@@ -39,11 +39,10 @@
 		const popupHandler = setPopup(options.popupComponent, { props: { options: { ...options.popupOptions, favorited: options.favorited } }, onClose: () => removeUrlParam('id') });
 
 		// load in additional data after opening popup
-		const collectionData = await apiGetCollectionById(options.popupOptions?.collectionData?.id).catch((e) => {});
+		const collectionData = await apiGetCollectionBySlug(options.collectionSlug).catch((e) => {});
 
 		// replacing partial data from API with detailed collection data
 		options.popupOptions.collectionData = collectionData;
-
 		updatePopupProps(popupHandler?.id, { options: { ...options.popupOptions, favorited: options.favorited } });
 	}
 
