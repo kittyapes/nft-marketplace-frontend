@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
-
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
@@ -14,7 +13,6 @@
 	import { parseToken } from '$utils/misc/priceUtils';
 	import { createToggle } from '$utils/misc/toggle';
 	import { notifyError } from '$utils/toast';
-	import dayjs from 'dayjs';
 	import { noTryAsync } from 'no-try';
 	import { createEventDispatcher } from 'svelte';
 
