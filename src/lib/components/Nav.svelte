@@ -2,7 +2,7 @@
 	// import Search from './Search.svelte';
 	import ProfilePopup from './ProfilePopup.svelte';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
-	import { appSigner } from '$stores/wallet';
+	import { appSigner, connectionDetails } from '$stores/wallet';
 	import { onMount } from 'svelte';
 	import { profileData } from '$stores/user';
 	import { fade } from 'svelte/transition';
@@ -34,13 +34,19 @@
 	profileData.subscribe((profile) => {
 		showCreate = profile && (profile.status === 'VERIFIED' || profile.roles.includes('superadmin'));
 	});
+
+	$: useTestnets = $connectionDetails?.chainId !== 1 || import.meta.env.VITE_DEFAULT_NETWORK !== '1';
 </script>
 
 <div class="fixed z-10 flex w-full">
 	<div class="fixed z-10 flex items-center w-full h-16 pl-8 pr-2 overflow-x-visible bg-white gap-x-8 drop-shadow-lg scrollbar-hidden snap-mandatory snap-x">
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
-			<img src="/svg/logo/logo.alpha.svg" alt="Hinata logo." />
+			{#if useTestnets}
+				<img src="/svg/logo/logo.testnets.svg" alt="Hinata Testnets logo." />
+			{:else}
+				<img src="/svg/logo/logo.alpha.svg" alt="Hinata logo." />
+			{/if}
 		</a>
 
 		<!-- <Search class="snap-start" /> -->
