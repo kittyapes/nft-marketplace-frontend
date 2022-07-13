@@ -49,9 +49,9 @@
 		description: 'The anime and metaverse NFT platform for browsing and creating web3 artwork that you can auction, raffle or sell for cryptocurrency using your Ethereum wallet.',
 		images: [
 			{
-				url: 'https://picsum.photos/300/200',
-				width: 600,
-				height: 400,
+				url: 'https://hinata-prod.mypinata.cloud/ipfs/QmSL6bqojDfspYKai2jmFY19ZHng8X3XmHZZEAmmGum6TE',
+				width: 1200,
+				height: 750,
 				alt: 'Hinata anime characters on a festival.'
 			}
 		],
