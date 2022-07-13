@@ -80,6 +80,7 @@
 
 			if (beforeLength === collections.length) break;
 			page++;
+			console.log(collections);
 		}
 
 		if (nftData.collectionName) {
@@ -162,11 +163,10 @@
 
 	const handleCollectionSelection = (event) => {
 		// Skip this function during collection loading
-		if ($availableCollections.length < 2) return;
-
 		if (event.detail?.label === 'Create new collection') {
 			goto(event.detail?.value);
-		} else {
+		} else if ($availableCollections.length < 2) return;
+		else {
 			nftData.collectionName = event.detail?.label;
 			selectedCollectionId = event.detail?.value;
 		}

@@ -34,18 +34,18 @@
 			<div class="uppercase">24h vol %</div>
 		</div>
 		{#each collections as collection, i}
-			<div class="grid w-full py-4 border-t border-black border-opacity-[0.15] clickable" transition:slide|local on:click={() => goto('/collections/' + collection.slug)}>
+			<div class="grid w-full py-4 border-t border-black border-opacity-[0.15] " transition:slide|local>
 				<div class="grid grid-cols-[1.5fr_7fr_1.5fr_3fr_2fr_3fr] w-[95%] place-items-center">
 					<div class="text-center text-sm grid place-items-center">{i + 1}</div>
-					<div class="flex place-items-center gap-6 place-self-start">
+					<a href={'/collections/' + collection.slug} class="flex place-items-center gap-6 place-self-start clickable w-full">
 						<div class="w-12 h-12 background profile-pic bg-cover rounded-full" style="--url: url({collection.logoImageUrl})" />
-						<div class="flex font-semibold text-sm gap-2">
+						<div class="flex font-semibold text-sm gap-2 ">
 							{collection.name}
-							{#if collection.verified}
+							{#if collection.mintedFrom?.toLowerCase() === 'hinata'}
 								<VerifiedBadge />
 							{/if}
 						</div>
-					</div>
+					</a>
 					<div class="flex place-items-center gap-2 text-sm">
 						<Eth />
 						{seperateNumberWithCommas(Math.round((collection.floorPrice ?? 0 + Number.EPSILON) * 100) / 100)}
