@@ -105,7 +105,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 			listingType,
 			price: options.sale?.price || options.auction.startingPrice || '0',
 			startTime: options.startTime || dayjs().unix(),
-			reservePrice: options.auction?.reservePrice || '0',
+			reservePrice: options.auction?.reservePrice || options.auction.startingPrice || options.sale.price,
 			duration: options.duration,
 			tokenIds,
 			tokenAmounts,
