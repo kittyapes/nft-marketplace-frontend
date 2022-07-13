@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 
 	import Popup from '../Popup.svelte';
+	import ResponsovePopupContainer from '../ResponsovePopupContainer.svelte';
 	import AssetContainer from './sections/AssetContainer.svelte';
 	import RightSection from './sections/RightSection.svelte';
 
@@ -28,7 +29,7 @@
 	$: console.debug('[Resource Data]:', options.rawResourceData);
 </script>
 
-<Popup class="w-full rounded-none lg:rounded-xl lg:w-[64rem] h-[45rem] pb-8 transition-all duration-200" closeButton on:close={handler.close}>
+<Popup class="w-full h-full overflow-y-auto rounded-none lg:rounded-xl lg:w-[1000px] lg:h-[700px] pb-8 transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>
 	<!-- Back button -->
 	<button class="absolute flex items-center flex-grow-0 gap-2 px-10 btn disabled:opacity-0 top-4" disabled={!showBackButton} on:click={rightSectionInstance.goBack()}>
 		<img src={getIconUrl('back-button')} alt="Arrow pointing left." />
