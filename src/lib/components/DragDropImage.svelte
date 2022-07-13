@@ -21,7 +21,12 @@
 	let fileType: 'image' | 'video' = null;
 
 	$: if (browser && previewSrc) {
-		fileType = previewSrc.split('/')[0].split(':')[1] as any;
+		if (!acceptedFormats.includes(previewSrc.split(':')[1].split(';')[0])) {
+			previewSrc = '';
+			files = [];
+		} else {
+			fileType = previewSrc.split('/')[0].split(':')[1] as any;
+		}
 	}
 
 	$: if (browser && files.length) {

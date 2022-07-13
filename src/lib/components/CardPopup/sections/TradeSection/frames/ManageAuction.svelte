@@ -46,6 +46,23 @@
 
 	let cancelButtonContainer: HTMLElement;
 
+	async function recreateListing() {
+		options.staleResource.set({ reason: 'relisting' });
+		dispatch('set-state', {
+			name: 'recreate-listing',
+			props: {
+				options,
+				selectedListing: 'auction',
+				price: options.auctionData.startingPrice,
+				paymentTokenTicker: options.listingData.tokenSymbol,
+				duration: options.duration,
+				startingPrice: options.auctionData.startingPrice,
+				reservePrice: options.auctionData.reservePrice,
+				quantity: '1'
+			}
+		});
+	}
+
 	async function cancelAuction() {
 		isWorking = true;
 		isCancelling = true;
@@ -58,7 +75,10 @@
 			dispatch('set-state', { name: 'error' });
 		} else {
 			options.staleResource.set({ reason: 'cancelled' });
-			dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Listing cancelled successfully.' } });
+			dispatch('set-state', {
+				name: 'success',
+				props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Listing cancelled successfully.', showRelistButton: true, relistFunction: recreateListing }
+			});
 		}
 
 		isWorking = false;

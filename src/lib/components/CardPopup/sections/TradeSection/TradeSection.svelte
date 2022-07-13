@@ -22,6 +22,7 @@
 		{ name: 'browse-sale', component: BrowseSale },
 		{ name: 'browse-auction', component: BrowseAuction },
 		{ name: 'create-listing', component: CreateListing },
+		{ name: 'recreate-listing', component: CreateListing },
 		{ name: 'manage-sale', component: ManageSale },
 		{ name: 'manage-auction', component: ManageAuction },
 		{ name: 'success', component: Success },
