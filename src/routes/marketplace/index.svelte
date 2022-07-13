@@ -54,7 +54,8 @@
 					options={[
 						{ label: 'Newest', value: 'NEWEST' },
 						{ label: 'Oldest', value: 'OLDEST' },
-						{ label: 'Most Popular', value: 'POPULAR' },
+						// commenting it out for now because it doesn't work on be
+						//{ label: 'Most Popular', value: 'POPULAR' },
 						{ label: 'Ending Now', value: 'END1MIN' }
 					]}
 				/>

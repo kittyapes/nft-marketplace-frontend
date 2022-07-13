@@ -22,10 +22,27 @@
 
 	// $: listingExpired = dayjs(options.listingData.startTime).add(options.listingData.duration, 'seconds').isBefore(dayjs());
 
-	let isCancellingListing = false;
+	let isCancellingListing = createToggle();
+
+	async function recreateListing() {
+		options.staleResource.set({ reason: 'relisting' });
+		dispatch('set-state', {
+			name: 'recreate-listing',
+			props: {
+				options,
+				selectedListing: 'sale',
+				price: options.saleData.price,
+				paymentTokenTicker: options.listingData.tokenSymbol,
+				duration: options.duration,
+				startingPrice: options.saleData.price ?? '0',
+				reservePrice: '',
+				quantity: '1'
+			}
+		});
+	}
 
 	async function cancelListing() {
-		isCancellingListing = true;
+		isCancellingListing.toggle();
 
 		const [err, res] = await noTryAsync(() => contractCancelListing(options.listingData.onChainId));
 
@@ -35,10 +52,13 @@
 			dispatch('set-state', { name: 'error', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Listing cancelled successfully.' } });
 		} else {
 			options.staleResource.set({ reason: 'cancelled' });
-			dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Listing cancelled successfully.' } });
+			dispatch('set-state', {
+				name: 'success',
+				props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Listing cancelled successfully.', showRelistButton: true, relistFunction: recreateListing }
+			});
 		}
 
-		isCancellingListing = false;
+		isCancellingListing.toggle();
 	}
 
 	const isUpdatingListing = createToggle();
@@ -134,9 +154,9 @@
 	</div>
 
 	<div class="flex gap-2 mt-4">
-		<SecondaryButton disabled={isCancellingListing} on:click={cancelListing}>
-			{#if isCancellingListing}
-				<ButtonSpinner />
+		<SecondaryButton disabled={$isCancellingListing} on:click={cancelListing}>
+			{#if $isCancellingListing}
+				<ButtonSpinner secondary />
 			{/if}
 			Cancel Listing
 		</SecondaryButton>

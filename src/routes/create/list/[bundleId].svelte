@@ -45,7 +45,10 @@
 
 		if (nftRes) {
 			if (nftRes.tokenStandard === 'ERC1155') {
-				maxQuantity = await getUserNftBalance(nftRes.contractAddress, nftRes.nftId);
+				// TODO debug and remove || 1 hotfix
+				const balance = await getUserNftBalance(nftRes.contractAddress, nftRes.nftId);
+				console.warn('[Hotfix]: Owned quantity is probably incorrect!', balance);
+				maxQuantity = balance.balance || 1;
 			} else {
 				maxQuantity = 1;
 			}

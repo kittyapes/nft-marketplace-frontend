@@ -7,6 +7,7 @@ export interface NftCardOptions {
 	animationUrl?: string;
 	title: string;
 	collectionName?: string;
+	collectionSlug?: string;
 	likes?: number;
 	price?: string;
 	favorited?: boolean;

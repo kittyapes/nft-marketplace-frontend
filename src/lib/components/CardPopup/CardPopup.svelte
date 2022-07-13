@@ -20,11 +20,8 @@
 
 	onMount(async () => {
 		if (options) {
-			if (options.nftData[0].contractType === 'ERC1155') {
-				options.nftData[0].userNftBalance = await getUserNftBalance(options.nftData[0].contractAddress, options.nftData[0].tokenId);
-			} else {
-				options.nftData[0].userNftBalance = 1;
-			}
+			const { balance, supply } = await getUserNftBalance(options.nftData[0].contractAddress, options.nftData[0].tokenId);
+			options.nftData[0].userNftBalance = balance;
 		}
 	});
 

@@ -9,10 +9,12 @@
 	export let options: CardPopupOptions;
 
 	let marketFee = 0;
-	let nftBalance = 0;
+	$: nftBalance = 0;
+
+	$: console.log(options, totalNfts, ownedOrListedNfts, nftBalance);
 
 	$: ownedOrListedNfts = options?.listingData ? options?.listingData?.quantity ?? 1 : nftBalance;
-	$: totalNfts = options?.rawResourceData?.amount ? options?.rawResourceData?.amount ?? 1 : options?.rawResourceData?.nfts?.[0]?.nft.amount ?? 1;
+	$: totalNfts = 1;
 
 	// Never show the back button on this tab
 	export const showBackButton = false;
@@ -21,7 +23,7 @@
 	// the bundle section
 	$: nftData = options.nftData?.[0];
 	$: properties = [
-		{ name: 'Creator', value: nftData.creator },
+		{ name: 'Creator', value: nftData.creator || options.rawResourceData.metadata?.creator?.address },
 		{ name: 'Collection name', value: options.collectionData?.name },
 		{ name: 'Edition', value: nftData.metadata?.edition },
 		{ name: 'Description', value: nftData.metadata?.description }
@@ -46,7 +48,9 @@
 		// When its not a listing
 		marketFee = await getMarketFee();
 		if (!options.listingData) {
-			nftBalance = await getUserNftBalance(options.nftData[0].contractAddress, options.nftData[0].tokenId);
+			let { balance, supply } = await getUserNftBalance(options.nftData[0].contractAddress, options.nftData[0].tokenId);
+			nftBalance = balance;
+			totalNfts = supply;
 		}
 	});
 
@@ -82,7 +86,7 @@
 				<div
 					on:click={() => {
 						closePopup();
-						goto('/profile/' + nftData.creator);
+						if (properties[0].value) goto('/profile/' + properties[0].value);
 					}}
 					class="overflow-hidden clickable"
 				>
