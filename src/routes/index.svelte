@@ -12,6 +12,7 @@
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import NftList from '$lib/components/NftList.svelte';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
+	import { MetaTags } from 'svelte-meta-tags';
 
 	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
@@ -36,6 +37,27 @@
 		collections = await apiGetMostActiveCollections();
 	});
 </script>
+
+<MetaTags
+	title="Hinata"
+	description="The anime and metaverse NFT platform for browsing and creating web3 artwork that you can auction, raffle or sell for cryptocurrency using your Ethereum wallet."
+	canonical="https://hinata.io/"
+	openGraph={{
+		type: 'website',
+		url: 'https://hinata.io/',
+		title: 'Hinata - Anime NFT Marketplace',
+		description: 'The anime and metaverse NFT platform for browsing and creating web3 artwork that you can auction, raffle or sell for cryptocurrency using your Ethereum wallet.',
+		images: [
+			{
+				url: 'https://hinata-prod.mypinata.cloud/ipfs/QmSL6bqojDfspYKai2jmFY19ZHng8X3XmHZZEAmmGum6TE',
+				width: 1200,
+				height: 750,
+				alt: 'Hinata anime characters on a festival.'
+			}
+		],
+		site_name: 'Hinata'
+	}}
+/>
 
 <div
 	class="

@@ -1,14 +1,13 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
-	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import ArrowDown from '$icons/arrow-down.svelte';
 	import { seperateNumberWithCommas } from '$utils/misc/seperateNumberWithSeparators';
 	import { slide } from 'svelte/transition';
 	import type { Collection } from '$utils/api/collection';
-	import { goto } from '$app/navigation';
 	import { inview } from 'svelte-inview';
 	import { createEventDispatcher } from 'svelte';
 	import DiamondsLoader from '../DiamondsLoader.svelte';
+	import HinataBadge from '$icons/hinata-badge.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -42,7 +41,7 @@
 						<div class="flex font-semibold text-sm gap-2 ">
 							{collection.name}
 							{#if collection.mintedFrom?.toLowerCase() === 'hinata'}
-								<VerifiedBadge />
+								<HinataBadge />
 							{/if}
 						</div>
 					</a>
