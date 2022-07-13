@@ -141,10 +141,10 @@
 				<div class="font-semibold text-lg">
 					<h1>{searchResults.users.data.length} Verified Creators</h1>
 				</div>
-				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[95vw] scrollbar-hide">
+				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[99vw] scrollbar-hide">
 					{#each searchResults.users.data as user}
-						<div class="max-w-xs w-full" on:click={() => goto('/profile/' + user.address)}>
-							<FeaturedArtistCard title={user.username} description={user.bio} coverImg={user.coverUrl} profileImg={user.thumbnailUrl} />
+						<div class=" w-full" on:click={() => goto('/profile/' + user.address)}>
+							<FeaturedArtistCard title={user.username || 'Guest User'} description={user.bio || 'No bio'} coverImg={user.coverUrl} profileImg={user.thumbnailUrl} />
 						</div>
 					{/each}
 				</div>

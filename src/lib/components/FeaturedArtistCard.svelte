@@ -7,7 +7,7 @@
 	export let profileImg: string;
 </script>
 
-<div class="rounded-2xl overflow-hidden border w-full  clickable">
+<div class="rounded-2xl overflow-hidden border w-full  clickable min-w-[275px] min-h-[280px]">
 	<img src={coverImg} alt="" class="h-32 w-full object-cover" />
 
 	<div class="relative px-4">
