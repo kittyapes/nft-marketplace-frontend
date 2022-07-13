@@ -8,7 +8,7 @@
 	import NftList from '$lib/components/NftList.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { apiNftToNftCard } from '$utils/adapters/apiNftToNftCard';
-	import { apiGetCollectionBySlug, apiSearchCollections, type Collection } from '$utils/api/collection';
+	import { apiGetCollectionBySlug, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
@@ -17,6 +17,7 @@
 	import { onMount } from 'svelte';
 	import { notifyError } from '$utils/toast';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
+	import { MetaTags } from 'svelte-meta-tags';
 
 	let collectionData: Collection;
 	let nfts = [];
@@ -47,12 +48,10 @@
 			return;
 		}
 
-		console.log(res);
 		if (res.adapted.length === 0) {
 			reachedEnd = true;
 		} else {
 			nfts = [...nfts, ...res.adapted];
-			console.log(nfts);
 			index++;
 		}
 
@@ -98,11 +97,12 @@
 
 	async function fetchCollectionData() {
 		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => undefined);
+		console.log(collectionData);
 
 		// Populate collection stats
 		let formatter = Intl.NumberFormat('en', { notation: 'compact' });
 		Object.keys(collectionStats).map((key) => {
-			if (collectionData[key]) {
+			if (collectionData?.[key]) {
 				collectionStats[key].value = formatter.format(collectionData[key]);
 			}
 		});
@@ -132,6 +132,29 @@
 	let menuAttachElement: AttachToElement;
 	onMount(() => document.addEventListener('scroll', () => menuAttachElement?.recalc()));
 </script>
+
+{#if collectionData}
+	<MetaTags
+		title={collectionData?.name + ' - Collection | Hinata Marketplace'}
+		description={collectionData?.description}
+		canonical={'https://hinata.io/' + collectionData?.slug}
+		openGraph={{
+			type: 'website',
+			url: 'https://hinata.io/' + collectionData?.slug,
+			title: collectionData?.name + ' - Collection | Hinata Marketplace',
+			description: collectionData?.description,
+			images: [
+				{
+					url: collectionData?.backgroundImageUrl,
+					width: 800,
+					height: 400,
+					alt: collectionData?.name + 'Collection banner image.'
+				}
+			],
+			site_name: 'Hinata'
+		}}
+	/>
+{/if}
 
 <main class="px-16 mx-auto">
 	<div class="relative mt-8">
