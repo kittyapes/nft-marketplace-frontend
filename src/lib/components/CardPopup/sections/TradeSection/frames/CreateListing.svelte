@@ -35,7 +35,7 @@
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: 'WETH',
 			quantity: BigNumber.from(1),
-			startTime: dayjs().unix() + 10,
+			startTime: startDateTs,
 			listingType: listingType,
 			sale: {} as any,
 			auction: {} as any
