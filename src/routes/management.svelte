@@ -407,11 +407,11 @@
 	{#if mode === 'COLLECTION'}
 		<div class="flex flex-col w-full gap-4 ">
 			<div class="flex flex-col gap-1">
-				<div class="text-color-black ">Verify Collection on Marketplace</div>
+				<div class="text-color-black ">Add address to Whitelisted Collections</div>
 				<div class="flex gap-10">
 					<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={whitelistingCollectionAddress} />
 					<div class="flex-grow" />
-					<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" on:click={handleVerify}>Verify</button>
+					<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" on:click={handleVerify}>Add</button>
 				</div>
 			</div>
 		</div>
