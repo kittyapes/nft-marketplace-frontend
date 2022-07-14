@@ -49,7 +49,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	};
 
 	if (options.startTime) {
-		fields['startTime'] = options.startTime.toString();
+		fields['startTime'] = dayjs(options.startTime * 1000).isAfter(dayjs()) ? options.startTime : null;
 	}
 
 	const listing = {};

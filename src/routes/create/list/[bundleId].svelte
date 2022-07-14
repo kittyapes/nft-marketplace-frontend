@@ -80,7 +80,7 @@
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: 'WETH',
 			quantity: BigNumber.from(1),
-			startTime: dayjs(startDateTs).isAfter(dayjs()) ? startDateTs : null,
+			startTime: startDateTs,
 			listingType: listingType,
 			sale: {} as any,
 			auction: {} as any
