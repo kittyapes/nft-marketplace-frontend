@@ -9,11 +9,13 @@
 	import { getCollectionsByTitle, getListingsByTitle, getUsersByName } from '$utils/api/search/globalSearch';
 	import { debounce } from 'lodash-es';
 	import { onMount } from 'svelte';
+	import { inview } from 'svelte-inview';
 	import { goto } from '$app/navigation';
 
 	const fullResultsLimit = 20;
 
 	let loaded = false;
+	const inviewOptions = {};
 
 	let searchResults: SearchResults = {
 		listings: {
@@ -83,6 +85,7 @@
 
 				if (res.length === 0) {
 					searchResults.users.reachedEnd = true;
+					searchResults.users.isLoading = false;
 					searchResults = searchResults;
 					return;
 				}
@@ -127,19 +130,27 @@
 		{#if searchResults.collections?.data.length}
 			<div class="">
 				<div class="font-semibold text-lg">
-					<h1>{searchResults.collections.data.length} Collection results</h1>
+					<h1>Collection results</h1>
 				</div>
 				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[91vw] scrollbar-hide">
 					{#each searchResults.collections.data as collection}
 						<LargeCollectionCard {collection} />
 					{/each}
+					{#if searchResults.collections.isLoading}
+						<DiamondsLoader />
+					{:else}
+						<div use:inview={inviewOptions} on:change={() => searchResults.collections.fetchFunction($searchQuery)} />
+					{/if}
+					{#if searchResults.collections.reachedEnd && searchResults.collections.data?.length !== 0}
+						<div class="text-center placeholder min-w-max grid place-items-center">You have reached the end of this list.</div>
+					{/if}
 				</div>
 			</div>
 		{/if}
 		{#if searchResults.users?.data.length}
 			<div class="">
 				<div class="font-semibold text-lg">
-					<h1>{searchResults.users.data.length} Verified Creators</h1>
+					<h1>Verified Creators</h1>
 				</div>
 				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[99vw] scrollbar-hide">
 					{#each searchResults.users.data as user}
@@ -147,13 +158,21 @@
 							<FeaturedArtistCard title={user.username || 'Guest User'} description={user.bio || 'No bio'} coverImg={user.coverUrl} profileImg={user.thumbnailUrl} />
 						</div>
 					{/each}
+					{#if searchResults.users.isLoading}
+						<DiamondsLoader />
+					{:else}
+						<div use:inview={inviewOptions} on:change={() => searchResults.users.fetchFunction($searchQuery)} />
+					{/if}
+					{#if searchResults.users.reachedEnd && searchResults.users.data?.length !== 0}
+						<div class="text-center placeholder min-w-max grid place-items-center">You have reached the end of this list.</div>
+					{/if}
 				</div>
 			</div>
 		{/if}
 		{#if searchResults.listings?.data.length}
 			<div class="w-full">
 				<div class="font-semibold text-lg">
-					<h1>{searchResults.listings.data.length} items</h1>
+					<h1>Listings</h1>
 				</div>
 				<div class="">
 					<NftList
