@@ -35,7 +35,7 @@
 </script>
 
 <div
-	class="fixed"
+	class="fixed z-10"
 	style="
     top: {clientRect?.top + (bottom ? clientRect?.height : 0) + offsetY}px;
     left: {clientRect?.left + (right ? clientRect?.width : 0) + offsetX}px"

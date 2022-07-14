@@ -7,8 +7,10 @@
 	import { formatDatetimeFromISO } from '$utils/misc/formatDatetime';
 	import dayjs, { Dayjs } from 'dayjs';
 	import isoWeek from 'dayjs/plugin/isoWeek.js';
-	import { onMount } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import Toggle from './Toggle.svelte';
+
+	const dispatch = createEventDispatcher();
 
 	dayjs.extend(isoWeek);
 
@@ -51,6 +53,8 @@
 				value = viewedDate.add(12, 'hour');
 			}
 		}
+
+		dispatch('new-value', value);
 	}
 
 	onMount(resetToday);

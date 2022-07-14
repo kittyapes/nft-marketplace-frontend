@@ -2,7 +2,8 @@
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
-	import Browse from './frames/Browse.svelte';
+	import BrowseAuction from './frames/BrowseAuction.svelte';
+	import BrowseSale from './frames/BrowseSale.svelte';
 	import CreateListing from './frames/CreateListing.svelte';
 	import Error from './frames/Error.svelte';
 	import ManageAuction from './frames/ManageAuction.svelte';
@@ -18,7 +19,8 @@
 	}
 
 	const states: { name: string; component: any }[] = [
-		{ name: 'browse', component: Browse },
+		{ name: 'browse-sale', component: BrowseSale },
+		{ name: 'browse-auction', component: BrowseAuction },
 		{ name: 'create-listing', component: CreateListing },
 		{ name: 'recreate-listing', component: CreateListing },
 		{ name: 'manage-sale', component: ManageSale },
@@ -39,7 +41,8 @@
 				if (options.listingData.listingType === 'auction') stateName = 'manage-auction';
 				if (options.listingData.listingType === 'sale') stateName = 'manage-sale';
 			} else {
-				stateName = 'browse';
+				if (options.listingData.listingType === 'auction') stateName = 'browse-auction';
+				if (options.listingData.listingType === 'sale') stateName = 'browse-sale';
 			}
 		} else if (options.resourceType === 'nft') {
 			stateName = 'create-listing';

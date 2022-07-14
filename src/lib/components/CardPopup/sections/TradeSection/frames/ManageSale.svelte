@@ -2,7 +2,6 @@
 	import Info from '$icons/info.v2.svelte';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
-	import OfferAndAsk from '$lib/components/CardPopup/lib/OfferAndAsk.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
@@ -13,7 +12,7 @@
 	import { parseToken } from '$utils/misc/priceUtils';
 	import { createToggle } from '$utils/misc/toggle';
 	import { notifyError, notifySuccess } from '$utils/toast';
-	import { noTry, noTryAsync } from 'no-try';
+	import { noTryAsync } from 'no-try';
 	import { createEventDispatcher } from 'svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
 
@@ -135,26 +134,24 @@
 	<div class="flex-grow" />
 
 	<!-- Fees -->
-	<div class="mt-4 font-semibold">Fees</div>
-	<div class="grid gap-2 mt-2 mb-4 font-semibold" style:grid-template-columns="auto 6rem">
+	<div class="mt-4 ml-2 font-semibold">Fees</div>
+	<div class="grid gap-2 mt-2 font-semibold ml-2" style:grid-template-columns="auto 6rem">
 		<div>Creator Royalties:</div>
-		<div class="flex justify-end space-x-3">
+		<div class="flex justify-end space-x-3 items-center">
 			<div class="">0.0%</div>
-			<div class="w-6">
+			<div class="w-5">
 				<Info />
 			</div>
 		</div>
 
 		<div class="gradient-text">Hinata Fees:</div>
-		<div class="flex justify-end space-x-3">
+		<div class="flex justify-end space-x-3 items-center">
 			<div class="gradient-text">0%</div>
-			<div class="w-6">
+			<div class="w-5">
 				<Info />
 			</div>
 		</div>
 	</div>
-
-	<OfferAndAsk offer="N/A" ask="N/A" />
 
 	<div class="flex gap-2 mt-4">
 		<SecondaryButton disabled={$isCancellingListing} on:click={cancelListing}>
