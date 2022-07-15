@@ -132,7 +132,7 @@
 				<div class="font-semibold text-lg">
 					<h1>Collection results</h1>
 				</div>
-				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[91vw] scrollbar-hide">
+				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[100vw] overflow-y-hidden blue-scrollbar">
 					{#each searchResults.collections.data as collection}
 						<LargeCollectionCard {collection} />
 					{/each}
@@ -152,7 +152,7 @@
 				<div class="font-semibold text-lg">
 					<h1>Verified Creators</h1>
 				</div>
-				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[99vw] scrollbar-hide">
+				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[100vw] overflow-y-hidden blue-scrollbar">
 					{#each searchResults.users.data as user}
 						<div class=" w-full" on:click={() => goto('/profile/' + user.address)}>
 							<FeaturedArtistCard title={user.username || 'Guest User'} description={user.bio || 'No bio'} coverImg={user.coverUrl} profileImg={user.thumbnailUrl} />
@@ -190,3 +190,15 @@
 		<DiamondsLoader />
 	{/if}
 </div>
+
+<style>
+	.blue-scrollbar::-webkit-scrollbar {
+		width: 0.5rem;
+		height: 0.5rem;
+	}
+
+	.blue-scrollbar::-webkit-scrollbar-thumb {
+		@apply bg-gradient-to-r from-color-purple to-color-blue rounded-full;
+		box-shadow: inset 0 0 2px #c6c6c6;
+	}
+</style>
