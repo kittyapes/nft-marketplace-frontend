@@ -256,7 +256,7 @@
 		serverCollectionToUpdate.set({ ...res });
 		collectionData.set({ ...res });
 		collectionUrl.set(urlStart + res.slug);
-		console.log(res);
+
 		originalCollectionData = { ...res };
 	}
 
@@ -269,8 +269,6 @@
 		}
 
 		dataChanged = JSON.stringify(originalCollectionData) !== JSON.stringify($collectionData);
-		console.log(originalCollectionData, $collectionData);
-		console.log(dataChanged);
 	}
 
 	// Utils
