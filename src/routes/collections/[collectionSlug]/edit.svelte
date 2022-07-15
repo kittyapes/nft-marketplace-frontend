@@ -280,7 +280,8 @@
 			discordUrl: d.discordUrl,
 			displayTheme: d.displayTheme,
 			instagramUrl: d.instagramUrl,
-			isExplicitSenstive: d.isExplicitSensitive || false,
+			// senstive === hotfix for a backend typo...
+			isExplicitSenstive: d.isExplicitSenstive || false,
 			name: d.name,
 			slug: d.slug.toLowerCase(),
 			telegramUrl: d.telegramUrl,
@@ -420,7 +421,7 @@
 			<div class="font-semibold uppercase">Explicit & Sensitive Content</div>
 			<p class="mt-2 mb-2">Set this collection as explicit and sensitive content.</p>
 		</div>
-		<Toggle style={{ button: 'bg-[#747474]', pill: '!w-14 bg-[#EBEBEB]' }} onInsideLabel="" offInsideLabel="" />
+		<Toggle style={{ button: 'bg-[#747474]', pill: '!w-14 bg-[#EBEBEB]' }} onInsideLabel="" offInsideLabel="" bind:state={$collectionData.isExplicitSenstive} />
 	</div>
 
 	<FormErrorList validity={$formValidity} />
