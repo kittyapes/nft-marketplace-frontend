@@ -4,6 +4,10 @@
 	import { page } from '$app/stores';
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
+	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
+	import type { NftCardOptions } from '$interfaces/nftCardOptions';
+	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
@@ -14,23 +18,20 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import { apiNftToNftCard } from '$utils/adapters/apiNftToNftCard';
-	import { getListings } from '$utils/api/listing';
-	import { apiGetUserNfts } from '$utils/api/nft';
+	import { getListing, getListings } from '$utils/api/listing';
+	import { apiGetUserNfts, getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
+	import { apiGetHiddenNfts } from '$utils/api/user';
 	import { userHasRole } from '$utils/auth/userRoles';
+	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
+	import { isEthAddress } from '$utils/validator/isEthAddress';
 	import type { UserData } from 'src/interfaces/userData';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
-	import { getListing } from '$utils/api/listing';
-	import { removeUrlParam } from '$utils/misc/removeUrlParam';
-	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
-	import { getNft } from '$utils/api/nft';
-	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
-	import { isEthAddress } from '$utils/validator/isEthAddress';
 
 	$: address = $page.params.address;
 
@@ -84,13 +85,17 @@
 	let totalNfts: number | null = null;
 	$: totalNfts;
 
-	const tabs = {
-		collected: {
-			index: 1,
-			reachedEnd: false,
-			fetchFunction: async () => {
+	const tabs: {
+		fetchFunction: (tab: any, page: number, limit: number) => Promise<{ res: any; adapted: []; err: Error }>;
+		label: string;
+		index?: number;
+		reachedEnd?: boolean;
+		data?: [];
+	}[] = [
+		{
+			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
-				res.res = await apiGetUserNfts(address, 'COLLECTED', tabs.collected.index, 10);
+				res.res = await apiGetUserNfts(address, 'COLLECTED', page, limit);
 				res.adapted = await Promise.all(res.res.res.map((nft) => apiNftToNftCard(nft)));
 
 				for (const nft of res.adapted) {
@@ -99,54 +104,61 @@
 
 				return res;
 			},
-			data: [],
 			label: 'Collected NFTs'
 		},
-		created: {
-			index: 1,
-			reachedEnd: false,
-			fetchFunction: async () => {
+		{
+			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
-				res.res = await apiGetUserNfts(address, 'MINTED', tabs.created.index, 10);
+				res.res = await apiGetUserNfts(address, 'MINTED', page, limit);
 				res.adapted = await Promise.all(res.res.res.map((nft) => apiNftToNftCard(nft)));
 				return res;
 			},
-			data: [],
 			label: 'Created NFTs'
 		},
-		listings: {
-			index: 1,
-			reachedEnd: false,
-			fetchFunction: async () => {
+		{
+			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
-				res.res = await getListings({ seller: address }, tabs.listings.index, 10);
+				res.res = await getListings({ seller: address }, page, limit);
 				// The following is not async, it's just that I do not wanna break the whole app
 				// one week before release by changing an adapter. :)
 				res.adapted = await Promise.all(res.res.map(adaptListingToNftCard));
 				return res;
 			},
-			data: [],
 			label: 'Active Listings'
 		},
-		favorites: {
-			index: 1,
-			reachedEnd: false,
-			fetchFunction: async () => {
+		{
+			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
 				res.adapted = [];
 				const nfts = await getUserFavoriteNfts(address);
 				res.adapted = await Promise.all(nfts?.map((nft) => apiNftToNftCard(nft.nft)));
 
-				tabs.favorites.reachedEnd = true;
+				tab.reachedEnd = true;
 
 				return res;
 			},
-			data: [],
 			label: 'Favorites'
-		}
-	};
+		},
+		{
+			fetchFunction: async (tab, page, limit) => {
+				const res = {};
 
-	let selectedTab = tabs.collected;
+				res['res'] = await apiGetHiddenNfts(address, page, limit);
+				res['adapted'] = res['res'].map(apiNftToNftCard);
+
+				return res as any;
+			},
+			label: 'Hidden'
+		}
+	];
+
+	tabs.map((t) => {
+		t.index = 1;
+		t.data = [];
+		t.reachedEnd = false;
+	});
+
+	let selectedTab = tabs[0];
 
 	let isFetchingNfts = false;
 
@@ -157,7 +169,7 @@
 
 		isFetchingNfts = true;
 
-		const res = await tab.fetchFunction();
+		const res = await tab.fetchFunction(tab, tab.index, 10);
 
 		if (res.err) {
 			console.error(res.err);
@@ -175,6 +187,18 @@
 		selectedTab = selectedTab;
 
 		isFetchingNfts = false;
+	}
+
+	let cardPropsMapper: (v: NftCardOptions) => { options: CardPopupOptions } & any;
+
+	$: {
+		if (selectedTab.label === 'Collected NFTs') {
+			cardPropsMapper = (v: NftCardOptions) => ({ options: v, menuItems: ['hide'] });
+		} else if (selectedTab.label === 'Hidden') {
+			cardPropsMapper = (v: NftCardOptions) => ({ options: v, menuItems: ['reveal'] });
+		} else {
+			cardPropsMapper = (v) => ({ options: v });
+		}
 	}
 </script>
 
@@ -276,7 +300,7 @@
 	<div class="h-px bg-black opacity-30" />
 
 	<div class="max-w-screen-xl mx-auto">
-		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={fetchMore} reachedEnd={selectedTab.reachedEnd} />
+		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={fetchMore} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
 	</div>
 </div>
 

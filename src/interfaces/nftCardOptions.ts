@@ -2,6 +2,7 @@ import type { MongoId } from '$interfaces';
 import type { CardPopupOptions } from './cardPopupOptions';
 
 export interface NftCardOptions {
+	databaseId: string;
 	id: string;
 	imageUrl?: string;
 	animationUrl?: string;

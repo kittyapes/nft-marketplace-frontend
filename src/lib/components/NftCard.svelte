@@ -10,23 +10,31 @@
 	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
 	import { fade } from 'svelte/transition';
 	import getTimeRemaining from '$utils/timeRemaining';
-	import { onMount } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import { likedNfts, refreshLikedNfts } from '$stores/user';
 	import { walletConnected } from '$utils/wallet';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { noTryAsync } from 'no-try';
-	import { apiGetCollectionById, apiGetCollectionBySlug } from '$utils/api/collection';
+	import { apiGetCollectionBySlug } from '$utils/api/collection';
+	import { apiHideNft, apiRevealNft } from '$utils/api/nft';
+	import { includes } from 'lodash-es';
+
+	const dispatch = createEventDispatcher();
 
 	export let options: NftCardOptions;
+	export let menuItems: ('hide' | 'reveal' | 'transfer')[] = [];
 
 	$: likes = options?.likes;
 	let dotsOpened = false;
 	let imgLoaded = false;
 
-	const toggleDots = () => (dotsOpened = !dotsOpened);
+	const toggleDots = (ev: Event) => {
+		dotsOpened = !dotsOpened;
+		ev.stopPropagation();
+	};
 
-	async function handleClick() {
+	async function handleClick(ev) {
 		if (!options.popupOptions) return;
 
 		let id = options.popupOptions.rawResourceData._id;
@@ -108,11 +116,37 @@
 			}
 		}
 	})(time);
+
+	async function hideNft(ev: Event) {
+		dotsOpened = false;
+		ev.stopPropagation();
+
+		const res = await apiHideNft(options.databaseId);
+
+		if (res.err) {
+			notifyError('Failed to hide NFT. \n' + res.err.message);
+		} else {
+			dispatch('hide-me');
+		}
+	}
+
+	async function revealNft(ev: Event) {
+		dotsOpened = false;
+		ev.stopPropagation();
+
+		const res = await apiRevealNft(options.databaseId);
+
+		if (res.err) {
+			notifyError('Failed to reveal NFT. \n' + res.err.message);
+		} else {
+			dispatch('hide-me');
+		}
+	}
 </script>
 
 <!-- Added a maximum width to prevent the card from extending its bounds when its only one card  -->
 <div class="relative p-4 overflow-hidden border border-color-gray-base border-opacity-50 rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options?.popupOptions}>
-	<div class="flex items-center gap-x-2">
+	<div class="flex items-center gap-x-2 h-8">
 		<!-- Listing Timer If The Time has not Expired Yet or Listing isn't live -->
 		{#if options.popupOptions?.startTime}
 			{#if options.popupOptions?.isListingTimeActive}
@@ -146,8 +180,8 @@
 
 		<!-- Remove && false to show options -->
 		<!-- Owned by user -->
-		{#if false}
-			<button on:click={toggleDots}>
+		{#if menuItems?.length}
+			<button on:click={toggleDots} class="hover:opacity-50 h-8 w-8" transition:fade|local={{ duration: 150 }}>
 				<ThreeDots />
 			</button>
 		{/if}
@@ -183,11 +217,19 @@
 		{/if}
 	</div>
 
-	<!-- TODO If owned by user -->
-	{#if dotsOpened && false}
-		<div id="popup" class="absolute flex flex-col font-bold bg-white rounded-md top-10">
-			<button class="gradient-text transition-btn">TRANSFER</button>
-			<button class="transition-btn">HIDE</button>
+	{#if dotsOpened}
+		<div id="popup" class="absolute flex flex-col font-bold bg-white rounded-md top-10 w-32">
+			{#if menuItems.includes('transfer')}
+				<button class="gradient-text transition-btn disabled:opacity-75" disabled>TRANSFER</button>
+			{/if}
+
+			{#if menuItems.includes('hide')}
+				<button class="transition-btn" on:click={hideNft}>HIDE</button>
+			{/if}
+
+			{#if menuItems.includes('reveal')}
+				<button class="transition-btn" on:click={hideNft}>REVEAL</button>
+			{/if}
 		</div>
 	{/if}
 </div>
