@@ -226,7 +226,7 @@
 				<div class="text-[#1D1D1DB2] mt-4 text-sm">For other marketplaces:</div>
 				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
 				<div class="mt-1 text-sm font-semibold text-color-black w-max">
-					PNG, JPG, JPEG, GIF <br />
+					PNG, JPG, JPEG, GIF, WEBP <br />
 					Max 3MB
 				</div>
 			</div>

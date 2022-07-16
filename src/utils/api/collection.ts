@@ -26,7 +26,7 @@ export interface Collection {
 	paymentTokenTicker: 'ETH';
 	status?: 'INACTIVE' | 'ACTIVE';
 	paymentTokenAddress: string;
-	isExplicitSensitive: boolean;
+	isExplicitSenstive: boolean;
 	creator: string;
 	nfts: any[];
 	id: string;

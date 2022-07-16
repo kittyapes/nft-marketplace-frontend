@@ -7,7 +7,6 @@
 	import SearchBar from '$lib/components/management/SearchBar.svelte';
 	import { getUsers } from '$utils/api/management/getUsers';
 	import type { UserData } from 'src/interfaces/userData';
-	import EntryReport from '$lib/components/management/render-components/EntryReport.svelte';
 	import EntryGenericText from '$lib/components/management/render-components/EntryGenericText.svelte';
 	import Filter from '$lib/components/management/Filter.svelte';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
@@ -23,13 +22,37 @@
 	import { whitelistCollection } from '$utils/api/management/whitelistCollection';
 	import { getRoleColor } from '$utils/api/management/getRoleColor';
 	import { getHighestRole } from '$utils/api/management/getHighestRole';
+	import FormErrorList from '$lib/components/FormErrorList.svelte';
+	import { writable } from 'svelte/store';
+	import isCollectionAddress from '$utils/validator/isCollectionAddress';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
 	let collections: Collection[] = [];
 	let loaded = false;
 	let eventId;
-	let whitelistingCollectionAddress: string;
+	const whitelistingCollectionAddress = writable<string>('');
+
+	type CollectionErrors = {
+		isErc1155OrErc721: boolean;
+		isContract: boolean;
+	};
+	const formValidity = writable<Partial<{ [K in keyof CollectionErrors]: any }>>({});
+	$: validating = false;
+	$: formValid = Object.values($formValidity).every((v) => v === true);
+
+	whitelistingCollectionAddress.subscribe(async (collection_address) => {
+		if (collection_address) {
+			validating = true;
+			const validation_result = await isCollectionAddress(collection_address);
+			$formValidity.isContract = validation_result.isContract ? true : 'Invalid Contract Address Detected';
+			$formValidity.isErc1155OrErc721 = validation_result.isErc1155 || validation_result.isErc721 ? true : 'Please Add a Contract That Supports ERC721 or ERC1155 NFTs';
+			validating = false;
+		} else {
+			$formValidity.isContract = true;
+			$formValidity.isErc1155OrErc721 = true;
+		}
+	});
 
 	interface UserFetchingOptions {
 		filter: Partial<{
@@ -120,8 +143,8 @@
 	};
 
 	const handleVerify = async () => {
-		if (!whitelistingCollectionAddress) return;
-		const res = await whitelistCollection(whitelistingCollectionAddress).catch((e) => console.log(e));
+		if (!$whitelistingCollectionAddress) return;
+		const res = await whitelistCollection($whitelistingCollectionAddress).catch((e) => console.log(e));
 	};
 
 	let roleFilterOptions = [
@@ -407,13 +430,19 @@
 	{#if mode === 'COLLECTION'}
 		<div class="flex flex-col w-full gap-4 ">
 			<div class="flex flex-col gap-1">
-				<div class="text-color-black ">Verify Collection on Marketplace</div>
+				<div class="text-color-black ">Add address to Whitelisted Collections</div>
 				<div class="flex gap-10">
-					<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={whitelistingCollectionAddress} />
+					<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
+
 					<div class="flex-grow" />
-					<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" on:click={handleVerify}>Verify</button>
+
+					<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>Add</button>
 				</div>
 			</div>
+
+			{#if !validating}
+				<FormErrorList validity={$formValidity} />
+			{/if}
 		</div>
 	{/if}
 </div>
