@@ -20,4 +20,5 @@ export interface NftCardOptions {
 
 	/** IDs to send to the bakend to like when the user taps the like button. */
 	likeIds: MongoId[];
+	diasllowListing?: boolean;
 }

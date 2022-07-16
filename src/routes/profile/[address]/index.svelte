@@ -143,8 +143,15 @@
 			fetchFunction: async (tab, page, limit) => {
 				const res = {};
 
-				res['res'] = await apiGetHiddenNfts(address, page, limit);
-				res['adapted'] = res['res'].map(apiNftToNftCard);
+				// res['res'] = await apiGetHiddenNfts(address, page, limit);
+				// res['adapted'] = res['res'].map(apiNftToNftCard);
+				res['res'] = await getUserFavoriteNfts(address);
+				res.adapted = await Promise.all(res['res']?.map((nft) => apiNftToNftCard(nft.nft)));
+
+				res.adapted.forEach((v: NftCardOptions) => {
+					v.popupOptions.disallowListing = true;
+					v.diasllowListing = true;
+				});
 
 				return res as any;
 			},

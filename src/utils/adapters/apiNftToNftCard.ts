@@ -42,7 +42,8 @@ export async function apiNftToNftCard(data: ApiNftData, fallback?: Partial<{ col
 		likeIds: [data._id],
 		popupComponent: CardPopup,
 		popupOptions,
-		databaseId: data._id
+		databaseId: data._id,
+		disallowListing: false
 	};
 
 	return nftCardOptions;
