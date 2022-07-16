@@ -11,8 +11,6 @@
 	let marketFee = 0;
 	$: nftBalance = 0;
 
-	$: console.log(options, totalNfts, ownedOrListedNfts, nftBalance);
-
 	$: ownedOrListedNfts = options?.listingData ? options?.listingData?.quantity ?? 1 : nftBalance;
 	$: totalNfts = 1;
 

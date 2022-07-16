@@ -11,6 +11,7 @@
 	import { onMount } from 'svelte';
 	import { inview } from 'svelte-inview';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 
 	const fullResultsLimit = 20;
 
@@ -122,7 +123,12 @@
 		await debouncedSearch(val);
 	});
 
-	onMount(async () => await debouncedSearch($searchQuery));
+	onMount(async () => {
+		if ($page.url.searchParams.has('query')) {
+			$searchQuery = $page.url.searchParams.get('query');
+		}
+		await debouncedSearch($searchQuery);
+	});
 </script>
 
 <div class="w-full h-full p-10 flex flex-col gap-10 overflow-hidden">
@@ -141,9 +147,6 @@
 					{:else}
 						<div use:inview={inviewOptions} on:change={() => searchResults.collections.fetchFunction($searchQuery)} />
 					{/if}
-					{#if searchResults.collections.reachedEnd && searchResults.collections.data?.length !== 0}
-						<div class="text-center placeholder min-w-max grid place-items-center">You have reached the end of this list.</div>
-					{/if}
 				</div>
 			</div>
 		{/if}
@@ -154,7 +157,7 @@
 				</div>
 				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[100vw] overflow-y-hidden blue-scrollbar">
 					{#each searchResults.users.data as user}
-						<div class=" w-full" on:click={() => goto('/profile/' + user.address)}>
+						<div class="" on:click={() => goto('/profile/' + user.address)}>
 							<FeaturedArtistCard title={user.username || 'Guest User'} description={user.bio || 'No bio'} coverImg={user.coverUrl} profileImg={user.thumbnailUrl} />
 						</div>
 					{/each}
@@ -162,9 +165,6 @@
 						<DiamondsLoader />
 					{:else}
 						<div use:inview={inviewOptions} on:change={() => searchResults.users.fetchFunction($searchQuery)} />
-					{/if}
-					{#if searchResults.users.reachedEnd && searchResults.users.data?.length !== 0}
-						<div class="text-center placeholder min-w-max grid place-items-center">You have reached the end of this list.</div>
 					{/if}
 				</div>
 			</div>
@@ -191,7 +191,7 @@
 	{/if}
 </div>
 
-<style>
+<style type="postcss">
 	.blue-scrollbar::-webkit-scrollbar {
 		width: 0.5rem;
 		height: 0.5rem;

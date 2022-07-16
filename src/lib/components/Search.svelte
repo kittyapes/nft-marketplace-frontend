@@ -1,9 +1,7 @@
 <script lang="ts">
 	import Search from '$icons/search.svelte';
 	import { debounce } from 'lodash-es';
-	import { notifyError } from '$utils/toast';
 	import { getCollectionsByTitle, getListingsByTitle, getUsersByName } from '$utils/api/search/globalSearch';
-	import type { SearchResults } from 'src/interfaces/search/searchResults';
 	import { reject } from 'lodash-es';
 	import Loader from '$icons/loader.svelte';
 	import { tick } from 'svelte';
@@ -54,7 +52,6 @@
 		await searchCollections(query).catch((error) => console.log(error));
 
 		await tick();
-		$searchQuery = query;
 		show = true;
 	};
 
@@ -101,7 +98,7 @@
 			if (e.code === 'Enter') {
 				show = false;
 				searching = false;
-				goto('/search');
+				goto('/search?query=' + query);
 			}
 		}}
 		type="text"
@@ -193,7 +190,7 @@
 							on:click={() => {
 								show = false;
 								searching = false;
-								goto('/search');
+								goto('/search?query=' + query);
 							}}
 						>
 							All results

@@ -17,7 +17,7 @@
 </script>
 
 <div
-	class="relative px-6 py-4 border border-color-gray-base border-opacity-50 rounded-xl max-w-2xl flex flex-col gap-4 clickable min-w-[34rem]"
+	class="relative px-6 py-4 border border-color-gray-base border-opacity-50 rounded-xl flex flex-col gap-4 clickable min-w-[42rem] max-w-min"
 	on:click={() => goto('/collections/' + collection.slug)}
 >
 	<div class="flex flex-row gap-4">
