@@ -12,7 +12,6 @@ export default async function (address: string) {
 		// check if erc721
 		const contract_interface = await getContractInterface(address, get(appProvider));
 
-		console.log(is_contract, contract_interface);
 		if (is_contract) {
 			return {
 				isContract: true,
@@ -27,7 +26,6 @@ export default async function (address: string) {
 			};
 		}
 	} catch (error) {
-		console.log(error);
 		return {
 			isContract: false,
 			isErc721: false,
