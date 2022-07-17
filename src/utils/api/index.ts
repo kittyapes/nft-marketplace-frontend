@@ -1,5 +1,6 @@
 import { connectionDetails, currentUserAddress } from '$stores/wallet';
 import { get } from 'svelte/store';
+import type { AxiosError, AxiosResponse } from 'axios';
 
 export type ApiVersion = 'latest' | `sprint-${number}` | 'v2';
 
