@@ -32,7 +32,7 @@ export const getUsersByName = async (query: string, limit?: number, page?: numbe
         }
 
         // should be without permissions
-        const res = await axios.get(getApiUrl('latest', 'admins/users'),  { params , ...getAxiosConfig()});
+        const res = await axios.get(getApiUrl('latest', 'admins/users'),  { params , ...await getAxiosConfig()});
 
         return res.data.data as UserData[];
     } catch {

@@ -117,5 +117,5 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	formData.append('artstation', data.social.artstation);
 	formData.append('signature', signature);
 
-	await axios.put(getApiUrl('latest', `users`), formData, getAxiosConfig());
+	await axios.put(getApiUrl('latest', `users`), formData, await getAxiosConfig());
 }
