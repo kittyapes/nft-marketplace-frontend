@@ -1,9 +1,11 @@
 <script lang="ts">
 	import Info from '$icons/info.v2.svelte';
-	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import ListingPropertiesSlot from '$lib/components/primary-listing/ListingPropertiesSlot.svelte';
 	import SaleProperties from '$lib/components/primary-listing/SaleProperties.svelte';
+	import Dropdown from '$lib/components/Dropdown.svelte';
+	import type { CardOptions } from '$lib/components/NftCard.svelte';
+	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
@@ -18,7 +20,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let options: CardPopupOptions;
+	export let options: CardOptions;
 
 	// $: listingExpired = dayjs(options.listingData.startTime).add(options.listingData.duration, 'seconds').isBefore(dayjs());
 
@@ -32,8 +34,8 @@
 				options,
 				selectedListing: 'sale',
 				price: options.saleData.price,
-				paymentTokenTicker: options.listingData.tokenSymbol,
-				duration: options.duration,
+				paymentTokenTicker: options.listingData.paymentTokenTicker,
+				duration: options.listingData.duration,
 				startingPrice: options.saleData.price ?? '0',
 				reservePrice: '',
 				quantity: '1'
@@ -69,7 +71,7 @@
 		const [err, res] = await noTryAsync(() =>
 			contractUpdateListing(options.listingData.onChainId, {
 				sale: { price },
-				payTokenAddress: options.listingData.tokenAddress
+				payTokenAddress: options.listingData.paymentTokenAddress
 			})
 		);
 
@@ -98,8 +100,8 @@
 	let newPriceValid = false;
 
 	$: try {
-		const parsedNewPrice = parseToken(price, options.listingData.tokenAddress);
-		const parsedOldPrice = parseToken(options.saleData.price, options.listingData.tokenAddress);
+		const parsedNewPrice = parseToken(price, options.listingData.paymentTokenAddress);
+		const parsedOldPrice = parseToken(options.saleData.price, options.listingData.paymentTokenAddress);
 
 		newPriceValid = parsedNewPrice.lt(parsedOldPrice) && parsedNewPrice.gt(0);
 	} catch {

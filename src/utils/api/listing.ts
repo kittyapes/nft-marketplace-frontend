@@ -1,4 +1,5 @@
 import type { EthAddress, TokenStandard } from '$interfaces';
+import type { ApiNftData } from '$interfaces/apiNftData';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { getApiUrl } from '.';
@@ -50,7 +51,7 @@ export interface Listing {
 	listingStatus: 'ACTIVE';
 	listingType: ListingType;
 	listing: {
-		price?: number;
+		price?: string;
 		quantity: number;
 		startingPrice: string;
 		reservePrice: string;
@@ -59,32 +60,7 @@ export interface Listing {
 		_id: string;
 		nftId: string;
 		amount: number;
-		assetUrl?: string;
-		thumbnailUrl?: string;
-		favoriteCount?: number;
-		metadata?: any;
-		creator?: string;
-		contractAddress?: string;
-		collectionId?: string;
-		isExternal?: boolean;
-		collectionName?: string;
-		collectionSlug?: string;
-		tokenStandard?: TokenStandard;
-		nft?: {
-			_id: string;
-			assetUrl: string;
-			thumbnailUrl: string;
-			favoriteCount: number;
-			metadata: any;
-			creator: string;
-			contractAddress: string;
-			nftId: string;
-			collectionId: string;
-			isExternal: boolean;
-			collectionName: string;
-			collectionSlug: string;
-			tokenStandard: TokenStandard;
-		};
+		nft: ApiNftData;
 	}[];
 
 	paymentTokenTicker: string;

@@ -24,7 +24,7 @@ export async function refreshProfileData() {
 
 export const profileCompletionProgress = derived(profileData, ($profileData) => {
 	if (!$profileData) return null;
-	
+
 	return [$profileData?.email, $profileData?.bio, $profileData.thumbnailUrl, $profileData.coverUrl].filter((v) => !!v).length * 25;
 });
 
@@ -34,6 +34,4 @@ export async function refreshLikedNfts(address: string) {
 }
 
 export const userLikedNfts = writable<{ nft: ApiNftData }[]>([]);
-
-// for favoriting state between popup and card
-export const likedNfts = writable<[string[], -1 | 1 | 0]>([[], 0]);
+export const likedNftIds = derived(userLikedNfts, (userLiked) => userLiked.map((nft) => nft.nft.nftId));

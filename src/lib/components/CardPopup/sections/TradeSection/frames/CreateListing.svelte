@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Info from '$icons/info.v2.svelte';
-	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import type { CardOptions } from '$lib/components/NftCard.svelte';
 	import AuctionProperties from '$lib/components/primary-listing/AuctionProperties.svelte';
 	import ListingPropertiesSlot from '$lib/components/primary-listing/ListingPropertiesSlot.svelte';
 	import SaleProperties from '$lib/components/primary-listing/SaleProperties.svelte';
@@ -17,7 +17,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let options: CardPopupOptions;
+	export let options: CardOptions;
 
 	let listingType: ListingType = 'auction';
 	let maxQuantity = 1;
@@ -28,10 +28,10 @@
 		isListing = true;
 
 		const flowOptions: CreateListingFlowOptions = {
-			title: options.nftData[0].metadata?.name,
-			description: options.nftData[0].metadata?.description,
+			title: options.nfts[0].metadata?.name,
+			description: options.nfts[0].metadata?.description,
 			duration: durationSeconds,
-			nfts: [{ nftId: options.nftData[0].tokenId, amount: BigNumber.from(quantity || 1), collectionAddress: options.nftData[0]?.contractAddress ?? getContractData('storage').address }],
+			nfts: [{ nftId: options.nfts[0].onChainId, amount: BigNumber.from(quantity || 1), collectionAddress: options.nfts[0]?.contractAddress ?? getContractData('storage').address }],
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: 'WETH',
 			quantity: BigNumber.from(1),
@@ -94,7 +94,7 @@
 		<div>Creator Royalties:</div>
 		<div class="flex justify-end space-x-3">
 			<div class="">
-				{(options.collectionData?.royalties?.reduce((acum, value) => acum + Number(value.fees ?? 0), 0) || 0) + ' %'}
+				{(options.nfts[0].collectionData.royalties?.reduce((acum, value) => acum + Number(value.fees ?? 0), 0) || 0) + ' %'}
 			</div>
 			<div class="w-6">
 				<Info />

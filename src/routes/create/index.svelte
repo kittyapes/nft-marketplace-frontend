@@ -5,7 +5,7 @@
 	import type { NftDraft } from '$interfaces/nft/nftDraft';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
-	import NftCard from '$lib/components/NftCard.svelte';
+	import NftCard, { type CardOptions } from '$lib/components/NftCard.svelte';
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
@@ -184,6 +184,19 @@
 		}
 		$formValidity.quantity = !!nftData.quantity && nftData.quantity > 0 ? true : !nftData.quantity ? 'NFT quantity must be a minimum of 1' : true;
 	}
+
+	// Preview
+	$: previewMockOptions = {
+		resourceType: 'nft',
+		rawResourceData: null,
+		nfts: [
+			{
+				name: nftData.name || 'No Title',
+				thumbnailUrl: nftData.thumbnailPreview || nftData.assetPreview,
+				collectionData: { name: nftData.collectionName }
+			}
+		]
+	} as CardOptions;
 </script>
 
 <!-- Back button -->
@@ -287,6 +300,6 @@
 	<!-- Right side -->
 	<div class="p-8 border-0 border-l separator w-80">
 		<div class="mb-4 text-xl uppercase">Preview</div>
-		<NftCard options={{ id: null, title: nftData.name, imageUrl: nftData.thumbnailPreview, likeIds: [], likes: 0, databaseId: '' }} />
+		<NftCard options={previewMockOptions} hideLikes />
 	</div>
 </div>

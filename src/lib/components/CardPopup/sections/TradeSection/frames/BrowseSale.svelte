@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
+	import type { CardOptions } from '$lib/components/NftCard.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
@@ -14,7 +14,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let options: CardPopupOptions;
+	export let options: CardOptions;
 	export let chainListing: ChainListing;
 
 	let hoveringPurchase = false;
@@ -25,7 +25,7 @@
 		purchasing = true;
 
 		const price = options.saleData.price.toString();
-		const success = await salePurchase(options.saleData.listingId, price);
+		const success = await salePurchase(options.listingData.onChainId, price);
 
 		success ? dispatch('set-state', { name: 'success' }) : dispatch('set-state', { name: 'error' });
 
@@ -76,7 +76,7 @@
 
 	{#if hoveringPurchase && $hasEnoughTokens === false}
 		<AttachToElement to={purchaseButton} bottom offsetY={20}>
-			<InfoBubble>You do not have enough {options.listingData.symbol} to purchase this item.</InfoBubble>
+			<InfoBubble>You do not have enough {options.listingData.paymentTokenTicker} to purchase this item.</InfoBubble>
 		</AttachToElement>
 	{/if}
 </div>

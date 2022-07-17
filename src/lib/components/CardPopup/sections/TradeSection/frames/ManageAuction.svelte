@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
-	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
+	import type { CardOptions } from '$lib/components/NftCard.svelte';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
@@ -18,7 +18,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let options: CardPopupOptions;
+	export let options: CardOptions;
 	export let chainListing: ChainListing;
 
 	// $: listingExpired = dayjs(options.listingData.startTime).add(options.listingData.duration, 'seconds').isBefore(dayjs());
@@ -54,8 +54,8 @@
 				options,
 				selectedListing: 'auction',
 				price: options.auctionData.startingPrice,
-				paymentTokenTicker: options.listingData.tokenSymbol,
-				duration: options.duration,
+				paymentTokenTicker: options.listingData.paymentTokenTicker,
+				duration: options.listingData.duration,
 				startingPrice: options.auctionData.startingPrice,
 				reservePrice: options.auctionData.reservePrice,
 				quantity: '1'
@@ -105,7 +105,7 @@
 </script>
 
 <div class="flex flex-col h-full pb-12 mt-4">
-	<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} tokenDecimals={options.listingData.tokenDecimals} />
+	<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} />
 
 	<div class="my-4 font-semibold flex">
 		<div>

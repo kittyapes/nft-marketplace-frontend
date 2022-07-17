@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import type { CardOptions } from '$lib/components/NftCard.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
 	import BrowseAuction from './frames/BrowseAuction.svelte';
@@ -10,7 +10,7 @@
 	import ManageSale from './frames/ManageSale.svelte';
 	import Success from './frames/Success.svelte';
 
-	export let options: CardPopupOptions;
+	export let options: CardOptions;
 	export let chainListing: ChainListing;
 	export let showBackButton = false;
 

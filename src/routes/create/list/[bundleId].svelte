@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import Back from '$icons/back_.svelte';
 	import type { ApiNftData } from '$interfaces/apiNftData';
-	import NftCard from '$lib/components/NftCard.svelte';
+	import NftCard, { type CardOptions } from '$lib/components/NftCard.svelte';
 	import ListingSuccessPopup from '$lib/components/popups/ListingSuccessPopup.svelte';
 	import AuctionProperties from '$lib/components/primary-listing/AuctionProperties.svelte';
 	import ListingPropertiesSlot from '$lib/components/primary-listing/ListingPropertiesSlot.svelte';
@@ -119,6 +119,19 @@
 	let reservePrice;
 
 	let formValid;
+
+	// Preview
+	$: previewMockOptions = {
+		resourceType: 'nft',
+		rawResourceData: null,
+		nfts: [
+			{
+				name: $fetchedNftData?.name || 'No Title',
+				thumbnailUrl: $fetchedNftData?.thumbnailUrl || $fetchedNftData?.assetUrl,
+				collectionData: { name: $fetchedNftData?.collectionName }
+			}
+		]
+	} as CardOptions;
 </script>
 
 <!-- Back button -->
@@ -161,16 +174,6 @@
 
 	<div class="p-8 border-0 border-l separator w-80">
 		<div class="mb-4 text-xl uppercase">Preview</div>
-		<NftCard
-			options={{
-				id: null,
-				title: $fetchedNftData?.name,
-				imageUrl: $fetchedNftData?.thumbnailUrl,
-				price: price || startingPrice,
-				collectionName: $fetchedNftData?.['collection']?.name ?? '',
-				likeIds: [],
-				likes: 0
-			}}
-		/>
+		<NftCard options={previewMockOptions} hideLikes />
 	</div>
 </div>

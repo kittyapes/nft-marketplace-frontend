@@ -1,14 +1,13 @@
 <script lang="ts">
-	import { getListings, type ListingType } from '$utils/api/listing';
-	import type { ListingFetchOptions } from '$utils/api/listing';
-	import NftList from '$lib/components/NftList.svelte';
-	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
-	import { notifyError } from '$utils/toast';
-	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
-	import { debounce } from 'lodash-es';
 	import { page } from '$app/stores';
+	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
+	import NftList from '$lib/components/NftList.svelte';
+	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
+	import type { ListingFetchOptions } from '$utils/api/listing';
+	import { getListings, type ListingType } from '$utils/api/listing';
+	import { notifyError } from '$utils/toast';
+	import { debounce } from 'lodash-es';
 	import { onMount } from 'svelte';
-	import dayjs from 'dayjs';
 
 	let data = [];
 
@@ -22,17 +21,7 @@
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await getListings({ ...fetchOptions }, index, 20);
-		res.adapted = await Promise.all(res.res.map(adaptListingToNftCard));
-
-		// Hotfix to hide expired listings
-		res.adapted = res.adapted.filter((l) => {
-			try {
-				const endingDate = dayjs(l.popupOptions.rawResourceData.startTime).add(l.popupOptions.rawResourceData.duration, 's');
-				return endingDate.isAfter(dayjs());
-			} catch {
-				return true;
-			}
-		});
+		res.adapted = res.res.map(listingToCardOptions);
 
 		return res;
 	};

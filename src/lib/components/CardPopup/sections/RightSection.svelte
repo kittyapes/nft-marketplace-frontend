@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
+	import type { CardOptions } from '$lib/components/NftCard.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { getOnChainListing, type ChainListing } from '$utils/contracts/listing';
@@ -10,7 +10,7 @@
 	import InfoSection from './InfoSection.svelte';
 	import TradeSection from './TradeSection/TradeSection.svelte';
 
-	export let options: CardPopupOptions;
+	export let options: CardOptions;
 	let chainListing: ChainListing;
 
 	onMount(async () => {
@@ -37,7 +37,7 @@
 				visible:
 					(options.resourceType === 'listing' || (options.resourceType === 'nft' && options.rawResourceData.owner === $currentUserAddress)) &&
 					(!get(options.staleResource) || get(options.staleResource)?.reason === 'relisting') &&
-					!options.disallowListing
+					options.allowTrade
 			}
 		];
 
@@ -65,7 +65,7 @@
 	<!-- Tabs -->
 	<div class="flex flex-grow-0 space-x-6">
 		{#each tabs.filter((t) => t.visible) as tab}
-			{@const hoverCannotTrade = tab.icon === 'trade' && options.nftData?.[0]?.isExternal}
+			{@const hoverCannotTrade = tab.icon === 'trade' && options.nfts?.[0]?.isExternal}
 
 			<button
 				class="flex items-center space-x-2 btn"
