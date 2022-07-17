@@ -9,6 +9,8 @@ export interface PopupOptions {
 		[key: string]: any;
 	};
 	onClose?: () => boolean | void;
+	// implicitly defaulted to false
+	returnPromise?: boolean;
 }
 
 export interface PopupStackItem {
@@ -20,6 +22,10 @@ export interface PopupStackItem {
 
 export interface PopupHandler {
 	id: string;
+	closePromise: {
+		promise: Promise<any>,
+		fulfilled: boolean
+	}
 	close: () => void;
 }
 
@@ -56,17 +62,31 @@ export function setPopup(component: any, options: PopupOptions = defaultOptions)
 	// during various operations, like closing it, etc.
 	const id = options.id || Math.random().toString(36).substring(2, 9);
 
+
+	// A promise which resolves once the popup is closed
+	let resolveClosePremise;
+	let closePromise = {
+		promise: new Promise((resolve, reject) => {
+			resolveClosePremise = resolve;
+		}),
+		fulfilled: null
+	} 
+
 	// A handler object that will be returned to control the popup
 	const handler: PopupHandler = {
 		id,
+		closePromise: options.returnPromise ? closePromise : undefined,
 		close: () => {
 			const canBeClosed = options.onClose ? options.onClose() !== false : true;
-
+		
 			if (canBeClosed) {
 				popupStack.update((stack) => {
 					return stack.filter((item) => item.id !== id);
 				});
 			}
+
+			resolveClosePremise();
+			closePromise.fulfilled = true;
 		}
 	};
 

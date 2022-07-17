@@ -54,7 +54,7 @@ export function getInitialCollectionData(): Partial<Collection> {
 }
 
 export async function addNftsToCollection(nftIds: string[], collectionId: string) {
-	const res = await axios.post(getApiUrl('v2', 'collections/' + collectionId + '/add-nfts'), { nfts: nftIds }, getAxiosConfig());
+	const res = await axios.post(getApiUrl('v2', 'collections/' + collectionId + '/add-nfts'), { nfts: nftIds }, await getAxiosConfig());
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -77,7 +77,7 @@ export async function apiCreateCollection(options: Collection) {
 	const formData = new FormData();
 	Object.entries(options).forEach(([k, v]) => formData.append(k, v));
 
-	const res = await axios.post(getApiUrl('v2', 'collections'), formData, getAxiosConfig()).catch((e) => e.response);
+	const res = await axios.post(getApiUrl('v2', 'collections'), formData, await getAxiosConfig()).catch((e) => e.response);
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -106,7 +106,7 @@ export async function apiUpdateCollection(options: UpdateCollectionOptions) {
 	const formData = new FormData();
 	Object.entries(options).forEach(([k, v]) => v && formData.append(k, v));
 
-	const res = await axios.put(getApiUrl('latest', 'collections/' + options.id), formData, getAxiosConfig()).catch((e) => e.response);
+	const res = await axios.put(getApiUrl('latest', 'collections/' + options.id), formData, await getAxiosConfig()).catch((e) => e.response);
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -216,7 +216,7 @@ export async function apiValidateCollectionNameAndSlug(name: string | null = nul
 }
 
 export async function changeCollectionStatus(slug: string, status: string) {
-	const res = await axios.post(getApiUrl('latest', `collections/${slug}/set-status`), { status }, getAxiosConfig());
+	const res = await axios.post(getApiUrl('latest', `collections/${slug}/set-status`), { status }, await getAxiosConfig());
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);

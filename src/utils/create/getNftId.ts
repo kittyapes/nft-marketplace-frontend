@@ -4,7 +4,7 @@ import { httpErrorHandler } from '$utils/toast';
 import axios from 'axios';
 
 export const getNftId = async () => {
-	const res = await axios.get(getApiUrl('latest', 'nfts/usableID'), getAxiosConfig()).catch((e) => {
+	const res = await axios.get(getApiUrl('latest', 'nfts/usableID'), await getAxiosConfig()).catch((e) => {
 		httpErrorHandler(e);
 		return null;
 	});

@@ -8,7 +8,7 @@ import { noTryAsync } from 'no-try';
 import { getApiUrl } from '..';
 
 export const whitelistCollection = async (address: string) => {
-	const [err, res] = await noTryAsync(() => axios.post(getApiUrl('latest', 'collections/crawl-collection'), { address }, getAxiosConfig()));
+	const [err, res] = await noTryAsync(async () => axios.post(getApiUrl('latest', 'collections/crawl-collection'), { address }, await getAxiosConfig()));
 	if (err) {
 		notifyError('Failed to whitelist collection');
 		throw new Error('Failed to whitelist collection');
