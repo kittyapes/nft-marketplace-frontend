@@ -36,7 +36,8 @@
 				sectionComponent: TradeSection,
 				visible:
 					(options.resourceType === 'listing' || (options.resourceType === 'nft' && options.rawResourceData.owner === $currentUserAddress)) &&
-					(!get(options.staleResource) || get(options.staleResource)?.reason === 'relisting')
+					(!get(options.staleResource) || get(options.staleResource)?.reason === 'relisting') &&
+					!options.disallowListing
 			}
 		];
 

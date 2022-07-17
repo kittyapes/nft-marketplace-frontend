@@ -76,7 +76,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		formData.append(key, value);
 	}
 
-	const [err, res] = await noTryAsync(() => axios.post(getApiUrl('latest', 'listings'), formData, getAxiosConfig()));
+	const [err, res] = await noTryAsync(async () => axios.post(getApiUrl('latest', 'listings'), formData, await getAxiosConfig()));
 
 	if (err) {
 		console.error(err);

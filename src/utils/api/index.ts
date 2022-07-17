@@ -23,3 +23,9 @@ export function getApiUrl(apiVersion: ApiVersion, apiPath: string): string {
 
 	return apiUrl + apiPath;
 }
+
+export interface ApiCallResult<T> {
+	err?: AxiosError;
+	res?: AxiosResponse;
+	data?: T;
+}
