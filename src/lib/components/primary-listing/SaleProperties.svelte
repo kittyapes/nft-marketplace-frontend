@@ -12,6 +12,8 @@
 	export let durationSeconds: number;
 	export let price: string;
 
+	export let hideQuantity = false;
+
 	export let maxQuantity: number;
 
 	export let formValid;
@@ -21,20 +23,30 @@
 	}
 
 	$: if (maxQuantity <= 1) quantity = 1;
+
+	export function setValues(options: { startDateTs: number; quantity: number; durationSeconds: number; price: string }) {
+		_setDuration(listingDurationOptions.find((v) => v.value === options.durationSeconds));
+		_setStartDateTs(options.startDateTs);
+		quantity = options.quantity;
+		price = options.price;
+	}
+
+	let _setDuration;
+	let _setStartDateTs;
 </script>
 
 <InputSlot label="Price">
 	<PriceInput bind:value={price} placeholder="1.0" tokenIconClass={Weth} />
 </InputSlot>
 
-<InputSlot label="Quantity">
-	<input type="number" class="w-full h-12 input input-hide-controls" bind:value={quantity} disabled={maxQuantity <= 1} />
+<InputSlot label="Quantity" hidden={hideQuantity}>
+	<input type="number" class="w-full h-12 input input-hide-controls outline-none" bind:value={quantity} disabled={maxQuantity <= 1} />
 </InputSlot>
 
 <InputSlot label="Start Date">
-	<Datepicker dateOnly on:new-value={(ev) => (startDateTs = ev.detail.unix())} />
+	<Datepicker dateOnly on:new-value={(ev) => (startDateTs = ev.detail.unix())} bind:setWithTimestamp={_setStartDateTs} />
 </InputSlot>
 
 <InputSlot label="Duration">
-	<Dropdown options={listingDurationOptions} on:select={(ev) => (durationSeconds = ev.detail.value)} />
+	<Dropdown options={listingDurationOptions} on:select={(ev) => (durationSeconds = ev.detail.value)} bind:setSelected={_setDuration} />
 </InputSlot>

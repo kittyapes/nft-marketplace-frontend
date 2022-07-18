@@ -20,6 +20,11 @@
 	export let dateOnly = false;
 	export let allowPastSelection = false;
 
+	export function setWithTimestamp(ts: number) {
+		viewedDate = dayjs(ts * 1000);
+		value = viewedDate;
+	}
+
 	let open = false;
 	let section: 'date' | 'time' = 'date';
 
@@ -128,7 +133,7 @@
 	</button>
 
 	{#if open}
-		<div class="absolute top-0 right-0 w-full bg-white flex flex-col rounded-xl translate-y-14 p-4 z-10" style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);">
+		<div class="absolute top-0 right-0 w-full max-w-xs bg-white flex flex-col rounded-xl translate-y-14 p-4 z-10" style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);">
 			<!-- use:outsideClickCallback={{ cb: () => (open = false) }} -->
 			<!-- Date/Time switch -->
 			{#if !dateOnly}

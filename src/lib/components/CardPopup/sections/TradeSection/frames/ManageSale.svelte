@@ -2,16 +2,16 @@
 	import Info from '$icons/info.v2.svelte';
 	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
-	import Dropdown from '$lib/components/Dropdown.svelte';
-	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
+	import ListingPropertiesSlot from '$lib/components/primary-listing/ListingPropertiesSlot.svelte';
+	import SaleProperties from '$lib/components/primary-listing/SaleProperties.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
-	import { contractCancelListing, contractUpdateListing, listingDurationOptions, listingTokens } from '$utils/contracts/listing';
+	import { contractCancelListing,contractUpdateListing } from '$utils/contracts/listing';
 	import { parseToken } from '$utils/misc/priceUtils';
 	import { createToggle } from '$utils/misc/toggle';
-	import { notifyError, notifySuccess } from '$utils/toast';
+	import { notifyError,notifySuccess } from '$utils/toast';
 	import { noTryAsync } from 'no-try';
 	import { createEventDispatcher } from 'svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
@@ -83,9 +83,17 @@
 		isUpdatingListing.toggle();
 	}
 
+	function _updateInputsFromOptions() {
+		_saleProperties.setValues({
+			startDateTs: options.listingData.startTime;
+			
+		})
+	}
+
 	// Listing properties
-	let price = options.saleData.price;
-	let duration = listingDurationOptions.find((l) => l.value === options.listingData.duration);
+	let price: string;
+	let durationSeconds: number;
+	let startDateTs: number;
 
 	let newPriceValid = false;
 
@@ -103,33 +111,20 @@
 	// Update listing button
 	let updatebuttonContainer: HTMLElement;
 	const isUpdateHovered = createToggle();
+
+	let _saleProperties: SaleProperties;
 </script>
 
-<div class="flex flex-col h-full pb-8">
+<div class="flex flex-col h-full pb-8 overflow-y-scroll p-4 overscroll-contain">
 	<!-- Listing Type -->
-	<div class="mt-4 font-semibold">Listing Type</div>
+	<div class="font-semibold">Listing Type</div>
 	<div class="mt-2"><ListingTypeSwitch selectedType={'sale'} disabled={true} /></div>
 
-	<!-- Price -->
-	<div class="mt-4 font-semibold">Price</div>
 	<div class="mt-2">
-		<TokenDropdown
-			dropdownBg="white"
-			dropdownColor="black"
-			dropdownButtonBg="white"
-			dropdownButtonColor="black"
-			showLabel
-			showArrow={false}
-			buttonDisabled
-			bind:value={price}
-			tokens={listingTokens}
-			valid={newPriceValid}
-		/>
+		<ListingPropertiesSlot>
+			<SaleProperties hideQuantity bind:price bind:durationSeconds bind:startDateTs bind:this={_saleProperties} />
+		</ListingPropertiesSlot>
 	</div>
-
-	<!-- Duration -->
-	<div class="mt-4 mb-2 font-semibold">Duration</div>
-	<Dropdown options={listingDurationOptions} bind:selected={duration} borderOpacity={1} disabled />
 
 	<div class="flex-grow" />
 
