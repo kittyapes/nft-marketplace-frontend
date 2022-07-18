@@ -1,7 +1,6 @@
 import contractCaller from './contractCaller';
-import { parseUnits } from 'ethers/lib/utils.js';
-import { getContract } from '$utils/misc/getContract';
 import { ethers } from 'ethers';
+import { getContract } from '$utils/misc/getContract';
 import { get } from 'svelte/store';
 import { appSigner } from '$stores/wallet';
 import erc1155Abi from '$constants/contracts/abis/Erc1155Mock.json';
@@ -30,7 +29,7 @@ export async function contractCreateCollection(options: {
 		options.paymentTokenTicker,
 		options.slug,
 		options.royalties.length > 0 ? options.royalties.map((item) => item.address) : ['0x0000000000000000000000000000000000000000'],
-		options.royalties.length > 0 ? options.royalties.map((item) => parseUnits(item.fees.toString(), 2)) : [parseUnits('0', 2)],
+		options.royalties.length > 0 ? options.royalties.map((item) => ethers.utils.parseUnits(item.fees.toString(), 2)) : [ethers.utils.parseUnits('0', 2)],
 		false
 	);
 

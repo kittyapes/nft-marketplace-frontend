@@ -1,7 +1,7 @@
 import { appProvider, appSigner, currentUserAddress } from '$stores/wallet';
 import { notifyError, notifySuccess, notifyWarning } from '$utils/toast';
 import type { BigNumber } from 'ethers';
-import { formatUnits, parseUnits } from 'ethers/lib/utils.js';
+import { ethers } from 'ethers';
 import { noTryAsync } from 'no-try';
 import { get } from 'svelte/store';
 import { getMockErc20TokenContract } from './generalContractCalls';
@@ -60,14 +60,14 @@ export async function hasEnoughBalance(tokenAddress: string, userAddress: string
 	const tokenDetails = await getTokenDetails(tokenAddress);
 	const balance = await getTokenBalance(tokenAddress, userAddress, tokenDetails.decimals);
 
-	const parsedRequired = parseUnits(requiredBalance, tokenDetails.decimals);
+	const parsedRequired = ethers.utils.parseUnits(requiredBalance, tokenDetails.decimals);
 
 	return balance.gte(parsedRequired);
 }
 
 export async function contractGetTokenAllowance(owner: string, spender: string, tokenAddress: string): Promise<BigNumber> {
 	if (isEther(tokenAddress)) {
-		return parseUnits('999999999999999999999999999999999999000000000000000000', 18);
+		return ethers.utils.parseUnits('999999999999999999999999999999999999000000000000000000', 18);
 	}
 	const contract = getMockErc20TokenContract(get(appSigner), tokenAddress);
 
@@ -84,7 +84,7 @@ export async function contractApproveToken(spender: string, amount: BigNumber, t
 	const contract = getMockErc20TokenContract(get(appSigner), tokenAddress);
 
 	// We can't assume the token is ethereum
-	const approveTx = await contract.approve(spender, parseUnits(amount.toString(), tokenDecimals));
+	const approveTx = await contract.approve(spender, ethers.utils.parseUnits(amount.toString(), tokenDecimals));
 	await approveTx.wait(1);
 }
 
@@ -95,7 +95,7 @@ export async function ensureAmountApproved(spender: string, amount: string, toke
 
 	const approved = await contractGetTokenAllowance(get(currentUserAddress), spender, tokenAddress);
 	const token = await getTokenDetails(tokenAddress);
-	const amountBigNumber = parseUnits(amount.toString(), token.decimals);
+	const amountBigNumber = ethers.utils.parseUnits(amount.toString(), token.decimals);
 
 	if (approved.lt(amountBigNumber)) {
 		notifyWarning('Token allowance is insufficient. Please approve the token first.');
