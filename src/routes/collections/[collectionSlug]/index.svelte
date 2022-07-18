@@ -66,12 +66,12 @@
 		highestSale: {
 			stat: 'Highest Sale',
 			value: 0,
-			symbol: 'ETH'
+			symbol: 'WETH'
 		},
 		floorPrice: {
 			stat: 'Floor Price',
 			value: 0,
-			symbol: 'ETH'
+			symbol: 'WETH'
 		},
 		totalVol: {
 			stat: 'Total Volume',
@@ -91,7 +91,7 @@
 		total24hours: {
 			stat: '24Hr Volume',
 			value: 0,
-			symbol: 'ETH'
+			symbol: 'WETH'
 		}
 	};
 
