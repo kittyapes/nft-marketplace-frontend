@@ -4,8 +4,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
-import { BigNumber } from 'ethers';
-import { formatUnits } from 'ethers/lib/utils.js';
+import { BigNumber, ethers } from 'ethers';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -45,7 +44,7 @@ export async function getBiddingsFlow(listingId: string, tokenDecimals: number):
 			bid.accumulated = bid.accumulated.add(bids[i].bid);
 		}
 
-		bid.formatted = formatUnits(bid.accumulated, tokenDecimals);
+		bid.formatted = ethers.utils.formatUnits(bid.accumulated, tokenDecimals);
 
 		longestString = Math.max(longestString, bid.formatted.length);
 	}
