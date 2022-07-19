@@ -19,10 +19,12 @@
 	export let value = dayjs();
 	export let dateOnly = false;
 	export let allowPastSelection = false;
+	export let disabled = false;
 
 	export function setWithTimestamp(ts: number) {
 		viewedDate = dayjs(ts * 1000);
 		value = viewedDate;
+		dispatch('new-value', value);
 	}
 
 	let open = false;
@@ -123,9 +125,9 @@
 </script>
 
 <div class="relative">
-	<input {id} type="text" class="input w-full h-12 disabled:bg-white" {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
+	<input {id} type="text" class="input w-full h-12 disabled:bg-white" class:disabled:bg-gray-100={disabled} {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
 
-	<button class="bg-color-black text-white w-20 absolute top-0 right-0 h-full rounded-r-md" on:click={() => (open = !open)}>
+	<button class="bg-color-black text-white w-20 absolute top-0 right-0 h-full rounded-r-md" on:click={() => (open = !open)} {disabled}>
 		<div class="btn flex items-center justify-center space-x-2">
 			<Calendar />
 			<ArrowDown />

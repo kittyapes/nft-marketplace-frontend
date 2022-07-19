@@ -13,14 +13,34 @@
 	export let price: string;
 
 	export let hideQuantity = false;
-
 	export let maxQuantity: number;
 
-	export let formValid;
+	export let disableStartDate = false;
+
+	export let maxPrice: string = null;
+
+	export let formValid = true;
+	export let formErrors: string[] = [];
 
 	$: {
-		formValid = isPrice(price) && quantity <= maxQuantity;
+		formErrors = [];
+
+		if (!isPrice(price)) {
+			formErrors.push('Price input value is invalid!');
+		}
+
+		if (quantity > (maxQuantity || 1)) {
+			formErrors.push('Quantity field cannot contain a greater value than the number of ERC 1155 tokens you own!');
+		}
+
+		if (maxPrice !== null && parseFloat(price) > parseFloat(maxPrice)) {
+			formErrors.push('New price cannot be higher than the current price.');
+		}
+
+		formErrors = formErrors;
 	}
+
+	$: formValid = !formErrors.length;
 
 	$: if (maxQuantity <= 1) quantity = 1;
 
@@ -33,6 +53,8 @@
 
 	let _setDuration;
 	let _setStartDateTs;
+
+	$: console.log({ maxPrice });
 </script>
 
 <InputSlot label="Price">
@@ -44,7 +66,7 @@
 </InputSlot>
 
 <InputSlot label="Start Date">
-	<Datepicker dateOnly on:new-value={(ev) => (startDateTs = ev.detail.unix())} bind:setWithTimestamp={_setStartDateTs} />
+	<Datepicker dateOnly on:new-value={(ev) => (startDateTs = ev.detail.unix())} bind:setWithTimestamp={_setStartDateTs} disabled={disableStartDate} />
 </InputSlot>
 
 <InputSlot label="Duration">

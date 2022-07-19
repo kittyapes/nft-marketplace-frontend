@@ -1,30 +1,29 @@
 <script lang="ts">
 	import Info from '$icons/info.v2.svelte';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
+	import type { CardOptions } from '$lib/components/NftCard.svelte';
 	import ListingPropertiesSlot from '$lib/components/primary-listing/ListingPropertiesSlot.svelte';
 	import SaleProperties from '$lib/components/primary-listing/SaleProperties.svelte';
-	import Dropdown from '$lib/components/Dropdown.svelte';
-	import type { CardOptions } from '$lib/components/NftCard.svelte';
-	import TokenDropdown from '$lib/components/TokenDropdown.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
-	import { contractCancelListing,contractUpdateListing } from '$utils/contracts/listing';
 	import { parseToken } from '$utils/misc/priceUtils';
+	import { getTokenBalance } from '$stores/user';
+	import { contractCancelListing, contractUpdateListing, type ChainListing } from '$utils/contracts/listing';
+	import { formatToken } from '$utils/misc/priceUtils';
+	import { isFuture } from '$utils/misc/time';
 	import { createToggle } from '$utils/misc/toggle';
-	import { notifyError,notifySuccess } from '$utils/toast';
+	import { notifyError, notifySuccess } from '$utils/toast';
 	import { noTryAsync } from 'no-try';
 	import { createEventDispatcher } from 'svelte';
-	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
 
 	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions;
+	export let chainListing: ChainListing;
 
-	// $: listingExpired = dayjs(options.listingData.startTime).add(options.listingData.duration, 'seconds').isBefore(dayjs());
-
-	let isCancellingListing = createToggle();
+	let isCancellingListing = false;
 
 	async function recreateListing() {
 		options.staleResource.set({ reason: 'relisting' });
@@ -44,7 +43,7 @@
 	}
 
 	async function cancelListing() {
-		isCancellingListing.toggle();
+		isCancellingListing = true;
 
 		const [err, res] = await noTryAsync(() => contractCancelListing(options.listingData.onChainId));
 
@@ -60,71 +59,70 @@
 			});
 		}
 
-		isCancellingListing.toggle();
+		isCancellingListing = false;
 	}
 
-	const isUpdatingListing = createToggle();
+	let isUpdatingListing = false;
 
 	async function updateListing() {
-		isUpdatingListing.toggle();
+		isUpdatingListing = true;
 
-		const [err, res] = await noTryAsync(() =>
-			contractUpdateListing(options.listingData.onChainId, {
-				sale: { price },
-				payTokenAddress: options.listingData.paymentTokenAddress
-			})
-		);
-
-		if (err) {
-			console.error(err);
-			notifyError('Failed to update listing.');
-		} else {
+		try {
+			await contractUpdateListing(options.listingData.onChainId, chainListing.payToken, { duration: durationSeconds, price, quantity, startDateTs });
 			notifySuccess('Successfully updated listing.');
+		} catch (err) {
+			notifyError('Failed to update listing.');
+			console.error(err.message);
 		}
 
-		isUpdatingListing.toggle();
+		isUpdatingListing = false;
 	}
 
-	function _updateInputsFromOptions() {
+	function _updateInputsFromData() {
+		console.log({ chainListing });
+
 		_saleProperties.setValues({
-			startDateTs: options.listingData.startTime;
-			
-		})
+			startDateTs: chainListing.startTime,
+			durationSeconds: chainListing.duration,
+			price: chainListing.price,
+			quantity: chainListing.quantity
+		});
 	}
+
+	$: chainListing && _saleProperties && _updateInputsFromData();
 
 	// Listing properties
 	let price: string;
 	let durationSeconds: number;
 	let startDateTs: number;
-
-	let newPriceValid = false;
-
-	$: try {
-		const parsedNewPrice = parseToken(price, options.listingData.paymentTokenAddress);
-		const parsedOldPrice = parseToken(options.saleData.price, options.listingData.paymentTokenAddress);
-
-		newPriceValid = parsedNewPrice.lt(parsedOldPrice) && parsedNewPrice.gt(0);
-	} catch {
-		newPriceValid = false;
-	}
-
-	$: newPropertiesValid = newPriceValid;
+	let quantity: number;
 
 	// Update listing button
 	let updatebuttonContainer: HTMLElement;
 	const isUpdateHovered = createToggle();
 
 	let _saleProperties: SaleProperties;
+
+	// Validation
+	let formErrors: string[] = [];
+
+	$: disableStartDate = chainListing && !isFuture(chainListing.startTime);
 </script>
 
 <div class="flex flex-col h-full pb-8 overflow-y-scroll p-4 overscroll-contain">
-	<!-- Listing Type -->
-	<div class="font-semibold">Listing Type</div>
-	<div class="mt-2"><ListingTypeSwitch selectedType={'sale'} disabled={true} /></div>
-
 	<div class="mt-2">
 		<ListingPropertiesSlot>
-			<SaleProperties hideQuantity bind:price bind:durationSeconds bind:startDateTs bind:this={_saleProperties} />
+			<SaleProperties
+				bind:this={_saleProperties}
+				bind:price
+				bind:durationSeconds
+				bind:startDateTs
+				bind:quantity
+				bind:formErrors
+				maxQuantity={getTokenBalance(options.nfts[0].onChainId)}
+				{disableStartDate}
+				maxPrice={chainListing.price}
+			/>
 		</ListingPropertiesSlot>
 	</div>
 
@@ -151,16 +149,16 @@
 	</div>
 
 	<div class="flex gap-2 mt-4">
-		<SecondaryButton disabled={$isCancellingListing} on:click={cancelListing}>
-			{#if $isCancellingListing}
+		<SecondaryButton disabled={isCancellingListing} on:click={cancelListing}>
+			{#if isCancellingListing}
 				<ButtonSpinner secondary />
 			{/if}
 			Cancel Listing
 		</SecondaryButton>
 
 		<div bind:this={updatebuttonContainer} class="w-full" on:pointerenter={isUpdateHovered.toggle} on:pointerleave={isUpdateHovered.toggle}>
-			<PrimaryButton on:click={updateListing} disabled={$isUpdatingListing || !newPropertiesValid}>
-				{#if $isUpdatingListing}
+			<PrimaryButton on:click={updateListing} disabled={isUpdatingListing || !!formErrors.length}>
+				{#if isUpdatingListing}
 					<ButtonSpinner />
 				{/if}
 				Update Listing
@@ -169,8 +167,8 @@
 	</div>
 </div>
 
-{#if $isUpdateHovered && !newPriceValid}
+{#if $isUpdateHovered && formErrors.length}
 	<AttachToElement to={updatebuttonContainer} bottom>
-		<InfoBubble>New price must be lower than the current price.</InfoBubble>
+		<InfoBubble>{formErrors}</InfoBubble>
 	</AttachToElement>
 {/if}

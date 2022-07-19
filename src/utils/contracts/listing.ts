@@ -4,6 +4,7 @@ import { getContract } from '$utils/misc/getContract';
 import { getIconUrl } from '$utils/misc/getIconUrl';
 import { parseToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
+import { duration } from 'dayjs';
 import { BigNumber, ethers } from 'ethers';
 import { get } from 'svelte/store';
 import { getCollectionContract } from './collection';
@@ -136,19 +137,20 @@ export async function contractCancelListing(listingId: string) {
 
 export async function contractUpdateListing(
 	listingId: string,
+	payTokenAddress: string,
 	options: {
-		sale: {
-			price: string;
-		};
-		payTokenAddress: string;
+		price: string;
+		quantity: number;
+		startDateTs: number;
+		duration: number;
 	}
 ) {
 	console.debug(`[Info] Will update listing with ID ${listingId} with the following options:`, options);
 
-	const parsedPrice = parseToken(options.sale.price, options.payTokenAddress);
+	const parsedPrice = parseToken(options.price, payTokenAddress);
 
 	const contract = getContract('marketplace');
-	await contractCaller(contract, 'updateListing', 150, 1, listingId, parsedPrice);
+	await contractCaller(contract, 'updateListing', 150, 1, listingId, parsedPrice, options.startDateTs, options.duration, options.quantity);
 }
 
 export async function getMarketFee() {
