@@ -27,8 +27,8 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby'; address: stri
 ];
 
 export function getContractData(name: ContractName) {
-	const provider = get(appProvider) || ethers.getDefaultProvider();
-	const networkId = provider.network?.chainId || import.meta.env.VITE_DEFAULT_NETWORK || 4;
+	const provider = get(appProvider) || ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
+	const networkId = provider.network?.chainId || +import.meta.env.VITE_DEFAULT_NETWORK;
 
 	let networkName: string;
 
@@ -55,7 +55,7 @@ export function getContract(name: ContractName, canUseFallback: boolean = false)
 	let provider = get(appSigner);
 
 	if (!provider && canUseFallback) {
-		provider = ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK || 4) as unknown as Signer;
+		provider = ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK) as unknown as Signer;
 	} else if (!provider) {
 		throw new Error('Web 3 provider has not been set yet!');
 	}

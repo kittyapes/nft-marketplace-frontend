@@ -10,7 +10,7 @@
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
-	import { walletConnected, walletDisconnected } from '$utils/wallet';
+	import { walletDisconnected } from '$utils/wallet';
 
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {

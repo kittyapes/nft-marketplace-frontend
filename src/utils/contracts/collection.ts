@@ -62,7 +62,7 @@ export async function getContractInterface(address: string, provider: ethers.Sig
 	const ERC721InterfaceId: string = '0x80ac58cd';
 
 	if (!provider) {
-		provider = ethers.getDefaultProvider(import.meta.env.VITE_DEFAULT_NETWORK || 1);
+		provider = ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
 	}
 
 	const contract = new ethers.Contract(address, ERC165Abi, provider);
