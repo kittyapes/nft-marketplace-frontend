@@ -382,11 +382,9 @@
 	</div>
 
 	<!-- Royalties -->
-	{#if isNewCollection}
-		<div class="mb-16">
-			<Royalties bind:values={$collectionData.royalties} bind:isValid={$formValidity.royalties} disabled={!isNewCollection} />
-		</div>
-	{/if}
+	<div class="mb-16">
+		<Royalties bind:values={$collectionData.royalties} bind:isValid={$formValidity.royalties} disabled={!isNewCollection} />
+	</div>
 
 	<!-- Links -->
 	<div class="flex flex-col space-y-2">
