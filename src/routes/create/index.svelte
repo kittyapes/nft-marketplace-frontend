@@ -79,7 +79,6 @@
 
 			if (beforeLength === collections.length) break;
 			page++;
-			console.log(collections);
 		}
 
 		if (nftData.collectionName) {
@@ -88,6 +87,9 @@
 			if (selectedCollection) {
 				selectedCollectionRow = adaptCollectionToMintingDropdown(selectedCollection);
 				selectedCollectionId = selectedCollection.id;
+			} else if (nftData.collectionName === 'Hinata General Collection' && $generalCollection?.value) {
+				selectedCollectionRow = $generalCollection;
+				selectedCollectionId = $generalCollection.value;
 			}
 		}
 
