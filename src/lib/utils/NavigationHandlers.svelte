@@ -14,7 +14,7 @@
 
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {
-		return [];
+		return [RegExp('admin.*'), RegExp('create.*'), RegExp('profile/edit'), RegExp('management.*'), RegExp('collections/new/edit'), RegExp('marketplace.*')];
 	}
 
 	function isProtectedAndExpired(path: string) {
@@ -111,7 +111,7 @@
 		// Restrict routes to verified creators
 		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
 			profileData.subscribe((profile) => {
-				if (profile && profile.status !== 'VERIFIED' && !profile.roles.includes('superadmin')) {
+				if (profile && (profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user')) && !profile.roles.includes('superadmin')) {
 					currentError.set(403);
 				}
 			});
