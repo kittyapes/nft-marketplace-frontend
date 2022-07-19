@@ -10,7 +10,9 @@
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
-	import { walletDisconnected } from '$utils/wallet';
+	import { walletConnected, walletDisconnected } from '$utils/wallet';
+
+	// TODO: this whole file needs refactoring
 
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {
@@ -101,7 +103,6 @@
 			if (!address) return;
 
 			if (isProtectedAndExpired(to.pathname)) {
-				console.log('yo wtf');
 				unsub();
 				await goto('/');
 				setLoginPopup(to.pathname);
@@ -111,7 +112,7 @@
 		// Restrict routes to verified creators
 		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
 			profileData.subscribe((profile) => {
-				if (profile && (profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user')) && !profile.roles.includes('superadmin')) {
+				if (!profile || ((profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user')) && !profile.roles.includes('superadmin'))) {
 					currentError.set(403);
 				}
 			});
@@ -120,7 +121,7 @@
 		// Pages only accessible by superadmins
 		if (to.pathname.match(/management*/)) {
 			profileData.subscribe((profile) => {
-				if (profile && !profile.roles.includes('superadmin') && !profile.roles.includes('admin')) {
+				if (!profile || (!profile.roles.includes('superadmin') && !profile.roles.includes('admin'))) {
 					currentError.set(403);
 				}
 			});
