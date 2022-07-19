@@ -59,7 +59,18 @@ export interface Listing {
 		_id: string;
 		nftId: string;
 		amount: number;
-		nft: {
+		assetUrl?: string;
+		thumbnailUrl?: string;
+		favoriteCount?: number;
+		metadata?: any;
+		creator?: string;
+		contractAddress?: string;
+		collectionId?: string;
+		isExternal?: boolean;
+		collectionName?: string;
+		collectionSlug?: string;
+		tokenStandard?: TokenStandard;
+		nft?: {
 			_id: string;
 			assetUrl: string;
 			thumbnailUrl: string;
@@ -110,7 +121,7 @@ export async function getListings(filters?: ListingFetchOptions, page: number = 
 		page,
 		limit
 	};
-	const res = await axios.get(getApiUrl('latest', 'listings?'), { params });
+	const res = await axios.get(getApiUrl('latest', 'listings'), { params });
 	return res.data.data as Listing[];
 }
 
@@ -118,7 +129,7 @@ export async function getRandomListings(limit: number = 10) {
 	const params = {
 		limit
 	};
-	const res = await axios.get(getApiUrl('latest', 'listings?'), { params });
+	const res = await axios.get(getApiUrl('latest', 'listings/getRandom'), { params });
 	return res.data.data as Listing[];
 }
 
