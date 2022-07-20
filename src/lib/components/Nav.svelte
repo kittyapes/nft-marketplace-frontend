@@ -1,5 +1,5 @@
 <script>
-	import Search from './Search.svelte';
+	// import Search from './Search.svelte';
 	import ProfilePopup from './ProfilePopup.svelte';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { appSigner, connectionDetails } from '$stores/wallet';
@@ -11,13 +11,11 @@
 
 	let displayProfilePopup = false;
 	let showProfileButton = false;
-
 	const closeModalIfNotInElement = (e) => {
 		// Click is not on the profile button or popup element
 		if (!e.target.closest('#profile-button') && !e.target.closest('#profile-popup-parent') && !e.target.closest('#profile-popup-container')) {
 			displayProfilePopup = false;
 		}
-
 		if (e.target.closest('.profile-btn-item')) {
 			displayProfilePopup = false;
 		}
@@ -28,10 +26,9 @@
 	});
 
 	$: displayedUsername = $profileData?.username;
-
 	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
-	let imageFailedToLoad = false;
 
+	let imageFailedToLoad = false;
 	let showCreate = false;
 
 	profileData.subscribe((profile) => {
@@ -80,7 +77,7 @@
 
 		<!-- Profile -->
 		<div class="relative flex items-center h-full">
-			{#if showProfileButton}
+			{#if showProfileButton || $appSigner}
 				<button
 					class="flex items-center h-full font-semibold text-md whitespace-nowrap transition-btn w-52"
 					id="profile-button"
@@ -106,7 +103,7 @@
 								class="object-cover w-full h-full rounded-full"
 							/>
 						{:else}
-							<div class="text-color-purple" in:fade>
+							<div class="text-color-purple" in:fade|local>
 								<UserCircle />
 							</div>
 						{/if}

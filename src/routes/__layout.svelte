@@ -18,6 +18,7 @@
 	import ErrorManager from '$lib/components/ErrorManager.svelte';
 	import ErrorPage from '$lib/components/ErrorPage.svelte';
 	import { currentError } from '$stores/error';
+	import { appDataToTriggerReload } from '$stores/wallet';
 
 	export let url;
 
@@ -37,19 +38,21 @@
 <svelte:head>
 	<title>Hinata</title>
 </svelte:head>
-<Nav />
-{#if $currentError}
-	<ErrorPage />
-{:else}
-	<!-- <PageTransition {url}> -->
-	<div class="pt-16 mx-auto">
-		<slot />
-	</div>
-	<!-- </PageTransition> -->
-{/if}
+{#key $appDataToTriggerReload}
+	<Nav />
+	{#if $currentError}
+		<ErrorPage />
+	{:else}
+		<!-- <PageTransition {url}> -->
+		<div class="pt-16 mx-auto">
+			<slot />
+		</div>
+		<!-- </PageTransition> -->
+	{/if}
 
-<Footer />
-<Toast />
-<PopupManager />
-<ErrorManager />
-<NavigationHandlers />
+	<Footer />
+	<Toast />
+	<PopupManager />
+	<ErrorManager />
+	<NavigationHandlers />
+{/key}

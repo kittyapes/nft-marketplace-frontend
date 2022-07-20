@@ -1,3 +1,4 @@
+import { getApiUrl } from '$utils/api';
 import { isJwtExpired } from '$utils/jwt';
 import { getAddress } from '$utils/misc/getters';
 import { setPopup } from '$utils/popup';
@@ -14,7 +15,7 @@ function getAuthTokenKey(address: string) {
 		throw new Error('No address provided and could not automatically get an address.');
 	}
 
-	return `authToken-${address}`;
+	return `authToken-${address}-${getApiUrl('latest', '')}`;
 }
 
 export async function getAuthToken(address?: string) {

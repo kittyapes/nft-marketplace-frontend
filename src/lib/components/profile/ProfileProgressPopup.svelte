@@ -33,17 +33,9 @@
 
 	<div class="gradient-text text-right ml-auto max-w-max mr-[10%] font-black mt-1">Free NFT</div>
 
-	<button
-		class="rounded-full bg-gradient-to-r from-color-purple to-color-blue py-4 w-1/2 mx-auto text-white uppercase block mt-6 font-semibold transition-btn"
-		on:click={handleCompleteProfile}
-	>
+	<button class="rounded-full bg-gradient-to-r from-color-purple to-color-blue py-4 w-1/2 mx-auto text-white uppercase block mt-6 font-semibold transition-btn" on:click={handleCompleteProfile}>
 		Complete your profile
 	</button>
 
-	<button
-		class="rounded-full py-4 w-1/2 mx-auto uppercase block mt-3 border-2 border-black font-semibold transition-btn"
-		on:click={handler.close}
-	>
-		Cancel
-	</button>
+	<button class="rounded-full py-4 w-1/2 mx-auto uppercase block mt-3 border-2 border-black font-semibold transition-btn" on:click={handler.close}>Cancel</button>
 </div>
