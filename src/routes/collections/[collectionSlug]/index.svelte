@@ -18,6 +18,7 @@
 	import { notifyError } from '$utils/toast';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import { MetaTags } from 'svelte-meta-tags';
+	import HinataBadge from '$icons/hinata-badge.svelte';
 
 	let collectionData: Collection;
 	let nfts = [];
@@ -171,7 +172,9 @@
 			<img class="object-cover w-20 h-20 bg-white border-4 border-white rounded-full " src={collectionData?.logoImageUrl || '/svg/icons/guest-avatar.svg'} alt="Collection creator avatar." />
 
 			<!-- Verified creator badge -->
-			<img class="absolute right-0 translate-y-6" src="/svg/icons/verified-creator-badge.svg" alt="Verified creator badge." />
+			{#if collectionData?.mintedFrom?.toLowerCase() === 'hinata'}
+				<HinataBadge class="w-6 h-6 absolute right-2 translate-y-6" />
+			{/if}
 		</div>
 	</div>
 
