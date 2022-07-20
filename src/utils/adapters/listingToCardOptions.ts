@@ -26,7 +26,8 @@ export function listingToCardOptions(listing: Listing): CardOptions {
 				},
 				likes: nft.favoriteCount,
 				thumbnailUrl: nft.thumbnailUrl,
-				assetUrl: nft.assetUrl || nft.thumbnailUrl
+				assetUrl: nft.assetUrl || nft.thumbnailUrl,
+				quantity: nft.amount
 			}
 		],
 		listingData: {

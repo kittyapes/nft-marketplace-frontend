@@ -11,7 +11,7 @@
 	let marketFee = 0;
 	$: nftBalance = 0;
 
-	$: ownedOrListedNfts = options?.listingData ? options?.listingData?.quantity ?? 1 : nftBalance;
+	$: ownedOrListedNfts = options.resourceType === 'listing' ? options?.nfts[0].quantity ?? 1 : nftBalance;
 	$: totalNfts = 1;
 
 	// Never show the back button on this tab
@@ -35,9 +35,9 @@
 			value: marketFee + ' % Fee | ' + (singleNft.collectionData?.royalties?.reduce((acum, value) => acum + Number(value.fees ?? 0), 0) || 0) + ' % Royalty'
 		},
 		{ name: 'Token ID', value: singleNft.onChainId },
-		{ name: 'Blockchain', value: options.listingData?.tokenSymbol || options.rawResourceData.chain },
+		{ name: 'Blockchain', value: options.listingData?.paymentTokenTicker || options.rawResourceData.chain },
 		{
-			name: options.listingData?.quantity ? 'NFTs in Listing' : 'You Own',
+			name: options.resourceType === 'listing' ? 'NFTs in Listing' : 'You Own',
 			value: `${ownedOrListedNfts} of ${totalNfts}`
 		}
 	];

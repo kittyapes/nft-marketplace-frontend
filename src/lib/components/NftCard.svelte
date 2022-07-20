@@ -24,6 +24,7 @@
 				likes: number;
 				thumbnailUrl: string;
 				assetUrl: string;
+				quantity: number;
 			}
 		];
 
