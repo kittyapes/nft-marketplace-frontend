@@ -40,6 +40,21 @@ export const getUsersByName = async (query: string, limit?: number, page?: numbe
     }
 }
 
+export const searchUsersByName = async (query: string) => {
+    try {
+        let params = {
+            username: query ? query : undefined,
+        }
+
+        // should be without permissions
+        const res = await axios.get(getApiUrl('latest', 'users/search'),  { params });
+
+        return res.data.data.slice(0, 3) as UserData[];
+    } catch {
+        throw new Error('Failed to search for users');
+    }
+}
+
 export const getCollectionsByTitle = async (query: string, limit?: number, page?: number) => {
     try {
         let params = {

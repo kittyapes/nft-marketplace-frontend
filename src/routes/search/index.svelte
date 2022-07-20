@@ -123,12 +123,12 @@
 		await debouncedSearch(val);
 	});
 
-	onMount(async () => {
+	$: {
 		if ($page.url.searchParams.has('query')) {
 			$searchQuery = $page.url.searchParams.get('query');
 		}
-		await debouncedSearch($searchQuery);
-	});
+		debouncedSearch($searchQuery);
+	}
 </script>
 
 <div class="w-full h-full p-10 flex flex-col gap-10 overflow-hidden">

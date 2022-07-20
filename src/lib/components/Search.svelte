@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Search from '$icons/search.svelte';
 	import { debounce } from 'lodash-es';
-	import { getCollectionsByTitle, getListingsByTitle, getUsersByName } from '$utils/api/search/globalSearch';
+	import { getCollectionsByTitle, getListingsByTitle, getUsersByName, searchUsersByName } from '$utils/api/search/globalSearch';
 	import { reject } from 'lodash-es';
 	import Loader from '$icons/loader.svelte';
 	import { tick } from 'svelte';
@@ -37,7 +37,8 @@
 	};
 
 	const searchUsers = async (query: string) => {
-		const response = await getUsersByName(query, resultCategoryLimit).catch((e) => []);
+		const response = await searchUsersByName(query).catch((e) => []);
+		console.log(response);
 		searchResults.users = response;
 	};
 
