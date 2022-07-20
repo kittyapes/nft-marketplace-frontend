@@ -12,6 +12,7 @@
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
 	import { getTokenBalance } from '$stores/user';
 	import { contractCancelListing, contractUpdateListing, type ChainListing } from '$utils/contracts/listing';
+	import { totalColRoyalties } from '$utils/misc/royalties';
 	import { isFuture } from '$utils/misc/time';
 	import { createToggle } from '$utils/misc/toggle';
 	import { notifyError } from '$utils/toast';
@@ -101,7 +102,7 @@
 	<div class="grid gap-2 mt-2 font-semibold ml-2" style:grid-template-columns="auto 6rem">
 		<div>Creator Royalties:</div>
 		<div class="flex justify-end space-x-3 items-center">
-			<div class="">0.0%</div>
+			<div class="">{totalColRoyalties(options)}%</div>
 			<div class="w-5">
 				<Info />
 			</div>
