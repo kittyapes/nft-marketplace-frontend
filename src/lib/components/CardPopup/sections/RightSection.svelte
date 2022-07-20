@@ -25,7 +25,7 @@
 		console.debug('[On chain listing data]:', chainListing);
 	}
 
-	_refreshOnChainListingHelper.subscribe(() => refreshOnChainListing());
+	_refreshOnChainListingHelper.subscribe(() => options.listingData && refreshOnChainListing());
 
 	// The back button is controlled by dynamic components
 	export let showBackButton: boolean;
