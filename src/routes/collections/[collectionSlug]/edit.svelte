@@ -180,6 +180,7 @@
 	}
 
 	async function _createCollection() {
+		console.log($collectionData);
 		const [contractError, contractRes] = await noTryAsync(() =>
 			contractCreateCollection({
 				name: $collectionData.name,

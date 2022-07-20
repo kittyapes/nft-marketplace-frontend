@@ -34,7 +34,7 @@ export async function addUserRole(address: string, roles: UserRole[]) {
 			{
 				roles,
 			},
-			getAxiosConfig()
+			await getAxiosConfig()
 		)
 		.catch(() => null);
 

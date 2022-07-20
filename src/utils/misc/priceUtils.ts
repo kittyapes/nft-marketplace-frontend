@@ -1,5 +1,5 @@
 import { connectionDetails } from '$stores/wallet';
-import { formatUnits, parseUnits } from 'ethers/lib/utils.js';
+import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 
 const knownTokens: { ticker: string; address: string; network: string; decimals: number }[] = [
@@ -47,7 +47,7 @@ export function parseToken(amount: string, tokenAddress: string, fallback?: any)
 	const tokenDetails = getKnownTokenDetails({ tokenAddress: tokenAddress });
 
 	try {
-		return parseUnits(amount, tokenDetails.decimals);
+		return ethers.utils.parseUnits(amount, tokenDetails.decimals);
 	} catch (err) {
 		if (fallback !== undefined) return fallback;
 		throw err;
@@ -57,5 +57,5 @@ export function parseToken(amount: string, tokenAddress: string, fallback?: any)
 export function formatToken(amount: string, tokenAddress: string) {
 	const tokenDetails = getKnownTokenDetails({ tokenAddress: tokenAddress });
 
-	return formatUnits(amount, tokenDetails.decimals);
+	return ethers.utils.formatUnits(amount, tokenDetails.decimals);
 }

@@ -14,7 +14,7 @@ export const freeNftStatus = writable<FreeNftStatus>('unclaimable');
  * @returns An object with the message to sign when claiming and the isClaimed boolean value
  */
 export async function hasClaimedFreeNft(address: string): Promise<{ status: FreeNftStatus }> {
-	const res = await axios.get(getApiUrl('latest', `nfts/isClaimed/${address}`), getAxiosConfig()).catch((err) => err.response);
+	const res = await axios.get(getApiUrl('latest', `nfts/isClaimed/${address}`), await getAxiosConfig()).catch((err) => err.response);
 
 	let status: FreeNftStatus;
 	let rest = {};
@@ -61,7 +61,7 @@ export async function claimFreeNft(selectedNftIndex: number, address: string, si
 					address,
 					signature
 				},
-				getAxiosConfig()
+				await getAxiosConfig()
 			)
 			.catch((err) => err);
 	}

@@ -1,4 +1,5 @@
 import { getEnv } from '$utils/env';
+import type { AxiosError, AxiosResponse } from 'axios';
 
 const LATEST = 2;
 const DATABASE_ITERATION = 2;
@@ -25,4 +26,10 @@ export function getApiUrl(apiVersion: ApiVersion, apiPath: string): string {
 	}
 
 	return `${domain}/${apiPath}`;
+}
+
+export interface ApiCallResult<T> {
+	err?: AxiosError;
+	res?: AxiosResponse;
+	data?: T;
 }

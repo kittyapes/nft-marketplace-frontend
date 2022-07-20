@@ -1,5 +1,5 @@
 import type { BigNumber } from 'ethers';
-import { parseEther } from 'ethers/lib/utils.js';
+import { ethers } from 'ethers';
 
 export function isPrice(s: string) {
 	if (!s) return false;
@@ -7,7 +7,7 @@ export function isPrice(s: string) {
 	let price: BigNumber;
 
 	try {
-		price = parseEther(s);
+		price = ethers.utils.parseEther(s);
 	} catch {
 		return false;
 	}

@@ -3,6 +3,7 @@ import { getApiUrl } from '$utils/api';
 import type { ListingType } from '$utils/api/listing';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { contractCreateListing, LISTING_TYPE } from '$utils/contracts/listing';
+import { parseToken } from '$utils/misc/priceUtils';
 import { notifyError, notifySuccess } from '$utils/toast';
 import axios from 'axios';
 import dayjs from 'dayjs';
@@ -33,6 +34,12 @@ export interface CreateListingFlowOptions {
 }
 
 export async function createListingFlow(options: CreateListingFlowOptions) {
+	const token = options.paymentTokenAddress;
+
+	const weiPrice = parseToken(options.sale.price, token, 0).toString();
+	const weiStartingPrice = parseToken(options.auction.startingPrice, token, 0).toString();
+	const weiReservePrice = parseToken(options.auction.reservePrice, token, 0).toString();
+
 	// Create listing on the server
 	const formData = new FormData();
 
@@ -56,17 +63,17 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 
 	// Sale specific
 	if (options.sale?.price) {
-		listing['price'] = options.sale.price.toString();
+		listing['price'] = weiPrice;
 		listing['quantity'] = options.quantity.toString();
 	}
 
 	// Auction specific
 	if (options.auction?.startingPrice) {
-		listing['startingPrice'] = options.auction.startingPrice.toString();
+		listing['startingPrice'] = weiStartingPrice;
 	}
 
 	if (options.auction?.reservePrice) {
-		listing['reservePrice'] = options.auction.reservePrice.toString();
+		listing['reservePrice'] = weiReservePrice;
 	}
 
 	// Append listing to formData
@@ -76,7 +83,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		formData.append(key, value);
 	}
 
-	const [err, res] = await noTryAsync(() => axios.post(getApiUrl('latest', 'listings'), formData, getAxiosConfig()));
+	const [err, res] = await noTryAsync(async () => axios.post(getApiUrl('latest', 'listings'), formData, await getAxiosConfig()));
 
 	if (err) {
 		console.error(err);

@@ -10,11 +10,11 @@
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
-	import { walletConnected, walletDisconnected } from '$utils/wallet';
+	import { walletDisconnected } from '$utils/wallet';
 
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {
-		return [RegExp('admin.*'), RegExp('create.*'), RegExp('profile/edit'), RegExp('management.*'), RegExp('collections/new/edit'), RegExp('marketplace.*')];
+		return [];
 	}
 
 	function isProtectedAndExpired(path: string) {
@@ -69,10 +69,11 @@
 			setWalletConnectionPopup(to.pathname);
 		}
 
-		if ($walletConnected && isProtectedAndExpired(to.pathname)) {
+		// with the new approach to ask for sign whenever needed on an API call, this may not be needed
+		/*if ($walletConnected && isProtectedAndExpired(to.pathname)) {
 			cancel();
 			setLoginPopup(to.pathname);
-		}
+		}*/
 
 		// When the user is trying to access his profile and the the profile has not been created on the backend,
 		// request him to sign in, which will create the profile.
@@ -95,15 +96,17 @@
 
 	// Handler for when the app is first loaded on a auth protected route
 	afterNavigate(({ to }) => {
-		const unsub = currentUserAddress.subscribe(async (address) => {
+		// with the new approach to ask for sign whenever needed on an API call, this may not be needed
+		/*const unsub = currentUserAddress.subscribe(async (address) => {
 			if (!address) return;
 
 			if (isProtectedAndExpired(to.pathname)) {
+				console.log('yo wtf');
 				unsub();
 				await goto('/');
 				setLoginPopup(to.pathname);
 			}
-		});
+		});*/
 
 		// Restrict routes to verified creators
 		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {

@@ -1,7 +1,7 @@
 import { getAuthToken } from './token';
 
-export function getAxiosConfig(address?: string) {
-	const token = getAuthToken(address);
+export async function getAxiosConfig(address?: string) {
+	const token = await getAuthToken(address);
 
 	if (!token) return {};
 

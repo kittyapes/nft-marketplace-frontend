@@ -3,7 +3,7 @@ import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 import type { Listing } from '$utils/api/listing';
 import { getTokenDetails } from '$utils/contracts/token';
 import dayjs from 'dayjs';
-import { formatUnits } from 'ethers/lib/utils.js';
+import { ethers } from 'ethers';
 import { writable } from 'svelte/store';
 
 export async function adaptListingToNftCard(data: Listing) {
@@ -27,7 +27,7 @@ export async function adaptListingToNftCard(data: Listing) {
 	let price: string;
 
 	try {
-		price = formatUnits(data.listing.price.toString(), token.decimals);
+		price = ethers.utils.formatUnits(data.listing.price.toString(), token.decimals);
 	} catch {
 		price = 'N/A';
 	}

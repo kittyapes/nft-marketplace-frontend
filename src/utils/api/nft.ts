@@ -1,7 +1,8 @@
 import type { ApiNftData } from '$interfaces/apiNftData';
+import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
 import { noTryAsync } from 'no-try';
-import { getApiUrl } from '.';
+import { getApiUrl, type ApiCallResult } from '.';
 
 export async function getNft(id: string) {
 	const res = await axios.get(getApiUrl('latest', 'nfts/' + id));
@@ -17,4 +18,22 @@ export async function apiGetUserNfts(address: string, type: 'COLLECTED' | 'MINTE
 	);
 
 	return { err, res: res.data.data as ApiNftData[] };
+}
+
+export async function apiHideNft(id: string): Promise<ApiCallResult<{ success: boolean }>> {
+	try {
+		const res = await axios.post(getApiUrl('latest', 'nfts/hide/' + id), getAxiosConfig());
+		return { res, data: { success: true } };
+	} catch (err) {
+		return { err, data: { success: false } };
+	}
+}
+
+export async function apiRevealNft(id: string): Promise<ApiCallResult<{ success: boolean }>> {
+	try {
+		const res = await axios.post(getApiUrl('latest', 'nfts/reveal/' + id), getAxiosConfig());
+		return { res, data: { success: true } };
+	} catch (err) {
+		return { err, data: { success: false } };
+	}
 }

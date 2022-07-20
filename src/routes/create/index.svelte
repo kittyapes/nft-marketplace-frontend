@@ -11,7 +11,7 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { nftDraft } from '$stores/create';
 	import { profileData } from '$stores/user';
-	import { appProvider, appSigner, currentUserAddress } from '$stores/wallet';
+	import { currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
@@ -21,7 +21,6 @@
 	import { goBack } from '$utils/navigation';
 	import { setPopup, updatePopupProps } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
-	import { onMount, tick } from 'svelte';
 	import { writable } from 'svelte/store';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import { getContract } from '$utils/misc/getContract';
@@ -80,7 +79,6 @@
 
 			if (beforeLength === collections.length) break;
 			page++;
-			console.log(collections);
 		}
 
 		if (nftData.collectionName) {
@@ -89,6 +87,9 @@
 			if (selectedCollection) {
 				selectedCollectionRow = adaptCollectionToMintingDropdown(selectedCollection);
 				selectedCollectionId = selectedCollection.id;
+			} else if (nftData.collectionName === 'Hinata General Collection' && $generalCollection?.value) {
+				selectedCollectionRow = $generalCollection;
+				selectedCollectionId = $generalCollection.value;
 			}
 		}
 
@@ -259,6 +260,7 @@
 					<Dropdown
 						selected={selectedCollectionRow}
 						on:select={handleCollectionSelection}
+						dispatchOnMount={false}
 						options={[...$availableCollections, { label: 'Create new collection', value: 'collections/new/edit?to=create' }]}
 						class="mt-2"
 						btnClass="font-semibold"
@@ -285,6 +287,6 @@
 	<!-- Right side -->
 	<div class="p-8 border-0 border-l separator w-80">
 		<div class="mb-4 text-xl uppercase">Preview</div>
-		<NftCard options={{ id: null, title: nftData.name, imageUrl: nftData.thumbnailPreview, likeIds: [], likes: 0 }} />
+		<NftCard options={{ id: null, title: nftData.name, imageUrl: nftData.thumbnailPreview, likeIds: [], likes: 0, databaseId: '' }} />
 	</div>
 </div>

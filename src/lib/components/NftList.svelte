@@ -9,6 +9,7 @@
 	const dispatch = createEventDispatcher();
 
 	export let options: NftCardOptions[];
+	export let cardPropsMapper: (NftCardOptions) => { options: NftCardOptions } = (v) => ({ options: v });
 	export let isLoading = false;
 	export let reachedEnd = false;
 
@@ -40,6 +41,11 @@
 		options;
 		markLiked();
 	}
+
+	function hideCard(index) {
+		options.splice(index, 1);
+		options = options;
+	}
 </script>
 
 <div class="w-full">
@@ -49,8 +55,9 @@
 
 	{#if data?.length}
 		<div class="nftGrid">
-			{#each data as tokenData}
-				<NftCard options={tokenData} />
+			{#each data as cardOptions, index}
+				{@const props = cardPropsMapper(cardOptions)}
+				<NftCard {...props} on:hide-me={() => hideCard(index)} />
 			{/each}
 		</div>
 	{/if}

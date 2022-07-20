@@ -73,4 +73,5 @@ export interface CardPopupOptions {
 	staleResource?: Writable<{ reason: string }>;
 
 	collectionData: Partial<Collection>;
+	disallowListing?: boolean;
 }
