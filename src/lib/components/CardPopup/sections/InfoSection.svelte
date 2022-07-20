@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { CardOptions } from '$lib/components/NftCard.svelte';
+	import type { CardOptions } from '$interfaces/ui';
 	import { getMarketFee } from '$utils/contracts/listing';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { closePopup } from '$utils/popup';

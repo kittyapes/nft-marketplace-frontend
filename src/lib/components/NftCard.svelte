@@ -1,91 +1,24 @@
-<script context="module" lang="ts">
-	import type { TokenStandard } from '$interfaces';
-	import type { Writable } from 'svelte/store';
-	import type { ListingType } from '$utils/api/listing';
-
-	export interface CardOptions {
-		/** Determines whether the popup is rendering a listing or an NFT in the user's wallet. */
-		resourceType: 'nft' | 'listing';
-
-		/** An array of NFTs contained in a listing. If the card is rendering a single NFT,
-		 * then the array length will be 1.
-		 */
-		nfts: [
-			{
-				databaseId: string;
-				onChainId: string;
-				name: string;
-				metadata?: any;
-				contractType: TokenStandard;
-				creator: string;
-				contractAddress: string;
-				isExternal: boolean;
-				collectionData: Partial<Collection>;
-				likes: number;
-				thumbnailUrl: string;
-				assetUrl: string;
-				quantity: number;
-			}
-		];
-
-		/** Data used when rendering a listing. */
-		listingData?: {
-			databaseId: string;
-			onChainId: string;
-			sellerAddress: string;
-			listingType: ListingType;
-			paymentTokenTicker: string;
-			paymentTokenAddress: string;
-			startTime: number;
-			endTime: number;
-			duration: number;
-		};
-
-		/** Data used when adapting a listing of the type Sale. */
-		saleData?: {
-			price: string;
-		};
-
-		/** Data used when adapting a listing of the type Auction. */
-		auctionData?: {
-			startingPrice: string;
-			reservePrice?: string;
-		};
-
-		/** The raw data that was used by an adapter to generate this data object. */
-		rawResourceData: any;
-
-		/** Resource is no longer valid. For example due to cancelling or purchasing a listing. Indicates that
-		 * the resource should be reloaded and no further actions should performed on the resource.
-		 */
-		staleResource?: Writable<{ reason: string }>;
-
-		allowPopup?: boolean;
-		allowTrade?: boolean;
-	}
-</script>
-
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
 	import Heart from '$icons/heart.svelte';
 	import ThreeDots from '$icons/three-dots.svelte';
+	import type { CardOptions } from '$interfaces/ui';
+	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
+	import { likedNftIds, refreshLikedNfts } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
+	import { apiGetCollectionBySlug } from '$utils/api/collection';
+	import { apiHideNft, apiRevealNft } from '$utils/api/nft';
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
+	import { getListingCardTimerHtml } from '$utils/misc/time';
 	import { favoriteNft } from '$utils/nfts/favoriteNft';
 	import { setPopup, updatePopupProps } from '$utils/popup';
-	import { fade } from 'svelte/transition';
-	import getTimeRemaining from '$utils/timeRemaining';
-	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-	import { likedNftIds, refreshLikedNfts } from '$stores/user';
-	import { walletConnected } from '$utils/wallet';
-	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { notifyError, notifySuccess } from '$utils/toast';
+	import { walletConnected } from '$utils/wallet';
 	import { noTryAsync } from 'no-try';
-	import { apiGetCollectionBySlug, type Collection } from '$utils/api/collection';
-	import { apiHideNft, apiRevealNft } from '$utils/api/nft';
+	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import CardPopup from './CardPopup/CardPopup.svelte';
-	import { getListingCardTimerHtml } from '$utils/misc/time';
 
 	const dispatch = createEventDispatcher();
 

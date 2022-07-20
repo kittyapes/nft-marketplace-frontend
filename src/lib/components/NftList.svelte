@@ -1,8 +1,9 @@
 <script lang="ts">
-	import NftCard, { type CardOptions } from './NftCard.svelte';
+	import NftCard from './NftCard.svelte';
 	import DiamondsLoader from './DiamondsLoader.svelte';
 	import { inview } from 'svelte-inview';
 	import { createEventDispatcher } from 'svelte';
+	import type { CardOptions } from '$interfaces/ui';
 
 	const dispatch = createEventDispatcher();
 

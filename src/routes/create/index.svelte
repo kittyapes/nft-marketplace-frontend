@@ -1,29 +1,30 @@
 <script lang="ts">
-	import { goto, beforeNavigate } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import { acceptedImages, acceptedVideos } from '$constants';
 	import Back from '$icons/back_.svelte';
 	import type { NftDraft } from '$interfaces/nft/nftDraft';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
-	import NftCard, { type CardOptions } from '$lib/components/NftCard.svelte';
-	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
+	import NftCard from '$lib/components/NftCard.svelte';
+	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
+	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import { nftDraft } from '$stores/create';
 	import { profileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
-	import { type NewBundleData, newBundleData } from '$utils/create';
+	import { newBundleData, type NewBundleData } from '$utils/create';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { getNftId } from '$utils/create/getNftId';
+	import { getContract } from '$utils/misc/getContract';
 	import { goBack } from '$utils/navigation';
 	import { setPopup, updatePopupProps } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
 	import { writable } from 'svelte/store';
-	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
-	import { getContract } from '$utils/misc/getContract';
+	import type { CardOptions } from '$interfaces/ui';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }>(null);

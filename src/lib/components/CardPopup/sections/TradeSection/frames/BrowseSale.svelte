@@ -1,6 +1,7 @@
 <script lang="ts">
+	import type { CardOptions } from '$interfaces/ui';
+
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
-	import type { CardOptions } from '$lib/components/NftCard.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import { appSigner, currentUserAddress } from '$stores/wallet';

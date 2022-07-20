@@ -1,6 +1,6 @@
 <script lang="ts">
+	import type { CardOptions } from '$interfaces/ui';
 	import InfoBox from '$lib/components/InfoBox.svelte';
-	import type { CardOptions } from '$lib/components/NftCard.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
 	import { parseToken } from '$utils/misc/priceUtils';

@@ -1,4 +1,4 @@
-import type { CardOptions } from '$lib/components/NftCard.svelte';
+import type { CardOptions } from '$interfaces/ui';
 import type { Listing } from '$utils/api/listing';
 import dayjs from 'dayjs';
 import { writable } from 'svelte/store';

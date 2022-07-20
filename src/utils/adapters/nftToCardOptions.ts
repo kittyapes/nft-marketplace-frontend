@@ -1,5 +1,5 @@
 import type { ApiNftData } from '$interfaces/apiNftData';
-import type { CardOptions } from '$lib/components/NftCard.svelte';
+import type { CardOptions } from '$interfaces/ui';
 import { writable } from 'svelte/store';
 
 export function nftToCardOptions(nft: ApiNftData): CardOptions {
@@ -23,7 +23,8 @@ export function nftToCardOptions(nft: ApiNftData): CardOptions {
 				},
 				likes: nft.favoriteCount,
 				thumbnailUrl: nft.thumbnailUrl,
-				assetUrl: nft.assetUrl || nft.thumbnailUrl
+				assetUrl: nft.assetUrl || nft.thumbnailUrl,
+				quantity: 1
 			}
 		],
 		allowPopup: true,

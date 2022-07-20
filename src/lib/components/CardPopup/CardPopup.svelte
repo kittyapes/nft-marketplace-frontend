@@ -1,9 +1,10 @@
 <script lang="ts">
+	import type { CardOptions } from '$interfaces/ui';
+
 	import { likedNftIds } from '$stores/user';
 
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import type { PopupHandler } from '$utils/popup';
-	import type { CardOptions } from '../NftCard.svelte';
 
 	import Popup from '../Popup.svelte';
 	import AssetContainer from './sections/AssetContainer.svelte';

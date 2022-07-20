@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Info from '$icons/info.v2.svelte';
 	import type { ConfigurableListingProps } from '$interfaces/listing';
+	import type { CardOptions } from '$interfaces/ui';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import { refreshOnChainListing } from '$lib/components/CardPopup/cardPopup';
-	import type { CardOptions } from '$lib/components/NftCard.svelte';
 	import ListingPropertiesSlot from '$lib/components/primary-listing/ListingPropertiesSlot.svelte';
 	import SaleProperties from '$lib/components/primary-listing/SaleProperties.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';

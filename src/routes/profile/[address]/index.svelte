@@ -5,9 +5,9 @@
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
+	import type { CardOptions } from '$interfaces/ui';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
-	import type { CardOptions } from '$lib/components/NftCard.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';

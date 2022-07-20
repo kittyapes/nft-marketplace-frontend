@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { CardOptions } from '$lib/components/NftCard.svelte';
+	import type { CardOptions } from '$interfaces/ui';
+
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { unpackedComponentStore } from '$utils/ui';
