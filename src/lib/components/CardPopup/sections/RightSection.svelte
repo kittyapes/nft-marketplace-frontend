@@ -44,10 +44,6 @@
 				visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && options.rawResourceData.owner === $currentUserAddress)) && !get(options.staleResource) && options.allowTrade
 			}
 		];
-
-		if (get(options.staleResource)?.reason === 'relisting') {
-			selectedTab = tabs[1];
-		}
 	}
 
 	updateTabs();
@@ -78,8 +74,8 @@
 				on:pointerleave={() => (showCannotTrade = false)}
 				bind:this={tradeTab}
 			>
-				<img class="h-8" src={getIconUrl('card-popup-tab-icon/' + tab.icon + (tab === selectedTab ? '.selected' : ''))} alt={tab.text} />
-				<div class="text-[#8C8C8C]" class:gradient-text={tab === selectedTab}>{tab.text}</div>
+				<img class="h-8" src={getIconUrl('card-popup-tab-icon/' + tab.icon + (tab.text === selectedTab.text ? '.selected' : ''))} alt={tab.text} />
+				<div class="text-[#8C8C8C]" class:gradient-text={tab.text === selectedTab.text}>{tab.text}</div>
 			</button>
 		{/each}
 	</div>
