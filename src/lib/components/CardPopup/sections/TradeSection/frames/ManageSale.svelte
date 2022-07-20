@@ -29,6 +29,7 @@
 		try {
 			await contractCancelListing(options.listingData.onChainId);
 			frame.set(Success);
+			options.staleResource.set({ reason: 'cancelled' });
 		} catch (err) {
 			console.error(err);
 			notifyError('Failed to cancel listing!');
