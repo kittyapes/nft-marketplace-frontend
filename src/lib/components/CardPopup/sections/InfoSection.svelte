@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import type { CardOptions } from '$interfaces/ui';
 	import { getMarketFee } from '$utils/contracts/listing';
+	import { totalColRoyalties } from '$utils/misc/royalties';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { closePopup } from '$utils/popup';
 	import { onMount } from 'svelte';
@@ -32,7 +33,7 @@
 		{ name: 'Token Standard', value: singleNft.contractType },
 		{
 			name: 'Fees and Royalties',
-			value: marketFee + ' % Fee | ' + (singleNft.collectionData?.royalties?.reduce((acum, value) => acum + Number(value.fees ?? 0), 0) || 0) + ' % Royalty'
+			value: marketFee + ' % Fee | ' + totalColRoyalties(options) + ' % Royalty'
 		},
 		{ name: 'Token ID', value: singleNft.onChainId },
 		{ name: 'Blockchain', value: options.listingData?.paymentTokenTicker || options.rawResourceData.chain },
