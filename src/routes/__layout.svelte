@@ -1,11 +1,3 @@
-<script context="module">
-	export const load = async ({ url }) => ({
-		props: {
-			url: url.href
-		}
-	});
-</script>
-
 <script lang="ts">
 	import '$styles/app.css';
 	import Footer from '$lib/components/Footer.svelte';
@@ -19,8 +11,6 @@
 	import ErrorPage from '$lib/components/ErrorPage.svelte';
 	import { currentError } from '$stores/error';
 	import { appDataToTriggerReload } from '$stores/wallet';
-
-	export let url;
 
 	onMount(async () => {
 		// Check for whether user has access/has provided password
@@ -38,6 +28,7 @@
 <svelte:head>
 	<title>Hinata</title>
 </svelte:head>
+
 {#key $appDataToTriggerReload}
 	<Nav />
 	{#if $currentError}
