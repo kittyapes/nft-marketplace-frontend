@@ -7,6 +7,7 @@
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
+	import { _refreshOnChainListingHelper } from '../cardPopup';
 	import InfoSection from './InfoSection.svelte';
 	import TradeSection from './TradeSection/TradeSection.svelte';
 
@@ -15,10 +16,16 @@
 
 	onMount(async () => {
 		if (options.listingData?.onChainId) {
-			chainListing = await getOnChainListing(options.listingData.onChainId);
-			console.debug('[On chain listing data]:', chainListing);
+			refreshOnChainListing();
 		}
 	});
+
+	async function refreshOnChainListing() {
+		chainListing = await getOnChainListing(options.listingData.onChainId);
+		console.debug('[On chain listing data]:', chainListing);
+	}
+
+	_refreshOnChainListingHelper.subscribe(() => refreshOnChainListing());
 
 	// The back button is controlled by dynamic components
 	export let showBackButton: boolean;
@@ -34,10 +41,7 @@
 				text: 'Trade',
 				icon: 'trade',
 				sectionComponent: TradeSection,
-				visible:
-					(options.resourceType === 'listing' || (options.resourceType === 'nft' && options.rawResourceData.owner === $currentUserAddress)) &&
-					(!get(options.staleResource) || get(options.staleResource)?.reason === 'relisting') &&
-					options.allowTrade
+				visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && options.rawResourceData.owner === $currentUserAddress)) && !get(options.staleResource) && options.allowTrade
 			}
 		];
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Info from '$icons/info.v2.svelte';
+	import type { ConfigurableListingProps } from '$interfaces/listing';
 	import type { CardOptions } from '$lib/components/NftCard.svelte';
 	import AuctionProperties from '$lib/components/primary-listing/AuctionProperties.svelte';
 	import ListingPropertiesSlot from '$lib/components/primary-listing/ListingPropertiesSlot.svelte';
@@ -10,12 +11,9 @@
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { getContractData } from '$utils/misc/getContract';
 	import { notifyError } from '$utils/toast';
-	import dayjs from 'dayjs';
-	import { BigNumber } from 'ethers';
-	import { createEventDispatcher } from 'svelte';
+	import { frame } from '../tradeSection';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
-
-	const dispatch = createEventDispatcher();
+	import Success from './Success.svelte';
 
 	export let options: CardOptions;
 
@@ -30,45 +28,33 @@
 		const flowOptions: CreateListingFlowOptions = {
 			title: options.nfts[0].metadata?.name,
 			description: options.nfts[0].metadata?.description,
-			duration: durationSeconds,
-			nfts: [{ nftId: options.nfts[0].onChainId, amount: BigNumber.from(quantity || 1), collectionAddress: options.nfts[0]?.contractAddress ?? getContractData('storage').address }],
+			nfts: [
+				{
+					nftId: options.nfts[0].onChainId,
+					collectionAddress: options.nfts[0]?.contractAddress ?? getContractData('storage').address,
+					amount: listingProps.quantity || 1
+				}
+			],
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: 'WETH',
-			quantity: BigNumber.from(1),
-			startTime: startDateTs,
 			listingType: listingType,
-			sale: {} as any,
-			auction: {} as any
+			...listingProps
 		};
 
-		if (listingType === 'sale') {
-			flowOptions.sale.price = price;
-		} else if (listingType === 'auction') {
-			flowOptions.auction.startingPrice = startingPrice;
-			flowOptions.auction.reservePrice = reservePrice || startingPrice;
-		}
-
-		const { err } = await createListingFlow(flowOptions);
-
-		if (err) {
+		try {
+			await createListingFlow(flowOptions);
+			frame.set([Success, { successDescription: 'Successfully listed.', showMarketplaceButton: false }]);
+			options.staleResource.set({ reason: 'listing-created' });
+		} catch (err) {
 			console.error(err);
 			notifyError(err.message);
-		} else {
-			dispatch('set-state', { name: 'success', props: { successDescription: 'Successfully listed.', showMarketplaceButton: false } });
 		}
 
 		isListing = false;
 	}
 
-	// Listing properties
-	let quantity = maxQuantity;
-	let durationSeconds;
-	let startDateTs;
-	let price;
-	let startingPrice;
-	let reservePrice;
-
-	let formValid;
+	let listingProps: Partial<ConfigurableListingProps> = {};
+	let formErrors: string[] = [];
 </script>
 
 <div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto">
@@ -79,9 +65,9 @@
 	<div class="mt-4">
 		<ListingPropertiesSlot>
 			{#if listingType === 'sale'}
-				<SaleProperties {maxQuantity} bind:durationSeconds bind:quantity bind:startDateTs bind:price bind:formValid />
+				<SaleProperties {maxQuantity} bind:props={listingProps} bind:formErrors />
 			{:else if listingType === 'auction'}
-				<AuctionProperties bind:durationSeconds bind:startDateTs bind:startingPrice bind:reservePrice bind:formValid />
+				<AuctionProperties bind:props={listingProps} />
 			{/if}
 		</ListingPropertiesSlot>
 	</div>
@@ -110,7 +96,7 @@
 		</div>
 	</div>
 
-	<PrimaryButton class="mt-4 flex-shrink-0" disabled={!formValid || isListing} on:click={completeListing}>
+	<PrimaryButton class="mt-4 flex-shrink-0" disabled={!!formErrors.length || isListing} on:click={completeListing}>
 		Complete Listing
 		{#if isListing}
 			<ButtonSpinner />

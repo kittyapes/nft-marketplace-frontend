@@ -4,10 +4,8 @@
 	import { createEventDispatcher } from 'svelte';
 
 	export let successDescription = 'NFT purchase was successful.';
-	export let showProfileButton = true;
-	export let showMarketplaceButton = true;
-	export let showRelistButton = false;
-	export let relistFunction = () => undefined;
+	export let showProfileButton = false;
+	export let showMarketplaceButton = false;
 
 	const dispatch = createEventDispatcher();
 
@@ -30,10 +28,6 @@
 
 		{#if showMarketplaceButton}
 			<button class="btn btn-gradient btn-rounded uppercase font-bold w-1/2" on:click={() => dispatch('close-popup')}>Continue shopping</button>
-		{/if}
-
-		{#if showRelistButton}
-			<button class="btn btn-gradient btn-rounded uppercase font-bold w-1/2" on:click={() => relistFunction()}>Relist</button>
 		{/if}
 	</div>
 </div>

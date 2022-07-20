@@ -1,4 +1,5 @@
-import type { EthAddress, UnixTime } from '$interfaces';
+import type { EthAddress } from '$interfaces';
+import type { ConfigurableListingProps } from '$interfaces/listing';
 import { getApiUrl } from '$utils/api';
 import type { ListingType } from '$utils/api/listing';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
@@ -7,38 +8,25 @@ import { parseToken } from '$utils/misc/priceUtils';
 import { notifyError, notifySuccess } from '$utils/toast';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import type { BigNumber } from 'ethers';
 import { noTryAsync } from 'no-try';
 
-export interface CreateListingFlowOptions {
-	nfts: { nftId: string; amount: BigNumber; collectionAddress: EthAddress }[];
+export interface CreateListingFlowOptions extends Partial<ConfigurableListingProps> {
+	nfts: { nftId: string; collectionAddress: EthAddress; amount: number }[];
 	paymentTokenAddress: EthAddress;
 	paymentTokenTicker: string;
 	title: string;
 	description: string;
-	quantity: BigNumber;
 	listingType: ListingType;
-	startTime: UnixTime;
-
-	/** Sale duration in seconds. */
-	duration: number;
-
-	sale?: {
-		price: string;
-	};
-
-	auction?: {
-		startingPrice: string;
-		reservePrice: string;
-	};
 }
 
 export async function createListingFlow(options: CreateListingFlowOptions) {
 	const token = options.paymentTokenAddress;
 
-	const weiPrice = parseToken(options.sale.price, token, 0).toString();
-	const weiStartingPrice = parseToken(options.auction.startingPrice, token, 0).toString();
-	const weiReservePrice = parseToken(options.auction.reservePrice, token, 0).toString();
+	const weiPrice = parseToken(options.price, token, 0).toString();
+	const weiStartingPrice = parseToken(options.startingPrice, token, 0).toString();
+	const weiReservePrice = parseToken(options.reservePrice || options.startingPrice, token, 0).toString();
+
+	console.log(options);
 
 	// Create listing on the server
 	const formData = new FormData();
@@ -52,27 +40,24 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		paymentTokenTicker: 'ETH', // hotfix options.paymentTokenTicker,
 		description: options.description || 'No Description',
 		listingType: options.listingType,
-		duration: options.duration.toString()
+		duration: options.durationSeconds.toString()
 	};
 
-	if (options.startTime) {
-		fields['startTime'] = dayjs(options.startTime * 1000).isAfter(dayjs()) ? options.startTime : null;
+	if (options.startDateTs) {
+		fields['startTime'] = dayjs(options.startDateTs * 1000).isAfter(dayjs()) ? options.startDateTs : null;
 	}
 
 	const listing = {};
 
 	// Sale specific
-	if (options.sale?.price) {
+	if (options.listingType === 'sale') {
 		listing['price'] = weiPrice;
 		listing['quantity'] = options.quantity.toString();
 	}
 
 	// Auction specific
-	if (options.auction?.startingPrice) {
+	if (options.listingType === 'auction') {
 		listing['startingPrice'] = weiStartingPrice;
-	}
-
-	if (options.auction?.reservePrice) {
 		listing['reservePrice'] = weiReservePrice;
 	}
 
@@ -83,13 +68,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		formData.append(key, value);
 	}
 
-	const [err, res] = await noTryAsync(async () => axios.post(getApiUrl('latest', 'listings'), formData, await getAxiosConfig()));
-
-	if (err) {
-		console.error(err);
-		notifyError('Server request failed.');
-		return { err };
-	}
+	const res = await axios.post(getApiUrl('latest', 'listings'), formData, await getAxiosConfig());
 
 	// Retrieve new listing ID from server response
 	const listingId = res.data.data.listingId;
@@ -105,27 +84,22 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		auction: LISTING_TYPE.TIME_LIMITED_WINER_TAKE_ALL_AUCTION
 	}[options.listingType];
 
-	try {
-		await contractCreateListing({
-			payToken: options.paymentTokenAddress,
-			listingId: listingId,
-			listingType,
-			price: options.sale?.price || options.auction.startingPrice || '0',
-			startTime: options.startTime || dayjs().unix(),
-			reservePrice: options.auction?.reservePrice || options.auction.startingPrice || options.sale.price,
-			duration: options.duration,
-			tokenIds,
-			tokenAmounts,
-			quantity: 1,
-			collections,
-			nfts: options.nfts
-		});
-	} catch (err) {
-		console.error(err);
-		return { err: new Error(err.error?.message) || err };
-	}
+	console.log({ options });
+
+	await contractCreateListing({
+		payToken: options.paymentTokenAddress,
+		listingId: listingId,
+		listingType,
+		price: options.price || options.startingPrice || '0',
+		reservePrice: options.reservePrice || options.startingPrice || options.price,
+		startTime: options.startDateTs || dayjs().unix(),
+		duration: options.durationSeconds,
+		tokenIds,
+		tokenAmounts,
+		quantity: 1,
+		collections,
+		nfts: options.nfts
+	});
 
 	notifySuccess('Successfully created a listing.');
-
-	return { success: true };
 }

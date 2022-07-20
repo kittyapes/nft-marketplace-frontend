@@ -1,5 +1,6 @@
 import type { ApiNftData } from '$interfaces/apiNftData';
 import type { CardOptions } from '$lib/components/NftCard.svelte';
+import { writable } from 'svelte/store';
 
 export function nftToCardOptions(nft: ApiNftData): CardOptions {
 	return {
@@ -25,6 +26,8 @@ export function nftToCardOptions(nft: ApiNftData): CardOptions {
 				assetUrl: nft.assetUrl || nft.thumbnailUrl
 			}
 		],
-		allowPopup: true
+		allowPopup: true,
+		allowTrade: true,
+		staleResource: writable()
 	};
 }

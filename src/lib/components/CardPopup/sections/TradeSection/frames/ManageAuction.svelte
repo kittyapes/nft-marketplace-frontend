@@ -13,8 +13,9 @@
 	import { parseToken } from '$utils/misc/priceUtils';
 	import { createToggle } from '$utils/misc/toggle';
 	import { notifyError } from '$utils/toast';
-	import { noTryAsync } from 'no-try';
 	import { createEventDispatcher } from 'svelte';
+	import { frame } from '../tradeSection';
+	import Success from './Success.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -26,7 +27,6 @@
 	let biddings: BidRow[] = [];
 
 	async function acceptHighest() {
-		isWorking = true;
 		isAccepting = true;
 
 		const { err, res } = await contractCompleteAuction(options.listingData.onChainId);
@@ -34,54 +34,29 @@
 		if (err) {
 			console.error(err);
 			notifyError('Failed to complete auction.');
-			dispatch('set-state', { name: 'error' });
 		} else {
-			options.staleResource.set({ reason: 'cancelled' });
+			options.staleResource.set({ reason: 'bid-accepted' });
 			dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Auction completed successfully.' } });
+			frame.set(Success);
 		}
 
-		isWorking = false;
 		isAccepting = false;
 	}
 
 	let cancelButtonContainer: HTMLElement;
 
-	async function recreateListing() {
-		options.staleResource.set({ reason: 'relisting' });
-		dispatch('set-state', {
-			name: 'recreate-listing',
-			props: {
-				options,
-				selectedListing: 'auction',
-				price: options.auctionData.startingPrice,
-				paymentTokenTicker: options.listingData.paymentTokenTicker,
-				duration: options.listingData.duration,
-				startingPrice: options.auctionData.startingPrice,
-				reservePrice: options.auctionData.reservePrice,
-				quantity: '1'
-			}
-		});
-	}
-
-	async function cancelAuction() {
-		isWorking = true;
+	async function cancelListing() {
 		isCancelling = true;
 
-		const [err, res] = await noTryAsync(() => contractCancelListing(options.listingData.onChainId));
-
-		if (err) {
-			console.error(err);
-			notifyError('Failed to cancel listing.');
-			dispatch('set-state', { name: 'error' });
-		} else {
+		try {
+			await contractCancelListing(options.listingData.onChainId);
+			frame.set(Success);
 			options.staleResource.set({ reason: 'cancelled' });
-			dispatch('set-state', {
-				name: 'success',
-				props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Listing cancelled successfully.', showRelistButton: true, relistFunction: recreateListing }
-			});
+		} catch (err) {
+			console.error(err);
+			notifyError('Failed to cancel listing!');
 		}
 
-		isWorking = false;
 		isCancelling = false;
 	}
 
@@ -89,7 +64,6 @@
 
 	let isRefreshingBids: boolean;
 
-	let isWorking = false;
 	let isAccepting = false;
 	let isCancelling = false;
 
@@ -129,7 +103,7 @@
 
 	<div class="flex gap-2">
 		<div bind:this={cancelButtonContainer} class="w-full" on:pointerenter={cancelHovered.toggle} on:pointerleave={cancelHovered.toggle}>
-			<SecondaryButton class="mt-4" disabled={isWorking || isRefreshingBids || !canCancel} on:click={cancelAuction}>
+			<SecondaryButton class="mt-4" disabled={isCancelling || isAccepting || isRefreshingBids || !canCancel} on:click={cancelListing}>
 				{#if isCancelling}
 					<ButtonSpinner secondary />
 				{/if}
@@ -137,7 +111,7 @@
 			</SecondaryButton>
 		</div>
 
-		<PrimaryButton class="mt-4" disabled={isWorking || isRefreshingBids || !canAccept} on:click={acceptHighest}>
+		<PrimaryButton class="mt-4" disabled={isCancelling || isAccepting || isRefreshingBids || !canAccept} on:click={acceptHighest}>
 			{#if isAccepting}
 				<ButtonSpinner />
 			{/if}
