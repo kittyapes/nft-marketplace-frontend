@@ -7,9 +7,8 @@ import { ethers } from 'ethers';
 import { writable } from 'svelte/store';
 
 export async function adaptListingToNftCard(data: Listing) {
-	console.log(data)
 	const nft = data.nfts?.[0].nft || data.nfts?.[0];
-	console.log(nft)
+
 	const nftsInListing = data.nfts?.[0].amount;
 
 	const collectionData = {
