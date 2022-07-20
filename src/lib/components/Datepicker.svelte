@@ -128,7 +128,7 @@
 	<input {id} type="text" class="input w-full h-12 disabled:bg-white" class:disabled:bg-gray-100={disabled} {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
 
 	<button class="bg-color-black text-white w-20 absolute top-0 right-0 h-full rounded-r-md" on:click={() => (open = !open)} {disabled}>
-		<div class="btn flex items-center justify-center space-x-2">
+		<div class="flex items-center justify-center space-x-2">
 			<Calendar />
 			<ArrowDown />
 		</div>
