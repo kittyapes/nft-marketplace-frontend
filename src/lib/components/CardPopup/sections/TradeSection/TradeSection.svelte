@@ -52,4 +52,4 @@
 	$: console.log($frame);
 </script>
 
-<svelte:component this={$component} {...$props} {options} {chainListing} on:close-popup />
+<svelte:component this={$component} {...$props} {options} {chainListing} on:close-popup on:listing-created />

@@ -6,8 +6,9 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import { getOnChainListing, type ChainListing } from '$utils/contracts/listing';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { onMount } from 'svelte';
-	import { get } from 'svelte/store';
+	import { fade } from 'svelte/transition';
 	import { _refreshOnChainListingHelper } from '../cardPopup';
 	import InfoSection from './InfoSection.svelte';
 	import TradeSection from './TradeSection/TradeSection.svelte';
@@ -15,10 +16,23 @@
 	export let options: CardOptions;
 	let chainListing: ChainListing;
 
+	// Check NFT balance to enable/disable trading functionality
+	let nftBalance = null;
+
+	async function refreshBalance() {
+		if ($currentUserAddress) {
+			nftBalance = (await getUserNftBalance(options.nfts[0].contractAddress, options.nfts[0].onChainId)).balance;
+		} else {
+			nftBalance = 0;
+		}
+	}
+
 	onMount(async () => {
 		if (options.listingData?.onChainId) {
 			refreshOnChainListing();
 		}
+
+		refreshBalance();
 	});
 
 	async function refreshOnChainListing() {
@@ -33,23 +47,19 @@
 
 	let tabs: { text: string; icon: string; sectionComponent: any; visible: boolean }[] = [];
 
-	$: options?.staleResource?.subscribe((v) => v && updateTabs());
+	$: staleResource = options.staleResource;
+	$: tabs = [
+		{ text: 'Info', icon: 'info', sectionComponent: InfoSection, visible: true },
+		{
+			text: 'Trade',
+			icon: 'trade',
+			sectionComponent: TradeSection,
+			visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && nftBalance)) && !$staleResource && options.allowTrade
+		}
+	];
 
-	function updateTabs() {
-		tabs = [
-			{ text: 'Info', icon: 'info', sectionComponent: InfoSection, visible: true },
-			{
-				text: 'Trade',
-				icon: 'trade',
-				sectionComponent: TradeSection,
-				visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && options.rawResourceData.owner === $currentUserAddress)) && !get(options.staleResource) && options.allowTrade
-			}
-		];
-	}
-
-	updateTabs();
-
-	let selectedTab = tabs[0];
+	// Set default tab and prevent overwiriting when statement above
+	$: selectedTab = selectedTab || tabs[0];
 
 	export function goBack() {
 		tabComponentInstance.goBack?.();
@@ -74,14 +84,19 @@
 				on:pointerenter={() => hoverCannotTrade && (showCannotTrade = true)}
 				on:pointerleave={() => (showCannotTrade = false)}
 				bind:this={tradeTab}
+				transition:fade|local
 			>
 				<img class="h-8" src={getIconUrl('card-popup-tab-icon/' + tab.icon + (tab.text === selectedTab.text ? '.selected' : ''))} alt={tab.text} />
 				<div class="text-[#8C8C8C]" class:gradient-text={tab.text === selectedTab.text}>{tab.text}</div>
 			</button>
 		{/each}
+
+		{#if nftBalance === null}
+			<div class="bg-gray-100 h-full w-24 rounded-lg animate-pulse" />
+		{/if}
 	</div>
 
-	<svelte:component this={selectedTab.sectionComponent} {options} {chainListing} on:close-popup bind:showBackButton bind:this={tabComponentInstance} />
+	<svelte:component this={selectedTab.sectionComponent} {options} {chainListing} on:close-popup bind:showBackButton bind:this={tabComponentInstance} on:listing-created={refreshBalance} />
 </div>
 
 {#if showCannotTrade}

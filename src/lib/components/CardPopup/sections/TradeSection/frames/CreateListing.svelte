@@ -11,9 +11,12 @@
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { getContractData } from '$utils/misc/getContract';
 	import { notifyError } from '$utils/toast';
+	import { createEventDispatcher } from 'svelte';
 	import { frame } from '../tradeSection';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
 	import Success from './Success.svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions;
 
@@ -44,7 +47,7 @@
 		try {
 			await createListingFlow(flowOptions);
 			frame.set([Success, { successDescription: 'Successfully listed.', showMarketplaceButton: false }]);
-			options.staleResource.set({ reason: 'listing-created' });
+			dispatch('listing-created');
 		} catch (err) {
 			console.error(err);
 			notifyError(err.message);
