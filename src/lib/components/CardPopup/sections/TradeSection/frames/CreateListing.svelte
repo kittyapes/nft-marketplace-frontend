@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Info from '$icons/info.v2.svelte';
 	import type { ConfigurableListingProps } from '$interfaces/listing';
-	import type { CardOptions } from '$lib/components/NftCard.svelte';
+	import type { CardOptions } from '$interfaces/ui';
 	import AuctionProperties from '$lib/components/primary-listing/AuctionProperties.svelte';
 	import ListingPropertiesSlot from '$lib/components/primary-listing/ListingPropertiesSlot.svelte';
 	import SaleProperties from '$lib/components/primary-listing/SaleProperties.svelte';
@@ -33,6 +33,7 @@
 			description: options.nfts[0].metadata?.description,
 			nfts: [
 				{
+					_id: options.nfts[0].databaseId,
 					nftId: options.nfts[0].onChainId,
 					collectionAddress: options.nfts[0]?.contractAddress ?? getContractData('storage').address,
 					amount: listingProps.quantity || 1

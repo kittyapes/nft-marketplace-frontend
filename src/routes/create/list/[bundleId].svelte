@@ -4,7 +4,8 @@
 	import Back from '$icons/back_.svelte';
 	import type { ApiNftData } from '$interfaces/apiNftData';
 	import type { ConfigurableListingProps } from '$interfaces/listing';
-	import NftCard, { type CardOptions } from '$lib/components/NftCard.svelte';
+	import type { CardOptions } from '$interfaces/ui';
+	import NftCard from '$lib/components/NftCard.svelte';
 	import ListingSuccessPopup from '$lib/components/popups/ListingSuccessPopup.svelte';
 	import AuctionProperties from '$lib/components/primary-listing/AuctionProperties.svelte';
 	import ListingPropertiesSlot from '$lib/components/primary-listing/ListingPropertiesSlot.svelte';
@@ -70,7 +71,7 @@
 			title: $fetchedNftData.name,
 			description: $fetchedNftData.metadata?.description,
 			// TODO, add support for addresses from external collections
-			nfts: [{ nftId: $fetchedNftData.nftId, amount: listingProps.quantity || 1, collectionAddress: $fetchedNftData.contractAddress ?? getContractData('storage').address }],
+			nfts: [{ nftId: $fetchedNftData.nftId, amount: listingProps.quantity || 1, collectionAddress: $fetchedNftData.contractAddress ?? getContractData('storage').address, _id: $fetchedNftData._id }],
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: 'WETH',
 			listingType: listingType,
