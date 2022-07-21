@@ -167,7 +167,8 @@
 		<!-- Hide price info when not present/listed -->
 		{#if options?.resourceType === 'listing'}
 			<Eth />
-			<div class="ml-1">{options?.saleData?.price || 'N/A'}</div>
+			<!-- TEMPORARY FIX - ADDITIONAL FIX FOR BIDS WILL BE ADDED ONCE BIDDING DATA IS PRESENT ON LISTINGS RESPONSE -->
+			<div class="ml-1">{options?.saleData?.price || options?.auctionData?.startingPrice || 'N/A'}</div>
 		{/if}
 	</div>
 
