@@ -169,7 +169,6 @@ export interface collectionSearchOptions {
 }
 
 export async function apiSearchCollections(options?: collectionSearchOptions) {
-	console.log(options)
 	if (options && !options.name) options.name = undefined;
 	if (options && !options.limit) options.limit = 20;
 

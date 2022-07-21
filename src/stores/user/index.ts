@@ -1,4 +1,5 @@
 import type { ApiNftData } from '$interfaces/apiNftData';
+import { currentError } from '$stores/error';
 import { appDataToTriggerReload, currentUserAddress } from '$stores/wallet';
 import { fetchProfileData } from '$utils/api/profile';
 import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
@@ -18,6 +19,8 @@ appDataToTriggerReload.subscribe(() => {
 });
 
 export async function refreshProfileData() {
+	// remove error pages when swapping accounts
+	currentError.set(null);
 	const newProfileData = await fetchProfileData(get(currentUserAddress));
 	profileData.set(newProfileData);
 }
