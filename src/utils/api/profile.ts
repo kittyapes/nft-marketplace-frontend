@@ -2,6 +2,7 @@ import { appSigner } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { htmlize } from '$utils/misc/htmlize';
 import type { SupportedSocialNetworks } from '$utils/validator/isValidSocialLink';
+import isValidSocialLink from '$utils/validator/isValidSocialLink';
 import axios from 'axios';
 import { sha512 } from 'hash.js';
 import type { UserData } from 'src/interfaces/userData';
@@ -61,6 +62,11 @@ export async function checkUsernameAvailability(username: string) {
 }
 
 export async function updateProfile(address: string, data: Partial<EditableProfileData>) {
+	// Parse Relevant social links to the social object
+	Object.keys(data.social).map((item: SupportedSocialNetworks) => {
+		data.social[item] = data.social[item] ? isValidSocialLink(data.social[item], item).parsedValue : '';
+	});
+
 	const formData = new FormData();
 
 	const requestTime = Date.now().toString();
