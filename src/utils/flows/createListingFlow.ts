@@ -5,13 +5,12 @@ import type { ListingType } from '$utils/api/listing';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { contractCreateListing, LISTING_TYPE } from '$utils/contracts/listing';
 import { parseToken } from '$utils/misc/priceUtils';
-import { notifyError, notifySuccess } from '$utils/toast';
+import { notifySuccess } from '$utils/toast';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { noTryAsync } from 'no-try';
 
 export interface CreateListingFlowOptions extends Partial<ConfigurableListingProps> {
-	nfts: { nftId: string; collectionAddress: EthAddress; amount: number }[];
+	nfts: { nftId: string; collectionAddress: EthAddress; amount: number; _id: string }[];
 	paymentTokenAddress: EthAddress;
 	paymentTokenTicker: string;
 	title: string;
@@ -31,7 +30,8 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	// Create listing on the server
 	const formData = new FormData();
 
-	const nfts = options.nfts.map(({ nftId, amount }) => ({ nftId, amount: amount.toString() }));
+	// Is this needed?
+	const nfts = options.nfts.map(({ nftId, amount, _id }) => ({ nftId, amount: amount.toString(), _id }));
 
 	const fields = {
 		nfts: JSON.stringify(nfts),
