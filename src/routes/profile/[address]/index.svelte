@@ -122,6 +122,7 @@
 				// The following is not async, it's just that I do not wanna break the whole app
 				// one week before release by changing an adapter. :)
 				res.adapted = await Promise.all(res.res.map(adaptListingToNftCard));
+				console.log(res);
 				return res;
 			},
 			label: 'Active Listings'

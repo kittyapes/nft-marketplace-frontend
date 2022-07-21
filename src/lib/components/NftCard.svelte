@@ -18,7 +18,6 @@
 	import { noTryAsync } from 'no-try';
 	import { apiGetCollectionBySlug } from '$utils/api/collection';
 	import { apiHideNft, apiRevealNft } from '$utils/api/nft';
-	import { includes } from 'lodash-es';
 
 	const dispatch = createEventDispatcher();
 
