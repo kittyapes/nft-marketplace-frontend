@@ -14,8 +14,24 @@ const knownTokens: { ticker: string; address: string; network: string; decimals:
 		address: '0xf2155859d31C5EA79F45a55C6ad9A44e7f257700',
 		network: 'rinkeby',
 		decimals: 18
+	},
+	{
+		ticker: 'HI',
+		address: '0x04013fA3b72E82489d434FD64E3f4142647413cA',
+		network: 'rinkeby',
+		decimals: 18
 	}
 ];
+
+export function isKnownToken(options: { ticker?: string; tokenAddress?: string; network?: 'eth' | 'rinkeby' }) {
+	try {
+		getKnownTokenDetails(options);
+	} catch {
+		return false;
+	}
+
+	return true;
+}
 
 export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: string; network?: 'eth' | 'rinkeby' }) {
 	let { ticker, tokenAddress, network } = options;

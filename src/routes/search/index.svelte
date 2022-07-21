@@ -1,15 +1,15 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { SearchResults } from '$interfaces/search/searchResults';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import LargeCollectionCard from '$lib/components/LargeCollectionCard.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import { searchQuery } from '$stores/search';
-	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
+	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
 	import { getCollectionsByTitle, getListingsByTitle, getUsersByName } from '$utils/api/search/globalSearch';
 	import { debounce } from 'lodash-es';
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
 
 	const fullResultsLimit = 20;
 
@@ -37,7 +37,7 @@
 
 				searchResults.listings.index++;
 				let listings = res;
-				searchResults.listings.data = [...searchResults.listings.data, ...(await Promise.all(listings.map(adaptListingToNftCard)))];
+				searchResults.listings.data = [...searchResults.listings.data, ...listings.map(listingToCardOptions)];
 				searchResults.listings.isLoading = false;
 
 				searchResults = searchResults;

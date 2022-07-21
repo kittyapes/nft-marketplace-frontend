@@ -1,29 +1,22 @@
 <script lang="ts">
-	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import type { CardOptions } from '$interfaces/ui';
+
+	import { likedNftIds } from '$stores/user';
+
 	import { getIconUrl } from '$utils/misc/getIconUrl';
-	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import type { PopupHandler } from '$utils/popup';
-	import { onMount } from 'svelte';
 
 	import Popup from '../Popup.svelte';
-	import ResponsovePopupContainer from '../ResponsovePopupContainer.svelte';
 	import AssetContainer from './sections/AssetContainer.svelte';
 	import RightSection from './sections/RightSection.svelte';
 
-	export let options: CardPopupOptions;
+	export let options: CardOptions;
 	export let handler: PopupHandler;
 
 	// Showing of the back button is controlled by the RightSection component
 	let showBackButton = false;
 
 	let rightSectionInstance;
-
-	onMount(async () => {
-		if (options) {
-			const { balance, supply } = await getUserNftBalance(options.nftData[0].contractAddress, options.nftData[0].tokenId);
-			options.nftData[0].userNftBalance = balance;
-		}
-	});
 
 	// Log data that was used by the adapter to generate the CardPopup
 	$: console.debug('[Resource Data]:', options.rawResourceData);
@@ -41,10 +34,10 @@
 		<!-- Left part with image and buttons -->
 		<div class="h-full lg:w-2/5">
 			<AssetContainer
-				assetUrl={options.assetUrl}
-				title={options.title}
+				assetUrl={options.nfts[0].assetUrl}
+				title={options.nfts[0].name}
 				{options}
-				favorited={options.favorited}
+				favorited={$likedNftIds.includes(options.nfts[0].onChainId)}
 				countdown={options.listingData?.listingType === 'auction' ? { startTime: options.listingData.startTime, duration: options.listingData.duration } : null}
 			/>
 		</div>

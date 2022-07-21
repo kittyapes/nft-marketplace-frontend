@@ -7,7 +7,7 @@
 <button class="relative border-gradient {buttonBaseClasses} {$$props.class}" on:click {disabled}>
 	<!-- This is here so we can position the text/content on top of border-gradient -->
 	<div class="absolute top-0 bottom-0 left-0 right-0 z-10 flex items-center justify-center">
-		<span class="text-gradient">
+		<span class="text-gradient font-bold">
 			<slot />
 		</span>
 	</div>

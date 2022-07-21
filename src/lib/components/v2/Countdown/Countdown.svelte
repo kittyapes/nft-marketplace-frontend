@@ -5,11 +5,11 @@
 
 	dayjs.extend(durationExt);
 
-	export let startTime: string;
+	export let startTime: number;
 	export let duration: number;
 
-	$: endTime = dayjs(startTime).add(duration, 'seconds');
-	$: remaining = dayjs.duration(dayjs(endTime).diff(dayjs(), 'seconds'), 'seconds');
+	$: endTime = dayjs(startTime * 1000).add(duration, 'seconds');
+	$: remaining = dayjs.duration(endTime.diff(dayjs(), 'seconds'), 'seconds');
 
 	$: values = [
 		['Days', remaining.days()],

@@ -1,8 +1,11 @@
 <script>
 	export let label;
+	export let hidden = false;
 </script>
 
-<div>
-	<div class="uppercase mb-2">{label}</div>
-	<slot />
-</div>
+{#if !hidden}
+	<div>
+		<div class="uppercase mb-2">{label}</div>
+		<slot />
+	</div>
+{/if}

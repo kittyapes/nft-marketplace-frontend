@@ -2,126 +2,91 @@
 	import Eth from '$icons/eth.svelte';
 	import Heart from '$icons/heart.svelte';
 	import ThreeDots from '$icons/three-dots.svelte';
-	import { currentUserAddress } from '$stores/wallet';
-	import { addUrlParam } from '$utils/misc/addUrlParam';
-	import { removeUrlParam } from '$utils/misc/removeUrlParam';
-	import { favoriteNft } from '$utils/nfts/favoriteNft';
-	import { setPopup, updatePopupProps } from '$utils/popup';
-	import type { NftCardOptions } from 'src/interfaces/nftCardOptions';
-	import { fade } from 'svelte/transition';
-	import getTimeRemaining from '$utils/timeRemaining';
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { likedNfts, refreshLikedNfts } from '$stores/user';
-	import { walletConnected } from '$utils/wallet';
+	import type { CardOptions } from '$interfaces/ui';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
-	import { notifyError, notifySuccess } from '$utils/toast';
-	import { noTryAsync } from 'no-try';
+	import { likedNftIds, refreshLikedNfts } from '$stores/user';
+	import { currentUserAddress } from '$stores/wallet';
 	import { apiGetCollectionBySlug } from '$utils/api/collection';
 	import { apiHideNft, apiRevealNft } from '$utils/api/nft';
-	import { includes } from 'lodash-es';
+	import { addUrlParam } from '$utils/misc/addUrlParam';
+	import { removeUrlParam } from '$utils/misc/removeUrlParam';
+	import { getListingCardTimerHtml } from '$utils/misc/time';
+	import { favoriteNft } from '$utils/nfts/favoriteNft';
+	import { setPopup, updatePopupProps } from '$utils/popup';
+	import { notifyError, notifySuccess } from '$utils/toast';
+	import { walletConnected } from '$utils/wallet';
+	import { noTryAsync } from 'no-try';
+	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import CardPopup from './CardPopup/CardPopup.svelte';
 
 	const dispatch = createEventDispatcher();
 
-	export let options: NftCardOptions;
+	export let options: CardOptions;
 	export let menuItems: ('hide' | 'reveal' | 'transfer')[] = [];
+	export let hideLikes = false;
 
-	$: likes = options?.likes;
-	let dotsOpened = false;
+	// Helpers
 	let imgLoaded = false;
+
+	// Menu
+	let dotsOpened = false;
 
 	const toggleDots = (ev: Event) => {
 		dotsOpened = !dotsOpened;
 		ev.stopPropagation();
 	};
 
+	// Universal Popup
 	async function handleClick(ev) {
-		if (!options.popupOptions) return;
+		if (!options.allowPopup) return;
 
-		let id = options.popupOptions.rawResourceData._id;
-		if (options.popupOptions.resourceType === 'listing') {
-			id = options.popupOptions.listingData.onChainId;
-		}
+		const id = options.resourceType === 'nft' ? options.nfts[0].databaseId : options.listingData.onChainId;
 
 		addUrlParam('id', id);
 
-		const popupHandler = setPopup(options.popupComponent, { props: { options: { ...options.popupOptions, favorited: options.favorited } }, onClose: () => removeUrlParam('id') });
+		const popupHandler = setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id') });
 
-		// load in additional data after opening popup
-		const collectionData = await apiGetCollectionBySlug(options.collectionSlug).catch((e) => {});
+		// Load complete collection data after opening the popup
+		if (options.nfts[0].collectionData.slug) {
+			const collectionData = await apiGetCollectionBySlug(options.nfts[0].collectionData.slug);
 
-		// replacing partial data from API with detailed collection data
-		options.popupOptions.collectionData = collectionData;
-		updatePopupProps(popupHandler?.id, { options: { ...options.popupOptions, favorited: options.favorited } });
+			// Replace partial collection data with complete collection data fetched from API
+			options.nfts[0].collectionData = collectionData;
+			updatePopupProps(popupHandler?.id, { options });
+		}
 	}
+
+	// Favoriting
+	$: isUserLiked = $likedNftIds.includes(options.nfts[0].onChainId);
 
 	async function favNFT() {
 		if (!$walletConnected) {
-			setPopup(WalletNotConnectedPopup, {
-				unique: true
-			});
+			setPopup(WalletNotConnectedPopup, { unique: true });
 		}
-		if (!$currentUserAddress || !options.popupOptions) return;
 
-		for (const id of options.likeIds) {
-			const [err, res] = await noTryAsync(() => favoriteNft(id));
-			if (err) {
-				notifyError(err.message);
-				console.error(err);
-			} else if (res.data.message) {
-				$likedNfts = [options.likeIds, -1];
-				options.favorited = true;
-				notifySuccess('Unfavorited NFT.');
-			} else {
-				$likedNfts = [options.likeIds, 1];
-				options.favorited = true;
-				notifySuccess('Favorited NFT.');
-			}
+		const [err, res] = await noTryAsync(() => favoriteNft(options.nfts[0].databaseId));
+
+		if (err) {
+			notifyError(err.message);
+			console.error(err);
+		} else if (res.data.message) {
+			notifySuccess('Unfavorited NFT.');
+			options.nfts[0].likes--;
+		} else {
+			notifySuccess('Favorited NFT.');
+			options.nfts[0].likes++;
 		}
 
 		await refreshLikedNfts($currentUserAddress);
 	}
 
-	let time = new Date();
-	let interval = null;
-
-	onMount(() => {
-		if (options.popupOptions?.startTime && options.popupOptions?.isListingTimeActive) {
-			// Update every minute
-			interval = setInterval(() => {
-				time = new Date(Date.now());
-			}, 60000);
-		}
-		return () => {
-			clearInterval(interval);
-		};
-	});
-
-	$: saleHasStarted = false;
-
-	$: timeRemainingToSaleStart = null;
-	$: timeRemainingToSaleEnd = null;
-
-	$: ((_time) => {
-		if (_time && options.popupOptions?.startTime && options.popupOptions?.isListingTimeActive) {
-			const startTime = new Date(options.popupOptions.startTime);
-			const endTime = new Date(startTime.getTime() + (options.popupOptions.duration ?? 0));
-			saleHasStarted = options.popupOptions.isListingTimeActive && startTime.getTime() < Date.now();
-
-			timeRemainingToSaleStart = getTimeRemaining(startTime.toISOString(), new Date().toISOString());
-
-			timeRemainingToSaleEnd = getTimeRemaining(endTime.toISOString(), new Date(Date.now()).toISOString());
-
-			if (!options.popupOptions?.startTime && !options.popupOptions?.isListingTimeActive && timeRemainingToSaleStart.total < 0 && timeRemainingToSaleEnd.total < 0 && interval) {
-				clearInterval(interval);
-			}
-		}
-	})(time);
-
+	// Hiding
 	async function hideNft(ev: Event) {
 		dotsOpened = false;
 		ev.stopPropagation();
 
-		const res = await apiHideNft(options.databaseId);
+		const res = await apiHideNft(options.nfts[0].databaseId);
 
 		if (res.err) {
 			notifyError('Failed to hide NFT. \n' + res.err.message);
@@ -134,7 +99,7 @@
 		dotsOpened = false;
 		ev.stopPropagation();
 
-		const res = await apiRevealNft(options.databaseId);
+		const res = await apiRevealNft(options.nfts[0].databaseId);
 
 		if (res.err) {
 			notifyError('Failed to reveal NFT. \n' + res.err.message);
@@ -142,43 +107,31 @@
 			dispatch('hide-me');
 		}
 	}
+
+	// Listing timer
+	let timerHtml: string = '';
+	let timerInterval;
+
+	function updateTimerHtml() {
+		timerHtml = getListingCardTimerHtml(options.listingData.startTime, options.listingData.duration);
+	}
+
+	onMount(() => {
+		if (options.resourceType !== 'listing') return;
+
+		timerInterval = setInterval(updateTimerHtml, 60_000);
+		updateTimerHtml();
+	});
+
+	onDestroy(() => clearInterval(timerInterval));
 </script>
 
-<!-- Added a maximum width to prevent the card from extending its bounds when its only one card  -->
-<div class="relative p-4 overflow-hidden border border-color-gray-base border-opacity-50 rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options?.popupOptions}>
+<div class="relative p-4 overflow-hidden border border-color-gray-base border-opacity-50 rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options.allowPopup}>
 	<div class="flex items-center gap-x-2 h-8">
-		<!-- Listing Timer If The Time has not Expired Yet or Listing isn't live -->
-		{#if options.popupOptions?.startTime}
-			{#if options.popupOptions?.isListingTimeActive}
-				<div class="listing-timer text-[10px] font-bold uppercase">
-					{#if !saleHasStarted && timeRemainingToSaleStart.total > 0}
-						<span class="text-transparent bg-gradient-to-r bg-clip-text from-color-purple to-color-blue">Starting In:</span>
-						{#if timeRemainingToSaleStart.days > 0}
-							{timeRemainingToSaleStart.days}D
-						{/if}
-						{#if timeRemainingToSaleStart.hours > 0}
-							{timeRemainingToSaleStart.hours}H
-						{/if}
-						{timeRemainingToSaleStart.minutes}MIN
-					{:else if timeRemainingToSaleEnd.total > 0}
-						<span class="text-color-red">Ending In:</span>
-						{#if timeRemainingToSaleEnd.days > 0}
-							{timeRemainingToSaleEnd.days}D
-						{/if}
-						{#if timeRemainingToSaleEnd.hours > 0}
-							{timeRemainingToSaleEnd.hours}H
-						{/if}
-						{timeRemainingToSaleEnd.minutes}MIN
-					{:else}
-						<div class="listing-timer text-[10px] font-bold uppercase text-color-red">Expired</div>
-					{/if}
-				</div>
-			{:else}
-				<div class="listing-timer text-[10px] font-bold uppercase text-color-red">Expired</div>
-			{/if}
-		{/if}
+		<div class="font-bold text-[10px] uppercase">
+			{@html timerHtml}
+		</div>
 
-		<!-- Remove && false to show options -->
 		<!-- Owned by user -->
 		{#if menuItems?.length}
 			<button on:click={toggleDots} class="hover:opacity-50 h-8 w-8" transition:fade|local={{ duration: 150 }}>
@@ -188,32 +141,33 @@
 
 		<div class="flex-grow" />
 
-		<div class="text-white btn" class:text-color-red={options?.favorited} on:click|stopPropagation={favNFT}>
-			<Heart class="w-6 h-6" />
-		</div>
-		<div class="font-medium select-none">{(options && likes === 0) || likes ? likes : 'N/A'}</div>
+		{#if !hideLikes}
+			<div class="text-white btn" class:text-color-red={isUserLiked} on:click|stopPropagation={favNFT}>
+				<Heart class="w-6 h-6" />
+			</div>
+			<div class="font-medium select-none">{options?.nfts?.[0].likes ?? 'N/A'}</div>
+		{/if}
 	</div>
 
 	<div class="w-full mx-auto mt-2 overflow-hidden transition bg-gray-100 rounded-lg select-none aspect-1" class:animate-pulse={!imgLoaded}>
-		<img alt="" src={options?.imageUrl} class="object-cover object-top w-full h-full transition" class:opacity-0={!imgLoaded} on:load={() => (imgLoaded = true)} />
+		<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" class:opacity-0={!imgLoaded} on:load={() => (imgLoaded = true)} />
 	</div>
 
 	<div class="flex mt-2 text-sm font-medium text-gray-600">
-		<div class={`flex-grow ${options?.collectionName === 'N/A' || options?.collectionName}`}>
-			{options?.collectionName?.substring(0, 15) || 'N/A'}{options?.collectionName?.length > 15 ? '...' : ''}
-		</div>
+		<div class="flex-grow truncate">{options.nfts[0].collectionData.name || 'N/A'}</div>
+
 		<!-- Hide price info when not present/listed -->
-		{#if options?.price}
+		{#if options?.resourceType === 'listing'}
 			<div>Price</div>
 		{/if}
 	</div>
 
 	<div class="flex items-center mt-2 font-semibold">
-		<div class="flex-grow whitespace-nowrap">{options?.title?.substring(0, 12) || 'N/A'}{options?.title?.length > 12 ? '...' : ''}</div>
+		<div class="flex-grow whitespace-nowrap truncate">{options.nfts[0].name}</div>
 		<!-- Hide price info when not present/listed -->
-		{#if options?.price}
+		{#if options?.resourceType === 'listing'}
 			<Eth />
-			<div class="ml-1">{options?.price || 'N/A'}</div>
+			<div class="ml-1">{options?.saleData?.price || 'N/A'}</div>
 		{/if}
 	</div>
 
@@ -228,7 +182,7 @@
 			{/if}
 
 			{#if menuItems.includes('reveal')}
-				<button class="transition-btn" on:click={hideNft}>REVEAL</button>
+				<button class="transition-btn" on:click={revealNft}>REVEAL</button>
 			{/if}
 		</div>
 	{/if}

@@ -4,9 +4,8 @@
 	import { page } from '$app/stores';
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
-	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
-	import type { NftCardOptions } from '$interfaces/nftCardOptions';
+	import type { CardOptions } from '$interfaces/ui';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 	import NftList from '$lib/components/NftList.svelte';
@@ -16,8 +15,8 @@
 	import TabButton from '$lib/components/TabButton.svelte';
 	import { profileCompletionProgress } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
-	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
-	import { apiNftToNftCard } from '$utils/adapters/apiNftToNftCard';
+	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
+	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
 	import { getListing, getListings } from '$utils/api/listing';
 	import { apiGetUserNfts, getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
@@ -53,16 +52,17 @@
 		if ($page.url.searchParams.has('id')) {
 			const id = $page.url.searchParams.get('id');
 			const listing = await getListing(id);
-			let popupOptions;
+
+			let options: CardOptions;
 
 			if (listing) {
-				popupOptions = (await adaptListingToNftCard(listing)).popupOptions;
+				options = listingToCardOptions(listing);
 			} else {
 				const nft = await getNft(id);
-				popupOptions = (await apiNftToNftCard(nft)).popupOptions;
+				options = nftToCardOptions(nft);
 			}
 
-			setPopup(CardPopup, { props: { options: popupOptions }, onClose: () => removeUrlParam('id') });
+			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id') });
 		}
 	});
 
@@ -96,10 +96,10 @@
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
 				res.res = await apiGetUserNfts(address, 'COLLECTED', page, limit);
-				res.adapted = await Promise.all(res.res.res.map((nft) => apiNftToNftCard(nft)));
+				res.adapted = res.res.res.map(nftToCardOptions);
 
 				for (const nft of res.adapted) {
-					nft.popupOptions.rawResourceData.owner = address;
+					nft.rawResourceData.owner = address;
 				}
 
 				return res;
@@ -110,7 +110,7 @@
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
 				res.res = await apiGetUserNfts(address, 'MINTED', page, limit);
-				res.adapted = await Promise.all(res.res.res.map((nft) => apiNftToNftCard(nft)));
+				res.adapted = res.res.res.map((nft) => nftToCardOptions(nft));
 				return res;
 			},
 			label: 'Created NFTs'
@@ -119,9 +119,7 @@
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
 				res.res = await getListings({ seller: address }, page, limit);
-				// The following is not async, it's just that I do not wanna break the whole app
-				// one week before release by changing an adapter. :)
-				res.adapted = await Promise.all(res.res.map(adaptListingToNftCard));
+				res.adapted = res.res.map(listingToCardOptions);
 				return res;
 			},
 			label: 'Active Listings'
@@ -129,9 +127,8 @@
 		{
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
-				res.adapted = [];
-				const nfts = await getUserFavoriteNfts(address);
-				res.adapted = await Promise.all(nfts?.map((nft) => apiNftToNftCard(nft.nft)));
+				res.res = await getUserFavoriteNfts(address);
+				res.adapted = res.res.map((nft) => nftToCardOptions(nft.nft));
 
 				tab.reachedEnd = true;
 
@@ -141,17 +138,10 @@
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
-				const res = {};
+				const res = {} as FetchFunctionResult;
 
-				// res['res'] = await apiGetHiddenNfts(address, page, limit);
-				// res['adapted'] = res['res'].map(apiNftToNftCard);
-				res['res'] = await getUserFavoriteNfts(address);
-				res.adapted = await Promise.all(res['res']?.map((nft) => apiNftToNftCard(nft.nft)));
-
-				res.adapted.forEach((v: NftCardOptions) => {
-					v.popupOptions.disallowListing = true;
-					v.diasllowListing = true;
-				});
+				res.res = await apiGetHiddenNfts(address, page, limit);
+				res.adapted = res.res.map(nftToCardOptions);
 
 				return res as any;
 			},
@@ -166,7 +156,6 @@
 	});
 
 	let selectedTab = tabs[0];
-
 	let isFetchingNfts = false;
 
 	async function fetchMore() {
@@ -196,13 +185,13 @@
 		isFetchingNfts = false;
 	}
 
-	let cardPropsMapper: (v: NftCardOptions) => { options: CardPopupOptions } & any;
+	let cardPropsMapper: (v: CardOptions) => { options: CardOptions } & any;
 
 	$: {
 		if (selectedTab.label === 'Collected NFTs') {
-			cardPropsMapper = (v: NftCardOptions) => ({ options: v, menuItems: ['hide'] });
+			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: ['hide'] });
 		} else if (selectedTab.label === 'Hidden') {
-			cardPropsMapper = (v: NftCardOptions) => ({ options: v, menuItems: ['reveal'] });
+			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: ['reveal'] });
 		} else {
 			cardPropsMapper = (v) => ({ options: v });
 		}

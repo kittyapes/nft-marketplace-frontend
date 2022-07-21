@@ -62,9 +62,12 @@
 		"anonymous": false,
 		"inputs": [
 			{ "indexed": true, "internalType": "uint256", "name": "listingId", "type": "uint256" },
-			{ "indexed": false, "internalType": "uint128", "name": "newPrice", "type": "uint128" }
+			{ "indexed": false, "internalType": "uint128", "name": "newPrice", "type": "uint128" },
+			{ "indexed": false, "internalType": "uint64", "name": "newStartTime", "type": "uint64" },
+			{ "indexed": false, "internalType": "uint64", "name": "newDuration", "type": "uint64" },
+			{ "indexed": false, "internalType": "uint64", "name": "newQuantity", "type": "uint64" }
 		],
-		"name": "PriceDecreased",
+		"name": "ListingUpdated",
 		"type": "event"
 	},
 	{
@@ -298,7 +301,10 @@
 	{
 		"inputs": [
 			{ "internalType": "uint256", "name": "listingId", "type": "uint256" },
-			{ "internalType": "uint128", "name": "newPrice", "type": "uint128" }
+			{ "internalType": "uint128", "name": "newPrice", "type": "uint128" },
+			{ "internalType": "uint64", "name": "newStartTime", "type": "uint64" },
+			{ "internalType": "uint64", "name": "newDuration", "type": "uint64" },
+			{ "internalType": "uint64", "name": "newQuantity", "type": "uint64" }
 		],
 		"name": "updateListing",
 		"outputs": [],
