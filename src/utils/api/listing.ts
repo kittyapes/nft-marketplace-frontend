@@ -1,4 +1,4 @@
-import type { EthAddress, TokenStandard } from '$interfaces';
+import type { EthAddress, IsoTime, TokenStandard } from '$interfaces';
 import type { ApiNftData } from '$interfaces/apiNftData';
 import axios from 'axios';
 import { ethers } from 'ethers';
@@ -57,9 +57,36 @@ export interface Listing {
 		reservePrice: string;
 	};
 	nfts: {
-		_id: string;
-		nftId: string;
 		amount: number;
+		assetUrl: string;
+		chain: 'ETHEREUM';
+		chainStatus: 'NOT_ON_CHAIN' | 'ON_CHAIN';
+		collectionId: string;
+		contractAddress: EthAddress;
+		createdAt: IsoTime;
+		creator: EthAddress;
+		favoriteCount: number;
+		isExternal: boolean;
+		metadata: {
+			external_url: string;
+			image: string;
+			name: string;
+			description: string;
+		};
+		name: string;
+		nftId: string;
+		offers: [];
+		owner: EthAddress;
+		price: number;
+		royalties: [];
+		sales: [];
+		thumbnailUrl: string;
+		tokenStandard: TokenStandard;
+		updatedAt: IsoTime;
+		uri: string;
+		collectionName: string;
+		collectionSlug: string;
+		_id: string;
 		nft: ApiNftData;
 	}[];
 

@@ -52,7 +52,7 @@
 			const collectionData = await apiGetCollectionBySlug(options.nfts[0].collectionData.slug);
 
 			// Replace partial collection data with complete collection data fetched from API
-			options.nfts[0].collectionData = collectionData;
+			if (collectionData) options.nfts[0].collectionData = collectionData;
 			updatePopupProps(popupHandler?.id, { options });
 		}
 	}
