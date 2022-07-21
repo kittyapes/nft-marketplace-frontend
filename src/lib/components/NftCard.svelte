@@ -50,11 +50,11 @@
 		// Load complete collection data after opening the popup
 		if (options.nfts[0].collectionData.slug) {
 			const collectionData = await apiGetCollectionBySlug(options.nfts[0].collectionData.slug);
-			if (collectionData) options.popupOptions.collectionData = collectionData;
-		}
 
-		// replacing partial data from API with detailed collection data
-		updatePopupProps(popupHandler?.id, { options: { ...options.popupOptions, favorited: options.favorited } });
+			// Replace partial collection data with complete collection data fetched from API
+			if (collectionData) options.nfts[0].collectionData = collectionData;
+			updatePopupProps(popupHandler?.id, { options });
+		}
 	}
 
 	// Favoriting
