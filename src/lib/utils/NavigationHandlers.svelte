@@ -109,12 +109,12 @@
 			}
 		});*/
 
+		currentError.set(null);
+
 		// Restrict routes to verified creators
 		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
 			profileData.subscribe((profile) => {
 				if (profile && (profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user')) && !profile.roles.includes('superadmin')) {
-					console.log(from?.pathname, '->', to?.pathname);
-					console.log('WRONG');
 					currentError.set(403);
 				}
 			});
