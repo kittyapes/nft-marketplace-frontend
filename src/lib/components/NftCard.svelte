@@ -49,7 +49,7 @@
 		const collectionData = await apiGetCollectionBySlug(options.collectionSlug).catch((e) => {});
 
 		// replacing partial data from API with detailed collection data
-		options.popupOptions.collectionData = collectionData;
+		if (collectionData) options.popupOptions.collectionData = collectionData;
 		updatePopupProps(popupHandler?.id, { options: { ...options.popupOptions, favorited: options.favorited } });
 	}
 
