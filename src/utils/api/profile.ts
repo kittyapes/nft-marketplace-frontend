@@ -1,7 +1,7 @@
-import { api } from '$constants/api';
 import { appSigner } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { htmlize } from '$utils/misc/htmlize';
+import type { SupportedSocialNetworks } from '$utils/validator/isValidSocialLink';
 import axios from 'axios';
 import { sha512 } from 'hash.js';
 import type { UserData } from 'src/interfaces/userData';
@@ -21,8 +21,8 @@ export interface LoginHistoryEntry {
  * @returns Profile data or `null` in case of an error.
  */
 export async function fetchProfileData(address: string) {
-	if(!address) return null;
-	
+	if (!address) return null;
+
 	const res = await axios.get(getApiUrl('latest', 'users/' + address)).catch(() => null);
 
 	if (!res) {
@@ -42,7 +42,7 @@ export interface EditableProfileData {
 	bio: string;
 	thumbnailUrl: string;
 	coverUrl: string;
-	social: { instagram: string; discord: string; twitter: string; website: string; pixiv: string; deviantart: string; artstation: string };
+	social: { [key in SupportedSocialNetworks]: string };
 }
 
 // async function hashImage(address: string, file: Blob) {

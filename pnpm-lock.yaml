@@ -33,6 +33,7 @@ specifiers:
   postcss-load-config: ^4.0.1
   prettier: ^2.6.2
   prettier-plugin-svelte: ^2.7.0
+  social-links: ^1.4.5
   svelte: ^3.48.0
   svelte-check: ^2.7.2
   svelte-inview: ^3.0.1
@@ -62,6 +63,7 @@ dependencies:
   jwt-decode: 3.1.2
   lodash-es: 4.17.21
   no-try: 3.1.0
+  social-links: 1.4.5
   svelte-inview: 3.0.1_svelte@3.48.0
   svelte-loading-spinners: 0.1.7
   svelte-meta-tags: 2.6.1_dg7s4kx4gpzom5ifrkhkr632g4
@@ -7037,6 +7039,10 @@ packages:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
     dev: true
+
+  /social-links/1.4.5:
+    resolution: {integrity: sha512-HzUwJ+QILy6x0Kk1BGl/Q1YqQMgaq3ea9DVA7CXSgYZPmooYlPViWbaRI6CdY+ORtKQzqfkkt2MdFxqAW7m3hg==}
+    dev: false
 
   /sorcery/0.10.0:
     resolution: {integrity: sha512-R5ocFmKZQFfSTstfOtHjJuAwbpGyf9qjQa1egyhvXSbM7emjrtLXtGdZsDJDABC85YBfVvrOiGWKSYXPKdvP1g==}
