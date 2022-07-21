@@ -22,4 +22,5 @@ export interface UserData {
 	bio: string;
 	social: { instagram: string; discord: string; twitter: string; website: string; pixiv: string; deviantart: string; artstation: string };
 	roles: UserRole[];
+	nftBalances: Record<string, number>;
 }

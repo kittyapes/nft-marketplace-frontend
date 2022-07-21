@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import type { CardOptions } from '$interfaces/ui';
 	import { getMarketFee } from '$utils/contracts/listing';
+	import { totalColRoyalties } from '$utils/misc/royalties';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { closePopup } from '$utils/popup';
 	import { onMount } from 'svelte';
 
-	export let options: CardPopupOptions;
+	export let options: CardOptions;
 
 	let marketFee = 0;
 	$: nftBalance = 0;
 
-	$: ownedOrListedNfts = options?.listingData ? options?.listingData?.quantity ?? 1 : nftBalance;
+	$: ownedOrListedNfts = options.resourceType === 'listing' ? options?.nfts[0].quantity ?? 1 : nftBalance;
 	$: totalNfts = 1;
 
 	// Never show the back button on this tab
@@ -19,25 +20,25 @@
 
 	// It is possible to pass data of multiple NFTs into the popup to support
 	// the bundle section
-	$: nftData = options.nftData?.[0];
+	$: singleNft = options.nfts?.[0];
 	$: properties = [
-		{ name: 'Creator', value: nftData.creator || options.rawResourceData.metadata?.creator?.address },
-		{ name: 'Collection name', value: options.collectionData?.name },
-		{ name: 'Edition', value: nftData.metadata?.edition },
-		{ name: 'Description', value: nftData.metadata?.description }
+		{ name: 'Creator', value: singleNft.creator || options.rawResourceData.metadata?.creator?.address },
+		{ name: 'Collection name', value: singleNft.collectionData?.name },
+		{ name: 'Edition', value: singleNft.metadata?.edition },
+		{ name: 'Description', value: singleNft.metadata?.description }
 	];
 
 	$: technicalProperties = [
-		{ name: 'Contract Add', value: nftData.contractAddress },
-		{ name: 'Token Standard', value: nftData.contractType },
+		{ name: 'Contract Add', value: singleNft.contractAddress },
+		{ name: 'Token Standard', value: singleNft.contractType },
 		{
 			name: 'Fees and Royalties',
-			value: marketFee + ' % Fee | ' + (options.collectionData?.royalties?.reduce((acum, value) => acum + Number(value.fees ?? 0), 0) || 0) + ' % Royalty'
+			value: marketFee + ' % Fee | ' + totalColRoyalties(options) + ' % Royalty'
 		},
-		{ name: 'Token ID', value: nftData.tokenId },
-		{ name: 'Blockchain', value: options.listingData?.tokenSymbol || options.rawResourceData.chain },
+		{ name: 'Token ID', value: singleNft.onChainId },
+		{ name: 'Blockchain', value: options.listingData?.paymentTokenTicker || options.rawResourceData.chain },
 		{
-			name: options.listingData?.quantity ? 'NFTs in Listing' : 'You Own',
+			name: options.resourceType === 'listing' ? 'NFTs in Listing' : 'You Own',
 			value: `${ownedOrListedNfts} of ${totalNfts}`
 		}
 	];
@@ -46,7 +47,7 @@
 		// When its not a listing
 		marketFee = await getMarketFee();
 		if (!options.listingData) {
-			let { balance, supply } = await getUserNftBalance(options.nftData[0].contractAddress, options.nftData[0].tokenId);
+			let { balance, supply } = await getUserNftBalance(singleNft.contractAddress, singleNft.onChainId);
 			nftBalance = balance;
 			totalNfts = supply;
 		}
@@ -73,7 +74,7 @@
 				<div
 					on:click={() => {
 						closePopup();
-						goto('/collections/' + options.collectionData.slug);
+						goto('/collections/' + singleNft.collectionData.slug);
 					}}
 					class="overflow-hidden clickable"
 				>
@@ -99,9 +100,9 @@
 	</div>
 
 	<!-- NFT attributes -->
-	{#if nftData.metadata?.attributes}
+	{#if singleNft.metadata?.attributes}
 		<div class="grid grid-cols-3 gap-4">
-			{#each parseAttributes(nftData.metadata.attributes) as attr}
+			{#each parseAttributes(singleNft.metadata.attributes) as attr}
 				<div>
 					<div class="text-xs font-semibold text-center uppercase">{attr.trait_type}</div>
 					<div class="py-2 mt-1 text-xs text-center text-white uppercase bg-black rounded-full">{attr.value || 'N/A'}</div>

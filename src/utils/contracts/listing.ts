@@ -1,9 +1,11 @@
 import type { EthAddress, OnChainId, UnixTime } from '$interfaces';
+import type { ConfigurableListingProps } from '$interfaces/listing';
 import { currentUserAddress } from '$stores/wallet';
 import { getContract } from '$utils/misc/getContract';
 import { getIconUrl } from '$utils/misc/getIconUrl';
 import { parseToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
+import { duration } from 'dayjs';
 import { BigNumber, ethers } from 'ethers';
 import { get } from 'svelte/store';
 import { getCollectionContract } from './collection';
@@ -41,9 +43,9 @@ export interface ContractCreateListingOptions {
 	listingId: OnChainId;
 	listingType: LISTING_TYPE;
 	tokenIds: OnChainId[];
-	tokenAmounts: BigNumber[];
+	tokenAmounts: number[];
 	collections: EthAddress[];
-	nfts: { nftId: string; amount: BigNumber; collectionAddress: EthAddress }[];
+	nfts: { nftId: string; amount: number; collectionAddress: EthAddress }[];
 }
 
 export async function contractCreateListing(options: ContractCreateListingOptions) {
@@ -57,6 +59,8 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		const approval: ethers.ContractTransaction = await collectionContract.setApprovalForAll(marketplaceContract.address, true);
 		await approval.wait(1);
 	}
+
+	console.log({ options });
 
 	const callOptions = {
 		id: ethers.BigNumber.from(options.listingId),
@@ -134,21 +138,13 @@ export async function contractCancelListing(listingId: string) {
 	await contractCaller(contract, 'cancelListing', 150, 1, listingId);
 }
 
-export async function contractUpdateListing(
-	listingId: string,
-	options: {
-		sale: {
-			price: string;
-		};
-		payTokenAddress: string;
-	}
-) {
-	console.debug(`[Info] Will update listing with ID ${listingId} with the following options:`, options);
+export async function contractUpdateListing(listingId: string, payTokenAddress: string, props: Partial<ConfigurableListingProps>) {
+	console.debug(`[Info] Will update listing with ID ${listingId} with the following props:`, props);
 
-	const parsedPrice = parseToken(options.sale.price, options.payTokenAddress);
+	const parsedPrice = parseToken(props.price, payTokenAddress);
 
 	const contract = getContract('marketplace');
-	await contractCaller(contract, 'updateListing', 150, 1, listingId, parsedPrice);
+	await contractCaller(contract, 'updateListing', 150, 1, listingId, parsedPrice, props.startDateTs, props.durationSeconds, props.quantity);
 }
 
 export async function getMarketFee() {

@@ -37,6 +37,10 @@
 		dispatch('select', option);
 	}
 
+	export function setSelected(option: Option) {
+		selected = option;
+	}
+
 	onMount(() => {
 		if (dispatchOnMount) handleOptionSelect(selected);
 	});
@@ -58,7 +62,7 @@
 	</button>
 
 	{#if opened}
-		<div id="list-container" class="absolute bottom-0 z-10 w-full overflow-hidden overflow-y-auto translate-y-full bg-white rounded-lg max-h-72 custom-scrollbar">
+		<div id="list-container" class="absolute bottom-0 z-20 w-full overflow-hidden overflow-y-auto translate-y-full bg-white rounded-lg max-h-72 custom-scrollbar">
 			{#each options as option}
 				<button class="flex items-center w-full px-4 h-12 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded gap-x-2" on:click={() => handleOptionSelect(option)}>
 					{#if option.iconUrl}
