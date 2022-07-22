@@ -21,6 +21,7 @@
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await getListings({ ...fetchOptions }, index, 20);
+		console.log(res.res);
 		res.adapted = res.res.map(listingToCardOptions);
 
 		return res;

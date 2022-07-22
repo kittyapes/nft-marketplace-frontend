@@ -168,7 +168,7 @@
 		{#if options?.resourceType === 'listing'}
 			<Eth />
 			<!-- TEMPORARY FIX - ADDITIONAL FIX FOR BIDS WILL BE ADDED ONCE BIDDING DATA IS PRESENT ON LISTINGS RESPONSE -->
-			<div class="ml-1">{options?.saleData?.price || options?.auctionData?.startingPrice || 'N/A'}</div>
+			<div class="ml-1">{options?.saleData?.formatPrice || options?.auctionData?.formatStartingPrice || 'N/A'}</div>
 		{/if}
 	</div>
 

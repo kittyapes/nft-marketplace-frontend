@@ -48,14 +48,17 @@ export function listingToCardOptions(listing: Listing): CardOptions {
 
 	if (listing.listingType === 'sale') {
 		ret.saleData = {
-			price: listing.listing.price
+			price: listing.listing.price,
+			formatPrice: listing.listing.formatPrice
 		};
 	}
 
 	if (listing.listingType === 'auction') {
 		ret.auctionData = {
 			startingPrice: listing.listing.startingPrice,
-			reservePrice: listing.listing.reservePrice
+			reservePrice: listing.listing.reservePrice,
+			formatStartingPrice: listing.listing.formatStartingPrice,
+			formatReservePrice: listing.listing.formatReservePrice
 		};
 	}
 

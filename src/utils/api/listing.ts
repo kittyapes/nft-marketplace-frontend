@@ -52,9 +52,12 @@ export interface Listing {
 	listingType: ListingType;
 	listing: {
 		price?: string;
+		formatPrice?: number;
 		quantity: number;
-		startingPrice: string;
-		reservePrice: string;
+		startingPrice?: string;
+		reservePrice?: string;
+		formatStartingPrice?: number;
+		formatReservePrice?: number;
 	};
 	nfts: {
 		amount: number;
