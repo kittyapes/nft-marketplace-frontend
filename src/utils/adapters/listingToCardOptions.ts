@@ -11,23 +11,23 @@ export function listingToCardOptions(listing: Listing): CardOptions {
 		rawResourceData: listing,
 		nfts: [
 			{
-				databaseId: nft._id,
-				onChainId: nft.nftId,
-				name: nft.name,
-				metadata: nft.metadata,
-				contractType: nft.tokenStandard,
-				creator: nft.creator,
-				contractAddress: nft.contractAddress,
-				isExternal: nft.isExternal,
+				databaseId: nft?._id,
+				onChainId: nft?.nftId,
+				name: nft?.name,
+				metadata: nft?.metadata,
+				contractType: nft?.tokenStandard,
+				creator: nft?.creator,
+				contractAddress: nft?.contractAddress,
+				isExternal: nft?.isExternal,
 				collectionData: {
-					id: nft.collectionId,
-					slug: nft.collectionSlug,
-					name: nft.collectionName
+					id: nft?.collectionId,
+					slug: nft?.collectionSlug,
+					name: nft?.collectionName
 				},
-				likes: nft.favoriteCount,
+				likes: nft?.favoriteCount,
 				thumbnailUrl: nft.thumbnailUrl,
-				assetUrl: nft.assetUrl || nft.thumbnailUrl,
-				quantity: nft.amount
+				assetUrl: nft?.assetUrl || nft?.thumbnailUrl,
+				quantity: nft?.amount
 			}
 		],
 		listingData: {
