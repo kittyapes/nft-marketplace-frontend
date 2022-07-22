@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '$styles/app.css';
+	import walletsScript from '$scripts/js/wallets.js?url';
 	import Footer from '$lib/components/Footer.svelte';
 	import Nav from '$lib/components/Nav.svelte';
 	import { onMount } from 'svelte';
@@ -27,6 +28,7 @@
 
 <svelte:head>
 	<title>Hinata</title>
+	<script src={walletsScript}></script>
 </svelte:head>
 
 {#key $appDataToTriggerReload}
