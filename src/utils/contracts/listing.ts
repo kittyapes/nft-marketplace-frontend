@@ -112,7 +112,7 @@ export interface ChainListing {
 }
 
 export async function getOnChainListing(listingId: string): Promise<ChainListing> {
-	const contract = getContract('marketplace');
+	const contract = getContract('marketplace', true);
 	const onChainListing = await contract.listings(listingId);
 
 	const token = await getTokenDetails(onChainListing.payToken);
