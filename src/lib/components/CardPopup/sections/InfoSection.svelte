@@ -33,7 +33,7 @@
 		{ name: 'Token Standard', value: singleNft.contractType },
 		{
 			name: 'Fees and Royalties',
-			value: marketFee + ' % Fee | ' + totalColRoyalties(options) + ' % Royalty'
+			value: marketFee + ' % Fee | ' + (totalColRoyalties(options) ? `${totalColRoyalties(options) + ' % Royalty'}` : '- % Royalty')
 		},
 		{ name: 'Token ID', value: singleNft.onChainId },
 		{ name: 'Blockchain', value: options.listingData?.paymentTokenTicker || options.rawResourceData.chain },
