@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
-	import type { CardOptions } from '$lib/components/NftCard.svelte';
+	import type { CardOptions } from '$interfaces/ui';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import Input from '$lib/components/v2/Input/Input.svelte';
@@ -83,7 +83,7 @@
 			<div class="">Starting price</div>
 			<div class="flex items-center gap-2 justify-end">
 				<Eth />
-				{chainListing?.price || 'N/A'}
+				{options.auctionData?.formatStartingPrice || options.auctionData?.startingPrice || chainListing?.price || 'N/A'}
 			</div>
 		</div>
 

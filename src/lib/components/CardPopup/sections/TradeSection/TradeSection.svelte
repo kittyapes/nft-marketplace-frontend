@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { CardOptions } from '$interfaces/ui';
+	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
@@ -26,16 +27,19 @@
 		options.listingData.listingType === 'sale' ? frame.set(BrowseSale) : frame.set(BrowseAuction);
 	}
 
-	$: options && updateState();
+	$: (options || chainListing) && updateState();
 
 	function updateState() {
 		if (options.resourceType === 'listing') {
-			if (options.listingData.sellerAddress === $currentUserAddress) {
-				if (options.listingData.listingType === 'auction') frame.set(ManageAuction);
-				if (options.listingData.listingType === 'sale') frame.set(ManageSale);
-			} else {
-				if (options.listingData.listingType === 'auction') frame.set(BrowseAuction);
-				if (options.listingData.listingType === 'sale') frame.set(BrowseSale);
+			if (!chainListing) frame.set(DiamondsLoader);
+			else {
+				if (options.listingData.sellerAddress === $currentUserAddress) {
+					if (options.listingData.listingType === 'auction') frame.set(ManageAuction);
+					if (options.listingData.listingType === 'sale') frame.set(ManageSale);
+				} else {
+					if (options.listingData.listingType === 'auction') frame.set(BrowseAuction);
+					if (options.listingData.listingType === 'sale') frame.set(BrowseSale);
+				}
 			}
 		} else if (options.resourceType === 'nft') {
 			frame.set(CreateListing);
@@ -48,8 +52,6 @@
 	goBack();
 
 	const { component, props } = unpackedComponentStore(frame);
-
-	$: console.log($frame);
 </script>
 
 <svelte:component this={$component} {...$props} {options} {chainListing} on:close-popup on:listing-created />
