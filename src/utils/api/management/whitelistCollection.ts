@@ -7,12 +7,9 @@ import { ethers } from 'ethers';
 import { noTryAsync } from 'no-try';
 import { getApiUrl } from '..';
 
-export const whitelistCollection = async (address: string) => {
-	const [err, res] = await noTryAsync(async () => axios.post(getApiUrl('latest', 'collections/crawl-collection'), { address }, await getAxiosConfig()));
-	if (err) {
-		notifyError('Failed to whitelist collection');
-		throw new Error('Failed to whitelist collection');
-	}
+export const whitelistCollection = async (address: string, slug: string) => {
+	
+	const res = await axios.get('https://api.opensea.io/api/v1/collection' + slug);
 
 	const factoryContract = getContract('factory');
 
@@ -23,5 +20,11 @@ export const whitelistCollection = async (address: string) => {
 
 	await contractCaller(factoryContract, 'register', 150, 1, res.data.data.collectionAddress, beneficiaries, percentages).catch(() => notifyError('Failed to whitelist collection on-chain'));
 
-	return res.data.data;
+	const [err, apiRes] = await noTryAsync(async () => axios.post(getApiUrl('latest', 'collections/crawl-collection'), { address }, await getAxiosConfig()));
+	if (err) {
+		notifyError('Failed to whitelist collection');
+		throw new Error('Failed to whitelist collection');
+	}
+
+	return apiRes.data.data;
 };
