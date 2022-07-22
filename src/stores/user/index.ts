@@ -22,7 +22,7 @@ appDataToTriggerReload.subscribe(() => {
 
 export async function refreshProfileData() {
 	// remove error pages when swapping accounts
-	currentError.set(null);
+	if (get(currentError) !== 404) currentError.set(null);
 
 	const newProfileData = await fetchProfileData(get(currentUserAddress));
 	profileData.set(newProfileData);

@@ -108,8 +108,8 @@
 				setLoginPopup(to.pathname);
 			}
 		});*/
-
-		currentError.set(null);
+		console.log('g');
+		if ($currentError !== 404) currentError.set(null);
 
 		// Restrict routes to verified creators
 		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {

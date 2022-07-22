@@ -3,6 +3,7 @@
 	import { currentError } from '$stores/error';
 
 	afterNavigate(() => {
-		currentError.set(null);
+		console.log('g');
+		if ($currentError !== 404) currentError.set(null);
 	});
 </script>
