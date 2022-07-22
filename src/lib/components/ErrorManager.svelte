@@ -5,4 +5,8 @@
 	afterNavigate(() => {
 		currentError.set(null);
 	});
+
+	beforeNavigate(() => {
+		if ($currentError === 404) currentError.set(null);
+	});
 </script>
