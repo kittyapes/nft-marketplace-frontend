@@ -74,6 +74,6 @@
 	onMount(refreshWithFilters);
 </script>
 
-<div class="flex flex-wrap justify-center gap-6 mt-11 cards">
+<div class="flex flex-wrap justify-center gap-6 cards">
 	<NftList options={data} {isLoading} {reachedEnd} on:end-reached={fetchMore} />
 </div>

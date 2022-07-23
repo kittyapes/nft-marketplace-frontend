@@ -91,8 +91,8 @@
 			</button>
 		{/each}
 
-		{#if nftBalance === null}
-			<div class="bg-gray-100 h-full w-24 rounded-lg animate-pulse" />
+		{#if nftBalance === null && !options.allowTrade}
+			<div class="w-24 h-full bg-gray-100 rounded-lg animate-pulse" />
 		{/if}
 	</div>
 

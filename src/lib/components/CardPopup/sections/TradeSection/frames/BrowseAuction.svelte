@@ -79,11 +79,11 @@
 	<div class="flex flex-col h-full mt-4">
 		<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} on:request-refresh={refreshBids} />
 
-		<div class="my-4 font-semibold ml-auto">
+		<div class="my-4 ml-auto font-semibold">
 			<div class="">Starting price</div>
-			<div class="flex items-center gap-2 justify-end">
+			<div class="flex items-center justify-end gap-2">
 				<Eth />
-				{options.auctionData?.formatStartingPrice || options.auctionData?.startingPrice || chainListing?.price || 'N/A'}
+				{options.auctionData?.formatStartingPrice}
 			</div>
 		</div>
 
