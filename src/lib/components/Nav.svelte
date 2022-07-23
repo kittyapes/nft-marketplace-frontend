@@ -2,12 +2,14 @@
 	// import Search from './Search.svelte';
 	import ProfilePopup from './ProfilePopup.svelte';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
-	import { appSigner, connectionDetails } from '$stores/wallet';
+	import { appSigner, connectionDetails, currentUserAddress } from '$stores/wallet';
 	import { onMount } from 'svelte';
 	import { profileData } from '$stores/user';
 	import { fade } from 'svelte/transition';
 	import UserCircle from '$icons/user-circle.svelte';
 	import { goto } from '$app/navigation';
+	import { storage } from '$utils/contracts';
+	import { browser } from '$app/env';
 
 	let displayProfilePopup = false;
 	let showProfileButton = false;
@@ -29,13 +31,15 @@
 	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
 
 	let imageFailedToLoad = false;
-	let showCreate = false;
-
-	profileData.subscribe((profile) => {
-		showCreate = profile && (profile.status === 'VERIFIED' || profile.roles.includes('superadmin'));
-	});
 
 	$: useTestnets = $connectionDetails?.chainId !== 1 || import.meta.env.VITE_DEFAULT_NETWORK !== '1';
+
+	// Create button display logic
+	let showCreate = false;
+
+	currentUserAddress.subscribe(async (a) => {
+		showCreate = browser && a && (await storage.hasRole('minter', a));
+	});
 </script>
 
 <div class="fixed z-10 flex w-full">
