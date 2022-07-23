@@ -54,10 +54,10 @@ export interface Listing {
 		price?: string;
 		formatPrice?: number;
 		quantity: number;
-		startingPrice?: string;
-		reservePrice?: string;
-		formatStartingPrice?: number;
-		formatReservePrice?: number;
+		startingPrice: string;
+		formatStartingPrice: number;
+		reservePrice: string;
+		formatReservePrice: number;
 	};
 	nfts: {
 		amount: number;

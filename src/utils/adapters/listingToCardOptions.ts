@@ -3,7 +3,7 @@ import type { Listing } from '$utils/api/listing';
 import dayjs from 'dayjs';
 import { writable } from 'svelte/store';
 
-export function listingToCardOptions(listing: Listing): CardOptions {
+export function listingToCardOptions(listing: Listing, fallback?: any): CardOptions {
 	const nft = listing.nfts?.[0].nft || listing.nfts?.[0];
 
 	const ret: CardOptions = {
@@ -47,18 +47,23 @@ export function listingToCardOptions(listing: Listing): CardOptions {
 	};
 
 	if (listing.listingType === 'sale') {
+		const fPrice = listing.listing?.formatPrice;
+
 		ret.saleData = {
 			price: listing.listing.price,
-			formatPrice: listing.listing.formatPrice
+			formatPrice: fPrice ? fPrice.toFixed(1) : 'N/A'
 		};
 	}
 
 	if (listing.listingType === 'auction') {
+		const fStarting = listing.listing?.formatStartingPrice;
+		const fReserve = listing.listing?.formatReservePrice;
+
 		ret.auctionData = {
-			startingPrice: listing.listing.startingPrice,
-			reservePrice: listing.listing.reservePrice,
-			formatStartingPrice: listing.listing.formatStartingPrice,
-			formatReservePrice: listing.listing.formatReservePrice
+			startingPrice: listing.listing?.startingPrice,
+			formatStartingPrice: fStarting ? fStarting.toFixed(1) : 'N/A',
+			reservePrice: listing.listing?.reservePrice,
+			formatReservePrice: fReserve ? fReserve.toFixed(1) : 'N/A'
 		};
 	}
 
