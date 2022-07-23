@@ -36,7 +36,7 @@
 	const hasEnoughTokens = derived(
 		currentUserAddress,
 		(address, set) => {
-			hasEnoughBalance(chainListing.payToken, address, options.saleData.price).then(set);
+			hasEnoughBalance(chainListing.payToken, address, options.saleData.formatPrice).then(set);
 		},
 		null
 	);

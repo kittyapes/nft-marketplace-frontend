@@ -57,6 +57,8 @@ export async function getTokenBalance(tokenAddress: string, userAddress: string,
 }
 
 export async function hasEnoughBalance(tokenAddress: string, userAddress: string, requiredBalance: string) {
+	console.log(tokenAddress, userAddress, requiredBalance);
+
 	const tokenDetails = await getTokenDetails(tokenAddress);
 	const balance = await getTokenBalance(tokenAddress, userAddress, tokenDetails.decimals);
 
