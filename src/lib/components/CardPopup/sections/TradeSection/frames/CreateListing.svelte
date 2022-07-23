@@ -7,10 +7,13 @@
 	import SaleProperties from '$lib/components/primary-listing/SaleProperties.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { getContractData } from '$utils/misc/getContract';
+	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { notifyError } from '$utils/toast';
+	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { frame } from '../tradeSection';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
@@ -57,7 +60,14 @@
 		isListing = false;
 	}
 
-	let listingProps: Partial<ConfigurableListingProps> = {};
+	async function refreshBalance() {
+		const res = await getUserNftBalance(options.nfts[0].contractAddress, options.nfts[0].onChainId);
+		maxQuantity = res.balance;
+	}
+
+	$: $currentUserAddress && refreshBalance();
+
+	let listingProps: Partial<ConfigurableListingProps> = { quantity: 1 };
 	let formErrors: string[] = [];
 </script>
 
@@ -100,7 +110,7 @@
 		</div>
 	</div>
 
-	<PrimaryButton class="mt-4 flex-shrink-0" disabled={!!formErrors.length || isListing} on:click={completeListing}>
+	<PrimaryButton class="flex-shrink-0 mt-4" disabled={!!formErrors.length || isListing} on:click={completeListing}>
 		Complete Listing
 		{#if isListing}
 			<ButtonSpinner />
