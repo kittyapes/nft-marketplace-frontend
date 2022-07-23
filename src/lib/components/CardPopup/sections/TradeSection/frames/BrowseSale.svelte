@@ -9,11 +9,12 @@
 	import { hasEnoughBalance } from '$utils/contracts/token';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import { notifyError } from '$utils/toast';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { createEventDispatcher } from 'svelte';
 	import { derived } from 'svelte/store';
-
-	const dispatch = createEventDispatcher();
+	import { frame } from '../tradeSection';
+	import Success from './Success.svelte';
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
@@ -28,7 +29,9 @@
 		const price = options.saleData.price.toString();
 		const success = await salePurchase(options.listingData.onChainId, price);
 
-		success ? dispatch('set-state', { name: 'success' }) : dispatch('set-state', { name: 'error' });
+		if (success) {
+			frame.set(Success);
+		}
 
 		purchasing = false;
 	}
