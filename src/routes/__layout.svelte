@@ -1,6 +1,13 @@
 <script lang="ts">
 	import '$styles/app.css';
+
+	// Local Build Scripts
 	import walletsScript from '$scripts/js/wallets.js?url';
+
+	// Imports from Unpkg
+	import walletConnectScript from '$scripts/js/walletconnect.umd.min.js?url';
+	import torusScript from '$scripts/js/torus.umd.min.js?url';
+
 	import Footer from '$lib/components/Footer.svelte';
 	import Nav from '$lib/components/Nav.svelte';
 	import { onMount } from 'svelte';
@@ -28,6 +35,8 @@
 
 <svelte:head>
 	<title>Hinata</title>
+	<script src={walletConnectScript}></script>
+	<script src={torusScript}></script>
 	<script src={walletsScript}></script>
 </svelte:head>
 
