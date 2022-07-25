@@ -25,7 +25,6 @@
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
 	import { writable } from 'svelte/store';
 	import isCollectionAddress from '$utils/validator/isCollectionAddress';
-	import { async } from '$scripts/js/wallets';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
@@ -38,9 +37,11 @@
 	type CollectionErrors = {
 		isErc1155OrErc721: boolean;
 		isContract: boolean;
-		hasSlug: boolean;
+		slug: boolean | string;
 	};
+
 	const formValidity = writable<Partial<{ [K in keyof CollectionErrors]: any }>>({});
+
 	$: validating = false;
 	$: formValid = Object.values($formValidity).every((v) => v === true);
 
@@ -57,8 +58,11 @@
 		}
 	});
 
+	$formValidity.slug = true;
+
 	whitelistingCollectionSlug.subscribe((val) => {
-		$formValidity.hasSlug = val ? true : false;
+		$formValidity.slug = val ? true : false;
+		if (!$formValidity.slug) $formValidity.slug = 'Opensea route is missing';
 	});
 
 	interface UserFetchingOptions {
@@ -188,7 +192,7 @@
 		mode === 'USER' ? await createUserTable() : await createCollectionTable();
 	};
 
-	//COLLECTION section
+	// //COLLECTION section
 
 	let createCollectionTable = async () => {
 		await apiSearchCollections()
@@ -303,7 +307,7 @@
 		collections = (await apiSearchCollections(getCollectionsFetchingOptions())).filter((c) => c.slug);
 	};
 
-	// USER section
+	// // USER section
 
 	let createUserTable = async () => {
 		await getUsers()
@@ -451,7 +455,7 @@
 
 					<div class="flex-grow" />
 
-					<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>Add</button>
+					<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" disabled={validating} on:click={handleVerify}>Add</button>
 				</div>
 			</div>
 
