@@ -9,11 +9,12 @@
 	import { hasEnoughBalance } from '$utils/contracts/token';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import { notifyError } from '$utils/toast';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { createEventDispatcher } from 'svelte';
 	import { derived } from 'svelte/store';
-
-	const dispatch = createEventDispatcher();
+	import { frame } from '../tradeSection';
+	import Success from './Success.svelte';
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
@@ -28,7 +29,9 @@
 		const price = options.saleData.price.toString();
 		const success = await salePurchase(options.listingData.onChainId, price);
 
-		success ? dispatch('set-state', { name: 'success' }) : dispatch('set-state', { name: 'error' });
+		if (success) {
+			frame.set(Success);
+		}
 
 		purchasing = false;
 	}
@@ -36,7 +39,7 @@
 	const hasEnoughTokens = derived(
 		currentUserAddress,
 		(address, set) => {
-			hasEnoughBalance(chainListing.payToken, address, options.saleData.price).then(set);
+			hasEnoughBalance(chainListing.payToken, address, options.saleData.formatPrice).then(set);
 		},
 		null
 	);
@@ -51,7 +54,7 @@
 	<div class="mt-8 font-bold text-center opacity-50">Price:</div>
 	<div class="flex items-center justify-center mt-2">
 		<img src={getIconUrl('eth')} alt="" />
-		<div class="text-5xl font-bold">{options.saleData?.price || 'N/A'}</div>
+		<div class="text-5xl font-bold">{options.saleData?.formatPrice || options.saleData?.price || 'N/A'}</div>
 		<div class="grid h-full ml-2 font-bold opacity-70 place-items-end">wETH</div>
 	</div>
 

@@ -10,9 +10,7 @@
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
-	import { walletDisconnected } from '$utils/wallet';
-
-	// TODO: this whole file needs refactoring
+	import { walletConnected, walletDisconnected } from '$utils/wallet';
 
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {
@@ -71,11 +69,10 @@
 			setWalletConnectionPopup(to.pathname);
 		}
 
-		// with the new approach to ask for sign whenever needed on an API call, this may not be needed
-		/*if ($walletConnected && isProtectedAndExpired(to.pathname)) {
+		if ($walletConnected && isProtectedAndExpired(to.pathname)) {
 			cancel();
 			setLoginPopup(to.pathname);
-		}*/
+		}
 
 		// When the user is trying to access his profile and the the profile has not been created on the backend,
 		// request him to sign in, which will create the profile.
@@ -98,8 +95,7 @@
 
 	// Handler for when the app is first loaded on a auth protected route
 	afterNavigate(({ from, to }) => {
-		// with the new approach to ask for sign whenever needed on an API call, this may not be needed
-		/*const unsub = currentUserAddress.subscribe(async (address) => {
+		const unsub = currentUserAddress.subscribe(async (address) => {
 			if (!address) return;
 
 			if (isProtectedAndExpired(to.pathname)) {
@@ -107,8 +103,7 @@
 				await goto('/');
 				setLoginPopup(to.pathname);
 			}
-		});*/
-
+		});
 		currentError.set(null);
 
 		// Restrict routes to verified creators

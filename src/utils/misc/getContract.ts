@@ -1,5 +1,5 @@
 import { appProvider, appSigner } from '$stores/wallet';
-import { ethers, Signer } from 'ethers';
+import { ethers, providers, Signer } from 'ethers';
 import { get } from 'svelte/store';
 
 import erc20Abi from '$constants/contracts/abis/Erc20Mock.json';
@@ -52,10 +52,10 @@ export function getContractData(name: ContractName) {
 export function getContract(name: ContractName, canUseFallback: boolean = false) {
 	const contractData = getContractData(name);
 
-	let provider = get(appSigner);
+	let provider: providers.Provider | Signer = get(appSigner);
 
 	if (!provider && canUseFallback) {
-		provider = ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK) as unknown as Signer;
+		provider = ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK) as unknown as providers.Provider;
 	} else if (!provider) {
 		throw new Error('Web 3 provider has not been set yet!');
 	}

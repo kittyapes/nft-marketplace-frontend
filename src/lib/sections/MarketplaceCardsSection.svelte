@@ -21,7 +21,6 @@
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await getListings({ ...fetchOptions }, index, 20);
-		console.log(res.res);
 		res.adapted = res.res.map(listingToCardOptions);
 
 		return res;
@@ -75,6 +74,6 @@
 	onMount(refreshWithFilters);
 </script>
 
-<div class="flex flex-wrap justify-center gap-6 mt-11 cards">
+<div class="flex flex-wrap justify-center gap-6 cards">
 	<NftList options={data} {isLoading} {reachedEnd} on:end-reached={fetchMore} />
 </div>

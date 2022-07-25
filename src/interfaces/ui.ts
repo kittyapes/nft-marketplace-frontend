@@ -44,15 +44,15 @@ export interface CardOptions {
 	/** Data used when adapting a listing of the type Sale. */
 	saleData?: {
 		price: string;
-		formatPrice: number;
+		formatPrice: string;
 	};
 
 	/** Data used when adapting a listing of the type Auction. */
 	auctionData?: {
 		startingPrice: string;
 		reservePrice?: string;
-		formatStartingPrice: number;
-		formatReservePrice?: number;
+		formatStartingPrice: string;
+		formatReservePrice?: string;
 	};
 
 	/** The raw data that was used by an adapter to generate this data object. */

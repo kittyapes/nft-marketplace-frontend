@@ -112,13 +112,13 @@ export interface ChainListing {
 }
 
 export async function getOnChainListing(listingId: string): Promise<ChainListing> {
-	const contract = getContract('marketplace');
+	const contract = getContract('marketplace', true);
 	const onChainListing = await contract.listings(listingId);
 
 	const token = await getTokenDetails(onChainListing.payToken);
 
 	// Copying over the values to remove the first array vars from chain
-	return {
+	const onChainObj = {
 		duration: onChainListing.duration.toNumber(),
 		id: ethers.utils.formatUnits(onChainListing.id, 0),
 		listingType: onChainListing.listingType,
@@ -129,6 +129,8 @@ export async function getOnChainListing(listingId: string): Promise<ChainListing
 		seller: onChainListing.seller,
 		startTime: onChainListing.startTime ? onChainListing.startTime.toNumber() : null
 	};
+
+	return onChainObj;
 }
 
 export async function contractCancelListing(listingId: string) {
