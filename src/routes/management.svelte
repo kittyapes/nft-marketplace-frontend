@@ -455,7 +455,7 @@
 
 					<div class="flex-grow" />
 
-					<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" disabled={validating} on:click={handleVerify}>Add</button>
+					<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>Add</button>
 				</div>
 			</div>
 
