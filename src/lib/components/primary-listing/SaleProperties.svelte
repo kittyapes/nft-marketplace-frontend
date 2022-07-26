@@ -7,7 +7,6 @@
 	import Datepicker from '../Datepicker.svelte';
 	import Dropdown from '../Dropdown.svelte';
 	import PriceInput from '../PriceInput.svelte';
-	import TextInput from '../TextInput.svelte';
 	import InfoBubble from '../v2/InfoBubble/InfoBubble.svelte';
 	import InputSlot from './InputSlot.svelte';
 
@@ -15,6 +14,7 @@
 	export let maxQuantity: number;
 	export let hideQuantity = false;
 	export let disableStartDate = false;
+	export let disabled = false;
 
 	export let formErrors: string[] = [];
 
@@ -63,32 +63,33 @@
 </script>
 
 <InputSlot label="Price">
-	<PriceInput bind:value={props.price} placeholder="1.0" tokenIconClass={Weth} />
+	<PriceInput bind:value={props.price} placeholder="1.0" tokenIconClass={Weth} {disabled} />
 </InputSlot>
 
 <InputSlot label="Quantity" hidden={hideQuantity}>
-	<div class="flex items-center gap-3">
+	<div class="flex items-center gap-3 relative">
 		<input
 			type="number"
 			class="w-full h-12 outline-none input input-hide-controls {(quantityError && 'border-red-500 focus:border-red-500') || ''}"
 			bind:this={quantityInput}
 			bind:value={props.quantity}
-			disabled={maxQuantity <= 1}
+			disabled={maxQuantity <= 1 || disabled}
 		/>
 
-		{#if quantityError}
-			<AttachToElement to={quantityInput} bottom>
-				<InfoBubble>{quantityError}</InfoBubble>
-			</AttachToElement>
-		{/if}
 		<div class="font-semibold whitespace-nowrap">of {maxQuantity}</div>
+
+		{#if quantityError}
+			<div class="absolute top-14 z-10 left-4">
+				<InfoBubble>{quantityError}</InfoBubble>
+			</div>
+		{/if}
 	</div>
 </InputSlot>
 
 <InputSlot label="Start Date">
-	<Datepicker dateOnly on:new-value={(ev) => (props.startDateTs = ev.detail.unix())} bind:setWithTimestamp={_setStartDateTs} disabled={disableStartDate} />
+	<Datepicker dateOnly on:new-value={(ev) => (props.startDateTs = ev.detail.unix())} bind:setWithTimestamp={_setStartDateTs} disabled={disableStartDate || disabled} />
 </InputSlot>
 
 <InputSlot label="Duration">
-	<Dropdown options={listingDurationOptions} on:select={(ev) => (props.durationSeconds = ev.detail.value)} bind:setSelected={_setDuration} />
+	<Dropdown options={listingDurationOptions} on:select={(ev) => (props.durationSeconds = ev.detail.value)} bind:setSelected={_setDuration} {disabled} />
 </InputSlot>

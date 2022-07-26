@@ -13,7 +13,6 @@
 	import { getContractData } from '$utils/misc/getContract';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { notifyError } from '$utils/toast';
-	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { frame } from '../tradeSection';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
@@ -79,9 +78,9 @@
 	<div class="mt-4">
 		<ListingPropertiesSlot>
 			{#if listingType === 'sale'}
-				<SaleProperties {maxQuantity} bind:props={listingProps} bind:formErrors />
+				<SaleProperties {maxQuantity} bind:props={listingProps} bind:formErrors disabled={isListing} />
 			{:else if listingType === 'auction'}
-				<AuctionProperties bind:props={listingProps} />
+				<AuctionProperties bind:props={listingProps} disabled={isListing} />
 			{/if}
 		</ListingPropertiesSlot>
 	</div>

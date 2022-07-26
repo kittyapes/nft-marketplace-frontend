@@ -11,7 +11,7 @@
 	import InputSlot from './InputSlot.svelte';
 
 	export let props: Partial<ConfigurableListingProps> = {};
-
+	export let disabled = false;
 	export let formErrors: string[] = [];
 
 	$: isReserveValid = !isPrice(props.startingPrice) || !props.reservePrice || parseFloat(props.reservePrice) > parseFloat(props.startingPrice);
@@ -37,20 +37,20 @@
 </script>
 
 <InputSlot label="Start Date">
-	<Datepicker dateOnly on:new-value={(ev) => (props.startDateTs = ev.detail.unix())} />
+	<Datepicker dateOnly on:new-value={(ev) => (props.startDateTs = ev.detail.unix())} {disabled} />
 </InputSlot>
 
 <InputSlot label="Duration">
-	<Dropdown options={listingDurationOptions} on:select={(ev) => (props.durationSeconds = ev.detail.value)} />
+	<Dropdown options={listingDurationOptions} on:select={(ev) => (props.durationSeconds = ev.detail.value)} {disabled} />
 </InputSlot>
 
 <InputSlot label="Starting Price">
-	<PriceInput bind:value={props.startingPrice} placeholder="1.0" tokenIconClass={Weth} />
+	<PriceInput bind:value={props.startingPrice} placeholder="1.0" tokenIconClass={Weth} {disabled} />
 </InputSlot>
 
 <InputSlot label="Reserve Price (Optional)">
 	<div bind:this={divPriceInput}>
-		<PriceInput bind:value={props.reservePrice} placeholder="5.0" tokenIconClass={Weth} validOverride={isReserveValid} />
+		<PriceInput bind:value={props.reservePrice} placeholder="5.0" tokenIconClass={Weth} validOverride={isReserveValid} {disabled} />
 	</div>
 </InputSlot>
 
