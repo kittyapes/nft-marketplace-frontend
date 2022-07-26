@@ -47,12 +47,10 @@
 	onMount(async () => {
 		// When its not a listing
 		marketFee = await getMarketFee();
-		if (!options.listingData) {
-			const res = await getUserNftBalance(singleNft.contractAddress, singleNft.onChainId);
+		const res = await getUserNftBalance(singleNft.contractAddress, singleNft.onChainId);
 
-			balance = res.balance;
-			supply = res.supply;
-		}
+		balance = res.balance;
+		supply = res.supply;
 	});
 
 	function parseAttributes(attributes) {
