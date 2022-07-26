@@ -46,12 +46,20 @@ export function listingToCardOptions(listing: Listing, fallback?: any): CardOpti
 		staleResource: writable()
 	};
 
+	const makeNice = (n: number) => {
+		if (n.toString().includes('.')) {
+			return n.toString();
+		}
+
+		return n.toString() + '.0';
+	};
+
 	if (listing.listingType === 'sale') {
 		const fPrice = listing.listing?.formatPrice;
 
 		ret.saleData = {
 			price: listing.listing.price,
-			formatPrice: fPrice ? fPrice.toFixed(1) : 'N/A'
+			formatPrice: fPrice ? makeNice(fPrice) : 'N/A'
 		};
 	}
 
@@ -61,9 +69,9 @@ export function listingToCardOptions(listing: Listing, fallback?: any): CardOpti
 
 		ret.auctionData = {
 			startingPrice: listing.listing?.startingPrice,
-			formatStartingPrice: fStarting ? fStarting.toFixed(1) : 'N/A',
+			formatStartingPrice: fStarting ? makeNice(fStarting) : 'N/A',
 			reservePrice: listing.listing?.reservePrice,
-			formatReservePrice: fReserve ? fReserve.toFixed(1) : 'N/A'
+			formatReservePrice: fReserve ? makeNice(fReserve) : 'N/A'
 		};
 	}
 
