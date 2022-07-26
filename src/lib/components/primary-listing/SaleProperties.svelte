@@ -3,7 +3,6 @@
 	import type { ConfigurableListingProps } from '$interfaces/listing';
 	import { listingDurationOptions } from '$utils/contracts/listing';
 	import { isPrice } from '$utils/validator/isPrice';
-	import AttachToElement from '../AttachToElement.svelte';
 	import Datepicker from '../Datepicker.svelte';
 	import Dropdown from '../Dropdown.svelte';
 	import PriceInput from '../PriceInput.svelte';
@@ -13,6 +12,7 @@
 	export let maxPrice: string = null;
 	export let maxQuantity: number;
 	export let hideQuantity = false;
+	export let disableQuantity = false;
 	export let disableStartDate = false;
 	export let disabled = false;
 
@@ -58,8 +58,6 @@
 
 	let _setDuration;
 	let _setStartDateTs;
-
-	let quantityInput: HTMLElement;
 </script>
 
 <InputSlot label="Price">
@@ -71,12 +69,15 @@
 		<input
 			type="number"
 			class="w-full h-12 outline-none input input-hide-controls {(quantityError && 'border-red-500 focus:border-red-500') || ''}"
-			bind:this={quantityInput}
 			bind:value={props.quantity}
-			disabled={maxQuantity <= 1 || disabled}
+			disabled={maxQuantity <= 1 || disabled || disableQuantity}
 		/>
 
-		<div class="font-semibold whitespace-nowrap">of {maxQuantity}</div>
+		<!-- Disable quantity is true only on EditSale screen. We do not wanna show it since the edit quantity
+		functionality is not implemented.  -->
+		{#if !disableQuantity}
+			<div class="font-semibold whitespace-nowrap">of {maxQuantity}</div>
+		{/if}
 
 		{#if quantityError}
 			<div class="absolute top-14 z-10 left-4">
