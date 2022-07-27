@@ -60,7 +60,7 @@
 	}
 
 	.-option.-selected > :nth-child(1):after {
-		content: url('/svg/gradient-checkmark.svg');
-		@apply absolute h-10 w-10 right-0 translate-x-4 -translate-y-4;
+		content: url('/svg/icons/collection-edit-gradient-checkmark.svg');
+		@apply absolute h-12 w-12 right-0 translate-x-5 -translate-y-4;
 	}
 </style>

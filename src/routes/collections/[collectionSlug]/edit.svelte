@@ -25,6 +25,7 @@
 	import { withPrevious } from 'svelte-previous';
 	import { contractCreateCollection } from '$utils/contracts/collection';
 	import { currentUserAddress } from '$stores/wallet';
+	import { currentError } from '$stores/error';
 
 	// Page params
 	const collectionSlug = $page.params.collectionSlug;
@@ -243,7 +244,7 @@
 
 		if (res.creator?.toLowerCase() !== $currentUserAddress?.toLowerCase()) {
 			// Wish we had a 401 error page
-			goto('/403');
+			currentError.set(403);
 			return;
 		}
 
