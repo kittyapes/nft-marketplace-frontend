@@ -119,9 +119,8 @@ export async function getListings(filters?: ListingFetchOptions, page: number = 
 	const params = {
 		type: filters?.type,
 		collectionId: filters?.collectionId ? filters?.collectionId : undefined,
-		// TODO convert to parseUnits
-		priceMin: filters?.priceMin && ethers.utils.parseEther(filters?.priceMin.toString()).toString(),
-		priceMax: filters?.priceMax && ethers.utils.parseEther(filters?.priceMax.toString()).toString(),
+		priceMin: filters?.priceMin,
+		priceMax: filters?.priceMax,
 		seller: filters?.seller,
 		sortBy: filters?.sortBy,
 		page,
