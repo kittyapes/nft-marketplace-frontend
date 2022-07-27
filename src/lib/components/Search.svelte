@@ -2,7 +2,6 @@
 	import Search from '$icons/search.svelte';
 	import { debounce } from 'lodash-es';
 	import { getCollectionsByTitle, getListingsByTitle, getUsersByName, searchUsersByName } from '$utils/api/search/globalSearch';
-	import { reject } from 'lodash-es';
 	import Loader from '$icons/loader.svelte';
 	import { tick } from 'svelte';
 	import { fly } from 'svelte/transition';
@@ -10,9 +9,9 @@
 	import { goto } from '$app/navigation';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import { setPopup } from '$utils/popup';
-	import axios from 'axios';
-	import { searchQuery } from '$stores/search';
 	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
+	import { page } from '$app/stores';
+	import { searchQuery } from '$stores/search';
 
 	let query: string;
 	let searching = false;
@@ -38,7 +37,6 @@
 
 	const searchUsers = async (query: string) => {
 		const response = await searchUsersByName(query).catch((e) => []);
-		console.log(response);
 		searchResults.users = response;
 	};
 
@@ -62,28 +60,13 @@
 	}
 
 	$: if (query) {
-		searching = true;
-		show = false;
-		debouncedSearch();
-	}
-
-	const preload = async (src) => {
-		try {
-			const res = await axios.get(src);
-			const blob = await new Blob(res.data);
-
-			return new Promise(function (resolve) {
-				let reader = new FileReader();
-				reader.readAsDataURL(blob);
-				reader.onload = () => {
-					resolve(reader.result);
-				};
-				reader.onerror = (error) => reject(`Error: ${error}`);
-			});
-		} catch (error) {
-			console.log(error);
+		if (!$page.url.pathname.startsWith('/search')) {
+			$searchQuery = query;
+			searching = true;
+			show = false;
+			debouncedSearch();
 		}
-	};
+	}
 </script>
 
 <div
