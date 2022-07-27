@@ -59,7 +59,7 @@
 	];
 
 	// Set default tab and prevent overwiriting when statement above
-	$: selectedTab = selectedTab || tabs[0];
+	$: selectedTab = selectedTab || (options.resourceType === 'listing' && tabs[1]) || tabs[0];
 
 	export function goBack() {
 		tabComponentInstance.goBack?.();
