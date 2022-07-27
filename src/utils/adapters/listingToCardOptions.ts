@@ -4,7 +4,11 @@ import dayjs from 'dayjs';
 import { writable } from 'svelte/store';
 
 export function listingToCardOptions(listing: Listing, fallback?: any): CardOptions {
-	const nft = listing.nfts?.[0].nft || listing.nfts?.[0];
+	const nft = listing.nfts?.[0]?.nft || listing.nfts?.[0];
+
+	if (!nft) {
+		return null;
+	}
 
 	const ret: CardOptions = {
 		resourceType: 'listing',
