@@ -19,10 +19,7 @@
 
 	function isProtectedAndExpired(path: string) {
 		const isProtectedRoute = getAuthRequiredRoutes().some((route) => route.test(path));
-		console.log($currentUserAddress);
 		const isTokenExpired = isAuthTokenExpired($currentUserAddress);
-
-		console.log({ isTokenExpired });
 
 		return isProtectedRoute && isTokenExpired;
 	}

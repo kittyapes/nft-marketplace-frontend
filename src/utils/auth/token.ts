@@ -19,8 +19,6 @@ function getAuthTokenKey(address: string) {
 }
 
 export function getAuthToken(address?: string) {
-	console.log({ tokenKey: getAuthTokenKey(address) });
-
 	return localStorage.getItem(getAuthTokenKey(address));
 }
 
@@ -63,8 +61,6 @@ export function setAuthToken(address: string, token: string) {
 
 export function isAuthTokenExpired(address: string) {
 	const token = getAuthToken(address);
-
-	console.log({ token });
 
 	if (!token) return true;
 
