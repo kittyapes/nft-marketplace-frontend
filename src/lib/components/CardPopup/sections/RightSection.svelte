@@ -91,7 +91,7 @@
 			</button>
 		{/each}
 
-		{#if nftBalance === null && !options.allowTrade}
+		{#if nftBalance === null && options.resourceType !== 'listing'}
 			<div class="w-24 h-full bg-gray-100 rounded-lg animate-pulse" />
 		{/if}
 	</div>

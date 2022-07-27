@@ -27,7 +27,7 @@ export function listingToCardOptions(listing: Listing, fallback?: any): CardOpti
 				likes: nft?.favoriteCount,
 				thumbnailUrl: nft.thumbnailUrl,
 				assetUrl: nft?.assetUrl || nft?.thumbnailUrl,
-				quantity: nft?.amount
+				quantity: listing.nfts[0].amount
 			}
 		],
 		listingData: {

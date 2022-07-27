@@ -87,6 +87,7 @@
 					bind:this={_saleProperties}
 					bind:formErrors
 					maxQuantity={getTokenBalance(options.nfts[0].onChainId)}
+					disableQuantity
 					{disableStartDate}
 					maxPrice={chainListing.price}
 					bind:props={listingProps}
