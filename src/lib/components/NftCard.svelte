@@ -133,7 +133,8 @@
 		</div>
 
 		<!-- Owned by user -->
-		{#if menuItems?.length}
+		<!-- Temporarily hidden -->
+		{#if menuItems?.length && false}
 			<button on:click={toggleDots} class="hover:opacity-50 h-8 w-8" transition:fade|local={{ duration: 150 }}>
 				<ThreeDots />
 			</button>
