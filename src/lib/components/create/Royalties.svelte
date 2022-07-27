@@ -4,6 +4,8 @@
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import { ethAddressRegex, isEthAddress } from '$utils/validator/isEthAddress';
 	import Info from '$icons/info.v2.svelte';
+	import Share from '$icons/share.svelte';
+	import ExternalLink from '$icons/external-link.svelte';
 
 	// Prettier would break this line
 	const prettierFix = `Royalties`;
@@ -16,8 +18,11 @@
 
 	export let isValid: boolean | string = false;
 	export let disabled = false;
+
 	let titleElementTooltip: HTMLElement;
+
 	const titleHovered = createToggle();
+	const tooltipHovered = createToggle();
 
 	$: isValid = false;
 	$: values.forEach((v) => {
@@ -74,11 +79,19 @@
 	</div>
 </div>
 
-{#if $titleHovered}
+{#if $titleHovered || $tooltipHovered}
 	<AttachToElement to={titleElementTooltip} bottom offsetX={-20} offsetY={18}>
-		<InfoBubble>
-			All sales are subject to both platform and creator fees. The Hinata platform fee for selling NFTs is a sliding scale up to 1.5% depending on membership level, and Verified Creators are able to
-			set an additional royalty structure between up to 3 addresses. If over 20% in total setting royalties this high may discourage a healthy market!
+		<InfoBubble gradientText={false} on:pointerenter={tooltipHovered.toggle} on:pointerleave={tooltipHovered.toggle}>
+			<div class="flex flex-col p-4 gap-4">
+				<div class="">
+					All sales are subject to both platform and creator fees. The Hinata platform fee for selling NFTs is a sliding scale up to 1.5% depending on membership level, and Verified Creators are able
+					to set an additional royalty structure between up to 3 addresses. If over 20% in total setting royalties this high may discourage a healthy market!
+				</div>
+				<a class="flex self-end gap-1 text-black clickable items-center" href="https://docs.hinata.io/trading-on-hinata/creator-royalties-and-platform-fees">
+					<div class="">Read More</div>
+					<ExternalLink />
+				</a>
+			</div>
 		</InfoBubble>
 	</AttachToElement>
 {/if}
