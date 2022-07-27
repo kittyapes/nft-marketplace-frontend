@@ -1,5 +1,5 @@
 import { appProvider, appSigner } from '$stores/wallet';
-import { ethers, Signer } from 'ethers';
+import { ethers, providers, Signer } from 'ethers';
 import { get } from 'svelte/store';
 
 import erc20Abi from '$constants/contracts/abis/Erc20Mock.json';
@@ -13,7 +13,7 @@ type ContractName = 'marketplace' | 'storage' | 'factory' | 'token' | 'weth';
 const contracts: { name: ContractName; network: 'eth' | 'rinkeby'; address: string; abi: any }[] = [
 	// Rinkeby
 	{ name: 'marketplace', network: 'rinkeby', address: '0x81A8685ADAfAE90aC3224598E0b3623bF24584c6', abi: marketplaceAbi },
-	{ name: 'storage', network: 'rinkeby', address: '0xbfF4E404ACacd49c55Cc9A04e871D8a738af7095', abi: storageAbi },
+	{ name: 'storage', network: 'rinkeby', address: '0xDaf3f945857f8Ea58f2bc4cF598a491c30868A72', abi: storageAbi },
 	{ name: 'factory', network: 'rinkeby', address: '0xD0776DB18B7878cBD2D56C468208Cda5B9263715', abi: factoryAbi },
 	{ name: 'token', network: 'rinkeby', address: '0x04013fA3b72E82489d434FD64E3f4142647413cA', abi: tokenAbi },
 	{ name: 'weth', network: 'rinkeby', address: '0xf2155859d31C5EA79F45a55C6ad9A44e7f257700', abi: erc20Abi },
@@ -52,10 +52,10 @@ export function getContractData(name: ContractName) {
 export function getContract(name: ContractName, canUseFallback: boolean = false) {
 	const contractData = getContractData(name);
 
-	let provider = get(appSigner);
+	let provider: providers.Provider | Signer = get(appSigner);
 
 	if (!provider && canUseFallback) {
-		provider = ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK) as unknown as Signer;
+		provider = ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK) as unknown as providers.Provider;
 	} else if (!provider) {
 		throw new Error('Web 3 provider has not been set yet!');
 	}

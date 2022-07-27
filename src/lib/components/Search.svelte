@@ -11,8 +11,8 @@
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import { setPopup } from '$utils/popup';
 	import axios from 'axios';
-	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import { searchQuery } from '$stores/search';
+	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
 
 	let query: string;
 	let searching = false;
@@ -33,7 +33,7 @@
 	const searchListings = async (query: string) => {
 		const response = await getListingsByTitle(query, resultCategoryLimit);
 		let listings = response;
-		searchResults.listings = await Promise.all(listings.map(adaptListingToNftCard)).catch((e) => []);
+		searchResults.listings = listings.map(listingToCardOptions);
 	};
 
 	const searchUsers = async (query: string) => {

@@ -30,9 +30,10 @@
 	import { derived, writable } from 'svelte/store';
 	import { fade, slide } from 'svelte/transition';
 	import { withPrevious } from 'svelte-previous';
-	import { isUrl } from '$utils/validator/isUrl';
 	import { isEqual } from 'lodash-es';
 	import { acceptedImages } from '$constants';
+	import isValidSocialLink, { type SupportedSocialNetworks } from '$utils/validator/isValidSocialLink';
+	import FormErrorList from '$lib/components/FormErrorList.svelte';
 
 	const progressbarPoints = [
 		{ at: 25, label: 'Email' },
@@ -45,6 +46,8 @@
 	const localDataStore = writable<EditableProfileData>(null);
 
 	$: dataChanged = JSON.stringify($fetchedDataStore) != JSON.stringify($localDataStore);
+
+	const socialLinksValidity = writable<Partial<{ [K in keyof { [key in SupportedSocialNetworks]: string }]: any }>>({});
 
 	let firstTimeUser = false;
 
@@ -185,10 +188,20 @@
 	}
 
 	$: bioValid = isValidBio($localDataStore?.bio) || !$localDataStore?.bio;
-	$: websiteValid = browser && (!$localDataStore?.social?.website || isUrl($localDataStore?.social?.website));
+	$: if (browser && $localDataStore?.social) {
+		Object.keys($localDataStore.social).map((item: SupportedSocialNetworks) => {
+			$socialLinksValidity[item] = $localDataStore.social[item].trim() ? (!isValidSocialLink($localDataStore.social[item], item).isValid ? `Please enter a valid url for your ${item}` : true) : true;
+		});
+	}
 
 	// We setting false on SSR to avoid save button flashing
-	$: dataValid = browser && $localDataStore?.username && usernameValid && bioValid && websiteValid && isEmail($localDataStore?.email);
+	$: dataValid =
+		browser &&
+		$localDataStore?.username &&
+		usernameValid &&
+		bioValid &&
+		!Object.entries($socialLinksValidity).some((item) => !item[1] || typeof item[1] === 'string') &&
+		isEmail($localDataStore?.email);
 
 	const [currentAddress, previousAddress] = withPrevious('', { requireChange: true });
 	$: $currentAddress = $currentUserAddress;
@@ -373,6 +386,8 @@
 				<Loader class="w-6 h-6 mx-0" />
 				<div class="ml-4 font-semibold uppercase">Saving changes...</div>
 			</div>
+
+			<FormErrorList validity={$socialLinksValidity} class="mb-10 -mt-10" />
 
 			<Button rounded variant="rounded-black" stretch on:click={onSave} disabled={isSynced || !dataChanged || !dataValid || isSaving} class="!font-medium">Save changes</Button>
 		</div>

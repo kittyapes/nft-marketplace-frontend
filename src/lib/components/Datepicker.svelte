@@ -19,6 +19,13 @@
 	export let value = dayjs();
 	export let dateOnly = false;
 	export let allowPastSelection = false;
+	export let disabled = false;
+
+	export function setWithTimestamp(ts: number) {
+		viewedDate = dayjs(ts * 1000);
+		value = viewedDate;
+		dispatch('new-value', value);
+	}
 
 	let open = false;
 	let section: 'date' | 'time' = 'date';
@@ -118,17 +125,17 @@
 </script>
 
 <div class="relative">
-	<input {id} type="text" class="input w-full h-12 disabled:bg-white" {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
+	<input {id} type="text" class="input w-full h-12 disabled:bg-white" class:disabled:bg-gray-100={disabled} {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
 
-	<button class="bg-color-black text-white w-20 absolute top-0 right-0 h-full rounded-r-md" on:click={() => (open = !open)}>
-		<div class="btn flex items-center justify-center space-x-2">
+	<button class="bg-color-black text-white w-20 absolute top-0 right-0 h-full rounded-r-md" on:click={() => (open = !open)} {disabled}>
+		<div class="flex items-center justify-center space-x-2">
 			<Calendar />
 			<ArrowDown />
 		</div>
 	</button>
 
 	{#if open}
-		<div class="absolute top-0 right-0 w-full bg-white flex flex-col rounded-xl translate-y-14 p-4 z-10" style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);">
+		<div class="absolute top-0 right-0 w-full max-w-xs bg-white flex flex-col rounded-xl translate-y-14 p-4 z-10" style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);">
 			<!-- use:outsideClickCallback={{ cb: () => (open = false) }} -->
 			<!-- Date/Time switch -->
 			{#if !dateOnly}

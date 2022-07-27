@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
+	import { afterNavigate } from '$app/navigation';
 	import { currentError } from '$stores/error';
 
-	beforeNavigate(() => {
+	afterNavigate(() => {
 		currentError.set(null);
 	});
 </script>

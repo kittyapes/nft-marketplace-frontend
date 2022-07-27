@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
-	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import type { CardOptions } from '$interfaces/ui';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import Input from '$lib/components/v2/Input/Input.svelte';
@@ -10,17 +10,17 @@
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
-	import { parseToken } from '$utils/misc/priceUtils';
+	import { getKnownTokenDetails, parseToken } from '$utils/misc/priceUtils';
+	import { isFuture } from '$utils/misc/time';
 	import { notifyError } from '$utils/toast';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
-	import dayjs from 'dayjs';
 	import { noTryAsync } from 'no-try';
 	import { onMount } from 'svelte';
 
-	export let options: CardPopupOptions;
+	export let options: CardOptions;
 	export let chainListing: ChainListing;
 
-	$: listingExpired = dayjs(options.listingData.startTime).add(options.listingData.duration, 'seconds').isBefore(dayjs());
+	$: listingExpired = !isFuture(options.listingData.endTime);
 
 	let bidAmount: string;
 	let bidAmountValid: boolean;
@@ -68,7 +68,7 @@
 
 	async function refreshBids() {
 		isRefreshingBids = true;
-		biddings = await getBiddingsFlow(options.rawResourceData.listingId, options.listingData.tokenDecimals);
+		biddings = await getBiddingsFlow(options.rawResourceData.listingId, getKnownTokenDetails({ tokenAddress: options.listingData.paymentTokenAddress }).decimals);
 		isRefreshingBids = false;
 	}
 
@@ -77,13 +77,13 @@
 
 <div class="flex flex-col justify-center h-[90%]">
 	<div class="flex flex-col h-full mt-4">
-		<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenDecimals={options.listingData.tokenDecimals} on:request-refresh={refreshBids} />
+		<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} on:request-refresh={refreshBids} />
 
-		<div class="my-4 font-semibold ml-auto">
+		<div class="my-4 ml-auto font-semibold">
 			<div class="">Starting price</div>
-			<div class="flex items-center gap-2 justify-end">
+			<div class="flex items-center justify-end gap-2">
 				<Eth />
-				{chainListing?.price || 'N/A'}
+				{options.auctionData?.formatStartingPrice}
 			</div>
 		</div>
 

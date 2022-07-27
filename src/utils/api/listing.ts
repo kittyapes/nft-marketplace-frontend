@@ -1,4 +1,5 @@
-import type { EthAddress, TokenStandard } from '$interfaces';
+import type { EthAddress, IsoTime, TokenStandard } from '$interfaces';
+import type { ApiNftData } from '$interfaces/apiNftData';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { getApiUrl } from '.';
@@ -50,41 +51,46 @@ export interface Listing {
 	listingStatus: 'ACTIVE';
 	listingType: ListingType;
 	listing: {
-		price?: number;
+		price?: string;
+		formatPrice?: number;
 		quantity: number;
 		startingPrice: string;
+		formatStartingPrice: number;
 		reservePrice: string;
+		formatReservePrice: number;
 	};
 	nfts: {
-		_id: string;
-		nftId: string;
 		amount: number;
-		assetUrl?: string;
-		thumbnailUrl?: string;
-		favoriteCount?: number;
-		metadata?: any;
-		creator?: string;
-		contractAddress?: string;
-		collectionId?: string;
-		isExternal?: boolean;
-		collectionName?: string;
-		collectionSlug?: string;
-		tokenStandard?: TokenStandard;
-		nft?: {
-			_id: string;
-			assetUrl: string;
-			thumbnailUrl: string;
-			favoriteCount: number;
-			metadata: any;
-			creator: string;
-			contractAddress: string;
-			nftId: string;
-			collectionId: string;
-			isExternal: boolean;
-			collectionName: string;
-			collectionSlug: string;
-			tokenStandard: TokenStandard;
+		assetUrl: string;
+		chain: 'ETHEREUM';
+		chainStatus: 'NOT_ON_CHAIN' | 'ON_CHAIN';
+		collectionId: string;
+		contractAddress: EthAddress;
+		createdAt: IsoTime;
+		creator: EthAddress;
+		favoriteCount: number;
+		isExternal: boolean;
+		metadata: {
+			external_url: string;
+			image: string;
+			name: string;
+			description: string;
 		};
+		name: string;
+		nftId: string;
+		offers: [];
+		owner: EthAddress;
+		price: number;
+		royalties: [];
+		sales: [];
+		thumbnailUrl: string;
+		tokenStandard: TokenStandard;
+		updatedAt: IsoTime;
+		uri: string;
+		collectionName: string;
+		collectionSlug: string;
+		_id: string;
+		nft: ApiNftData;
 	}[];
 
 	paymentTokenTicker: string;
@@ -113,9 +119,8 @@ export async function getListings(filters?: ListingFetchOptions, page: number = 
 	const params = {
 		type: filters?.type,
 		collectionId: filters?.collectionId ? filters?.collectionId : undefined,
-		// TODO convert to parseUnits
-		priceMin: filters?.priceMin && ethers.utils.parseEther(filters?.priceMin.toString()).toString(),
-		priceMax: filters?.priceMax && ethers.utils.parseEther(filters?.priceMax.toString()).toString(),
+		priceMin: filters?.priceMin,
+		priceMax: filters?.priceMax,
 		seller: filters?.seller,
 		sortBy: filters?.sortBy,
 		page,

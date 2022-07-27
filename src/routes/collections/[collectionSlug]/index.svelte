@@ -2,22 +2,23 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import AddCircle from '$icons/add-circle.svelte';
+	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import type { UserData } from '$interfaces/userData';
 	import ActionMenu from '$lib/components/ActionMenu.svelte';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import NftList from '$lib/components/NftList.svelte';
+	import { nftDraft } from '$stores/create';
 	import { currentUserAddress } from '$stores/wallet';
-	import { apiNftToNftCard } from '$utils/adapters/apiNftToNftCard';
+	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
 	import { apiGetCollectionBySlug, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
-	import { nftDraft } from '$stores/create';
-	import { onMount } from 'svelte';
 	import { notifyError } from '$utils/toast';
-	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
+	import { onMount } from 'svelte';
 	import { MetaTags } from 'svelte-meta-tags';
+	import HinataBadge from '$icons/hinata-badge.svelte';
 
 	let collectionData: Collection;
 	let nfts = [];
@@ -32,7 +33,7 @@
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await apiGetCollectionBySlug($page.params.collectionSlug, limit, index);
-		res.adapted = await Promise.all(res.res.nfts.map((nft) => apiNftToNftCard(nft)));
+		res.adapted = res.res.nfts.map(nftToCardOptions);
 		return res;
 	};
 
@@ -171,7 +172,9 @@
 			<img class="object-cover w-20 h-20 bg-white border-4 border-white rounded-full " src={collectionData?.logoImageUrl || '/svg/icons/guest-avatar.svg'} alt="Collection creator avatar." />
 
 			<!-- Verified creator badge -->
-			<img class="absolute right-0 translate-y-6" src="/svg/icons/verified-creator-badge.svg" alt="Verified creator badge." />
+			{#if collectionData?.mintedFrom?.toLowerCase() === 'hinata'}
+				<HinataBadge class="w-6 h-6 absolute right-2 translate-y-6" />
+			{/if}
 		</div>
 	</div>
 

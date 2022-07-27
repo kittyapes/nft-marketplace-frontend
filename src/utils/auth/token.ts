@@ -3,7 +3,7 @@ import { isJwtExpired } from '$utils/jwt';
 import { getAddress } from '$utils/misc/getters';
 import { setPopup } from '$utils/popup';
 import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
-	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
+import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
 import { refreshProfileData } from '$stores/user';
 
 function getAuthTokenKey(address: string) {
@@ -18,7 +18,7 @@ function getAuthTokenKey(address: string) {
 	return `authToken-${address}-${getApiUrl('latest', '')}`;
 }
 
-export async function getAuthToken(address?: string) {
+export function getAuthToken(address?: string) {
 	if (!address) {
 		address = getAddress();
 	}
@@ -27,9 +27,21 @@ export async function getAuthToken(address?: string) {
 		throw new Error('No address provided and could not automatically get an address.');
 	}
 
-	const token = localStorage.getItem(getAuthTokenKey(address));
+	return localStorage.getItem(getAuthTokenKey(address));
+}
 
-	if(token ? isJwtExpired(token) : true) {
+/**
+ * Attempts to retrieve the auth token for an address from the local storage. If the token is not found
+ * or is expired, a popup with the message sign process will be displayed. If the user completes the flow
+ * successfully, the obtained token will be returned.
+ *
+ * @param address Address for which the auth token needs to be obtained.
+ * @returns The auth token as a string.
+ */
+export async function getAuthTokenAsync(address?: string) {
+	const token = getAuthToken(address);
+
+	if (token ? isJwtExpired(token) : true) {
 		const handler = setPopup(AuthLoginPopup, {
 			unique: true,
 			returnPromise: true,
@@ -42,12 +54,12 @@ export async function getAuthToken(address?: string) {
 		});
 
 		await handler?.closePromise.promise;
-		if(!handler?.closePromise.fulfilled) return null;
-		
+		if (!handler?.closePromise.fulfilled) return null;
+
 		return localStorage.getItem(getAuthTokenKey(address));
 	}
 
-	return localStorage.getItem(getAuthTokenKey(address));
+	return token;
 }
 
 export function setAuthToken(address: string, token: string) {
@@ -55,8 +67,8 @@ export function setAuthToken(address: string, token: string) {
 	localStorage.setItem(key, token);
 }
 
-export async function isAuthTokenExpired(address: string) {
-	const token = await getAuthToken(address);
+export function isAuthTokenExpired(address: string) {
+	const token = getAuthToken(address);
 
 	if (!token) return true;
 

@@ -8,7 +8,7 @@
 	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
-	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
+	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
 	import { getListing } from '$utils/api/listing';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { setPopup } from '$utils/popup';
@@ -21,9 +21,9 @@
 		if ($page.url.searchParams.has('id')) {
 			const id = $page.url.searchParams.get('id');
 			const listing = await getListing(id);
-			const popupOptions = (await adaptListingToNftCard(listing)).popupOptions;
+			const options = listingToCardOptions(listing);
 
-			setPopup(CardPopup, { props: { options: popupOptions }, onClose: () => removeUrlParam('id'), unique: true });
+			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
 		}
 	});
 

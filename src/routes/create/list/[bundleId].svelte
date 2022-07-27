@@ -3,6 +3,8 @@
 	import { page } from '$app/stores';
 	import Back from '$icons/back_.svelte';
 	import type { ApiNftData } from '$interfaces/apiNftData';
+	import type { ConfigurableListingProps } from '$interfaces/listing';
+	import type { CardOptions } from '$interfaces/ui';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import ListingSuccessPopup from '$lib/components/popups/ListingSuccessPopup.svelte';
 	import AuctionProperties from '$lib/components/primary-listing/AuctionProperties.svelte';
@@ -19,8 +21,6 @@
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
-	import dayjs from 'dayjs';
-	import { BigNumber } from 'ethers';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -60,13 +60,9 @@
 	let isListing = false;
 
 	async function list() {
-		if (quantity > maxQuantity) {
+		if (listingProps.quantity > maxQuantity) {
 			notifyError(`Error: You Can Only List a Maximum of ${maxQuantity} Tokens`);
 			return;
-		}
-
-		if (!quantity || quantity <= 1) {
-			quantity = 1;
 		}
 
 		isListing = true;
@@ -74,33 +70,20 @@
 		const flowOptions: CreateListingFlowOptions = {
 			title: $fetchedNftData.name,
 			description: $fetchedNftData.metadata?.description,
-			duration: durationSeconds,
 			// TODO, add support for addresses from external collections
-			nfts: [{ nftId: $fetchedNftData.nftId, amount: BigNumber.from(quantity), collectionAddress: $fetchedNftData.contractAddress ?? getContractData('storage').address }],
+			nfts: [{ nftId: $fetchedNftData.nftId, amount: listingProps.quantity || 1, collectionAddress: $fetchedNftData.contractAddress ?? getContractData('storage').address, _id: $fetchedNftData._id }],
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: 'WETH',
-			quantity: BigNumber.from(1),
-			startTime: startDateTs,
 			listingType: listingType,
-			sale: {} as any,
-			auction: {} as any
+			...listingProps
 		};
 
-		if (listingType === 'sale') {
-			flowOptions.sale.price = price;
-		} else if (listingType === 'auction') {
-			flowOptions.auction.startingPrice = startingPrice;
-			flowOptions.auction.reservePrice = reservePrice || startingPrice;
-		}
-
-		const { err, success } = await createListingFlow(flowOptions);
-
-		if (err) {
-			notifyError('Failed to list NFT!');
-		}
-
-		if (success) {
+		try {
+			await createListingFlow(flowOptions);
 			setPopup(ListingSuccessPopup, { props: { viewCallback: goViewNft }, closeByOutsideClick: false });
+		} catch (err) {
+			console.error(err);
+			notifyError('Failed to list NFT!');
 		}
 
 		isListing = false;
@@ -110,15 +93,21 @@
 		goto('/profile/' + $currentUserAddress + '?tab=listings');
 	}
 
-	// Listing properties
-	let quantity = maxQuantity;
-	let durationSeconds;
-	let startDateTs;
-	let price;
-	let startingPrice;
-	let reservePrice;
+	let formErrors: string[] = [];
+	let listingProps: Partial<ConfigurableListingProps> = {};
 
-	let formValid;
+	// Preview
+	$: previewMockOptions = {
+		resourceType: 'nft',
+		rawResourceData: null,
+		nfts: [
+			{
+				name: $fetchedNftData?.name || 'No Title',
+				thumbnailUrl: $fetchedNftData?.thumbnailUrl || $fetchedNftData?.assetUrl,
+				collectionData: { name: $fetchedNftData?.collectionName }
+			}
+		]
+	} as CardOptions;
 </script>
 
 <!-- Back button -->
@@ -142,15 +131,15 @@
 		<div class="mt-8 pr-8">
 			<ListingPropertiesSlot compact>
 				{#if listingType === 'sale'}
-					<SaleProperties {maxQuantity} bind:durationSeconds bind:quantity bind:startDateTs bind:price bind:formValid />
+					<SaleProperties {maxQuantity} bind:formErrors bind:props={listingProps} />
 				{:else if listingType === 'auction'}
-					<AuctionProperties bind:durationSeconds bind:startDateTs bind:startingPrice bind:reservePrice bind:formValid />
+					<AuctionProperties bind:formErrors bind:props={listingProps} />
 				{/if}
 			</ListingPropertiesSlot>
 		</div>
 
 		<div class="pr-8 mt-8">
-			<PrimaryButton on:click={list} disabled={!formValid || isListing}>
+			<PrimaryButton on:click={list} disabled={!!formErrors.length || isListing}>
 				List for {listingType || 'N/A'}
 				{#if isListing}
 					<ButtonSpinner />
@@ -161,16 +150,6 @@
 
 	<div class="p-8 border-0 border-l separator w-80">
 		<div class="mb-4 text-xl uppercase">Preview</div>
-		<NftCard
-			options={{
-				id: null,
-				title: $fetchedNftData?.name,
-				imageUrl: $fetchedNftData?.thumbnailUrl,
-				price: price || startingPrice,
-				collectionName: $fetchedNftData?.['collection']?.name ?? '',
-				likeIds: [],
-				likes: 0
-			}}
-		/>
+		<NftCard options={previewMockOptions} hideLikes />
 	</div>
 </div>

@@ -9,10 +9,10 @@
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
 	import { writable } from 'svelte/store';
 	import { getRandomListings, type Listing } from '$utils/api/listing';
-	import { adaptListingToNftCard } from '$utils/adapters/adaptListingToNftCard';
 	import NftList from '$lib/components/NftList.svelte';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
+	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
 
 	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
@@ -27,7 +27,7 @@
 
 	const getExploreMarketData = async () => {
 		exploreListings.set(await getRandomListings(10));
-		exploreListingsData = await Promise.all($exploreListings.map(adaptListingToNftCard));
+		exploreListingsData = $exploreListings.map(listingToCardOptions).filter((e) => e);
 	};
 
 	// Please don't ask me why we need an auth token for this...

@@ -12,8 +12,6 @@
 	import { setPopup } from '$utils/popup';
 	import { walletConnected, walletDisconnected } from '$utils/wallet';
 
-	// TODO: this whole file needs refactoring
-
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {
 		return [RegExp('admin.*'), RegExp('create.*'), RegExp('profile/edit'), RegExp('management.*'), RegExp('collections/new/edit'), RegExp('marketplace.*')];
@@ -71,11 +69,10 @@
 			setWalletConnectionPopup(to.pathname);
 		}
 
-		// with the new approach to ask for sign whenever needed on an API call, this may not be needed
-		/*if ($walletConnected && isProtectedAndExpired(to.pathname)) {
+		if ($walletConnected && isProtectedAndExpired(to.pathname)) {
 			cancel();
 			setLoginPopup(to.pathname);
-		}*/
+		}
 
 		// When the user is trying to access his profile and the the profile has not been created on the backend,
 		// request him to sign in, which will create the profile.
@@ -97,9 +94,8 @@
 	});
 
 	// Handler for when the app is first loaded on a auth protected route
-	afterNavigate(({ to }) => {
-		// with the new approach to ask for sign whenever needed on an API call, this may not be needed
-		/*const unsub = currentUserAddress.subscribe(async (address) => {
+	afterNavigate(({ from, to }) => {
+		const unsub = currentUserAddress.subscribe(async (address) => {
 			if (!address) return;
 
 			if (isProtectedAndExpired(to.pathname)) {
@@ -107,12 +103,12 @@
 				await goto('/');
 				setLoginPopup(to.pathname);
 			}
-		});*/
+		});
 
 		// Restrict routes to verified creators
 		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
 			profileData.subscribe((profile) => {
-				if (!profile || ((profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user')) && !profile.roles.includes('superadmin'))) {
+				if (profile && (profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user')) && !profile.roles.includes('superadmin')) {
 					currentError.set(403);
 				}
 			});
@@ -121,7 +117,7 @@
 		// Pages only accessible by superadmins
 		if (to.pathname.match(/management*/)) {
 			profileData.subscribe((profile) => {
-				if (!profile || (!profile.roles.includes('superadmin') && !profile.roles.includes('admin'))) {
+				if (profile && !profile.roles.includes('superadmin') && !profile.roles.includes('admin')) {
 					currentError.set(403);
 				}
 			});

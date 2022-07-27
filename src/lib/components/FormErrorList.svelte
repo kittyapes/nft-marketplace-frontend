@@ -4,7 +4,7 @@
 	export let validity: { [key: string]: boolean | string };
 </script>
 
-<ul class="list-disc pl-8">
+<ul class="list-disc pl-8 {$$props.class}">
 	{#each Object.entries(validity) as [key, messageOrTrue]}
 		{#if typeof messageOrTrue === 'string'}
 			<li class="mt-2 text-red-500" transition:slide|local>{messageOrTrue}</li>

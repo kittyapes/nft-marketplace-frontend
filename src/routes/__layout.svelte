@@ -1,13 +1,13 @@
-<script context="module">
-	export const load = async ({ url }) => ({
-		props: {
-			url: url.href
-		}
-	});
-</script>
-
 <script lang="ts">
 	import '$styles/app.css';
+
+	// Local Build Scripts
+	import walletsScript from '$scripts/js/wallets.js?url';
+
+	// Imports from Unpkg
+	import walletConnectScript from '$scripts/js/walletconnect.umd.min.js?url';
+	import torusScript from '$scripts/js/torus.umd.min.js?url';
+
 	import Footer from '$lib/components/Footer.svelte';
 	import Nav from '$lib/components/Nav.svelte';
 	import { onMount } from 'svelte';
@@ -19,8 +19,6 @@
 	import ErrorPage from '$lib/components/ErrorPage.svelte';
 	import { currentError } from '$stores/error';
 	import { appDataToTriggerReload } from '$stores/wallet';
-
-	export let url;
 
 	onMount(async () => {
 		// Check for whether user has access/has provided password
@@ -37,7 +35,11 @@
 
 <svelte:head>
 	<title>Hinata</title>
+	<script src={walletConnectScript}></script>
+	<script src={torusScript}></script>
+	<script src={walletsScript}></script>
 </svelte:head>
+
 {#key $appDataToTriggerReload}
 	<Nav />
 	{#if $currentError}

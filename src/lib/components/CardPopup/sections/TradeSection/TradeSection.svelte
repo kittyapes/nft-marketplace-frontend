@@ -1,7 +1,10 @@
 <script lang="ts">
-	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import type { CardOptions } from '$interfaces/ui';
+	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
+
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
+	import { unpackedComponentStore } from '$utils/ui';
 	import BrowseAuction from './frames/BrowseAuction.svelte';
 	import BrowseSale from './frames/BrowseSale.svelte';
 	import CreateListing from './frames/CreateListing.svelte';
@@ -9,64 +12,46 @@
 	import ManageAuction from './frames/ManageAuction.svelte';
 	import ManageSale from './frames/ManageSale.svelte';
 	import Success from './frames/Success.svelte';
+	import { frame } from './tradeSection';
 
-	export let options: CardPopupOptions;
+	export let options: CardOptions;
 	export let chainListing: ChainListing;
 	export let showBackButton = false;
 
 	export function goBack() {
-		selectedState = states[0];
-	}
-
-	const states: { name: string; component: any }[] = [
-		{ name: 'browse-sale', component: BrowseSale },
-		{ name: 'browse-auction', component: BrowseAuction },
-		{ name: 'create-listing', component: CreateListing },
-		{ name: 'recreate-listing', component: CreateListing },
-		{ name: 'manage-sale', component: ManageSale },
-		{ name: 'manage-auction', component: ManageAuction },
-		{ name: 'success', component: Success },
-		{ name: 'error', component: Error }
-	];
-
-	let selectedState: typeof states[0];
-
-	$: options && updateState();
-
-	function updateState() {
-		let stateName: string;
-
-		if (options.resourceType === 'listing') {
-			if (options.listingData.sellerAddress === $currentUserAddress) {
-				if (options.listingData.listingType === 'auction') stateName = 'manage-auction';
-				if (options.listingData.listingType === 'sale') stateName = 'manage-sale';
-			} else {
-				if (options.listingData.listingType === 'auction') stateName = 'browse-auction';
-				if (options.listingData.listingType === 'sale') stateName = 'browse-sale';
-			}
-		} else if (options.resourceType === 'nft') {
-			stateName = 'create-listing';
+		if (!options.listingData) {
+			frame.set(CreateListing);
+			return;
 		}
 
-		selectedState = states.find((s) => s.name === stateName);
+		options.listingData.listingType === 'sale' ? frame.set(BrowseSale) : frame.set(BrowseAuction);
 	}
 
-	function handleSetState(e) {
-		const stateName = e.detail.name;
+	$: (options || chainListing) && updateState();
 
-		selectedState = states.find((s) => s.name === stateName);
-		stateProps[stateName] = e.detail.props;
+	function updateState() {
+		if (options.resourceType === 'listing') {
+			if (!chainListing) frame.set(DiamondsLoader);
+			else {
+				if (options.listingData.sellerAddress === $currentUserAddress) {
+					if (options.listingData.listingType === 'auction') frame.set(ManageAuction);
+					if (options.listingData.listingType === 'sale') frame.set(ManageSale);
+				} else {
+					if (options.listingData.listingType === 'auction') frame.set(BrowseAuction);
+					if (options.listingData.listingType === 'sale') frame.set(BrowseSale);
+				}
+			}
+		} else if (options.resourceType === 'nft') {
+			frame.set(CreateListing);
+		}
 	}
 
-	// We use a object with props for each state separately to avoid deleting
-	// props when switching states.
-	const stateProps = {};
+	$: showBackButton = $frame === Success || $frame === Error;
 
-	$: showBackButton = selectedState && ['success', 'error'].includes(selectedState.name);
+	// Initialize state
+	goBack();
+
+	const { component, props } = unpackedComponentStore(frame);
 </script>
 
-{#if selectedState}
-	<svelte:component this={selectedState.component} {options} {chainListing} {...stateProps[selectedState.name]} on:set-state={handleSetState} on:close-popup />
-{:else}
-	Jakub is dumb
-{/if}
+<svelte:component this={$component} {...$props} {options} {chainListing} on:close-popup on:listing-created />

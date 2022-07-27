@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
-	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
+	import type { CardOptions } from '$interfaces/ui';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
@@ -13,12 +13,13 @@
 	import { parseToken } from '$utils/misc/priceUtils';
 	import { createToggle } from '$utils/misc/toggle';
 	import { notifyError } from '$utils/toast';
-	import { noTryAsync } from 'no-try';
 	import { createEventDispatcher } from 'svelte';
+	import { frame } from '../tradeSection';
+	import Success from './Success.svelte';
 
 	const dispatch = createEventDispatcher();
 
-	export let options: CardPopupOptions;
+	export let options: CardOptions;
 	export let chainListing: ChainListing;
 
 	// $: listingExpired = dayjs(options.listingData.startTime).add(options.listingData.duration, 'seconds').isBefore(dayjs());
@@ -26,7 +27,6 @@
 	let biddings: BidRow[] = [];
 
 	async function acceptHighest() {
-		isWorking = true;
 		isAccepting = true;
 
 		const { err, res } = await contractCompleteAuction(options.listingData.onChainId);
@@ -34,54 +34,29 @@
 		if (err) {
 			console.error(err);
 			notifyError('Failed to complete auction.');
-			dispatch('set-state', { name: 'error' });
 		} else {
-			options.staleResource.set({ reason: 'cancelled' });
+			options.staleResource.set({ reason: 'bid-accepted' });
 			dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Auction completed successfully.' } });
+			frame.set(Success);
 		}
 
-		isWorking = false;
 		isAccepting = false;
 	}
 
 	let cancelButtonContainer: HTMLElement;
 
-	async function recreateListing() {
-		options.staleResource.set({ reason: 'relisting' });
-		dispatch('set-state', {
-			name: 'recreate-listing',
-			props: {
-				options,
-				selectedListing: 'auction',
-				price: options.auctionData.startingPrice,
-				paymentTokenTicker: options.listingData.tokenSymbol,
-				duration: options.duration,
-				startingPrice: options.auctionData.startingPrice,
-				reservePrice: options.auctionData.reservePrice,
-				quantity: '1'
-			}
-		});
-	}
-
-	async function cancelAuction() {
-		isWorking = true;
+	async function cancelListing() {
 		isCancelling = true;
 
-		const [err, res] = await noTryAsync(() => contractCancelListing(options.listingData.onChainId));
-
-		if (err) {
-			console.error(err);
-			notifyError('Failed to cancel listing.');
-			dispatch('set-state', { name: 'error' });
-		} else {
+		try {
+			await contractCancelListing(options.listingData.onChainId);
+			frame.set(Success);
 			options.staleResource.set({ reason: 'cancelled' });
-			dispatch('set-state', {
-				name: 'success',
-				props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Listing cancelled successfully.', showRelistButton: true, relistFunction: recreateListing }
-			});
+		} catch (err) {
+			console.error(err);
+			notifyError('Failed to cancel listing!');
 		}
 
-		isWorking = false;
 		isCancelling = false;
 	}
 
@@ -89,7 +64,6 @@
 
 	let isRefreshingBids: boolean;
 
-	let isWorking = false;
 	let isAccepting = false;
 	let isCancelling = false;
 
@@ -105,14 +79,14 @@
 </script>
 
 <div class="flex flex-col h-full pb-12 mt-4">
-	<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} tokenDecimals={options.listingData.tokenDecimals} />
+	<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} />
 
-	<div class="my-4 font-semibold flex">
+	<div class="flex my-4 font-semibold">
 		<div>
 			<div class="">Reserve price</div>
 			<div class="flex items-center gap-2">
 				<Eth />
-				{options.auctionData.reservePrice || 'N/A'}
+				{options.auctionData.formatReservePrice}
 			</div>
 		</div>
 
@@ -120,16 +94,16 @@
 
 		<div>
 			<div class="">Starting price</div>
-			<div class="flex items-center gap-2 justify-end">
+			<div class="flex items-center justify-end gap-2">
 				<Eth />
-				{options.auctionData.startingPrice || 'N/A'}
+				{options.auctionData.formatStartingPrice}
 			</div>
 		</div>
 	</div>
 
 	<div class="flex gap-2">
 		<div bind:this={cancelButtonContainer} class="w-full" on:pointerenter={cancelHovered.toggle} on:pointerleave={cancelHovered.toggle}>
-			<SecondaryButton class="mt-4" disabled={isWorking || isRefreshingBids || !canCancel} on:click={cancelAuction}>
+			<SecondaryButton class="mt-4" disabled={isCancelling || isAccepting || isRefreshingBids || !canCancel} on:click={cancelListing}>
 				{#if isCancelling}
 					<ButtonSpinner secondary />
 				{/if}
@@ -137,7 +111,7 @@
 			</SecondaryButton>
 		</div>
 
-		<PrimaryButton class="mt-4" disabled={isWorking || isRefreshingBids || !canAccept} on:click={acceptHighest}>
+		<PrimaryButton class="mt-4" disabled={isCancelling || isAccepting || isRefreshingBids || !canAccept} on:click={acceptHighest}>
 			{#if isAccepting}
 				<ButtonSpinner />
 			{/if}

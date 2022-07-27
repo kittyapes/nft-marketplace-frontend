@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { CardPopupOptions } from '$interfaces/cardPopupOptions';
+	import type { CardOptions } from '$interfaces/ui';
+
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
@@ -8,13 +9,14 @@
 	import { hasEnoughBalance } from '$utils/contracts/token';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import { notifyError } from '$utils/toast';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { createEventDispatcher } from 'svelte';
 	import { derived } from 'svelte/store';
+	import { frame } from '../tradeSection';
+	import Success from './Success.svelte';
 
-	const dispatch = createEventDispatcher();
-
-	export let options: CardPopupOptions;
+	export let options: CardOptions;
 	export let chainListing: ChainListing;
 
 	let hoveringPurchase = false;
@@ -25,9 +27,11 @@
 		purchasing = true;
 
 		const price = options.saleData.price.toString();
-		const success = await salePurchase(options.saleData.listingId, price);
+		const success = await salePurchase(options.listingData.onChainId, price);
 
-		success ? dispatch('set-state', { name: 'success' }) : dispatch('set-state', { name: 'error' });
+		if (success) {
+			frame.set(Success);
+		}
 
 		purchasing = false;
 	}
@@ -35,7 +39,7 @@
 	const hasEnoughTokens = derived(
 		currentUserAddress,
 		(address, set) => {
-			hasEnoughBalance(chainListing.payToken, address, options.saleData.price).then(set);
+			hasEnoughBalance(chainListing.payToken, address, options.saleData.formatPrice).then(set);
 		},
 		null
 	);
@@ -50,7 +54,7 @@
 	<div class="mt-8 font-bold text-center opacity-50">Price:</div>
 	<div class="flex items-center justify-center mt-2">
 		<img src={getIconUrl('eth')} alt="" />
-		<div class="text-5xl font-bold">{options.saleData?.price || 'N/A'}</div>
+		<div class="text-5xl font-bold">{options.saleData?.formatPrice || options.saleData?.price || 'N/A'}</div>
 		<div class="grid h-full ml-2 font-bold opacity-70 place-items-end">wETH</div>
 	</div>
 
@@ -76,7 +80,7 @@
 
 	{#if hoveringPurchase && $hasEnoughTokens === false}
 		<AttachToElement to={purchaseButton} bottom offsetY={20}>
-			<InfoBubble>You do not have enough {options.listingData.symbol} to purchase this item.</InfoBubble>
+			<InfoBubble>You do not have enough {options.listingData.paymentTokenTicker} to purchase this item.</InfoBubble>
 		</AttachToElement>
 	{/if}
 </div>

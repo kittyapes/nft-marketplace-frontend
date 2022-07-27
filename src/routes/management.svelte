@@ -32,12 +32,16 @@
 	let loaded = false;
 	let eventId;
 	const whitelistingCollectionAddress = writable<string>('');
+	const whitelistingCollectionSlug = writable<string>('');
 
 	type CollectionErrors = {
 		isErc1155OrErc721: boolean;
 		isContract: boolean;
+		slug: boolean | string;
 	};
+
 	const formValidity = writable<Partial<{ [K in keyof CollectionErrors]: any }>>({});
+
 	$: validating = false;
 	$: formValid = Object.values($formValidity).every((v) => v === true);
 
@@ -52,6 +56,13 @@
 			$formValidity.isContract = true;
 			$formValidity.isErc1155OrErc721 = true;
 		}
+	});
+
+	$formValidity.slug = true;
+
+	whitelistingCollectionSlug.subscribe((val) => {
+		$formValidity.slug = val ? true : false;
+		if (!$formValidity.slug) $formValidity.slug = 'Opensea route is missing';
 	});
 
 	interface UserFetchingOptions {
@@ -144,7 +155,7 @@
 
 	const handleVerify = async () => {
 		if (!$whitelistingCollectionAddress) return;
-		const res = await whitelistCollection($whitelistingCollectionAddress).catch((e) => console.log(e));
+		const res = await whitelistCollection($whitelistingCollectionAddress, $whitelistingCollectionSlug).catch((e) => console.log(e));
 	};
 
 	let roleFilterOptions = [
@@ -181,7 +192,7 @@
 		mode === 'USER' ? await createUserTable() : await createCollectionTable();
 	};
 
-	//COLLECTION section
+	// //COLLECTION section
 
 	let createCollectionTable = async () => {
 		await apiSearchCollections()
@@ -296,7 +307,7 @@
 		collections = (await apiSearchCollections(getCollectionsFetchingOptions())).filter((c) => c.slug);
 	};
 
-	// USER section
+	// // USER section
 
 	let createUserTable = async () => {
 		await getUsers()
@@ -428,7 +439,15 @@
 	{/if}
 
 	{#if mode === 'COLLECTION'}
-		<div class="flex flex-col w-full gap-4 ">
+		<div class="flex flex-col w-full gap-10 ">
+			<div class="flex flex-col gap-1">
+				<div class="text-color-black ">Opensea route</div>
+				<div class="flex gap-10">
+					<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input opensea route, e.g. azuki" bind:value={$whitelistingCollectionSlug} />
+
+					<div class="flex-grow" />
+				</div>
+			</div>
 			<div class="flex flex-col gap-1">
 				<div class="text-color-black ">Add address to Whitelisted Collections</div>
 				<div class="flex gap-10">
