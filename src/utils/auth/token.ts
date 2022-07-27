@@ -19,13 +19,7 @@ function getAuthTokenKey(address: string) {
 }
 
 export function getAuthToken(address?: string) {
-	if (!address) {
-		address = getAddress();
-	}
-
-	if (!address) {
-		throw new Error('No address provided and could not automatically get an address.');
-	}
+	console.log({ tokenKey: getAuthTokenKey(address) });
 
 	return localStorage.getItem(getAuthTokenKey(address));
 }
@@ -69,6 +63,8 @@ export function setAuthToken(address: string, token: string) {
 
 export function isAuthTokenExpired(address: string) {
 	const token = getAuthToken(address);
+
+	console.log({ token });
 
 	if (!token) return true;
 

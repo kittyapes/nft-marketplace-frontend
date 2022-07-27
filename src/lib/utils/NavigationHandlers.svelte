@@ -6,7 +6,7 @@
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { currentError } from '$stores/error';
 	import { profileData, refreshProfileData } from '$stores/user';
-	import { currentUserAddress } from '$stores/wallet';
+	import { connectionDetails, currentUserAddress } from '$stores/wallet';
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
@@ -19,7 +19,10 @@
 
 	function isProtectedAndExpired(path: string) {
 		const isProtectedRoute = getAuthRequiredRoutes().some((route) => route.test(path));
+		console.log($currentUserAddress);
 		const isTokenExpired = isAuthTokenExpired($currentUserAddress);
+
+		console.log({ isTokenExpired });
 
 		return isProtectedRoute && isTokenExpired;
 	}
@@ -95,16 +98,6 @@
 
 	// Handler for when the app is first loaded on a auth protected route
 	afterNavigate(({ from, to }) => {
-		const unsub = currentUserAddress.subscribe(async (address) => {
-			if (!address) return;
-
-			if (isProtectedAndExpired(to.pathname)) {
-				unsub();
-				await goto('/');
-				setLoginPopup(to.pathname);
-			}
-		});
-
 		// Restrict routes to verified creators
 		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
 			profileData.subscribe((profile) => {
@@ -125,6 +118,12 @@
 	});
 
 	$: if ($walletDisconnected && isConnectionRequired($page.url.pathname)) {
+		setWalletConnectionPopup($page.url.href);
+		goto('/');
+	}
+
+	$: if ($currentUserAddress && $connectionDetails && isProtectedAndExpired($page.url.pathname)) {
+		setLoginPopup($page.url.pathname);
 		goto('/');
 	}
 
