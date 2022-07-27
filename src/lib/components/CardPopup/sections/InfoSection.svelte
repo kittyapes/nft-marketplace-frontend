@@ -6,14 +6,15 @@
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { closePopup } from '$utils/popup';
 	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 
 	export let options: CardOptions;
 
 	let marketFee = 0;
-	$: nftBalance = 0;
+	let balance = null;
+	let supply = null;
 
-	$: ownedOrListedNfts = options.resourceType === 'listing' ? options?.nfts[0].quantity ?? 1 : nftBalance;
-	$: totalNfts = 1;
+	$: ownedOrListedNfts = options.resourceType === 'listing' ? options?.nfts[0].quantity ?? 1 : balance;
 
 	// Never show the back button on this tab
 	export const showBackButton = false;
@@ -39,18 +40,17 @@
 		{ name: 'Blockchain', value: options.listingData?.paymentTokenTicker || options.rawResourceData.chain },
 		{
 			name: options.resourceType === 'listing' ? 'NFTs in Listing' : 'You Own',
-			value: `${ownedOrListedNfts} of ${totalNfts}`
+			value: balance !== null ? `${ownedOrListedNfts} of ${supply}` : null
 		}
 	];
 
 	onMount(async () => {
 		// When its not a listing
 		marketFee = await getMarketFee();
-		if (!options.listingData) {
-			let { balance, supply } = await getUserNftBalance(singleNft.contractAddress, singleNft.onChainId);
-			nftBalance = balance;
-			totalNfts = supply;
-		}
+		const res = await getUserNftBalance(singleNft.contractAddress, singleNft.onChainId);
+
+		balance = res.balance;
+		supply = res.supply;
 	});
 
 	function parseAttributes(attributes) {
@@ -117,7 +117,12 @@
 			<div class="overflow-hidden {prop.name === 'Fees and Royalties' ? 'text-sm' : ''}">
 				<div class="property-name">{prop.name}</div>
 
-				<div class="property-value">{prop.value || 'N/A'}</div>
+				<div class="relative property-value">
+					{prop.value || 'N/A'}
+					{#if prop.value === null}
+						<div class="absolute top-0 w-24 h-6 mt-1 bg-gray-100 rounded" out:fade|local />
+					{/if}
+				</div>
 			</div>
 		{/each}
 	</div>
