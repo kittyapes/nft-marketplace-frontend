@@ -27,7 +27,7 @@
 
 	const getExploreMarketData = async () => {
 		exploreListings.set(await getRandomListings(10));
-		exploreListingsData = $exploreListings.map(listingToCardOptions);
+		exploreListingsData = $exploreListings.map(listingToCardOptions).filter((e) => e);
 	};
 
 	// Please don't ask me why we need an auth token for this...
