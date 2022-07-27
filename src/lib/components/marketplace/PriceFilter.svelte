@@ -1,7 +1,10 @@
 <script lang="ts">
+	import { regexFilter } from '$actions/regexFilter';
+
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { listingTokens } from '$utils/contracts/listing';
+	import { floatRe } from '$utils/misc/regex';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import Dropdown from '../Dropdown.svelte';
 
@@ -12,6 +15,10 @@
 	let selectedToken: typeof listingTokens[0];
 
 	function updateSearchParams() {
+		if ((min && !min.match(floatRe)) || (max && !max.match(floatRe))) {
+			return;
+		}
+
 		$page.url.searchParams.set('token', selectedToken.label);
 
 		min ? $page.url.searchParams.set('minPrice', min) : $page.url.searchParams.delete('minPrice');
@@ -37,8 +44,24 @@
 	<Dropdown options={listingTokens} bind:selected={selectedToken} />
 
 	<div class="w-full flex justify-between items-center gap-3 mt-4">
-		<input type="text" class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4" placeholder="MIN" bind:value={min} min="0" on:input={updateSearchParams} />
+		<input
+			type="text"
+			class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4"
+			placeholder="MIN"
+			bind:value={min}
+			min="0"
+			use:regexFilter={{ regex: floatRe }}
+			on:input={updateSearchParams}
+		/>
 		TO
-		<input type="text" class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4" placeholder="MAX" bind:value={max} min="0" on:input={updateSearchParams} />
+		<input
+			type="text"
+			class="w-24 h-10 border border-black border-opacity-50 rounded-md pl-4"
+			placeholder="MAX"
+			bind:value={max}
+			min="0"
+			use:regexFilter={{ regex: floatRe }}
+			on:input={updateSearchParams}
+		/>
 	</div>
 </div>
