@@ -4,13 +4,14 @@
 	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
-	import { currentError } from '$stores/error';
 	import { profileData, refreshProfileData } from '$stores/user';
 	import { connectionDetails, currentUserAddress } from '$stores/wallet';
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
 	import { walletConnected, walletDisconnected } from '$utils/wallet';
+
+	export let errorCode = null;
 
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {
@@ -99,7 +100,7 @@
 		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
 			profileData.subscribe((profile) => {
 				if (profile && (profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user')) && !profile.roles.includes('superadmin')) {
-					currentError.set(403);
+					errorCode = 403;
 				}
 			});
 		}
@@ -108,7 +109,7 @@
 		if (to.pathname.match(/management*/)) {
 			profileData.subscribe((profile) => {
 				if (profile && !profile.roles.includes('superadmin') && !profile.roles.includes('admin')) {
-					currentError.set(403);
+					errorCode = 403;
 				}
 			});
 		}
@@ -129,7 +130,7 @@
 
 		// If the user is not an admin and trying to access admin routes, redirect to the home page
 		if ($page.url.pathname.startsWith('/admin') && !roles.includes('admin') && !roles.includes('superadmin')) {
-			currentError.set(403);
+			errorCode = 403;
 		}
 	});
 </script>
