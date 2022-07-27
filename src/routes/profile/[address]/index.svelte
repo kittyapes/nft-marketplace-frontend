@@ -135,18 +135,18 @@
 				return res;
 			},
 			label: 'Favorites'
-		},
-		{
-			fetchFunction: async (tab, page, limit) => {
-				const res = {} as FetchFunctionResult;
-
-				res.res = await apiGetHiddenNfts(address, page, limit);
-				res.adapted = res.res.map(nftToCardOptions);
-
-				return res as any;
-			},
-			label: 'Hidden'
 		}
+		// {
+		// 	fetchFunction: async (tab, page, limit) => {
+		// 		const res = {} as FetchFunctionResult;
+
+		// 		res.res = await apiGetHiddenNfts(address, page, limit);
+		// 		res.adapted = res.res.map(nftToCardOptions);
+
+		// 		return res as any;
+		// 	},
+		// 	label: 'Hidden'
+		// }
 	];
 
 	tabs.map((t) => {
