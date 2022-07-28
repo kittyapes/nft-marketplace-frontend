@@ -59,7 +59,7 @@
 	];
 
 	// Set default tab and prevent overwiriting when statement above
-	$: selectedTab = selectedTab || tabs[0];
+	$: selectedTab = selectedTab || (options.resourceType === 'listing' && tabs[1]) || tabs[0];
 
 	export function goBack() {
 		tabComponentInstance.goBack?.();
@@ -91,7 +91,7 @@
 			</button>
 		{/each}
 
-		{#if nftBalance === null && !options.allowTrade}
+		{#if nftBalance === null && options.resourceType !== 'listing'}
 			<div class="w-24 h-full bg-gray-100 rounded-lg animate-pulse" />
 		{/if}
 	</div>

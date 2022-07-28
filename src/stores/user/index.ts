@@ -1,7 +1,5 @@
 import { goto } from '$app/navigation';
-import { page } from '$app/stores';
 import type { ApiNftData } from '$interfaces/apiNftData';
-import { currentError } from '$stores/error';
 import { appDataToTriggerReload, currentUserAddress } from '$stores/wallet';
 import { fetchProfileData } from '$utils/api/profile';
 import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
@@ -21,16 +19,8 @@ appDataToTriggerReload.subscribe(() => {
 });
 
 export async function refreshProfileData() {
-	// remove error pages when swapping accounts
-	 currentError.set(null);
-
 	const newProfileData = await fetchProfileData(get(currentUserAddress));
 	profileData.set(newProfileData);
-
-	// if changing account on create, reroute to new profile
-	if(window.location.href.endsWith('/create') && get(profileData) && (get(profileData).status !== 'VERIFIED' || !get(profileData).roles.includes('verified_user')) && !get(profileData).roles.includes('superadmin')) {
-		goto('/profile/' + get(currentUserAddress));
-	} 
 }
 
 export const profileCompletionProgress = derived(profileData, ($profileData) => {

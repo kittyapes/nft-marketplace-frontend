@@ -52,6 +52,7 @@
 		try {
 			await contractUpdateListing(options.listingData.onChainId, chainListing.payToken, listingProps);
 			frame.set(Success);
+			options.staleResource.set({ reason: 'cancelled' });
 		} catch (err) {
 			console.error(err);
 			notifyError('Failed to update listing.');
@@ -63,11 +64,12 @@
 
 	let cancellingListing = false;
 
-	function cancelListing() {
+	async function cancelListing() {
 		cancellingListing = true;
 
 		try {
-			contractCancelListing(options.listingData.onChainId);
+			await contractCancelListing(options.listingData.onChainId);
+			options.staleResource.set({ reason: 'cancelled' });
 		} catch (err) {
 			console.error(err);
 			notifyError('Failed to cancel listing!');
@@ -79,7 +81,7 @@
 	let listingProps: Partial<ConfigurableListingProps> = {};
 </script>
 
-<div class="flex flex-col h-full pb-8 overflow-y-scroll p-4 overscroll-contain">
+<div class="flex flex-col h-full p-4 pb-8 overflow-y-scroll overscroll-contain">
 	<div class="mt-2">
 		<ListingPropertiesSlot>
 			{#if options.listingData.listingType === 'sale'}
@@ -87,6 +89,7 @@
 					bind:this={_saleProperties}
 					bind:formErrors
 					maxQuantity={getTokenBalance(options.nfts[0].onChainId)}
+					disableQuantity
 					{disableStartDate}
 					maxPrice={chainListing.price}
 					bind:props={listingProps}
@@ -99,9 +102,9 @@
 
 	<!-- Fees -->
 	<div class="mt-4 ml-2 font-semibold">Fees</div>
-	<div class="grid gap-2 mt-2 font-semibold ml-2" style:grid-template-columns="auto 6rem">
+	<div class="grid gap-2 mt-2 ml-2 font-semibold" style:grid-template-columns="auto 6rem">
 		<div>Creator Royalties:</div>
-		<div class="flex justify-end space-x-3 items-center">
+		<div class="flex items-center justify-end space-x-3">
 			<div class="">{totalColRoyalties(options)}%</div>
 			<div class="w-5">
 				<Info />
@@ -109,7 +112,7 @@
 		</div>
 
 		<div class="gradient-text">Hinata Fees:</div>
-		<div class="flex justify-end space-x-3 items-center">
+		<div class="flex items-center justify-end space-x-3">
 			<div class="gradient-text">0%</div>
 			<div class="w-5">
 				<Info />
