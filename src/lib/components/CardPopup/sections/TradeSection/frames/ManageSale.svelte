@@ -3,21 +3,12 @@
 	import InfoBox from '$lib/components/InfoBox.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
-	import { parseToken } from '$utils/misc/priceUtils';
-	import { getTokenBalance } from '$stores/user';
-	import { contractCancelListing, contractUpdateListing, type ChainListing } from '$utils/contracts/listing';
-	import { formatToken } from '$utils/misc/priceUtils';
-	import { isFuture } from '$utils/misc/time';
-	import { createToggle } from '$utils/misc/toggle';
-	import { notifyError, notifySuccess } from '$utils/toast';
-	import { noTryAsync } from 'no-try';
-	import { createEventDispatcher } from 'svelte';
+	import { contractCancelListing } from '$utils/contracts/listing';
+	import { notifyError } from '$utils/toast';
 
 	import { frame } from '../tradeSection';
 	import EditSale from './EditSale.svelte';
 	import Success from './Success.svelte';
-
-	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions;
 
@@ -39,7 +30,7 @@
 	}
 </script>
 
-<div class="flex flex-col h-full pb-8 overflow-y-scroll p-4 overscroll-contain">
+<div class="flex flex-col h-full p-4 pb-8 overflow-y-scroll overscroll-contain">
 	<InfoBox>Offers on sale listings are coming soon!</InfoBox>
 
 	<div class="flex-grow" />
