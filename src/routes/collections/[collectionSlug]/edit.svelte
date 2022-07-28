@@ -1,31 +1,32 @@
 <script lang="ts">
+	import { browser } from '$app/env';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { acceptedImages } from '$constants';
+	import Loader from '$icons/loader.svelte';
 	import PlaceholderImage from '$icons/placeholder-image.svelte';
 	import CollectionDisplayStyleSwitcher from '$lib/components/collection/CollectionDisplayStyleSwitcher.svelte';
 	import PaymentTokenCard from '$lib/components/collection/PaymentTokenCard.svelte';
 	import Royalties from '$lib/components/create/Royalties.svelte';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
+	import FormErrorList from '$lib/components/FormErrorList.svelte';
 	import SocialLinkInput from '$lib/components/SocialLinkInput.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
-	import { writable } from 'svelte/store';
-	import { apiCreateCollection, apiGetCollectionBySlug, apiUpdateCollection, apiValidateCollectionNameAndSlug, getInitialCollectionData } from '$utils/api/collection';
-	import type { Collection, UpdateCollectionOptions } from '$utils/api/collection';
-	import FormErrorList from '$lib/components/FormErrorList.svelte';
-	import { tick } from 'svelte';
-	import { noTryAsync } from 'no-try';
-	import { notifyError, notifySuccess } from '$utils/toast';
-	import { goto } from '$app/navigation';
-	import Loader from '$icons/loader.svelte';
-	import { acceptedImages } from '$constants';
-	import { page } from '$app/stores';
 	import { nftDraft } from '$stores/create';
-	import { browser } from '$app/env';
-	import { debounce } from 'lodash-es';
-	import { withPrevious } from 'svelte-previous';
-	import { contractCreateCollection } from '$utils/contracts/collection';
 	import { currentUserAddress } from '$stores/wallet';
-	import { currentError } from '$stores/error';
+	import type { Collection, UpdateCollectionOptions } from '$utils/api/collection';
+	import { apiCreateCollection, apiGetCollectionBySlug, apiUpdateCollection, apiValidateCollectionNameAndSlug, getInitialCollectionData } from '$utils/api/collection';
+	import { contractCreateCollection } from '$utils/contracts/collection';
+	import { notifyError, notifySuccess } from '$utils/toast';
+	import { debounce } from 'lodash-es';
+	import { noTryAsync } from 'no-try';
+	import { getContext, tick } from 'svelte';
+	import { withPrevious } from 'svelte-previous';
+	import { writable } from 'svelte/store';
+
+	const layoutStuff = getContext('layout-stuff');
 
 	// Page params
 	const collectionSlug = $page.params.collectionSlug;
@@ -242,9 +243,9 @@
 	async function fetchRemoteCollectionData() {
 		const [err, res] = await noTryAsync(() => apiGetCollectionBySlug(collectionSlug));
 
-		if (res.creator?.toLowerCase() !== $currentUserAddress?.toLowerCase()) {
+		if (res?.creator?.toLowerCase() !== $currentUserAddress?.toLowerCase()) {
 			// Wish we had a 401 error page
-			currentError.set(403);
+			layoutStuff['setErrorCode'](403);
 			return;
 		}
 
