@@ -6,7 +6,7 @@
 	import { tick } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import { setPopup } from '$utils/popup';
 	import { page } from '$app/stores';
@@ -56,6 +56,7 @@
 
 	$: if (!query) {
 		searching = false;
+		$searchQuery = query;
 		debouncedSearch.cancel();
 	}
 
@@ -67,6 +68,10 @@
 			debouncedSearch($searchQuery);
 		}
 	}
+
+	beforeNavigate(({ to }) => {
+		if (!to.pathname.match(/search*/)) query = '';
+	});
 </script>
 
 <div
