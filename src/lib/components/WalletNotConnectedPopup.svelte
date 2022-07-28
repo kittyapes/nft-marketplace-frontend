@@ -12,21 +12,17 @@
 	async function connectWallet() {
 		walletState.set(WalletState.REQUESTING_CONNECT);
 
-		handler.close();
-
 		try {
 			connectToWallet();
 		} catch {
 			walletState.set(WalletState.DISCONNECTED);
 			return;
 		}
+	}
 
-		const unsub = currentUserAddress.subscribe((address) => {
-			if (address && onConnectSuccess) {
-				onConnectSuccess();
-				unsub();
-			}
-		});
+	$: if ($currentUserAddress) {
+		onConnectSuccess?.();
+		handler.close();
 	}
 </script>
 
