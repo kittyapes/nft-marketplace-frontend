@@ -24,6 +24,17 @@
 		options.splice(index, 1);
 		options = options;
 	}
+
+	let hidden = new WeakMap();
+
+	$: options.forEach((o) =>
+		o.staleResource.subscribe((r) => {
+			if (r?.reason === 'cancelled') {
+				hidden.set(o, true);
+				hidden = hidden;
+			}
+		})
+	);
 </script>
 
 <div class="w-full">
@@ -34,8 +45,10 @@
 	{#if options?.length}
 		<div class="nftGrid">
 			{#each options as cardOptions, index}
-				{@const props = cardPropsMapper(cardOptions)}
-				<NftCard {...props} on:hide-me={() => hideCard(index)} />
+				{#if !hidden.get(cardOptions)}
+					{@const props = cardPropsMapper(cardOptions)}
+					<NftCard {...props} on:hide-me={() => hideCard(index)} />
+				{/if}
 			{/each}
 		</div>
 	{/if}
