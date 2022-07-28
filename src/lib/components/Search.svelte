@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Search from '$icons/search.svelte';
 	import { debounce } from 'lodash-es';
-	import { getCollectionsByTitle, getListingsByTitle, getUsersByName, searchUsersByName } from '$utils/api/search/globalSearch';
+	import { getCollectionsByTitle, getNftsByTitle, searchUsersByName } from '$utils/api/search/globalSearch';
 	import Loader from '$icons/loader.svelte';
 	import { tick } from 'svelte';
 	import { fly } from 'svelte/transition';
@@ -9,9 +9,9 @@
 	import { goto } from '$app/navigation';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import { setPopup } from '$utils/popup';
-	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
 	import { page } from '$app/stores';
 	import { searchQuery } from '$stores/search';
+	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
 
 	let query: string;
 	let searching = false;
@@ -21,18 +21,18 @@
 
 	let searchResults = {
 		collections: [],
-		listings: [],
+		items: [],
 		users: []
 	};
 
-	const debouncedSearch = debounce(async () => {
-		await searchGlobally();
+	const debouncedSearch = debounce(async (query: string) => {
+		await searchGlobally(query);
 	}, 500);
 
-	const searchListings = async (query: string) => {
-		const response = await getListingsByTitle(query, resultCategoryLimit);
-		let listings = response;
-		searchResults.listings = listings.map(listingToCardOptions);
+	const searchNfts = async (query: string) => {
+		const response = await getNftsByTitle(query, resultCategoryLimit);
+		let nfts = response;
+		searchResults.items = nfts.map(nftToCardOptions);
 	};
 
 	const searchUsers = async (query: string) => {
@@ -45,8 +45,8 @@
 		searchResults.collections = response.filter((e) => e.slug);
 	};
 
-	const searchGlobally = async () => {
-		await searchListings(query).catch((error) => console.log(error));
+	const searchGlobally = async (query: string) => {
+		await searchNfts(query).catch((error) => console.log(error));
 		await searchUsers(query).catch((error) => console.log(error));
 		await searchCollections(query).catch((error) => console.log(error));
 
@@ -60,11 +60,11 @@
 	}
 
 	$: if (query) {
+		$searchQuery = query;
 		if (!$page.url.pathname.startsWith('/search')) {
-			$searchQuery = query;
 			searching = true;
 			show = false;
-			debouncedSearch();
+			debouncedSearch($searchQuery);
 		}
 	}
 </script>
@@ -82,7 +82,7 @@
 			if (e.code === 'Enter') {
 				show = false;
 				searching = false;
-				goto('/search?query=' + query);
+				goto('/search?query=' + $searchQuery);
 			}
 		}}
 		type="text"
@@ -99,19 +99,15 @@
 							<div class="border-b border-black border-opacity-30" />
 							<div class="p-4 flex flex-col gap-4">
 								{#each searchResults[section] as result}
-									{#if section === 'listings'}
+									{#if section === 'items'}
 										<div class="flex gap-4 items-center btn" on:click={() => setPopup(result.popupComponent, { props: { options: result.popupOptions } })}>
-											{#if result.imageUrl}
+											{#if result.thumbnailUrl}
 												<div class="w-12 h-12 rounded-full grid place-items-center">
-													<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({result.imageUrl})" />
+													<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({result.thumbnailUrl})" />
 												</div>
 											{/if}
-											<div class="font-semibold w-full max-w-full">
-												{#if result.title?.length > 25}
-													{result.title.slice(0, 25)}...
-												{:else}
-													{result.title}
-												{/if}
+											<div class="font-semibold w-full max-w-full truncate">
+												{result.name}
 											</div>
 										</div>
 									{:else if section === 'users'}
@@ -128,12 +124,8 @@
 												</div>
 											{/if}
 											<div class="">
-												<div class="font-semibold username w-full max-w-full">
-													{#if result.username?.length > 25}
-														{result.username.slice(0, 25)}...
-													{:else}
-														{result.username}
-													{/if}
+												<div class="font-semibold username w-full max-w-full truncate">
+													{result.username}
 												</div>
 											</div>
 											{#if result.roles?.includes('verified_user')}
@@ -153,12 +145,8 @@
 													<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({result.logoImageUrl})" />
 												</div>
 											{/if}
-											<div class="font-semibold w-full max-w-full">
-												{#if result.name?.length > 25}
-													{result.name?.slice(0, 25)}...
-												{:else}
-													{result.name}
-												{/if}
+											<div class="font-semibold w-full max-w-full truncate">
+												{result.name}
 											</div>
 										</div>
 									{/if}

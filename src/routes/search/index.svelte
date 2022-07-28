@@ -7,11 +7,12 @@
 	import NftList from '$lib/components/NftList.svelte';
 	import { searchQuery } from '$stores/search';
 	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
-	import { getCollectionsByTitle, getListingsByTitle, getUsersByName } from '$utils/api/search/globalSearch';
+	import { getCollectionsByTitle, getNftsByTitle, getUsersByName } from '$utils/api/search/globalSearch';
 	import { debounce } from 'lodash-es';
 	import { inview } from 'svelte-inview';
 	import { page } from '$app/stores';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
+	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
 
 	const fullResultsLimit = 20;
 
@@ -20,29 +21,29 @@
 	const inviewOptions = {};
 
 	let searchResults: SearchResults = {
-		listings: {
+		nfts: {
 			data: [],
 			index: 1,
 			reachedEnd: false,
 			isLoading: false,
 			fetchFunction: async (query: string) => {
-				if (searchResults.listings.reachedEnd) return;
+				if (searchResults.nfts.reachedEnd) return;
 
-				searchResults.listings.isLoading = true;
+				searchResults.nfts.isLoading = true;
 
-				const res = await getListingsByTitle(query, fullResultsLimit, searchResults.listings.index).catch((e) => []);
+				const res = await getNftsByTitle(query, fullResultsLimit, searchResults.nfts.index).catch((e) => []);
 
 				if (res.length === 0) {
-					searchResults.listings.reachedEnd = true;
-					searchResults.listings.isLoading = false;
+					searchResults.nfts.reachedEnd = true;
+					searchResults.nfts.isLoading = false;
 					searchResults = searchResults;
 					return;
 				}
 
-				searchResults.listings.index++;
-				let listings = res;
-				searchResults.listings.data = [...searchResults.listings.data, ...listings.map(listingToCardOptions)];
-				searchResults.listings.isLoading = false;
+				searchResults.nfts.index++;
+				let nfts = res;
+				searchResults.nfts.data = [...searchResults.nfts.data, ...nfts.map(nftToCardOptions)];
+				searchResults.nfts.isLoading = false;
 
 				searchResults = searchResults;
 			}
@@ -128,8 +129,11 @@
 		if ($page.url.searchParams.has('query')) {
 			$searchQuery = $page.url.searchParams.get('query');
 		}
-		debouncedSearch($searchQuery);
 	}
+
+	searchQuery.subscribe((query) => {
+		debouncedSearch(query);
+	});
 
 	let refreshWithFilters: () => void;
 </script>
@@ -137,7 +141,7 @@
 <div class="flex flex-col w-full h-full min-h-screen md:flex-row">
 	<Sidebar bind:isOpen={sidebarOpen} on:request-refresh={() => refreshWithFilters()} />
 	<div class="w-full h-full p-10 flex flex-col gap-10 overflow-hidden {!sidebarOpen ? 'md:ml-24' : 'md:ml-72'}">
-		{#if loaded && (searchResults.collections.data.length > 0 || searchResults.listings.data.length > 0 || searchResults.users.data.length > 0)}
+		{#if loaded && (searchResults.collections.data.length > 0 || searchResults.nfts.data.length > 0 || searchResults.users.data.length > 0)}
 			{#if searchResults.collections?.data.length}
 				<div class="">
 					<div class="font-semibold text-lg">
@@ -174,17 +178,17 @@
 					</div>
 				</div>
 			{/if}
-			{#if searchResults.listings?.data.length}
+			{#if searchResults.nfts?.data.length}
 				<div class="w-full">
 					<div class="font-semibold text-lg">
-						<h1>Listings</h1>
+						<h1>Items</h1>
 					</div>
 					<div class="">
 						<NftList
-							options={searchResults.listings.data}
-							isLoading={searchResults.listings.isLoading}
-							on:end-reached={() => searchResults.listings.fetchFunction($searchQuery)}
-							reachedEnd={searchResults.listings.reachedEnd}
+							options={searchResults.nfts.data}
+							isLoading={searchResults.nfts.isLoading}
+							on:end-reached={() => searchResults.nfts.fetchFunction($searchQuery)}
+							reachedEnd={searchResults.nfts.reachedEnd}
 						/>
 					</div>
 				</div>

@@ -1,3 +1,4 @@
+import type { ApiNftData } from '$interfaces/apiNftData';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
 import type { UserData } from 'src/interfaces/userData';
@@ -6,7 +7,7 @@ import type { Collection } from '../collection';
 import type { Listing } from '../listing';
 
 
-export const getListingsByTitle = async (query: string, limit?: number, page?: number) => {
+export const getNftsByTitle = async (query: string, limit?: number, page?: number) => {
     try {
         let params = {
           //  query: query ? query: undefined,
@@ -14,9 +15,9 @@ export const getListingsByTitle = async (query: string, limit?: number, page?: n
             limit: limit ? limit : undefined,
         }
 
-        const res = await axios.get(getApiUrl('latest', 'listings'), {params});
-
-        return res.data.data as Listing[];
+        const res = await axios.get(getApiUrl('latest', 'nfts/search'), { params });
+        console.log(res)
+        return res.data.data as ApiNftData[];
     } catch {    
         throw new Error('Failed to search for listings');
     }
