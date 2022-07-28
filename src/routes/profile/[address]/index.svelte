@@ -33,14 +33,6 @@
 
 	$: address = $page.params.address;
 
-	$: if ($page.url.searchParams.has('tab')) {
-		let tabName = $page.url.searchParams.get('tab');
-		if (tabs[tabName]) {
-			selectedTab = tabs[tabName];
-		}
-		$page.url.searchParams.delete('tab');
-	}
-
 	onMount(async () => {
 		if (!isEthAddress(address)) {
 			notifyError('Invalid Ethereum Address');
@@ -87,6 +79,7 @@
 	let tabs: {
 		fetchFunction: (tab: any, page: number, limit: number) => Promise<{ res: any; adapted: []; err: Error }>;
 		label: string;
+		name: string;
 		index?: number;
 		reachedEnd?: boolean;
 		data?: [];
@@ -106,7 +99,8 @@
 
 					return res;
 				},
-				label: 'Collected NFTs'
+				label: 'Collected NFTs',
+				name: 'collected'
 			},
 			{
 				fetchFunction: async (tab, page, limit) => {
@@ -115,7 +109,8 @@
 					res.adapted = res.res.res.map((nft) => nftToCardOptions(nft));
 					return res;
 				},
-				label: 'Created NFTs'
+				label: 'Created NFTs',
+				name: 'created'
 			},
 			{
 				fetchFunction: async (tab, page, limit) => {
@@ -124,7 +119,8 @@
 					res.adapted = res.res.map(listingToCardOptions);
 					return res;
 				},
-				label: 'Active Listings'
+				label: 'Active Listings',
+				name: 'listings'
 			},
 			{
 				fetchFunction: async (tab, page, limit) => {
@@ -136,7 +132,8 @@
 
 					return res;
 				},
-				label: 'Favorites'
+				label: 'Favorites',
+				name: 'favorites'
 			}
 			// {
 			// 	fetchFunction: async (tab, page, limit) => {
@@ -147,7 +144,8 @@
 
 			// 		return res as any;
 			// 	},
-			// 	label: 'Hidden'
+			// 	label: 'Hidden',
+			//  name: 'hidden'
 			// }
 		];
 
@@ -156,11 +154,10 @@
 			t.data = [];
 			t.reachedEnd = false;
 		});
-
-		selectedTab = tabs[0];
 	}
 
-	let selectedTab = tabs[0];
+	let selectedTabName = $page.url.searchParams.get('tab') || 'collected';
+	$: selectedTab = tabs.find((t) => t.name === selectedTabName) || tabs[0];
 
 	initTabs();
 	$: address, initTabs(), fetchMore();
