@@ -53,7 +53,7 @@
 				options = nftToCardOptions(nft);
 			}
 
-			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id') });
+			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
 		}
 	});
 
