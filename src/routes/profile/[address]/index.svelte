@@ -288,10 +288,10 @@
 		{#each tabs as tab}
 			<TabButton
 				on:click={() => {
-					selectedTab = tab;
+					selectedTabName = tab.name;
 					fetchMore();
 				}}
-				selected={selectedTab === tab}
+				selected={selectedTabName === tab.name}
 				uppercase
 			>
 				{tab.label}
