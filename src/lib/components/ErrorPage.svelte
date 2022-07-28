@@ -5,7 +5,9 @@
 	export let errorCode: number;
 </script>
 
-{#if errorCode}
+{#if errorCode === 403}
+	<Error403Page />
+{:else if errorCode}
 	<div class="h-full w-full grid place-items-center">
 		<div class="flex flex-col gap-10 p-40 items-center">
 			<Error404 />
@@ -13,6 +15,4 @@
 			<button class="btn btn-rounded gradient-text font-semibold text-5xl" on:click={() => window.history.back()}>Go Back</button>
 		</div>
 	</div>
-{:else if errorCode}
-	<Error403Page />
 {/if}

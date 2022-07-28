@@ -21,16 +21,6 @@ appDataToTriggerReload.subscribe(() => {
 export async function refreshProfileData() {
 	const newProfileData = await fetchProfileData(get(currentUserAddress));
 	profileData.set(newProfileData);
-
-	// if changing account on create, reroute to new profile
-	if (
-		window.location.href.endsWith('/create') &&
-		get(profileData) &&
-		(get(profileData).status !== 'VERIFIED' || !get(profileData).roles.includes('verified_user')) &&
-		!get(profileData).roles.includes('superadmin')
-	) {
-		goto('/profile/' + get(currentUserAddress));
-	}
 }
 
 export const profileCompletionProgress = derived(profileData, ($profileData) => {
