@@ -46,6 +46,19 @@
 	});
 
 	$: errorCode = navigationErrorCode || passedUpErrorCode;
+
+	// Reload the app when the network has changed, but prevent app reload
+	// when the app has first loaded due to the network being null.
+	let previousNetworkId = null;
+	let appReloadHelper = 0;
+
+	appDataToTriggerReload.subscribe((o) => {
+		if (previousNetworkId !== null) {
+			appReloadHelper++;
+		}
+
+		previousNetworkId = o?.network.chainId || null;
+	});
 </script>
 
 <svelte:head>
@@ -55,7 +68,7 @@
 	<script src={walletsScript}></script>
 </svelte:head>
 
-{#key $appDataToTriggerReload}
+{#key appReloadHelper}
 	<Nav />
 
 	{#if errorCode}

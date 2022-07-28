@@ -37,7 +37,7 @@
 </script>
 
 <div class="flex flex-col w-full h-full min-h-screen md:flex-row">
-	<Sidebar bind:isOpen={sidebarOpen} on:request-refresh={() => refreshWithFilters()} />
+	<Sidebar bind:isOpen={sidebarOpen} on:request-refresh={refreshWithFilters} />
 
 	<div class={`p-11 w-full ml-0 ${!sidebarOpen ? 'md:ml-24' : 'md:ml-72'} transform transition-all duration-200`}>
 		<MainTabs tab={0} />
