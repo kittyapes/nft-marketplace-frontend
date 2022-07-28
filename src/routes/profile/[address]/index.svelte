@@ -85,69 +85,71 @@
 		data?: [];
 	}[] = [];
 
+	const defaultTabs: typeof tabs = [
+		{
+			fetchFunction: async (tab, page, limit) => {
+				const res = {} as FetchFunctionResult;
+				res.res = await apiGetUserNfts(address, 'COLLECTED', page, limit);
+				res.adapted = res.res.res.map(nftToCardOptions);
+
+				for (const nft of res.adapted) {
+					nft.rawResourceData.owner = address;
+				}
+
+				return res;
+			},
+			label: 'Collected NFTs',
+			name: 'collected'
+		},
+		{
+			fetchFunction: async (tab, page, limit) => {
+				const res = {} as FetchFunctionResult;
+				res.res = await apiGetUserNfts(address, 'MINTED', page, limit);
+				res.adapted = res.res.res.map((nft) => nftToCardOptions(nft));
+				return res;
+			},
+			label: 'Created NFTs',
+			name: 'created'
+		},
+		{
+			fetchFunction: async (tab, page, limit) => {
+				const res = {} as FetchFunctionResult;
+				res.res = await getListings({ seller: address }, page, limit);
+				res.adapted = res.res.map(listingToCardOptions);
+				return res;
+			},
+			label: 'Active Listings',
+			name: 'listings'
+		},
+		{
+			fetchFunction: async (tab, page, limit) => {
+				const res = {} as FetchFunctionResult;
+				res.res = await getUserFavoriteNfts(address);
+				res.adapted = res.res.map((nft) => nftToCardOptions(nft.nft));
+
+				tab.reachedEnd = true;
+
+				return res;
+			},
+			label: 'Favorites',
+			name: 'favorites'
+		}
+		// {
+		// 	fetchFunction: async (tab, page, limit) => {
+		// 		const res = {} as FetchFunctionResult;
+
+		// 		res.res = await apiGetHiddenNfts(address, page, limit);
+		// 		res.adapted = res.res.map(nftToCardOptions);
+
+		// 		return res as any;
+		// 	},
+		// 	label: 'Hidden',
+		//  name: 'hidden'
+		// }
+	];
+
 	function initTabs() {
-		tabs = [
-			{
-				fetchFunction: async (tab, page, limit) => {
-					const res = {} as FetchFunctionResult;
-					res.res = await apiGetUserNfts(address, 'COLLECTED', page, limit);
-					res.adapted = res.res.res.map(nftToCardOptions);
-
-					for (const nft of res.adapted) {
-						nft.rawResourceData.owner = address;
-					}
-
-					return res;
-				},
-				label: 'Collected NFTs',
-				name: 'collected'
-			},
-			{
-				fetchFunction: async (tab, page, limit) => {
-					const res = {} as FetchFunctionResult;
-					res.res = await apiGetUserNfts(address, 'MINTED', page, limit);
-					res.adapted = res.res.res.map((nft) => nftToCardOptions(nft));
-					return res;
-				},
-				label: 'Created NFTs',
-				name: 'created'
-			},
-			{
-				fetchFunction: async (tab, page, limit) => {
-					const res = {} as FetchFunctionResult;
-					res.res = await getListings({ seller: address }, page, limit);
-					res.adapted = res.res.map(listingToCardOptions);
-					return res;
-				},
-				label: 'Active Listings',
-				name: 'listings'
-			},
-			{
-				fetchFunction: async (tab, page, limit) => {
-					const res = {} as FetchFunctionResult;
-					res.res = await getUserFavoriteNfts(address);
-					res.adapted = res.res.map((nft) => nftToCardOptions(nft.nft));
-
-					tab.reachedEnd = true;
-
-					return res;
-				},
-				label: 'Favorites',
-				name: 'favorites'
-			}
-			// {
-			// 	fetchFunction: async (tab, page, limit) => {
-			// 		const res = {} as FetchFunctionResult;
-
-			// 		res.res = await apiGetHiddenNfts(address, page, limit);
-			// 		res.adapted = res.res.map(nftToCardOptions);
-
-			// 		return res as any;
-			// 	},
-			// 	label: 'Hidden',
-			//  name: 'hidden'
-			// }
-		];
+		tabs = [...defaultTabs];
 
 		tabs.map((t) => {
 			t.index = 1;
@@ -156,7 +158,11 @@
 		});
 	}
 
-	let selectedTabName = $page.url.searchParams.get('tab') || 'collected';
+	function filterTabName(name: string) {
+		return defaultTabs.find((i) => i.name === name) && name;
+	}
+
+	let selectedTabName = filterTabName($page.url.searchParams.get('tab')) || 'collected';
 	$: selectedTab = tabs.find((t) => t.name === selectedTabName) || tabs[0];
 
 	initTabs();
