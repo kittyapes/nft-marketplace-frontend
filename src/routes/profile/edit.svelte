@@ -17,7 +17,7 @@
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { profileData, refreshProfileData } from '$stores/user';
-	import { appSigner, currentUserAddress } from '$stores/wallet';
+	import { appSigner, connectionDetails, currentUserAddress } from '$stores/wallet';
 	import { freeNftStatus, hasClaimedFreeNft } from '$utils/api/freeNft';
 	import { checkUsernameAvailability, type EditableProfileData, updateProfile } from '$utils/api/profile';
 	import { inputize } from '$utils/misc/inputize';
@@ -211,7 +211,7 @@
 	appSigner.subscribe((signer) => browser && checkIfWalletConnected(signer, $page.url.pathname));
 
 	// Free NFT claiming
-	$: $currentUserAddress && hasClaimedFreeNft($currentAddress);
+	$: $connectionDetails && hasClaimedFreeNft($currentAddress);
 </script>
 
 <LoadedContent loaded={$localDataStore}>
