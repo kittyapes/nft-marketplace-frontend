@@ -2,9 +2,7 @@
 	import Info from '$icons/info.v2.svelte';
 	import type { ConfigurableListingProps } from '$interfaces/listing';
 	import type { CardOptions } from '$interfaces/ui';
-	import AuctionProperties from '$lib/components/primary-listing/AuctionProperties.svelte';
-	import ListingPropertiesSlot from '$lib/components/primary-listing/ListingPropertiesSlot.svelte';
-	import SaleProperties from '$lib/components/primary-listing/SaleProperties.svelte';
+	import ListingProperties from '$lib/components/primary-listing/ListingProperties.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { currentUserAddress } from '$stores/wallet';
@@ -76,13 +74,7 @@
 	<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} /></div>
 
 	<div class="mt-4">
-		<ListingPropertiesSlot>
-			{#if listingType === 'sale'}
-				<SaleProperties {maxQuantity} bind:props={listingProps} bind:formErrors disabled={isListing} />
-			{:else if listingType === 'auction'}
-				<AuctionProperties bind:props={listingProps} disabled={isListing} />
-			{/if}
-		</ListingPropertiesSlot>
+		<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} />
 	</div>
 
 	<div class="flex-grow" />
