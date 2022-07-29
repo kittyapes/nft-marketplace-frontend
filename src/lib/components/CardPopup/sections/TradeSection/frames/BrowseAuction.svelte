@@ -79,11 +79,20 @@
 	<div class="flex flex-col h-full mt-4">
 		<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} on:request-refresh={refreshBids} />
 
-		<div class="my-4 ml-auto font-semibold">
-			<div class="">Starting price</div>
-			<div class="flex items-center justify-end gap-2">
-				<Eth />
-				{options.auctionData?.formatStartingPrice}
+		<div class="flex my-4 items-center justify-between">
+			<div class="font-semibold">
+				<div class="">Quantity</div>
+				<div class="flex items-center justify-start gap-2">
+					{options?.nfts[0].quantity || '1'}
+				</div>
+			</div>
+
+			<div class="font-semibold">
+				<div class="">Starting price</div>
+				<div class="flex items-center justify-end gap-2">
+					<Eth />
+					{options.auctionData?.formatStartingPrice}
+				</div>
 			</div>
 		</div>
 
