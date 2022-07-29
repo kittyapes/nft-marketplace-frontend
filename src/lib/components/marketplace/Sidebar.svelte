@@ -38,7 +38,7 @@
 
 	{#if isOpen}
 		<div transition:slide={{ duration: 200 }}>
-			<SidebarItem title="Status" icon="status">
+			<SidebarItem title="Show Only" icon="status">
 				<StatusFilter on:request-refresh />
 			</SidebarItem>
 

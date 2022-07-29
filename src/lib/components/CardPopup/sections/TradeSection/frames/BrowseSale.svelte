@@ -54,8 +54,15 @@
 	<div class="mt-8 font-bold text-center opacity-50">Price:</div>
 	<div class="flex items-center justify-center mt-2">
 		<img src={getIconUrl('eth')} alt="" />
-		<div class="text-5xl font-bold">{options.saleData?.formatPrice || options.saleData?.price || 'N/A'}</div>
+		<div class="{(options.saleData?.formatPrice || options.saleData?.price || 'N/A').toString().length > 12 ? 'text-3xl' : 'text-5xl'} font-bold">
+			{options.saleData?.formatPrice || options.saleData?.price || 'N/A'}
+		</div>
 		<div class="grid h-full ml-2 font-bold opacity-70 place-items-end">wETH</div>
+	</div>
+
+	<div class="mt-8 font-bold text-center opacity-50">Quantity:</div>
+	<div class="flex items-center justify-center mt-2">
+		<div class="{options?.nfts[0].quantity > 10000000000000 ? 'text-3xl' : 'text-5xl'} font-bold">{options?.nfts[0].quantity || '1'}</div>
 	</div>
 
 	<div class="grid mt-12 place-items-center">
