@@ -62,7 +62,7 @@
 
 	<div class="mt-8 font-bold text-center opacity-50">Quantity:</div>
 	<div class="flex items-center justify-center mt-2">
-		<div class="{options?.nfts[0].quantity > 10000000000000 ? 'text-3xl' : 'text-5xl'} font-bold">{options?.nfts[0].quantity || '1'}</div>
+		<div class="{options?.nfts[0]?.quantity > 10000000000000 ? 'text-3xl' : 'text-5xl'} font-bold">{options?.nfts[0]?.quantity || '1'}</div>
 	</div>
 
 	<div class="grid mt-12 place-items-center">
