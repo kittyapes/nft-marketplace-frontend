@@ -83,15 +83,15 @@
 			<div class="font-semibold">
 				<div class="">Quantity</div>
 				<div class="flex items-center justify-start gap-2">
-					{options?.nfts[0].quantity || '1'}
+					{options?.nfts[0]?.quantity || '1'}
 				</div>
 			</div>
 
 			<div class="font-semibold">
 				<div class="">Starting price</div>
-				<div class="flex items-center justify-end gap-2">
+				<div class="flex items-center justify-end gap-2 {(options?.auctionData?.formatStartingPrice || options?.auctionData?.startingPrice || 'N/A').toString().length > 12 ? 'text-xs' : 'text-base'}">
 					<Eth />
-					{options.auctionData?.formatStartingPrice}
+					{options?.auctionData?.formatStartingPrice || options?.auctionData?.startingPrice || 'N/A'}
 				</div>
 			</div>
 		</div>
