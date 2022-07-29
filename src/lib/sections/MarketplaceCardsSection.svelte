@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import NftList from '$lib/components/NftList.svelte';
+	import { currentUserAddress } from '$stores/wallet';
 	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
 	import type { ListingFetchOptions } from '$utils/api/listing';
 	import { getListings, type ListingType } from '$utils/api/listing';
@@ -54,8 +55,6 @@
 			data = [];
 			lastFetchOptions = JSON.stringify(fetchOptions);
 			fetchMore();
-		} else {
-			console.log('skipping fetch');
 		}
 	}, 1000);
 
@@ -71,7 +70,7 @@
 		debouncedFetchMore();
 	}
 
-	onMount(refreshWithFilters);
+	refreshWithFilters();
 </script>
 
 <div class="flex flex-wrap justify-center gap-6 cards">
