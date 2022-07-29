@@ -176,6 +176,23 @@
 
 	$: quantityValid = nftData.quantity > 0;
 	$: inputValid = nftData.name && nftData.name.length <= 25 && selectedCollectionId && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
+	$: (inputValid === true || inputValid === false) &&
+		console.log(
+			'name valid: ',
+			nftData.name,
+			'name length valid: ',
+			nftData.name?.length <= 25,
+			'collection id valid: ',
+			selectedCollectionId,
+			'asset valid: ',
+			!!nftData.assetPreview,
+			'thumbnail valid: ',
+			!!nftData.thumbnailPreview,
+			'quantity valid: ',
+			quantityValid,
+			'Combined validity: ',
+			inputValid
+		);
 
 	$: if (nftData) {
 		$formValidity.name = !!nftData.name ? (nftData.name.length > 25 ? 'Name Cannot be more than 25 characters' : true) : !nftData.name ? 'Name is Required' : true;
