@@ -4,6 +4,7 @@
 
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
+	import { matches } from '$utils/misc';
 	import { unpackedComponentStore } from '$utils/ui';
 	import BrowseAuction from './frames/BrowseAuction.svelte';
 	import BrowseSale from './frames/BrowseSale.svelte';
@@ -33,7 +34,7 @@
 		if (options.resourceType === 'listing') {
 			if (!chainListing) frame.set(DiamondsLoader);
 			else {
-				if (options.listingData.sellerAddress === $currentUserAddress) {
+				if (matches(chainListing.seller, $currentUserAddress)) {
 					if (options.listingData.listingType === 'auction') frame.set(ManageAuction);
 					if (options.listingData.listingType === 'sale') frame.set(ManageSale);
 				} else {
