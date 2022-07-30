@@ -75,7 +75,7 @@
 					on:pointerleave={() => (hoveringPurchase = false)}
 					class="font-bold uppercase btn btn-gradient btn-rounded w-80"
 					on:click={handlePurchase}
-					disabled={purchasing || purchaseError}
+					disabled={purchasing || !!purchaseError}
 				>
 					{#if purchasing || $hasEnoughTokens === null}
 						<ButtonSpinner />
