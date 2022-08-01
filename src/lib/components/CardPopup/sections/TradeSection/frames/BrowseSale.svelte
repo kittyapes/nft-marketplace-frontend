@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { CardOptions } from '$interfaces/ui';
 
-	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
@@ -9,9 +8,8 @@
 	import { hasEnoughBalance } from '$utils/contracts/token';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
-	import { notifyError } from '$utils/toast';
+	import { isFuture } from '$utils/misc/time';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
-	import { createEventDispatcher } from 'svelte';
 	import { derived } from 'svelte/store';
 	import { frame } from '../tradeSection';
 	import Success from './Success.svelte';
@@ -21,7 +19,6 @@
 
 	let hoveringPurchase = false;
 	let purchasing = false;
-	let purchaseButton: HTMLElement;
 
 	async function handlePurchase() {
 		purchasing = true;
@@ -43,6 +40,11 @@
 		},
 		null
 	);
+
+	// prettier-ignore
+	$: purchaseError =
+		(isFuture(chainListing.startTime) && "This listing isn't for sale yet.") ||
+		!$hasEnoughTokens 				  && `You do not have enough ${options.listingData.paymentTokenTicker} to purchase this item.`;
 </script>
 
 <div class="flex flex-col justify-center h-full pb-16">
@@ -67,27 +69,28 @@
 
 	<div class="grid mt-12 place-items-center">
 		{#if $appSigner}
-			<button
-				bind:this={purchaseButton}
-				on:pointerenter={() => (hoveringPurchase = true)}
-				on:pointerleave={() => (hoveringPurchase = false)}
-				class="font-bold uppercase btn btn-gradient btn-rounded w-80"
-				on:click={handlePurchase}
-				disabled={purchasing || !$hasEnoughTokens}
-			>
-				{#if purchasing || $hasEnoughTokens === null}
-					<ButtonSpinner />
+			<div class="relative">
+				<button
+					on:pointerenter={() => (hoveringPurchase = true)}
+					on:pointerleave={() => (hoveringPurchase = false)}
+					class="font-bold uppercase btn btn-gradient btn-rounded w-80"
+					on:click={handlePurchase}
+					disabled={purchasing || !!purchaseError}
+				>
+					{#if purchasing || $hasEnoughTokens === null}
+						<ButtonSpinner />
+					{/if}
+					Buy Now
+				</button>
+
+				{#if hoveringPurchase && purchaseError}
+					<div class="absolute top-12">
+						<InfoBubble>{purchaseError}</InfoBubble>
+					</div>
 				{/if}
-				Buy Now
-			</button>
+			</div>
 		{:else}
-			<button bind:this={purchaseButton} class="font-bold uppercase btn btn-gradient btn-rounded w-80" on:click={connectToWallet}>Connect To Wallet</button>
+			<button class="font-bold uppercase btn btn-gradient btn-rounded w-80" on:click={connectToWallet}>Connect To Wallet</button>
 		{/if}
 	</div>
-
-	{#if hoveringPurchase && $hasEnoughTokens === false}
-		<AttachToElement to={purchaseButton} bottom offsetY={20}>
-			<InfoBubble>You do not have enough {options.listingData.paymentTokenTicker} to purchase this item.</InfoBubble>
-		</AttachToElement>
-	{/if}
 </div>

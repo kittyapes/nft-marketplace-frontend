@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import type { CardOptions } from '$interfaces/ui';
 	import { getMarketFee } from '$utils/contracts/listing';
+	import { getContractData } from '$utils/misc/getContract';
 	import { totalColRoyalties } from '$utils/misc/royalties';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { closePopup } from '$utils/popup';
@@ -19,6 +20,13 @@
 	// Never show the back button on this tab
 	export const showBackButton = false;
 
+	// The Hinata General collection should always have a 1.5 % royalties,
+	// you know we cannot rely on the backend :)
+	// prettier-ignore
+	$: royaltyPercentage = 
+		options.nfts[0].contractAddress === getContractData('storage').address && "1.5 % Beneficiary" ||
+		totalColRoyalties(options) + ' % Royalty'
+
 	// It is possible to pass data of multiple NFTs into the popup to support
 	// the bundle section
 	$: singleNft = options.nfts?.[0];
@@ -30,11 +38,11 @@
 	];
 
 	$: technicalProperties = [
-		{ name: 'Contract Add', value: singleNft.contractAddress },
+		{ name: 'Contract Address', value: singleNft.contractAddress },
 		{ name: 'Token Standard', value: singleNft.contractType },
 		{
 			name: 'Fees and Royalties',
-			value: marketFee + ' % Fee | ' + (totalColRoyalties(options) ? `${totalColRoyalties(options) + ' % Royalty'}` : '- % Royalty')
+			value: marketFee + ' % Fee | ' + royaltyPercentage
 		},
 		{ name: 'Token ID', value: singleNft.onChainId },
 		{ name: 'Blockchain', value: options.listingData?.paymentTokenTicker || options.rawResourceData.chain },
@@ -43,6 +51,8 @@
 			value: balance !== null ? `${ownedOrListedNfts} of ${supply}` : null
 		}
 	];
+
+	$: console.log(options);
 
 	onMount(async () => {
 		// When its not a listing
@@ -112,9 +122,9 @@
 	{/if}
 
 	<!-- Technical properties -->
-	<div class="grid grid-cols-3 gap-4 mt-8">
+	<div class="grid gap-4 mt-6">
 		{#each technicalProperties as prop}
-			<div class="overflow-hidden {prop.name === 'Fees and Royalties' ? 'text-sm' : ''}">
+			<div class="overflow-hidden">
 				<div class="property-name">{prop.name}</div>
 
 				<div class="relative property-value">
