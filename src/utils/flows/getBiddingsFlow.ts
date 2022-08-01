@@ -1,5 +1,6 @@
 import { getApiUrl } from '$utils/api';
 import { contractGetAuctionBid } from '$utils/contracts/auction';
+import { notifyError } from '$utils/toast';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
@@ -29,7 +30,7 @@ async function fetchHighestBid(listingId: string) {
 	return highestBid;
 }
 
-export async function getBiddingsFlow(listingId: string, tokenDecimals: number): Promise<BidRow[]> {
+async function _fetchBiddings(listingId: string, tokenDecimals: number) {
 	const res = await axios.get(getApiUrl('latest', 'listings/' + listingId + '/bids'));
 	const bids = res.data.data as any[];
 
@@ -50,8 +51,8 @@ export async function getBiddingsFlow(listingId: string, tokenDecimals: number):
 	}
 
 	const adaptedBids = bids.map((bid) => ({
-		bidderName: bid.user.username,
-		imageUrl: bid.user.thumbnailUrl,
+		bidderName: bid.user?.username,
+		imageUrl: bid.user?.thumbnailUrl,
 		tokenAmount: bid.formatted.padEnd(longestString, '0'),
 		timeAgo: dayjs
 			.duration(dayjs(bid.bidAt * 1000).diff(dayjs(), 's'), 's')
@@ -61,4 +62,15 @@ export async function getBiddingsFlow(listingId: string, tokenDecimals: number):
 	}));
 
 	return adaptedBids;
+}
+
+export async function getBiddingsFlow(listingId: string, tokenDecimals: number): Promise<BidRow[]> {
+	try {
+		return await _fetchBiddings(listingId, tokenDecimals);
+	} catch (err) {
+		console.error(err);
+		notifyError('Something went wrong while trying to refresh bids.');
+
+		return [];
+	}
 }
