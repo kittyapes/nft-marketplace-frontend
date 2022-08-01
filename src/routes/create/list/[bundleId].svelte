@@ -7,9 +7,7 @@
 	import type { CardOptions } from '$interfaces/ui';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import ListingSuccessPopup from '$lib/components/popups/ListingSuccessPopup.svelte';
-	import AuctionProperties from '$lib/components/primary-listing/AuctionProperties.svelte';
-	import ListingPropertiesSlot from '$lib/components/primary-listing/ListingPropertiesSlot.svelte';
-	import SaleProperties from '$lib/components/primary-listing/SaleProperties.svelte';
+	import ListingProperties from '$lib/components/primary-listing/ListingProperties.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { currentUserAddress } from '$stores/wallet';
@@ -128,14 +126,8 @@
 
 		<hr class="mt-4 separator" />
 
-		<div class="mt-8 pr-8">
-			<ListingPropertiesSlot compact>
-				{#if listingType === 'sale'}
-					<SaleProperties {maxQuantity} bind:formErrors bind:props={listingProps} />
-				{:else if listingType === 'auction'}
-					<AuctionProperties bind:formErrors bind:props={listingProps} />
-				{/if}
-			</ListingPropertiesSlot>
+		<div class="pr-8 mt-8">
+			<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} compact />
 		</div>
 
 		<div class="pr-8 mt-8">

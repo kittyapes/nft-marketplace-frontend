@@ -99,8 +99,12 @@
 		// Restrict routes to verified creators
 		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
 			profileData.subscribe((profile) => {
-				if (profile && (profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user') || !profile.roles.includes('superadmin'))) {
-					errorCode = 403;
+				if (profile && (profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user'))) {
+					if (!profile.roles.includes('superadmin')) {
+						// This check occurs only if the user is not the above.
+						// when placed above it causes 403 for other users, so if user does not have all three, they get the 403
+						errorCode = 403;
+					}
 				} else if (profile && (profile.status === 'VERIFIED' || profile.roles.includes('verified_user') || profile.roles.includes('superadmin'))) {
 					// reset the error to ensure displayed error is updated on UI
 					errorCode = null;
