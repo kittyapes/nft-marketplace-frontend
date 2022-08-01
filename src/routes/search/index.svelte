@@ -13,6 +13,7 @@
 	import { page } from '$app/stores';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import { onMount } from 'svelte';
 
 	const fullResultsLimit = 20;
 
@@ -135,7 +136,11 @@
 		debouncedSearch(query);
 	});
 
-	let refreshWithFilters: () => void;
+	function refreshWithFilters() {
+		const params = $page.url.searchParams;
+	}
+
+	onMount(refreshWithFilters);
 </script>
 
 <div class="flex flex-col w-full h-full min-h-screen md:flex-row">
