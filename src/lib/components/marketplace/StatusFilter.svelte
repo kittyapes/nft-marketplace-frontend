@@ -6,10 +6,26 @@
 
 	const dispatch = createEventDispatcher();
 
-	const listingTypes: { label: string; listingType: string; selected: boolean }[] = [
+	let listingTypes: { label: string; listingType: string; selected: boolean }[] = [
 		{ label: 'Buy Now', listingType: 'sale', selected: false },
 		{ label: 'Auction', listingType: 'auction', selected: false }
 	];
+
+	function selectFilter(type: { label: string; listingType: string; selected: boolean }) {
+		// Unselect selected filter if one is selected
+		// This has to be re-though when adding a third listing type
+
+		const selected = listingTypes.find((t) => t.selected);
+
+		if (selected && selected !== type) {
+			selected.selected = false;
+		}
+
+		console.log(type);
+
+		type.selected = !type.selected;
+		listingTypes = listingTypes;
+	}
 
 	$: {
 		const selectedTypes = listingTypes
@@ -36,6 +52,6 @@
 
 <div class="flex flex-wrap gap-2">
 	{#each listingTypes as type}
-		<StatusFilterButton label={type.label} selected={type.selected} on:click={() => (type.selected = !type.selected)} />
+		<StatusFilterButton label={type.label} selected={type.selected} on:click={() => selectFilter(type)} />
 	{/each}
 </div>

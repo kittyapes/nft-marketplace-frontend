@@ -1,4 +1,6 @@
 <script>
+	import { fade } from 'svelte/transition';
+
 	export let selected;
 	export let underlineWidth = 100;
 	export let uppercase = false;
@@ -6,7 +8,7 @@
 	$: underlineTranslate = 0.5 * (underlineWidth - 100);
 </script>
 
-<button on:click class:selected class:gradient-text={selected} style="--underline-width: {underlineWidth}%; --underline-translate: {underlineTranslate}%" class:uppercase>
+<button on:click class:selected class:gradient-text={selected} style="--underline-width: {underlineWidth}%; --underline-translate: {underlineTranslate}%" class:uppercase transition:fade|local>
 	<slot />
 </button>
 
