@@ -97,31 +97,38 @@
 	// Handler for when the app is first loaded on a auth protected route
 	afterNavigate(({ from, to }) => {
 		// Restrict routes to verified creators
-		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
-			profileData.subscribe((profile) => {
-				if (profile && (profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user'))) {
-					if (!profile.roles.includes('superadmin')) {
-						// This check occurs only if the user is not the above.
-						// when placed above it causes 403 for other users, so if user does not have all three, they get the 403
-						errorCode = 403;
+		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit' || to.pathname.match(/management*/)) {
+			if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
+				profileData.subscribe((profile) => {
+					if (profile && (profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user'))) {
+						if (!profile.roles.includes('superadmin')) {
+							// This check occurs only if the user is not the above.
+							// when placed above it causes 403 for other users, so if user does not have all three, they get the 403
+							errorCode = 403;
+						}
+					} else if (profile && (profile.status === 'VERIFIED' || profile.roles.includes('verified_user') || profile.roles.includes('superadmin'))) {
+						// reset the error to ensure displayed error is updated on UI
+						errorCode = null;
 					}
-				} else if (profile && (profile.status === 'VERIFIED' || profile.roles.includes('verified_user') || profile.roles.includes('superadmin'))) {
-					// reset the error to ensure displayed error is updated on UI
-					errorCode = null;
-				}
-			});
-		}
+				});
+			}
 
-		// Pages only accessible by superadmins
-		if (to.pathname.match(/management*/)) {
-			profileData.subscribe((profile) => {
-				if (profile && (!profile.roles.includes('superadmin') || !profile.roles.includes('admin'))) {
-					errorCode = 403;
-				} else if (profile && (profile.roles.includes('superadmin') || profile.roles.includes('admin'))) {
-					// reset the error to ensure displayed error is updated on UI
-					errorCode = null;
-				}
-			});
+			// Pages only accessible by superadmins
+			if (to.pathname.match(/management*/)) {
+				profileData.subscribe((profile) => {
+					if (profile && (!profile.roles.includes('superadmin') || !profile.roles.includes('admin'))) {
+						errorCode = 403;
+					} else if (profile && (profile.roles.includes('superadmin') || profile.roles.includes('admin'))) {
+						// reset the error to ensure displayed error is updated on UI
+						errorCode = null;
+					}
+				});
+			}
+		} else {
+			// first set error to null, and then figure things out from there
+			// prevents bug related to the ui seeming unresponsive once error has been thrown
+			// basically keeps showing 403
+			errorCode = null;
 		}
 	});
 
