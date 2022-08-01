@@ -51,8 +51,8 @@ async function _fetchBiddings(listingId: string, tokenDecimals: number) {
 	}
 
 	const adaptedBids = bids.map((bid) => ({
-		bidderName: bid.user.username,
-		imageUrl: bid.user.thumbnailUrl,
+		bidderName: bid.user?.username,
+		imageUrl: bid.user?.thumbnailUrl,
 		tokenAmount: bid.formatted.padEnd(longestString, '0'),
 		timeAgo: dayjs
 			.duration(dayjs(bid.bidAt * 1000).diff(dayjs(), 's'), 's')
