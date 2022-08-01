@@ -59,7 +59,7 @@
 			formErrors.push('Starting price has invalid value.');
 		}
 
-		if (auction && !isPrice(props.reservePrice || props.startingPrice)) {
+		if (auction && props.reservePrice && !isPrice(props.reservePrice || props.startingPrice)) {
 			reservePriceError = 'Reserve price has invalid value.';
 			formErrors.push(reservePriceError);
 		}
@@ -134,7 +134,7 @@
 				<PriceInput bind:value={props.reservePrice} placeholder="5.0" tokenIconClass={Weth} validOverride={reservePriceError} {disabled} />
 
 				{#if reservePriceError}
-					<div class="absolute top-12">
+					<div class="absolute z-10 top-12">
 						<InfoBubble>{reservePriceError}</InfoBubble>
 					</div>
 				{/if}
