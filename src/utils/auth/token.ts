@@ -19,14 +19,6 @@ function getAuthTokenKey(address: string) {
 }
 
 export function getAuthToken(address?: string) {
-	if (!address) {
-		address = getAddress();
-	}
-
-	if (!address) {
-		throw new Error('No address provided and could not automatically get an address.');
-	}
-
 	return localStorage.getItem(getAuthTokenKey(address));
 }
 

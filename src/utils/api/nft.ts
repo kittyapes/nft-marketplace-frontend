@@ -22,7 +22,7 @@ export async function apiGetUserNfts(address: string, type: 'COLLECTED' | 'MINTE
 
 export async function apiHideNft(id: string): Promise<ApiCallResult<{ success: boolean }>> {
 	try {
-		const res = await axios.post(getApiUrl('latest', 'nfts/hide/' + id), getAxiosConfig());
+		const res = await axios.post(getApiUrl('latest', 'nfts/hide/' + id), null, await getAxiosConfig());
 		return { res, data: { success: true } };
 	} catch (err) {
 		return { err, data: { success: false } };
@@ -31,7 +31,7 @@ export async function apiHideNft(id: string): Promise<ApiCallResult<{ success: b
 
 export async function apiRevealNft(id: string): Promise<ApiCallResult<{ success: boolean }>> {
 	try {
-		const res = await axios.post(getApiUrl('latest', 'nfts/reveal/' + id), getAxiosConfig());
+		const res = await axios.post(getApiUrl('latest', 'nfts/reveal/' + id), null, await getAxiosConfig());
 		return { res, data: { success: true } };
 	} catch (err) {
 		return { err, data: { success: false } };

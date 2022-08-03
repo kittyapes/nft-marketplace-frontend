@@ -29,18 +29,10 @@
 	import { isEthAddress } from '$utils/validator/isEthAddress';
 	import type { UserData } from 'src/interfaces/userData';
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
+	import { derived, writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 
 	$: address = $page.params.address;
-
-	$: if ($page.url.searchParams.has('tab')) {
-		let tabName = $page.url.searchParams.get('tab');
-		if (tabs[tabName]) {
-			selectedTab = tabs[tabName];
-		}
-		$page.url.searchParams.delete('tab');
-	}
 
 	onMount(async () => {
 		if (!isEthAddress(address)) {
@@ -62,7 +54,7 @@
 				options = nftToCardOptions(nft);
 			}
 
-			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id') });
+			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
 		}
 	});
 
@@ -88,6 +80,7 @@
 	const tabs: {
 		fetchFunction: (tab: any, page: number, limit: number) => Promise<{ res: any; adapted: []; err: Error }>;
 		label: string;
+		name: string;
 		index?: number;
 		reachedEnd?: boolean;
 		data?: [];
@@ -104,7 +97,8 @@
 
 				return res;
 			},
-			label: 'Collected NFTs'
+			label: 'Collected NFTs',
+			name: 'collected'
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -113,7 +107,8 @@
 				res.adapted = res.res.res.map((nft) => nftToCardOptions(nft));
 				return res;
 			},
-			label: 'Created NFTs'
+			label: 'Created NFTs',
+			name: 'created'
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -122,7 +117,8 @@
 				res.adapted = res.res.map(listingToCardOptions);
 				return res;
 			},
-			label: 'Active Listings'
+			label: 'Active Listings',
+			name: 'listings'
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -134,28 +130,55 @@
 
 				return res;
 			},
-			label: 'Favorites'
+			label: 'Favorites',
+			name: 'favorites'
+		},
+		{
+			fetchFunction: async (tab, page, limit) => {
+				const res = {} as FetchFunctionResult;
+
+				res.res = await apiGetHiddenNfts(address, page, limit);
+				res.adapted = res.res.map(nftToCardOptions);
+
+				return res as any;
+			},
+			label: 'Hidden',
+			name: 'hidden'
 		}
-		// {
-		// 	fetchFunction: async (tab, page, limit) => {
-		// 		const res = {} as FetchFunctionResult;
-
-		// 		res.res = await apiGetHiddenNfts(address, page, limit);
-		// 		res.adapted = res.res.map(nftToCardOptions);
-
-		// 		return res as any;
-		// 	},
-		// 	label: 'Hidden'
-		// }
 	];
 
-	tabs.map((t) => {
-		t.index = 1;
-		t.data = [];
-		t.reachedEnd = false;
-	});
+	function resetTabs() {
+		tabs.forEach((t) => {
+			t.index = 1;
+			t.data = [];
+			t.reachedEnd = false;
+		});
+	}
 
-	let selectedTab = tabs[0];
+	// Reset tabs on the initial load
+	resetTabs();
+
+	let selectedTab: typeof tabs[0] = tabs[0];
+
+	function selectTab(name: string) {
+		if (name === selectedTab.name) {
+			// return;
+		}
+
+		if (browser && name) {
+			goto('?tab=' + name, { noscroll: true });
+		}
+
+		selectedTab = tabs.find((i) => i.name === name) || tabs.find((t) => t.name === 'collected');
+
+		if (browser && !selectedTab.data.length) {
+			fetchMore();
+		}
+	}
+
+	const tabParam = derived(page, (p) => p.url.searchParams.get('tab'));
+	$: selectTab($tabParam);
+
 	let isFetchingNfts = false;
 
 	async function fetchMore() {
@@ -180,17 +203,35 @@
 			tab.index++;
 		}
 
-		selectedTab = selectedTab;
+		selectedTab = tab;
 
 		isFetchingNfts = false;
+	}
+
+	function handleReachedEnd() {
+		if (selectedTab.data.length) {
+			fetchMore();
+		}
+	}
+
+	let displayedTabs: string[];
+
+	$: {
+		displayedTabs = ['collected', 'created', 'listings', 'favorites'];
+
+		if (address === $currentUserAddress) {
+			displayedTabs.push('hidden');
+		}
+
+		displayedTabs = displayedTabs;
 	}
 
 	let cardPropsMapper: (v: CardOptions) => { options: CardOptions } & any;
 
 	$: {
-		if (selectedTab.label === 'Collected NFTs') {
+		if (selectedTab.name === 'created') {
 			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: ['hide'] });
-		} else if (selectedTab.label === 'Hidden') {
+		} else if (selectTab.name === 'hidden') {
 			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: ['reveal'] });
 		} else {
 			cardPropsMapper = (v) => ({ options: v });
@@ -279,24 +320,19 @@
 
 <div>
 	<div class="container flex max-w-screen-xl px-32 mx-auto mt-16 space-x-8">
-		{#each Object.entries(tabs) as [tabName, tab]}
-			<TabButton
-				on:click={() => {
-					selectedTab = tab;
-					fetchMore();
-				}}
-				selected={selectedTab === tab}
-				uppercase
-			>
-				{tab.label}
-			</TabButton>
+		{#each tabs as tab}
+			{#if displayedTabs.includes(tab.name)}
+				<TabButton on:click={() => selectTab(tab.name)} selected={selectedTab.name === tab.name} uppercase>
+					{tab.label}
+				</TabButton>
+			{/if}
 		{/each}
 	</div>
 
 	<div class="h-px bg-black opacity-30" />
 
 	<div class="max-w-screen-xl mx-auto">
-		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={fetchMore} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
+		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
 	</div>
 </div>
 

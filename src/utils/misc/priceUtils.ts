@@ -50,7 +50,7 @@ export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: 
 		network = 'eth';
 	}
 
-	const token = knownTokens.find((t) => (t.ticker === ticker || t.address.toLowerCase() === tokenAddress.toLowerCase()) && t.network === network);
+	const token = knownTokens.find((t) => (t.ticker === ticker && t.network === network) || t.address.toLowerCase() === tokenAddress.toLowerCase());
 
 	if (!token) {
 		throw new Error(`Couldn't find such token: ${JSON.stringify(options)}`);
