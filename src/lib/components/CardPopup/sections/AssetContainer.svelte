@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Loader from '$lib/components/Loader.svelte';
-	import type { CardOptions } from '$lib/components/NftCard.svelte';
+	import type { CardOptions } from '$interfaces/ui';
 	import Countdown from '$lib/components/v2/Countdown/Countdown.svelte';
 	import { refreshLikedNfts } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
@@ -48,7 +48,7 @@
 		if (videoAsset?.requestFullscreen) {
 			videoAsset.requestFullscreen();
 		} else {
-			window.open(assetUrl, '_blank');
+			assetUrl && window.open(assetUrl, '_blank');
 		}
 	}
 
@@ -93,11 +93,13 @@
 
 	<!-- Buttons -->
 	<div class="flex justify-center mt-4 mb-6 gap-x-12">
-		<button class="w-6 h-6 btn" on:click={handleShare}><img src={getIconUrl('share')} alt="Share." /></button>
+		<button class="w-6 h-6 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}><img src={getIconUrl('share')} alt="Share." /></button>
 		<button class="w-6 h-6 btn disabled:opacity-50" on:click={handleLike} disabled={options.nfts[0].isExternal}>
 			<img src={favorited ? getIconUrl('heart-filled') : getIconUrl('heart-outline')} alt="Heart." class:text-color-red={favorited} />
 		</button>
-		<button class="w-6 h-6 btn" on:click={handleFullscreen}><img src={getIconUrl('fullscreen')} alt="Fullscreen." /></button>
+		<button class="w-6 h-6 btn" disabled={!videoAsset && !assetUrl} on:click={handleFullscreen}>
+			<img src={getIconUrl('fullscreen')} alt="Fullscreen." />
+		</button>
 	</div>
 
 	<!-- Auction timer -->
