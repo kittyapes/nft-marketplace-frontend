@@ -12,6 +12,8 @@
 	import { page } from '$app/stores';
 	import { searchQuery } from '$stores/search';
 	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
+	import type { CardOptions } from '$interfaces/ui';
 
 	let query: string;
 	let searching = false;
@@ -105,14 +107,15 @@
 							<div class="p-4 flex flex-col gap-4">
 								{#each searchResults[section] as result}
 									{#if section === 'items'}
-										<div class="flex gap-4 items-center btn" on:click={() => setPopup(result.popupComponent, { props: { options: result.popupOptions } })}>
-											{#if result.thumbnailUrl}
+										{@const props = result.nfts[0]}
+										<div class="flex gap-4 items-center btn" on:click={() => setPopup(CardPopup, { props: { options: searchResults['items'][0] } })}>
+											{#if props.thumbnailUrl}
 												<div class="w-12 h-12 rounded-full grid place-items-center">
-													<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({result.thumbnailUrl})" />
+													<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({props.thumbnailUrl})" />
 												</div>
 											{/if}
 											<div class="font-semibold w-full max-w-full truncate">
-												{result.name}
+												{props.name}
 											</div>
 										</div>
 									{:else if section === 'users'}
