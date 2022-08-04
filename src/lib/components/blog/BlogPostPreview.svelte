@@ -11,7 +11,7 @@
 	{#if !skeleton}
 		<a class="flex flex-col h-full overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-gray-100" href={'/blog/' + data.segment} in:fade>
 			<div class="flex-shrink-0 h-full py-8 lg:h-72">
-				<img src={data.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" use:fadeImageOnLoad />
+				<img src={data.thumbnail} alt="" class="h-full object-fit" style="aspect-ratio: 420/250;" use:fadeImageOnLoad />
 			</div>
 
 			<div class="flex flex-col flex-grow py-8 lg:ml-16">
