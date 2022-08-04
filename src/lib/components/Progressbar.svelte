@@ -9,7 +9,8 @@
 	{#each points as point}
 		<div
 			class="-translate-x-1/2 uppercase text-xs text-center font-light absolute -top-[150%] whitespace-nowrap"
-			class:gradient-text={value >= point.at || (point.at === 100 && value === 80)}
+			class:gradient-text={value >= point.at || point.at === 100}
+			class:font-extrabold={point.at === 100}
 			style="left: {point.at}%"
 		>
 			{point.top_value}
