@@ -18,7 +18,7 @@
 
 	let rightSectionInstance;
 
-	const countdownData = { startTime: options.listingData.startTime, duration: options.listingData.duration };
+	const countdownData = options?.resourceType === 'listing' ? { startTime: options.listingData?.startTime, duration: options.listingData?.duration } : null;
 
 	// Log data that was used by the adapter to generate the CardPopup
 	$: console.debug('[Resource Data]:', options.rawResourceData);

@@ -104,7 +104,7 @@
 
 	<!-- Auction timer -->
 	{#if countdown}
-		<div class="pb-4 font-medium opacity-50">{capitalize(options.listingData.listingType)} ending in:</div>
+		<div class="pb-4 font-medium opacity-50">{capitalize(options.listingData?.listingType)} ending in:</div>
 		<Countdown {...countdown} />
 	{/if}
 </div>
