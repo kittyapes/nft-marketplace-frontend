@@ -35,7 +35,13 @@
 	<div class="flex flex-col h-full mx-10 lg:flex-row">
 		<!-- Left part with image and buttons -->
 		<div class="h-full lg:w-2/5">
-			<AssetContainer assetUrl={options.nfts[0].assetUrl} title={options.nfts[0].name} {options} favorited={$likedNftIds.includes(options.nfts[0].onChainId)} countdown={countdownData} />
+			<AssetContainer
+				assetUrl={options.nfts[0].assetUrl}
+				title={options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
+				{options}
+				favorited={$likedNftIds.includes(options.nfts[0].onChainId)}
+				countdown={countdownData}
+			/>
 		</div>
 
 		<!-- Right part with info and actions -->
