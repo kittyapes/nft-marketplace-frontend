@@ -141,6 +141,8 @@
 				res.res = await apiGetHiddenNfts(address, page, limit);
 				res.adapted = res.res.map(nftToCardOptions);
 
+				res.adapted.forEach((i) => (i.allowTrade = false));
+
 				return res as any;
 			},
 			label: 'Hidden',
