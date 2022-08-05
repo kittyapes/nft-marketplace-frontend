@@ -41,6 +41,7 @@
 				{options}
 				favorited={$likedNftIds.includes(options.nfts[0].onChainId)}
 				countdown={countdownData}
+				thumbnailUrl={options.nfts[0]?.thumbnailUrl}
 			/>
 		</div>
 

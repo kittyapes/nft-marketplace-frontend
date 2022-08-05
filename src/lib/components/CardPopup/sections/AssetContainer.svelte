@@ -13,6 +13,7 @@
 
 	export let title: string;
 	export let assetUrl: string;
+	export let thumbnailUrl: string;
 	export let favorited: boolean;
 	export let options: CardOptions;
 	export let countdown: { startTime: number; duration: number } = null;
@@ -76,13 +77,15 @@
 			<Loader />
 		{:then}
 			{#if fileType === 'video'}
-				<video class="max-w-full max-h-full shadow-xl" autoplay loop bind:this={videoAsset}>
+				<video crossorigin="anonymous" class="max-w-full max-h-full shadow-xl" autoplay loop bind:this={videoAsset}>
 					<source src={assetUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
 			{:else if fileType === 'image'}
-				<img src={assetUrl} class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
+				<img src={assetUrl} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
 			{/if}
+		{:catch _err}
+			<img src={`${thumbnailUrl}?not-from-cache`} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
 		{/await}
 	</div>
 
