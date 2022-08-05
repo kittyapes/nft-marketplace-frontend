@@ -22,6 +22,7 @@
 	import { fetchProfileData } from '$utils/api/profile';
 	import { apiGetHiddenNfts } from '$utils/api/user';
 	import { userHasRole } from '$utils/auth/userRoles';
+	import { storage } from '$utils/contracts';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 	import { setPopup } from '$utils/popup';
@@ -264,7 +265,7 @@
 			{/if}
 
 			{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
-				<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED'} class="inline-block translate-x-1 translate-y-1">
+				<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || storage.hasRole('minter', address)} class="inline-block translate-x-1 translate-y-1">
 					<VerifiedBadge />
 				</div>
 			{/if}
