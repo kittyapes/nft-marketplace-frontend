@@ -127,6 +127,7 @@ export async function getListings(filters?: ListingFetchOptions, page: number = 
 		limit
 	};
 	const res = await axios.get(getApiUrl('latest', 'listings'), { params });
+
 	return res.data.data as Listing[];
 }
 

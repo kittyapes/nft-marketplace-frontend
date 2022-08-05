@@ -39,11 +39,11 @@
 		name: '' || $nftDraft?.name,
 		quantity: 1 || $nftDraft?.quantity,
 		collectionName: 'Hinata General Collection',
-		description: '' || $nftDraft?.description,
-		assetPreview: '' || $nftDraft?.assetPreview,
-		thumbnailPreview: '' || $nftDraft?.thumbnailPreview,
-		fileBlob: null,
-		animationBlob: null
+		description: $nftDraft?.description,
+		assetPreview: $nftDraft?.assetPreview,
+		thumbnailPreview: $nftDraft?.thumbnailPreview,
+		thumbnailBlob: $nftDraft?.thumbnailBlob,
+		assetBlob: $nftDraft?.assetBlob
 	};
 
 	const formValidity = writable<Partial<{ [K in keyof NftDraft]: any }>>({});
@@ -125,8 +125,8 @@
 			amount: nftData.quantity,
 			name: nftData.name,
 			creator: $currentUserAddress,
-			image: nftData.fileBlob,
-			animation: nftData.animationBlob,
+			thumbnail: nftData.thumbnailBlob,
+			asset: nftData.assetBlob,
 			collectionId: selectedCollection.value
 		});
 
@@ -176,23 +176,6 @@
 
 	$: quantityValid = nftData.quantity > 0;
 	$: inputValid = nftData.name && nftData.name.length <= 25 && selectedCollectionId && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
-	$: (inputValid === true || inputValid === false) &&
-		console.log(
-			'name valid: ',
-			nftData.name,
-			'name length valid: ',
-			nftData.name?.length <= 25,
-			'collection id valid: ',
-			selectedCollectionId,
-			'asset valid: ',
-			!!nftData.assetPreview,
-			'thumbnail valid: ',
-			!!nftData.thumbnailPreview,
-			'quantity valid: ',
-			quantityValid,
-			'Combined validity: ',
-			inputValid
-		);
 
 	$: if (nftData) {
 		$formValidity.name = !!nftData.name ? (nftData.name.length > 25 ? 'Name Cannot be more than 25 characters' : true) : !nftData.name ? 'Name is Required' : true;
@@ -246,7 +229,7 @@
 			</div>
 
 			<div class="grid flex-grow place-items-stretch">
-				<DragDropImage max_file_size={50_000_000} bind:blob={nftData.animationBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos} />
+				<DragDropImage max_file_size={50_000_000} bind:blob={nftData.assetBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos} />
 			</div>
 		</div>
 
@@ -264,7 +247,7 @@
 			</div>
 
 			<div class="grid flex-grow place-items-stretch">
-				<DragDropImage max_file_size={3_000_000} bind:blob={nftData.fileBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages} />
+				<DragDropImage max_file_size={3_000_000} bind:blob={nftData.thumbnailBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages} />
 			</div>
 		</div>
 
@@ -281,9 +264,9 @@
 
 				<div class="uppercase text-[#1D1D1DB2] mt-8">Collection</div>
 				{#if isLoadingCollections}
-					<div class="h-12 border rounded-lg mt-2 flex items-center">
-						<div class="relative h-full w-12">
-							<ButtonSpinner secondary class="h-4 w-4 ml-4" />
+					<div class="flex items-center h-12 mt-2 border rounded-lg">
+						<div class="relative w-12 h-full">
+							<ButtonSpinner secondary class="w-4 h-4 ml-4" />
 						</div>
 						<div class="text-sm font-medium">Loading...</div>
 					</div>
