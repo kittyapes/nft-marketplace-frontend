@@ -44,7 +44,7 @@
 
 	{#if options?.length}
 		<div class="nftGrid">
-			{#each options as cardOptions, index}
+			{#each options as cardOptions, index (cardOptions.rawResourceData._id)}
 				{#if !hidden.get(cardOptions)}
 					{@const props = cardPropsMapper(cardOptions)}
 					<NftCard {...props} on:hide-me={() => hideCard(index)} />
