@@ -114,7 +114,7 @@
 		{
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
-				res.res = await getListings({ seller: address }, page, limit);
+				res.res = await getListings({ seller: address, listingStatus: ['UNLISTED', 'ACTIVE'] }, page, limit);
 				res.adapted = res.res.map(listingToCardOptions);
 				return res;
 			},
