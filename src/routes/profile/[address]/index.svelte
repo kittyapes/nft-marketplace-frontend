@@ -118,7 +118,7 @@
 				res.adapted = res.res.map(listingToCardOptions);
 				return res;
 			},
-			label: 'Active Listings',
+			label: 'Listings',
 			name: 'listings'
 		},
 		{
