@@ -12,7 +12,7 @@
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import { nftDraft } from '$stores/create';
 	import { profileData } from '$stores/user';
-	import { currentUserAddress } from '$stores/wallet';
+	import { connectionDetails, currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
@@ -25,6 +25,8 @@
 	import { notifyError } from '$utils/toast';
 	import { writable } from 'svelte/store';
 	import type { CardOptions } from '$interfaces/ui';
+	import { walletRefreshed } from '$utils/wallet';
+	import { browser } from '$app/env';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }>(null);
@@ -54,7 +56,7 @@
 		dumpDraft ? nftDraft.set(null) : nftDraft.set(nftData);
 	});
 
-	let isLoadingCollections = false;
+	let isLoadingCollections = true;
 
 	async function prepData() {
 		if (!$currentUserAddress) return;
@@ -103,7 +105,7 @@
 		isLoadingCollections = false;
 	}
 
-	$: $currentUserAddress && prepData();
+	$: $currentUserAddress && $connectionDetails && prepData();
 
 	async function mintAndContinue() {
 		// Keep for skipping mint
@@ -112,7 +114,7 @@
 
 		newBundleData.set({} as NewBundleData);
 		const progress = writable(0);
-		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress, id: '' }, closeByOutsideClick: false });
+		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
 
 		const nftId = await getNftId();
 		console.info('[Create] Using new NFT contract ID:', nftId);
