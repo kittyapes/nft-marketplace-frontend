@@ -234,7 +234,7 @@
 	$: {
 		if (selectedTab.name === 'created') {
 			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: ['hide'] });
-		} else if (selectTab.name === 'hidden') {
+		} else if (selectedTab.name === 'hidden') {
 			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: ['reveal'] });
 		} else {
 			cardPropsMapper = (v) => ({ options: v });
