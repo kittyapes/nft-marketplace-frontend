@@ -1,20 +1,22 @@
 <script lang="ts">
 	export let value: number;
-	export let points: { at: number; label: string; dot?: boolean; top_value: string }[] = [];
+	export let points: { at: number; label: string; dot?: boolean; top_value?: string }[] = [];
 </script>
 
 <div class="relative mt-8">
 	<div id="rail" class="h-4 w-full rounded-full bg-[#c4c4c4] relative {$$props.class}" style="--after-width: {value === 80 ? 100 : value}%" />
 
 	{#each points as point}
-		<div
-			class="-translate-x-1/2 uppercase text-xs text-center font-light absolute -top-[150%] whitespace-nowrap"
-			class:gradient-text={value >= point.at || point.at === 100}
-			class:font-extrabold={point.at === 100}
-			style="left: {point.at}%"
-		>
-			{point.at} %
-		</div>
+		{#if point.top_value}
+			<div
+				class="-translate-x-1/2 uppercase text-xs text-center font-light absolute -top-[150%] whitespace-nowrap"
+				class:gradient-text={value >= point.at || point.at === 100}
+				class:font-extrabold={point.at === 100}
+				style="left: {point.at}%"
+			>
+				{point.top_value}
+			</div>
+		{/if}
 		<div class="absolute top-0" style="left: {point.at}%">
 			<div
 				class="w-6 h-6 rounded-full
