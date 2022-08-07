@@ -160,12 +160,11 @@
 <main class="px-16 mx-auto">
 	<div class="relative mt-8">
 		<!-- Cover image -->
-		<img
-			class="object-cover w-full h-64 rounded-md"
-			src={collectionData?.backgroundImageUrl ||
-				'https://media.istockphoto.com/photos/abstract-geometric-network-polygon-globe-graphic-background-picture-id1208738316?b=1&k=20&m=1208738316&s=170667a&w=0&h=f4KWULKjL770nceDM6xi32EbfIgMtBwSp5fPxIx08wc='}
-			alt=""
-		/>
+		{#if collectionData?.backgroundImageUrl}
+			<img class="object-cover w-full h-64 rounded-md" src={collectionData?.backgroundImageUrl} alt="" />
+		{:else}
+			<div class="w-full h-64 rounded-md bg-gray-100" />
+		{/if}
 
 		<!-- Creator profile image - TODO ADD LOGIC FOR VERIFIED CREATOR BADGE -->
 		<div class="absolute bottom-0 left-0 right-0 w-24 h-24 mx-auto translate-y-12 grid place-items-center">
@@ -189,11 +188,13 @@
 
 	<!-- Creator username and collection address -->
 	<div class="flex items-center justify-center mt-2 space-x-3">
-		<div class="text-xl font-medium text-color-gradient max-w-max font-poppins">
-			{#if creatorData?.username}
+		{#if creatorData?.username}
+			<div class="text-xl font-medium text-color-gradient max-w-max font-poppins">
 				@{creatorData?.username}
-			{/if}
-		</div>
+			</div>
+		{:else}
+			<div class="bg-gray-100 rounded-lg w-24 h-6" />
+		{/if}
 
 		<button class="btn bg-[#F5F5F5] flex rounded-full px-4 py-2 space-x-2 w-36" on:click={() => copyTextToClipboard(collectionData?.collectionAddress)}>
 			<img class="w-5" src="/svg/icons/collection-gradient-eth.svg" alt="Ethereum." />
