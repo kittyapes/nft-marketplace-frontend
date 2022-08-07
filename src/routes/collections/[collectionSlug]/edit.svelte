@@ -342,7 +342,7 @@
 
 			<!-- File types -->
 			<div class="mt-8 font-semibold">File types:</div>
-			<div class="mt-2 text-sm">PNG, GIF, WEBP, MP4, MP3</div>
+			<div class="mt-2 text-sm">PNG, GIF, WEBP</div>
 			<div>Max 10 MB</div>
 		</div>
 
