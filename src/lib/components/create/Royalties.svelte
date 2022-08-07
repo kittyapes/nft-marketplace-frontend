@@ -32,7 +32,7 @@
 			values.filter((item) => !!item.address && !!v.address && isEthAddress(item.address) && isEthAddress(v.address) && item.address.toLowerCase() === v.address.toLowerCase()).length > 1;
 
 		console.log(total);
-		if (total < 0.3) isValid = 'Sum of Royalties Cannot Be Bellow 0.3 %';
+		if (total < 0.3) isValid = 'Sum of Royalties Cannot Be Below 0.3 %';
 		else {
 			isValid =
 				total > 98.5
