@@ -13,7 +13,7 @@
 			class:font-extrabold={point.at === 100}
 			style="left: {point.at}%"
 		>
-			{point.top_value}
+			{point.at} %
 		</div>
 		<div class="absolute top-0" style="left: {point.at}%">
 			<div
