@@ -127,15 +127,14 @@
 </script>
 
 <div class="relative p-4 overflow-hidden border border-color-gray-base border-opacity-50 rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options.allowPopup}>
-	<div class="flex items-center gap-x-2 h-8">
+	<div class="flex items-center h-8 gap-x-2">
 		<div class="font-bold text-[10px] uppercase">
 			{@html timerHtml}
 		</div>
 
 		<!-- Owned by user -->
-		<!-- Temporarily hidden -->
 		{#if menuItems?.length}
-			<button on:click={toggleDots} class="hover:opacity-50 h-8 w-8" transition:fade|local={{ duration: 150 }}>
+			<button on:click={toggleDots} class="w-8 h-8 hover:opacity-50" transition:fade|local={{ duration: 150 }}>
 				<ThreeDots />
 			</button>
 		{/if}
@@ -164,7 +163,9 @@
 	</div>
 
 	<div class="flex items-center mt-2 font-semibold">
-		<div class="flex-grow whitespace-nowrap truncate">{options.nfts[0].name}</div>
+		<div class="flex-grow truncate whitespace-nowrap" class:text-xs={!options.nfts[0]?.name}>
+			{options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
+		</div>
 		<!-- Hide price info when not present/listed -->
 		{#if options?.resourceType === 'listing'}
 			<Eth />
@@ -174,7 +175,7 @@
 	</div>
 
 	{#if dotsOpened}
-		<div id="popup" class="absolute flex flex-col font-bold bg-white rounded-md top-10 w-32">
+		<div id="popup" class="absolute flex flex-col w-32 font-bold bg-white rounded-md top-10">
 			{#if menuItems.includes('transfer')}
 				<button class="gradient-text transition-btn disabled:opacity-75" disabled>TRANSFER</button>
 			{/if}

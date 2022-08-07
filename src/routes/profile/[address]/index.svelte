@@ -22,6 +22,7 @@
 	import { fetchProfileData } from '$utils/api/profile';
 	import { apiGetHiddenNfts } from '$utils/api/user';
 	import { userHasRole } from '$utils/auth/userRoles';
+	import { storage } from '$utils/contracts';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 	import { setPopup } from '$utils/popup';
@@ -83,6 +84,7 @@
 		name: string;
 		index?: number;
 		reachedEnd?: boolean;
+		isFetching?: boolean;
 		data?: [];
 	}[] = [
 		{
@@ -113,11 +115,11 @@
 		{
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
-				res.res = await getListings({ seller: address }, page, limit);
+				res.res = await getListings({ seller: address, listingStatus: ['UNLISTED', 'ACTIVE'] }, page, limit);
 				res.adapted = res.res.map(listingToCardOptions);
 				return res;
 			},
-			label: 'Active Listings',
+			label: 'Listings',
 			name: 'listings'
 		},
 		{
@@ -140,6 +142,8 @@
 				res.res = await apiGetHiddenNfts(address, page, limit);
 				res.adapted = res.res.map(nftToCardOptions);
 
+				res.adapted.forEach((i) => (i.allowTrade = false));
+
 				return res as any;
 			},
 			label: 'Hidden',
@@ -152,6 +156,7 @@
 			t.index = 1;
 			t.data = [];
 			t.reachedEnd = false;
+			t.isFetching = false;
 		});
 	}
 
@@ -161,17 +166,13 @@
 	let selectedTab: typeof tabs[0] = tabs[0];
 
 	function selectTab(name: string) {
-		if (name === selectedTab.name) {
-			// return;
-		}
-
 		if (browser && name) {
 			goto('?tab=' + name, { noscroll: true });
 		}
 
 		selectedTab = tabs.find((i) => i.name === name) || tabs.find((t) => t.name === 'collected');
 
-		if (browser && !selectedTab.data.length) {
+		if (browser && !selectedTab.data.length && !selectedTab.isFetching) {
 			fetchMore();
 		}
 	}
@@ -187,6 +188,7 @@
 		if (tab.reachedEnd) return;
 
 		isFetchingNfts = true;
+		tab.isFetching = true;
 
 		const res = await tab.fetchFunction(tab, tab.index, 10);
 
@@ -203,9 +205,10 @@
 			tab.index++;
 		}
 
-		selectedTab = tab;
+		selectedTab = selectedTab;
 
 		isFetchingNfts = false;
+		tab.isFetching = false;
 	}
 
 	function handleReachedEnd() {
@@ -231,7 +234,7 @@
 	$: {
 		if (selectedTab.name === 'created') {
 			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: ['hide'] });
-		} else if (selectTab.name === 'hidden') {
+		} else if (selectedTab.name === 'hidden') {
 			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: ['reveal'] });
 		} else {
 			cardPropsMapper = (v) => ({ options: v });
@@ -264,7 +267,7 @@
 			{/if}
 
 			{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
-				<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED'} class="inline-block translate-x-1 translate-y-1">
+				<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || storage.hasRole('minter', address)} class="inline-block translate-x-1 translate-y-1">
 					<VerifiedBadge />
 				</div>
 			{/if}

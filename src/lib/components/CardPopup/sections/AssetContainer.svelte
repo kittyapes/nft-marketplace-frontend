@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Loader from '$lib/components/Loader.svelte';
-	import type { CardOptions } from '$lib/components/NftCard.svelte';
+	import type { CardOptions } from '$interfaces/ui';
 	import Countdown from '$lib/components/v2/Countdown/Countdown.svelte';
 	import { refreshLikedNfts } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
@@ -13,6 +13,7 @@
 
 	export let title: string;
 	export let assetUrl: string;
+	export let thumbnailUrl: string;
 	export let favorited: boolean;
 	export let options: CardOptions;
 	export let countdown: { startTime: number; duration: number } = null;
@@ -48,7 +49,7 @@
 		if (videoAsset?.requestFullscreen) {
 			videoAsset.requestFullscreen();
 		} else {
-			window.open(assetUrl, '_blank');
+			assetUrl && window.open(assetUrl, '_blank');
 		}
 	}
 
@@ -76,13 +77,15 @@
 			<Loader />
 		{:then}
 			{#if fileType === 'video'}
-				<video class="max-w-full max-h-full shadow-xl" autoplay loop bind:this={videoAsset}>
+				<video crossorigin="anonymous" class="max-w-full max-h-full shadow-xl" autoplay loop bind:this={videoAsset}>
 					<source src={assetUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
 			{:else if fileType === 'image'}
-				<img src={assetUrl} class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
+				<img src={assetUrl} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
 			{/if}
+		{:catch _err}
+			<img src={`${thumbnailUrl}?not-from-cache`} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
 		{/await}
 	</div>
 
@@ -93,16 +96,18 @@
 
 	<!-- Buttons -->
 	<div class="flex justify-center mt-4 mb-6 gap-x-12">
-		<button class="w-6 h-6 btn" on:click={handleShare}><img src={getIconUrl('share')} alt="Share." /></button>
+		<button class="w-6 h-6 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}><img src={getIconUrl('share')} alt="Share." /></button>
 		<button class="w-6 h-6 btn disabled:opacity-50" on:click={handleLike} disabled={options.nfts[0].isExternal}>
 			<img src={favorited ? getIconUrl('heart-filled') : getIconUrl('heart-outline')} alt="Heart." class:text-color-red={favorited} />
 		</button>
-		<button class="w-6 h-6 btn" on:click={handleFullscreen}><img src={getIconUrl('fullscreen')} alt="Fullscreen." /></button>
+		<button class="w-6 h-6 btn" disabled={!videoAsset && !assetUrl} on:click={handleFullscreen}>
+			<img src={getIconUrl('fullscreen')} alt="Fullscreen." />
+		</button>
 	</div>
 
 	<!-- Auction timer -->
 	{#if countdown}
-		<div class="pb-4 font-medium opacity-50">{capitalize(options.listingData.listingType)} ending in:</div>
+		<div class="pb-4 font-medium opacity-50">{capitalize(options.listingData?.listingType)} ending in:</div>
 		<Countdown {...countdown} />
 	{/if}
 </div>

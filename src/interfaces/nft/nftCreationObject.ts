@@ -2,8 +2,8 @@ export interface NFTCreationObject {
 	amount: number;
 	name: string;
 	creator: string;
-	image: Blob;
-	animation: Blob;
+	thumbnail: Blob;
+	asset: Blob;
 	description?: string;
 	collectionId: string;
 }

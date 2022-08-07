@@ -24,7 +24,7 @@
 	// you know we cannot rely on the backend :)
 	// prettier-ignore
 	$: royaltyPercentage = 
-		options.nfts[0].contractAddress === getContractData('storage').address && "1.5 % Beneficiary" ||
+		(options.nfts[0].contractAddress === getContractData('storage').address && "1.5 % Beneficiary") ||
 		totalColRoyalties(options) + ' % Royalty'
 
 	// It is possible to pass data of multiple NFTs into the popup to support
