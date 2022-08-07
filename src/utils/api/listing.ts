@@ -1,7 +1,6 @@
 import type { EthAddress, IsoTime, TokenStandard } from '$interfaces';
 import type { ApiNftData } from '$interfaces/apiNftData';
 import axios from 'axios';
-import { ethers } from 'ethers';
 import { getApiUrl } from '.';
 
 export type ListingType = 'sale' | 'auction' | 'raffle';
@@ -113,19 +112,20 @@ export interface ListingFetchOptions {
 	priceMax?: string;
 	seller?: EthAddress;
 	sortBy?: 'NEWEST' | 'OLDEST' | 'POPULAR' | 'END1MIN';
+	listingStatus?: ('ACTIVE' | 'UNLISTED')[];
 }
 
 export async function getListings(filters?: ListingFetchOptions, page: number = 1, limit: number = 20) {
-	const params = {
-		type: filters?.type,
-		collectionId: filters?.collectionId ? filters?.collectionId : undefined,
-		priceMin: filters?.priceMin,
-		priceMax: filters?.priceMax,
-		seller: filters?.seller,
-		sortBy: filters?.sortBy,
-		page,
-		limit
-	};
+	const params = Object.entries({ ...filters, page, limit }).reduce((p, [k, v]: [string, any]) => {
+		if (k === 'listingStatus') {
+			v.forEach((i) => p.append('listingStatus', i));
+		} else if (v) {
+			p.append(k, v as any);
+		}
+
+		return p;
+	}, new URLSearchParams());
+
 	const res = await axios.get(getApiUrl('latest', 'listings'), { params });
 
 	return res.data.data as Listing[];
