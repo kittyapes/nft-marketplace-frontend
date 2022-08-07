@@ -84,6 +84,7 @@
 		name: string;
 		index?: number;
 		reachedEnd?: boolean;
+		isFetching?: boolean;
 		data?: [];
 	}[] = [
 		{
@@ -155,6 +156,7 @@
 			t.index = 1;
 			t.data = [];
 			t.reachedEnd = false;
+			t.isFetching = false;
 		});
 	}
 
@@ -164,17 +166,13 @@
 	let selectedTab: typeof tabs[0] = tabs[0];
 
 	function selectTab(name: string) {
-		if (name === selectedTab.name) {
-			// return;
-		}
-
 		if (browser && name) {
 			goto('?tab=' + name, { noscroll: true });
 		}
 
 		selectedTab = tabs.find((i) => i.name === name) || tabs.find((t) => t.name === 'collected');
 
-		if (browser && !selectedTab.data.length) {
+		if (browser && !selectedTab.data.length && !selectedTab.isFetching) {
 			fetchMore();
 		}
 	}
@@ -190,6 +188,7 @@
 		if (tab.reachedEnd) return;
 
 		isFetchingNfts = true;
+		tab.isFetching = true;
 
 		const res = await tab.fetchFunction(tab, tab.index, 10);
 
@@ -206,9 +205,10 @@
 			tab.index++;
 		}
 
-		selectedTab = tab;
+		selectedTab = selectedTab;
 
 		isFetchingNfts = false;
+		tab.isFetching = false;
 	}
 
 	function handleReachedEnd() {
