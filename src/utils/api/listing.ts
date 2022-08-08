@@ -103,6 +103,9 @@ export interface Listing {
 	createdAt: string;
 	updatedAt: string;
 	seller: string;
+
+	// Only On Auctions
+	highestBid?: number;
 }
 
 export interface ListingFetchOptions {
