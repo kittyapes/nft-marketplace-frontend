@@ -71,7 +71,8 @@ export function listingToCardOptions(listing: Listing, fallback?: any): CardOpti
 		const fStarting = listing.listing?.formatStartingPrice;
 		const fReserve = listing.listing?.formatReservePrice;
 		const highestBid = listing.highestBid;
-		const priceToDisplay = fStarting && highestBid ? (highestBid > fStarting ? highestBid : fStarting) : fStarting;
+		// Highest Bid is Always 0 when there is no highest bid
+		const priceToDisplay = highestBid !== 0 && highestBid ? highestBid : fStarting;
 
 		ret.auctionData = {
 			startingPrice: listing.listing?.startingPrice,
