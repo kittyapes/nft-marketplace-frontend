@@ -76,7 +76,7 @@
 			await refreshProfileData().catch(() => notifyError('Failed to fetch new profile data.'));
 		} catch (err) {
 			if (err.message.includes('User denied message signature')) {
-				notifyError("You have denied metamask signature. Changes weren't saved.");
+				notifyError("You have denied wallet signature. Changes weren't saved.");
 			} else {
 				httpErrorHandler(err);
 				console.error(err);
