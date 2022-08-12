@@ -1,5 +1,5 @@
 import { SocialLinks, type Profile, type Config, TYPE_DESKTOP } from 'social-links';
-import { isUrl, urlPattern } from './isUrl';
+import { urlPattern } from './isUrl';
 
 export type SupportedSocialNetworks = 'instagram' | 'discord' | 'twitter' | 'website' | 'pixiv' | 'deviantart' | 'artstation';
 

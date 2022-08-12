@@ -13,10 +13,10 @@ import { getContract } from '$utils/misc/getContract';
 import storageAbi from '$constants/contracts/abis/HinataMarketplaceStorage.json';
 import { getContractInterface } from '$utils/contracts/collection';
 
-export const createNFTOnAPI = async ({ amount, animation, creator, image, name, description, collectionId }: NFTCreationObject) => {
+export const createNFTOnAPI = async ({ amount, creator, thumbnail, asset, name, description, collectionId }: NFTCreationObject) => {
 	const formData = new FormData();
-	formData.append('thumbnail', image);
-	formData.append('asset', animation || null);
+	formData.append('thumbnail', thumbnail);
+	formData.append('asset', asset || null);
 	formData.append('amount', amount.toString() || '1');
 	formData.append('name', name);
 	formData.append('creator', creator);

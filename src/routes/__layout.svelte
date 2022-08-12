@@ -16,8 +16,7 @@
 	import { appDataToTriggerReload } from '$stores/wallet';
 	import PopupManager from '$utils/popup/PopupManager.svelte';
 	import { refreshConnection } from '$utils/wallet/connectWallet';
-	import { onMount } from 'svelte';
-	import { setContext } from 'svelte';
+	import { onMount, setContext } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
 
 	onMount(async () => {

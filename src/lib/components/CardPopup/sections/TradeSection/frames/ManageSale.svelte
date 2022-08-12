@@ -30,7 +30,7 @@
 	}
 </script>
 
-<div class="flex flex-col h-full p-4 pb-8 overflow-y-scroll overscroll-contain">
+<div class="flex flex-col h-full p-4 pb-8 overflow-y-auto overscroll-contain blue-scrollbar">
 	<InfoBox>Offers on sale listings are coming soon!</InfoBox>
 
 	<div class="flex-grow" />

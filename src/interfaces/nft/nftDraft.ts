@@ -1,6 +1,6 @@
 export interface NftDraft {
-	fileBlob: Blob;
-    animationBlob: Blob;
+	thumbnailBlob: Blob;
+    assetBlob: Blob;
     assetPreview: string;
     thumbnailPreview: string;
     description: string;
