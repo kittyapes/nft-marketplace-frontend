@@ -53,6 +53,8 @@ export interface CardOptions {
 		reservePrice?: string;
 		formatStartingPrice: string;
 		formatReservePrice?: string;
+		highestBid: string;
+		priceToDisplay: string;
 	};
 
 	/** The raw data that was used by an adapter to generate this data object. */

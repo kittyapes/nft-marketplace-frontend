@@ -70,12 +70,17 @@ export function listingToCardOptions(listing: Listing, fallback?: any): CardOpti
 	if (listing.listingType === 'auction') {
 		const fStarting = listing.listing?.formatStartingPrice;
 		const fReserve = listing.listing?.formatReservePrice;
+		const highestBid = listing.highestBid;
+		// Highest Bid is Always 0 when there is no highest bid
+		const priceToDisplay = highestBid !== 0 && highestBid ? highestBid : fStarting;
 
 		ret.auctionData = {
 			startingPrice: listing.listing?.startingPrice,
 			formatStartingPrice: fStarting ? makeNice(fStarting) : 'N/A',
 			reservePrice: listing.listing?.reservePrice,
-			formatReservePrice: fReserve ? makeNice(fReserve) : 'N/A'
+			formatReservePrice: fReserve ? makeNice(fReserve) : 'N/A',
+			highestBid: highestBid ? makeNice(highestBid) : 'N/A',
+			priceToDisplay: priceToDisplay ? makeNice(priceToDisplay) : 'N/A'
 		};
 	}
 
