@@ -69,12 +69,7 @@
 
 	$: highestAmount = biddings[0] && parseToken(biddings[0].tokenAmount, chainListing.payToken);
 
-	// prettier-ignore
-	$: canCancel = [
-		biddings.length < 1,
-		highestAmount && highestAmount.lt(parseToken(chainListing.reservePrice, chainListing.payToken))
-	].some((v) => v) && (!options?.auctionData.reservePrice || options?.auctionData.reservePrice !== options?.auctionData.startingPrice);
-
+	$: canCancel = biddings.length < 1 || (highestAmount && highestAmount.lt(parseToken(chainListing.reservePrice, chainListing.payToken)));
 	$: canAccept = [biddings.length > 0].some((v) => v);
 </script>
 
