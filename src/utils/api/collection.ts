@@ -146,7 +146,7 @@ export interface CollectionTableRow {
 	'24hourPercent': number;
 }
 
-export async function apiGetMostActiveCollections(): Promise<Collection[]> {
+export async function apiGetMostActiveCollections(): Promise<{ collections: Collection[]; totalCount: number }> {
 	const limit = 7;
 	const res = await axios.get(getApiUrl('latest', 'collections/search'), { params: { limit } });
 
