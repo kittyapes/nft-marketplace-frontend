@@ -15,7 +15,6 @@
 	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
 
 	let collections: Collection[] = [];
-	$: collections;
 	let exploreListings = writable<Listing[]>([]);
 	let loadedExploreListings = writable(false);
 	let exploreListingsData;
