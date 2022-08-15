@@ -16,6 +16,7 @@
 
 	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
+	let loadedExploreListings = writable(false);
 	let exploreListingsData;
 
 	const aidrop = {
@@ -26,8 +27,10 @@
 	};
 
 	const getExploreMarketData = async () => {
+		loadedExploreListings.set(false);
 		exploreListings.set(await getRandomListings(10));
 		exploreListingsData = $exploreListings.map(listingToCardOptions).filter((e) => e);
+		loadedExploreListings.set(true);
 	};
 
 	// Please don't ask me why we need an auth token for this...
@@ -117,7 +120,7 @@
 	</div>
 	<hr class="mt-4 border-[#0000004D]" />
 
-	{#if exploreListingsData?.length}
+	{#if $loadedExploreListings}
 		<NftList options={exploreListingsData} />
 	{:else}
 		<DiamondsLoader />
