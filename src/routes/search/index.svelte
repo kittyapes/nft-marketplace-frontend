@@ -7,7 +7,7 @@
 	import NftList from '$lib/components/NftList.svelte';
 	import { searchQuery } from '$stores/search';
 	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
-	import { getCollectionsByTitle, getNftsByTitle, getUsersByName } from '$utils/api/search/globalSearch';
+	import { getCollectionsByTitle, getNftsByTitle, searchUsersByName } from '$utils/api/search/globalSearch';
 	import { debounce } from 'lodash-es';
 	import { inview } from 'svelte-inview';
 	import { page } from '$app/stores';
@@ -61,7 +61,7 @@
 
 				const res = await getCollectionsByTitle(query, fullResultsLimit, searchResults.collections.index).catch((e) => []);
 
-				if (res.length === 0) {
+				if (res.collections.length === 0) {
 					searchResults.collections.reachedEnd = true;
 					searchResults.collections.isLoading = false;
 					searchResults = searchResults;
@@ -69,7 +69,7 @@
 				}
 
 				searchResults.collections.index++;
-				searchResults.collections.data = [...searchResults.collections.data, ...res.filter((e) => e.slug)];
+				searchResults.collections.data = [...searchResults.collections.data, ...res.collections.filter((e) => e?.slug)];
 				searchResults.collections.isLoading = false;
 
 				searchResults = searchResults;
@@ -85,7 +85,7 @@
 
 				searchResults.users.isLoading = true;
 
-				const res = await getUsersByName(query, fullResultsLimit, searchResults.users.index).catch((e) => []);
+				const res = await searchUsersByName(query, fullResultsLimit, searchResults.users.index).catch((e) => []);
 
 				if (res.length === 0) {
 					searchResults.users.reachedEnd = true;

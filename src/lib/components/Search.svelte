@@ -39,12 +39,12 @@
 
 	const searchUsers = async (query: string) => {
 		const response = await searchUsersByName(query).catch((e) => []);
-		searchResults.users = response;
+		searchResults.users = response.slice(0, 3);
 	};
 
 	const searchCollections = async (query: string) => {
 		const response = await getCollectionsByTitle(query, resultCategoryLimit).catch((e) => []);
-		searchResults.collections = response.filter((e) => e.slug);
+		searchResults.collections = response.collections;
 	};
 
 	const searchGlobally = async (query: string) => {

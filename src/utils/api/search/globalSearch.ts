@@ -23,34 +23,22 @@ export const getNftsByTitle = async (query: string, limit?: number, page?: numbe
     }
 }
 
-export const getUsersByName = async (query: string, limit?: number, page?: number) => {
-    try {
-        let params = {
-            query: query ? query : undefined,
-            limit: limit ? limit : undefined,
-            page: page ? page : 1,
-            role: 'verified_user'
-        }
-
-        // should be without permissions
-        const res = await axios.get(getApiUrl('latest', 'admins/users'),  { params , ...await getAxiosConfig()});
-
-        return res.data.data as UserData[];
-    } catch {
-        throw new Error('Failed to search for users');
-    }
-}
-
-export const searchUsersByName = async (query: string) => {
+export const searchUsersByName = async (query: string, limit?: number, page?: number) => {
     try {
         let params = {
             username: query ? query : undefined,
+            limit: limit ? limit : undefined,
+            page: page ? page : 1,
         }
 
-        // should be without permissions
-        const res = await axios.get(getApiUrl('latest', 'users/search'),  { params });
+        if (params.username !== '' || params.username !== undefined || params.username.length < 3) {
+            const res = await axios.get(getApiUrl('latest', 'users/search'),  { params });
+            return res.data.data as UserData[];
+        } else {
+            return [];
+        }
 
-        return res.data.data.slice(0, 3) as UserData[];
+       
     } catch {
         throw new Error('Failed to search for users');
     }
@@ -66,7 +54,7 @@ export const getCollectionsByTitle = async (query: string, limit?: number, page?
 
         const res = await axios.get(getApiUrl('latest', 'collections/search'),  { params });
         
-        return res.data.data as Collection[];
+        return res.data.data;
     } catch {    
         throw new Error('Failed to search for collections');
     }
