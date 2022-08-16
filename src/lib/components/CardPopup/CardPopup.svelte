@@ -18,6 +18,8 @@
 
 	let rightSectionInstance;
 
+	const countdownData = options?.resourceType === 'listing' ? { startTime: options.listingData?.startTime, duration: options.listingData?.duration } : null;
+
 	// Log data that was used by the adapter to generate the CardPopup
 	$: console.debug('[Resource Data]:', options.rawResourceData);
 </script>
@@ -35,10 +37,11 @@
 		<div class="h-full lg:w-2/5">
 			<AssetContainer
 				assetUrl={options.nfts[0].assetUrl}
-				title={options.nfts[0].name}
+				title={options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
 				{options}
 				favorited={$likedNftIds.includes(options.nfts[0].onChainId)}
-				countdown={options.listingData?.listingType === 'auction' ? { startTime: options.listingData.startTime, duration: options.listingData.duration } : null}
+				countdown={countdownData}
+				thumbnailUrl={options.nfts[0]?.thumbnailUrl}
 			/>
 		</div>
 

@@ -38,7 +38,7 @@
 	let showCreate = false;
 
 	currentUserAddress.subscribe(async (a) => {
-		showCreate = browser && a && (await storage.hasRole('minter', a));
+		showCreate = browser && a && (await storage.hasRole('minter', a).catch(() => false));
 	});
 </script>
 

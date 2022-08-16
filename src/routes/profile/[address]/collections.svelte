@@ -31,6 +31,11 @@
 
 		loaded = false;
 
+		// Clear collections when the user address has changed
+		if (userCollections.length > 0 && userCollections[0]?.creator.toLowerCase() !== address.toLowerCase()) {
+			userCollections = [];
+		}
+
 		let page = 1;
 
 		while (true) {

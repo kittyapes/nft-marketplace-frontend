@@ -17,7 +17,7 @@
 	import Progressbar from '$lib/components/Progressbar.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import { profileData, refreshProfileData } from '$stores/user';
-	import { appSigner, currentUserAddress } from '$stores/wallet';
+	import { appSigner, connectionDetails, currentUserAddress } from '$stores/wallet';
 	import { freeNftStatus, hasClaimedFreeNft } from '$utils/api/freeNft';
 	import { checkUsernameAvailability, type EditableProfileData, updateProfile } from '$utils/api/profile';
 	import { inputize } from '$utils/misc/inputize';
@@ -36,10 +36,11 @@
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
 
 	const progressbarPoints = [
-		{ at: 25, label: 'Email' },
-		{ at: 50, label: 'Bio' },
-		{ at: 75, label: 'Profile Picture' },
-		{ at: 100, label: 'Banner Image', dot: false }
+		{ at: 20, label: 'Email', top_value: '25%' },
+		{ at: 40, label: 'Bio', top_value: '50%' },
+		{ at: 60, label: 'Profile Picture', top_value: '75%' },
+		{ at: 80, label: 'Banner Image', top_value: '100%' },
+		{ at: 100, label: '', top_value: 'Free NFT' }
 	];
 
 	const fetchedDataStore = writable<EditableProfileData>(null);
@@ -143,7 +144,7 @@
 		[isEmail($localDataStore?.email), isBioValid($localDataStore?.bio), isProfileImage, isCoverImage, 0]
 			.map((v) => (v ? 1 : 0))
 			.join('')
-			.indexOf('0') * 25;
+			.indexOf('0') * 20;
 
 	async function handleNftClaim() {
 		setPopup(FreeNftPopup);
@@ -199,7 +200,7 @@
 		browser &&
 		$localDataStore?.username &&
 		usernameValid &&
-		bioValid &&
+		($localDataStore?.bio ? bioValid : true) &&
 		!Object.entries($socialLinksValidity).some((item) => !item[1] || typeof item[1] === 'string') &&
 		isEmail($localDataStore?.email);
 
@@ -211,7 +212,7 @@
 	appSigner.subscribe((signer) => browser && checkIfWalletConnected(signer, $page.url.pathname));
 
 	// Free NFT claiming
-	$: $currentUserAddress && hasClaimedFreeNft($currentAddress);
+	$: $connectionDetails && hasClaimedFreeNft($currentAddress);
 </script>
 
 <LoadedContent loaded={$localDataStore}>
@@ -226,14 +227,8 @@
 				Profile completion progress: <span class="gradient-text">{profileCompletionProgress}%</span>
 			</div>
 
-			<div class="w-4/5 mx-auto">
+			<div class="w-4/5 mx-auto mt-5">
 				<Progressbar class="mt-2" value={profileCompletionProgress} points={progressbarPoints} />
-			</div>
-
-			<div class="relative w-full">
-				{#if profileCompletionProgress !== 100}
-					<div class="absolute font-bold gradient-text -translate-y-12 translate-x-[-100%] right-0" transition:fade|local>Free NFT</div>
-				{/if}
 			</div>
 
 			{#if $freeNftStatus !== 'claimed'}
@@ -252,10 +247,21 @@
 			{/if}
 
 			<div id="form-container" class="grid mt-20 gap-y-6">
+				<div class="grid grid-cols-1">
+					<div>
+						<div class="">
+							<span class="text-red-500">*</span>
+							Required Fields
+						</div>
+					</div>
+				</div>
+
 				<div class="grid grid-cols-2">
 					<div>
-						<div class="input-label">Username</div>
-						<div class="text-xs font-medium uppercase">Mandatory</div>
+						<div class="input-label">
+							Username
+							<span class="text-red-500 text-base">*</span>
+						</div>
 					</div>
 
 					<div>
@@ -270,7 +276,11 @@
 				</div>
 
 				<div class="grid items-stretch grid-cols-2">
-					<div class="flex items-center transition input-label gradient-text brightness-0" class:brightness-100={isEmail($localDataStore.email)}>Email</div>
+					<div class="flex items-center transition input-label gradient-text">
+						<div class="mr-2">25%</div>
+						<div class:text-black={!isEmail($localDataStore.email)}>Email</div>
+						<span class="text-red-500 text-base">*</span>
+					</div>
 					<div>
 						<input type="email" class="input input-gray-outline" placeholder="example@email.com" bind:value={$localDataStore.email} />
 						{#if $localDataStore.email && !isEmail($localDataStore.email)}
@@ -281,8 +291,11 @@
 					</div>
 				</div>
 
-				<div class="grid grid-cols-2">
-					<div class="transition input-label gradient-text brightness-0" class:brightness-100={isBioValid($localDataStore.bio)}>Bio</div>
+				<div class="grid grid-cols-2 items-start">
+					<div class="flex items-center transition input-label gradient-text">
+						<div class="mr-2">25%</div>
+						<div class:text-black={!($localDataStore.bio && isValidBio($localDataStore.bio))}>Bio</div>
+					</div>
 
 					<div>
 						<TextArea outline placeholder="Enter your short bio" maxChars={200} bind:value={$localDataStore.bio} />
@@ -292,14 +305,19 @@
 					</div>
 				</div>
 
-				<div class="grid grid-cols-2">
-					<div>
-						<div class="transition input-label gradient-text brightness-0" class:brightness-100={isProfileImage}>
-							PROFILE <br />
-							PICTURE
+				<div class="grid grid-cols-2 items-start">
+					<div class="gradient-text input-label flex">
+						<div class="mr-2">25%</div>
+						<div>
+							<div class="transition">
+								<div class="flex">
+									<div class:text-black={!isProfileImage}>PROFILE</div>
+								</div>
+								PICTURE
+							</div>
+							<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
+							<div class="text-xs text-[#A9A8A8]">Max 10MB</div>
 						</div>
-						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
-						<div class="text-xs text-[#A9A8A8]">Max 10MB</div>
 					</div>
 					<div class="flex flex-col w-full">
 						<DragDropImage
@@ -313,11 +331,16 @@
 					</div>
 				</div>
 
-				<div class="grid grid-cols-2">
-					<div>
-						<div class="input-label gradient-text brightness-0" class:brightness-100={isCoverImage}>BANNER</div>
-						<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
-						<div class="text-xs text-[#A9A8A8]">Max 10MB</div>
+				<div class="grid grid-cols-2 items-start">
+					<div class="gradient-text input-label flex">
+						<div class="mr-2">25%</div>
+						<div>
+							<div class="input-label">
+								<div class:text-black={!isCoverImage}>BANNER</div>
+							</div>
+							<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
+							<div class="text-xs text-[#A9A8A8]">Max 10MB</div>
+						</div>
 					</div>
 					<div class="flex flex-col w-full">
 						<DragDropImage

@@ -73,7 +73,7 @@
 	$: canCancel = [
 		biddings.length < 1,
 		highestAmount && highestAmount.lt(parseToken(chainListing.reservePrice, chainListing.payToken))
-	].some((v) => v);
+	].some((v) => v) && (!options?.auctionData.reservePrice || options?.auctionData.reservePrice !== options?.auctionData.startingPrice);
 
 	$: canAccept = [biddings.length > 0].some((v) => v);
 </script>

@@ -1,12 +1,10 @@
 <script context="module" lang="ts">
-	import { currentError } from '$stores/error';
-
-	let response: number;
+	let _status: number;
 
 	/** @type {import('@sveltejs/kit').ErrorLoad} */
 	export function load({ error, status }) {
-		response = status;
-		currentError.set(response);
+		_status = status;
+
 		return {
 			props: {
 				title: `${status}: ${error.message}`
@@ -19,4 +17,4 @@
 	import ErrorPage from '$lib/components/ErrorPage.svelte';
 </script>
 
-<ErrorPage />
+<ErrorPage errorCode={_status} />

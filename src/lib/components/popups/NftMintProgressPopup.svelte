@@ -12,9 +12,9 @@
 	import Progressbar from '../Progressbar.svelte';
 
 	const points = [
-		{ at: 0, label: 'Upload' },
-		{ at: 50, label: 'NFT TX' },
-		{ at: 100, label: 'Finished' }
+		{ at: 0, label: 'Upload', top_value: null },
+		{ at: 50, label: 'NFT TX', top_value: null },
+		{ at: 100, label: 'Finished', top_value: null }
 	];
 
 	export let handler: PopupHandler;

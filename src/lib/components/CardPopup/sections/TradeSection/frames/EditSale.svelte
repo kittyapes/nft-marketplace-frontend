@@ -4,8 +4,7 @@
 	import type { CardOptions } from '$interfaces/ui';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import { refreshOnChainListing } from '$lib/components/CardPopup/cardPopup';
-	import ListingPropertiesSlot from '$lib/components/primary-listing/ListingPropertiesSlot.svelte';
-	import SaleProperties from '$lib/components/primary-listing/SaleProperties.svelte';
+	import ListingProperties from '$lib/components/primary-listing/ListingProperties.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
@@ -23,7 +22,7 @@
 	export let chainListing: ChainListing;
 
 	function _updateInputsFromData() {
-		_saleProperties.setValues({
+		_listingProperties.setValues({
 			startDateTs: chainListing.startTime,
 			durationSeconds: chainListing.duration,
 			price: chainListing.price,
@@ -31,13 +30,13 @@
 		});
 	}
 
-	$: chainListing && _saleProperties && _updateInputsFromData();
+	$: chainListing && _listingProperties && _updateInputsFromData();
 
 	// Update listing button
 	let updatebuttonContainer: HTMLElement;
 	const isUpdateHovered = createToggle();
 
-	let _saleProperties: SaleProperties;
+	let _listingProperties: ListingProperties;
 
 	// Validation
 	let formErrors: string[] = [];
@@ -52,6 +51,7 @@
 		try {
 			await contractUpdateListing(options.listingData.onChainId, chainListing.payToken, listingProps);
 			frame.set(Success);
+			options.staleResource.set({ reason: 'cancelled' });
 		} catch (err) {
 			console.error(err);
 			notifyError('Failed to update listing.');
@@ -63,11 +63,12 @@
 
 	let cancellingListing = false;
 
-	function cancelListing() {
+	async function cancelListing() {
 		cancellingListing = true;
 
 		try {
-			contractCancelListing(options.listingData.onChainId);
+			await contractCancelListing(options.listingData.onChainId);
+			options.staleResource.set({ reason: 'cancelled' });
 		} catch (err) {
 			console.error(err);
 			notifyError('Failed to cancel listing!');
@@ -79,30 +80,28 @@
 	let listingProps: Partial<ConfigurableListingProps> = {};
 </script>
 
-<div class="flex flex-col h-full pb-8 overflow-y-scroll p-4 overscroll-contain">
+<div class="flex flex-col h-full p-4 pb-8 overflow-y-scroll overscroll-contain">
 	<div class="mt-2">
-		<ListingPropertiesSlot>
-			{#if options.listingData.listingType === 'sale'}
-				<SaleProperties
-					bind:this={_saleProperties}
-					bind:formErrors
-					maxQuantity={getTokenBalance(options.nfts[0].onChainId)}
-					disableQuantity
-					{disableStartDate}
-					maxPrice={chainListing.price}
-					bind:props={listingProps}
-				/>
-			{/if}
-		</ListingPropertiesSlot>
+		<!-- TODO maxQuantity needs to be checked on chain -->
+		<ListingProperties
+			listingType={options.listingData.listingType}
+			maxQuantity={getTokenBalance(options.nfts[0].onChainId)}
+			disableQuantity
+			{disableStartDate}
+			maxPrice={chainListing.price}
+			bind:formErrors
+			bind:props={listingProps}
+			bind:this={_listingProperties}
+		/>
 	</div>
 
 	<div class="flex-grow" />
 
 	<!-- Fees -->
 	<div class="mt-4 ml-2 font-semibold">Fees</div>
-	<div class="grid gap-2 mt-2 font-semibold ml-2" style:grid-template-columns="auto 6rem">
+	<div class="grid gap-2 mt-2 ml-2 font-semibold" style:grid-template-columns="auto 6rem">
 		<div>Creator Royalties:</div>
-		<div class="flex justify-end space-x-3 items-center">
+		<div class="flex items-center justify-end space-x-3">
 			<div class="">{totalColRoyalties(options)}%</div>
 			<div class="w-5">
 				<Info />
@@ -110,7 +109,7 @@
 		</div>
 
 		<div class="gradient-text">Hinata Fees:</div>
-		<div class="flex justify-end space-x-3 items-center">
+		<div class="flex items-center justify-end space-x-3">
 			<div class="gradient-text">0%</div>
 			<div class="w-5">
 				<Info />

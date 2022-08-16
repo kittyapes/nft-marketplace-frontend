@@ -3,6 +3,7 @@
 	import type { CardOptions } from '$interfaces/ui';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
+	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
@@ -73,17 +74,30 @@
 	}
 
 	onMount(refreshBids);
+
+	$: bidError = isFuture(chainListing.startTime) && "Auction hasn't started yet.";
+
+	let hoveringPlaceBid;
 </script>
 
-<div class="flex flex-col justify-center h-[90%]">
+<div class="flex flex-col justify-center h-[90%] pr-1">
 	<div class="flex flex-col h-full mt-4">
 		<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} on:request-refresh={refreshBids} />
 
-		<div class="my-4 ml-auto font-semibold">
-			<div class="">Starting price</div>
-			<div class="flex items-center justify-end gap-2">
-				<Eth />
-				{options.auctionData?.formatStartingPrice}
+		<div class="flex items-center justify-between my-4">
+			<div class="font-semibold">
+				<div class="">Quantity</div>
+				<div class="flex items-center justify-start gap-2">
+					{options?.nfts[0]?.quantity || '1'}
+				</div>
+			</div>
+
+			<div class="font-semibold">
+				<div class="">Starting price</div>
+				<div class="flex items-center justify-end gap-2 {(options?.auctionData?.formatStartingPrice || options?.auctionData?.startingPrice || 'N/A').toString().length > 12 ? 'text-xs' : 'text-base'}">
+					<Eth />
+					{options?.auctionData?.formatStartingPrice || options?.auctionData?.startingPrice || 'N/A'}
+				</div>
 			</div>
 		</div>
 
@@ -98,12 +112,20 @@
 					<SecondaryButton>Cancel Bid</SecondaryButton>
 				{/if}
 
-				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid}>
-					{#if isPlacingBid}
-						<ButtonSpinner />
+				<div class="relative w-full" on:pointerover={() => (hoveringPlaceBid = true)} on:pointerleave={() => (hoveringPlaceBid = false)}>
+					<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid || !!bidError}>
+						{#if isPlacingBid}
+							<ButtonSpinner />
+						{/if}
+						Place Bid
+					</PrimaryButton>
+
+					{#if hoveringPlaceBid && bidError}
+						<div class="absolute top-4">
+							<InfoBubble>{bidError}</InfoBubble>
+						</div>
 					{/if}
-					Place Bid
-				</PrimaryButton>
+				</div>
 			{:else}
 				<PrimaryButton on:click={connectToWallet}>Connect To Wallet</PrimaryButton>
 			{/if}

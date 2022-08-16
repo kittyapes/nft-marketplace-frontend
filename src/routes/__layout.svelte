@@ -5,20 +5,19 @@
 	import walletsScript from '$scripts/js/wallets.js?url';
 
 	// Imports from Unpkg
-	import walletConnectScript from '$scripts/js/walletconnect.umd.min.js?url';
 	import torusScript from '$scripts/js/torus.umd.min.js?url';
+	import walletConnectScript from '$scripts/js/walletconnect.umd.min.js?url';
 
+	import ErrorPage from '$lib/components/ErrorPage.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import Nav from '$lib/components/Nav.svelte';
-	import { onMount } from 'svelte';
-	import { refreshConnection } from '$utils/wallet/connectWallet';
 	import Toast from '$lib/components/toast/index.svelte';
-	import PopupManager from '$utils/popup/PopupManager.svelte';
 	import NavigationHandlers from '$lib/utils/NavigationHandlers.svelte';
-	import ErrorManager from '$lib/components/ErrorManager.svelte';
-	import ErrorPage from '$lib/components/ErrorPage.svelte';
-	import { currentError } from '$stores/error';
 	import { appDataToTriggerReload } from '$stores/wallet';
+	import PopupManager from '$utils/popup/PopupManager.svelte';
+	import { refreshConnection } from '$utils/wallet/connectWallet';
+	import { onMount, setContext } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
 
 	onMount(async () => {
 		// Check for whether user has access/has provided password
@@ -31,6 +30,34 @@
 		// Keep connection live as long as cachedProvider is present (even after reloads)
 		await refreshConnection();
 	});
+
+	let navigationErrorCode: number = null;
+	let passedUpErrorCode: number = null;
+
+	setContext('layout-stuff', {
+		setErrorCode: (code: number) => {
+			passedUpErrorCode = code;
+		}
+	});
+
+	afterNavigate(() => {
+		passedUpErrorCode = null;
+	});
+
+	$: errorCode = navigationErrorCode || passedUpErrorCode;
+
+	// Reload the app when the network has changed, but prevent app reload
+	// when the app has first loaded due to the network being null.
+	let previousNetworkId = null;
+	let appReloadHelper = 0;
+
+	appDataToTriggerReload.subscribe((o) => {
+		if (previousNetworkId !== null) {
+			appReloadHelper++;
+		}
+
+		previousNetworkId = o?.network.chainId || null;
+	});
 </script>
 
 <svelte:head>
@@ -40,10 +67,11 @@
 	<script src={walletsScript}></script>
 </svelte:head>
 
-{#key $appDataToTriggerReload}
+{#key appReloadHelper}
 	<Nav />
-	{#if $currentError}
-		<ErrorPage />
+
+	{#if errorCode}
+		<ErrorPage {errorCode} />
 	{:else}
 		<!-- <PageTransition {url}> -->
 		<div class="pt-16 mx-auto">
@@ -55,6 +83,5 @@
 	<Footer />
 	<Toast />
 	<PopupManager />
-	<ErrorManager />
-	<NavigationHandlers />
+	<NavigationHandlers bind:errorCode={navigationErrorCode} />
 {/key}

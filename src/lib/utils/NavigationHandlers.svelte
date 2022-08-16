@@ -4,13 +4,14 @@
 	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
-	import { currentError } from '$stores/error';
 	import { profileData, refreshProfileData } from '$stores/user';
-	import { currentUserAddress } from '$stores/wallet';
+	import { connectionDetails, currentUserAddress } from '$stores/wallet';
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
 	import { walletConnected, walletDisconnected } from '$utils/wallet';
+
+	export let errorCode = null;
 
 	// We are using a function to prevent reactivity race conditions
 	function getAuthRequiredRoutes() {
@@ -95,36 +96,49 @@
 
 	// Handler for when the app is first loaded on a auth protected route
 	afterNavigate(({ from, to }) => {
-		const unsub = currentUserAddress.subscribe(async (address) => {
-			if (!address) return;
-
-			if (isProtectedAndExpired(to.pathname)) {
-				unsub();
-				await goto('/');
-				setLoginPopup(to.pathname);
-			}
-		});
-
 		// Restrict routes to verified creators
-		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
-			profileData.subscribe((profile) => {
-				if (profile && (profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user')) && !profile.roles.includes('superadmin')) {
-					currentError.set(403);
-				}
-			});
-		}
+		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit' || to.pathname.match(/management*/)) {
+			if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
+				profileData.subscribe((profile) => {
+					if (profile && (profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user'))) {
+						if (!profile.roles.includes('superadmin')) {
+							// This check occurs only if the user is not the above.
+							// when placed above it causes 403 for other users, so if user does not have all three, they get the 403
+							errorCode = 403;
+						}
+					} else if (profile && (profile.status === 'VERIFIED' || profile.roles.includes('verified_user') || profile.roles.includes('superadmin'))) {
+						// reset the error to ensure displayed error is updated on UI
+						errorCode = null;
+					}
+				});
+			}
 
-		// Pages only accessible by superadmins
-		if (to.pathname.match(/management*/)) {
-			profileData.subscribe((profile) => {
-				if (profile && !profile.roles.includes('superadmin') && !profile.roles.includes('admin')) {
-					currentError.set(403);
-				}
-			});
+			// Pages only accessible by superadmins
+			if (to.pathname.match(/management*/)) {
+				profileData.subscribe((profile) => {
+					if (profile && (!profile.roles.includes('superadmin') || !profile.roles.includes('admin'))) {
+						errorCode = 403;
+					} else if (profile && (profile.roles.includes('superadmin') || profile.roles.includes('admin'))) {
+						// reset the error to ensure displayed error is updated on UI
+						errorCode = null;
+					}
+				});
+			}
+		} else {
+			// first set error to null, and then figure things out from there
+			// prevents bug related to the ui seeming unresponsive once error has been thrown
+			// basically keeps showing 403
+			errorCode = null;
 		}
 	});
 
 	$: if ($walletDisconnected && isConnectionRequired($page.url.pathname)) {
+		setWalletConnectionPopup($page.url.href);
+		goto('/');
+	}
+
+	$: if ($currentUserAddress && $connectionDetails && isProtectedAndExpired($page.url.pathname)) {
+		setLoginPopup($page.url.pathname);
 		goto('/');
 	}
 
@@ -132,8 +146,11 @@
 		if (!roles) return;
 
 		// If the user is not an admin and trying to access admin routes, redirect to the home page
-		if ($page.url.pathname.startsWith('/admin') && !roles.includes('admin') && !roles.includes('superadmin')) {
-			currentError.set(403);
+		if ($page.url.pathname.startsWith('/admin') && (!roles.includes('admin') || !roles.includes('superadmin'))) {
+			errorCode = 403;
+		} else if ($page.url.pathname.startsWith('/admin') && (roles.includes('admin') || roles.includes('superadmin'))) {
+			// reset the error to ensure displayed error is updated on UI
+			errorCode = null;
 		}
 	});
 </script>
