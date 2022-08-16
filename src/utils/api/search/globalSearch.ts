@@ -10,13 +10,13 @@ import type { Listing } from '../listing';
 export const getNftsByTitle = async (query: string, limit?: number, page?: number) => {
     try {
         let params = {
-          //  query: query ? query: undefined,
+            query: query ? query: undefined,
             page: page ? page : 1,
             limit: limit ? limit : undefined,
         }
 
         const res = await axios.get(getApiUrl('latest', 'nfts/search'), { params });
-        console.log(res)
+        
         return res.data.data as ApiNftData[];
     } catch {    
         throw new Error('Failed to search for listings');

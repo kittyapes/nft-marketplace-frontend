@@ -13,6 +13,7 @@
 	import { page } from '$app/stores';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import { onMount } from 'svelte';
 
 	const fullResultsLimit = 20;
 
@@ -134,71 +135,66 @@
 	searchQuery.subscribe((query) => {
 		debouncedSearch(query);
 	});
-
-	let refreshWithFilters: () => void;
 </script>
 
-<div class="flex flex-col w-full h-full min-h-screen md:flex-row">
-	<Sidebar bind:isOpen={sidebarOpen} on:request-refresh={() => refreshWithFilters()} />
-	<div class="w-full h-full p-10 flex flex-col gap-10 overflow-hidden {!sidebarOpen ? 'md:ml-24' : 'md:ml-72'}">
-		{#if loaded && (searchResults.collections.data.length > 0 || searchResults.nfts.data.length > 0 || searchResults.users.data.length > 0)}
-			{#if searchResults.collections?.data.length}
-				<div class="">
-					<div class="font-semibold text-lg">
-						<h1>Collection results</h1>
-					</div>
-					<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[100vw] overflow-y-hidden blue-scrollbar">
-						{#each searchResults.collections.data as collection}
-							<LargeCollectionCard {collection} />
-						{/each}
-						{#if searchResults.collections.isLoading}
-							<DiamondsLoader />
-						{:else}
-							<div use:inview={inviewOptions} on:change={() => searchResults.collections.fetchFunction($searchQuery)} />
-						{/if}
-					</div>
+<div class="w-full h-full p-10 flex flex-col gap-10 overflow-hidden">
+	{#if loaded && (searchResults.collections.data.length > 0 || searchResults.nfts.data.length > 0 || searchResults.users.data.length > 0)}
+		{#if searchResults.collections?.data.length}
+			<div class="">
+				<div class="font-semibold text-lg">
+					<h1>Collection results</h1>
 				</div>
-			{/if}
-			{#if searchResults.users?.data.length}
-				<div class="">
-					<div class="font-semibold text-lg">
-						<h1>Verified Creators</h1>
-					</div>
-					<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[100vw] overflow-y-hidden blue-scrollbar">
-						{#each searchResults.users.data as user}
-							<div class="" on:click={() => goto('/profile/' + user.address)}>
-								<FeaturedArtistCard title={user.username || 'Guest User'} description={user.bio || 'No bio'} coverImg={user.coverUrl} profileImg={user.thumbnailUrl} />
-							</div>
-						{/each}
-						{#if searchResults.users.isLoading}
-							<DiamondsLoader />
-						{:else}
-							<div use:inview={inviewOptions} on:change={() => searchResults.users.fetchFunction($searchQuery)} />
-						{/if}
-					</div>
+				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[100vw] overflow-y-hidden blue-scrollbar">
+					{#each searchResults.collections.data as collection}
+						<LargeCollectionCard {collection} />
+					{/each}
+					{#if searchResults.collections.isLoading}
+						<DiamondsLoader />
+					{:else}
+						<div use:inview={inviewOptions} on:change={() => searchResults.collections.fetchFunction($searchQuery)} />
+					{/if}
 				</div>
-			{/if}
-			{#if searchResults.nfts?.data.length}
-				<div class="w-full">
-					<div class="font-semibold text-lg">
-						<h1>Items</h1>
-					</div>
-					<div class="">
-						<NftList
-							options={searchResults.nfts.data}
-							isLoading={searchResults.nfts.isLoading}
-							on:end-reached={() => searchResults.nfts.fetchFunction($searchQuery)}
-							reachedEnd={searchResults.nfts.reachedEnd}
-						/>
-					</div>
-				</div>
-			{/if}
-		{:else if loaded}
-			<div class="p-40 text-xl text-center">No results found</div>
-		{:else}
-			<DiamondsLoader />
+			</div>
 		{/if}
-	</div>
+		{#if searchResults.users?.data.length}
+			<div class="">
+				<div class="font-semibold text-lg">
+					<h1>Verified Creators</h1>
+				</div>
+				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[100vw] overflow-y-hidden blue-scrollbar">
+					{#each searchResults.users.data as user}
+						<div class="" on:click={() => goto('/profile/' + user.address)}>
+							<FeaturedArtistCard title={user.username || 'Guest User'} description={user.bio || 'No bio'} coverImg={user.coverUrl} profileImg={user.thumbnailUrl} />
+						</div>
+					{/each}
+					{#if searchResults.users.isLoading}
+						<DiamondsLoader />
+					{:else}
+						<div use:inview={inviewOptions} on:change={() => searchResults.users.fetchFunction($searchQuery)} />
+					{/if}
+				</div>
+			</div>
+		{/if}
+		{#if searchResults.nfts?.data.length}
+			<div class="w-full">
+				<div class="font-semibold text-lg">
+					<h1>Items</h1>
+				</div>
+				<div class="">
+					<NftList
+						options={searchResults.nfts.data}
+						isLoading={searchResults.nfts.isLoading}
+						on:end-reached={() => searchResults.nfts.fetchFunction($searchQuery)}
+						reachedEnd={searchResults.nfts.reachedEnd}
+					/>
+				</div>
+			</div>
+		{/if}
+	{:else if loaded}
+		<div class="p-40 text-xl text-center">No results found</div>
+	{:else}
+		<DiamondsLoader />
+	{/if}
 </div>
 
 <style type="postcss">
