@@ -171,12 +171,11 @@
 		"inputs": [
 			{ "internalType": "string", "name": "name", "type": "string" },
 			{ "internalType": "string", "name": "symbol", "type": "string" },
-			{ "internalType": "string", "name": "uri", "type": "string" },
 			{ "internalType": "address[]", "name": "beneficiaries", "type": "address[]" },
 			{ "internalType": "uint256[]", "name": "percentages", "type": "uint256[]" },
 			{ "internalType": "bool", "name": "is721", "type": "bool" }
 		],
-		"name": "spawn",
+		"name": "create",
 		"outputs": [{ "internalType": "address", "name": "", "type": "address" }],
 		"stateMutability": "nonpayable",
 		"type": "function"
