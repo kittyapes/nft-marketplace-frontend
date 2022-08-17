@@ -40,6 +40,10 @@
 	currentUserAddress.subscribe(async (a) => {
 		showCreate = browser && a && (await storage.hasRole('minter', a).catch(() => false));
 	});
+
+	connectionDetails.subscribe(async (cDetails) => {
+		showCreate = browser && cDetails && $currentUserAddress && (await storage.hasRole('minter', $currentUserAddress).catch(() => false));
+	});
 </script>
 
 <div class="fixed z-10 flex w-full">
