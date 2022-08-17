@@ -32,7 +32,7 @@
 
 	let imageFailedToLoad = false;
 
-	$: useTestnets = $connectionDetails?.chainId !== 1 || import.meta.env.VITE_DEFAULT_NETWORK !== '1';
+	$: useTestnets = $connectionDetails ? $connectionDetails?.chainId !== 1 : import.meta.env.VITE_DEFAULT_NETWORK !== '1';
 
 	// Create button display logic
 	let showCreate = false;
