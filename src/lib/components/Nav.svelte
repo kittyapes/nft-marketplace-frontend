@@ -1,5 +1,5 @@
 <script>
-	// import Search from './Search.svelte';
+	import Search from './Search.svelte';
 	import ProfilePopup from './ProfilePopup.svelte';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { appSigner, connectionDetails, currentUserAddress } from '$stores/wallet';
@@ -57,7 +57,7 @@
 			{/if}
 		</a>
 
-		<!-- <Search class="snap-start" /> -->
+		<Search class="snap-start" />
 
 		<!-- Flex filler -->
 		<div class="flex-grow" />
