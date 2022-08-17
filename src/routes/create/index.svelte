@@ -17,7 +17,7 @@
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { newBundleData, type NewBundleData } from '$utils/create';
-	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
+	import { createNFTOnAPI, createNFTOnChain, updateNftOnApi } from '$utils/create/createNFT';
 	import { getNftId } from '$utils/create/getNftId';
 	import { getContract } from '$utils/misc/getContract';
 	import { goBack } from '$utils/navigation';
@@ -146,11 +146,23 @@
 
 		// create NFT on chain
 		try {
-			await createNFTOnChain({
+			const tx = await createNFTOnChain({
 				id: createNftRes.nftId.toString(),
 				amount: nftData.quantity.toString(),
 				collectionAddress: selectedCollection.collectionAddress
 			});
+			console.log(tx);
+
+			const updateObj = {
+				id: createNftRes._id,
+				mintingTransaction: (tx as any)?.transactionHash,
+				chainStatus: 'CONFIRMED'
+			};
+
+			(tx as any)?.transactionHash && (updateObj['mintingTransaction'] = (tx as any)?.transactionHash);
+
+			// Update the db backend just in case it fails to recognize the data we have already
+			await updateNftOnApi(updateObj);
 		} catch (err) {
 			notifyError('Failed to create NFT on chain!');
 			popupHandler.close();
