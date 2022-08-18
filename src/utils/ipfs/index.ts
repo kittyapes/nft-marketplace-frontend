@@ -5,5 +5,5 @@ export function makeHttps(url: string) {
 		return url;
 	}
 
-	return url.replace(/^ipfs:\/\//, 'https://ipfs.io/');
+	return url.replace(/^ipfs:\/\//, 'https://ipfs.io/ipfs/');
 }
