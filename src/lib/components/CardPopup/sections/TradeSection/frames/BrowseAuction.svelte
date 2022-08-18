@@ -113,16 +113,21 @@
 				{/if}
 
 				<div class="relative w-full" on:pointerover={() => (hoveringPlaceBid = true)} on:pointerleave={() => (hoveringPlaceBid = false)}>
-					<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid || !!bidError}>
+					<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid || !!bidError || !chainListing.isValidOnChainListing}>
 						{#if isPlacingBid}
 							<ButtonSpinner />
 						{/if}
 						Place Bid
 					</PrimaryButton>
 
-					{#if hoveringPlaceBid && bidError}
+					{#if hoveringPlaceBid && bidError && chainListing.isValidOnChainListing}
 						<div class="absolute top-4">
 							<InfoBubble>{bidError}</InfoBubble>
+						</div>
+					{/if}
+					{#if hoveringPlaceBid && !chainListing.isValidOnChainListing}
+						<div class="absolute top-4">
+							<InfoBubble>Sorry, this listing is no longer valid</InfoBubble>
 						</div>
 					{/if}
 				</div>
