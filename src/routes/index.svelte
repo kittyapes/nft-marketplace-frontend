@@ -85,9 +85,7 @@
 				Marketplace
 			</h1>
 
-			<div class="text-white py-6 px-1 text-lg w-1/2 font-semibold">
-				The Hinata platform features curated collections and artists of anime, manga, and all variety of illustrated work, including Art Blocks, Bored Ape Yacht Club, and more
-			</div>
+			<div class="text-white py-6 px-1 text-lg w-1/2 font-semibold">Welcome to the anime NFT marketplace featuring top collections on Ethereum curated by users and artists.</div>
 
 			<div class="flex gap-x-4 mt-6 h-16 uppercase font-semibold">
 				<a class="flex flex-col justify-center items-center bg-white w-48 transition-btn" href={socials.twitter} target="_blank">Follow Us</a>
