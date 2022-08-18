@@ -7,6 +7,11 @@ import { noTryAsync } from 'no-try';
 export async function salePurchase(listingId: string, price: string) {
 	const listing = await getOnChainListing(listingId);
 
+	if (!listing?.isValidOnChainListing) {
+		notifyError('Failed to Make Purchase: Listing is no longer valid');
+		return;
+	}
+
 	const marketplaceAddress = getContractData('marketplace').address;
 	const contractApproved = await ensureAmountApproved(marketplaceAddress, price, listing.payToken);
 

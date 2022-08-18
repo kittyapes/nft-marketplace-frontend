@@ -88,6 +88,11 @@ export async function contractPurchaseListing(listingId: string) {
 	const contract = getContract('marketplace');
 	const listing = await getOnChainListing(listingId);
 
+	if (!listing?.isValidOnChainListing) {
+		notifyError('Failed to Make Purchase: Listing is no longer valid');
+		return;
+	}
+
 	const contractApproved = await ensureAmountApproved(contract.address, listing.price, listing.payToken);
 
 	if (!contractApproved) {
@@ -109,11 +114,15 @@ export interface ChainListing {
 	duration: number;
 	quantity: number;
 	listingType: LISTING_TYPE;
+	isValidOnChainListing: boolean;
 }
 
 export async function getOnChainListing(listingId: string): Promise<ChainListing> {
 	const contract = getContract('marketplace', true);
 	const onChainListing = await contract.listings(listingId);
+
+	// if on chain listing is not valid, return null
+	const onChainId = ethers.utils.formatUnits(onChainListing.id, 0);
 
 	const token = await getTokenDetails(onChainListing.payToken);
 
@@ -127,7 +136,8 @@ export async function getOnChainListing(listingId: string): Promise<ChainListing
 		reservePrice: ethers.utils.formatUnits(onChainListing.reservePrice),
 		quantity: onChainListing.quantity.toNumber(),
 		seller: onChainListing.seller,
-		startTime: onChainListing.startTime ? onChainListing.startTime.toNumber() : null
+		startTime: onChainListing.startTime ? onChainListing.startTime.toNumber() : null,
+		isValidOnChainListing: onChainId === listingId.toString()
 	};
 
 	return onChainObj;

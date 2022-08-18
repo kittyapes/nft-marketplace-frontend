@@ -61,7 +61,7 @@
 </script>
 
 <svelte:head>
-	<title>Hinata</title>
+	<title>Hinata - Anime NFT Marketplace</title>
 	<script src={walletConnectScript}></script>
 	<script src={torusScript}></script>
 	<script src={walletsScript}></script>
