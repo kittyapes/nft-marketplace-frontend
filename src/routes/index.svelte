@@ -37,7 +37,7 @@
 	// We don't anymore 🙂 🔪
 	onMount(async () => {
 		getExploreMarketData();
-		collections = await apiGetMostActiveCollections();
+		collections = (await apiGetMostActiveCollections()).collections;
 	});
 </script>
 
