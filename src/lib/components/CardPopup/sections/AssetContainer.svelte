@@ -10,6 +10,7 @@
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { capitalize, reject } from 'lodash-es';
 	import { noTryAsync } from 'no-try';
+	import { makeHttps } from '$utils/ipfs';
 
 	export let title: string;
 	export let assetUrl: string;
@@ -49,12 +50,12 @@
 		if (videoAsset?.requestFullscreen) {
 			videoAsset.requestFullscreen();
 		} else {
-			assetUrl && window.open(assetUrl, '_blank');
+			assetUrl && window.open(makeHttps(assetUrl), '_blank');
 		}
 	}
 
 	const preload = async (src) => {
-		const resp = await fetch(src);
+		const resp = await fetch(makeHttps(src));
 		const blob = await resp.blob();
 		fileType = blob.type.split('/')[0];
 
