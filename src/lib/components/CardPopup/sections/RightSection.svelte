@@ -98,9 +98,9 @@
 
 	<svelte:component this={selectedTab.sectionComponent} {options} {chainListing} on:close-popup bind:showBackButton bind:this={tabComponentInstance} on:listing-created={refreshBalance} />
 </div>
-
+<!-- 
 {#if showCannotTrade}
 	<AttachToElement to={tradeTab} offsetY={50} offsetX={-12}>
 		<InfoBubble>This NFT is not part of any of the whitelisted collections on the marketplace, it therefore cannot be traded here.</InfoBubble>
 	</AttachToElement>
-{/if}
+{/if} -->

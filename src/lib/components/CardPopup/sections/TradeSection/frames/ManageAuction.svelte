@@ -29,6 +29,11 @@
 	async function acceptHighest() {
 		isAccepting = true;
 
+		if (!chainListing?.isValidOnChainListing) {
+			notifyError('Failed to Accept Highest Bid: Listing is no longer valid (not on chain)');
+			return;
+		}
+
 		const { err, res } = await contractCompleteAuction(options.listingData.onChainId);
 
 		if (err) {
@@ -47,6 +52,11 @@
 
 	async function cancelListing() {
 		isCancelling = true;
+
+		if (!chainListing?.isValidOnChainListing) {
+			notifyError('Failed to Cancel Listing: Listing is no longer valid (not on chain)');
+			return;
+		}
 
 		try {
 			await contractCancelListing(options.listingData.onChainId);

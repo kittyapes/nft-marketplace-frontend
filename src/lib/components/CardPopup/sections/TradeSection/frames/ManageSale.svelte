@@ -3,7 +3,7 @@
 	import InfoBox from '$lib/components/InfoBox.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
-	import { contractCancelListing } from '$utils/contracts/listing';
+	import { contractCancelListing, type ChainListing } from '$utils/contracts/listing';
 	import { notifyError } from '$utils/toast';
 
 	import { frame } from '../tradeSection';
@@ -11,11 +11,17 @@
 	import Success from './Success.svelte';
 
 	export let options: CardOptions;
+	export let chainListing: ChainListing;
 
 	let cancellingListing = false;
 
 	async function cancelListing() {
 		cancellingListing = true;
+
+		if (!chainListing?.isValidOnChainListing) {
+			notifyError('Failed to Cancel Listing: Listing is no longer valid (not on chain)');
+			return;
+		}
 
 		try {
 			await contractCancelListing(options.listingData.onChainId);

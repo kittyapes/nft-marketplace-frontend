@@ -77,7 +77,7 @@
 					on:pointerleave={() => (hoveringPurchase = false)}
 					class="font-bold uppercase btn btn-gradient btn-rounded w-80"
 					on:click={handlePurchase}
-					disabled={purchasing || !!purchaseError}
+					disabled={purchasing || !!purchaseError || !chainListing.isValidOnChainListing}
 				>
 					{#if purchasing || $hasEnoughTokens === null}
 						<ButtonSpinner />
@@ -85,9 +85,15 @@
 					Buy Now
 				</button>
 
-				{#if hoveringPurchase && purchaseError}
+				{#if hoveringPurchase && purchaseError && chainListing.isValidOnChainListing}
 					<div class="absolute top-12">
 						<InfoBubble>{purchaseError}</InfoBubble>
+					</div>
+				{/if}
+
+				{#if hoveringPurchase && !chainListing.isValidOnChainListing}
+					<div class="absolute top-12">
+						<InfoBubble>Sorry, this listing is no longer valid</InfoBubble>
 					</div>
 				{/if}
 			</div>
