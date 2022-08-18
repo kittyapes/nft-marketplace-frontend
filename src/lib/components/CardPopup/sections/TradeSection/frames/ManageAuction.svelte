@@ -27,12 +27,12 @@
 	let biddings: BidRow[] = [];
 
 	async function acceptHighest() {
-		isAccepting = true;
-
 		if (!chainListing?.isValidOnChainListing) {
 			notifyError('Failed to Accept Highest Bid: Listing is no longer valid (not on chain)');
 			return;
 		}
+
+		isAccepting = true;
 
 		const { err, res } = await contractCompleteAuction(options.listingData.onChainId);
 
@@ -51,12 +51,12 @@
 	let cancelButtonContainer: HTMLElement;
 
 	async function cancelListing() {
-		isCancelling = true;
-
 		if (!chainListing?.isValidOnChainListing) {
 			notifyError('Failed to Cancel Listing: Listing is no longer valid (not on chain)');
 			return;
 		}
+
+		isCancelling = true;
 
 		try {
 			await contractCancelListing(options.listingData.onChainId);

@@ -16,12 +16,12 @@
 	let cancellingListing = false;
 
 	async function cancelListing() {
-		cancellingListing = true;
-
 		if (!chainListing?.isValidOnChainListing) {
 			notifyError('Failed to Cancel Listing: Listing is no longer valid (not on chain)');
 			return;
 		}
+
+		cancellingListing = true;
 
 		try {
 			await contractCancelListing(options.listingData.onChainId);
