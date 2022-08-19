@@ -42,7 +42,7 @@
 </script>
 
 <MetaTags
-	title="Hinata"
+	title="Hinata - Anime NFT Marketplace"
 	description="The anime and metaverse NFT platform for browsing and creating web3 artwork that you can auction, raffle or sell for cryptocurrency using your Ethereum wallet."
 	canonical="https://hinata.io/"
 	openGraph={{
