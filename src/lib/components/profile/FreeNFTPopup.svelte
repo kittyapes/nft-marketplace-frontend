@@ -3,12 +3,12 @@
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import ChevronRight from '$icons/chevron-right.svelte';
 	import Loader from '$icons/loader.svelte';
-	import { welcomeNfts } from '$constants/nfts';
+	import { welcomeNftsMainnet, welcomeNftsRinkeby } from '$constants/nfts';
 	import { clone } from 'lodash-es';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import type { PopupHandler } from '$utils/popup';
 	import { claimFreeNft } from '$utils/api/freeNft';
-	import { appSigner, currentUserAddress, welcomeNftMessage } from '$stores/wallet';
+	import { appSigner, currentUserAddress, welcomeNftMessage, connectionDetails } from '$stores/wallet';
 
 	export let handler: PopupHandler;
 
@@ -53,7 +53,11 @@
 		}
 	}
 
-	let nfts = clone(welcomeNfts);
+	$: nfts = clone($connectionDetails?.chainId === 1 || +import.meta.env.VITE_DEFAULT_NETWORK === 1 ? welcomeNftsMainnet : welcomeNftsRinkeby);
+	$: if ($connectionDetails || $currentUserAddress) {
+		nfts = clone($connectionDetails?.chainId === 1 || (!$connectionDetails && +import.meta.env.VITE_DEFAULT_NETWORK === 1) ? welcomeNftsMainnet : welcomeNftsRinkeby);
+	}
+	$: console.log(nfts);
 	$: data = nfts[0];
 </script>
 
