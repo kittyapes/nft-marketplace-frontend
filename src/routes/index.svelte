@@ -118,9 +118,9 @@
 	</div>
 	<hr class="mt-4 border-[#0000004D]" />
 
-	{#if $loadedExploreListings}
+	{#if $loadedExploreListings && exploreListingsData?.length > 0}
 		<NftList options={exploreListingsData} />
-	{:else}
+	{:else if !$loadedExploreListings}
 		<DiamondsLoader />
 	{/if}
 </div>
