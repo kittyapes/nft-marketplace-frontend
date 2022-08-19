@@ -9,6 +9,7 @@
 	import type { PopupHandler } from '$utils/popup';
 	import { claimFreeNft } from '$utils/api/freeNft';
 	import { appSigner, currentUserAddress, welcomeNftMessage, connectionDetails } from '$stores/wallet';
+	import { onMount } from 'svelte';
 
 	export let handler: PopupHandler;
 
@@ -19,6 +20,8 @@
 
 	let minting = false;
 	let minted = false;
+	let networkId: number;
+	let uAddress: string;
 
 	async function onMint() {
 		minting = true;
@@ -53,8 +56,13 @@
 		}
 	}
 
-	$: nfts = clone($connectionDetails?.chainId === 1 || +import.meta.env.VITE_DEFAULT_NETWORK === 1 ? welcomeNftsMainnet : welcomeNftsRinkeby);
-	$: if ($connectionDetails || $currentUserAddress) {
+	onMount(() => {
+		uAddress = $currentUserAddress;
+		networkId = $connectionDetails?.chainId;
+	});
+
+	let nfts = clone($connectionDetails?.chainId === 1 || +import.meta.env.VITE_DEFAULT_NETWORK === 1 ? welcomeNftsMainnet : welcomeNftsRinkeby);
+	$: if ($connectionDetails?.chainId !== networkId || $currentUserAddress !== uAddress) {
 		nfts = clone($connectionDetails?.chainId === 1 || (!$connectionDetails && +import.meta.env.VITE_DEFAULT_NETWORK === 1) ? welcomeNftsMainnet : welcomeNftsRinkeby);
 	}
 	$: console.log(nfts);
