@@ -31,7 +31,8 @@
 		let areAddressesSimilar =
 			values.filter((item) => !!item.address && !!v.address && isEthAddress(item.address) && isEthAddress(v.address) && item.address.toLowerCase() === v.address.toLowerCase()).length > 1;
 
-		if (total < 0.3 && values.reduce((acc, v) => !!acc || !!(+v.fees > 0) || !!v.address, false)) isValid = 'Sum of Royalties Cannot Be Below 0.3 %';
+		if (values.some((value) => parseFloat(value.fees.toString()) === 0)) isValid = 'Royalty Must be a Non-Zero Value';
+		else if (total < 0.3 && values.reduce((acc, v) => !!acc || !!(+v.fees > 0) || !!v.address, false)) isValid = 'Sum of Royalties Cannot Be Below 0.3 %';
 		else {
 			isValid =
 				total > 98.5
