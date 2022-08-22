@@ -2,6 +2,7 @@
 	import type { CardOptions } from '$interfaces/ui';
 
 	import { likedNftIds } from '$stores/user';
+	import { makeHttps } from '$utils/ipfs';
 
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import type { PopupHandler } from '$utils/popup';
@@ -36,12 +37,12 @@
 		<!-- Left part with image and buttons -->
 		<div class="h-full lg:w-2/5">
 			<AssetContainer
-				assetUrl={options.nfts[0].assetUrl}
+				assetUrl={makeHttps(options.nfts[0].assetUrl)}
 				title={options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
 				{options}
 				favorited={$likedNftIds.includes(options.nfts[0].onChainId)}
 				countdown={countdownData}
-				thumbnailUrl={options.nfts[0]?.thumbnailUrl}
+				thumbnailUrl={makeHttps(options.nfts[0]?.thumbnailUrl)}
 			/>
 		</div>
 
