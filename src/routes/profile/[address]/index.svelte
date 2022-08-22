@@ -267,7 +267,7 @@
 			{/if}
 
 			{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
-				<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || storage.hasRole('minter', address)} class="inline-block translate-x-1 translate-y-1">
+				<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || !storage.hasRole('minter', address)} class="inline-block translate-x-1 translate-y-1">
 					<VerifiedBadge />
 				</div>
 			{/if}
