@@ -30,7 +30,7 @@ export function listingToCardOptions(listing: Listing, fallback?: any): CardOpti
 				},
 				likes: nft?.favoriteCount,
 				thumbnailUrl: nft.thumbnailUrl,
-				assetUrl: nft?.assetUrl || nft?.thumbnailUrl,
+				assetUrl: nft?.metadata?.animation_url || nft?.assetUrl || nft?.thumbnailUrl,
 				quantity: listing.nfts[0].amount
 			}
 		],
