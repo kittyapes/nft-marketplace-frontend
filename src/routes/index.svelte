@@ -3,7 +3,7 @@
 	import { socials } from '$constants/socials';
 	import CollectionsTable from '$lib/components/collections/CollectionsTable.svelte';
 	import { apiGetMostActiveCollections, type Collection } from '$utils/api/collection';
-	import { fade } from 'svelte/transition';
+	import { fade, slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
@@ -17,7 +17,7 @@
 	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
 	let loadedExploreListings = writable(false);
-	let exploreListingsData;
+	let exploreListingsData = [];
 
 	const aidrop = {
 		title: 'Claim your monthly airdrop',
@@ -111,19 +111,17 @@
 </div>
 
 <!-- Explore Market Section -->
-<div class="px-16 mt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Explore Market</h2>
-		<a href="/marketplace" class="uppercase underline text-sm font-bold">View All</a>
-	</div>
-	<hr class="mt-4 border-[#0000004D]" />
+{#if $loadedExploreListings && exploreListingsData?.length > 0}
+	<div class="px-16 mt-24 mb-16" in:slide>
+		<div class="flex items-end">
+			<h2 class="text-4xl font-light uppercase flex-grow">Explore Market</h2>
+			<a href="/marketplace" class="uppercase underline text-sm font-bold">View All</a>
+		</div>
+		<hr class="mt-4 border-[#0000004D]" />
 
-	{#if $loadedExploreListings && exploreListingsData?.length > 0}
 		<NftList options={exploreListingsData} />
-	{:else if !$loadedExploreListings}
-		<DiamondsLoader />
-	{/if}
-</div>
+	</div>
+{/if}
 
 <!-- Latest blog posts -->
 <div class="px-16 mt-24 mb-16">
