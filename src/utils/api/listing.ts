@@ -74,6 +74,7 @@ export interface Listing {
 			image: string;
 			name: string;
 			description: string;
+			animation_url?: string;
 		};
 		name: string;
 		nftId: string;

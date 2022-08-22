@@ -23,7 +23,7 @@ export function nftToCardOptions(nft: ApiNftData): CardOptions {
 				},
 				likes: nft.favoriteCount,
 				thumbnailUrl: nft.thumbnailUrl,
-				assetUrl: nft.assetUrl || nft.thumbnailUrl,
+				assetUrl: nft?.metadata?.animation_url || nft.assetUrl || nft.thumbnailUrl,
 				quantity: 1
 			}
 		],
