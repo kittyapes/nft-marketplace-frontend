@@ -277,7 +277,7 @@
 
 				<div class="grid items-stretch grid-cols-2">
 					<div class="flex items-center transition input-label gradient-text">
-						<div class="mr-2">25%</div>
+						<div class="mr-2" class:text-color-gray-light={!isEmail($localDataStore.email)}>25%</div>
 						<div class:text-black={!isEmail($localDataStore.email)}>Email</div>
 						<span class="text-red-500 text-base">*</span>
 					</div>
@@ -293,7 +293,7 @@
 
 				<div class="grid grid-cols-2 items-start">
 					<div class="flex items-center transition input-label gradient-text">
-						<div class="mr-2">25%</div>
+						<div class="mr-2" class:text-color-gray-light={!($localDataStore.bio && isValidBio($localDataStore.bio))}>25%</div>
 						<div class:text-black={!($localDataStore.bio && isValidBio($localDataStore.bio))}>Bio</div>
 					</div>
 
@@ -307,7 +307,7 @@
 
 				<div class="grid grid-cols-2 items-start">
 					<div class="gradient-text input-label flex">
-						<div class="mr-2">25%</div>
+						<div class="mr-2" class:text-color-gray-light={!isProfileImage}>25%</div>
 						<div>
 							<div class="transition">
 								<div class="flex flex-col">
@@ -333,7 +333,7 @@
 
 				<div class="grid grid-cols-2 items-start">
 					<div class="gradient-text input-label flex">
-						<div class="mr-2">25%</div>
+						<div class="mr-2" class:text-color-gray-light={!isCoverImage}>25%</div>
 						<div>
 							<div class="input-label">
 								<div class:text-black={!isCoverImage}>BANNER</div>
