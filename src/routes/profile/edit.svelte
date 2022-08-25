@@ -38,7 +38,7 @@
 	const progressbarPoints = [
 		{ at: 20, label: 'Email', top_value: '25%' },
 		{ at: 40, label: 'Bio', top_value: '50%' },
-		{ at: 60, label: 'Profile Picture', top_value: '75%' },
+		{ at: 60, label: '	icture', top_value: '75%' },
 		{ at: 80, label: 'Banner Image', top_value: '100%' },
 		{ at: 100, label: '', top_value: 'Free NFT' }
 	];
@@ -310,10 +310,10 @@
 						<div class="mr-2">25%</div>
 						<div>
 							<div class="transition">
-								<div class="flex">
+								<div class="flex flex-col">
 									<div class:text-black={!isProfileImage}>PROFILE</div>
+									<div class:text-black={!isProfileImage}>PICTURE</div>
 								</div>
-								PICTURE
 							</div>
 							<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
 							<div class="text-xs text-[#A9A8A8]">Max 10MB</div>
