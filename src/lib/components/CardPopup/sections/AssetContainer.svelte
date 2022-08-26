@@ -86,7 +86,16 @@
 				<img src={assetUrl} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
 			{/if}
 		{:catch _err}
-			<img src={`${thumbnailUrl}?not-from-cache`} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
+			{#if fileType === 'video'}
+				<video crossorigin="anonymous" class="max-w-full max-h-full shadow-xl" poster={thumbnailUrl} autoplay loop bind:this={videoAsset}>
+					<source src={assetUrl} type="video/mp4" />
+					<track kind="captions" />
+				</video>
+			{:else if fileType === 'image'}
+				<img src={assetUrl} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
+			{:else}
+				<img src={thumbnailUrl} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
+			{/if}
 		{/await}
 	</div>
 

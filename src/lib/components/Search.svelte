@@ -1,20 +1,19 @@
 <script lang="ts">
 	import Search from '$icons/search.svelte';
 	import { debounce } from 'lodash-es';
-	import { notifyError } from '$utils/toast';
-	import { getCollectionsByTitle, getListingsByTitle, getUsersByName } from '$utils/api/search/globalSearch';
-	import type { SearchResults } from 'src/interfaces/search/searchResults';
-	import { reject } from 'lodash-es';
+	import { getCollectionsByTitle, getNftsByTitle, searchUsersByName } from '$utils/api/search/globalSearch';
 	import Loader from '$icons/loader.svelte';
 	import { tick } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import { setPopup } from '$utils/popup';
-	import axios from 'axios';
+	import { page } from '$app/stores';
 	import { searchQuery } from '$stores/search';
-	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
+	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
+	import type { CardOptions } from '$interfaces/ui';
 
 	let query: string;
 	let searching = false;
@@ -24,68 +23,57 @@
 
 	let searchResults = {
 		collections: [],
-		listings: [],
+		items: [],
 		users: []
 	};
 
-	const debouncedSearch = debounce(async () => {
-		await searchGlobally();
+	const debouncedSearch = debounce(async (query: string) => {
+		await searchGlobally(query);
 	}, 500);
 
-	const searchListings = async (query: string) => {
-		const response = await getListingsByTitle(query, resultCategoryLimit);
-		let listings = response;
-		searchResults.listings = listings.map(listingToCardOptions);
+	const searchNfts = async (query: string) => {
+		const response = await getNftsByTitle(query, resultCategoryLimit);
+		let nfts = response;
+		searchResults.items = nfts.map(nftToCardOptions);
 	};
 
 	const searchUsers = async (query: string) => {
-		const response = await getUsersByName(query, resultCategoryLimit).catch((e) => []);
-		searchResults.users = response;
+		const response = await searchUsersByName(query).catch((e) => []);
+		searchResults.users = response.slice(0, 3);
 	};
 
 	const searchCollections = async (query: string) => {
 		const response = await getCollectionsByTitle(query, resultCategoryLimit).catch((e) => []);
-		searchResults.collections = response.filter((e) => e.slug);
+		searchResults.collections = response.collections;
 	};
 
-	const searchGlobally = async () => {
-		await searchListings(query).catch((error) => console.log(error));
+	const searchGlobally = async (query: string) => {
+		await searchNfts(query).catch((error) => console.log(error));
 		await searchUsers(query).catch((error) => console.log(error));
 		await searchCollections(query).catch((error) => console.log(error));
 
 		await tick();
-		$searchQuery = query;
 		show = true;
 	};
 
 	$: if (!query) {
 		searching = false;
+		$searchQuery = query;
 		debouncedSearch.cancel();
 	}
 
 	$: if (query) {
-		searching = true;
-		show = false;
-		debouncedSearch();
+		$searchQuery = query;
+		if (!$page.url.pathname.startsWith('/search')) {
+			searching = true;
+			show = false;
+			debouncedSearch($searchQuery);
+		}
 	}
 
-	const preload = async (src) => {
-		try {
-			const res = await axios.get(src);
-			const blob = await new Blob(res.data);
-
-			return new Promise(function (resolve) {
-				let reader = new FileReader();
-				reader.readAsDataURL(blob);
-				reader.onload = () => {
-					resolve(reader.result);
-				};
-				reader.onerror = (error) => reject(`Error: ${error}`);
-			});
-		} catch (error) {
-			console.log(error);
-		}
-	};
+	beforeNavigate(({ to }) => {
+		if (!to.pathname.match(/search*/)) query = '';
+	});
 </script>
 
 <div
@@ -101,7 +89,7 @@
 			if (e.code === 'Enter') {
 				show = false;
 				searching = false;
-				goto('/search');
+				goto('/search?query=' + $searchQuery);
 			}
 		}}
 		type="text"
@@ -118,19 +106,16 @@
 							<div class="border-b border-black border-opacity-30" />
 							<div class="p-4 flex flex-col gap-4">
 								{#each searchResults[section] as result}
-									{#if section === 'listings'}
-										<div class="flex gap-4 items-center btn" on:click={() => setPopup(result.popupComponent, { props: { options: result.popupOptions } })}>
-											{#if result.imageUrl}
+									{#if section === 'items'}
+										{@const props = result.nfts[0]}
+										<div class="flex gap-4 items-center btn" on:click={() => setPopup(CardPopup, { props: { options: searchResults['items'][0] } })}>
+											{#if props.thumbnailUrl}
 												<div class="w-12 h-12 rounded-full grid place-items-center">
-													<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({result.imageUrl})" />
+													<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({props.thumbnailUrl})" />
 												</div>
 											{/if}
-											<div class="font-semibold w-full max-w-full">
-												{#if result.title?.length > 25}
-													{result.title.slice(0, 25)}...
-												{:else}
-													{result.title}
-												{/if}
+											<div class="font-semibold w-full max-w-full truncate">
+												{props.name}
 											</div>
 										</div>
 									{:else if section === 'users'}
@@ -147,12 +132,8 @@
 												</div>
 											{/if}
 											<div class="">
-												<div class="font-semibold username w-full max-w-full">
-													{#if result.username?.length > 25}
-														{result.username.slice(0, 25)}...
-													{:else}
-														{result.username}
-													{/if}
+												<div class="font-semibold username w-full max-w-full truncate">
+													{result.username}
 												</div>
 											</div>
 											{#if result.roles?.includes('verified_user')}
@@ -172,12 +153,8 @@
 													<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({result.logoImageUrl})" />
 												</div>
 											{/if}
-											<div class="font-semibold w-full max-w-full">
-												{#if result.name?.length > 25}
-													{result.name?.slice(0, 25)}...
-												{:else}
-													{result.name}
-												{/if}
+											<div class="font-semibold w-full max-w-full truncate">
+												{result.name}
 											</div>
 										</div>
 									{/if}
@@ -193,7 +170,7 @@
 							on:click={() => {
 								show = false;
 								searching = false;
-								goto('/search');
+								goto('/search?query=' + query);
 							}}
 						>
 							All results
