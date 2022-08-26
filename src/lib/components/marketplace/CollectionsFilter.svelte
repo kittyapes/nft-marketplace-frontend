@@ -13,6 +13,8 @@
 
 	const dispatch = createEventDispatcher();
 
+	export let state: string;
+
 	let query = '';
 	let collections: any[] = [];
 	let searching = false;

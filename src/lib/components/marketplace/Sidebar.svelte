@@ -1,14 +1,70 @@
-<script>
+<script lang="ts">
 	import ArrowLeft from '$icons/arrow-left.svelte';
 	import Filters from '$icons/filters.svelte';
 	import SidebarItem from '$lib/components/marketplace/SidebarItem.svelte';
+	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
+	import { page } from '$app/stores';
 	import CollectionsFilter from './CollectionsFilter.svelte';
 	import PriceFilter from './PriceFilter.svelte';
 	import StatusFilter from './StatusFilter.svelte';
 
 	export let isOpen = true;
 	const toggle = () => (isOpen = !isOpen);
+
+	const tabs = [
+		{
+			title: 'Show Only',
+			icon: 'status',
+			queryString: 'types',
+			renderComponent: StatusFilter,
+			open: false,
+			state: '',
+			setState: (params: string) => {
+				return params;
+			}
+		},
+		{
+			title: 'Collections',
+			icon: 'collection',
+			queryString: 'collections',
+			renderComponent: CollectionsFilter,
+			open: false,
+			state: '',
+			setState: (params: string) => {
+				console.log(params);
+				return '';
+			}
+		},
+		{
+			title: 'Price',
+			icon: 'price',
+			queryString: 'token',
+			renderComponent: PriceFilter,
+			open: false,
+			state: '',
+			setState: (params: string) => {
+				console.log(params);
+				return '';
+			}
+		}
+	];
+
+	let loaded = false;
+
+	onMount(() => {
+		// open filter tabs if page refreshed with filters
+		tabs.forEach((t) => {
+			if ($page.url.searchParams.has(t.queryString)) {
+				let searchParamsValue = $page.url.searchParams.get(t.queryString);
+
+				t.state = t.setState(searchParamsValue);
+				t.open = true;
+			}
+		});
+
+		loaded = true;
+	});
 </script>
 
 <div
@@ -36,19 +92,13 @@
 		</div>
 	{/if}
 
-	{#if isOpen}
+	{#if isOpen && loaded}
 		<div transition:slide={{ duration: 200 }}>
-			<SidebarItem title="Show Only" icon="status">
-				<StatusFilter on:request-refresh />
-			</SidebarItem>
-
-			<SidebarItem title="Collections" icon="collection">
-				<CollectionsFilter on:request-refresh />
-			</SidebarItem>
-
-			<SidebarItem title="Price" icon="price">
-				<PriceFilter on:request-refresh />
-			</SidebarItem>
+			{#each tabs as tab}
+				<SidebarItem title={tab.title} icon={tab.icon} isOpen={tab.open}>
+					<svelte:component this={tab.renderComponent} state={tab.state} on:request-refresh />
+				</SidebarItem>
+			{/each}
 		</div>
 	{/if}
 </div>
