@@ -16,13 +16,16 @@
 	import { createEventDispatcher } from 'svelte';
 	import { frame } from '../tradeSection';
 	import Success from './Success.svelte';
+	import dayjs from 'dayjs';
 
 	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
 
-	// $: listingExpired = dayjs(options.listingData.startTime).add(options.listingData.duration, 'seconds').isBefore(dayjs());
+	$: listingExpired = dayjs(options.listingData.startTime * 1000)
+		.add(options.listingData.duration, 'seconds')
+		.isBefore(dayjs());
 
 	let biddings: BidRow[] = [];
 
@@ -85,7 +88,13 @@
 		highestAmount && highestAmount.lt(parseToken(chainListing.reservePrice, chainListing.payToken))
 	].some((v) => v) && (!options?.auctionData.reservePrice || options?.auctionData.reservePrice !== options?.auctionData.startingPrice);
 
-	$: canAccept = [biddings.length > 0].some((v) => v);
+	let canAccept = false;
+
+	$: if (chainListing.reservePrice === chainListing.price) {
+		canAccept = [biddings.length > 0].some((v) => v);
+	} else {
+		canAccept = listingExpired || (biddings.length && parseFloat(biddings[0].tokenAmount) >= parseFloat(chainListing.reservePrice));
+	}
 </script>
 
 <div class="flex flex-col h-full pb-12 mt-4">

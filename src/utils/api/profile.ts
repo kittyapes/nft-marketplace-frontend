@@ -1,4 +1,4 @@
-import { appSigner } from '$stores/wallet';
+import { appSigner, currentUserAddress } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { htmlize } from '$utils/misc/htmlize';
 import type { SupportedSocialNetworks } from '$utils/validator/isValidSocialLink';
@@ -24,7 +24,18 @@ export interface LoginHistoryEntry {
 export async function fetchProfileData(address: string) {
 	if (!address) return null;
 
-	const res = await axios.get(getApiUrl('latest', 'users/' + address)).catch(() => null);
+	let res = null;
+
+	if (address.toLowerCase() === get(currentUserAddress)?.toLowerCase()) {
+		// Fetch personal profile
+		res = await axios.get(getApiUrl('latest', 'users'), await getAxiosConfig()).catch(() => null);
+	} else {
+		try {
+			res = await axios.get(getApiUrl('latest', 'users/' + address), await getAxiosConfig()).catch(() => null);
+		} catch (error) {
+			res = await axios.get(getApiUrl('latest', 'users/' + address)).catch(() => null);
+		}
+	}
 
 	if (!res) {
 		return null;
