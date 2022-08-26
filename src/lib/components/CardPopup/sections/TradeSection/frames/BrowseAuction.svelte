@@ -88,7 +88,7 @@
 			<div class="font-semibold">
 				<div class="">Quantity</div>
 				<div class="flex items-center justify-start gap-2">
-					{options?.rawResourceData?.listing?.quantity ?? options?.nfts[0]?.quantity ?? '1'}
+					{chainListing?.quantity ?? options?.rawResourceData?.listing?.quantity ?? options?.nfts[0]?.quantity ?? '1'}
 				</div>
 			</div>
 
