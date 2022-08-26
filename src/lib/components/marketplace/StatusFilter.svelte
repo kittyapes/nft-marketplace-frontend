@@ -6,12 +6,18 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let state: string;
+	export let state: string = '';
 
 	let listingTypes: { label: string; listingType: string; selected: boolean }[] = [
 		{ label: 'Buy Now', listingType: 'sale', selected: false },
 		{ label: 'Auction', listingType: 'auction', selected: false }
 	];
+
+	listingTypes.forEach((t) => {
+		if (state && t.listingType === state) {
+			t.selected = true;
+		}
+	});
 
 	function selectFilter(type: { label: string; listingType: string; selected: boolean }) {
 		// Unselect selected filter if one is selected

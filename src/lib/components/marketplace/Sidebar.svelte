@@ -32,8 +32,7 @@
 			open: false,
 			state: '',
 			setState: (params: string) => {
-				console.log(params);
-				return '';
+				return params;
 			}
 		},
 		{
