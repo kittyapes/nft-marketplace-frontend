@@ -124,6 +124,9 @@ export async function getOnChainListing(listingId: string): Promise<ChainListing
 	// if on chain listing is not valid, return null
 	const onChainId = ethers.utils.formatUnits(onChainListing.id, 0);
 
+	// if on chain listing is not valid, return null
+	const onChainId = ethers.utils.formatUnits(onChainListing.id, 0);
+
 	const token = await getTokenDetails(onChainListing.payToken);
 
 	// Copying over the values to remove the first array vars from chain
