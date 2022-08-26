@@ -1,8 +1,6 @@
 <script lang="ts">
 	import type { CardOptions } from '$interfaces/ui';
 
-	import AttachToElement from '$lib/components/AttachToElement.svelte';
-	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { getOnChainListing, type ChainListing } from '$utils/contracts/listing';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
@@ -54,8 +52,8 @@
 			text: 'Trade',
 			icon: 'trade',
 			sectionComponent: TradeSection,
-			visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && nftBalance)) && !$staleResource && options.allowTrade
-		}
+			visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && nftBalance)) && !$staleResource && options.allowTrade,
+		},
 	];
 
 	// Set default tab and prevent overwiriting when statement above

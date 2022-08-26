@@ -33,7 +33,7 @@
 				hidden.set(o, true);
 				hidden = hidden;
 			}
-		})
+		}),
 	);
 </script>
 
