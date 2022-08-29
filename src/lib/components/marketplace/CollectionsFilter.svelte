@@ -37,7 +37,9 @@
 
 	onMount(async () => {
 		if ($collectionQuery) {
-			query = $collectionQuery;
+			{
+				query = $collectionQuery;
+			}
 		}
 	});
 
