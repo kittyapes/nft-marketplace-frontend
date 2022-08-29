@@ -16,37 +16,26 @@
 		{
 			title: 'Show Only',
 			icon: 'status',
-			queryString: 'types',
+			queryStrings: ['types'],
 			renderComponent: StatusFilter,
 			open: false,
-			state: '',
-			setState: (params: string) => {
-				return params;
-			}
+			state: ['']
 		},
 		{
 			title: 'Collections',
 			icon: 'collection',
-			queryString: 'collections',
+			queryStrings: ['collections'],
 			renderComponent: CollectionsFilter,
 			open: false,
-			state: '',
-			setState: (params: string) => {
-				console.log(params);
-				return '';
-			}
+			state: ['']
 		},
 		{
 			title: 'Price',
 			icon: 'price',
-			queryString: 'token',
+			queryStrings: ['token', 'minPrice', 'maxPrice'],
 			renderComponent: PriceFilter,
 			open: false,
-			state: '',
-			setState: (params: string) => {
-				console.log(params);
-				return '';
-			}
+			state: ['', '', '']
 		}
 	];
 
@@ -55,15 +44,15 @@
 	onMount(() => {
 		// open filter tabs if page refreshed with filters
 		tabs.forEach((t) => {
-			if ($page.url.searchParams.has(t.queryString)) {
-				let searchParamsValue = $page.url.searchParams.get(t.queryString);
-
-				t.state = t.setState(searchParamsValue);
-				t.open = true;
-			}
+			t.state = t.queryStrings.map((s) => {
+				if ($page.url.searchParams.has(s)) return $page.url.searchParams.get(s);
+				else return '';
+			});
+			if (t.state.some((e) => e)) t.open = true;
 		});
 
 		loaded = true;
+		console.log(tabs);
 	});
 </script>
 

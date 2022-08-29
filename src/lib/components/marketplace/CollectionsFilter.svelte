@@ -6,20 +6,28 @@
 	import Search from '$icons/search.svelte';
 	import { collectionQuery } from '$stores/marketplace';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
-	import { apiSearchCollections } from '$utils/api/collection';
+	import { apiGetCollectionById, apiSearchCollections } from '$utils/api/collection';
 	import { debounce } from 'lodash-es';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 
 	const dispatch = createEventDispatcher();
 
-	export let state: string;
+	export let state: string[];
 
 	let query = '';
 	let collections: any[] = [];
 	let searching = false;
 	let opened = false;
 	let selected: Partial<DropdownCollectionData>;
+
+	const reflectState = async () => {
+		if (state[0]) {
+			selected = adaptCollectionToMintingDropdown(await apiGetCollectionById(state[0]));
+		}
+	};
+
+	reflectState();
 
 	interface DropdownCollectionData {
 		label: string;
@@ -28,7 +36,9 @@
 	}
 
 	onMount(async () => {
-		if ($collectionQuery) query = $collectionQuery;
+		if ($collectionQuery) {
+			query = $collectionQuery;
+		}
 	});
 
 	const handleSelect = (collection: DropdownCollectionData) => {
