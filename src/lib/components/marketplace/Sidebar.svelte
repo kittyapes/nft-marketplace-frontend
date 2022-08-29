@@ -52,7 +52,6 @@
 		});
 
 		loaded = true;
-		console.log(tabs);
 	});
 </script>
 
