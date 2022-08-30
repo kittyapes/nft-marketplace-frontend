@@ -102,7 +102,7 @@
 				return res;
 			},
 			label: 'Collected NFTs',
-			name: 'collected'
+			name: 'collected',
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -112,7 +112,7 @@
 				return res;
 			},
 			label: 'Created NFTs',
-			name: 'created'
+			name: 'created',
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -122,7 +122,7 @@
 				return res;
 			},
 			label: 'Listings',
-			name: 'listings'
+			name: 'listings',
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -135,7 +135,7 @@
 				return res;
 			},
 			label: 'Favorites',
-			name: 'favorites'
+			name: 'favorites',
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -149,8 +149,8 @@
 				return res as any;
 			},
 			label: 'Hidden',
-			name: 'hidden'
-		}
+			name: 'hidden',
+		},
 	];
 
 	function resetTabs() {
@@ -248,9 +248,9 @@
 
 	$: {
 		if (selectedTab.name === 'created' || selectedTab.name === 'collected') {
-			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: ['hide'] });
+			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: address === $currentUserAddress ? ['hide'] : [] });
 		} else if (selectedTab.name === 'hidden') {
-			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: ['reveal'] });
+			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: address === $currentUserAddress ? ['reveal'] : [] });
 		} else {
 			cardPropsMapper = (v) => ({ options: v });
 		}
