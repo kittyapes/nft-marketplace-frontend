@@ -5,6 +5,7 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { matches } from '$utils/misc';
+	import { isZeroAddress } from '$utils/misc/address';
 	import { unpackedComponentStore } from '$utils/ui';
 	import BrowseAuction from './frames/BrowseAuction.svelte';
 	import BrowseSale from './frames/BrowseSale.svelte';
@@ -12,6 +13,7 @@
 	import Error from './frames/Error.svelte';
 	import ManageAuction from './frames/ManageAuction.svelte';
 	import ManageSale from './frames/ManageSale.svelte';
+	import NotTradable from './frames/NotTradable.svelte';
 	import Success from './frames/Success.svelte';
 	import { frame } from './tradeSection';
 
@@ -32,15 +34,22 @@
 
 	function updateState() {
 		if (options.resourceType === 'listing') {
-			if (!chainListing) frame.set(DiamondsLoader);
-			else {
-				if (matches(chainListing.seller, $currentUserAddress)) {
-					if (options.listingData.listingType === 'auction') frame.set(ManageAuction);
-					if (options.listingData.listingType === 'sale') frame.set(ManageSale);
-				} else {
-					if (options.listingData.listingType === 'auction') frame.set(BrowseAuction);
-					if (options.listingData.listingType === 'sale') frame.set(BrowseSale);
-				}
+			if (!chainListing) {
+				frame.set(DiamondsLoader);
+				return;
+			}
+
+			if (isZeroAddress(chainListing.seller)) {
+				frame.set(NotTradable);
+				return;
+			}
+
+			if (matches(chainListing.seller, $currentUserAddress)) {
+				if (options.listingData.listingType === 'auction') frame.set(ManageAuction);
+				if (options.listingData.listingType === 'sale') frame.set(ManageSale);
+			} else {
+				if (options.listingData.listingType === 'auction') frame.set(BrowseAuction);
+				if (options.listingData.listingType === 'sale') frame.set(BrowseSale);
 			}
 		} else if (options.resourceType === 'nft') {
 			frame.set(CreateListing);
