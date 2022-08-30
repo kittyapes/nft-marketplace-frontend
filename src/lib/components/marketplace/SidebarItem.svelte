@@ -9,7 +9,7 @@
 	export let title = '';
 	export let icon = '';
 
-	let isOpen = false;
+	export let isOpen = false;
 	const toggle = () => (isOpen = !isOpen);
 </script>
 
@@ -51,7 +51,7 @@
 </div>
 
 <style>
-	[aria-expanded='true'] svg {
+	.aria-expanded svg {
 		transform: rotate(0.5turn);
 	}
 </style>
