@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
 	import CloseButton from '$icons/close-button.svelte';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -9,6 +9,20 @@
 	function onClose() {
 		dispatch('close');
 	}
+
+	function onKeydown(ev: KeyboardEvent) {
+		if (ev.key === 'Escape') {
+			onClose();
+		}
+	}
+
+	onMount(() => {
+		if (closeButton) {
+			addEventListener('keydown', onKeydown);
+		}
+	});
+
+	onDestroy(() => removeEventListener('keydown', onKeydown));
 </script>
 
 <div class="relative bg-white rounded-2xl {$$props.class}">
