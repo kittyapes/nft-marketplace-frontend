@@ -105,7 +105,7 @@
 	<!-- Buttons -->
 	<div class="flex justify-center mt-4 mb-6 gap-x-12">
 		<button class="w-6 h-6 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}><img src={getIconUrl('share')} alt="Share." /></button>
-		<button class="w-6 h-6 btn disabled:opacity-50" on:click={handleLike} disabled={options.nfts[0].isExternal}>
+		<button class="w-6 h-6 btn disabled:opacity-50" on:click={handleLike}>
 			<img src={favorited ? getIconUrl('heart-filled') : getIconUrl('heart-outline')} alt="Heart." class:text-color-red={favorited} />
 		</button>
 		<button class="w-6 h-6 btn" disabled={!videoAsset && !assetUrl} on:click={handleFullscreen}>
