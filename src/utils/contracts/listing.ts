@@ -5,8 +5,7 @@ import { getContract } from '$utils/misc/getContract';
 import { getIconUrl } from '$utils/misc/getIconUrl';
 import { parseToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
-import { duration } from 'dayjs';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import { getCollectionContract } from './collection';
 import contractCaller from './contractCaller';
@@ -18,17 +17,8 @@ export enum LISTING_TYPE {
 	TIME_LIMITED_WINER_TAKE_ALL_AUCTION,
 	TIERED_1_OF_N_AUCTION,
 	TIME_LIMITED_PRICE_PER_TICKET_RAFFLE,
-	TIME_LIMITED_1_OF_N_WINNING_TICKETS_RAFFLE
+	TIME_LIMITED_1_OF_N_WINNING_TICKETS_RAFFLE,
 }
-
-export const listingDurationOptions = [
-	{ label: '1 day', value: 1 * 24 * 3600 },
-	{ label: '3 days', value: 3 * 24 * 3600 },
-	{ label: '7 days', value: 7 * 24 * 3600 },
-	{ label: '1 month', value: 30 * 24 * 3600 },
-	{ label: '3 months', value: 90 * 24 * 3600 },
-	{ label: '6 months', value: 180 * 24 * 3600 }
-];
 
 export const listingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.black') }];
 export const whiteListingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.light') }];
@@ -74,7 +64,7 @@ export async function contractCreateListing(options: ContractCreateListingOption
 		listingType: options.listingType,
 		collections: options.collections,
 		tokenIds: options.tokenIds,
-		tokenAmounts: options.tokenAmounts
+		tokenAmounts: options.tokenAmounts,
 	};
 
 	console.debug('[Info] Will call createListing on contract with the following parameters.', callOptions);
@@ -137,7 +127,7 @@ export async function getOnChainListing(listingId: string): Promise<ChainListing
 		quantity: onChainListing.quantity.toNumber(),
 		seller: onChainListing.seller,
 		startTime: onChainListing.startTime ? onChainListing.startTime.toNumber() : null,
-		isValidOnChainListing: onChainId === listingId.toString()
+		isValidOnChainListing: onChainId === listingId.toString(),
 	};
 
 	return onChainObj;
