@@ -116,7 +116,7 @@ export interface ListingFetchOptions {
 	priceMax?: string;
 	seller?: EthAddress;
 	sortBy?: 'NEWEST' | 'OLDEST' | 'POPULAR' | 'END1MIN';
-	listingStatus?: ('ACTIVE' | 'UNLISTED')[];
+	listingStatus?: ('ACTIVE' | 'UNLISTED' | 'EXPIRED')[];
 }
 
 export async function getListings(filters?: ListingFetchOptions, page: number = 1, limit: number = 20) {
@@ -137,7 +137,7 @@ export async function getListings(filters?: ListingFetchOptions, page: number = 
 
 export async function getRandomListings(limit: number = 10) {
 	const params = {
-		limit
+		limit,
 	};
 	const res = await axios.get(getApiUrl('latest', 'listings/getRandom'), { params });
 	return res.data.data as Listing[];
