@@ -52,8 +52,8 @@
 			text: 'Trade',
 			icon: 'trade',
 			sectionComponent: TradeSection,
-			visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && nftBalance)) && !$staleResource && options.allowTrade,
-		},
+			visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && nftBalance)) && !$staleResource && options.allowTrade
+		}
 	];
 
 	// Set default tab and prevent overwiriting when statement above

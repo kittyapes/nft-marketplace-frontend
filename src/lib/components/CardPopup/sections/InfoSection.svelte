@@ -34,7 +34,7 @@
 		{ name: 'Creator', value: singleNft.creator || options.rawResourceData.metadata?.creator?.address },
 		{ name: 'Collection name', value: singleNft.collectionData?.name },
 		{ name: 'Edition', value: singleNft.metadata?.edition },
-		{ name: 'Description', value: singleNft.metadata?.description }
+		{ name: 'Description', value: singleNft.metadata?.description },
 	];
 
 	$: technicalProperties = [
@@ -42,14 +42,14 @@
 		{ name: 'Token Standard', value: singleNft.contractType },
 		{
 			name: 'Fees and Royalties',
-			value: marketFee + ' % Fee | ' + royaltyPercentage
+			value: marketFee + ' % Fee | ' + royaltyPercentage,
 		},
 		{ name: 'Token ID', value: singleNft.onChainId },
 		{ name: 'Blockchain', value: options.listingData?.paymentTokenTicker || options.rawResourceData.chain },
 		{
 			name: options.resourceType === 'listing' ? 'NFTs in Listing' : 'You Own',
-			value: balance !== null ? `${ownedOrListedNfts} of ${supply}` : null
-		}
+			value: balance !== null ? `${ownedOrListedNfts} of ${supply}` : null,
+		},
 	];
 
 	$: console.log(options);
@@ -68,7 +68,7 @@
 		if (attributes.length === undefined) {
 			attributes = Object.entries(attributes).map(([key, value]) => ({
 				trait_type: key,
-				value: value
+				value: value,
 			}));
 		}
 
@@ -76,7 +76,7 @@
 	}
 </script>
 
-<div class="flex-grow h-full pb-8 pr-4 mb-8 overflow-y-auto blue-scrollbar">
+<div class="flex-grow h-full pr-4 overflow-y-auto blue-scrollbar">
 	<!-- Properties -->
 	<div class="mt-4">
 		{#each properties as prop}

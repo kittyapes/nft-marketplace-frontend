@@ -71,9 +71,9 @@
 </script>
 
 <!-- NFT Image side-->
-<div class="flex flex-col w-full h-full pt-12 overflow-hidden text-center">
+<div class="flex flex-col w-full h-full pt-20 overflow-hidden text-center scrollbar-hide max-h-[650px]">
 	<!-- Asset render container -->
-	<div class="flex items-center self-center justify-center object-contain w-full max-w-lg mt-1 overflow-hidden bg-gray-100 aspect-1 rounded-xl">
+	<div class="flex items-center self-center justify-center object-contain w-full max-w-lg border overflow-hidden bg-gray-100 aspect-1 rounded-xl flex-shrink-0">
 		{#await preload(assetUrl)}
 			<Loader />
 		{:then}
@@ -91,10 +91,8 @@
 					<source src={assetUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
-			{:else if fileType === 'image'}
-				<img src={assetUrl} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
 			{:else}
-				<img src={thumbnailUrl} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
+				<img src={fileType === 'image' ? assetUrl : thumbnailUrl} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
 			{/if}
 		{/await}
 	</div>
@@ -114,6 +112,8 @@
 			<img src={getIconUrl('fullscreen')} alt="Fullscreen." />
 		</button>
 	</div>
+
+	<div class="flex-grow" />
 
 	<!-- Auction timer -->
 	{#if countdown}
