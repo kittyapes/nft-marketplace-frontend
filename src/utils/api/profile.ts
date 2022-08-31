@@ -1,7 +1,7 @@
 import type { UserStatus } from '$interfaces';
 import { appSigner, currentUserAddress } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
-import { htmlize } from '$utils/misc/htmlize';
+import { sanitizeHtmlInternal } from '$utils/html';
 import type { SupportedSocialNetworks } from '$utils/validator/isValidSocialLink';
 import isValidSocialLink from '$utils/validator/isValidSocialLink';
 import axios from 'axios';
@@ -43,6 +43,10 @@ export async function fetchProfileData(address: string) {
 	}
 
 	const data = res.data.data as UserData;
+
+	if (data.bio) {
+		data.bio = sanitizeHtmlInternal(data.bio);
+	}
 
 	return data as UserData;
 }
@@ -132,7 +136,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	});
 
 	// Escape stuff
-	data.bio = htmlize(data.bio);
+	data.bio = sanitizeHtmlInternal(data.bio);
 
 	const message = [
 		data.email,
