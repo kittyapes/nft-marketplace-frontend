@@ -388,7 +388,7 @@
 
 	<!-- Royalties -->
 	<div class="mb-16">
-		<Royalties bind:values={$collectionData.royalties} bind:isValid={$formValidity.royalties} disabled={!isNewCollection} />
+		<Royalties bind:values={$collectionData.royalties} bind:error={$formValidity.royalties} disabled={!isNewCollection} />
 	</div>
 
 	<!-- Links -->
