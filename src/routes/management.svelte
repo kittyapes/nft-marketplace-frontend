@@ -160,8 +160,14 @@
 		}
 	};
 
+	let whitelisting = false;
+
 	const handleVerify = async () => {
+		whitelisting = true;
+
 		await whitelistCollection($whitelistingCollectionAddress, $whitelistingCollectionSlug).catch((e) => console.log(e));
+
+		whitelisting = false;
 	};
 
 	let roleFilterOptions = [
@@ -487,6 +493,13 @@
 					<div class="flex items-center">
 						<Loader class="mx-2 w-6" />
 						<div class="font-semibold">Validating...</div>
+					</div>
+				{/if}
+
+				{#if whitelisting}
+					<div class="flex items-center">
+						<Loader class="mx-2 w-6" />
+						<div class="font-semibold">Whitelisting...</div>
 					</div>
 				{/if}
 
