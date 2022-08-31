@@ -25,6 +25,8 @@
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
 	import { writable } from 'svelte/store';
 	import isCollectionAddress from '$utils/validator/isCollectionAddress';
+	import Dropdown from '$lib/components/Dropdown.svelte';
+	import Loader from '$icons/loader.svelte';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
@@ -45,10 +47,15 @@
 	$: validating = false;
 	$: formValid = Object.values($formValidity).every((v) => v === true);
 
-	whitelistingCollectionAddress.subscribe(async (collection_address) => {
-		if (collection_address) {
+	whitelistingCollectionAddress.subscribe(validateContractAddress);
+
+	async function validateContractAddress(address: string) {
+		if (address) {
 			validating = true;
-			const validation_result = await isCollectionAddress(collection_address);
+			const validation_result = await isCollectionAddress(address, $selectedNetworkOption.value);
+
+			console.log(validation_result);
+
 			$formValidity.isContract = validation_result.isContract ? true : 'Invalid Contract Address Detected';
 			$formValidity.isErc1155OrErc721 = validation_result.isErc1155 || validation_result.isErc721 ? true : 'Please Add a Contract That Supports ERC721 or ERC1155 NFTs';
 			validating = false;
@@ -56,7 +63,7 @@
 			$formValidity.isContract = true;
 			$formValidity.isErc1155OrErc721 = true;
 		}
-	});
+	}
 
 	$formValidity.slug = true;
 
@@ -93,13 +100,13 @@
 	let userFetchingOptions: UserFetchingOptions = {
 		filter: {},
 		sort: {},
-		query: ''
+		query: '',
 	};
 
 	let collectionFetchingOptions: CollectionFetchingOptions = {
 		filter: {},
 		sort: {},
-		name: ''
+		name: '',
 	};
 
 	let userTableData: TableCol[] = [];
@@ -109,13 +116,13 @@
 		if (mode === 'USER') {
 			userFetchingOptions.sort = {
 				sortBy: event.detail.sortBy,
-				sortReversed: event.detail.sortReversed
+				sortReversed: event.detail.sortReversed,
 			};
 			users = await getUsers(getUsersFetchingOptions());
 		} else {
 			collectionFetchingOptions.sort = {
 				sortBy: event.detail.sortBy,
-				sortReversed: event.detail.sortReversed
+				sortReversed: event.detail.sortReversed,
 			};
 			collections = (await apiSearchCollections(getCollectionsFetchingOptions())).filter((c) => c.slug);
 		}
@@ -128,7 +135,7 @@
 			userFetchingOptions.filter = {
 				createdBefore: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdBefore,
 				role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
-				status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status
+				status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status,
 			};
 
 			if (event.detail.status) userFetchingOptions.filter.role = undefined;
@@ -143,7 +150,7 @@
 		} else {
 			collectionFetchingOptions.filter = {
 				status: event.detail.status ? event.detail.status : collectionFetchingOptions.filter.status,
-				isClaimed: typeof event.detail.value === 'boolean' ? event.detail.value : collectionFetchingOptions.filter.isClaimed
+				isClaimed: typeof event.detail.value === 'boolean' ? event.detail.value : collectionFetchingOptions.filter.isClaimed,
 			};
 			console.log(event);
 			if (event.detail.status === 'all') collectionFetchingOptions.filter.status = undefined;
@@ -164,25 +171,25 @@
 		{ label: 'Admin', role: 'admin' },
 		{ label: 'Verified Creator', role: 'verified_user' },
 		{ label: 'Blogger' },
-		{ label: 'Inactive', status: 'INACTIVATED' }
+		{ label: 'Inactive', status: 'INACTIVATED' },
 	];
 
 	let userFilterOptions = [
 		{ label: 'Flagged' },
 		{ label: 'Joined 24 hrs ago', createdBefore: dayjs().subtract(1, 'hour').unix() },
 		{ label: 'Joined 7 days ago', createdBefore: dayjs().subtract(1, 'week').unix() },
-		{ label: 'Joined 1 Mon ago', createdBefore: dayjs().subtract(1, 'month').unix() }
+		{ label: 'Joined 1 Mon ago', createdBefore: dayjs().subtract(1, 'month').unix() },
 	];
 
 	let statusFilterOptions = [
 		{ label: 'All', status: 'all' },
 		{ label: 'Active', status: 'ACTIVE' },
-		{ label: 'Inactive', status: 'INACTIVE' }
+		{ label: 'Inactive', status: 'INACTIVE' },
 	];
 
 	let collectionFilterOptions = [
 		{ label: 'Claimed', value: true },
-		{ label: 'Unclaimed', value: false }
+		{ label: 'Unclaimed', value: false },
 	];
 
 	$: if ($currentUserAddress && mode) createTable();
@@ -215,14 +222,14 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETICAL', active: false },
 				renderComponent: CollectionName,
-				renderComponentProps: collections.map((c) => ({ name: c.name || '', imageUrl: c.logoImageUrl, slug: c.slug, badge: c.mintedFrom === 'Hinata' }))
+				renderComponentProps: collections.map((c) => ({ name: c.name || '', imageUrl: c.logoImageUrl, slug: c.slug, badge: c.mintedFrom === 'Hinata' })),
 			},
 			{
 				gridSize: '2fr',
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Ethereum Address' },
 				renderComponent: EthAddress,
-				renderComponentProps: collections.map((c) => ({ address: c.collectionAddress || 'N/A' }))
+				renderComponentProps: collections.map((c) => ({ address: c.collectionAddress || 'N/A' })),
 			},
 			{
 				gridSize: '1fr',
@@ -237,9 +244,9 @@
 					color: getRoleColor(u.status === 'INACTIVE' ? 'INACTIVATED' : 'verified_user'),
 					options: [
 						{ label: 'Active', checked: u.status === 'ACTIVE', value: 'ACTIVE' },
-						{ label: 'Inactive', checked: u.status === 'INACTIVE', value: 'INACTIVE' }
-					]
-				}))
+						{ label: 'Inactive', checked: u.status === 'INACTIVE', value: 'INACTIVE' },
+					],
+				})),
 			},
 			{
 				gridSize: '1fr',
@@ -247,8 +254,8 @@
 				titleRenderComponentProps: { title: 'Claimed' },
 				renderComponent: EntryGenericText,
 				renderComponentProps: collections.map((c) => ({
-					text: c.isClaimed ? 'Claimed' : 'Unclaimed'
-				}))
+					text: c.isClaimed ? 'Claimed' : 'Unclaimed',
+				})),
 			},
 			{
 				name: 'collection-owner',
@@ -256,7 +263,7 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Added by' },
 				renderComponent: EntryName,
-				renderComponentProps: []
+				renderComponentProps: [],
 			},
 			{
 				gridSize: '2fr',
@@ -266,8 +273,8 @@
 				renderComponentProps: collections.map((c) => {
 					let date = dayjs(c.createdAt);
 					return { text: date.format('MMM D, YYYY') };
-				})
-			}
+				}),
+			},
 		];
 
 		collectionTableData.forEach(async (e, i) => {
@@ -288,9 +295,9 @@
 				return {
 					name: creator?.username || '',
 					imageUrl: creator?.thumbnailUrl,
-					address: creator?.address
+					address: creator?.address,
 				};
-			})
+			}),
 		);
 	};
 
@@ -338,14 +345,14 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETICAL', active: false },
 				renderComponent: EntryName,
-				renderComponentProps: users.map((u) => ({ name: u.username || '', imageUrl: u.thumbnailUrl, address: u.address }))
+				renderComponentProps: users.map((u) => ({ name: u.username || '', imageUrl: u.thumbnailUrl, address: u.address })),
 			},
 			{
 				gridSize: '3fr',
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Ethereum Address' },
 				renderComponent: EthAddress,
-				renderComponentProps: users.map((u) => ({ address: u.address }))
+				renderComponentProps: users.map((u) => ({ address: u.address })),
 			},
 			{
 				gridSize: '2fr',
@@ -362,9 +369,9 @@
 						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin' },
 						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user' },
 						{ label: 'blogger', checked: false, cb: (e) => e.roles?.includes('blogger'), value: 'blogger' },
-						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED', value: 'inactivated_user' }
-					]
-				}))
+						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED', value: 'inactivated_user' },
+					],
+				})),
 			},
 			{
 				gridSize: '2fr',
@@ -374,8 +381,8 @@
 				renderComponentProps: users.map((u) => {
 					let date = dayjs(u.createdAt);
 					return { text: date.format('MMM D, YYYY') };
-				})
-			}
+				}),
+			},
 			/*
 			{
 				gridSize: '2fr',
@@ -393,6 +400,16 @@
 	}
 
 	$: searchPlaceholder = `Search for ${mode.toLowerCase()}`;
+
+	// Network picker
+	const networkPickerOptions = [
+		{ value: 1, label: 'Mainnet' },
+		{ value: 4, label: 'Rinkeby' },
+	];
+
+	const selectedNetworkOption = writable(networkPickerOptions[0]);
+
+	selectedNetworkOption.subscribe(() => validateContractAddress($whitelistingCollectionAddress));
 </script>
 
 <div class="flex flex-col w-full h-full p-40 gap-12">
@@ -439,29 +456,47 @@
 	{/if}
 
 	{#if mode === 'COLLECTION'}
-		<div class="flex flex-col w-full gap-10 ">
-			<div class="flex flex-col gap-1">
-				<div class="text-color-black ">Opensea route</div>
-				<div class="flex gap-10">
-					<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input opensea route, e.g. azuki" bind:value={$whitelistingCollectionSlug} />
-
-					<div class="flex-grow" />
+		<div>
+			<h2 class="text-xl font-bold gradient-text">Whitelist a collection</h2>
+			<div class="flex flex-col w-full gap-10 mt-1">
+				<!-- Network picker -->
+				<div class="flex flex-col gap-1 w-[36rem]">
+					<div class="font-semibold">Network to check address against</div>
+					<Dropdown options={networkPickerOptions} bind:selected={$selectedNetworkOption} />
 				</div>
-			</div>
-			<div class="flex flex-col gap-1">
-				<div class="text-color-black ">Add address to Whitelisted Collections</div>
-				<div class="flex gap-10">
-					<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
 
-					<div class="flex-grow" />
+				<div class="flex flex-col gap-1">
+					<div class="font-semibold">Opensea collection URL part</div>
+					<div class="flex gap-10">
+						<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input opensea route, e.g. azuki" bind:value={$whitelistingCollectionSlug} />
 
-					<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>Add</button>
+						<div class="flex-grow" />
+					</div>
 				</div>
-			</div>
+				<div class="flex flex-col gap-1">
+					<div class="font-semibold">Contract address</div>
+					<div class="flex gap-10">
+						<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
 
-			{#if !validating}
-				<FormErrorList validity={$formValidity} />
-			{/if}
+						<div class="flex-grow" />
+
+						<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>
+							Add
+						</button>
+					</div>
+				</div>
+
+				{#if validating}
+					<div class="flex items-center">
+						<Loader class="mx-2 w-6" />
+						<div class="font-semibold">Validating...</div>
+					</div>
+				{/if}
+
+				{#if !validating}
+					<FormErrorList validity={$formValidity} />
+				{/if}
+			</div>
 		</div>
 	{/if}
 </div>
