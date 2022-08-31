@@ -161,8 +161,7 @@
 	};
 
 	const handleVerify = async () => {
-		if (!$whitelistingCollectionAddress) return;
-		const res = await whitelistCollection($whitelistingCollectionAddress, $whitelistingCollectionSlug).catch((e) => console.log(e));
+		await whitelistCollection($whitelistingCollectionAddress, $whitelistingCollectionSlug).catch((e) => console.log(e));
 	};
 
 	let roleFilterOptions = [
@@ -478,10 +477,8 @@
 					<div class="flex gap-10">
 						<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
 
-						<div class="flex-grow" />
-
 						<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>
-							Add
+							Whitelist
 						</button>
 					</div>
 				</div>
