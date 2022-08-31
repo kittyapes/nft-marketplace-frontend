@@ -188,8 +188,8 @@
 				name: $collectionData.name,
 				paymentTokenTicker: 'WETH',
 				royalties: $collectionData.royalties,
-				slug: $collectionData.slug
-			})
+				slug: $collectionData.slug,
+			}),
 		);
 
 		if (contractError) {
@@ -255,6 +255,9 @@
 			return;
 		}
 
+		// Convert null royalties to an empty string
+		res.royalties?.forEach((i) => (i.fees = i.fees || ''));
+
 		// Copy is needed because slug would get overwritten
 		serverCollectionToUpdate.set({ ...res });
 		collectionData.set({ ...res });
@@ -292,7 +295,7 @@
 			websiteUrl: d.otherUrl,
 			logoImage: collectionData.image,
 			backgroundImage: collectionData.cover,
-			id: d.id
+			id: d.id,
 		} as UpdateCollectionOptions;
 	}
 
