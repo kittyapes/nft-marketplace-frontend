@@ -92,8 +92,10 @@
 	}
 </script>
 
-<div class="flex flex-col h-full pb-12 mt-4">
-	<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} />
+<div class="flex flex-col flex-grow mt-4">
+	<div class="min-h-[300px] flex-grow">
+		<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} />
+	</div>
 
 	<div class="flex my-4 font-semibold">
 		<div>

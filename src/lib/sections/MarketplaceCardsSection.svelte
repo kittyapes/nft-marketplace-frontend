@@ -8,7 +8,6 @@
 	import { getListings, type ListingType } from '$utils/api/listing';
 	import { notifyError } from '$utils/toast';
 	import { debounce } from 'lodash-es';
-	import { onMount } from 'svelte';
 
 	let data = [];
 

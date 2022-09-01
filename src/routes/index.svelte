@@ -3,7 +3,7 @@
 	import { socials } from '$constants/socials';
 	import CollectionsTable from '$lib/components/collections/CollectionsTable.svelte';
 	import { apiGetMostActiveCollections, type Collection } from '$utils/api/collection';
-	import { fade } from 'svelte/transition';
+	import { fade, slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
@@ -17,13 +17,13 @@
 	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
 	let loadedExploreListings = writable(false);
-	let exploreListingsData;
+	let exploreListingsData = [];
 
 	const aidrop = {
 		title: 'Claim your monthly airdrop',
 		textPreview:
 			'The Hinata marketplace will be doing an airdrop for active users in the coming months. Buyers, sellers and minters will all be eligible to claim tokens after the token generation event later this year.',
-		thumbnail: '/img/png/airdrop-banner.png'
+		thumbnail: '/img/png/airdrop-banner.png',
 	};
 
 	const getExploreMarketData = async () => {
@@ -55,10 +55,10 @@
 				url: 'https://hinata-prod.mypinata.cloud/ipfs/QmSL6bqojDfspYKai2jmFY19ZHng8X3XmHZZEAmmGum6TE',
 				width: 1200,
 				height: 750,
-				alt: 'Hinata anime characters on a festival.'
-			}
+				alt: 'Hinata anime characters on a festival.',
+			},
 		],
-		site_name: 'Hinata'
+		site_name: 'Hinata',
 	}}
 />
 
@@ -111,19 +111,17 @@
 </div>
 
 <!-- Explore Market Section -->
-<div class="px-16 mt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Explore Market</h2>
-		<a href="/marketplace" class="uppercase underline text-sm font-bold">View All</a>
-	</div>
-	<hr class="mt-4 border-[#0000004D]" />
+{#if $loadedExploreListings && exploreListingsData?.length > 0}
+	<div class="px-16 mt-24 mb-16" in:slide>
+		<div class="flex items-end">
+			<h2 class="text-4xl font-light uppercase flex-grow">Explore Market</h2>
+			<a href="/marketplace" class="uppercase underline text-sm font-bold">View All</a>
+		</div>
+		<hr class="mt-4 border-[#0000004D]" />
 
-	{#if $loadedExploreListings}
 		<NftList options={exploreListingsData} />
-	{:else}
-		<DiamondsLoader />
-	{/if}
-</div>
+	</div>
+{/if}
 
 <!-- Latest blog posts -->
 <div class="px-16 mt-24 mb-16">

@@ -10,9 +10,24 @@
 
 	const dispatch = createEventDispatcher();
 
+	export let state: string[];
+
 	let min: string;
 	let max: string;
 	let selectedToken: typeof listingTokens[0];
+
+	if (state) {
+		if (state[0]) {
+			listingTokens.forEach((t) => {
+				if (t.label === state[0]) {
+					selectedToken = t;
+				}
+			});
+		}
+
+		if (state[1]) min = state[1];
+		if (state[2]) max = state[2];
+	}
 
 	function updateSearchParams() {
 		if ((min && !min.match(floatRe)) || (max && !max.match(floatRe))) {

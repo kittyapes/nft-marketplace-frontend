@@ -1,3 +1,4 @@
+import type { UserStatus } from '$interfaces';
 import { appSigner, currentUserAddress } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { sanitizeHtmlInternal } from '$utils/html';
@@ -49,6 +50,42 @@ export async function fetchProfileData(address: string) {
 	}
 
 	return data as UserData;
+}
+
+/**
+ * Fetch the user data of the currently connected user wallet. This data is different from the data
+ * returned by the `fetchProfileData` function, which returns stripped user data. This function instead
+ * returns all the data available, including the data that is only supposed to be seen by the owner
+ * of the account.
+ * @returns An object representing the profile data of the currently connected user.
+ */
+export async function fetchCurrentUserData(): Promise<{
+	_id: string;
+	address: string;
+	bio: string;
+	coverUrl: string;
+	createdAt: string;
+	email: string;
+	loginHistories: any[];
+	nftBalances: Record<number, number>;
+	roles: string[];
+	social: {
+		artstation: string;
+		deviantart: string;
+		discord: string;
+		instagram: string;
+		pixiv: string;
+		twitter: string;
+		website: string;
+	};
+	status: UserStatus;
+	thumbnailUrl: string;
+	queueDate: number;
+	updatedAt: string;
+	username: string;
+}> {
+	const res = await axios.get(getApiUrl('latest', 'users'), await getAxiosConfig());
+	return res.data.data;
 }
 
 export interface EditableProfileData {

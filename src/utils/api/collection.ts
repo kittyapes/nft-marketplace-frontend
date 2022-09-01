@@ -15,7 +15,7 @@ export interface Collection {
 	description?: string;
 	isClaimed?: boolean;
 	displayTheme: 'CONTAINED' | 'PADDED' | 'COVERED';
-	royalties?: { fees: string | number; address: string; createdAt?: string }[];
+	royalties?: { fees: string | null; address: string; createdAt?: string }[];
 	walletAddress?: string;
 	discordUrl?: string;
 	instagramUrl?: string;
@@ -48,8 +48,8 @@ export function getInitialCollectionData(): Partial<Collection> {
 		royalties: [
 			{ fees: '', address: '' },
 			{ fees: '', address: '' },
-			{ fees: '', address: '' }
-		]
+			{ fees: '', address: '' },
+		],
 	};
 }
 
@@ -187,7 +187,7 @@ export async function apiValidateCollectionNameAndSlug(name: string | null = nul
 			nameIsDuplicate: false,
 			nameisInvalid: false,
 			slugIsDuplicate: false,
-			slugIsInvalid: false
+			slugIsInvalid: false,
 		};
 
 		if (name) {

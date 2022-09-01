@@ -59,6 +59,8 @@
 		}
 	});
 
+	const fetchLimit = 10;
+
 	const localProfileData = writable<UserData>();
 
 	async function fetchData(forAdress: string) {
@@ -114,8 +116,14 @@
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
+				const listingStatus = ['UNLISTED', 'ACTIVE'] as any;
+
+				if ($currentUserAddress === address) {
+					listingStatus.push('EXPIRED');
+				}
+
 				const res = {} as FetchFunctionResult;
-				res.res = await getListings({ seller: address, listingStatus: ['UNLISTED', 'ACTIVE'] }, page, limit);
+				res.res = await getListings({ seller: address, listingStatus }, page, limit);
 				res.adapted = res.res.map(listingToCardOptions);
 				return res;
 			},
@@ -163,6 +171,19 @@
 	// Reset tabs on the initial load
 	resetTabs();
 
+	let refreshNftTabs = () => {
+		tabs.forEach((t) => {
+			if (t.name === 'collected' || t.name === 'created' || t.name === 'hidden') {
+				t.index = 1;
+				t.data = [];
+				t.reachedEnd = false;
+				t.isFetching = false;
+
+				t.fetchFunction(t, t.index, fetchLimit);
+			}
+		});
+	};
+
 	let selectedTab: typeof tabs[0] = tabs[0];
 
 	function selectTab(name: string) {
@@ -190,7 +211,7 @@
 		isFetchingNfts = true;
 		tab.isFetching = true;
 
-		const res = await tab.fetchFunction(tab, tab.index, 10);
+		const res = await tab.fetchFunction(tab, tab.index, fetchLimit);
 
 		if (res.err) {
 			console.error(res.err);
@@ -335,7 +356,7 @@
 	<div class="h-px bg-black opacity-30" />
 
 	<div class="max-w-screen-xl mx-auto">
-		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
+		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:hid-nft={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
 	</div>
 </div>
 

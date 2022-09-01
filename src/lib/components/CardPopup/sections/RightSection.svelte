@@ -1,8 +1,6 @@
 <script lang="ts">
 	import type { CardOptions } from '$interfaces/ui';
 
-	import AttachToElement from '$lib/components/AttachToElement.svelte';
-	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { getOnChainListing, type ChainListing } from '$utils/contracts/listing';
 	import { getIconUrl } from '$utils/misc/getIconUrl';

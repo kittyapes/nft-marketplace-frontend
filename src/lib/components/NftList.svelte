@@ -23,6 +23,7 @@
 	function hideCard(index) {
 		options.splice(index, 1);
 		options = options;
+		dispatch('hid-nft');
 	}
 
 	let hidden = new WeakMap();
@@ -33,7 +34,7 @@
 				hidden.set(o, true);
 				hidden = hidden;
 			}
-		})
+		}),
 	);
 </script>
 
