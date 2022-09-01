@@ -15,7 +15,7 @@ export interface SearchResults {
         isLoading: boolean;
         fetchFunction: (query: string) => Promise<any> 
     };
-    listings: {
+    nfts: {
         data: any[];
         isLoading: boolean;
         index: number;

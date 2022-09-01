@@ -1,5 +1,6 @@
 import { appSigner, currentUserAddress } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
+import { sanitizeHtmlInternal } from '$utils/html';
 import { htmlize } from '$utils/misc/htmlize';
 import type { SupportedSocialNetworks } from '$utils/validator/isValidSocialLink';
 import isValidSocialLink from '$utils/validator/isValidSocialLink';
@@ -30,7 +31,11 @@ export async function fetchProfileData(address: string) {
 		// Fetch personal profile
 		res = await axios.get(getApiUrl('latest', 'users'), await getAxiosConfig()).catch(() => null);
 	} else {
-		res = await axios.get(getApiUrl('latest', 'users/' + address), await getAxiosConfig()).catch(() => null);
+		try {
+			res = await axios.get(getApiUrl('latest', 'users/' + address), await getAxiosConfig()).catch(() => null);
+		} catch (error) {
+			res = await axios.get(getApiUrl('latest', 'users/' + address)).catch(() => null);
+		}
 	}
 
 	if (!res) {
@@ -38,6 +43,10 @@ export async function fetchProfileData(address: string) {
 	}
 
 	const data = res.data.data as UserData;
+
+	if (data.bio) {
+		data.bio = sanitizeHtmlInternal(htmlize(data.bio));
+	}
 
 	return data as UserData;
 }
@@ -91,7 +100,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	});
 
 	// Escape stuff
-	data.bio = htmlize(data.bio);
+	data.bio = sanitizeHtmlInternal(htmlize(data.bio));
 
 	const message = [
 		data.email,
@@ -106,7 +115,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 		data.social.website,
 		data.social.pixiv,
 		data.social.deviantart,
-		data.social.artstation
+		data.social.artstation,
 	]
 		.map((v) => v || '')
 		.join('');
