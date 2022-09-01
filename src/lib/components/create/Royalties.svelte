@@ -15,7 +15,7 @@
 		{ fees: '', address: '' },
 	];
 
-	export let error: string = null;
+	export let error: string | boolean = true;
 	export let disabled = false;
 
 	let titleElementTooltip: HTMLElement;
@@ -48,7 +48,7 @@
 		} else if (hasAddressWithoutPercentage) {
 			error = 'Royalties contain an address without a percentage';
 		} else {
-			error = null;
+			error = true;
 		}
 	});
 </script>
