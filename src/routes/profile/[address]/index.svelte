@@ -116,8 +116,14 @@
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
+				const listingStatus = ['UNLISTED', 'ACTIVE'] as any;
+
+				if ($currentUserAddress === address) {
+					listingStatus.push('EXPIRED');
+				}
+
 				const res = {} as FetchFunctionResult;
-				res.res = await getListings({ seller: address, listingStatus: ['UNLISTED', 'ACTIVE', 'EXPIRED'] }, page, limit);
+				res.res = await getListings({ seller: address, listingStatus }, page, limit);
 				res.adapted = res.res.map(listingToCardOptions);
 				return res;
 			},
