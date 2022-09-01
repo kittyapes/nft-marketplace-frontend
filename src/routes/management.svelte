@@ -52,7 +52,7 @@
 	async function validateContractAddress(address: string) {
 		if (address) {
 			validating = true;
-			const validation_result = await isCollectionAddress(address, $selectedNetworkOption.value);
+			const validation_result = await isCollectionAddress(address);
 
 			console.log(validation_result);
 
@@ -407,14 +407,14 @@
 	$: searchPlaceholder = `Search for ${mode.toLowerCase()}`;
 
 	// Network picker
-	const networkPickerOptions = [
-		{ value: 1, label: 'Mainnet' },
-		{ value: 4, label: 'Rinkeby' },
-	];
+	// const networkPickerOptions = [
+	// 	{ value: 1, label: 'Mainnet' },
+	// 	{ value: 4, label: 'Rinkeby' },
+	// ];
 
-	const selectedNetworkOption = writable(networkPickerOptions[0]);
+	// const selectedNetworkOption = writable(networkPickerOptions[0]);
 
-	selectedNetworkOption.subscribe(() => validateContractAddress($whitelistingCollectionAddress));
+	// selectedNetworkOption.subscribe(() => validateContractAddress($whitelistingCollectionAddress));
 </script>
 
 <div class="flex flex-col w-full h-full p-40 gap-12">
@@ -465,10 +465,10 @@
 			<h2 class="text-xl font-bold gradient-text">Whitelist a collection</h2>
 			<div class="flex flex-col w-full gap-10 mt-1">
 				<!-- Network picker -->
-				<div class="flex flex-col gap-1 w-[36rem]">
+				<!-- <div class="flex flex-col gap-1 w-[36rem]">
 					<div class="font-semibold">Network to check address against</div>
 					<Dropdown options={networkPickerOptions} bind:selected={$selectedNetworkOption} />
-				</div>
+				</div> -->
 
 				<div class="flex flex-col gap-1">
 					<div class="font-semibold">Opensea collection URL part</div>
