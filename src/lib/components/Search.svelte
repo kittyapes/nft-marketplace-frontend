@@ -24,7 +24,7 @@
 	let searchResults = {
 		collections: [],
 		items: [],
-		users: []
+		users: [],
 	};
 
 	const debouncedSearch = debounce(async (query: string) => {
@@ -79,7 +79,7 @@
 <div
 	class="flex py-2 px-4 items-center gap-x-4 border border-black border-opacity-30 rounded-md flex-grow-[0.1] relative overflow-visible z-30 {$$props.class}"
 	use:outsideClickCallback={{
-		cb: () => (searching = false)
+		cb: () => (searching = false),
 	}}
 >
 	<Search />
@@ -99,89 +99,99 @@
 	{#if searching}
 		<div class="w-full bg-white top-16 right-0 border-black border-opacity-30 rounded-md border z-30 absolute" in:fly={{ y: -40, duration: 300 }}>
 			{#if show}
-				{#each Object.keys(searchResults) as section}
-					{#if searchResults[section].length > 0}
-						<div class="">
-							<div class="first-letter:uppercase font-semibold text-sm p-4">{section}</div>
-							<div class="border-b border-black border-opacity-30" />
-							<div class="p-4 flex flex-col gap-4">
-								{#each searchResults[section] as result}
-									{#if section === 'items'}
-										{@const props = result.nfts[0]}
-										<div class="flex gap-4 items-center btn" on:click={() => setPopup(CardPopup, { props: { options: searchResults['items'][0] } })}>
-											{#if props.thumbnailUrl}
-												<div class="w-12 h-12 rounded-full grid place-items-center">
-													<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({props.thumbnailUrl})" />
-												</div>
-											{/if}
-											<div class="font-semibold w-full max-w-full truncate">
-												{props.name}
-											</div>
-										</div>
-									{:else if section === 'users'}
-										<div
-											class="flex gap-4 items-center btn"
-											on:click={() => {
-												searching = false;
-												goto('/profile/' + result.address);
-											}}
-										>
-											{#if result.thumbnailUrl}
-												<div class="w-12 h-12 rounded-full grid place-items-center">
-													<div class="w-12 h-12 bg-cover rounded-full" style="background-image: url({result.thumbnailUrl})" />
-												</div>
-											{/if}
-											<div class="">
-												<div class="font-semibold username w-full max-w-full truncate">
-													{result.username}
+				<div class=" max-h-[30rem] overflow-y-auto relative blue-scrollbar overscroll-contain">
+					{#each Object.keys(searchResults) as section}
+						{#if searchResults[section].length > 0}
+							<div class="">
+								<div class="first-letter:uppercase font-semibold text-sm p-4">{section}</div>
+								<div class="border-b border-black border-opacity-30" />
+								<div class="p-4 flex flex-col gap-4">
+									{#each searchResults[section] as result}
+										{#if section === 'items'}
+											{@const props = result.nfts[0]}
+											<div class="flex gap-4 items-center btn" on:click={() => setPopup(CardPopup, { props: { options: searchResults['items'][0] } })}>
+												{#if props.thumbnailUrl}
+													<div class="w-12 h-12 rounded-full grid place-items-center">
+														<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({props.thumbnailUrl})" />
+													</div>
+												{/if}
+												<div class="font-semibold w-full max-w-full truncate">
+													{props.name}
 												</div>
 											</div>
-											{#if result.roles?.includes('verified_user')}
-												<VerifiedBadge />
-											{/if}
-										</div>
-									{:else if section === 'collections'}
-										<div
-											class="flex gap-4 items-center btn"
-											on:click={() => {
-												searching = false;
-												goto('/collections/' + result.slug);
-											}}
-										>
-											{#if result.logoImageUrl}
-												<div class="w-12 h-12 rounded-full grid place-items-center">
-													<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({result.logoImageUrl})" />
+										{:else if section === 'users'}
+											<div
+												class="flex gap-4 items-center btn"
+												on:click={() => {
+													searching = false;
+													goto('/profile/' + result.address);
+												}}
+											>
+												{#if result.thumbnailUrl}
+													<div class="w-12 h-12 rounded-full grid place-items-center">
+														<div class="w-12 h-12 bg-cover rounded-full" style="background-image: url({result.thumbnailUrl})" />
+													</div>
+												{/if}
+												<div class="">
+													<div class="font-semibold username w-full max-w-full truncate">
+														{result.username}
+													</div>
 												</div>
-											{/if}
-											<div class="font-semibold w-full max-w-full truncate">
-												{result.name}
+												{#if result.roles?.includes('verified_user')}
+													<VerifiedBadge />
+												{/if}
 											</div>
-										</div>
-									{/if}
-								{/each}
+										{:else if section === 'collections'}
+											<div
+												class="flex gap-4 items-center btn"
+												on:click={() => {
+													searching = false;
+													goto('/collections/' + result.slug);
+												}}
+											>
+												{#if result.logoImageUrl}
+													<div class="w-12 h-12 rounded-full grid place-items-center">
+														<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({result.logoImageUrl})" />
+													</div>
+												{/if}
+												<div class="font-semibold w-full max-w-full truncate">
+													{result.name}
+												</div>
+											</div>
+										{/if}
+									{/each}
+								</div>
 							</div>
+						{/if}
+					{/each}
+					{#if Object.values(searchResults).filter((e) => e.length > 0).length > 0}
+						<div class="all-results p-4">
+							<button
+								class="btn btn-rounded w-full border-2 btn-gradient-border"
+								on:click={() => {
+									show = false;
+									searching = false;
+									goto('/search?query=' + query);
+								}}
+							>
+								All results
+							</button>
 						</div>
+					{:else}
+						<div class="p-4 text-lg font-semibold">Nothing found</div>
 					{/if}
-				{/each}
-				{#if Object.values(searchResults).filter((e) => e.length > 0).length > 0}
-					<div class="p-4">
-						<button
-							class="btn btn-rounded w-full border-2 btn-gradient-border"
-							on:click={() => {
-								show = false;
-								searching = false;
-								goto('/search?query=' + query);
-							}}
-						>
-							All results
-						</button>
-					</div>
-				{:else}
-					<div class="p-4 text-lg font-semibold">Nothing found</div>
-				{/if}
+				</div>
 			{:else}
 				<Loader />
 			{/if}
 		</div>
 	{/if}
 </div>
+
+<style type="postcss">
+	@media (max-height: 540px) {
+		.all-results {
+			@apply my-32;
+		}
+	}
+</style>
