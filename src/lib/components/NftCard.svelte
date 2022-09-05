@@ -8,6 +8,7 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import { apiGetCollectionBySlug } from '$utils/api/collection';
 	import { apiHideNft, apiRevealNft } from '$utils/api/nft';
+	import { sanitizeHtmlInternal } from '$utils/html';
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { getListingCardTimerHtml } from '$utils/misc/time';
@@ -113,7 +114,7 @@
 	let timerInterval;
 
 	function updateTimerHtml() {
-		timerHtml = getListingCardTimerHtml(options.listingData.startTime, options.listingData.duration);
+		timerHtml = sanitizeHtmlInternal(getListingCardTimerHtml(options.listingData.startTime, options.listingData.duration));
 	}
 
 	onMount(() => {
