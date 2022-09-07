@@ -45,6 +45,7 @@
 		} else {
 			options.staleResource.set({ reason: 'bid-accepted' });
 			dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Auction completed successfully.' } });
+			dispatch('force-expire');
 			frame.set(Success);
 		}
 
