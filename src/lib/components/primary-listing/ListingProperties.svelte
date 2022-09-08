@@ -131,7 +131,7 @@
 
 		<InputSlot label="Reserve Price (Optional)">
 			<div class="relative">
-				<PriceInput bind:value={props.reservePrice} placeholder="5.0" tokenIconClass={Weth} validOverride={reservePriceError} {disabled} />
+				<PriceInput bind:value={props.reservePrice} placeholder="5.0" tokenIconClass={Weth} validOverride={reservePriceError === null} {disabled} />
 
 				{#if reservePriceError}
 					<div class="absolute z-10 top-12">

@@ -25,6 +25,7 @@
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
 	import { writable } from 'svelte/store';
 	import isCollectionAddress from '$utils/validator/isCollectionAddress';
+	import Loader from '$icons/loader.svelte';
 
 	export let mode: 'USER' | 'COLLECTION' = 'USER';
 	let users: UserData[] = [];
@@ -45,10 +46,15 @@
 	$: validating = false;
 	$: formValid = Object.values($formValidity).every((v) => v === true);
 
-	whitelistingCollectionAddress.subscribe(async (collection_address) => {
-		if (collection_address) {
+	whitelistingCollectionAddress.subscribe(validateContractAddress);
+
+	async function validateContractAddress(address: string) {
+		if (address) {
 			validating = true;
-			const validation_result = await isCollectionAddress(collection_address);
+			const validation_result = await isCollectionAddress(address);
+
+			console.log(validation_result);
+
 			$formValidity.isContract = validation_result.isContract ? true : 'Invalid Contract Address Detected';
 			$formValidity.isErc1155OrErc721 = validation_result.isErc1155 || validation_result.isErc721 ? true : 'Please Add a Contract That Supports ERC721 or ERC1155 NFTs';
 			validating = false;
@@ -56,7 +62,7 @@
 			$formValidity.isContract = true;
 			$formValidity.isErc1155OrErc721 = true;
 		}
-	});
+	}
 
 	$formValidity.slug = true;
 
@@ -153,9 +159,14 @@
 		}
 	};
 
+	let whitelisting = false;
+
 	const handleVerify = async () => {
-		if (!$whitelistingCollectionAddress) return;
-		const res = await whitelistCollection($whitelistingCollectionAddress, $whitelistingCollectionSlug).catch((e) => console.log(e));
+		whitelisting = true;
+
+		await whitelistCollection($whitelistingCollectionAddress, $whitelistingCollectionSlug).catch((e) => console.log(e));
+
+		whitelisting = false;
 	};
 
 	let roleFilterOptions = [
@@ -393,6 +404,16 @@
 	}
 
 	$: searchPlaceholder = `Search for ${mode.toLowerCase()}`;
+
+	// Network picker
+	// const networkPickerOptions = [
+	// 	{ value: 1, label: 'Mainnet' },
+	// 	{ value: 4, label: 'Rinkeby' },
+	// ];
+
+	// const selectedNetworkOption = writable(networkPickerOptions[0]);
+
+	// selectedNetworkOption.subscribe(() => validateContractAddress($whitelistingCollectionAddress));
 </script>
 
 <div class="flex flex-col w-full h-full p-40 gap-12">
@@ -439,29 +460,52 @@
 	{/if}
 
 	{#if mode === 'COLLECTION'}
-		<div class="flex flex-col w-full gap-10 ">
-			<div class="flex flex-col gap-1">
-				<div class="text-color-black ">Opensea route</div>
-				<div class="flex gap-10">
-					<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input opensea route, e.g. azuki" bind:value={$whitelistingCollectionSlug} />
+		<div>
+			<h2 class="text-xl font-bold gradient-text">Whitelist a collection</h2>
+			<div class="flex flex-col w-full gap-10 mt-1">
+				<!-- Network picker -->
+				<!-- <div class="flex flex-col gap-1 w-[36rem]">
+					<div class="font-semibold">Network to check address against</div>
+					<Dropdown options={networkPickerOptions} bind:selected={$selectedNetworkOption} />
+				</div> -->
 
-					<div class="flex-grow" />
+				<div class="flex flex-col gap-1">
+					<div class="font-semibold">Opensea collection URL part</div>
+					<div class="flex gap-10">
+						<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input opensea route, e.g. azuki" bind:value={$whitelistingCollectionSlug} />
+
+						<div class="flex-grow" />
+					</div>
 				</div>
-			</div>
-			<div class="flex flex-col gap-1">
-				<div class="text-color-black ">Add address to Whitelisted Collections</div>
-				<div class="flex gap-10">
-					<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
+				<div class="flex flex-col gap-1">
+					<div class="font-semibold">Contract address</div>
+					<div class="flex gap-10">
+						<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
 
-					<div class="flex-grow" />
-
-					<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>Add</button>
+						<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>
+							Whitelist
+						</button>
+					</div>
 				</div>
-			</div>
 
-			{#if !validating}
-				<FormErrorList validity={$formValidity} />
-			{/if}
+				{#if validating}
+					<div class="flex items-center">
+						<Loader class="mx-2 w-6" />
+						<div class="font-semibold">Validating...</div>
+					</div>
+				{/if}
+
+				{#if whitelisting}
+					<div class="flex items-center">
+						<Loader class="mx-2 w-6" />
+						<div class="font-semibold">Whitelisting...</div>
+					</div>
+				{/if}
+
+				{#if !validating}
+					<FormErrorList validity={$formValidity} />
+				{/if}
+			</div>
 		</div>
 	{/if}
 </div>

@@ -5,7 +5,8 @@ import { getContract } from '$utils/misc/getContract';
 import { getIconUrl } from '$utils/misc/getIconUrl';
 import { parseToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
-import { ethers } from 'ethers';
+import { duration } from 'dayjs';
+import { BigNumber, ethers } from 'ethers';
 import { get } from 'svelte/store';
 import { getCollectionContract } from './collection';
 import contractCaller from './contractCaller';
@@ -118,7 +119,7 @@ export interface ChainListing {
 
 export async function getOnChainListing(listingId: string): Promise<ChainListing> {
 	const contract = getContract('marketplace', true);
-	const onChainListing = await contract.listings(listingId.toString());
+	const onChainListing = await contract.listings(listingId);
 
 	// if on chain listing is not valid, return null
 	const onChainId = ethers.utils.formatUnits(onChainListing.id, 0);

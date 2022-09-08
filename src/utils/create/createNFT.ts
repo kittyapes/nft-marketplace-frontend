@@ -46,10 +46,10 @@ export const createNFTOnChain = async (options: { id: string; amount: string; co
 		} else {
 			// Check what type of contract that is
 			if (contractType === 'ERC721') {
-				return await contractCaller(contract, 'mint', 150, 1, get(currentUserAddress));
+				await contractCaller(contract, 'mint', 150, 1, get(currentUserAddress));
 			} else if (contractType === 'ERC1155') {
 				// This is the default for most collections on the marketplace - erc1155
-				return await contractCaller(contract, 'mint', 150, 1, get(currentUserAddress), options.id, options.amount);
+				await contractCaller(contract, 'mint', 150, 1, get(currentUserAddress), options.id, options.amount);
 			} else {
 				// UNKNOWN type
 				throw new Error('Failed to create NFT on chain');
@@ -62,22 +62,4 @@ export const createNFTOnChain = async (options: { id: string; amount: string; co
 		throw new Error('Failed to create NFT on chain');
 		//return false;
 	}
-};
-
-export const updateNftOnApi = async (options: { id: string; name?: string; description?: string; metadata?: any; chainStatus: string; mintingTransaction?: string }) => {
-	const formData = new FormData();
-	options.name && formData.append('name', options.name);
-	options.description && formData.append('description', options.description);
-	options.metadata && formData.append('metadata', options.metadata);
-	options.chainStatus && formData.append('chainStatus', options.chainStatus);
-	options.mintingTransaction && formData.append('mintingTransaction', options.mintingTransaction);
-
-	const res = await axios.put(getApiUrl('latest', `nfts/${options.id}`), formData, await getAxiosConfig()).catch((e) => {
-		httpErrorHandler(e);
-		return null;
-	});
-
-	if (!res) return null;
-
-	return res.data.data;
 };

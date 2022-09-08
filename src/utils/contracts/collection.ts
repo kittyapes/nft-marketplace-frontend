@@ -30,17 +30,7 @@ export async function contractCreateCollection(options: {
 		options.royalties.length > 0 ? options.royalties.map((item) => item.address) : ['0x0000000000000000000000000000000000000000'],
 		options.royalties.length > 0 ? options.royalties.map((item) => ethers.utils.parseUnits(item.fees.toString(), 2)) : [ethers.utils.parseUnits('0', 2)],
 		false
-	).catch((err) => {
-		console.log(
-			options.name,
-			options.paymentTokenTicker,
-			options.slug,
-			options.royalties.length > 0 ? options.royalties.map((item) => item.address) : ['0x0000000000000000000000000000000000000000'],
-			options.royalties.length > 0 ? options.royalties.map((item) => ethers.utils.parseUnits(item.fees.toString(), 2)) : [ethers.utils.parseUnits('0', 2)],
-			false,
-			err
-		);
-	});
+	);
 
 	return { contractAddress: res.events[0].args[2] };
 }
