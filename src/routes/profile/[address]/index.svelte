@@ -261,6 +261,9 @@
 			cardPropsMapper = (v) => ({ options: v });
 		}
 	}
+
+	// When you refresh listings subtab currentUserAddress is null first and when set later function is not called again fix
+	$: browser && $currentUserAddress && selectedTab.name === 'listings' && fetchMore();
 </script>
 
 <div class="h-72 bg-color-gray-light">
