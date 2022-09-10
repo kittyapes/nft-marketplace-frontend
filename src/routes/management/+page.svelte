@@ -1,6 +1,4 @@
 <script lang="ts">
-	throw new Error("@migration task: Add data prop (https://github.com/sveltejs/kit/discussions/5774#discussioncomment-3292707)");
-
 	import EntryName from '$lib/components/management/render-components/EntryName.svelte';
 	import EthAddress from '$lib/components/management/render-components/EntryEthAddress.svelte';
 	import InteractiveTable from '$lib/components/management/InteractiveTable.svelte';
@@ -30,9 +28,9 @@
 	import Loader from '$icons/loader.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { browser } from '$app/env';
+	import { browser } from '$app/environment';
 
-	export let tab: 'USER' | 'COLLECTION' = 'USER';
+	let tab: 'USER' | 'COLLECTION' = 'USER';
 
 	let users: UserData[] = [];
 	let collections: Collection[] = [];
@@ -433,7 +431,7 @@
 	// selectedNetworkOption.subscribe(() => validateContractAddress($whitelistingCollectionAddress));
 </script>
 
-<div class="flex flex-col w-full h-full p-40 gap-12">
+<div class="flex flex-col w-full h-full gap-12 p-40">
 	<div class="flex gap-14">
 		<div class="{tab === 'USER' ? 'gradient-text gradient-underline' : 'text-color-gray-base'} font-bold text-3xl relative btn" on:click={() => (tab = 'USER')}>User Management</div>
 		<div class="{tab === 'COLLECTION' ? 'gradient-text gradient-underline' : 'text-color-gray-dark'} font-bold text-3xl relative btn" on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
@@ -497,7 +495,7 @@
 					<div class="flex gap-10">
 						<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
 
-						<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>
+						<button class="w-40 px-10 py-2 text-lg font-semibold btn btn-gradient btn-rounded" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>
 							Whitelist
 						</button>
 					</div>
@@ -505,14 +503,14 @@
 
 				{#if validating}
 					<div class="flex items-center">
-						<Loader class="mx-2 w-6" />
+						<Loader class="w-6 mx-2" />
 						<div class="font-semibold">Validating...</div>
 					</div>
 				{/if}
 
 				{#if whitelisting}
 					<div class="flex items-center">
-						<Loader class="mx-2 w-6" />
+						<Loader class="w-6 mx-2" />
 						<div class="font-semibold">Whitelisting...</div>
 					</div>
 				{/if}

@@ -1,4 +1,4 @@
-throw new Error('@migration task: Update +server.js (https://github.com/sveltejs/kit/discussions/5774#discussioncomment-3292701)');
+import type { RequestHandler } from '@sveltejs/kit';
 
 const privateInvestors = [
 	'0xA0b65F62E19B764F8918Dc9B457178F6e1268645',
@@ -1340,16 +1340,10 @@ const privateInvestors = [
 	'0xB662804100f604674b90A0ec3F14806160622800',
 ];
 
-export const get = (req) => {
+export const GET: RequestHandler = (req) => {
 	if (req.url.searchParams.get('address')) {
-		return {
-			body: {
-				canAccess: !!privateInvestors.find((item) => item.toLowerCase() === req.url.searchParams.get('address').toLowerCase()),
-			},
-		};
+		return new Response(JSON.stringify({ canAccess: !!privateInvestors.find((item) => item.toLowerCase() === req.url.searchParams.get('address').toLowerCase()) }));
 	}
 
-	return {
-		body: null,
-	};
+	return new Response(JSON.stringify(null));
 };

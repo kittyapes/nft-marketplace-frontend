@@ -31,16 +31,16 @@
 		<Countdown startTime={new Date().toISOString()} duration={3600} />
 	</div>
 
-	<h2 class="text-lg font-medium mt-4">Auction contract testing!</h2>
+	<h2 class="mt-4 text-lg font-medium">Auction contract testing!</h2>
 
 	<div class="mt-2">Listing ID</div>
-	<input type="text" class="mt-2 h-10 rounded-lg border px-4" bind:value={listingId} />
+	<input type="text" class="h-10 px-4 mt-2 border rounded-lg" bind:value={listingId} />
 
-	<pre class="whitespace-pre-wrap overflow-hidden">
+	<pre class="overflow-hidden whitespace-pre-wrap">
 		{auctionErr}
 	</pre>
 
-	<div class="flex mt-2 gap-2">
+	<div class="flex gap-2 mt-2">
 		<button on:click={acceptHighest}>Accept Highest Bid</button>
 		<button on:click={cancelListing}>Cancel Auction</button>
 	</div>

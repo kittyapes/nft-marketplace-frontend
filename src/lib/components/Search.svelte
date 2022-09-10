@@ -72,7 +72,7 @@
 	}
 
 	beforeNavigate(({ to }) => {
-		if (!to.pathname.match(/search*/)) query = '';
+		if (!to.url.pathname.match(/search*/)) query = '';
 	});
 </script>
 

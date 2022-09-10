@@ -1,7 +1,7 @@
 import { readable } from 'svelte/store';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { browser } from '$app/env';
+import { browser } from '$app/environment';
 import { sanitizeHtmlInternal } from '$utils/html';
 
 export interface BlogPost {
