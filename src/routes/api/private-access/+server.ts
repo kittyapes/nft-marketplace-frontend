@@ -1,3 +1,5 @@
+throw new Error('@migration task: Update +server.js (https://github.com/sveltejs/kit/discussions/5774#discussioncomment-3292701)');
+
 const privateInvestors = [
 	'0xA0b65F62E19B764F8918Dc9B457178F6e1268645',
 	'0xaC93Bd07a62F0e9B4ee95E0e80d8fC4Fb32AD453',
@@ -1335,19 +1337,19 @@ const privateInvestors = [
 	// Custom Testers
 	'0x7FB10CF27B4A7613d1B6F168e3DCf9728a115EFb',
 	'0x43fea27665EE03573021e012eA43c7922Ee572D7',
-	'0xB662804100f604674b90A0ec3F14806160622800'
+	'0xB662804100f604674b90A0ec3F14806160622800',
 ];
 
 export const get = (req) => {
 	if (req.url.searchParams.get('address')) {
 		return {
 			body: {
-				canAccess: !!privateInvestors.find((item) => item.toLowerCase() === req.url.searchParams.get('address').toLowerCase())
-			}
+				canAccess: !!privateInvestors.find((item) => item.toLowerCase() === req.url.searchParams.get('address').toLowerCase()),
+			},
 		};
 	}
 
 	return {
-		body: null
+		body: null,
 	};
 };

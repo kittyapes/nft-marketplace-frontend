@@ -1,16 +1,18 @@
 <script context="module" lang="ts">
-	let _status: number;
+	throw new Error("@migration task: Replace error load function (https://github.com/sveltejs/kit/discussions/5774#discussioncomment-3293209)");
 
-	/** @type {import('@sveltejs/kit').ErrorLoad} */
-	export function load({ error, status }) {
-		_status = status;
+	// let _status: number;
 
-		return {
-			props: {
-				title: `${status}: ${error.message}`
-			}
-		};
-	}
+	// /** @type {import('@sveltejs/kit').ErrorLoad} */
+	// export function load({ error, status }) {
+	// 	_status = status;
+
+	// 	return {
+	// 		props: {
+	// 			title: `${status}: ${error.message}`
+	// 		}
+	// 	};
+	// }
 </script>
 
 <script lang="ts">

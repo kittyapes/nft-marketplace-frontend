@@ -1,4 +1,6 @@
 <script lang="ts">
+    throw new Error("@migration task: Add data prop (https://github.com/sveltejs/kit/discussions/5774#discussioncomment-3292707)");
+
     import Disconnect from "$icons/disconnect.svelte";
     import CreatorFormScreen from "$lib/components/CreatorFormScreen.svelte";
     import { checkUsernameAvailability } from "$utils/api/profile";

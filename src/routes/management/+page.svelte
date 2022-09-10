@@ -1,4 +1,6 @@
 <script lang="ts">
+	throw new Error("@migration task: Add data prop (https://github.com/sveltejs/kit/discussions/5774#discussioncomment-3292707)");
+
 	import EntryName from '$lib/components/management/render-components/EntryName.svelte';
 	import EthAddress from '$lib/components/management/render-components/EntryEthAddress.svelte';
 	import InteractiveTable from '$lib/components/management/InteractiveTable.svelte';
