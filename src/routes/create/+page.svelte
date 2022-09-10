@@ -26,7 +26,7 @@
 	import { writable } from 'svelte/store';
 	import type { CardOptions } from '$interfaces/ui';
 	import { walletRefreshed } from '$utils/wallet';
-	import { browser } from '$app/env';
+	import { browser } from '$app/environment';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }>(null);

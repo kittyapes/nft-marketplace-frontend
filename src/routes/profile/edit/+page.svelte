@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { browser } from '$app/env';
+	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Loader from '$icons/loader.svelte';
@@ -40,7 +40,7 @@
 		{ at: 40, label: 'Bio', top_value: '50%' },
 		{ at: 60, label: '	icture', top_value: '75%' },
 		{ at: 80, label: 'Banner Image', top_value: '100%' },
-		{ at: 100, label: '', top_value: 'Free NFT' }
+		{ at: 100, label: '', top_value: 'Free NFT' },
 	];
 
 	const fetchedDataStore = writable<EditableProfileData>(null);
@@ -108,8 +108,8 @@
 					website: '',
 					pixiv: '',
 					deviantart: '',
-					artstation: ''
-				}
+					artstation: '',
+				},
 			} as EditableProfileData;
 
 			fetchedDataStore.set(cloneDeep(localData));
