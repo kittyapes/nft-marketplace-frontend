@@ -171,16 +171,25 @@
 	// Reset tabs on the initial load
 	resetTabs();
 
-	let refreshNftTabs = () => {
-		tabs.forEach((t) => {
-			if (t.name === 'collected' || t.name === 'created' || t.name === 'hidden') {
-				t.index = 1;
-				t.data = [];
-				t.reachedEnd = false;
-				t.isFetching = false;
+	let refreshNftTabs = (event: CustomEvent) => {
+		if (!event.detail) return;
 
-				t.fetchFunction(t, t.index, fetchLimit);
-			}
+		event.detail.tabs.forEach((tabName) => {
+			tabs.forEach((tab) => {
+				if (tabName === tab.name) {
+					tab.index = 1;
+					tab.data = [];
+					tab.reachedEnd = false;
+
+					tab.isFetching = true;
+					isFetchingNfts = true;
+
+					tab.fetchFunction(tab, tab.index, fetchLimit);
+
+					tab.isFetching = false;
+					isFetchingNfts = false;
+				}
+			});
 		});
 	};
 
@@ -359,7 +368,7 @@
 	<div class="h-px bg-black opacity-30" />
 
 	<div class="max-w-screen-xl mx-auto">
-		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:hid-nft={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
+		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:refresh-tabs={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
 	</div>
 </div>
 
