@@ -11,7 +11,7 @@ export async function salePurchase(listingId: string, price: string) {
 		notifyError('Failed to Make Purchase: Listing is no longer valid');
 		return;
 	}
-	
+
 	const marketplaceAddress = getContractData('marketplace').address;
 	const contractApproved = await ensureAmountApproved(marketplaceAddress, price, listing.payToken);
 
