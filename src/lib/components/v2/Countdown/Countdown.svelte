@@ -7,7 +7,6 @@
 
 	export let startTime: number;
 	export let duration: number;
-	export let expired: boolean = false;
 
 	$: endTime = dayjs(startTime * 1000).add(duration, 'seconds');
 	$: remaining = dayjs.duration(endTime.diff(dayjs(), 'seconds'), 'seconds');
@@ -16,7 +15,7 @@
 		['Days', remaining.days()],
 		['Hours', remaining.hours()],
 		['Minutes', remaining.minutes()],
-		['Seconds', remaining.seconds()],
+		['Seconds', remaining.seconds()]
 		// @ts-ignore
 	].map(([unit, value]) => [unit, Math.max(0, value)]);
 
@@ -35,11 +34,7 @@
 			<div class="relative grid w-16 h-16 bg-white rounded-lg place-items-center">
 				<div class="absolute w-full h-full rounded-lg bg-gradient-to-r from-color-purple to-color-blue opacity-10" />
 				<span class="text-2xl font-bold opacity-70">
-					{#if expired}
-						0
-					{:else}
-						{value}
-					{/if}
+					{value}
 				</span>
 			</div>
 

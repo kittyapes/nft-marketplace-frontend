@@ -52,8 +52,8 @@
 			text: 'Trade',
 			icon: 'trade',
 			sectionComponent: TradeSection,
-			visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && nftBalance)) && !$staleResource && options.allowTrade,
-		},
+			visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && nftBalance)) && !$staleResource && options.allowTrade
+		}
 	];
 
 	// Set default tab and prevent overwiriting when statement above
@@ -94,16 +94,7 @@
 		{/if}
 	</div>
 
-	<svelte:component
-		this={selectedTab.sectionComponent}
-		{options}
-		{chainListing}
-		on:close-popup
-		on:force-expire
-		bind:showBackButton
-		bind:this={tabComponentInstance}
-		on:listing-created={refreshBalance}
-	/>
+	<svelte:component this={selectedTab.sectionComponent} {options} {chainListing} on:close-popup bind:showBackButton bind:this={tabComponentInstance} on:listing-created={refreshBalance} />
 </div>
 
 <!-- {#if showCannotTrade}

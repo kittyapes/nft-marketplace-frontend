@@ -1,5 +1,3 @@
-import type { RequestHandler } from '@sveltejs/kit';
-
 const privateInvestors = [
 	'0xA0b65F62E19B764F8918Dc9B457178F6e1268645',
 	'0xaC93Bd07a62F0e9B4ee95E0e80d8fC4Fb32AD453',
@@ -1337,13 +1335,19 @@ const privateInvestors = [
 	// Custom Testers
 	'0x7FB10CF27B4A7613d1B6F168e3DCf9728a115EFb',
 	'0x43fea27665EE03573021e012eA43c7922Ee572D7',
-	'0xB662804100f604674b90A0ec3F14806160622800',
+	'0xB662804100f604674b90A0ec3F14806160622800'
 ];
 
-export const GET: RequestHandler = (req) => {
+export const get = (req) => {
 	if (req.url.searchParams.get('address')) {
-		return new Response(JSON.stringify({ canAccess: !!privateInvestors.find((item) => item.toLowerCase() === req.url.searchParams.get('address').toLowerCase()) }));
+		return {
+			body: {
+				canAccess: !!privateInvestors.find((item) => item.toLowerCase() === req.url.searchParams.get('address').toLowerCase())
+			}
+		};
 	}
 
-	return new Response(JSON.stringify(null));
+	return {
+		body: null
+	};
 };

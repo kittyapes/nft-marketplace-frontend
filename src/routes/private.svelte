@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { hoverHint } from '$actions/hoverHint';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import AccessForbidden from '$lib/components/AccessForbidden.svelte';
 	import GridOptionContainer from '$lib/components/airdrop/investors/GridOptionContainer.svelte';
 	import GridOptionSplit from '$lib/components/airdrop/investors/GridOptionSplit.svelte';
@@ -25,7 +25,7 @@
 		seedMerkleContractIsActive,
 		stakedHinataBalance,
 		stakingWaifuRewards,
-		userHinataBalance,
+		userHinataBalance
 	} from '$stores/wallet';
 	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
 	import { claimWaifuRewards, stakeTokens } from '$utils/contracts/staking';
@@ -188,7 +188,7 @@
 			escrowTokensValue: seedEscrowed,
 			airdropType: 'seed',
 			airdropHasClaimed: seedHasClaimed,
-			contractActive: $seedMerkleContractIsActive,
+			contractActive: $seedMerkleContractIsActive
 		},
 		{
 			title: 'Private',
@@ -197,7 +197,7 @@
 			escrowTokensValue: privateEscrowed,
 			airdropType: 'private',
 			airdropHasClaimed: privateHasClaimed,
-			contractActive: $privateMerkleContractIsActive,
+			contractActive: $privateMerkleContractIsActive
 		},
 		{
 			title: 'Public',
@@ -206,8 +206,8 @@
 			escrowTokensValue: idoEscrowed,
 			airdropType: 'ido',
 			airdropHasClaimed: idoPublicHasClaimed,
-			contractActive: $idoMerkleContractIsActive,
-		},
+			contractActive: $idoMerkleContractIsActive
+		}
 	];
 
 	// Check For eligibility
@@ -229,8 +229,8 @@
 			props: {
 				numberOfHinata: $userHinataBalance,
 				duration: selectedDuration.duration,
-				onContinue: async () => stakeTokens(await hinataTokensBalance($currentUserAddress), selectedDuration.duration),
-			},
+				onContinue: async () => stakeTokens(await hinataTokensBalance($currentUserAddress), selectedDuration.duration)
+			}
 		});
 	};
 
@@ -247,7 +247,7 @@
 	const stakeDurationOptions = [
 		{ label: '3 MO', duration: 3600 },
 		{ label: '1 YR', duration: 7200 },
-		{ label: '2 YR', duration: 10800 },
+		{ label: '2 YR', duration: 10800 }
 	];
 
 	let selectedDuration = stakeDurationOptions[1];
@@ -293,9 +293,9 @@
 						<div style="font-weight: 450;" class="w-full pl-4">
 							{parseFloat($userHinataBalance.toFixed(2))} HINATA TOKENS
 						</div>
-						<Button gradient rounded on:click={() => ($hinataStakingAllowance > 0 ? stakeAllTokens() : increaseHinataAllowance())} disabled={$userHinataBalance <= 0}>
-							{$hinataStakingAllowance > 0 ? 'Stake' : 'Approve'}
-						</Button>
+						<Button gradient rounded on:click={() => ($hinataStakingAllowance > 0 ? stakeAllTokens() : increaseHinataAllowance())} disabled={$userHinataBalance <= 0}
+							>{$hinataStakingAllowance > 0 ? 'Stake' : 'Approve'}</Button
+						>
 					</div>
 
 					<div class="flex mt-8 items-center gap-x-14">
@@ -303,7 +303,7 @@
 						<div
 							use:hoverHint={{
 								text: `Lock your HiNATA for longer for better rewards! ${makeBold(makeLink('READ MORE', 'https://www.hinata.io/'))}`,
-								targetId: 'hint-target',
+								targetId: 'hint-target'
 							}}
 						>
 							<div id="hint-target" />

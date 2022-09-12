@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 
 	export let to: HTMLElement;
 	export let right = false;
@@ -22,7 +22,7 @@
 			bottom: box.bottom,
 			left: box.left,
 			height: box.height,
-			width: box.width,
+			width: box.width
 		};
 	}
 

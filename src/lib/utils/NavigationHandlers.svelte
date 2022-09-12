@@ -45,7 +45,7 @@
 
 		setPopup(AuthLoginPopup, {
 			unique: true,
-			props: { adapter: userAuthLoginPopupAdapter, onLoginSuccess },
+			props: { adapter: userAuthLoginPopupAdapter, onLoginSuccess }
 		});
 	}
 
@@ -54,30 +54,30 @@
 
 		setPopup(WalletNotConnectedPopup, {
 			unique: true,
-			props: { onConnectSuccess },
+			props: { onConnectSuccess }
 		});
 	}
 
 	// Handler for when the user is already in the app and is about
 	// to navigate to a protected route
 	beforeNavigate(({ to, cancel }) => {
-		if (!to?.url.pathname) {
+		if (!to?.pathname) {
 			return;
 		}
 
-		if (isConnectionRequired(to.url.pathname)) {
+		if (isConnectionRequired(to.pathname)) {
 			cancel();
-			setWalletConnectionPopup(to.url.pathname);
+			setWalletConnectionPopup(to.pathname);
 		}
 
-		if ($walletConnected && isProtectedAndExpired(to.url.pathname)) {
+		if ($walletConnected && isProtectedAndExpired(to.pathname)) {
 			cancel();
-			setLoginPopup(to.url.pathname);
+			setLoginPopup(to.pathname);
 		}
 
 		// When the user is trying to access his profile and the the profile has not been created on the backend,
 		// request him to sign in, which will create the profile.
-		if (to.url.pathname === '/profile' || RegExp(`profile/${$currentUserAddress}`).test(to.url.pathname)) {
+		if (to.pathname === '/profile' || RegExp(`profile/${$currentUserAddress}`).test(to.pathname)) {
 			if (!$profileData) {
 				cancel();
 				setPopup(AuthLoginPopup, {
@@ -87,8 +87,8 @@
 						onLoginSuccess: async () => {
 							await refreshProfileData();
 							goto('/profile');
-						},
-					},
+						}
+					}
 				});
 			}
 		}
@@ -97,8 +97,8 @@
 	// Handler for when the app is first loaded on a auth protected route
 	afterNavigate(({ from, to }) => {
 		// Restrict routes to verified creators
-		if (to.url.pathname.match(/create*/) || to.url.pathname === '/collections/new/edit' || to.url.pathname.match(/management*/)) {
-			if (to.url.pathname.match(/create*/) || to.url.pathname === '/collections/new/edit') {
+		if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit' || to.pathname.match(/management*/)) {
+			if (to.pathname.match(/create*/) || to.pathname === '/collections/new/edit') {
 				profileData.subscribe((profile) => {
 					if (profile && (profile.status !== 'VERIFIED' || !profile.roles.includes('verified_user'))) {
 						if (!profile.roles.includes('superadmin')) {
@@ -114,7 +114,7 @@
 			}
 
 			// Pages only accessible by superadmins
-			if (to.url.pathname.match(/management*/)) {
+			if (to.pathname.match(/management*/)) {
 				profileData.subscribe((profile) => {
 					if (profile && (!profile.roles.includes('superadmin') || !profile.roles.includes('admin'))) {
 						errorCode = 403;

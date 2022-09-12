@@ -8,8 +8,6 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import { apiGetCollectionBySlug } from '$utils/api/collection';
 	import { apiHideNft, apiRevealNft } from '$utils/api/nft';
-	import { sanitizeHtmlInternal } from '$utils/html';
-	import { makeHttps } from '$utils/ipfs';
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { getListingCardTimerHtml } from '$utils/misc/time';
@@ -21,8 +19,6 @@
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import CardPopup from './CardPopup/CardPopup.svelte';
-	import { reject } from 'lodash-es';
-	import Loader from '$icons/loader.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -115,30 +111,10 @@
 	// Listing timer
 	let timerHtml: string = '';
 	let timerInterval;
-	let fileType;
 
 	function updateTimerHtml() {
-		timerHtml = sanitizeHtmlInternal(getListingCardTimerHtml(options.listingData.startTime, options.listingData.duration));
+		timerHtml = getListingCardTimerHtml(options.listingData.startTime, options.listingData.duration);
 	}
-
-	const preload = async (src) => {
-		const resp = await fetch(makeHttps(src));
-		const blob = await resp.blob();
-		fileType = blob.type.split('/')[0];
-
-		return new Promise(function (resolve) {
-			let reader = new FileReader();
-			reader.readAsDataURL(blob);
-			reader.onload = () => {
-				imgLoaded = true;
-				resolve(reader.result);
-			};
-			reader.onerror = (error) => {
-				imgLoaded = false;
-				reject(`Error: ${error}`);
-			};
-		});
-	};
 
 	onMount(() => {
 		if (options.resourceType !== 'listing') return;
@@ -174,27 +150,7 @@
 	</div>
 
 	<div class="w-full mx-auto mt-2 overflow-hidden transition bg-gray-100 rounded-lg select-none aspect-1" class:animate-pulse={!imgLoaded}>
-		{#await preload(options.nfts[0].thumbnailUrl)}
-			<Loader />
-		{:then}
-			{#if fileType === 'video'}
-				<video crossorigin="anonymous" class="max-w-full max-h-full shadow-xl object-cover object-top w-full h-full transition" autoplay loop class:opacity-0={!imgLoaded}>
-					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
-					<track kind="captions" />
-				</video>
-			{:else if fileType === 'image'}
-				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" class:opacity-0={!imgLoaded} />
-			{/if}
-		{:catch _err}
-			{#if fileType === 'video'}
-				<video crossorigin="anonymous" class="max-w-full max-h-full shadow-xl object-cover object-top w-full h-full transition" autoplay loop class:opacity-0={!imgLoaded}>
-					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
-					<track kind="captions" />
-				</video>
-			{:else if fileType === 'image'}
-				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" class:opacity-0={!imgLoaded} />
-			{/if}
-		{/await}
+		<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" class:opacity-0={!imgLoaded} on:load={() => (imgLoaded = true)} />
 	</div>
 
 	<div class="flex mt-2 text-sm font-medium text-gray-600">

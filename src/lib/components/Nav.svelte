@@ -9,7 +9,7 @@
 	import UserCircle from '$icons/user-circle.svelte';
 	import { goto } from '$app/navigation';
 	import { storage } from '$utils/contracts';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 
 	let displayProfilePopup = false;
 	let showProfileButton = false;

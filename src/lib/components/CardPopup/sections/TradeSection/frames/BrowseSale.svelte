@@ -11,11 +11,8 @@
 	import { isFuture } from '$utils/misc/time';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { derived } from 'svelte/store';
-	import { createEventDispatcher } from 'svelte';
 	import { frame } from '../tradeSection';
 	import Success from './Success.svelte';
-
-	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
@@ -31,7 +28,6 @@
 
 		if (success) {
 			frame.set(Success);
-			dispatch('force-expire');
 		}
 
 		purchasing = false;

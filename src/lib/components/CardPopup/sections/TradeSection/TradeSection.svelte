@@ -64,4 +64,4 @@
 	const { component, props } = unpackedComponentStore(frame);
 </script>
 
-<svelte:component this={$component} {...$props} {options} {chainListing} on:close-popup on:listing-created on:force-expire />
+<svelte:component this={$component} {...$props} {options} {chainListing} on:close-popup on:listing-created />

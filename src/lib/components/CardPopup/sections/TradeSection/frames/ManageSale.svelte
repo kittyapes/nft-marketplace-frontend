@@ -5,13 +5,10 @@
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
 	import { contractCancelListing, type ChainListing } from '$utils/contracts/listing';
 	import { notifyError } from '$utils/toast';
-	import { createEventDispatcher } from 'svelte';
 
 	import { frame } from '../tradeSection';
 	import EditSale from './EditSale.svelte';
 	import Success from './Success.svelte';
-
-	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
@@ -30,7 +27,6 @@
 			await contractCancelListing(options.listingData.onChainId);
 			frame.set(Success);
 			options.staleResource.set({ reason: 'cancelled' });
-			dispatch('force-expire');
 		} catch (err) {
 			console.error(err);
 			notifyError('Failed to cancel listing!');

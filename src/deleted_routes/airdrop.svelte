@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 
 	import ClaimTokens from '$lib/components/airdrop/ClaimTokens.svelte';
 	import ConnectWalletBanner from '$lib/components/airdrop/ConnectWalletBanner.svelte';
@@ -26,21 +26,21 @@
 </script>
 
 <div class="w-full min-h-full px-6">
-	<div class="flex justify-center w-full mt-24">
+	<div class="w-full flex justify-center mt-24">
 		<img src="/img/logo/airdrop-logo.svg" alt="airdrop logo" />
 	</div>
 
 	<div class="w-full text-center mt-9 ">
 		<div
-			class="font-bold text-transparent uppercase text-7xl bg-clip-text bg-gradient-to-r from-color-purple to-color-blue"
+			class="text-7xl uppercase font-bold text-transparent bg-clip-text bg-gradient-to-r from-color-purple to-color-blue"
 		>
 			Token portal
 		</div>
 
 		<!-- Community Airdrop Section -->
-		<div class="w-full mt-20 text-5xl font-bold">Community Airdrop</div>
+		<div class="w-full mt-20 font-bold text-5xl">Community Airdrop</div>
 
-		<div class="mt-12 text-lg font-bold">
+		<div class="text-lg font-bold mt-12">
 			The Hinata community airdrop snapshot was taken on December 8th, 2021 at 00:00 UTC
 		</div>
 
@@ -51,7 +51,7 @@
 		{/if}
 
 		<!-- Platform Usage -->
-		<div class="w-full text-5xl font-bold mt-28">Platform Usage</div>
+		<div class="w-full mt-28 font-bold text-5xl">Platform Usage</div>
 
 		<div class="w-full max-w-3xl m-auto mt-16 text-color-black">
 			Tokens are distributed among active users on the Hinata Platform. If you made a sale or a
@@ -59,7 +59,7 @@
 		</div>
 
 		<div
-			class="w-full max-w-5xl m-auto mt-12 bg-black border-4 border-black bg-opacity-5 border-opacity-20 py-11 px-7 rounded-2xl"
+			class="w-full max-w-5xl m-auto bg-black bg-opacity-5 border-4 border-black border-opacity-20 mt-12 py-11 px-7 rounded-2xl"
 		>
 			<span class="text-lg font-bold text-color-black ">
 				Platform usage claims will begin once the app is live.

@@ -11,9 +11,9 @@
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import { slide } from 'svelte/transition';
 
-	let username = 'Till Lindemann';
-	let profilePictureUrl = 'https://picsum.photos/200';
-	let bio =
+	export let username = 'Till Lindemann';
+	export let profilePictureUrl = 'https://picsum.photos/200';
+	export let bio =
 		'Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullamco laboriosam, nisi ut aliquid ex ea commodi consequatur.';
 
 	let showShare = false;
@@ -28,38 +28,53 @@
 
 <LoadedContent {loaded}>
 	<CreatorFormScreen step={4}>
-		<div slot="header" class="max-w-3xl mb-5">
-			<h1 class="font-bold uppercase text-7xl">
+		<div slot="header" class="mb-5 max-w-3xl">
+			<h1 class="uppercase font-bold text-7xl">
 				<p>Share your</p>
 				<p class="gradient-text">avatar</p>
 			</h1>
 		</div>
 		<div slot="content" class="flex flex-col max-w-xl gap-8 mb-16">
-			<p class="mb-6 text-sm font-light">
-				Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullamco laboriosam,
-				nisi ut aliquid ex ea commodi consequatur.
+			<p class="text-sm font-light mb-6">
+				Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor incidunt ut
+				labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullamco
+				laboriosam, nisi ut aliquid ex ea commodi consequatur.
 			</p>
-			<h1 class="text-lg uppercase text-color-black">Sharing is caring</h1>
-			<div class="relative grid w-full text-white bg-gradient-to-r from-color-purple to-color-blue rounded-2xl place-items-center py-9">
+			<h1 class="text-lg text-color-black uppercase">Sharing is caring</h1>
+			<div
+				class="bg-gradient-to-r from-color-purple to-color-blue w-full rounded-2xl text-white grid place-items-center py-9 relative"
+			>
 				<div class="grid w-11/12 h-full gap-x-4 place-items-center grid-cols-[1fr_3fr]">
-					<div class="grid w-full h-full p-2 place-items-center">
+					<div class="grid place-items-center w-full h-full p-2">
 						<div class="w-36 h-36">
-							<div class="grid self-center w-full h-full bg-white rounded-full  place-items-center">
-								<img src={profilePictureUrl} alt="Profile Picutre" class="rounded-full w-[85%] h-[85%]" />
+							<div class=" bg-white rounded-full self-center w-full h-full grid place-items-center">
+								<img
+									src={profilePictureUrl}
+									alt="Profile Picutre"
+									class="rounded-full w-[85%] h-[85%]"
+								/>
 							</div>
 						</div>
 					</div>
 					<div class="flex flex-col gap-2 p-2 place-self-start">
-						<div class="flex gap-3 text-left ">
-							<h1 class="text-xl font-semibold ">{username}</h1>
+						<div class="flex text-left gap-3 ">
+							<h1 class="font-semibold text-xl ">{username}</h1>
 							<VerifiedCheckmarkWhite />
 						</div>
 						<p class="font-light text-sm max-w-[15rem]">{bio}</p>
 					</div>
 				</div>
-				<div class="absolute -bottom-5 right-[13%] grid place-items-center" class:right={moveRight} use:outsideClickCallback={{ cb: () => (showShare = false) }}>
+				<div
+					class="absolute -bottom-5 right-[13%] grid place-items-center"
+					class:right={moveRight}
+					use:outsideClickCallback={{ cb: () => (showShare = false) }}
+				>
 					{#if showShare}
-						<div class="flex gap-3 px-10 py-5 text-black bg-white rounded-lg bg-opacity-80" transition:slide on:outroend={() => (moveRight = false)}>
+						<div
+							class="rounded-lg bg-white bg-opacity-80 py-5 px-10 flex text-black gap-3"
+							transition:slide
+							on:outroend={() => (moveRight = false)}
+						>
 							<div
 								class="icon"
 								on:click={() => {
@@ -93,10 +108,13 @@
 								<Web {gradient} />
 							</div>
 						</div>
-						<div class="w-0 h-0 border-x-[0.75rem] border-t-[1rem] border-x-transparent border-t-white border-opacity-80 mb-1 bg-transparent" transition:slide />
+						<div
+							class="w-0 h-0 border-x-[0.75rem] border-t-[1rem] border-x-transparent border-t-white border-opacity-80 mb-1 bg-transparent"
+							transition:slide
+						/>
 					{/if}
 					<button
-						class="flex gap-2 btn btn-black btn-rounded "
+						class="btn btn-black btn-rounded flex gap-2 "
 						on:click={() => {
 							showShare = !showShare;
 							moveRight = true;

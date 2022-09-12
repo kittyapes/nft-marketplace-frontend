@@ -20,7 +20,7 @@
 
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
-		res.res = await getListings({ ...fetchOptions, listingStatus: ['UNLISTED', 'ACTIVE'] }, index, 20);
+		res.res = await getListings({ ...fetchOptions }, index, 20);
 		res.adapted = res.res.map(listingToCardOptions);
 
 		return res;

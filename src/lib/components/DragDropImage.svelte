@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { notifyError } from '$utils/toast';
 	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';

@@ -17,7 +17,7 @@
 	export let thumbnailUrl: string;
 	export let favorited: boolean;
 	export let options: CardOptions;
-	export let countdown: { startTime: number; duration: number; expired?: boolean } = null;
+	export let countdown: { startTime: number; duration: number } = null;
 
 	let videoAsset: HTMLVideoElement;
 	let fileType;
@@ -73,7 +73,7 @@
 <!-- NFT Image side-->
 <div class="flex flex-col w-full h-full pt-20 overflow-hidden text-center scrollbar-hide max-h-[650px]">
 	<!-- Asset render container -->
-	<div class="flex items-center self-center justify-center flex-shrink-0 object-contain w-full max-w-lg overflow-hidden bg-gray-100 border aspect-1 rounded-xl">
+	<div class="flex items-center self-center justify-center object-contain w-full max-w-lg border overflow-hidden bg-gray-100 aspect-1 rounded-xl flex-shrink-0">
 		{#await preload(assetUrl)}
 			<Loader />
 		{:then}
@@ -117,15 +117,7 @@
 
 	<!-- Auction timer -->
 	{#if countdown}
-		<div class="pb-4 font-medium opacity-50">
-			{capitalize(options.listingData?.listingType)}
-
-			{#if countdown.expired}
-				ended
-			{:else}
-				ending in:
-			{/if}
-		</div>
+		<div class="pb-4 font-medium opacity-50">{capitalize(options.listingData?.listingType)} ending in:</div>
 		<Countdown {...countdown} />
 	{/if}
 </div>
