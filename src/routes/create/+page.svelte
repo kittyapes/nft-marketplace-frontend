@@ -26,7 +26,7 @@
 	import { writable } from 'svelte/store';
 	import type { CardOptions } from '$interfaces/ui';
 	import { walletRefreshed } from '$utils/wallet';
-	import { browser } from '$app/env';
+	import { browser } from '$app/environment';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }>(null);
@@ -45,7 +45,7 @@
 		assetPreview: $nftDraft?.assetPreview,
 		thumbnailPreview: $nftDraft?.thumbnailPreview,
 		thumbnailBlob: $nftDraft?.thumbnailBlob,
-		assetBlob: $nftDraft?.assetBlob
+		assetBlob: $nftDraft?.assetBlob,
 	};
 
 	const formValidity = writable<Partial<{ [K in keyof NftDraft]: any }>>({});
@@ -69,6 +69,7 @@
 		generalCollection.set(genColl[0]);
 
 		profileData.set(await fetchProfileData($currentUserAddress));
+		console.log($profileData);
 
 		let collections: Collection[] = [];
 		let page = 1;
@@ -129,7 +130,7 @@
 			creator: $currentUserAddress,
 			thumbnail: nftData.thumbnailBlob,
 			asset: nftData.assetBlob,
-			collectionId: selectedCollection.value
+			collectionId: selectedCollection.value,
 		});
 
 		if (!createNftRes) {
@@ -149,7 +150,7 @@
 			await createNFTOnChain({
 				id: createNftRes.nftId.toString(),
 				amount: nftData.quantity.toString(),
-				collectionAddress: selectedCollection.collectionAddress
+				collectionAddress: selectedCollection.collectionAddress,
 			});
 		} catch (err) {
 			notifyError('Failed to create NFT on chain!');
@@ -196,9 +197,9 @@
 			{
 				name: nftData.name || 'No Title',
 				thumbnailUrl: nftData.thumbnailPreview || nftData.assetPreview,
-				collectionData: { name: nftData.collectionName }
-			}
-		]
+				collectionData: { name: nftData.collectionName },
+			},
+		],
 	} as CardOptions;
 </script>
 

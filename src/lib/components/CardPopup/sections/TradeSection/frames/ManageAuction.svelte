@@ -45,6 +45,7 @@
 		} else {
 			options.staleResource.set({ reason: 'bid-accepted' });
 			dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Auction completed successfully.' } });
+			dispatch('force-expire');
 			frame.set(Success);
 		}
 
@@ -65,6 +66,7 @@
 			await contractCancelListing(options.listingData.onChainId);
 			frame.set(Success);
 			options.staleResource.set({ reason: 'cancelled' });
+			dispatch('force-expire');
 		} catch (err) {
 			console.error(err);
 			notifyError('Failed to cancel listing!');

@@ -25,14 +25,28 @@
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
 	import { writable } from 'svelte/store';
 	import isCollectionAddress from '$utils/validator/isCollectionAddress';
-	import Dropdown from '$lib/components/Dropdown.svelte';
 	import Loader from '$icons/loader.svelte';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { browser } from '$app/environment';
 
-	export let mode: 'USER' | 'COLLECTION' = 'USER';
+	let tab: 'USER' | 'COLLECTION' = 'USER';
+
 	let users: UserData[] = [];
 	let collections: Collection[] = [];
 	let loaded = false;
 	let eventId;
+
+	$: if (tab && browser) {
+		$page.url.searchParams.set('tab', tab);
+		goto('?' + $page.url.searchParams, { keepfocus: true });
+	}
+
+	$: if ($page.url.searchParams.has('tab')) {
+		// @ts-ignore
+		tab = $page.url.searchParams.get('tab');
+	}
+
 	const whitelistingCollectionAddress = writable<string>('');
 	const whitelistingCollectionSlug = writable<string>('');
 
@@ -113,7 +127,7 @@
 	let collectionTableData: TableCol[] = [];
 
 	const handleTableEvent = async (event: CustomEvent) => {
-		if (mode === 'USER') {
+		if (tab === 'USER') {
 			userFetchingOptions.sort = {
 				sortBy: event.detail.sortBy,
 				sortReversed: event.detail.sortReversed,
@@ -131,7 +145,7 @@
 	};
 
 	const handleFilter = async (event: CustomEvent) => {
-		if (mode === 'USER') {
+		if (tab === 'USER') {
 			userFetchingOptions.filter = {
 				createdBefore: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdBefore,
 				role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
@@ -197,14 +211,14 @@
 		{ label: 'Unclaimed', value: false },
 	];
 
-	$: if ($currentUserAddress && mode) createTable();
+	$: if ($currentUserAddress && tab) createTable();
 
 	let createTable = async () => {
 		loaded = false;
-		mode === 'USER' ? await createUserTable() : await createCollectionTable();
+		tab === 'USER' ? await createUserTable() : await createCollectionTable();
 	};
 
-	// //COLLECTION section
+	//COLLECTION section
 
 	let createCollectionTable = async () => {
 		await apiSearchCollections()
@@ -243,7 +257,7 @@
 				renderComponent: EntryRole,
 				renderComponentProps: collections.map((u) => ({
 					id: u.slug,
-					mode,
+					mode: tab,
 					disableAllOnSelect: true,
 					role: u.status,
 					color: getRoleColor(u.status === 'INACTIVE' ? 'INACTIVATED' : 'verified_user'),
@@ -319,7 +333,7 @@
 		collections = (await apiSearchCollections(getCollectionsFetchingOptions())).filter((c) => c.slug);
 	};
 
-	// // USER section
+	// USER section
 
 	let createUserTable = async () => {
 		await getUsers()
@@ -332,7 +346,7 @@
 		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort };
 	};
 
-	const debouncedSearch = debounce(async () => (mode === 'USER' ? await getSearchedUsers() : await getSearchedCollections()), 300);
+	const debouncedSearch = debounce(async () => (tab === 'USER' ? await getSearchedUsers() : await getSearchedCollections()), 300);
 
 	const getSearchedUsers = async () => {
 		users = await getUsers(getUsersFetchingOptions());
@@ -367,7 +381,7 @@
 				renderComponentProps: users.map((u) => ({
 					id: u.address,
 					dispatchAllOptions: true,
-					mode,
+					mode: tab,
 					role: getHighestRole([...u.roles, u.status]),
 					color: getRoleColor(getHighestRole([...u.roles, u.status])),
 					options: [
@@ -404,7 +418,7 @@
 		loaded = true;
 	}
 
-	$: searchPlaceholder = `Search for ${mode.toLowerCase()}`;
+	$: searchPlaceholder = `Search for ${tab.toLowerCase()}`;
 
 	// Network picker
 	// const networkPickerOptions = [
@@ -417,15 +431,13 @@
 	// selectedNetworkOption.subscribe(() => validateContractAddress($whitelistingCollectionAddress));
 </script>
 
-<div class="flex flex-col w-full h-full p-40 gap-12">
+<div class="flex flex-col w-full h-full gap-12 p-40">
 	<div class="flex gap-14">
-		<div class="{mode === 'USER' ? 'gradient-text gradient-underline' : 'text-color-gray-base'} font-bold text-3xl relative btn" on:click={() => (mode = 'USER')}>User Management</div>
-		<div class="{mode === 'COLLECTION' ? 'gradient-text gradient-underline' : 'text-color-gray-dark'} font-bold text-3xl relative btn" on:click={() => (mode = 'COLLECTION')}>
-			Collection Management
-		</div>
+		<div class="{tab === 'USER' ? 'gradient-text gradient-underline' : 'text-color-gray-base'} font-bold text-3xl relative btn" on:click={() => (tab = 'USER')}>User Management</div>
+		<div class="{tab === 'COLLECTION' ? 'gradient-text gradient-underline' : 'text-color-gray-dark'} font-bold text-3xl relative btn" on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
 	</div>
 	<div class="flex gap-4">
-		{#if mode === 'USER'}
+		{#if tab === 'USER'}
 			<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
 			<div class="flex-grow" />
 			<div class="flex gap-10">
@@ -450,7 +462,7 @@
 		{/if}
 	</div>
 
-	{#if mode === 'USER'}
+	{#if tab === 'USER'}
 		<LoadedContent {loaded}>
 			<InteractiveTable on:event={handleTableEvent} tableData={userTableData} rows={users.length} />
 		</LoadedContent>
@@ -460,7 +472,7 @@
 		</LoadedContent>
 	{/if}
 
-	{#if mode === 'COLLECTION'}
+	{#if tab === 'COLLECTION'}
 		<div>
 			<h2 class="text-xl font-bold gradient-text">Whitelist a collection</h2>
 			<div class="flex flex-col w-full gap-10 mt-1">
@@ -483,7 +495,7 @@
 					<div class="flex gap-10">
 						<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
 
-						<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>
+						<button class="w-40 px-10 py-2 text-lg font-semibold btn btn-gradient btn-rounded" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>
 							Whitelist
 						</button>
 					</div>
@@ -491,14 +503,14 @@
 
 				{#if validating}
 					<div class="flex items-center">
-						<Loader class="mx-2 w-6" />
+						<Loader class="w-6 mx-2" />
 						<div class="font-semibold">Validating...</div>
 					</div>
 				{/if}
 
 				{#if whitelisting}
 					<div class="flex items-center">
-						<Loader class="mx-2 w-6" />
+						<Loader class="w-6 mx-2" />
 						<div class="font-semibold">Whitelisting...</div>
 					</div>
 				{/if}

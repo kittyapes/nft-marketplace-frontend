@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { browser } from '$app/env';
+	import { browser } from '$app/environment';
 
 	import type { CardOptions } from '$interfaces/ui';
 
@@ -22,10 +22,16 @@
 
 	let rightSectionInstance;
 
-	const countdownData = options?.resourceType === 'listing' ? { startTime: options.listingData?.startTime, duration: options.listingData?.duration } : null;
+	const countdownData = options?.resourceType === 'listing' ? { startTime: options.listingData?.startTime, duration: options.listingData?.duration, expired: false } : null;
 
 	// Log data that was used by the adapter to generate the CardPopup
 	$: console.debug('[Resource Data]:', options.rawResourceData);
+
+	function onForceExpire() {
+		if (countdownData) {
+			countdownData.expired = true;
+		}
+	}
 </script>
 
 <Popup class="w-full h-full overflow-y-auto rounded-none lg:rounded-xl lg:w-[1000px] lg:max-h-[700px] transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>
@@ -36,7 +42,7 @@
 	</button>
 
 	<!-- Main content -->
-	<div class="flex mx-10 flex-row flex-wrap justify-around gap-y-8 h-full">
+	<div class="flex flex-row flex-wrap justify-around h-full mx-10 gap-y-8">
 		<!-- Left part with image and buttons -->
 		<div class="min-h-[500px] w-[320px] overflow-y-auto pb-8">
 			<AssetContainer
@@ -51,7 +57,7 @@
 
 		<!-- Right part with info and actions -->
 		<div class="pt-8 w-[450px] flex-grow border-t lg:border-none pb-8">
-			<RightSection {options} on:close-popup={handler.close} bind:showBackButton bind:this={rightSectionInstance} />
+			<RightSection {options} on:close-popup={handler.close} bind:showBackButton bind:this={rightSectionInstance} on:force-expire={onForceExpire} />
 		</div>
 	</div>
 </Popup>
