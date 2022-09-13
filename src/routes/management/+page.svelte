@@ -155,7 +155,6 @@
 		}
 
 		if (tab === 'COLLECTION') {
-			console.log(event.detail.page);
 			collectionPage = event.detail.page;
 			await getSearchedCollections();
 		}
@@ -215,7 +214,6 @@
 
 	$: if (collectionFetchingOptions) {
 		collectionPage = 1;
-		console.log('updated', collectionPage);
 	}
 
 	let whitelisting = false;

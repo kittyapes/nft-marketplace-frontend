@@ -32,7 +32,6 @@
 			showingPages.pop();
 			showingPages.unshift(showingPages[0] - 1);
 			showingPages = showingPages;
-			1;
 		}
 
 		selected = page;
