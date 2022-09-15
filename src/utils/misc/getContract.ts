@@ -43,6 +43,8 @@ export function getContractData(name: ContractName) {
 		networkName = 'eth';
 	} else if (networkId === 4) {
 		networkName = 'rinkeby';
+	} else if (networkId === 5) {
+		networkName = 'goerli';
 	} else {
 		throw new Error(`Network with the ID ${networkId} not supported.`);
 	}
