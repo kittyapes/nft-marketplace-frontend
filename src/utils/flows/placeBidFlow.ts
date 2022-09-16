@@ -13,7 +13,7 @@ export async function placeBidFlow(listingId: string, amount: string) {
 		notifyError('Failed to Place Bid: Listing is no longer valid');
 		return;
 	}
-
+	
 	const contract = getContract('marketplace');
 
 	await ensureAmountApproved(contract.address, amount, listing.payToken);

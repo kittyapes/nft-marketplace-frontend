@@ -34,8 +34,6 @@ async function _fetchBiddings(listingId: string, tokenDecimals: number) {
 	const res = await axios.get(getApiUrl('latest', 'listings/' + listingId + '/bids'));
 	const bids = res.data.data as any[];
 
-	let longestString = 0;
-
 	// A hotfix for accumulating the bid amounts, because the contract emits only the differences
 	// and the backend returns only them, not accumulated
 	for (const [index, bid] of bids.entries()) {
@@ -46,19 +44,17 @@ async function _fetchBiddings(listingId: string, tokenDecimals: number) {
 		}
 
 		bid.formatted = ethers.utils.formatUnits(bid.accumulated, tokenDecimals);
-
-		longestString = Math.max(longestString, bid.formatted.length);
 	}
 
 	const adaptedBids = bids.map((bid) => ({
 		bidderName: bid.user?.username,
 		imageUrl: bid.user?.thumbnailUrl,
-		tokenAmount: bid.formatted.padEnd(longestString, '0'),
+		tokenAmount: bid.formatted,
 		timeAgo: dayjs
 			.duration(dayjs(bid.bidAt * 1000).diff(dayjs(), 's'), 's')
 			.humanize(true)
 			.replace('a few seconds ago', 'now')
-			.replace('minutes', 'm')
+			.replace('minutes', 'm'),
 	}));
 
 	return adaptedBids;

@@ -9,13 +9,13 @@
 
 	const feeInputRegex = /^([0-9]|[0-9]{2})(\.[0-9]{0,2})?$/;
 
-	export let values: { fees: number | string; address: string }[] = [
+	export let values: { fees: string | null; address: string }[] = [
 		{ fees: '', address: '' },
 		{ fees: '', address: '' },
-		{ fees: '', address: '' }
+		{ fees: '', address: '' },
 	];
 
-	export let isValid: boolean | string = false;
+	export let error: string | boolean = true;
 	export let disabled = false;
 
 	let titleElementTooltip: HTMLElement;
@@ -23,23 +23,32 @@
 	const titleHovered = createToggle();
 	const tooltipHovered = createToggle();
 
-	$: isValid = false;
 	$: values.forEach((v) => {
-		let total = values.reduce((acc, b) => acc + ((b?.fees && parseFloat(b.fees.toString())) || 0), 0);
+		const addresses = values.map((i) => i.address.toLowerCase()).filter((i) => i);
 
-		// More than one entry has this value
-		let areAddressesSimilar =
-			values.filter((item) => !!item.address && !!v.address && isEthAddress(item.address) && isEthAddress(v.address) && item.address.toLowerCase() === v.address.toLowerCase()).length > 1;
+		const total = values.reduce((acc, b) => acc + ((b?.fees && parseFloat(b.fees.toString())) || 0), 0);
+		const hasZero = values.some((value) => parseFloat(value.fees) === 0);
+		const hasDuplicates = new Set(addresses).size !== addresses.length;
+		const hasInvalidAddress = addresses.map((i) => isEthAddress(i)).some((i) => !i);
+		const hasPercentageWithoutAddress = values.reduce((acc, i) => acc || (i.fees && !i.address), false);
+		const hasAddressWithoutPercentage = values.reduce((acc, i) => acc || (i.address && !i.fees), false);
 
-		if (values.some((value) => parseFloat(value.fees.toString()) === 0)) isValid = 'Royalty Must be a Non-Zero Value';
-		else if (total < 0.3 && values.reduce((acc, v) => !!acc || !!(+v.fees > 0) || !!v.address, false)) isValid = 'Sum of Royalties Cannot Be Below 0.3 %';
-		else {
-			isValid =
-				total > 98.5
-					? 'Sum of Royalties Cannot Exceed 98.5 %'
-					: areAddressesSimilar
-					? 'Please Enter Unique Addresses To Each Field'
-					: (!!v.fees === !!v.address && isEthAddress(v.address)) || (v.fees == '' && v.address == '');
+		if (total !== 0 && total < 0.3) {
+			error = 'The sum of royalties cannot be lower than 0.3 %';
+		} else if (total > 98.5) {
+			error = 'Sum of Royalties Cannot Exceed 98.5 %';
+		} else if (hasZero) {
+			error = 'Royalty Must be a Non-Zero Value';
+		} else if (hasDuplicates) {
+			error = 'Royalties contain duplicate addresses';
+		} else if (hasInvalidAddress) {
+			error = 'Royalties contain an invalid ETH address';
+		} else if (hasPercentageWithoutAddress) {
+			error = 'Royalties contain a percentage without an address';
+		} else if (hasAddressWithoutPercentage) {
+			error = 'Royalties contain an address without a percentage';
+		} else {
+			error = true;
 		}
 	});
 </script>

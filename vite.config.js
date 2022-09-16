@@ -15,17 +15,17 @@ const config = {
 			$contracts: path.resolve('./src/contracts'),
 			$actions: path.resolve('./src/actions'),
 			$interfaces: path.resolve('./src/interfaces'),
-			$scripts: path.resolve('./src/scripts')
-		}
+			$scripts: path.resolve('./src/scripts'),
+		},
 	},
 	define: {
-		'process.env': process.env
+		'process.env': process.env,
 	},
 	optimizeDeps: {
 		entries: ['jwt-decode'],
-		exclude: ['@zerodevx/svelte-toast']
+		exclude: ['@zerodevx/svelte-toast'],
 	},
-	assetsInclude: ['./static/js/wallets.js']
+	assetsInclude: ['./static/js/wallets.js'],
 };
 
 export default config;

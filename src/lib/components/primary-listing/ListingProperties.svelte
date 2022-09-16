@@ -3,7 +3,8 @@
 
 	import type { ConfigurableListingProps } from '$interfaces/listing';
 	import type { ListingType } from '$utils/api/listing';
-	import { listingDurationOptions } from '$utils/contracts/listing';
+	import { userHasRole } from '$utils/auth/userRoles';
+	import { buildListingDurationOptions } from '$utils/misc';
 	import { isPrice } from '$utils/validator/isPrice';
 	import Datepicker from '../Datepicker.svelte';
 	import Dropdown from '../Dropdown.svelte';
@@ -24,6 +25,8 @@
 
 	$: sale = listingType === 'sale';
 	$: auction = listingType === 'auction';
+
+	$: durationOptions = buildListingDurationOptions($userHasRole('admin', 'superadmin'));
 
 	export let formErrors: string[] = [];
 
@@ -75,7 +78,7 @@
 	$: if (maxQuantity <= 1) props.quantity = 1;
 
 	export function setValues(options: { startDateTs: number; quantity: number; durationSeconds: number; price: string }) {
-		_setDuration(listingDurationOptions.find((v) => v.value === options.durationSeconds));
+		_setDuration(durationOptions.find((v) => v.value === options.durationSeconds));
 		_setStartDateTs(options.startDateTs);
 		props.quantity = options.quantity;
 		props.price = options.price;
@@ -93,7 +96,7 @@
 	</InputSlot>
 
 	<InputSlot label="Duration">
-		<Dropdown options={listingDurationOptions} on:select={(ev) => (props.durationSeconds = ev.detail.value)} bind:setSelected={_setDuration} {disabled} />
+		<Dropdown options={durationOptions} on:select={(ev) => (props.durationSeconds = ev.detail.value)} bind:setSelected={_setDuration} {disabled} />
 	</InputSlot>
 
 	<InputSlot label="Quantity" hidden={hideQuantity}>

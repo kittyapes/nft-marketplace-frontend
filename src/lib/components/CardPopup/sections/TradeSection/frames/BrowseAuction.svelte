@@ -82,7 +82,9 @@
 
 <div class="flex flex-col justify-center h-[90%] pr-1">
 	<div class="flex flex-col h-full mt-4">
-		<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} on:request-refresh={refreshBids} />
+		<div class="min-h-[300px] flex-grow">
+			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} on:request-refresh={refreshBids} />
+		</div>
 
 		<div class="flex items-center justify-between my-4">
 			<div class="font-semibold">

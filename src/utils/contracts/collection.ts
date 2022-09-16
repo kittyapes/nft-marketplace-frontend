@@ -29,7 +29,7 @@ export async function contractCreateCollection(options: {
 		options.paymentTokenTicker,
 		options.royalties.length > 0 ? options.royalties.map((item) => item.address) : ['0x0000000000000000000000000000000000000000'],
 		options.royalties.length > 0 ? options.royalties.map((item) => ethers.utils.parseUnits(item.fees.toString(), 2)) : [ethers.utils.parseUnits('0', 2)],
-		false
+		false,
 	);
 
 	return { contractAddress: res.events[0].args[2] };
@@ -42,23 +42,23 @@ export async function getContractInterface(address: string, provider: ethers.Sig
 				{
 					internalType: 'bytes4',
 					name: 'interfaceId',
-					type: 'bytes4'
-				}
+					type: 'bytes4',
+				},
 			],
 			name: 'supportsInterface',
 			outputs: [
 				{
 					internalType: 'bool',
 					name: '',
-					type: 'bool'
-				}
+					type: 'bool',
+				},
 			],
 			stateMutability: 'view',
-			type: 'function'
-		}
+			type: 'function',
+		},
 	];
-	const ERC1155InterfaceId: string = '0xd9b67a26';
-	const ERC721InterfaceId: string = '0x80ac58cd';
+	const ERC1155InterfaceId = '0xd9b67a26';
+	const ERC721InterfaceId = '0x80ac58cd';
 
 	if (!provider) {
 		provider = ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);

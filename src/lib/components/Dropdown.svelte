@@ -7,6 +7,7 @@
 		value?: any;
 		label: string;
 		iconUrl?: string;
+		style?: string;
 	}
 
 	export let options: Option[];
@@ -64,7 +65,11 @@
 	{#if opened}
 		<div id="list-container" class="absolute bottom-0 z-20 w-full overflow-hidden overflow-y-auto translate-y-full bg-white rounded-lg max-h-72 custom-scrollbar">
 			{#each options as option}
-				<button class="flex items-center w-full px-4 h-12 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded gap-x-2" on:click={() => handleOptionSelect(option)}>
+				<button
+					class="flex items-center w-full px-4 h-12 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded gap-x-2"
+					style={option.style}
+					on:click={() => handleOptionSelect(option)}
+				>
 					{#if option.iconUrl}
 						<img src={option.iconUrl} alt="" class="object-cover w-6 h-6 rounded-full" />
 					{/if}

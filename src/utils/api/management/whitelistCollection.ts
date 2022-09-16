@@ -9,9 +9,9 @@ export const whitelistCollection = async (address: string, slug: string) => {
 			getApiUrl('latest', 'collections/crawl-collection'),
 			{
 				address,
-				openseaSlug: slug
+				openseaSlug: slug,
 			},
-			await getAxiosConfig()
+			await getAxiosConfig(),
 		);
 	} catch (err) {
 		notifyError('Failed to whitelist collection. ' + err.message);

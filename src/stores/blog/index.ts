@@ -1,7 +1,8 @@
 import { readable } from 'svelte/store';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { browser } from '$app/env';
+import { browser } from '$app/environment';
+import { sanitizeHtmlInternal } from '$utils/html';
 
 export interface BlogPost {
 	title: string;
@@ -17,8 +18,7 @@ export interface BlogPost {
 	segment: string;
 }
 
-const FETCH_URL =
-	'https://api.rss2json.com/v1/api.json?rss_url=https://hinatafoundation.medium.com/feed';
+const FETCH_URL = 'https://api.rss2json.com/v1/api.json?rss_url=https://hinatafoundation.medium.com/feed';
 
 export const blogPosts = readable<BlogPost[]>([], (set) => {
 	if (!browser) {
@@ -28,6 +28,7 @@ export const blogPosts = readable<BlogPost[]>([], (set) => {
 	function formatPostData(post: BlogPost) {
 		post.pubDate = dayjs(post.pubDate).format('D MMMM, YYYY');
 		post.segment = getSegmentFromTitle(post.title);
+		post.content = sanitizeHtmlInternal(post.content);
 
 		return post;
 	}
