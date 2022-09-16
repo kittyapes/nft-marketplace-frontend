@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { _refreshOnChainListingHelper } from '../cardPopup';
+	import HistorySection from './HistorySection/HistorySection.svelte';
 	import InfoSection from './InfoSection.svelte';
 	import TradeSection from './TradeSection/TradeSection.svelte';
 
@@ -54,6 +55,7 @@
 			sectionComponent: TradeSection,
 			visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && nftBalance)) && !$staleResource && options.allowTrade,
 		},
+		{ text: 'History', icon: 'history', sectionComponent: HistorySection, visible: true },
 	];
 
 	// Set default tab and prevent overwiriting when statement above
