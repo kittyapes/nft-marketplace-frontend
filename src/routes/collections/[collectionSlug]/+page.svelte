@@ -20,6 +20,8 @@
 	import { MetaTags } from 'svelte-meta-tags';
 	import HinataBadge from '$icons/hinata-badge.svelte';
 
+	export let data;
+
 	let collectionData: Collection;
 	let nfts = [];
 	let creatorData: UserData;
@@ -133,22 +135,22 @@
 	onMount(() => document.addEventListener('scroll', () => menuAttachElement?.recalc()));
 </script>
 
-{#if collectionData}
+{#if data.collection}
 	<MetaTags
-		title={collectionData?.name + ' - Collection | Hinata Marketplace'}
-		description={collectionData?.description}
-		canonical={'https://hinata.io/' + collectionData?.slug}
+		title={data.collection?.name + ' - Collection | Hinata Marketplace'}
+		description={data.collection?.description}
+		canonical={'https://hinata.io/' + data.collection?.slug}
 		openGraph={{
 			type: 'website',
-			url: 'https://hinata.io/' + collectionData?.slug,
-			title: collectionData?.name + ' - Collection | Hinata Marketplace',
-			description: collectionData?.description,
+			url: 'https://hinata.io/' + data.collection?.slug,
+			title: data.collection?.name + ' - Collection | Hinata Marketplace',
+			description: data.collection?.description,
 			images: [
 				{
-					url: collectionData?.backgroundImageUrl,
+					url: data.collection?.backgroundImageUrl,
 					width: 800,
 					height: 400,
-					alt: collectionData?.name + 'Collection banner image.',
+					alt: data.collection?.name + 'Collection banner image.',
 				},
 			],
 			site_name: 'Hinata',
