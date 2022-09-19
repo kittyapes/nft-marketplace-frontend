@@ -10,8 +10,6 @@ export async function load(event) {
 	const res = await axios.get(getApiUrl('latest', 'collections/' + slug), { params: { limit: 1, page: 1 } });
 	const collection = res.data.data;
 
-	console.log(collection);
-
 	return {
 		collection,
 	};
