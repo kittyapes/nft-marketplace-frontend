@@ -10,7 +10,7 @@ import tokenAbi from '$constants/contracts/abis/hinataToken.json';
 
 type ContractName = 'marketplace' | 'storage' | 'factory' | 'token' | 'weth';
 
-const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'goerli'; address: string; abi: any }[] = [
+const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'goerli' | 'staging-genache'; address: string; abi: any }[] = [
 	// Rinkeby
 	{ name: 'marketplace', network: 'rinkeby', address: '0x81A8685ADAfAE90aC3224598E0b3623bF24584c6', abi: marketplaceAbi },
 	{ name: 'storage', network: 'rinkeby', address: '0xDaf3f945857f8Ea58f2bc4cF598a491c30868A72', abi: storageAbi },
@@ -31,6 +31,13 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'goerli'; ad
 	{ name: 'factory', network: 'eth', address: '0x41a508E15F391b2AA3129c9fE054f9A48226AC4F', abi: factoryAbi },
 	{ name: 'token', network: 'eth', address: '0x91a09acc7a76624f593990c4456fc318d705c761', abi: tokenAbi },
 	{ name: 'weth', network: 'eth', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', abi: erc20Abi },
+
+	// Staging Genache
+	{ name: 'marketplace', network: 'staging-genache', address: '0x9A986d8B2cB50e827393Ec329cb0003535b5Ff75', abi: marketplaceAbi },
+	{ name: 'storage', network: 'staging-genache', address: '0x88129f1931ecc44678b68c4c25393059b4bcfca7', abi: storageAbi },
+	{ name: 'factory', network: 'staging-genache', address: '0x41a508E15F391b2AA3129c9fE054f9A48226AC4F', abi: factoryAbi },
+	{ name: 'token', network: 'staging-genache', address: '0x91a09acc7a76624f593990c4456fc318d705c761', abi: tokenAbi },
+	{ name: 'weth', network: 'staging-genache', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', abi: erc20Abi },
 ];
 
 export function getContractData(name: ContractName) {
@@ -45,6 +52,8 @@ export function getContractData(name: ContractName) {
 		networkName = 'rinkeby';
 	} else if (networkId === 5) {
 		networkName = 'goerli';
+	} else if (networkId === 1337) {
+		networkName = 'staging-genache';
 	} else {
 		throw new Error(`Network with the ID ${networkId} not supported.`);
 	}
