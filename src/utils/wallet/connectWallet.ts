@@ -226,6 +226,9 @@ const isAllowedNetworks = async (provider: ethers.providers.ExternalProvider) =>
 		if (allowedNetworks.some((item) => item === 5)) {
 			items.push('Ethereum Goerli');
 		}
+		if (allowedNetworks.some((item) => item === 1337)) {
+			items.push('Staging Genache');
+		}
 		notifyError(`You can only connect to these networks: ${items.join(' | ')}. Please switch your wallet network and reconnect.`);
 		return false;
 	}
