@@ -64,10 +64,6 @@
 	}
 
 	let tabComponentInstance;
-
-	let showCannotTrade = false;
-
-	let tradeTab: HTMLElement;
 </script>
 
 <div class="flex flex-col h-full pl-8 overflow-hidden">
@@ -76,14 +72,7 @@
 		{#each tabs.filter((t) => t.visible) as tab}
 			{@const hoverCannotTrade = tab.icon === 'trade' && options.nfts?.[0]?.isExternal}
 
-			<button
-				class="flex items-center space-x-2 btn"
-				on:click={() => (selectedTab = tab)}
-				on:pointerenter={() => hoverCannotTrade && (showCannotTrade = true)}
-				on:pointerleave={() => (showCannotTrade = false)}
-				bind:this={tradeTab}
-				transition:fade|local
-			>
+			<button class="flex items-center space-x-2 btn" on:click={() => (selectedTab = tab)} transition:fade|local>
 				<img class="h-8" src={getIconUrl('card-popup-tab-icon/' + tab.icon + (tab.text === selectedTab.text ? '.selected' : ''))} alt={tab.text} />
 				<div class="text-[#8C8C8C]" class:gradient-text={tab.text === selectedTab.text}>{tab.text}</div>
 			</button>
@@ -105,9 +94,3 @@
 		on:listing-created={refreshBalance}
 	/>
 </div>
-
-<!-- {#if showCannotTrade}
-	<AttachToElement to={tradeTab} offsetY={50} offsetX={-12}>
-		<InfoBubble>This NFT is not part of any of the whitelisted collections on the marketplace, it therefore cannot be traded here.</InfoBubble>
-	</AttachToElement>
-{/if} -->
