@@ -20,6 +20,8 @@
 	import { MetaTags } from 'svelte-meta-tags';
 	import HinataBadge from '$icons/hinata-badge.svelte';
 
+	export let data;
+
 	let collectionData: Collection;
 	let nfts = [];
 	let creatorData: UserData;
@@ -67,38 +69,37 @@
 		highestSale: {
 			stat: 'Highest Sale',
 			value: 0,
-			symbol: 'WETH'
+			symbol: 'WETH',
 		},
 		floorPrice: {
 			stat: 'Floor Price',
 			value: 0,
-			symbol: 'WETH'
+			symbol: 'WETH',
 		},
 		totalVol: {
 			stat: 'Total Volume',
 			value: 0,
-			symbol: ''
+			symbol: '',
 		},
 		items: {
 			stat: 'Items',
 			value: 0,
-			symbol: ''
+			symbol: '',
 		},
 		owners: {
 			stat: 'Owners',
 			value: 0,
-			symbol: ''
+			symbol: '',
 		},
 		total24hours: {
 			stat: '24Hr Volume',
 			value: 0,
-			symbol: 'WETH'
-		}
+			symbol: 'WETH',
+		},
 	};
 
 	async function fetchCollectionData() {
 		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => undefined);
-		console.log(collectionData);
 
 		// Populate collection stats
 		let formatter = Intl.NumberFormat('en', { notation: 'compact' });
@@ -116,14 +117,14 @@
 	let collectionMenuButtonOptions = [
 		// REMEMBER TO SET THESE TO TRUE
 		/*{ label: 'Claim Ownership', action: () => {}, disabled: true },*/
-		{ label: 'Report', action: () => {}, disabled: true }
+		{ label: 'Report', action: () => {}, disabled: true },
 	];
 
 	$: if ($currentUserAddress && creatorData && $currentUserAddress.toLowerCase() === creatorData.address.toLowerCase()) {
 		collectionMenuButtonOptions = [
 			/*{ label: 'Claim Ownership', action: () => {}, disabled: true },*/
 			{ label: 'Report', action: () => {}, disabled: true },
-			{ label: 'Edit', action: () => goto(`/collections/${collectionData.slug}/edit`), disabled: $currentUserAddress.toLowerCase() !== creatorData.address.toLowerCase() }
+			{ label: 'Edit', action: () => goto(`/collections/${collectionData.slug}/edit`), disabled: $currentUserAddress.toLowerCase() !== creatorData.address.toLowerCase() },
 		];
 	}
 
@@ -134,25 +135,25 @@
 	onMount(() => document.addEventListener('scroll', () => menuAttachElement?.recalc()));
 </script>
 
-{#if collectionData}
+{#if data.collection}
 	<MetaTags
-		title={collectionData?.name + ' - Collection | Hinata Marketplace'}
-		description={collectionData?.description}
-		canonical={'https://hinata.io/' + collectionData?.slug}
+		title={data.collection?.name + ' - Collection | Hinata Marketplace'}
+		description={data.collection?.description}
+		canonical={'https://hinata.io/' + data.collection?.slug}
 		openGraph={{
 			type: 'website',
-			url: 'https://hinata.io/' + collectionData?.slug,
-			title: collectionData?.name + ' - Collection | Hinata Marketplace',
-			description: collectionData?.description,
+			url: 'https://hinata.io/' + data.collection?.slug,
+			title: data.collection?.name + ' - Collection | Hinata Marketplace',
+			description: data.collection?.description,
 			images: [
 				{
-					url: collectionData?.backgroundImageUrl,
+					url: data.collection?.backgroundImageUrl,
 					width: 800,
 					height: 400,
-					alt: collectionData?.name + 'Collection banner image.'
-				}
+					alt: data.collection?.name + 'Collection banner image.',
+				},
 			],
-			site_name: 'Hinata'
+			site_name: 'Hinata',
 		}}
 	/>
 {/if}
