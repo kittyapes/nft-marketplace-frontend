@@ -29,7 +29,7 @@ const knownTokens: { ticker: string; address: string; network: string; decimals:
 	},
 ];
 
-export function isKnownToken(options: { ticker?: string; tokenAddress?: string; network?: 'eth' | 'rinkeby' }) {
+export function isKnownToken(options: { ticker?: string; tokenAddress?: string; network?: 'eth' | 'rinkeby' | 'goerli' }) {
 	try {
 		getKnownTokenDetails(options);
 	} catch {
@@ -39,8 +39,9 @@ export function isKnownToken(options: { ticker?: string; tokenAddress?: string; 
 	return true;
 }
 
-export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: string; network?: 'eth' | 'rinkeby' }) {
-	let { ticker, tokenAddress, network } = options;
+export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: string; network?: 'eth' | 'rinkeby' | 'goerli' }) {
+	const { ticker, tokenAddress } = options;
+	let { network } = options;
 
 	if (!ticker && !tokenAddress) {
 		throw new Error('ticker or tokenAddress must be provided.');
@@ -50,6 +51,8 @@ export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: 
 		network = 'eth';
 	} else if (get(connectionDetails)?.chainId === 4) {
 		network = 'rinkeby';
+	} else if (get(connectionDetails)?.chainId === 5) {
+		network = 'goerli';
 	}
 
 	if (!network) {
