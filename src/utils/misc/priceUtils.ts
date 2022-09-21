@@ -7,20 +7,26 @@ const knownTokens: { ticker: string; address: string; network: string; decimals:
 		ticker: 'WETH',
 		address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
 		network: 'eth',
-		decimals: 18
+		decimals: 18,
 	},
 	{
 		ticker: 'WETH',
 		address: '0xf2155859d31C5EA79F45a55C6ad9A44e7f257700',
 		network: 'rinkeby',
-		decimals: 18
+		decimals: 18,
+	},
+	{
+		ticker: 'WETH',
+		address: '0x0c84c20673341B5bae28D80F54926269A64B47a5',
+		network: 'goerli',
+		decimals: 18,
 	},
 	{
 		ticker: 'HI',
 		address: '0x04013fA3b72E82489d434FD64E3f4142647413cA',
 		network: 'rinkeby',
-		decimals: 18
-	}
+		decimals: 18,
+	},
 ];
 
 export function isKnownToken(options: { ticker?: string; tokenAddress?: string; network?: 'eth' | 'rinkeby' }) {
