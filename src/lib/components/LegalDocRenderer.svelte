@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { browser } from '$app/env';
+	import { browser } from '$app/environment';
 	import DropdownArrow from '$icons/dropdown-arrow.svelte';
 	import { tick } from 'svelte';
 	import { fade } from 'svelte/transition';

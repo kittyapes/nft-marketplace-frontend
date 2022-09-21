@@ -37,7 +37,7 @@
 	setContext('layout-stuff', {
 		setErrorCode: (code: number) => {
 			passedUpErrorCode = code;
-		}
+		},
 	});
 
 	afterNavigate(() => {

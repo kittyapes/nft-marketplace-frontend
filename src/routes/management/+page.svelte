@@ -26,12 +26,27 @@
 	import { writable } from 'svelte/store';
 	import isCollectionAddress from '$utils/validator/isCollectionAddress';
 	import Loader from '$icons/loader.svelte';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { browser } from '$app/environment';
 
-	export let mode: 'USER' | 'COLLECTION' = 'USER';
+	let tab: 'USER' | 'COLLECTION' = 'USER';
+
 	let users: UserData[] = [];
 	let collections: Collection[] = [];
 	let loaded = false;
 	let eventId;
+
+	$: if (tab && browser) {
+		$page.url.searchParams.set('tab', tab);
+		goto('?' + $page.url.searchParams, { keepfocus: true });
+	}
+
+	$: if ($page.url.searchParams.has('tab')) {
+		// @ts-ignore
+		tab = $page.url.searchParams.get('tab');
+	}
+
 	const whitelistingCollectionAddress = writable<string>('');
 	const whitelistingCollectionSlug = writable<string>('');
 
@@ -99,29 +114,29 @@
 	let userFetchingOptions: UserFetchingOptions = {
 		filter: {},
 		sort: {},
-		query: ''
+		query: '',
 	};
 
 	let collectionFetchingOptions: CollectionFetchingOptions = {
 		filter: {},
 		sort: {},
-		name: ''
+		name: '',
 	};
 
 	let userTableData: TableCol[] = [];
 	let collectionTableData: TableCol[] = [];
 
 	const handleTableEvent = async (event: CustomEvent) => {
-		if (mode === 'USER') {
+		if (tab === 'USER') {
 			userFetchingOptions.sort = {
 				sortBy: event.detail.sortBy,
-				sortReversed: event.detail.sortReversed
+				sortReversed: event.detail.sortReversed,
 			};
 			users = await getUsers(getUsersFetchingOptions());
 		} else {
 			collectionFetchingOptions.sort = {
 				sortBy: event.detail.sortBy,
-				sortReversed: event.detail.sortReversed
+				sortReversed: event.detail.sortReversed,
 			};
 			collections = (await apiSearchCollections(getCollectionsFetchingOptions())).filter((c) => c.slug);
 		}
@@ -130,11 +145,11 @@
 	};
 
 	const handleFilter = async (event: CustomEvent) => {
-		if (mode === 'USER') {
+		if (tab === 'USER') {
 			userFetchingOptions.filter = {
 				createdBefore: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdBefore,
 				role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
-				status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status
+				status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status,
 			};
 
 			if (event.detail.status) userFetchingOptions.filter.role = undefined;
@@ -149,7 +164,7 @@
 		} else {
 			collectionFetchingOptions.filter = {
 				status: event.detail.status ? event.detail.status : collectionFetchingOptions.filter.status,
-				isClaimed: typeof event.detail.value === 'boolean' ? event.detail.value : collectionFetchingOptions.filter.isClaimed
+				isClaimed: typeof event.detail.value === 'boolean' ? event.detail.value : collectionFetchingOptions.filter.isClaimed,
 			};
 			console.log(event);
 			if (event.detail.status === 'all') collectionFetchingOptions.filter.status = undefined;
@@ -175,35 +190,35 @@
 		{ label: 'Admin', role: 'admin' },
 		{ label: 'Verified Creator', role: 'verified_user' },
 		{ label: 'Blogger' },
-		{ label: 'Inactive', status: 'INACTIVATED' }
+		{ label: 'Inactive', status: 'INACTIVATED' },
 	];
 
 	let userFilterOptions = [
 		{ label: 'Flagged' },
 		{ label: 'Joined 24 hrs ago', createdBefore: dayjs().subtract(1, 'hour').unix() },
 		{ label: 'Joined 7 days ago', createdBefore: dayjs().subtract(1, 'week').unix() },
-		{ label: 'Joined 1 Mon ago', createdBefore: dayjs().subtract(1, 'month').unix() }
+		{ label: 'Joined 1 Mon ago', createdBefore: dayjs().subtract(1, 'month').unix() },
 	];
 
 	let statusFilterOptions = [
 		{ label: 'All', status: 'all' },
 		{ label: 'Active', status: 'ACTIVE' },
-		{ label: 'Inactive', status: 'INACTIVE' }
+		{ label: 'Inactive', status: 'INACTIVE' },
 	];
 
 	let collectionFilterOptions = [
 		{ label: 'Claimed', value: true },
-		{ label: 'Unclaimed', value: false }
+		{ label: 'Unclaimed', value: false },
 	];
 
-	$: if ($currentUserAddress && mode) createTable();
+	$: if ($currentUserAddress && tab) createTable();
 
 	let createTable = async () => {
 		loaded = false;
-		mode === 'USER' ? await createUserTable() : await createCollectionTable();
+		tab === 'USER' ? await createUserTable() : await createCollectionTable();
 	};
 
-	// //COLLECTION section
+	//COLLECTION section
 
 	let createCollectionTable = async () => {
 		await apiSearchCollections()
@@ -226,14 +241,14 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETICAL', active: false },
 				renderComponent: CollectionName,
-				renderComponentProps: collections.map((c) => ({ name: c.name || '', imageUrl: c.logoImageUrl, slug: c.slug, badge: c.mintedFrom === 'Hinata' }))
+				renderComponentProps: collections.map((c) => ({ name: c.name || '', imageUrl: c.logoImageUrl, slug: c.slug, badge: c.mintedFrom === 'Hinata' })),
 			},
 			{
 				gridSize: '2fr',
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Ethereum Address' },
 				renderComponent: EthAddress,
-				renderComponentProps: collections.map((c) => ({ address: c.collectionAddress || 'N/A' }))
+				renderComponentProps: collections.map((c) => ({ address: c.collectionAddress || 'N/A' })),
 			},
 			{
 				gridSize: '1fr',
@@ -242,15 +257,15 @@
 				renderComponent: EntryRole,
 				renderComponentProps: collections.map((u) => ({
 					id: u.slug,
-					mode,
+					mode: tab,
 					disableAllOnSelect: true,
 					role: u.status,
 					color: getRoleColor(u.status === 'INACTIVE' ? 'INACTIVATED' : 'verified_user'),
 					options: [
 						{ label: 'Active', checked: u.status === 'ACTIVE', value: 'ACTIVE' },
-						{ label: 'Inactive', checked: u.status === 'INACTIVE', value: 'INACTIVE' }
-					]
-				}))
+						{ label: 'Inactive', checked: u.status === 'INACTIVE', value: 'INACTIVE' },
+					],
+				})),
 			},
 			{
 				gridSize: '1fr',
@@ -258,8 +273,8 @@
 				titleRenderComponentProps: { title: 'Claimed' },
 				renderComponent: EntryGenericText,
 				renderComponentProps: collections.map((c) => ({
-					text: c.isClaimed ? 'Claimed' : 'Unclaimed'
-				}))
+					text: c.isClaimed ? 'Claimed' : 'Unclaimed',
+				})),
 			},
 			{
 				name: 'collection-owner',
@@ -267,7 +282,7 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Added by' },
 				renderComponent: EntryName,
-				renderComponentProps: []
+				renderComponentProps: [],
 			},
 			{
 				gridSize: '2fr',
@@ -277,8 +292,8 @@
 				renderComponentProps: collections.map((c) => {
 					let date = dayjs(c.createdAt);
 					return { text: date.format('MMM D, YYYY') };
-				})
-			}
+				}),
+			},
 		];
 
 		collectionTableData.forEach(async (e, i) => {
@@ -299,9 +314,9 @@
 				return {
 					name: creator?.username || '',
 					imageUrl: creator?.thumbnailUrl,
-					address: creator?.address
+					address: creator?.address,
 				};
-			})
+			}),
 		);
 	};
 
@@ -318,7 +333,7 @@
 		collections = (await apiSearchCollections(getCollectionsFetchingOptions())).filter((c) => c.slug);
 	};
 
-	// // USER section
+	// USER section
 
 	let createUserTable = async () => {
 		await getUsers()
@@ -331,7 +346,7 @@
 		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort };
 	};
 
-	const debouncedSearch = debounce(async () => (mode === 'USER' ? await getSearchedUsers() : await getSearchedCollections()), 300);
+	const debouncedSearch = debounce(async () => (tab === 'USER' ? await getSearchedUsers() : await getSearchedCollections()), 300);
 
 	const getSearchedUsers = async () => {
 		users = await getUsers(getUsersFetchingOptions());
@@ -349,14 +364,14 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETICAL', active: false },
 				renderComponent: EntryName,
-				renderComponentProps: users.map((u) => ({ name: u.username || '', imageUrl: u.thumbnailUrl, address: u.address }))
+				renderComponentProps: users.map((u) => ({ name: u.username || '', imageUrl: u.thumbnailUrl, address: u.address })),
 			},
 			{
 				gridSize: '3fr',
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Ethereum Address' },
 				renderComponent: EthAddress,
-				renderComponentProps: users.map((u) => ({ address: u.address }))
+				renderComponentProps: users.map((u) => ({ address: u.address })),
 			},
 			{
 				gridSize: '2fr',
@@ -366,16 +381,16 @@
 				renderComponentProps: users.map((u) => ({
 					id: u.address,
 					dispatchAllOptions: true,
-					mode,
+					mode: tab,
 					role: getHighestRole([...u.roles, u.status]),
 					color: getRoleColor(getHighestRole([...u.roles, u.status])),
 					options: [
 						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin' },
 						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user' },
 						{ label: 'blogger', checked: false, cb: (e) => e.roles?.includes('blogger'), value: 'blogger' },
-						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED', value: 'inactivated_user' }
-					]
-				}))
+						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED', value: 'inactivated_user' },
+					],
+				})),
 			},
 			{
 				gridSize: '2fr',
@@ -385,8 +400,8 @@
 				renderComponentProps: users.map((u) => {
 					let date = dayjs(u.createdAt);
 					return { text: date.format('MMM D, YYYY') };
-				})
-			}
+				}),
+			},
 			/*
 			{
 				gridSize: '2fr',
@@ -403,7 +418,7 @@
 		loaded = true;
 	}
 
-	$: searchPlaceholder = `Search for ${mode.toLowerCase()}`;
+	$: searchPlaceholder = `Search for ${tab.toLowerCase()}`;
 
 	// Network picker
 	// const networkPickerOptions = [
@@ -416,15 +431,13 @@
 	// selectedNetworkOption.subscribe(() => validateContractAddress($whitelistingCollectionAddress));
 </script>
 
-<div class="flex flex-col w-full h-full p-40 gap-12">
+<div class="flex flex-col w-full h-full gap-12 p-40">
 	<div class="flex gap-14">
-		<div class="{mode === 'USER' ? 'gradient-text gradient-underline' : 'text-color-gray-base'} font-bold text-3xl relative btn" on:click={() => (mode = 'USER')}>User Management</div>
-		<div class="{mode === 'COLLECTION' ? 'gradient-text gradient-underline' : 'text-color-gray-dark'} font-bold text-3xl relative btn" on:click={() => (mode = 'COLLECTION')}>
-			Collection Management
-		</div>
+		<div class="{tab === 'USER' ? 'gradient-text gradient-underline' : 'text-color-gray-base'} font-bold text-3xl relative btn" on:click={() => (tab = 'USER')}>User Management</div>
+		<div class="{tab === 'COLLECTION' ? 'gradient-text gradient-underline' : 'text-color-gray-dark'} font-bold text-3xl relative btn" on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
 	</div>
 	<div class="flex gap-4">
-		{#if mode === 'USER'}
+		{#if tab === 'USER'}
 			<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
 			<div class="flex-grow" />
 			<div class="flex gap-10">
@@ -449,7 +462,7 @@
 		{/if}
 	</div>
 
-	{#if mode === 'USER'}
+	{#if tab === 'USER'}
 		<LoadedContent {loaded}>
 			<InteractiveTable on:event={handleTableEvent} tableData={userTableData} rows={users.length} />
 		</LoadedContent>
@@ -459,7 +472,7 @@
 		</LoadedContent>
 	{/if}
 
-	{#if mode === 'COLLECTION'}
+	{#if tab === 'COLLECTION'}
 		<div>
 			<h2 class="text-xl font-bold gradient-text">Whitelist a collection</h2>
 			<div class="flex flex-col w-full gap-10 mt-1">
@@ -482,7 +495,7 @@
 					<div class="flex gap-10">
 						<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
 
-						<button class="btn btn-gradient btn-rounded px-10 py-2 w-40 font-semibold text-lg" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>
+						<button class="w-40 px-10 py-2 text-lg font-semibold btn btn-gradient btn-rounded" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>
 							Whitelist
 						</button>
 					</div>
@@ -490,14 +503,14 @@
 
 				{#if validating}
 					<div class="flex items-center">
-						<Loader class="mx-2 w-6" />
+						<Loader class="w-6 mx-2" />
 						<div class="font-semibold">Validating...</div>
 					</div>
 				{/if}
 
 				{#if whitelisting}
 					<div class="flex items-center">
-						<Loader class="mx-2 w-6" />
+						<Loader class="w-6 mx-2" />
 						<div class="font-semibold">Whitelisting...</div>
 					</div>
 				{/if}

@@ -1,4 +1,4 @@
-import { browser } from '$app/env';
+import { browser } from '$app/environment';
 import { get, writable } from 'svelte/store';
 
 export interface PopupOptions {
@@ -23,14 +23,14 @@ export interface PopupStackItem {
 export interface PopupHandler {
 	id: string;
 	closePromise: {
-		promise: Promise<any>,
-		fulfilled: boolean
-	}
+		promise: Promise<any>;
+		fulfilled: boolean;
+	};
 	close: () => void;
 }
 
 const defaultOptions: PopupOptions = {
-	closeByOutsideClick: true
+	closeByOutsideClick: true,
 };
 
 export const popupStack = writable<PopupStackItem[]>([]);
@@ -50,7 +50,7 @@ export function setPopup(component: any, options: PopupOptions = defaultOptions)
 	// Popuplate unset properties with default values
 	options = {
 		...defaultOptions,
-		...options
+		...options,
 	};
 
 	// Ignore duplicate popups that should be unique
@@ -62,15 +62,14 @@ export function setPopup(component: any, options: PopupOptions = defaultOptions)
 	// during various operations, like closing it, etc.
 	const id = options.id || Math.random().toString(36).substring(2, 9);
 
-
 	// A promise which resolves once the popup is closed
 	let resolveClosePremise;
 	let closePromise = {
 		promise: new Promise((resolve, reject) => {
 			resolveClosePremise = resolve;
 		}),
-		fulfilled: null
-	} 
+		fulfilled: null,
+	};
 
 	// A handler object that will be returned to control the popup
 	const handler: PopupHandler = {
@@ -78,7 +77,7 @@ export function setPopup(component: any, options: PopupOptions = defaultOptions)
 		closePromise: options.returnPromise ? closePromise : undefined,
 		close: () => {
 			const canBeClosed = options.onClose ? options.onClose() !== false : true;
-		
+
 			if (canBeClosed) {
 				popupStack.update((stack) => {
 					return stack.filter((item) => item.id !== id);
@@ -87,7 +86,7 @@ export function setPopup(component: any, options: PopupOptions = defaultOptions)
 
 			resolveClosePremise();
 			closePromise.fulfilled = true;
-		}
+		},
 	};
 
 	// Add the popup to the end of the stack. The last popup

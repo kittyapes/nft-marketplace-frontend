@@ -17,7 +17,7 @@
 	export let thumbnailUrl: string;
 	export let favorited: boolean;
 	export let options: CardOptions;
-	export let countdown: { startTime: number; duration: number } = null;
+	export let countdown: { startTime: number; duration: number; expired?: boolean } = null;
 
 	let videoAsset: HTMLVideoElement;
 	let fileType;
@@ -71,9 +71,9 @@
 </script>
 
 <!-- NFT Image side-->
-<div class="flex flex-col w-full h-full pt-12 overflow-hidden text-center">
+<div class="flex flex-col w-full h-full pt-20 overflow-hidden text-center scrollbar-hide max-h-[650px]">
 	<!-- Asset render container -->
-	<div class="flex items-center self-center justify-center object-contain w-full max-w-lg mt-1 overflow-hidden bg-gray-100 aspect-1 rounded-xl">
+	<div class="flex items-center self-center justify-center flex-shrink-0 object-contain w-full max-w-lg overflow-hidden bg-gray-100 border aspect-1 rounded-xl">
 		{#await preload(assetUrl)}
 			<Loader />
 		{:then}
@@ -91,10 +91,8 @@
 					<source src={assetUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
-			{:else if fileType === 'image'}
-				<img src={assetUrl} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
 			{:else}
-				<img src={thumbnailUrl} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
+				<img src={fileType === 'image' ? assetUrl : thumbnailUrl} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
 			{/if}
 		{/await}
 	</div>
@@ -107,7 +105,7 @@
 	<!-- Buttons -->
 	<div class="flex justify-center mt-4 mb-6 gap-x-12">
 		<button class="w-6 h-6 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}><img src={getIconUrl('share')} alt="Share." /></button>
-		<button class="w-6 h-6 btn disabled:opacity-50" on:click={handleLike} disabled={options.nfts[0].isExternal}>
+		<button class="w-6 h-6 btn disabled:opacity-50" on:click={handleLike}>
 			<img src={favorited ? getIconUrl('heart-filled') : getIconUrl('heart-outline')} alt="Heart." class:text-color-red={favorited} />
 		</button>
 		<button class="w-6 h-6 btn" disabled={!videoAsset && !assetUrl} on:click={handleFullscreen}>
@@ -115,9 +113,19 @@
 		</button>
 	</div>
 
+	<div class="flex-grow" />
+
 	<!-- Auction timer -->
 	{#if countdown}
-		<div class="pb-4 font-medium opacity-50">{capitalize(options.listingData?.listingType)} ending in:</div>
+		<div class="pb-4 font-medium opacity-50">
+			{capitalize(options.listingData?.listingType)}
+
+			{#if countdown.expired}
+				ended
+			{:else}
+				ending in:
+			{/if}
+		</div>
 		<Countdown {...countdown} />
 	{/if}
 </div>

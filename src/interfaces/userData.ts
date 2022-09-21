@@ -1,3 +1,5 @@
+import type { UserStatus } from '$interfaces';
+
 export type UserRole = 'superadmin' | 'admin' | 'user' | 'inactivated_user' | 'verified_user';
 
 export interface LoginHistoryEntry {
@@ -8,19 +10,16 @@ export interface LoginHistoryEntry {
 }
 
 export interface UserData {
+	status: UserStatus;
+	_id: string;
 	address: string;
 	createdAt: string;
-	email: string;
-	thumbnailUrl: string;
-	coverUrl: string;
-	loginHistories: LoginHistoryEntry[];
-	nickname: string;
-	status: 'USER' | 'AWAITING_VERIFIED' | 'VERIFIED' | 'AWAITING_INACTIVATED' | 'INACTIVATED';
 	updatedAt: string;
 	username: string;
-	_id: string;
+	thumbnailUrl: string;
+	queueDate: number;
+	coverUrl: string;
 	bio: string;
 	social: { instagram: string; discord: string; twitter: string; website: string; pixiv: string; deviantart: string; artstation: string };
 	roles: UserRole[];
-	nftBalances: Record<string, number>;
 }

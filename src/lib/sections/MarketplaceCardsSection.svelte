@@ -8,7 +8,6 @@
 	import { getListings, type ListingType } from '$utils/api/listing';
 	import { notifyError } from '$utils/toast';
 	import { debounce } from 'lodash-es';
-	import { onMount } from 'svelte';
 
 	let data = [];
 
@@ -21,7 +20,7 @@
 
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
-		res.res = await getListings({ ...fetchOptions }, index, 20);
+		res.res = await getListings({ ...fetchOptions, listingStatus: ['UNLISTED', 'ACTIVE'] }, index, 20);
 		res.adapted = res.res.map(listingToCardOptions);
 
 		return res;

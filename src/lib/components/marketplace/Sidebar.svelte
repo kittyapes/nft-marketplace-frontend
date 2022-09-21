@@ -1,14 +1,58 @@
-<script>
+<script lang="ts">
 	import ArrowLeft from '$icons/arrow-left.svelte';
 	import Filters from '$icons/filters.svelte';
 	import SidebarItem from '$lib/components/marketplace/SidebarItem.svelte';
+	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
+	import { page } from '$app/stores';
 	import CollectionsFilter from './CollectionsFilter.svelte';
 	import PriceFilter from './PriceFilter.svelte';
 	import StatusFilter from './StatusFilter.svelte';
 
 	export let isOpen = true;
 	const toggle = () => (isOpen = !isOpen);
+
+	const tabs = [
+		{
+			title: 'Show Only',
+			icon: 'status',
+			queryStrings: ['types'],
+			renderComponent: StatusFilter,
+			open: false,
+			state: ['']
+		},
+		{
+			title: 'Collections',
+			icon: 'collection',
+			queryStrings: ['collections'],
+			renderComponent: CollectionsFilter,
+			open: false,
+			state: ['']
+		},
+		{
+			title: 'Price',
+			icon: 'price',
+			queryStrings: ['token', 'minPrice', 'maxPrice'],
+			renderComponent: PriceFilter,
+			open: false,
+			state: ['', '', '']
+		}
+	];
+
+	let loaded = false;
+
+	onMount(() => {
+		// open filter tabs if page refreshed with filters
+		tabs.forEach((t) => {
+			t.state = t.queryStrings.map((s) => {
+				if ($page.url.searchParams.has(s)) return $page.url.searchParams.get(s);
+				else return '';
+			});
+			if (t.state.some((e) => e)) t.open = true;
+		});
+
+		loaded = true;
+	});
 </script>
 
 <div
@@ -36,19 +80,13 @@
 		</div>
 	{/if}
 
-	{#if isOpen}
+	{#if isOpen && loaded}
 		<div transition:slide={{ duration: 200 }}>
-			<SidebarItem title="Show Only" icon="status">
-				<StatusFilter on:request-refresh />
-			</SidebarItem>
-
-			<SidebarItem title="Collections" icon="collection">
-				<CollectionsFilter on:request-refresh />
-			</SidebarItem>
-
-			<SidebarItem title="Price" icon="price">
-				<PriceFilter on:request-refresh />
-			</SidebarItem>
+			{#each tabs as tab}
+				<SidebarItem title={tab.title} icon={tab.icon} isOpen={tab.open}>
+					<svelte:component this={tab.renderComponent} state={tab.state} on:request-refresh />
+				</SidebarItem>
+			{/each}
 		</div>
 	{/if}
 </div>

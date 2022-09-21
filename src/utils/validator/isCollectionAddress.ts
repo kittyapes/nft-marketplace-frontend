@@ -28,20 +28,20 @@ export default async function (address: string, networkId?: number) {
 			return {
 				isContract: true,
 				isErc721: contract_interface === 'ERC721',
-				isErc1155: contract_interface === 'ERC1155'
+				isErc1155: contract_interface === 'ERC1155',
 			};
 		} else {
 			return {
 				isContract: false,
 				isErc721: false,
-				isErc1155: false
+				isErc1155: false,
 			};
 		}
 	} catch (error) {
 		return {
 			isContract: false,
 			isErc721: false,
-			isErc1155: false
+			isErc1155: false,
 		};
 	}
 }

@@ -59,9 +59,9 @@ export async function claimFreeNft(selectedNftIndex: number, address: string, si
 				{
 					choice: selectedNftIndex,
 					address,
-					signature
+					signature,
 				},
-				await getAxiosConfig()
+				await getAxiosConfig(),
 			)
 			.catch((err) => err);
 	}
@@ -94,7 +94,7 @@ export async function claimFreeNft(selectedNftIndex: number, address: string, si
 	try {
 		const hinataContract = getContract('token');
 		const tx = await hinataContract.claimNFT(address, resData.nftID, resData.nftAmount, resData.nonce, resData.signature, []);
-		const txRes = await tx.wait(1);
+		const txRes = await tx.wait(5);
 		welcomeNftClaimedOnServer.set(true);
 		return resData;
 	} catch (err) {
