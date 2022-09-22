@@ -42,14 +42,14 @@ export const createNFTOnChain = async (options: { id: string; amount: string; co
 		const contract = new ethers.Contract(options.collectionAddress, contractAbi, get(appSigner));
 
 		if (storageAddress === options.collectionAddress) {
-			await contractCaller(contract, 'mintArtistNFT', 150, 5, options.id, options.amount, []);
+			await contractCaller(contract, 'mintArtistNFT', 150, 1, options.id, options.amount, []);
 		} else {
 			// Check what type of contract that is
 			if (contractType === 'ERC721') {
-				await contractCaller(contract, 'mint', 150, 5, get(currentUserAddress));
+				await contractCaller(contract, 'mint', 150, 1, get(currentUserAddress));
 			} else if (contractType === 'ERC1155') {
 				// This is the default for most collections on the marketplace - erc1155
-				await contractCaller(contract, 'mint', 150, 5, get(currentUserAddress), options.id, options.amount);
+				await contractCaller(contract, 'mint', 150, 1, get(currentUserAddress), options.id, options.amount);
 			} else {
 				// UNKNOWN type
 				throw new Error('Failed to create NFT on chain');
