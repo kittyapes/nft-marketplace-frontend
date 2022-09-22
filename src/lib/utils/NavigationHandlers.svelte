@@ -116,7 +116,7 @@
 			// Pages only accessible by superadmins
 			if (to.url.pathname.match(/management*/)) {
 				profileData.subscribe((profile) => {
-					if (profile && (!profile.roles.includes('superadmin') || !profile.roles.includes('admin'))) {
+					if (profile && !(profile.roles.includes('superadmin') || profile.roles.includes('admin'))) {
 						errorCode = 403;
 					} else if (profile && (profile.roles.includes('superadmin') || profile.roles.includes('admin'))) {
 						// reset the error to ensure displayed error is updated on UI
