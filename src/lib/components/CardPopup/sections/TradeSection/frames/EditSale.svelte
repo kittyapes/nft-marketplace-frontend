@@ -26,7 +26,7 @@
 			startDateTs: chainListing.startTime,
 			durationSeconds: chainListing.duration,
 			price: chainListing.price,
-			quantity: chainListing.quantity
+			quantity: chainListing.quantity,
 		});
 	}
 

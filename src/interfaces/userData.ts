@@ -1,5 +1,3 @@
-import type { UserStatus } from '$interfaces';
-
 export type UserRole = 'superadmin' | 'admin' | 'user' | 'inactivated_user' | 'verified_user';
 
 export interface LoginHistoryEntry {
@@ -10,7 +8,6 @@ export interface LoginHistoryEntry {
 }
 
 export interface UserData {
-	status: UserStatus;
 	_id: string;
 	address: string;
 	createdAt: string;

@@ -1,11 +1,11 @@
 import { profileData } from '$stores/user';
-import type { UserData, UserRole } from 'src/interfaces/userData';
+import type { UserRole } from 'src/interfaces/userData';
 import { derived } from 'svelte/store';
 
 /**
  * A list of roles the current user has.
  */
-export const userRoles = derived(profileData, (data: UserData) => {
+export const userRoles = derived(profileData, (data) => {
 	if (!data) return null;
 
 	// No roles, API doesn't return an empty array.
