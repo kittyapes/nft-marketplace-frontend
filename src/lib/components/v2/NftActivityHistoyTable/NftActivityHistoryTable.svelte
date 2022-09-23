@@ -14,7 +14,11 @@
 
 	{#each data as row}
 		<div>{row.event}</div>
-		<div class="gap-x-2"><EthIcon />{row.price}</div>
+		{#if row.price}
+			<div class="gap-x-2"><EthIcon />{row.price}</div>
+		{:else}
+			<div />
+		{/if}
 		<div><a href="/profile/{row.from}" target="_blank" class="flex items-center h-full hover:text-blue-500">{row.from}</a></div>
 		<div><a href="/profile/{row.to}" target="_blank" class="flex items-center h-full hover:text-blue-500">{row.to}</a></div>
 		<div>{row.date}</div>
