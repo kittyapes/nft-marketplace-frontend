@@ -5,6 +5,7 @@
 	import FilterChip from '$lib/components/v2/FilterChip/FilterChip.svelte';
 	import NftActivityHistoryTable from '$lib/components/v2/NftActivityHistoyTable/NftActivityHistoryTable.svelte';
 	import type { NftActivityHistoryTableRowData } from '$lib/components/v2/NftActivityHistoyTable/types';
+	import { toNftActivityHistoryTableRowData } from '$utils/adapters';
 	import { apiGetNftActivityHistory } from '$utils/api/nft';
 	import { onMount } from 'svelte';
 
@@ -23,9 +24,18 @@
 
 	let nftActivityHistoryData: NftActivityHistoryTableRowData[] = [];
 
+	$: console.log(nftActivityHistoryData);
+
 	onMount(async () => {
 		// Fetch NFT activity history
-		nftActivityHistoryData = await apiGetNftActivityHistory(options.nfts[0].onChainId);
+		const historyRes = await apiGetNftActivityHistory(options.nfts[0].databaseId, {
+			sales: filterOptions[0].checked,
+			transfers: filterOptions[1].checked,
+			listings: filterOptions[2].checked,
+			bids: filterOptions[3].checked,
+		});
+
+		nftActivityHistoryData = historyRes.map(toNftActivityHistoryTableRowData);
 	});
 </script>
 

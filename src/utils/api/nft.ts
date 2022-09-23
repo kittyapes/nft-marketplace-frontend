@@ -39,11 +39,20 @@ export async function apiRevealNft(id: string): Promise<ApiCallResult<{ success:
 	}
 }
 
-export async function apiGetNftActivityHistory(id: string): Promise<NftActivityHistoryTableRowData[]> {
+export interface ApiNftActivityHistoryEntry {
+	_id: string;
+	event: string;
+	from: string;
+	to?: string;
+	nftId: string;
+	createdAt: string;
+	updatedAt: string;
+}
+
+export async function apiGetNftActivityHistory(id: string, options: { sales?: boolean; transfers?: boolean; listings?: boolean; bids?: boolean }): Promise<ApiNftActivityHistoryEntry[]> {
 	try {
 		const res = await axios.get(getApiUrl(null, '/nft-activities/' + id));
-		console.log(res);
-		return [];
+		return res.data.data;
 	} catch {
 		return [];
 	}
