@@ -18,7 +18,7 @@ export function buildListingDurationOptions(isAdmin: boolean) {
 	];
 
 	if (isAdmin) {
-		options.unshift({ label: '1 hour', value: 60 * 60, style: 'color: #868BF7' });
+		options.unshift({ label: '10 minutes', value: 10 * 60, style: 'color: #868BF7' });
 	}
 
 	return options;
