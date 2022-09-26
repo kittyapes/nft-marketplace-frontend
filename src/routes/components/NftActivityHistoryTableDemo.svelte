@@ -9,8 +9,12 @@
 		to: '0x' + (i + 1).toString().repeat(32),
 		date: i + ' mins ago',
 	}));
+
+	let skeleton = false;
 </script>
 
+<button on:click={() => (skeleton = !skeleton)}>Toogle skeleton</button>
+
 <div class="h-[400px]">
-	<NftActivityHistoryTable {data} />
+	<NftActivityHistoryTable {data} {skeleton} />
 </div>

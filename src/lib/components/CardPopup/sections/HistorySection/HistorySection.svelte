@@ -26,6 +26,8 @@
 
 	$: console.log(nftActivityHistoryData);
 
+	let isLoading = true;
+
 	onMount(async () => {
 		// Fetch NFT activity history
 		const historyRes = await apiGetNftActivityHistory(options.nfts[0].databaseId, {
@@ -36,6 +38,8 @@
 		});
 
 		nftActivityHistoryData = historyRes.map(toNftActivityHistoryTableRowData);
+
+		isLoading = false;
 	});
 </script>
 
@@ -60,6 +64,6 @@
 	</div>
 
 	<div class="h-[500px] mt-4">
-		<NftActivityHistoryTable data={nftActivityHistoryData} />
+		<NftActivityHistoryTable data={nftActivityHistoryData} skeleton={isLoading} />
 	</div>
 </div>
