@@ -27,7 +27,7 @@
 
 .blue-scrollbar::-webkit-scrollbar {
 	/* @apply hidden; */
-	@apply block w-1;
+	@apply block w-1 h-1;
 }
 
 .blue-scrollbar::-webkit-scrollbar-track {
