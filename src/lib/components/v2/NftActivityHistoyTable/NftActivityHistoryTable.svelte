@@ -15,7 +15,12 @@
 	{#each data as row}
 		<div>{row.event}</div>
 		{#if row.price}
-			<div class="gap-x-2"><EthIcon />{row.price}</div>
+			<div class="gap-x-2">
+				<div class="w-4">
+					<EthIcon />
+				</div>
+				{row.price}
+			</div>
 		{:else}
 			<div />
 		{/if}
