@@ -5,7 +5,7 @@
 	export let data: NftActivityHistoryTableRowData[] = [];
 </script>
 
-<div id="grid-container" class="grid h-full grid-cols-5 py-2 overflow-y-auto font-semibold bg-white border border-gray-300 rounded-xl blue-scrollbar" style:--list-length={data.length}>
+<div id="grid-container" class="grid h-full py-2 overflow-auto font-semibold bg-white border border-gray-300 rounded-xl blue-scrollbar" style:--list-length={data.length}>
 	<div>Event</div>
 	<div>Price</div>
 	<div>From</div>
@@ -32,6 +32,7 @@
 <style>
 	#grid-container {
 		grid-template-rows: repeat(var(--list-length), min-content);
+		grid-template-columns: minmax(10rem, auto) minmax(4rem, auto) minmax(10rem, auto) minmax(10rem, auto) minmax(10rem, auto);
 	}
 
 	#grid-container > :nth-child(-n + 5) {
