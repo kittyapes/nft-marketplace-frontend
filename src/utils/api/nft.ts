@@ -47,6 +47,7 @@ export interface ApiNftActivityHistoryEntry {
 	nftId: string;
 	createdAt: string;
 	updatedAt: string;
+	price: string;
 }
 
 export async function apiGetNftActivityHistory(id: string, options: { sales?: boolean; transfers?: boolean; listings?: boolean; bids?: boolean }): Promise<ApiNftActivityHistoryEntry[]> {

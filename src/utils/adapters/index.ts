@@ -4,9 +4,12 @@ import dayjs from 'dayjs';
 
 const friendlyEventNames = {
 	LISTING_CANCELLED: 'Listing Cancelled',
+	BID_RECEIVED: 'Bid',
 };
 
 export function toNftActivityHistoryTableRowData(from: ApiNftActivityHistoryEntry): NftActivityHistoryTableRowData {
+	console.log(from);
+
 	const friendlyDate = dayjs(from.createdAt).fromNow();
 
 	return {
@@ -14,6 +17,6 @@ export function toNftActivityHistoryTableRowData(from: ApiNftActivityHistoryEntr
 		from: from.from || '',
 		to: from.to || '',
 		date: friendlyDate,
-		price: null,
+		price: from.price,
 	};
 }
