@@ -93,10 +93,18 @@
 			}
 		}
 
+		const available = collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown);
+
 		if ($generalCollection) {
-			$availableCollections = [$generalCollection, ...collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown)];
-		} else {
-			$availableCollections = collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown);
+			// Insert general collection if available and set it as selected
+			available.unshift($generalCollection);
+		}
+
+		$availableCollections = available;
+
+		// Select first available collection
+		if (available.length) {
+			handleCollectionSelection({ detail: available[0] });
 		}
 
 		isLoadingCollections = false;
@@ -163,11 +171,12 @@
 	}
 
 	const handleCollectionSelection = (event) => {
-		// Skip this function during collection loading
 		if (event.detail?.label === 'Create new collection') {
 			goto(event.detail?.value);
-		} else if ($availableCollections.length < 2) return;
-		else {
+		} else if ($availableCollections.length < 1) {
+			// Skip this function during collection loading
+			return;
+		} else {
 			nftData.collectionName = event.detail?.label;
 			selectedCollectionId = event.detail?.value;
 		}
