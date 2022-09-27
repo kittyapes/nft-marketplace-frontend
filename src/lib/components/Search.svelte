@@ -13,7 +13,6 @@
 	import { searchQuery } from '$stores/search';
 	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
-	import type { CardOptions } from '$interfaces/ui';
 
 	let query: string;
 	let searching = false;
@@ -77,7 +76,7 @@
 </script>
 
 <div
-	class="flex py-2 px-4 items-center gap-x-4 border border-black border-opacity-30 rounded-md flex-grow-[0.1] relative overflow-visible z-30 {$$props.class}"
+	class="flex py-2 px-4 items-center gap-x-4 flex-grow-[0.1] relative overflow-visible z-30 bg-card-gradient text-white text-opacity-60 {$$props.class}"
 	use:outsideClickCallback={{
 		cb: () => (searching = false),
 	}}
@@ -93,11 +92,11 @@
 			}
 		}}
 		type="text"
-		class="w-72 focus:outline-none"
+		class="w-96 focus:outline-none bg-transparent placeholder:text-white placeholder:text-opacity-60"
 		placeholder="Search nfts, collections, and artists"
 	/>
 	{#if searching}
-		<div class="w-full bg-white top-16 right-0 border-black border-opacity-30 rounded-md border z-30 absolute" in:fly={{ y: -40, duration: 300 }}>
+		<div class="w-full top-16 right-0 border-black border-opacity-30 rounded-md border z-30 absolute bg-inherit" in:fly={{ y: -40, duration: 300 }}>
 			{#if show}
 				<div class=" max-h-[30rem] overflow-y-auto relative blue-scrollbar overscroll-contain">
 					{#each Object.keys(searchResults) as section}

@@ -74,7 +74,7 @@
 		<ErrorPage {errorCode} />
 	{:else}
 		<!-- <PageTransition {url}> -->
-		<div class="pt-16 mx-auto">
+		<div class="mx-auto">
 			<slot />
 		</div>
 		<!-- </PageTransition> -->

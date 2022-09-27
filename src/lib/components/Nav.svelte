@@ -46,8 +46,8 @@
 	});
 </script>
 
-<div class="fixed z-10 flex w-full">
-	<div class="fixed z-10 flex items-center w-full h-16 pl-8 pr-2 overflow-x-visible bg-white gap-x-8 drop-shadow-lg scrollbar-hidden snap-mandatory snap-x">
+<div class="absolute z-10 flex w-full bg-gradient ">
+	<div class="fixed z-10 flex items-center w-full h-16 pl-8 pr-2 overflow-x-visible scrollbar-hidden snap-mandatory snap-x navbar text-white">
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
 			{#if useTestnets}
@@ -57,15 +57,13 @@
 			{/if}
 		</a>
 
-		<Search class="snap-start" />
+		<Search class="snap-start ml-20" />
 
 		<!-- Flex filler -->
 		<div class="flex-grow" />
 
 		<!-- Marketplace -->
-		<a id="marketplace-link" href="/marketplace" class="relative font-semibold text-transparent uppercase text-md bg-gradient-to-r bg-clip-text from-color-purple to-color-blue snap-center">
-			Marketplace
-		</a>
+		<a id="marketplace-link" href="/marketplace" class="relative font-semibold snap-center bg-card-gradient h-1/2 grid place-items-center px-4">Marketplace</a>
 
 		<!-- Staking - HIDDEN FOR V1 -->
 		<!-- <a href="/stake" class="relative font-semibold uppercase text-md snap-center min-w-fit" class:-mr-8={!showCreate}>Staking</a> -->
@@ -75,41 +73,23 @@
 
 		<!-- Create -->
 		{#if showCreate}
-			<button
-				on:click={() => goto('/create')}
-				class="relative grid h-full px-16 font-semibold text-white uppercase text-md bg-gradient-to-r from-color-purple to-color-blue place-items-center snap-center"
-			>
-				Create
-			</button>
+			<button on:click={() => goto('/create')} class="relative font-semibold bg-card-gradient h-1/2 grid place-items-center px-4 snap-center">Create</button>
 		{/if}
 
 		<!-- Profile -->
-		<div class="relative flex items-center h-full">
+		<div class="relative flex items-center h-full ml-8">
 			{#if showProfileButton || $appSigner}
 				<button
-					class="flex items-center h-full font-semibold text-md whitespace-nowrap transition-btn w-52"
+					class="flex items-center h-full font-semibold text-md whitespace-nowrap transition-btn w-32"
 					id="profile-button"
 					class:hidden={!$appSigner}
 					on:click={() => (displayProfilePopup = !displayProfilePopup)}
 					title={profileButtonTitle}
 				>
-					<div class="flex-grow" in:fade>
-						{#if $profileData?.username}
-							{displayedUsername && displayedUsername.length > 15 ? `${displayedUsername.substring(0, 13)}...` : displayedUsername}
-						{:else}
-							Guest User
-						{/if}
-					</div>
-
 					<!-- Profile image or guest user icon -->
-					<div class="w-8 h-8">
+					<div class="w-8 h-8 btn-gradient-border border">
 						{#if $profileData?.thumbnailUrl}
-							<img
-								on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"}
-								src={$profileData.thumbnailUrl}
-								alt="Current account avatar."
-								class="object-cover w-full h-full rounded-full"
-							/>
+							<img on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"} src={$profileData.thumbnailUrl} alt="Current account avatar." class="object-cover w-full h-full" />
 						{:else}
 							<div class="text-color-purple" in:fade|local>
 								<UserCircle />
@@ -140,10 +120,19 @@
 	</div>
 </div>
 
-<!-- <style>
-	#marketplace-link::after {
+<style type="postcss">
+	/* #marketplace-link::after {
 		@apply absolute h-px w-full bg-gradient-to-r from-color-purple to-color-blue;
 		@apply left-0 bottom-0;
 		content: '';
+	} */
+
+	.navbar {
+		background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
 	}
-</style> -->
+
+	.btn-gradient-border {
+		background: linear-gradient(white, white) padding-box, linear-gradient(to right, #868bf7, #6cc7f8) border-box;
+		@apply border-transparent border-2;
+	}
+</style>

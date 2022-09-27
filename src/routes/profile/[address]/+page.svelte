@@ -275,13 +275,12 @@
 	$: browser && $currentUserAddress && selectedTab.name === 'listings' && fetchMore();
 </script>
 
-<div class="h-72 bg-color-gray-light">
-	{#if $localProfileData?.coverUrl}
-		<div style="background-image: url({$localProfileData?.coverUrl})" class="w-full h-full bg-center bg-no-repeat bg-cover" />
-	{/if}
-</div>
-
 <div class="relative max-w-screen-xl px-32 mx-auto">
+	<div class="h-72 bg-color-gray-light pt-16">
+		{#if $localProfileData?.coverUrl}
+			<div style="background-image: url({$localProfileData?.coverUrl})" class="w-full h-full bg-center bg-no-repeat bg-cover" />
+		{/if}
+	</div>
 	<!-- Profile image -->
 	<div class="absolute top-0 grid w-32 h-32 overflow-hidden transform -translate-y-1/2 bg-white border-4 border-white rounded-full shadow place-items-center">
 		{#if $localProfileData?.thumbnailUrl}
