@@ -19,7 +19,7 @@
 	import { profileData, refreshProfileData } from '$stores/user';
 	import { appSigner, connectionDetails, currentUserAddress } from '$stores/wallet';
 	import { freeNftStatus, hasClaimedFreeNft } from '$utils/api/freeNft';
-	import { checkUsernameAvailability, type EditableProfileData, updateProfile } from '$utils/api/profile';
+	import { checkUsernameAvailability, type EditableProfileData, updateProfile, fetchCurrentUserData } from '$utils/api/profile';
 	import { inputize } from '$utils/misc/inputize';
 	import { setPopup } from '$utils/popup';
 	import { httpErrorHandler, notifyError, notifySuccess } from '$utils/toast';
@@ -91,7 +91,7 @@
 		$localDataStore = $localDataStore;
 	}
 
-	async function useProfileData(data: UserData) {
+	async function useProfileData(data: Awaited<ReturnType<typeof fetchCurrentUserData>>) {
 		try {
 			const localData = {
 				username: data.username,
