@@ -24,16 +24,14 @@ export async function hasClaimedFreeNft(address: string): Promise<{ status: Free
 		console.info('[Free NFT] ' + res.data.message);
 
 		status = 'unclaimable';
-	}
-
-	if (res.status === 200 && res.data.data.isClaimed === false) {
+	} else if (res.status === 200 && res.data.data.isClaimed) {
 		console.info('[Free NFT] claimable.');
 
 		welcomeNftMessage.set(res.data.data.message);
-		status = 'claimable';
-	}
 
-	if (res.status === 200 && res.data.data.isClaimed) {
+		rest = res.data.data;
+		status = 'claimable';
+	} else if (res.status === 200 && res.data.data.onChainTx) {
 		console.info('[Free NFT] claimed.');
 
 		rest = res.data.data;
@@ -90,6 +88,8 @@ export async function claimFreeNft(selectedNftIndex: number, address: string, si
 	}
 
 	const resData: ClaimData = res;
+
+	console.log(resData);
 
 	try {
 		const hinataContract = getContract('token');
