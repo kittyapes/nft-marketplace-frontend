@@ -8,16 +8,37 @@ import { getApiUrl } from '.';
 export type FreeNftStatus = 'unclaimable' | 'claimable' | 'claimed';
 export const freeNftStatus = writable<FreeNftStatus>('unclaimable');
 
+interface IsClaimedResponse {
+	_id: string;
+	address: string;
+	nonce: number;
+	name: string;
+	generation: string;
+	categories: string;
+	isClaimed: boolean;
+	createdAt: string; //'2022-03-30T15:23:12.666Z'
+	updatedAt: string; //'2022-03-30T15:23:12.666Z';
+	__v: number;
+	claimingMessage: string;
+	claimingMessageIssuedTime: string; //'2022-03-30T15:18:42.564Z';
+	animation_url: string;
+	image: string;
+	nftAmount: number;
+	nftID: string; // number
+	signature: string;
+	uri: string;
+}
+
 /**
  * Check if the user has already claimed and get message to sign and attach to the claim route
  * @param address Currently logged in user's wallet address.
  * @returns An object with the message to sign when claiming and the isClaimed boolean value
  */
-export async function hasClaimedFreeNft(address: string): Promise<{ status: FreeNftStatus }> {
+export async function hasClaimedFreeNft(address: string) {
 	const res = await axios.get(getApiUrl('latest', `nfts/isClaimed/${address}`), await getAxiosConfig()).catch((err) => err.response);
 
 	let status: FreeNftStatus;
-	let rest = {};
+	let rest: IsClaimedResponse = {} as any;
 
 	if (res.status === 404) {
 		console.info('[Free NFT] not claimed and unclaimable.');
@@ -66,37 +87,17 @@ export async function claimFreeNft(selectedNftIndex: number, address: string, si
 
 	const res = await hasClaimedFreeNft(address);
 
-	interface ClaimData {
-		_id: string;
-		address: string;
-		nonce: number;
-		name: string;
-		generation: string;
-		categories: string;
-		isClaimed: boolean;
-		createdAt: string; //'2022-03-30T15:23:12.666Z'
-		updatedAt: string; //'2022-03-30T15:23:12.666Z';
-		__v: number;
-		claimingMessage: string;
-		claimingMessageIssuedTime: string; //'2022-03-30T15:18:42.564Z';
-		animation_url: string;
-		image: string;
-		nftAmount: number;
-		nftID: string; // number
-		signature: string;
-		uri: string;
-	}
-
-	const resData: ClaimData = res;
-
-	console.log(resData);
+	console.log(res);
 
 	try {
 		const hinataContract = getContract('token');
-		const tx = await hinataContract.claimNFT(address, resData.nftID, resData.nftAmount, resData.nonce, resData.signature, []);
-		const txRes = await tx.wait(5);
+		const tx = await hinataContract.claimNFT(address, res.nftID, res.nftAmount, res.nonce, res.signature, []);
+
+		await tx.wait(5);
+
 		welcomeNftClaimedOnServer.set(true);
-		return resData;
+
+		return res;
 	} catch (err) {
 		throw err;
 	}
