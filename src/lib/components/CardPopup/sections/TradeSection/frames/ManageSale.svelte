@@ -7,7 +7,7 @@
 	import { isListingExpired } from '$utils/misc';
 	import { getInterval } from '$utils/scheduler';
 	import { notifyError } from '$utils/toast';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onDestroy } from 'svelte';
 
 	import { frame } from '../tradeSection';
 	import EditSale from './EditSale.svelte';
@@ -18,11 +18,13 @@
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
 
-	let showEditButton = true;
+	let allowEdit = true;
 
-	getInterval(1000).subscribe(() => {
-		showEditButton = !isListingExpired(chainListing.startTime, chainListing.duration);
+	const allowEditUnsubscribe = getInterval(1000).subscribe(() => {
+		allowEdit = !isListingExpired(chainListing.startTime, chainListing.duration);
 	});
+
+	onDestroy(allowEditUnsubscribe);
 
 	let cancellingListing = false;
 
@@ -54,7 +56,7 @@
 	<div class="flex-grow" />
 
 	<div class="flex gap-2 mt-4">
-		{#if showEditButton}
+		{#if allowEdit}
 			<SecondaryButton on:click={() => frame.set(EditSale)}>Edit Listing</SecondaryButton>
 		{/if}
 
