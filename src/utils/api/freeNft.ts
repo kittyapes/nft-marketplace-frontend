@@ -154,8 +154,6 @@ export async function claimFreeNft(selectedNftIndex: number, address: string) {
 		return false;
 	}
 
-	console.log(res);
-
 	try {
 		const hinataContract = getContract('token');
 
