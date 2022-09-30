@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { postVerificationQueueAdd, postInactivationQueueAdd } from '$utils/api/admin/userManagement';
+	import { userHasRole } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
 
 	import { httpErrorHandler, notifySuccess } from '$utils/toast';
@@ -55,21 +56,30 @@
 		requestDataUpdate();
 	}
 
-	$: userStatus = profileData?.status;
+	$: isVerifiedUser = $userHasRole('verified_user');
+	$: isInactivatedUser = $userHasRole('inactivated_user');
 
-	$: promoteDisabled = ['VERIFIED', 'AWAITING_PROMOTED', 'AWAITING_INACTIVATED'].includes(userStatus) || isChangingverifiedStatus || !profileData;
-	$: inactivateDisabled = ['USER', 'AWAITING_PROMOTED', 'AWAITING_INACTIVATED'].includes(userStatus) || isChangingverifiedStatus || !profileData;
+	$: promoteDisabled = isVerifiedUser || isChangingverifiedStatus || !profileData;
+	$: inactivateDisabled = !isVerifiedUser || isChangingverifiedStatus || !profileData;
 </script>
 
-<div class="px-32 py-24 gap-x-2 items-center">
-	<div class="bg-gray-50 px-8 py-6 rounded-xl border">
-		<div class="uppercase font-semibold text-lg">Admin tools</div>
+<div class="items-center px-32 py-24 gap-x-2">
+	<div class="px-8 py-6 border bg-gray-50 rounded-xl">
+		<div class="text-lg font-semibold uppercase">Admin tools</div>
 
-		<hr class="border-px mt-4" />
+		<hr class="mt-4 border-px" />
 
 		<!-- Verified creator promoting and inactivating -->
-		<div class="font-semibold uppercase mt-6">
-			Verified creator status: <span class="gradient-text">{profileData?.status}</span>
+		<div class="mt-6 font-semibold uppercase">
+			Verified creator status: <span class="gradient-text">
+				{#if isVerifiedUser}
+					Verified
+				{:else if isInactivatedUser}
+					Inactivated
+				{:else}
+					User
+				{/if}
+			</span>
 		</div>
 
 		<div class="flex items-center gap-4 mt-4">
