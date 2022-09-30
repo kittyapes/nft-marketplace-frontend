@@ -47,18 +47,17 @@
 	let loaded = false;
 	let eventId;
 
-	onMount(() => {
-		if ($page.url.searchParams.has('tab')) {
-			// @ts-ignore
-			tab = $page.url.searchParams.get('tab');
-		}
-	});
+	$: if ($page.url.searchParams.has('tab')) {
+		// @ts-ignore
+		tab = $page.url.searchParams.get('tab');
+	}
 
 	onDestroy(() => {
 		$page.url.searchParams.delete('tab');
 	});
 
-	$: if (browser && tab) {
+	// for some reason this reactive block runs on other pages when navigated there, so this is a hotfix for that problem
+	$: if (browser && tab && $page.url.pathname === '/management') {
 		$page.url.searchParams.set('tab', tab);
 		goto('?' + $page.url.searchParams, { keepfocus: true });
 	}
