@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 export function matches(a: string, b: string) {
 	return a?.toLocaleLowerCase() === b?.toLocaleLowerCase();
 }
@@ -29,11 +27,4 @@ export function buildListingDurationOptions(isAdmin: boolean) {
 	}
 
 	return options;
-}
-
-/**
- * @returns `true` or `false` depending on whether the listing is expired or not.
- */
-export function isListingExpired(startTs: number, duration: number) {
-	return dayjs(startTs * 1000 + duration * 1000).isBefore(dayjs());
 }

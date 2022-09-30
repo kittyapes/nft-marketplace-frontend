@@ -29,7 +29,6 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { browser } from '$app/environment';
-	import { onDestroy, onMount } from 'svelte';
 
 	let tab: 'USER' | 'COLLECTION' = 'USER';
 
@@ -47,13 +46,6 @@
 		// @ts-ignore
 		tab = $page.url.searchParams.get('tab');
 	}
-
-	onMount(() => {});
-
-	onDestroy(() => {
-		$page.url.searchParams.delete('tab');
-		goto($page.url);
-	});
 
 	const whitelistingCollectionAddress = writable<string>('');
 	const whitelistingCollectionSlug = writable<string>('');
@@ -229,7 +221,7 @@
 	//COLLECTION section
 
 	let createCollectionTable = async () => {
-		await apiSearchCollections(getCollectionsFetchingOptions())
+		await apiSearchCollections()
 			.then((res) => (collections = res.filter((c) => c.slug)))
 			.catch((err) => console.log(err));
 
@@ -344,7 +336,7 @@
 	// USER section
 
 	let createUserTable = async () => {
-		await getUsers(getUsersFetchingOptions())
+		await getUsers()
 			.then((res) => (users = res))
 			.catch((err) => console.log(err));
 		if (!users.length) return;
@@ -360,7 +352,7 @@
 		users = await getUsers(getUsersFetchingOptions());
 	};
 
-	$: if (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0) {
+	$: if (userFetchingOptions.query || collectionFetchingOptions.name) {
 		loaded = false;
 		debouncedSearch();
 	}

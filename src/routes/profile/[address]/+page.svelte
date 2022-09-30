@@ -125,7 +125,6 @@
 				const res = {} as FetchFunctionResult;
 				res.res = await getListings({ seller: address, listingStatus }, page, limit);
 				res.adapted = res.res.map(listingToCardOptions);
-
 				return res;
 			},
 			label: 'Listings',
@@ -209,7 +208,7 @@
 	}
 
 	const tabParam = derived(page, (p) => p.url.searchParams.get('tab'));
-	$: if (browser && $currentUserAddress) selectTab($tabParam);
+	$: selectTab($tabParam);
 
 	let isFetchingNfts = false;
 
@@ -236,7 +235,7 @@
 			tab.index++;
 		}
 
-		selectedTab.data = selectedTab.data;
+		selectedTab = selectedTab;
 
 		isFetchingNfts = false;
 		tab.isFetching = false;
@@ -271,6 +270,9 @@
 			cardPropsMapper = (v) => ({ options: v });
 		}
 	}
+
+	// When you refresh listings subtab currentUserAddress is null first and when set later function is not called again fix
+	$: browser && $currentUserAddress && selectedTab.name === 'listings' && fetchMore();
 </script>
 
 <div class="h-72 bg-color-gray-light">

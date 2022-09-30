@@ -56,8 +56,8 @@
 		requestDataUpdate();
 	}
 
-	$: isVerifiedUser = profileData.roles?.includes('verified_user');
-	$: isInactivatedUser = profileData.roles?.includes('inactivated_user');
+	$: isVerifiedUser = $userHasRole('verified_user');
+	$: isInactivatedUser = $userHasRole('inactivated_user');
 
 	$: promoteDisabled = isVerifiedUser || isChangingverifiedStatus || !profileData;
 	$: inactivateDisabled = !isVerifiedUser || isChangingverifiedStatus || !profileData;
