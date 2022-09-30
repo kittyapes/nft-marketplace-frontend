@@ -3,6 +3,7 @@
 	import { acceptedImages, acceptedVideos } from '$constants';
 	import Back from '$icons/back_.svelte';
 	import type { NftDraft } from '$interfaces/nft/nftDraft';
+	import type { CardOptions } from '$interfaces/ui';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
@@ -11,11 +12,10 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import { nftDraft } from '$stores/create';
-	import { profileData } from '$stores/user';
+	import { refreshProfileData } from '$stores/user';
 	import { connectionDetails, currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
-	import { fetchProfileData } from '$utils/api/profile';
 	import { newBundleData, type NewBundleData } from '$utils/create';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { getNftId } from '$utils/create/getNftId';
@@ -24,9 +24,6 @@
 	import { setPopup, updatePopupProps } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
 	import { writable } from 'svelte/store';
-	import type { CardOptions } from '$interfaces/ui';
-	import { walletRefreshed } from '$utils/wallet';
-	import { browser } from '$app/environment';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }>(null);
@@ -68,8 +65,7 @@
 		genColl = genColl.map(adaptCollectionToMintingDropdown);
 		generalCollection.set(genColl[0]);
 
-		profileData.set(await fetchProfileData($currentUserAddress));
-		console.log($profileData);
+		await refreshProfileData();
 
 		let collections: Collection[] = [];
 		let page = 1;
@@ -97,10 +93,18 @@
 			}
 		}
 
+		const available = collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown);
+
 		if ($generalCollection) {
-			$availableCollections = [$generalCollection, ...collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown)];
-		} else {
-			$availableCollections = collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown);
+			// Insert general collection if available and set it as selected
+			available.unshift($generalCollection);
+		}
+
+		$availableCollections = available;
+
+		// Select first available collection
+		if (available.length) {
+			handleCollectionSelection({ detail: available[0] });
 		}
 
 		isLoadingCollections = false;
@@ -167,11 +171,12 @@
 	}
 
 	const handleCollectionSelection = (event) => {
-		// Skip this function during collection loading
 		if (event.detail?.label === 'Create new collection') {
 			goto(event.detail?.value);
-		} else if ($availableCollections.length < 2) return;
-		else {
+		} else if ($availableCollections.length < 1) {
+			// Skip this function during collection loading
+			return;
+		} else {
 			nftData.collectionName = event.detail?.label;
 			selectedCollectionId = event.detail?.value;
 		}
