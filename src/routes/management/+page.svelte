@@ -396,7 +396,7 @@
 	// USER section
 
 	let createUserTable = async () => {
-		await getUsers()
+		await getUsers(getUsersFetchingOptions())
 			.then((res) => {
 				users = res.users;
 				totalUserEntries = res.totalCount;
@@ -417,7 +417,7 @@
 		totalUserEntries = res.totalCount;
 	};
 
-	$: if (userFetchingOptions.query || collectionFetchingOptions.name) {
+	$: if (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0) {
 		loaded = false;
 		debouncedSearch();
 	}
