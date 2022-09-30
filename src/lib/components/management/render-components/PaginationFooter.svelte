@@ -11,10 +11,12 @@
 
 	let selected = 1;
 
-	let showingPages = [...Array(6).keys()].slice(1);
+	$: showingPages = props.pages > 6 ? [...Array(6).keys()].slice(1) : [...Array(props.pages + 1).keys()].slice(1);
 
 	function selectPage(page: number) {
 		if (props.pages < page || page < 0 || selected === page) return;
+
+		window.scrollTo(0, 0);
 
 		if (page === props.pages) {
 			showingPages = localPages.slice(-5);
@@ -55,7 +57,7 @@
 	}
 </script>
 
-<div class="w-full col-span-{props.columnSpan}">
+<div class="w-full col-span-full select-none">
 	<ColumnComponentContainer>
 		<div class="flex gap-4 text-lg font-semibold  items-center mx-8">
 			<div class="text-color-gray-light clickable" on:click={firstPage}>First</div>

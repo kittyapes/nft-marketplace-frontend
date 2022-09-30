@@ -30,6 +30,7 @@
 	import { page } from '$app/stores';
 	import { browser } from '$app/environment';
 	import PaginationFooter from '$lib/components/management/render-components/PaginationFooter.svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	const fetchLimit = 20;
 
@@ -46,14 +47,20 @@
 	let loaded = false;
 	let eventId;
 
-	$: if (tab && browser) {
+	onMount(() => {
+		if ($page.url.searchParams.has('tab')) {
+			// @ts-ignore
+			tab = $page.url.searchParams.get('tab');
+		}
+	});
+
+	onDestroy(() => {
+		$page.url.searchParams.delete('tab');
+	});
+
+	$: if (browser && tab) {
 		$page.url.searchParams.set('tab', tab);
 		goto('?' + $page.url.searchParams, { keepfocus: true });
-	}
-
-	$: if ($page.url.searchParams.has('tab')) {
-		// @ts-ignore
-		tab = $page.url.searchParams.get('tab');
 	}
 
 	const whitelistingCollectionAddress = writable<string>('');
@@ -151,7 +158,7 @@
 	const handlePageSelect = async (event: CustomEvent) => {
 		if (tab === 'USER') {
 			userPage = event.detail.page;
-			users = await getUsers(getUsersFetchingOptions());
+			await getSearchedUsers();
 		}
 
 		if (tab === 'COLLECTION') {
@@ -166,7 +173,7 @@
 				sortBy: event.detail.sortBy,
 				sortReversed: event.detail.sortReversed,
 			};
-			users = await getUsers(getUsersFetchingOptions());
+			await getSearchedUsers();
 		} else {
 			collectionFetchingOptions.sort = {
 				sortBy: event.detail.sortBy,
@@ -194,7 +201,7 @@
 				userFetchingOptions.filter.status = undefined;
 			}
 
-			users = await getUsers(getUsersFetchingOptions());
+			await getSearchedUsers();
 		} else {
 			collectionFetchingOptions.filter = {
 				status: event.detail.status ? event.detail.status : collectionFetchingOptions.filter.status,
@@ -391,7 +398,10 @@
 
 	let createUserTable = async () => {
 		await getUsers()
-			.then((res) => (users = res))
+			.then((res) => {
+				users = res.users;
+				totalUserEntries = res.totalCount;
+			})
 			.catch((err) => console.log(err));
 		if (!users.length) return;
 	};
@@ -403,7 +413,9 @@
 	const debouncedSearch = debounce(async () => (tab === 'USER' ? await getSearchedUsers() : await getSearchedCollections()), 300);
 
 	const getSearchedUsers = async () => {
-		users = await getUsers(getUsersFetchingOptions());
+		const res = await await getUsers(getUsersFetchingOptions());
+		users = res.users;
+		totalUserEntries = res.totalCount;
 	};
 
 	$: if (userFetchingOptions.query || collectionFetchingOptions.name) {
@@ -418,21 +430,21 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETICAL', active: false },
 				renderComponent: EntryName,
-				renderComponentProps: users.map((u) => ({ name: u.username || '', imageUrl: u.thumbnailUrl, address: u.address })),
+				renderComponentProps: users?.map((u) => ({ name: u.username || '', imageUrl: u.thumbnailUrl, address: u.address })),
 			},
 			{
 				gridSize: '3fr',
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Ethereum Address' },
 				renderComponent: EthAddress,
-				renderComponentProps: users.map((u) => ({ address: u.address })),
+				renderComponentProps: users?.map((u) => ({ address: u.address })),
 			},
 			{
 				gridSize: '2fr',
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Role' },
 				renderComponent: EntryRole,
-				renderComponentProps: users.map((u) => ({
+				renderComponentProps: users?.map((u) => ({
 					id: u.address,
 					dispatchAllOptions: true,
 					mode: tab,
@@ -451,7 +463,7 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Date Joined', sortBy: 'CREATED_AT', active: false },
 				renderComponent: EntryGenericText,
-				renderComponentProps: users.map((u) => {
+				renderComponentProps: users?.map((u) => {
 					let date = dayjs(u.createdAt);
 					return { text: date.format('MMM D, YYYY') };
 				}),
@@ -522,7 +534,7 @@
 				on:event={handleTableEvent}
 				tableData={userTableData}
 				rows={users.length}
-				tableFooterElement={{ element: PaginationFooter, props: { columnSpan: userTableData?.length, pages: Math.floor(totalUserEntries / fetchLimit) } }}
+				tableFooterElement={{ element: PaginationFooter, props: { pages: Math.ceil(totalUserEntries / fetchLimit) } }}
 			/>
 		</LoadedContent>
 	{:else}
@@ -533,7 +545,7 @@
 				rows={collections.length}
 				tableFooterElement={{
 					element: PaginationFooter,
-					props: { columnSpan: collectionTableData?.length, pages: Math.floor(totalCollectionEntries / fetchLimit) },
+					props: { pages: Math.ceil(totalCollectionEntries / fetchLimit) },
 				}}
 			/>
 		</LoadedContent>
