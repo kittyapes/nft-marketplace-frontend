@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { welcomeNftsMainnet, welcomeNftsRinkeby } from '$constants/nfts';
+	import CloseButton from '$icons/close-button.svelte';
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import ChevronRight from '$icons/chevron-right.svelte';
-	import CloseButton from '$icons/close-button.svelte';
 	import Loader from '$icons/loader.svelte';
-	import { connectionDetails, currentUserAddress } from '$stores/wallet';
-	import { claimFreeNft } from '$utils/api/freeNft';
-	import type { PopupHandler } from '$utils/popup';
+	import { welcomeNftsMainnet, welcomeNftsRinkeby } from '$constants/nfts';
 	import { clone } from 'lodash-es';
+	import { notifyError, notifySuccess } from '$utils/toast';
+	import type { PopupHandler } from '$utils/popup';
+	import { claimFreeNft } from '$utils/api/freeNft';
+	import { appSigner, currentUserAddress, welcomeNftMessage, connectionDetails } from '$stores/wallet';
 	import { onMount } from 'svelte';
 
 	export let handler: PopupHandler;
@@ -25,9 +26,34 @@
 	async function onMint() {
 		minting = true;
 
-		const claimedFreeNft = await claimFreeNft(nfts[0].id, $currentUserAddress);
+		try {
+			let signature = '';
 
-		minting = false;
+			if ($welcomeNftMessage) {
+				try {
+					signature = await $appSigner.signMessage($welcomeNftMessage);
+				} catch {
+					notifyError('Failed to Sign Message');
+					return;
+				}
+			}
+
+			const claimed = await claimFreeNft(nfts[0].id, $currentUserAddress, signature);
+
+			if (!claimed) {
+				notifyError('Failed to Claim Free NFT');
+				return;
+			}
+
+			notifySuccess('Successfully minted your NFT!');
+			minted = true;
+			handler.close();
+		} catch (err) {
+			console.error('FREE NFT ERROR: ', err);
+			notifyError('Failed minting your NFT.');
+		} finally {
+			minting = false;
+		}
 	}
 
 	onMount(() => {

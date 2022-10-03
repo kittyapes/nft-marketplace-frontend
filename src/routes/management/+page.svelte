@@ -32,6 +32,7 @@
 	import PaginationFooter from '$lib/components/management/render-components/PaginationFooter.svelte';
 	import { onDestroy, onMount } from 'svelte';
 
+
 	const fetchLimit = 20;
 
 	let tab: 'USER' | 'COLLECTION' = 'USER';
@@ -417,7 +418,7 @@
 		totalUserEntries = res.totalCount;
 	};
 
-	$: if (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0) {
+	$: if (userFetchingOptions.query || collectionFetchingOptions.name) {
 		loaded = false;
 		debouncedSearch();
 	}

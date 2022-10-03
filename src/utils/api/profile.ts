@@ -1,3 +1,4 @@
+import type { UserStatus } from '$interfaces';
 import { appSigner, currentUserAddress } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { sanitizeHtmlInternal } from '$utils/html';
@@ -77,13 +78,13 @@ export async function fetchCurrentUserData(): Promise<{
 		twitter: string;
 		website: string;
 	};
+	status: UserStatus;
 	thumbnailUrl: string;
 	queueDate: number;
 	updatedAt: string;
 	username: string;
 }> {
 	const res = await axios.get(getApiUrl('latest', 'users'), await getAxiosConfig());
-
 	return res.data.data;
 }
 

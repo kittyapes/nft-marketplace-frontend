@@ -11,26 +11,15 @@
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
 	import { getTokenBalance } from '$stores/user';
 	import { contractCancelListing, contractUpdateListing, type ChainListing } from '$utils/contracts/listing';
-	import { isListingExpired } from '$utils/misc';
 	import { totalColRoyalties } from '$utils/misc/royalties';
 	import { isFuture } from '$utils/misc/time';
 	import { createToggle } from '$utils/misc/toggle';
-	import { getInterval } from '$utils/scheduler';
 	import { notifyError } from '$utils/toast';
-	import { onDestroy } from 'svelte';
 	import { frame } from '../tradeSection';
 	import Success from './Success.svelte';
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
-
-	let allowEdit = true;
-
-	const allowEditUnsubscribe = getInterval(1000).subscribe(() => {
-		allowEdit = !isListingExpired(chainListing.startTime, chainListing.duration);
-	});
-
-	onDestroy(allowEditUnsubscribe);
 
 	function _updateInputsFromData() {
 		_listingProperties.setValues({
@@ -137,7 +126,7 @@
 		</SecondaryButton>
 
 		<div bind:this={updatebuttonContainer} class="w-full" on:pointerenter={isUpdateHovered.toggle} on:pointerleave={isUpdateHovered.toggle}>
-			<PrimaryButton on:click={updateListing} disabled={!!formErrors.length || updatingListing || cancellingListing || !allowEdit}>
+			<PrimaryButton on:click={updateListing} disabled={!!formErrors.length || updatingListing || cancellingListing}>
 				{#if updatingListing}
 					<ButtonSpinner />
 				{/if}
