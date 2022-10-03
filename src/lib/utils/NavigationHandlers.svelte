@@ -6,7 +6,6 @@
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { profileData, refreshProfileData } from '$stores/user';
 	import { connectionDetails, currentUserAddress } from '$stores/wallet';
-	import { fetchCurrentUserData } from '$utils/api/profile';
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
@@ -61,7 +60,7 @@
 
 	// Handler for when the user is already in the app and is about
 	// to navigate to a protected route
-	beforeNavigate(async ({ to, cancel }) => {
+	beforeNavigate(({ to, cancel }) => {
 		if (!to?.url.pathname) {
 			return;
 		}
@@ -79,7 +78,6 @@
 		// When the user is trying to access his profile and the the profile has not been created on the backend,
 		// request him to sign in, which will create the profile.
 		if (to.url.pathname === '/profile' || RegExp(`profile/${$currentUserAddress}`).test(to.url.pathname)) {
-			$profileData = await fetchCurrentUserData();
 			if (!$profileData) {
 				cancel();
 				setPopup(AuthLoginPopup, {

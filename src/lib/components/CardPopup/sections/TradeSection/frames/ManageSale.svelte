@@ -4,10 +4,8 @@
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
 	import { contractCancelListing, type ChainListing } from '$utils/contracts/listing';
-	import { isListingExpired } from '$utils/misc';
-	import { getInterval } from '$utils/scheduler';
 	import { notifyError } from '$utils/toast';
-	import { createEventDispatcher, onDestroy } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 
 	import { frame } from '../tradeSection';
 	import EditSale from './EditSale.svelte';
@@ -17,14 +15,6 @@
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
-
-	let allowEdit = true;
-
-	const allowEditUnsubscribe = getInterval(1000).subscribe(() => {
-		allowEdit = !isListingExpired(chainListing.startTime, chainListing.duration);
-	});
-
-	onDestroy(allowEditUnsubscribe);
 
 	let cancellingListing = false;
 
@@ -56,9 +46,7 @@
 	<div class="flex-grow" />
 
 	<div class="flex gap-2 mt-4">
-		{#if allowEdit}
-			<SecondaryButton on:click={() => frame.set(EditSale)}>Edit Listing</SecondaryButton>
-		{/if}
+		<SecondaryButton on:click={() => frame.set(EditSale)}>Edit Listing</SecondaryButton>
 
 		<SecondaryButton disabled={cancellingListing} on:click={cancelListing}>
 			{#if cancellingListing}

@@ -29,31 +29,39 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { browser } from '$app/environment';
+	import PaginationFooter from '$lib/components/management/render-components/PaginationFooter.svelte';
 	import { onDestroy, onMount } from 'svelte';
+
+
+	const fetchLimit = 20;
 
 	let tab: 'USER' | 'COLLECTION' = 'USER';
 
 	let users: UserData[] = [];
+	let totalUserEntries = 0;
+	let userPage = 1;
+
 	let collections: Collection[] = [];
+	let totalCollectionEntries = 0;
+	let collectionPage = 1;
+
 	let loaded = false;
 	let eventId;
-
-	$: if (tab && browser) {
-		$page.url.searchParams.set('tab', tab);
-		goto('?' + $page.url.searchParams, { keepfocus: true });
-	}
 
 	$: if ($page.url.searchParams.has('tab')) {
 		// @ts-ignore
 		tab = $page.url.searchParams.get('tab');
 	}
 
-	onMount(() => {});
-
 	onDestroy(() => {
 		$page.url.searchParams.delete('tab');
-		goto($page.url);
 	});
+
+	// for some reason this reactive block runs on other pages when navigated there, so this is a hotfix for that problem
+	$: if (browser && tab && $page.url.pathname === '/management') {
+		$page.url.searchParams.set('tab', tab);
+		goto('?' + $page.url.searchParams, { keepfocus: true });
+	}
 
 	const whitelistingCollectionAddress = writable<string>('');
 	const whitelistingCollectionSlug = writable<string>('');
@@ -103,8 +111,10 @@
 		sort: Partial<{
 			sortBy: 'ALPHABETICAL' | 'CREATED_AT';
 			sortReversed: boolean;
+			limit: number;
 		}>;
 		query: string;
+		limit: number;
 	}
 
 	interface CollectionFetchingOptions {
@@ -117,16 +127,19 @@
 			sortReversed: boolean;
 		}>;
 		name: string;
+		limit: number;
 	}
 
 	let userFetchingOptions: UserFetchingOptions = {
 		filter: {},
+		limit: fetchLimit,
 		sort: {},
 		query: '',
 	};
 
 	let collectionFetchingOptions: CollectionFetchingOptions = {
 		filter: {},
+		limit: fetchLimit,
 		sort: {},
 		name: '',
 	};
@@ -135,18 +148,38 @@
 	let collectionTableData: TableCol[] = [];
 
 	const handleTableEvent = async (event: CustomEvent) => {
+		if (event.detail.id || event.detail.sortBy || event.detail.sortReversed) {
+			await handleTableSort(event);
+		} else if (event.detail.page) {
+			await handlePageSelect(event);
+		}
+	};
+
+	const handlePageSelect = async (event: CustomEvent) => {
+		if (tab === 'USER') {
+			userPage = event.detail.page;
+			await getSearchedUsers();
+		}
+
+		if (tab === 'COLLECTION') {
+			collectionPage = event.detail.page;
+			await getSearchedCollections();
+		}
+	};
+
+	const handleTableSort = async (event: CustomEvent) => {
 		if (tab === 'USER') {
 			userFetchingOptions.sort = {
 				sortBy: event.detail.sortBy,
 				sortReversed: event.detail.sortReversed,
 			};
-			users = await getUsers(getUsersFetchingOptions());
+			await getSearchedUsers();
 		} else {
 			collectionFetchingOptions.sort = {
 				sortBy: event.detail.sortBy,
 				sortReversed: event.detail.sortReversed,
 			};
-			collections = (await apiSearchCollections(getCollectionsFetchingOptions())).filter((c) => c.slug);
+			await getSearchedCollections();
 		}
 
 		eventId = event.detail.id;
@@ -168,19 +201,27 @@
 				userFetchingOptions.filter.status = undefined;
 			}
 
-			users = await getUsers(getUsersFetchingOptions());
+			await getSearchedUsers();
 		} else {
 			collectionFetchingOptions.filter = {
 				status: event.detail.status ? event.detail.status : collectionFetchingOptions.filter.status,
 				isClaimed: typeof event.detail.value === 'boolean' ? event.detail.value : collectionFetchingOptions.filter.isClaimed,
 			};
-			console.log(event);
+
 			if (event.detail.status === 'all') collectionFetchingOptions.filter.status = undefined;
 			if (event.detail.value === 'all') collectionFetchingOptions.filter.isClaimed = undefined;
 
-			collections = (await apiSearchCollections(getCollectionsFetchingOptions())).filter((c) => c.slug);
+			await getSearchedCollections();
 		}
 	};
+
+	$: if (userFetchingOptions) {
+		userPage = 1;
+	}
+
+	$: if (collectionFetchingOptions) {
+		collectionPage = 1;
+	}
 
 	let whitelisting = false;
 
@@ -229,8 +270,11 @@
 	//COLLECTION section
 
 	let createCollectionTable = async () => {
-		await apiSearchCollections(getCollectionsFetchingOptions())
-			.then((res) => (collections = res.filter((c) => c.slug)))
+		await apiSearchCollections()
+			.then((res) => {
+				collections = res.collections.filter((c) => c.slug);
+				totalCollectionEntries = res.totalCount;
+			})
 			.catch((err) => console.log(err));
 
 		if (!collections.length) return;
@@ -239,7 +283,13 @@
 	};
 
 	let getCollectionsFetchingOptions = () => {
-		return { ...collectionFetchingOptions.filter, name: collectionFetchingOptions.name, ...collectionFetchingOptions.sort };
+		return {
+			...collectionFetchingOptions.filter,
+			name: collectionFetchingOptions.name,
+			...collectionFetchingOptions.sort,
+			limit: collectionFetchingOptions.limit,
+			page: collectionPage,
+		};
 	};
 
 	const createCollectionTableData = async () => {
@@ -338,29 +388,37 @@
 	}
 
 	const getSearchedCollections = async () => {
-		collections = (await apiSearchCollections(getCollectionsFetchingOptions())).filter((c) => c.slug);
+		await apiSearchCollections(getCollectionsFetchingOptions()).then((res) => {
+			collections = res.collections.filter((c) => c.slug);
+			totalCollectionEntries = res.totalCount;
+		});
 	};
 
 	// USER section
 
 	let createUserTable = async () => {
 		await getUsers(getUsersFetchingOptions())
-			.then((res) => (users = res))
+			.then((res) => {
+				users = res.users;
+				totalUserEntries = res.totalCount;
+			})
 			.catch((err) => console.log(err));
 		if (!users.length) return;
 	};
 
 	let getUsersFetchingOptions = () => {
-		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort };
+		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort, limit: userFetchingOptions.limit, page: userPage };
 	};
 
 	const debouncedSearch = debounce(async () => (tab === 'USER' ? await getSearchedUsers() : await getSearchedCollections()), 300);
 
 	const getSearchedUsers = async () => {
-		users = await getUsers(getUsersFetchingOptions());
+		const res = await await getUsers(getUsersFetchingOptions());
+		users = res.users;
+		totalUserEntries = res.totalCount;
 	};
 
-	$: if (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0) {
+	$: if (userFetchingOptions.query || collectionFetchingOptions.name) {
 		loaded = false;
 		debouncedSearch();
 	}
@@ -372,21 +430,21 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETICAL', active: false },
 				renderComponent: EntryName,
-				renderComponentProps: users.map((u) => ({ name: u.username || '', imageUrl: u.thumbnailUrl, address: u.address })),
+				renderComponentProps: users?.map((u) => ({ name: u.username || '', imageUrl: u.thumbnailUrl, address: u.address })),
 			},
 			{
 				gridSize: '3fr',
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Ethereum Address' },
 				renderComponent: EthAddress,
-				renderComponentProps: users.map((u) => ({ address: u.address })),
+				renderComponentProps: users?.map((u) => ({ address: u.address })),
 			},
 			{
 				gridSize: '2fr',
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Role' },
 				renderComponent: EntryRole,
-				renderComponentProps: users.map((u) => ({
+				renderComponentProps: users?.map((u) => ({
 					id: u.address,
 					dispatchAllOptions: true,
 					mode: tab,
@@ -405,7 +463,7 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Date Joined', sortBy: 'CREATED_AT', active: false },
 				renderComponent: EntryGenericText,
-				renderComponentProps: users.map((u) => {
+				renderComponentProps: users?.map((u) => {
 					let date = dayjs(u.createdAt);
 					return { text: date.format('MMM D, YYYY') };
 				}),
@@ -472,11 +530,24 @@
 
 	{#if tab === 'USER'}
 		<LoadedContent {loaded}>
-			<InteractiveTable on:event={handleTableEvent} tableData={userTableData} rows={users.length} />
+			<InteractiveTable
+				on:event={handleTableEvent}
+				tableData={userTableData}
+				rows={users.length}
+				tableFooterElement={{ element: PaginationFooter, props: { pages: Math.ceil(totalUserEntries / fetchLimit) } }}
+			/>
 		</LoadedContent>
 	{:else}
 		<LoadedContent {loaded}>
-			<InteractiveTable on:event={handleTableEvent} tableData={collectionTableData} rows={collections.length} />
+			<InteractiveTable
+				on:event={handleTableEvent}
+				tableData={collectionTableData}
+				rows={collections.length}
+				tableFooterElement={{
+					element: PaginationFooter,
+					props: { pages: Math.ceil(totalCollectionEntries / fetchLimit) },
+				}}
+			/>
 		</LoadedContent>
 	{/if}
 
