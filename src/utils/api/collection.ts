@@ -183,7 +183,7 @@ export async function apiSearchCollections(options?: collectionSearchOptions) {
 		throw new Error(res.data.message);
 	}
 
-	return res.data.data.collections;
+	return res.data.data;
 }
 
 export async function apiValidateCollectionNameAndSlug(name: string | null = null, slug: string | null = null) {
