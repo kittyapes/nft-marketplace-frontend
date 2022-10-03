@@ -40,6 +40,13 @@ export async function hasClaimedFreeNft(address: string): Promise<{ status: Free
 		status = 'claimed';
 	}
 
+	if (res.status === 200 && !isNaN(res.data.data?.nonce)) {
+		const hinataContract = getContract('token');
+		if (await hinataContract.usedNonce(res.data.data.nonce.toString())) {
+			status = 'claimed';
+		}
+	}
+
 	freeNftStatus.set(status);
 
 	return { status, ...rest };

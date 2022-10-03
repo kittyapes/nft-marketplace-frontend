@@ -372,6 +372,6 @@
 	</div>
 </div>
 
-{#if $userHasRole('admin', 'superadmin')}
+{#if $localProfileData && $userHasRole('admin', 'superadmin')}
 	<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
 {/if}

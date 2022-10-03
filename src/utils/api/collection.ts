@@ -170,7 +170,13 @@ export interface collectionSearchOptions {
 
 export async function apiSearchCollections(options?: collectionSearchOptions) {
 	if (options && !options.name) options.name = undefined;
+
 	if (options && !options.limit) options.limit = 20;
+	else if (!options && !options?.limit) {
+		options = {
+			limit: 20,
+		};
+	}
 
 	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: options });
 	if (res.status !== 200) {

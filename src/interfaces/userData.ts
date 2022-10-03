@@ -19,4 +19,6 @@ export interface UserData {
 	bio: string;
 	social: { instagram: string; discord: string; twitter: string; website: string; pixiv: string; deviantart: string; artstation: string };
 	roles: UserRole[];
+	// Not Sure who removed this before
+	status: string; // more to be added later (enum)
 }
