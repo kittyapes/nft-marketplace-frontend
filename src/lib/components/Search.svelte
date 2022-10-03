@@ -36,7 +36,7 @@
 			items: res?.nfts || [],
 			users: res?.verifiedCreators || [],
 		};
-		console.log(searchResults['items']);
+
 		await tick();
 		show = true;
 	};
