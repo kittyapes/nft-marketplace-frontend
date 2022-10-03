@@ -1,4 +1,4 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class={$$props.class}>
 	<defs>
 		<linearGradient id="grad" x1="0" x2="100%" y1="0" y2="0">
 			<stop offset="0%" stop-color="#868BF7" />
