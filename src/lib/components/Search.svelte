@@ -93,7 +93,7 @@
 								<div class="p-4 flex flex-col gap-4">
 									{#each searchResults[section] as result}
 										{#if section === 'items'}
-											{@const props = result[0]}
+											{@const props = result}
 											<div class="flex gap-4 items-center btn" on:click={() => setPopup(CardPopup, { props: { options: searchResults['items'][0] } })}>
 												{#if props.thumbnailUrl}
 													<div class="w-12 h-12 rounded-full grid place-items-center">
