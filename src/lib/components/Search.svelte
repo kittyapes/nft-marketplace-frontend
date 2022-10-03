@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Search from '$icons/search.svelte';
 	import { debounce } from 'lodash-es';
-	import { getCollectionsByTitle, getNftsByTitle, searchUsersByName } from '$utils/api/search/globalSearch';
+	import { globalSearch } from '$utils/api/search/globalSearch';
 	import Loader from '$icons/loader.svelte';
 	import { tick } from 'svelte';
 	import { fly } from 'svelte/transition';
@@ -11,9 +11,7 @@
 	import { setPopup } from '$utils/popup';
 	import { page } from '$app/stores';
 	import { searchQuery } from '$stores/search';
-	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
-	import type { CardOptions } from '$interfaces/ui';
 
 	let query: string;
 	let searching = false;
@@ -31,26 +29,13 @@
 		await searchGlobally(query);
 	}, 500);
 
-	const searchNfts = async (query: string) => {
-		const response = await getNftsByTitle(query, resultCategoryLimit);
-		let nfts = response;
-		searchResults.items = nfts.map(nftToCardOptions);
-	};
-
-	const searchUsers = async (query: string) => {
-		const response = await searchUsersByName(query).catch((e) => []);
-		searchResults.users = response.slice(0, 3);
-	};
-
-	const searchCollections = async (query: string) => {
-		const response = await getCollectionsByTitle(query, resultCategoryLimit).catch((e) => []);
-		searchResults.collections = response.collections;
-	};
-
 	const searchGlobally = async (query: string) => {
-		await searchNfts(query).catch((error) => console.log(error));
-		await searchUsers(query).catch((error) => console.log(error));
-		await searchCollections(query).catch((error) => console.log(error));
+		const res = await globalSearch(query, resultCategoryLimit).catch((err) => console.error(err));
+		searchResults = {
+			collections: res?.collections || [],
+			items: res?.nfts || [],
+			users: res?.verifiedCreators || [],
+		};
 
 		await tick();
 		show = true;
@@ -108,7 +93,7 @@
 								<div class="p-4 flex flex-col gap-4">
 									{#each searchResults[section] as result}
 										{#if section === 'items'}
-											{@const props = result.nfts[0]}
+											{@const props = result}
 											<div class="flex gap-4 items-center btn" on:click={() => setPopup(CardPopup, { props: { options: searchResults['items'][0] } })}>
 												{#if props.thumbnailUrl}
 													<div class="w-12 h-12 rounded-full grid place-items-center">
