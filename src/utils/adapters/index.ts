@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 const friendlyEventNames = {
 	LISTING_CANCELLED: 'Listing Cancelled',
 	BID_RECEIVED: 'Bid',
+	TRANSFER: 'Transfer',
 };
 
 export function toNftActivityHistoryTableRowData(from: ApiNftActivityHistoryEntry): NftActivityHistoryTableRowData {
