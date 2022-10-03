@@ -64,12 +64,11 @@
 		isLoadingCollections = true;
 
 		// Fetch general collection
-		let genColl = await apiSearchCollections({ collectionAddress: getContract('storage', true).address });
-		genColl = genColl.map(adaptCollectionToMintingDropdown);
-		generalCollection.set(genColl[0]);
+		const searchRes = await apiSearchCollections({ collectionAddress: getContract('storage', true).address });
+		const genCollection = searchRes.collections?.[0];
+		const genCollectionAdapted = adaptCollectionToMintingDropdown(genCollection);
 
-		profileData.set(await fetchProfileData($currentUserAddress));
-		console.log($profileData);
+		generalCollection.set(genCollectionAdapted);
 
 		let collections: Collection[] = [];
 		let page = 1;
@@ -79,7 +78,7 @@
 		while (true) {
 			const beforeLength = collections.length;
 
-			collections.push(...(await apiSearchCollections({ creator: $currentUserAddress, page })));
+			collections.push(...(await apiSearchCollections({ creator: $currentUserAddress, page })).collections);
 
 			if (beforeLength === collections.length) break;
 			page++;
