@@ -13,6 +13,7 @@
 	import { searchQuery } from '$stores/search';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import { browser } from '$app/environment';
 
 	let query: string;
 	let searching = false;
@@ -37,19 +38,20 @@
 			items: res?.nfts.map(nftToCardOptions) || [],
 			users: res?.verifiedCreators || [],
 		};
-		console.log(searchResults['items'][0].nfts[0]);
+
 		await tick();
 		show = true;
 	};
 
-	$: if (!query) {
+	$: if (browser && !query) {
 		searching = false;
-		$searchQuery = query;
+		$searchQuery = '';
 		debouncedSearch.cancel();
 	}
 
-	$: if (query) {
-		$searchQuery = query;
+	$: if (browser && query) {
+		$searchQuery = query.trim();
+
 		if (!$page.url.pathname.startsWith('/search')) {
 			searching = true;
 			show = false;
@@ -64,8 +66,9 @@
 	const navigateToSearchResults = (query: string) => {
 		show = false;
 		searching = false;
-		console.log(query);
-		goto('/search?query=' + query);
+
+		query = query.trim();
+		goto('/search?query=' + query.replace('#', '%23'));
 	};
 </script>
 
@@ -100,7 +103,12 @@
 									{#each searchResults[section] as result}
 										{#if section === 'items'}
 											{@const props = result.nfts[0]}
-											<div class="flex gap-4 items-center btn" on:click={() => setPopup(CardPopup, { props: { options: result } })}>
+											<div
+												class="flex gap-4 items-center btn"
+												on:click={() => {
+													setPopup(CardPopup, { props: { options: result }, onClose: () => (searching = true) });
+												}}
+											>
 												{#if props.thumbnailUrl}
 													<div class="w-12 h-12 rounded-full grid place-items-center">
 														<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({props.thumbnailUrl})" />
