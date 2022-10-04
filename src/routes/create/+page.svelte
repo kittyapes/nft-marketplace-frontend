@@ -65,6 +65,7 @@
 
 		// Fetch general collection
 		const searchRes = await apiSearchCollections({ collectionAddress: getContract('storage', true).address });
+		console.log(searchRes);
 		const genCollection = searchRes.collections?.[0];
 		const genCollectionAdapted = adaptCollectionToMintingDropdown(genCollection);
 
@@ -78,7 +79,7 @@
 		while (true) {
 			const beforeLength = collections.length;
 
-			const collectionsResponse = (await apiSearchCollections({ creator: $currentUserAddress, page })).catch(() => ({collections: []}))
+			const collectionsResponse = await apiSearchCollections({ creator: $currentUserAddress, page }).catch(() => ({collections: []}))
 			collections.push(...collectionsResponse.collections);
 
 			if (beforeLength === collections.length) break;
