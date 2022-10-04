@@ -10,7 +10,7 @@ import tokenAbi from '$constants/contracts/abis/hinataToken.json';
 
 type ContractName = 'marketplace' | 'storage' | 'factory' | 'token' | 'weth';
 
-const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'goerli' | 'staging-genache'; address: string; abi: any }[] = [
+const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goerli' | 'development-goerli' | 'staging-genache'; address: string; abi: any }[] = [
 	// Rinkeby
 	{ name: 'marketplace', network: 'rinkeby', address: '0x81A8685ADAfAE90aC3224598E0b3623bF24584c6', abi: marketplaceAbi },
 	{ name: 'storage', network: 'rinkeby', address: '0xDaf3f945857f8Ea58f2bc4cF598a491c30868A72', abi: storageAbi },
@@ -18,12 +18,19 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'goerli' | '
 	{ name: 'token', network: 'rinkeby', address: '0x04013fA3b72E82489d434FD64E3f4142647413cA', abi: tokenAbi },
 	{ name: 'weth', network: 'rinkeby', address: '0xf2155859d31C5EA79F45a55C6ad9A44e7f257700', abi: erc20Abi },
 
-	// Goerli
-	{ name: 'marketplace', network: 'goerli', address: '0x48441F157Eb382C8FEC1f9b40f34aa9a04209028', abi: marketplaceAbi },
-	{ name: 'storage', network: 'goerli', address: '0x5c7db52089565A5c3F701135d9015Bc4Df339B1b', abi: storageAbi },
-	{ name: 'factory', network: 'goerli', address: '0xa0B39FCC5FdeB3D839288c3Ec7210AAaf6fB972D', abi: factoryAbi },
-	{ name: 'token', network: 'goerli', address: '0x15733Ab0E019B8Ff529EceB3FA2F33BcdCc4c3a7', abi: tokenAbi },
-	{ name: 'weth', network: 'goerli', address: '0x0c84c20673341B5bae28D80F54926269A64B47a5', abi: erc20Abi },
+	// Goerli Testing Environment
+	{ name: 'marketplace', network: 'testing-goerli', address: '0x48441F157Eb382C8FEC1f9b40f34aa9a04209028', abi: marketplaceAbi },
+	{ name: 'storage', network: 'testing-goerli', address: '0x5c7db52089565A5c3F701135d9015Bc4Df339B1b', abi: storageAbi },
+	{ name: 'factory', network: 'testing-goerli', address: '0xa0B39FCC5FdeB3D839288c3Ec7210AAaf6fB972D', abi: factoryAbi },
+	{ name: 'token', network: 'testing-goerli', address: '0x15733Ab0E019B8Ff529EceB3FA2F33BcdCc4c3a7', abi: tokenAbi },
+	{ name: 'weth', network: 'testing-goerli', address: '0x0c84c20673341B5bae28D80F54926269A64B47a5', abi: erc20Abi },
+
+	// Goerli Development Environment
+	{ name: 'marketplace', network: 'development-goerli', address: '0x1F2C31095e8D9947e7FEb3202e9fd20C1eC0FF4B', abi: marketplaceAbi },
+	{ name: 'storage', network: 'development-goerli', address: '0xb3f40a5fe7f1621A36C540CF74BC76F8bc10fbAc', abi: storageAbi },
+	{ name: 'factory', network: 'development-goerli', address: '0x7FeDd7Cc42E5486f2Ff73147DD9c06b80665B2A1', abi: factoryAbi },
+	{ name: 'token', network: 'development-goerli', address: '0xaA8aF7853c6E449197a1369dE255A92264F65A6a', abi: tokenAbi },
+	{ name: 'weth', network: 'development-goerli', address: '0x6aA500DBe47b19437cB93D84492BDD175AA333BB', abi: erc20Abi },
 
 	// Eth
 	{ name: 'marketplace', network: 'eth', address: '0x9A986d8B2cB50e827393Ec329cb0003535b5Ff75', abi: marketplaceAbi },
@@ -43,6 +50,7 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'goerli' | '
 export function getContractData(name: ContractName) {
 	const provider = get(appProvider) || ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
 	const networkId = provider.network?.chainId || +import.meta.env.VITE_DEFAULT_NETWORK;
+	const environment: string | undefined = import.meta.env.VITE_CONTRACTS_ENVIRONMENT;
 
 	let networkName: string;
 
@@ -56,6 +64,10 @@ export function getContractData(name: ContractName) {
 		networkName = 'staging-genache';
 	} else {
 		throw new Error(`Network with the ID ${networkId} not supported.`);
+	}
+
+	if ((environment?.trim() === 'development' || environment?.trim() === 'testing') && networkName === 'goerli') {
+		networkName = `${environment.trim()}-goerli`;
 	}
 
 	const contractData = contracts.find((c) => c.name === name && c.network === networkName);
