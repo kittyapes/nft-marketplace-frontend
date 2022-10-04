@@ -12,6 +12,8 @@
 	import { page } from '$app/stores';
 	import { searchQuery } from '$stores/search';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
+	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import { browser } from '$app/environment';
 
 	let query: string;
 	let searching = false;
@@ -33,7 +35,7 @@
 		const res = await globalSearch(query, resultCategoryLimit).catch((err) => console.error(err));
 		searchResults = {
 			collections: res?.collections || [],
-			items: res?.nfts || [],
+			items: res?.nfts.map(nftToCardOptions) || [],
 			users: res?.verifiedCreators || [],
 		};
 
@@ -41,14 +43,15 @@
 		show = true;
 	};
 
-	$: if (!query) {
+	$: if (browser && !query) {
 		searching = false;
-		$searchQuery = query;
+		$searchQuery = '';
 		debouncedSearch.cancel();
 	}
 
-	$: if (query) {
-		$searchQuery = query;
+	$: if (browser && query) {
+		$searchQuery = query.trim();
+
 		if (!$page.url.pathname.startsWith('/search')) {
 			searching = true;
 			show = false;
@@ -59,6 +62,14 @@
 	beforeNavigate(({ to }) => {
 		if (!to.url.pathname.match(/search*/)) query = '';
 	});
+
+	const navigateToSearchResults = (query: string) => {
+		show = false;
+		searching = false;
+
+		query = query.trim();
+		goto('/search?query=' + query.replace('#', '%23'));
+	};
 </script>
 
 <div
@@ -72,9 +83,7 @@
 		bind:value={query}
 		on:keyup={(e) => {
 			if (e.code === 'Enter') {
-				show = false;
-				searching = false;
-				goto('/search?query=' + $searchQuery);
+				navigateToSearchResults($searchQuery);
 			}
 		}}
 		type="text"
@@ -93,8 +102,13 @@
 								<div class="p-4 flex flex-col gap-4">
 									{#each searchResults[section] as result}
 										{#if section === 'items'}
-											{@const props = result}
-											<div class="flex gap-4 items-center btn" on:click={() => setPopup(CardPopup, { props: { options: searchResults['items'][0] } })}>
+											{@const props = result.nfts[0]}
+											<div
+												class="flex gap-4 items-center btn"
+												on:click={() => {
+													setPopup(CardPopup, { props: { options: result }, onClose: () => (searching = true) });
+												}}
+											>
 												{#if props.thumbnailUrl}
 													<div class="w-12 h-12 rounded-full grid place-items-center">
 														<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({props.thumbnailUrl})" />
@@ -154,9 +168,7 @@
 							<button
 								class="btn btn-rounded w-full border-2 btn-gradient-border"
 								on:click={() => {
-									show = false;
-									searching = false;
-									goto('/search?query=' + query);
+									navigateToSearchResults(query);
 								}}
 							>
 								All results
