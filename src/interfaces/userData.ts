@@ -1,5 +1,3 @@
-import type { UserStatus } from '$interfaces';
-
 export type UserRole = 'superadmin' | 'admin' | 'user' | 'inactivated_user' | 'verified_user';
 
 export interface LoginHistoryEntry {
@@ -10,7 +8,6 @@ export interface LoginHistoryEntry {
 }
 
 export interface UserData {
-	status: UserStatus;
 	_id: string;
 	address: string;
 	createdAt: string;
@@ -22,4 +19,6 @@ export interface UserData {
 	bio: string;
 	social: { instagram: string; discord: string; twitter: string; website: string; pixiv: string; deviantart: string; artstation: string };
 	roles: UserRole[];
+	// Not Sure who removed this before
+	status: string; // more to be added later (enum)
 }

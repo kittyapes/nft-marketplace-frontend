@@ -47,7 +47,7 @@
 				searchResults.nfts.isLoading = false;
 
 				searchResults = searchResults;
-			}
+			},
 		},
 		collections: {
 			data: [],
@@ -73,7 +73,7 @@
 				searchResults.collections.isLoading = false;
 
 				searchResults = searchResults;
-			}
+			},
 		},
 		users: {
 			data: [],
@@ -99,8 +99,8 @@
 				searchResults.users.isLoading = false;
 
 				searchResults = searchResults;
-			}
-		}
+			},
+		},
 	};
 
 	const debouncedSearch = debounce(async (query: string) => {

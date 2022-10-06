@@ -40,8 +40,8 @@
 
 		while (true) {
 			const beforeLength = userCollections.length;
-
-			userCollections.push(...(await apiSearchCollections({ creator: address ?? $currentUserAddress, page, sortBy: 'CREATED_AT', sortReversed: true }).catch((err) => [])));
+			const collectionsResponse = await apiSearchCollections({ creator: address ?? $currentUserAddress, page, sortBy: 'CREATED_AT', sortReversed: true }).catch((err) => ({collections: []}));
+			userCollections.push(...collectionsResponse.collections);
 
 			if (beforeLength === userCollections.length) break;
 			page++;

@@ -14,7 +14,7 @@
 
 	let fetchFunction = async () => {
 		const res = await apiSearchCollections({ limit, page });
-		return res;
+		return res.collections;
 	};
 
 	async function fetchMore() {

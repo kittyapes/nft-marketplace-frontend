@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Search from '$icons/search.svelte';
 	import { debounce } from 'lodash-es';
-	import { getCollectionsByTitle, getNftsByTitle, searchUsersByName } from '$utils/api/search/globalSearch';
+	import { globalSearch } from '$utils/api/search/globalSearch';
 	import Loader from '$icons/loader.svelte';
 	import { tick } from 'svelte';
 	import { fly } from 'svelte/transition';
@@ -11,9 +11,9 @@
 	import { setPopup } from '$utils/popup';
 	import { page } from '$app/stores';
 	import { searchQuery } from '$stores/search';
-	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
-	import type { CardOptions } from '$interfaces/ui';
+	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import { browser } from '$app/environment';
 
 	let query: string;
 	let searching = false;
@@ -31,39 +31,27 @@
 		await searchGlobally(query);
 	}, 500);
 
-	const searchNfts = async (query: string) => {
-		const response = await getNftsByTitle(query, resultCategoryLimit);
-		let nfts = response;
-		searchResults.items = nfts.map(nftToCardOptions);
-	};
-
-	const searchUsers = async (query: string) => {
-		const response = await searchUsersByName(query).catch((e) => []);
-		searchResults.users = response.slice(0, 3);
-	};
-
-	const searchCollections = async (query: string) => {
-		const response = await getCollectionsByTitle(query, resultCategoryLimit).catch((e) => []);
-		searchResults.collections = response.collections;
-	};
-
 	const searchGlobally = async (query: string) => {
-		await searchNfts(query).catch((error) => console.log(error));
-		await searchUsers(query).catch((error) => console.log(error));
-		await searchCollections(query).catch((error) => console.log(error));
+		const res = await globalSearch(query, resultCategoryLimit).catch((err) => console.error(err));
+		searchResults = {
+			collections: res?.collections || [],
+			items: res?.nfts.map(nftToCardOptions) || [],
+			users: res?.verifiedCreators || [],
+		};
 
 		await tick();
 		show = true;
 	};
 
-	$: if (!query) {
+	$: if (browser && !query) {
 		searching = false;
-		$searchQuery = query;
+		$searchQuery = '';
 		debouncedSearch.cancel();
 	}
 
-	$: if (query) {
-		$searchQuery = query;
+	$: if (browser && query) {
+		$searchQuery = query.trim();
+
 		if (!$page.url.pathname.startsWith('/search')) {
 			searching = true;
 			show = false;
@@ -72,8 +60,16 @@
 	}
 
 	beforeNavigate(({ to }) => {
-		if (!to.url.pathname.match(/search*/)) query = '';
+		if (!to?.url.pathname.match(/search*/)) query = '';
 	});
+
+	const navigateToSearchResults = (query: string) => {
+		show = false;
+		searching = false;
+
+		query = query.trim();
+		goto('/search?query=' + query.replace('#', '%23'));
+	};
 </script>
 
 <div
@@ -87,9 +83,7 @@
 		bind:value={query}
 		on:keyup={(e) => {
 			if (e.code === 'Enter') {
-				show = false;
-				searching = false;
-				goto('/search?query=' + $searchQuery);
+				navigateToSearchResults($searchQuery);
 			}
 		}}
 		type="text"
@@ -109,7 +103,12 @@
 									{#each searchResults[section] as result}
 										{#if section === 'items'}
 											{@const props = result.nfts[0]}
-											<div class="flex gap-4 items-center btn" on:click={() => setPopup(CardPopup, { props: { options: searchResults['items'][0] } })}>
+											<div
+												class="flex gap-4 items-center btn"
+												on:click={() => {
+													setPopup(CardPopup, { props: { options: result }, onClose: () => (searching = true) });
+												}}
+											>
 												{#if props.thumbnailUrl}
 													<div class="w-12 h-12 rounded-full grid place-items-center">
 														<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({props.thumbnailUrl})" />
@@ -169,9 +168,7 @@
 							<button
 								class="btn btn-rounded w-full border-2 btn-gradient-border"
 								on:click={() => {
-									show = false;
-									searching = false;
-									goto('/search?query=' + query);
+									navigateToSearchResults(query);
 								}}
 							>
 								All results
