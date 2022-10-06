@@ -11,11 +11,9 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import { nftDraft } from '$stores/create';
-	import { profileData } from '$stores/user';
 	import { connectionDetails, currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
-	import { fetchProfileData } from '$utils/api/profile';
 	import { newBundleData, type NewBundleData } from '$utils/create';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
 	import { getNftId } from '$utils/create/getNftId';
@@ -25,8 +23,6 @@
 	import { notifyError } from '$utils/toast';
 	import { writable } from 'svelte/store';
 	import type { CardOptions } from '$interfaces/ui';
-	import { walletRefreshed } from '$utils/wallet';
-	import { browser } from '$app/environment';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
 	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }>(null);
@@ -65,7 +61,6 @@
 
 		// Fetch general collection
 		const searchRes = await apiSearchCollections({ collectionAddress: getContract('storage', true).address });
-		console.log(searchRes);
 
 		const genCollection = searchRes.collections?.[0];
 		if (!genCollection) {
@@ -144,9 +139,6 @@
 		}
 
 		updatePopupProps(popupHandler.id, { progress, id: createNftRes._id });
-
-		//add NFT to selected collection
-		// const addNftsToCollectionRes = await addNftsToCollection([createNftRes.nftId], selectedCollectionId);
 
 		progress.set(50);
 
