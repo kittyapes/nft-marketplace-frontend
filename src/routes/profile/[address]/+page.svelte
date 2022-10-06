@@ -203,7 +203,7 @@
 
 		selectedTab = tabs.find((i) => i.name === name) || tabs.find((t) => t.name === 'collected');
 
-		if (browser && !selectedTab.data.length && !selectedTab.isFetching) {
+		if (browser && !selectedTab.data.length && !selectedTab.isFetching && !selectedTab.reachedEnd) {
 			fetchMore();
 		}
 	}
