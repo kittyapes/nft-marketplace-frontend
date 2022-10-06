@@ -7,11 +7,11 @@
 
 	const dispatch = createEventDispatcher();
 
-	$: localPages = [...Array(props.pages + 1).keys()].slice(1);
+	$: localPages = [...Array(props?.pages + 1).keys()].slice(1);
 
 	let selected = 1;
 
-	$: showingPages = props.pages > 6 ? [...Array(6).keys()].slice(1) : [...Array(props.pages + 1).keys()].slice(1);
+	$: showingPages = props?.pages > 6 ? (selected === 1 ? [...localPages.keys()].slice(1, 6) : showingPages) : localPages;
 
 	function selectPage(page: number) {
 		if (props.pages < page || page < 0 || selected === page) return;
@@ -53,7 +53,7 @@
 	}
 
 	function lastPage() {
-		selectPage(props.pages);
+		selectPage(props?.pages);
 	}
 </script>
 

@@ -121,7 +121,7 @@ export async function claimFreeNft(selectedNftIndex: number, address: string) {
 			console.error('Error during user signing free NFT server provided message.');
 			console.error(err);
 
-			notifyError('Free NFT message signature failed.');
+			notifyError('Free NFT signature was not signed.');
 
 			return false;
 		}
@@ -145,6 +145,10 @@ export async function claimFreeNft(selectedNftIndex: number, address: string) {
 
 			return false;
 		}
+
+		// Set the message the user has to sign to null so we know that the
+		// user has already submitted a signature to the server.
+		freeNftServerMessageToSign.set(null);
 	}
 
 	// Get data to use during the contract call from the server
@@ -172,7 +176,7 @@ export async function claimFreeNft(selectedNftIndex: number, address: string) {
 		const tx = await hinataContract.claimNFT(...params);
 
 		// This is a hotfix to allow the crawler on the backend to catch up
-		await tx.wait(5);
+		await tx.wait(2);
 	} catch (err) {
 		console.error('Claiming free NFT on the contract failed.');
 		console.error(err);
@@ -181,6 +185,8 @@ export async function claimFreeNft(selectedNftIndex: number, address: string) {
 
 		return false;
 	}
+
+	freeNftStatus.set('claimed');
 
 	return true;
 }

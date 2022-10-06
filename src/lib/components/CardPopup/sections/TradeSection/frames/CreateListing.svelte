@@ -36,13 +36,13 @@
 					_id: options.nfts[0].databaseId,
 					nftId: options.nfts[0].onChainId,
 					collectionAddress: options.nfts[0]?.contractAddress ?? getContractData('storage').address,
-					amount: listingProps.quantity || 1
-				}
+					amount: listingProps.quantity || 1,
+				},
 			],
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: 'WETH',
 			listingType: listingType,
-			...listingProps
+			...listingProps,
 		};
 
 		try {

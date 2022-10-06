@@ -38,10 +38,9 @@
 				}
 			}
 
-			const claimed = await claimFreeNft(nfts[0].id, $currentUserAddress, signature);
+			const claimed = await claimFreeNft(nfts[0].id, $currentUserAddress);
 
 			if (!claimed) {
-				notifyError('Failed to Claim Free NFT');
 				return;
 			}
 
