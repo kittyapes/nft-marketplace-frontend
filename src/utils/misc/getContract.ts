@@ -73,6 +73,10 @@ export function getContractData(name: ContractName) {
 	const contractData = contracts.find((c) => c.name === name && c.network === networkName);
 
 	if (!contractData) {
+		if (!['development', 'testing'].includes(environment) && networkName === 'goerli') {
+			console.warn('Network is set to goerli but CONTRACTS_ENVIRONMENT variable is not set, app may not function properly.');
+		}
+
 		throw new Error(`Failed to find contract address for network: ${networkName}, contract: ${name}`);
 	}
 
