@@ -3,9 +3,10 @@ import type { ApiNftActivityHistoryEntry } from '$utils/api/nft';
 import dayjs from 'dayjs';
 
 const friendlyEventNames = {
-	LISTING_CANCELLED: 'Listing Cancelled',
+	LISTING_CANCELLED: 'Unlisted',
 	BID_RECEIVED: 'Bid',
 	TRANSFER: 'Transfer',
+	LISTING_CREATED: 'Listed',
 };
 
 export function toNftActivityHistoryTableRowData(from: ApiNftActivityHistoryEntry): NftActivityHistoryTableRowData {
