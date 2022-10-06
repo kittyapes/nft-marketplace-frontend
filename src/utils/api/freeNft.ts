@@ -172,7 +172,7 @@ export async function claimFreeNft(selectedNftIndex: number, address: string) {
 		const tx = await hinataContract.claimNFT(...params);
 
 		// This is a hotfix to allow the crawler on the backend to catch up
-		await tx.wait(5);
+		await tx.wait(2);
 	} catch (err) {
 		console.error('Claiming free NFT on the contract failed.');
 		console.error(err);
