@@ -108,9 +108,6 @@
 			handleCollectionSelection({ detail: available[0] });
 		}
 
-		console.log(available);
-		console.log(selectedCollectionId);
-
 		isLoadingCollections = false;
 	}
 
