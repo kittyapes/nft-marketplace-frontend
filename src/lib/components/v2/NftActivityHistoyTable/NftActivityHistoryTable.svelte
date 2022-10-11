@@ -8,7 +8,11 @@
 	export let skeleton = false;
 </script>
 
-<div id="grid-container" class="grid h-full py-2 overflow-auto font-semibold bg-white border border-gray-300 rounded-xl blue-scrollbar" style:--list-length={skeleton ? skeletonLength : data.length}>
+<div
+	id="grid-container"
+	class="grid h-full py-2 overflow-auto font-semibold bg-white border border-gray-300 rounded-xl blue-scrollbar overscroll-contain"
+	style:--list-length={skeleton ? skeletonLength : data.length}
+>
 	<div>Event</div>
 	<div>Price</div>
 	<div>From</div>
