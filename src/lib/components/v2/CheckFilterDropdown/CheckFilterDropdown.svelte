@@ -1,8 +1,11 @@
 <script lang="ts">
 	import ThemedCross from '$icons/themed-cross.svelte';
+	import { createEventDispatcher } from 'svelte';
 	import EmptyCheckIcon from './EmptyCheckIcon.svelte';
 	import FilledCheckIcon from './FilledCheckIcon.svelte';
 	import FilterIcon from './FilterIcon.svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let options: { label: string; checked: boolean }[] = [];
 	export let opened: boolean = false;
@@ -15,14 +18,20 @@
 	function toggleOption(option: { checked: boolean }) {
 		option.checked = !option.checked;
 		options = options;
+
+		dispatch('update');
 	}
 
 	export function selectAll() {
 		options = options.map((o) => ({ ...o, checked: true }));
+
+		dispatch('update');
 	}
 
 	export function clearAll() {
 		options = options.map((o) => ({ ...o, checked: false }));
+
+		dispatch('update');
 	}
 </script>
 

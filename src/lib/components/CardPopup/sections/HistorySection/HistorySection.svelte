@@ -28,8 +28,9 @@
 
 	let isLoading = true;
 
-	onMount(async () => {
-		// Fetch NFT activity history
+	async function refreshTable() {
+		isLoading = true;
+
 		const historyRes = await apiGetNftActivityHistory(options.nfts[0].databaseId, {
 			sales: filterOptions[0].checked,
 			transfers: filterOptions[1].checked,
@@ -40,7 +41,9 @@
 		nftActivityHistoryData = historyRes.map(toNftActivityHistoryTableRowData);
 
 		isLoading = false;
-	});
+	}
+
+	onMount(refreshTable);
 </script>
 
 <!-- Entire section -->
@@ -65,7 +68,7 @@
 		</button>
 
 		<div class="w-40">
-			<CheckFilterDropdown bind:options={filterOptions} bind:this={checkFilterDropdown} />
+			<CheckFilterDropdown bind:options={filterOptions} bind:this={checkFilterDropdown} on:update={refreshTable} />
 		</div>
 	</div>
 
