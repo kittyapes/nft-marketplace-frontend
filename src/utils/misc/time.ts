@@ -25,6 +25,7 @@ export function getListingCardTimerHtml(startDate: number, duration: number) {
 
 		const in_ = endingIn.format('D[d] H[h] m[m]');
 
+		if (endingIn.asMilliseconds() === 0) return `<div class="listing-timer text-[10px] font-bold uppercase text-color-red">Expired</div>`;
 		return `<span class="text-color-red">Ending in: ${in_}</span>`;
 	}
 
