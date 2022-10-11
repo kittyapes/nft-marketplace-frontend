@@ -48,6 +48,7 @@ export interface ApiNftActivityHistoryEntry {
 	createdAt: string;
 	updatedAt: string;
 	price: string;
+	detail: any;
 }
 
 export async function apiGetNftActivityHistory(id: string, options: { sales?: boolean; transfers?: boolean; listings?: boolean; bids?: boolean }): Promise<ApiNftActivityHistoryEntry[]> {
@@ -56,8 +57,6 @@ export async function apiGetNftActivityHistory(id: string, options: { sales?: bo
 		.filter((v) => v)
 		.map((v) => `events=${v}`)
 		.join('&');
-
-	console.log(eventsParam);
 
 	try {
 		const res = await axios.get(getApiUrl(null, '/nft-activities/' + id + '?' + eventsParam));

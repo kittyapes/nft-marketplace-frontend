@@ -1,12 +1,13 @@
 import type { NftActivityHistoryTableRowData } from '$lib/components/v2/NftActivityHistoyTable/types';
 import type { ApiNftActivityHistoryEntry } from '$utils/api/nft';
 import dayjs from 'dayjs';
+import { capitalize } from 'lodash-es';
 
-const friendlyEventNames = {
-	LISTING_CANCELLED: 'Unlisted',
-	BID_RECEIVED: 'Bid',
-	TRANSFER: 'Transfer',
-	LISTING_CREATED: 'Listed',
+const friendlyEventNames: Record<string, (e: ApiNftActivityHistoryEntry) => string> = {
+	LISTING_CANCELLED: () => 'Unlisted',
+	BID_RECEIVED: () => 'Bid',
+	TRANSFER: () => 'Transfer',
+	LISTING_CREATED: (e: ApiNftActivityHistoryEntry) => capitalize(e.detail.listingType) + ' created',
 };
 
 export function toNftActivityHistoryTableRowData(from: ApiNftActivityHistoryEntry): NftActivityHistoryTableRowData {
@@ -15,7 +16,7 @@ export function toNftActivityHistoryTableRowData(from: ApiNftActivityHistoryEntr
 	const friendlyDate = dayjs(from.createdAt).fromNow();
 
 	return {
-		event: friendlyEventNames[from.event] || from.event,
+		event: friendlyEventNames[from.event](from) || from.event,
 		from: from.from || '',
 		to: from.to || '',
 		date: friendlyDate,
