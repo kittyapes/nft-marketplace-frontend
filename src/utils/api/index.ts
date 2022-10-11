@@ -5,13 +5,26 @@ import type { AxiosError, AxiosResponse } from 'axios';
 export type ApiVersion = 'latest' | `sprint-${number}` | 'v2';
 
 export function getApiUrl(apiVersion: ApiVersion, apiPath: string): string {
-	// defaults to override
-	const chainId = get(currentUserAddress) ? get(connectionDetails)?.chainId ?? 'OVERRIDE' : +import.meta.env.VITE_DEFAULT_NETWORK || 'OVERRIDE';
+	let apiUrl: string = null;
 
-	let apiUrl = import.meta.env[`VITE_${chainId}_API_URL`] as string;
+	const overrideUrl = import.meta.env.VITE_OVERRIDE_API_URL;
 
-	if (!apiUrl) {
-		throw new Error(`VITE_${chainId}_API_URL env variable not set!`);
+	if (overrideUrl) {
+		apiUrl = overrideUrl;
+	} else {
+		let useNetworkId = import.meta.env.VITE_DEFAULT_NETWORK;
+
+		const conDetails = get(connectionDetails);
+
+		if (get(currentUserAddress) && conDetails) {
+			useNetworkId = conDetails.chainId;
+		}
+
+		apiUrl = import.meta.env[`VITE_${useNetworkId}_API_URL`] as string;
+
+		if (!apiUrl) {
+			throw new Error(`VITE_${useNetworkId}_API_URL env variable not set!`);
+		}
 	}
 
 	if (apiUrl.endsWith('/')) {
