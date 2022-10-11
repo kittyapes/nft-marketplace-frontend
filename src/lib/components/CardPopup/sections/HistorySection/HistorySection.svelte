@@ -56,7 +56,13 @@
 		</div>
 
 		<!-- Clear All button -->
-		<button class="px-4 py-2 font-semibold rounded-md btn hover:bg-gray-100 disabled:hover:bg-transparent" disabled={disableClearAll} on:click={() => checkFilterDropdown.clearAll()}>Clear All</button>
+		<button
+			class="px-4 py-2 font-semibold rounded-md btn hover:bg-gray-100 disabled:hover:bg-transparent outline-none focus-visible:bg-gray-100"
+			disabled={disableClearAll}
+			on:click={() => checkFilterDropdown.clearAll()}
+		>
+			Clear All
+		</button>
 
 		<div class="w-40">
 			<CheckFilterDropdown bind:options={filterOptions} bind:this={checkFilterDropdown} />
