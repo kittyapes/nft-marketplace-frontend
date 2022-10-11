@@ -78,7 +78,7 @@
 
 <div class="flex-grow h-full pr-4 overflow-y-auto blue-scrollbar">
 	<!-- Properties -->
-	<div class="mt-4">
+	<div class="mt-2">
 		{#each properties as prop}
 			{#if prop.name === 'Collection name' && prop.value}
 				<div

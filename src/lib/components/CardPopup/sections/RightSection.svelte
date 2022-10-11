@@ -73,7 +73,13 @@
 	<!-- Tabs -->
 	<div class="flex flex-grow-0 space-x-6">
 		{#each tabs as tab}
-			<button class="flex items-center space-x-2 btn text-[#8C8C8C]" class:tab-loading={tab.loading} on:click={() => (selectedTab = tab)} disabled={tab.disabled} transition:fade|local>
+			<button
+				class="flex items-center space-x-2 btn text-[#8C8C8C] outline-none focus-visible:bg-gray-100 p-2 rounded-md"
+				class:tab-loading={tab.loading}
+				on:click={() => (selectedTab = tab)}
+				disabled={tab.disabled}
+				transition:fade|local
+			>
 				<img class="h-8" src={getIconUrl('card-popup-tab-icon/' + tab.icon + (tab.text === selectedTab.text ? '.selected' : ''))} alt={tab.text} />
 				<div class="" class:gradient-text={tab.text === selectedTab.text}>{tab.text}</div>
 			</button>

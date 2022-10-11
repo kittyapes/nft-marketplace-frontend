@@ -46,7 +46,7 @@
 <!-- Entire section -->
 <div class="flex-grow h-full pr-4 overflow-y-auto blue-scrollbar">
 	<!-- Filter control -->
-	<div class="flex mt-4 space-x-2">
+	<div class="flex mt-2 space-x-2">
 		<div class="flex flex-grow space-x-2 overflow-x-scroll scrollbar-hidden">
 			{#each filterOptions as opt}
 				{#if opt.checked}

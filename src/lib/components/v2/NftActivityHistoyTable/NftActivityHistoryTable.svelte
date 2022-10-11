@@ -38,8 +38,8 @@
 			{:else}
 				<div />
 			{/if}
-			<div><a href="/profile/{row.from}" target="_blank" class="flex items-center h-full hover:text-blue-500">{row.from}</a></div>
-			<div><a href="/profile/{row.to}" target="_blank" class="flex items-center h-full hover:text-blue-500">{row.to}</a></div>
+			<div><a href="/profile/{row.from}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.from}</a></div>
+			<div><a href="/profile/{row.to}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.to}</a></div>
 			<div>{row.date}</div>
 		{/each}
 	{/if}
