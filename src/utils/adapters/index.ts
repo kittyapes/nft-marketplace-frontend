@@ -8,6 +8,17 @@ const friendlyEventNames: Record<string, (e: ApiNftActivityHistoryEntry) => stri
 	BID_RECEIVED: () => 'Bid',
 	TRANSFER: () => 'Transfer',
 	LISTING_CREATED: (e: ApiNftActivityHistoryEntry) => capitalize(e.detail.listingType) + ' created',
+	LISTING_PURCHASED: (e: ApiNftActivityHistoryEntry) => {
+		const type = e.detail?.listingType;
+
+		if (type === 'sale') {
+			return 'Listing purchased';
+		} else if (type === 'auction') {
+			return 'Auction completed';
+		}
+
+		return 'Listing purchased';
+	},
 };
 
 export function toNftActivityHistoryTableRowData(from: ApiNftActivityHistoryEntry): NftActivityHistoryTableRowData {
