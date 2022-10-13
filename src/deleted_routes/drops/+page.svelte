@@ -1,6 +1,6 @@
 <script>
-	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
-	import Sidebar from '$lib/components/drops/DropsSidebar.svelte';
+	import MainTabs from '$components/marketplace/MainTabs.svelte';
+	import Sidebar from '$components/drops/DropsSidebar.svelte';
 	import DropsSection from '$lib/sections/MarketplaceDropsSection.svelte';
 
 	let sidebarOpen;
