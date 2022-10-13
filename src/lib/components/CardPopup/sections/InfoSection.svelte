@@ -52,8 +52,6 @@
 		},
 	];
 
-	$: console.log(options);
-
 	onMount(async () => {
 		// When its not a listing
 		marketFee = await getMarketFee();

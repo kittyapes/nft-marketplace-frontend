@@ -38,6 +38,8 @@ export async function refreshLikedNfts(address: string) {
 export const userLikedNfts = writable<{ nft: ApiNftData }[]>([]);
 export const likedNftIds = derived(userLikedNfts, (userLiked) => userLiked.map((nft) => nft.nft.nftId));
 
+export const userCreatedListing = writable<boolean>(false);
+
 export const nftBalances = derived(profileData, (d) => d.nftBalances);
 
 export function getTokenBalance(onChainId: string) {
