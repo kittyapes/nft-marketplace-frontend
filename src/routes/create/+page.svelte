@@ -201,7 +201,7 @@
 </script>
 
 <!-- Back button -->
-<button class="flex items-center mt-16 mb-8 space-x-2 text-sm font-semibold uppercase btn" on:click={goBack}>
+<button class="flex items-center pt-16 mb-8 space-x-2 text-sm font-semibold uppercase btn" on:click={goBack}>
 	<Back />
 	<div>Go Back</div>
 </button>
