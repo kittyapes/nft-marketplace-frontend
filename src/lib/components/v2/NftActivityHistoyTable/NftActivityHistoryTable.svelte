@@ -21,6 +21,10 @@
 	let gridContainer: HTMLElement;
 
 	async function dispatchReachedEndIfNotFull() {
+		if (!gridContainer) {
+			return;
+		}
+
 		await tick();
 
 		if (gridContainer.scrollHeight === gridContainer.clientHeight) {
