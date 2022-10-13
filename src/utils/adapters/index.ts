@@ -9,15 +9,12 @@ const friendlyEventNames: Record<string, (e: ApiNftActivityHistoryEntry) => stri
 	TRANSFER: () => 'Transfer',
 	LISTING_CREATED: (e: ApiNftActivityHistoryEntry) => capitalize(e.detail.listingType) + ' created',
 	LISTING_PURCHASED: (e: ApiNftActivityHistoryEntry) => {
-		const type = e.detail?.listingType;
-
-		if (type === 'sale') {
-			return 'Listing purchased';
-		} else if (type === 'auction') {
-			return 'Auction completed';
-		}
-
-		return 'Listing purchased';
+		return (
+			{
+				sale: 'Listing purchased',
+				auction: 'Auction completed',
+			}[e.detail?.listingType] || 'Listing purchased'
+		);
 	},
 };
 
