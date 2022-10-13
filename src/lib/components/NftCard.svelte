@@ -143,7 +143,7 @@
 	onMount(() => {
 		if (options.resourceType !== 'listing') return;
 
-		timerInterval = setInterval(updateTimerHtml, 60_000);
+		timerInterval = setInterval(updateTimerHtml, 15_000);
 		updateTimerHtml();
 	});
 
