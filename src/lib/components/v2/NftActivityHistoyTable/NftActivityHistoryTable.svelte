@@ -1,17 +1,42 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+	import { tick } from 'svelte';
 	import EthIcon from './EthIcon.svelte';
 	import type { NftActivityHistoryTableRowData } from './types';
+
+	const dispatch = createEventDispatcher();
 
 	const skeletonLength = 5;
 
 	export let data: NftActivityHistoryTableRowData[] = [];
 	export let skeleton = false;
+	export let displayEndReachedMsg = false;
+
+	function handleScroll(ev) {
+		if (ev.target.scrollTop + ev.target.clientHeight >= ev.target.scrollHeight) {
+			dispatch('end-reached');
+		}
+	}
+
+	let gridContainer: HTMLElement;
+
+	async function dispatchReachedEndIfNotFull() {
+		await tick();
+
+		if (gridContainer.scrollHeight === gridContainer.clientHeight) {
+			dispatch('end-reached');
+		}
+	}
+
+	$: data, dispatchReachedEndIfNotFull();
 </script>
 
 <div
 	id="grid-container"
 	class="grid h-full py-2 overflow-auto font-semibold bg-white border border-gray-300 rounded-xl blue-scrollbar overscroll-contain"
-	style:--list-length={skeleton ? skeletonLength : data.length}
+	style:--list-length={skeleton ? data.length + skeletonLength : data.length}
+	on:scroll={handleScroll}
+	bind:this={gridContainer}
 >
 	<div>Event</div>
 	<div>Price</div>
@@ -19,29 +44,34 @@
 	<div>To</div>
 	<div>Date</div>
 
+	{#each data as row}
+		<div>{row.event}</div>
+		{#if row.price}
+			<div class="gap-x-2">
+				<div class="w-4">
+					<EthIcon />
+				</div>
+				{row.price}
+			</div>
+		{:else}
+			<div />
+		{/if}
+		<div><a href="/profile/{row.from}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.from}</a></div>
+		<div><a href="/profile/{row.to}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.to}</a></div>
+		<div>{row.date}</div>
+	{/each}
+
 	{#if skeleton}
 		{#each Array(skeletonLength * 5).fill(0) as i, index}
 			<div>
 				<div class="bg-gray-100 h-6 w-full rounded-md" />
 			</div>
 		{/each}
-	{:else}
-		{#each data as row}
-			<div>{row.event}</div>
-			{#if row.price}
-				<div class="gap-x-2">
-					<div class="w-4">
-						<EthIcon />
-					</div>
-					{row.price}
-				</div>
-			{:else}
-				<div />
-			{/if}
-			<div><a href="/profile/{row.from}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.from}</a></div>
-			<div><a href="/profile/{row.to}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.to}</a></div>
-			<div>{row.date}</div>
-		{/each}
+	{/if}
+
+	{#if displayEndReachedMsg}
+		<!-- I don't know why * 3, but it works :) -->
+		<div class="flex items-center justify-center font-semibold col-span-5 opacity-50" style="height: {skeletonLength * 3}rem !important;">You have reached the end of this NFT's history.</div>
 	{/if}
 
 	{#if !data.length && !skeleton}

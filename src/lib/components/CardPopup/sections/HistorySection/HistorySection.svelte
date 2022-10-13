@@ -24,9 +24,11 @@
 
 	let nftActivityHistoryData: NftActivityHistoryTableRowData[] = [];
 
-	$: console.log(nftActivityHistoryData);
-
 	let isLoading = true;
+
+	const pageLimit = 10;
+	let page = 1;
+	let historyEndReached = false;
 
 	async function refreshTable() {
 		isLoading = true;
@@ -36,11 +38,35 @@
 			transfers: filterOptions[1].checked,
 			listings: filterOptions[2].checked,
 			bids: filterOptions[3].checked,
+			limit: pageLimit,
+			page,
 		});
 
-		nftActivityHistoryData = historyRes.map(toNftActivityHistoryTableRowData);
+		const beforeLen = nftActivityHistoryData.length;
+
+		nftActivityHistoryData.push(...historyRes.map(toNftActivityHistoryTableRowData));
+		nftActivityHistoryData = nftActivityHistoryData;
+
+		const afterLen = nftActivityHistoryData.length;
+
+		if (afterLen === beforeLen || historyRes.length < pageLimit) {
+			historyEndReached = true;
+		}
 
 		isLoading = false;
+	}
+
+	async function loadNextPage() {
+		page++;
+		refreshTable();
+	}
+
+	function handleEndReached() {
+		if (isLoading || historyEndReached) {
+			return;
+		}
+
+		loadNextPage();
 	}
 
 	onMount(refreshTable);
@@ -73,6 +99,6 @@
 	</div>
 
 	<div class="h-[500px] mt-4">
-		<NftActivityHistoryTable data={nftActivityHistoryData} skeleton={isLoading} />
+		<NftActivityHistoryTable data={nftActivityHistoryData} skeleton={isLoading} on:end-reached={handleEndReached} displayEndReachedMsg={historyEndReached} />
 	</div>
 </div>

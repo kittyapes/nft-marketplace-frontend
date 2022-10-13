@@ -51,15 +51,28 @@ export interface ApiNftActivityHistoryEntry {
 	detail: any;
 }
 
-export async function apiGetNftActivityHistory(id: string, options: { sales?: boolean; transfers?: boolean; listings?: boolean; bids?: boolean }): Promise<ApiNftActivityHistoryEntry[]> {
+export async function apiGetNftActivityHistory(
+	id: string,
+	options: { sales?: boolean; transfers?: boolean; listings?: boolean; bids?: boolean; limit?: number; page?: number },
+): Promise<ApiNftActivityHistoryEntry[]> {
 	const o = options;
 	const eventsParam = [o.sales && 'Sales', o.transfers && 'Transfers', o.listings && 'Listing', o.bids && 'Bids']
 		.filter((v) => v)
 		.map((v) => `events=${v}`)
 		.join('&');
 
+	const params = {};
+
+	if (options.limit) {
+		params['limit'] = options.limit;
+	}
+
+	if (options.page) {
+		params['page'] = options.page;
+	}
+
 	try {
-		const res = await axios.get(getApiUrl(null, '/nft-activities/' + id + '?' + eventsParam));
+		const res = await axios.get(getApiUrl(null, '/nft-activities/' + id + '?' + eventsParam), { params });
 		return res.data.data;
 	} catch {
 		return [];
