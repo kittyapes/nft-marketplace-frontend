@@ -16,7 +16,7 @@ export function toNftActivityHistoryTableRowData(from: ApiNftActivityHistoryEntr
 	const friendlyDate = dayjs(from.createdAt).fromNow();
 
 	return {
-		event: friendlyEventNames[from.event](from) || from.event,
+		event: friendlyEventNames[from.event]?.(from) || from.event,
 		from: from.from || '',
 		to: from.to || '',
 		date: friendlyDate,
