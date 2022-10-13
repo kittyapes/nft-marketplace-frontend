@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { capitalize } from 'lodash-es';
 
 const friendlyEventNames: Record<string, (e: ApiNftActivityHistoryEntry) => string> = {
-	LISTING_CANCELLED: () => 'Unlisted',
+	LISTING_CANCELLED: (e: ApiNftActivityHistoryEntry) => (capitalize(e.detail?.listingType) || 'Listing') + ' cancelled',
 	BID_RECEIVED: () => 'Bid',
 	TRANSFER: () => 'Transfer',
 	LISTING_CREATED: (e: ApiNftActivityHistoryEntry) => capitalize(e.detail.listingType) + ' created',
@@ -22,8 +22,6 @@ const friendlyEventNames: Record<string, (e: ApiNftActivityHistoryEntry) => stri
 };
 
 export function toNftActivityHistoryTableRowData(from: ApiNftActivityHistoryEntry): NftActivityHistoryTableRowData {
-	console.log(from);
-
 	const friendlyDate = dayjs(from.createdAt).fromNow();
 
 	return {
