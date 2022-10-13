@@ -72,7 +72,7 @@
 
 <div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto">
 	<!-- Listing Type -->
-	<div class="mt-4 font-semibold">Listing Type</div>
+	<div class="mt-2 font-semibold">Listing Type</div>
 	<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} /></div>
 
 	<div class="mt-4">

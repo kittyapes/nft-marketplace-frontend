@@ -4,6 +4,10 @@
 	import { contractCancelListing } from '$utils/contracts/listing';
 	import { refreshConnection } from '$utils/wallet/connectWallet';
 	import { onMount } from 'svelte';
+	import CheckFilterDropdownDemo from './CheckFilterDropdownDemo.svelte';
+	import DemoContainer from './DemoContainer.svelte';
+	import FilterChipDemo from './FilterChipDemo.svelte';
+	import NftActivityHistoryTableDemo from './NftActivityHistoryTableDemo.svelte';
 
 	let listingId: string;
 	let auctionErr;
@@ -24,7 +28,7 @@
 	onMount(refreshConnection);
 </script>
 
-<main class="max-w-screen-lg p-8 mx-auto my-24 border bg-gray-50 rounded-xl">
+<main class="max-w-screen-lg p-8 mx-auto my-24 border bg-gray-50 rounded-xl grid space-y-4">
 	<h1 class="text-xl font-semibold">Welcome to the components route!</h1>
 
 	<div class="p-8 mt-4 bg-white rounded-xl">
@@ -44,6 +48,21 @@
 		<button on:click={acceptHighest}>Accept Highest Bid</button>
 		<button on:click={cancelListing}>Cancel Auction</button>
 	</div>
+
+	<!-- FilterChip -->
+	<DemoContainer title="FilterChip">
+		<FilterChipDemo />
+	</DemoContainer>
+
+	<!-- CheckFilterDropdown -->
+	<DemoContainer title="CheckFilterDropdown">
+		<CheckFilterDropdownDemo />
+	</DemoContainer>
+
+	<!-- NftActivityHistoryTable -->
+	<DemoContainer title="NftActivityHistoryTable">
+		<NftActivityHistoryTableDemo />
+	</DemoContainer>
 </main>
 
 <style>
