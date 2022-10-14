@@ -39,15 +39,14 @@
 
 	currentUserAddress.subscribe(async (a) => {
 		try {
-			showCreate = browser && a && (await storage.hasRole('minter', a))
+			showCreate = browser && a && (await storage.hasRole('minter', a));
 		} catch (err) {
-			console.error(err)
+			console.error(err);
 		}
 	});
 
 	connectionDetails.subscribe(async (cDetails) => {
-		console.log('trigger');
-		console.log(browser, cDetails, $currentUserAddress, await storage.hasRole('minter', $currentUserAddress).catch(() => false));
+		//console.log(browser, cDetails, $currentUserAddress, await storage.hasRole('minter', $currentUserAddress).catch(() => false));
 		showCreate = browser && cDetails && $currentUserAddress && (await storage.hasRole('minter', $currentUserAddress).catch(() => false));
 	});
 </script>

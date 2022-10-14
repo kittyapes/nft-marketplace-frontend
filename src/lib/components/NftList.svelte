@@ -12,8 +12,6 @@
 	export let isLoading = false;
 	export let reachedEnd = false;
 
-	$: console.log(options);
-
 	const inviewOptions = {};
 
 	function onChange(event) {
