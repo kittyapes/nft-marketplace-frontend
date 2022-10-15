@@ -26,13 +26,13 @@ export function listingToCardOptions(listing: Listing, fallback?: any): CardOpti
 				collectionData: {
 					id: nft?.collectionId,
 					slug: nft?.collectionSlug,
-					name: nft?.collectionName
+					name: nft?.collectionName,
 				},
 				likes: nft?.favoriteCount,
 				thumbnailUrl: nft.thumbnailUrl,
-				assetUrl: nft?.assetUrl || nft?.thumbnailUrl,
-				quantity: listing.nfts[0].amount
-			}
+				assetUrl: nft?.metadata?.animation_url || nft?.assetUrl || nft?.thumbnailUrl,
+				quantity: listing.nfts[0].amount ?? nft.amount,
+			},
 		],
 		listingData: {
 			databaseId: listing._id,
@@ -43,11 +43,11 @@ export function listingToCardOptions(listing: Listing, fallback?: any): CardOpti
 			paymentTokenAddress: listing.paymentTokenAddress,
 			startTime: dayjs(listing.startTime).unix(),
 			endTime: dayjs(listing.startTime).unix() + listing.duration,
-			duration: listing.duration
+			duration: listing.duration,
 		},
 		allowPopup: true,
 		allowTrade: true,
-		staleResource: writable()
+		staleResource: writable(),
 	};
 
 	const makeNice = (n: number) => {
@@ -63,7 +63,7 @@ export function listingToCardOptions(listing: Listing, fallback?: any): CardOpti
 
 		ret.saleData = {
 			price: listing.listing.price,
-			formatPrice: fPrice ? makeNice(fPrice) : 'N/A'
+			formatPrice: fPrice ? makeNice(fPrice) : 'N/A',
 		};
 	}
 
@@ -80,7 +80,7 @@ export function listingToCardOptions(listing: Listing, fallback?: any): CardOpti
 			reservePrice: listing.listing?.reservePrice,
 			formatReservePrice: fReserve ? makeNice(fReserve) : 'N/A',
 			highestBid: highestBid ? makeNice(highestBid) : 'N/A',
-			priceToDisplay: priceToDisplay ? makeNice(priceToDisplay) : 'N/A'
+			priceToDisplay: priceToDisplay ? makeNice(priceToDisplay) : 'N/A',
 		};
 	}
 

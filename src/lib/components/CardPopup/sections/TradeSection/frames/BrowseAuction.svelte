@@ -82,13 +82,15 @@
 
 <div class="flex flex-col justify-center h-[90%] pr-1">
 	<div class="flex flex-col h-full mt-4">
-		<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} on:request-refresh={refreshBids} />
+		<div class="min-h-[300px] flex-grow">
+			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} on:request-refresh={refreshBids} />
+		</div>
 
 		<div class="flex items-center justify-between my-4">
 			<div class="font-semibold">
 				<div class="">Quantity</div>
 				<div class="flex items-center justify-start gap-2">
-					{options?.nfts[0]?.quantity || '1'}
+					{chainListing?.quantity ?? options?.rawResourceData?.listing?.quantity ?? options?.nfts[0]?.quantity ?? '1'}
 				</div>
 			</div>
 
@@ -113,16 +115,21 @@
 				{/if}
 
 				<div class="relative w-full" on:pointerover={() => (hoveringPlaceBid = true)} on:pointerleave={() => (hoveringPlaceBid = false)}>
-					<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid || !!bidError}>
+					<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid || !!bidError || !chainListing.isValidOnChainListing}>
 						{#if isPlacingBid}
 							<ButtonSpinner />
 						{/if}
 						Place Bid
 					</PrimaryButton>
 
-					{#if hoveringPlaceBid && bidError}
+					{#if hoveringPlaceBid && bidError && chainListing.isValidOnChainListing}
 						<div class="absolute top-4">
 							<InfoBubble>{bidError}</InfoBubble>
+						</div>
+					{/if}
+					{#if hoveringPlaceBid && !chainListing.isValidOnChainListing}
+						<div class="absolute top-4">
+							<InfoBubble>Sorry, this listing is no longer valid</InfoBubble>
 						</div>
 					{/if}
 				</div>

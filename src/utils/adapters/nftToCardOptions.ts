@@ -19,16 +19,16 @@ export function nftToCardOptions(nft: ApiNftData): CardOptions {
 				collectionData: {
 					id: nft.collectionId,
 					slug: nft.collectionSlug,
-					name: nft.collectionName
+					name: nft.collectionName,
 				},
 				likes: nft.favoriteCount,
 				thumbnailUrl: nft.thumbnailUrl,
-				assetUrl: nft.assetUrl || nft.thumbnailUrl,
-				quantity: 1
-			}
+				assetUrl: nft?.metadata?.animation_url || nft.assetUrl || nft.thumbnailUrl,
+				quantity: 1,
+			},
 		],
 		allowPopup: true,
 		allowTrade: true,
-		staleResource: writable()
+		staleResource: writable(),
 	};
 }

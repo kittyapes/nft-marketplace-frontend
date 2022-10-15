@@ -39,7 +39,7 @@
 	});
 </script>
 
-<div class="relative flex flex-col flex-grow p-4 overflow-hidden border rounded-lg">
+<div class="relative flex flex-col h-full p-4 overflow-hidden border rounded-lg">
 	<div class="flex">
 		<div class="font-medium opacity-70 flex-grow">Bids</div>
 		<button class="opacity-70 active:opacity-50 transition" on:click={onRefreshClick}><Refresh class="scale-75" /></button>

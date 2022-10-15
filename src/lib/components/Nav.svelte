@@ -1,5 +1,5 @@
 <script>
-	// import Search from './Search.svelte';
+	import Search from './Search.svelte';
 	import ProfilePopup from './ProfilePopup.svelte';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { appSigner, connectionDetails, currentUserAddress } from '$stores/wallet';
@@ -9,7 +9,7 @@
 	import UserCircle from '$icons/user-circle.svelte';
 	import { goto } from '$app/navigation';
 	import { storage } from '$utils/contracts';
-	import { browser } from '$app/env';
+	import { browser } from '$app/environment';
 
 	let displayProfilePopup = false;
 	let showProfileButton = false;
@@ -32,13 +32,22 @@
 
 	let imageFailedToLoad = false;
 
-	$: useTestnets = $connectionDetails?.chainId !== 1 || import.meta.env.VITE_DEFAULT_NETWORK !== '1';
+	$: useTestnets = $connectionDetails ? $connectionDetails?.chainId !== 1 : import.meta.env.VITE_DEFAULT_NETWORK !== '1';
 
 	// Create button display logic
 	let showCreate = false;
 
 	currentUserAddress.subscribe(async (a) => {
-		showCreate = browser && a && (await storage.hasRole('minter', a).catch(() => false));
+		try {
+			showCreate = browser && a && (await storage.hasRole('minter', a));
+		} catch (err) {
+			console.error(err);
+		}
+	});
+
+	connectionDetails.subscribe(async (cDetails) => {
+		//console.log(browser, cDetails, $currentUserAddress, await storage.hasRole('minter', $currentUserAddress).catch(() => false));
+		showCreate = browser && cDetails && $currentUserAddress && (await storage.hasRole('minter', $currentUserAddress).catch(() => false));
 	});
 </script>
 
@@ -53,7 +62,7 @@
 			{/if}
 		</a>
 
-		<!-- <Search class="snap-start" /> -->
+		<Search class="snap-start" />
 
 		<!-- Flex filler -->
 		<div class="flex-grow" />

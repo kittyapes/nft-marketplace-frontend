@@ -1,8 +1,6 @@
 <script lang="ts">
 	import type { CardOptions } from '$interfaces/ui';
 
-	import AttachToElement from '$lib/components/AttachToElement.svelte';
-	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { getOnChainListing, type ChainListing } from '$utils/contracts/listing';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
@@ -10,6 +8,7 @@
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { _refreshOnChainListingHelper } from '../cardPopup';
+	import HistorySection from './HistorySection/HistorySection.svelte';
 	import InfoSection from './InfoSection.svelte';
 	import TradeSection from './TradeSection/TradeSection.svelte';
 
@@ -45,17 +44,19 @@
 	// The back button is controlled by dynamic components
 	export let showBackButton: boolean;
 
-	let tabs: { text: string; icon: string; sectionComponent: any; visible: boolean }[] = [];
+	let tabs: { text: string; icon: string; sectionComponent: any; loading: boolean; disabled?: boolean }[] = [];
 
 	$: staleResource = options.staleResource;
 	$: tabs = [
-		{ text: 'Info', icon: 'info', sectionComponent: InfoSection, visible: true },
+		{ text: 'Info', icon: 'info', sectionComponent: InfoSection, loading: false },
 		{
 			text: 'Trade',
 			icon: 'trade',
 			sectionComponent: TradeSection,
-			visible: (options.resourceType === 'listing' || (options.resourceType === 'nft' && nftBalance)) && !$staleResource && options.allowTrade
-		}
+			loading: nftBalance === null && options.resourceType !== 'listing',
+			disabled: options.resourceType === 'nft' && !nftBalance,
+		},
+		{ text: 'History', icon: 'history', sectionComponent: HistorySection, loading: false },
 	];
 
 	// Set default tab and prevent overwiriting when statement above
@@ -66,41 +67,43 @@
 	}
 
 	let tabComponentInstance;
-
-	let showCannotTrade = false;
-
-	let tradeTab: HTMLElement;
 </script>
 
 <div class="flex flex-col h-full pl-8 overflow-hidden">
 	<!-- Tabs -->
 	<div class="flex flex-grow-0 space-x-6">
-		{#each tabs.filter((t) => t.visible) as tab}
-			{@const hoverCannotTrade = tab.icon === 'trade' && options.nfts?.[0]?.isExternal}
-
+		{#each tabs as tab}
 			<button
-				class="flex items-center space-x-2 btn"
+				class="flex items-center space-x-2 btn text-[#8C8C8C] outline-none focus-visible:bg-gray-100 p-2 rounded-md"
+				class:tab-loading={tab.loading}
 				on:click={() => (selectedTab = tab)}
-				on:pointerenter={() => hoverCannotTrade && (showCannotTrade = true)}
-				on:pointerleave={() => (showCannotTrade = false)}
-				bind:this={tradeTab}
+				disabled={tab.disabled}
 				transition:fade|local
 			>
 				<img class="h-8" src={getIconUrl('card-popup-tab-icon/' + tab.icon + (tab.text === selectedTab.text ? '.selected' : ''))} alt={tab.text} />
-				<div class="text-[#8C8C8C]" class:gradient-text={tab.text === selectedTab.text}>{tab.text}</div>
+				<div class="" class:gradient-text={tab.text === selectedTab.text}>{tab.text}</div>
 			</button>
 		{/each}
-
-		{#if nftBalance === null && options.resourceType !== 'listing'}
-			<div class="w-24 h-full bg-gray-100 rounded-lg animate-pulse" />
-		{/if}
 	</div>
 
-	<svelte:component this={selectedTab.sectionComponent} {options} {chainListing} on:close-popup bind:showBackButton bind:this={tabComponentInstance} on:listing-created={refreshBalance} />
+	<svelte:component
+		this={selectedTab.sectionComponent}
+		{options}
+		{chainListing}
+		on:close-popup
+		on:force-expire
+		bind:showBackButton
+		bind:this={tabComponentInstance}
+		on:listing-created={refreshBalance}
+	/>
 </div>
 
-{#if showCannotTrade}
-	<AttachToElement to={tradeTab} offsetY={50} offsetX={-12}>
-		<InfoBubble>This NFT is not part of any of the whitelisted collections on the marketplace, it therefore cannot be traded here.</InfoBubble>
-	</AttachToElement>
-{/if}
+<style>
+	.tab-loading {
+		@apply bg-gray-100 text-transparent rounded-lg;
+	}
+
+	.tab-loading > img {
+		@apply opacity-0;
+	}
+</style>

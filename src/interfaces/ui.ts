@@ -25,7 +25,7 @@ export interface CardOptions {
 			thumbnailUrl: string;
 			assetUrl: string;
 			quantity: number;
-		}
+		},
 	];
 
 	/** Data used when rendering a listing. */

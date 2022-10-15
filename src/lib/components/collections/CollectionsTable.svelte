@@ -37,7 +37,7 @@
 				<div class="grid grid-cols-[1.5fr_7fr_1.5fr_3fr_2fr_3fr] w-[95%] place-items-center">
 					<div class="text-center text-sm grid place-items-center">{i + 1}</div>
 					<a href={'/collections/' + collection.slug} class="flex place-items-center gap-6 place-self-start clickable w-full">
-						<div class="w-12 h-12 background profile-pic bg-cover rounded-full" style="--url: url({collection.logoImageUrl})" />
+						<div class="w-12 h-12 background profile-pic bg-cover rounded-full" style="--url: url({collection.logoImageUrl ?? ''})" />
 						<div class="flex font-semibold text-sm gap-2 ">
 							{collection.name}
 							{#if collection.mintedFrom?.toLowerCase() === 'hinata'}

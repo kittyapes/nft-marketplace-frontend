@@ -23,6 +23,9 @@
 	function hideCard(index) {
 		options.splice(index, 1);
 		options = options;
+		dispatch('refresh-tabs', {
+			tabs: ['collected', 'created', 'hidden'],
+		});
 	}
 
 	let hidden = new WeakMap();
@@ -32,8 +35,11 @@
 			if (r?.reason === 'cancelled') {
 				hidden.set(o, true);
 				hidden = hidden;
+				dispatch('refresh-tabs', {
+					tabs: ['collected', 'created'],
+				});
 			}
-		})
+		}),
 	);
 </script>
 

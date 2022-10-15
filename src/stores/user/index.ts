@@ -1,12 +1,10 @@
-import { goto } from '$app/navigation';
 import type { ApiNftData } from '$interfaces/apiNftData';
 import { appDataToTriggerReload, currentUserAddress } from '$stores/wallet';
-import { fetchProfileData } from '$utils/api/profile';
+import { fetchCurrentUserData } from '$utils/api/profile';
 import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
-import type { UserData } from 'src/interfaces/userData';
 import { derived, get, writable } from 'svelte/store';
 
-export const profileData = writable<UserData>(null);
+export const profileData = writable<Awaited<ReturnType<typeof fetchCurrentUserData>>>(null);
 
 appDataToTriggerReload.subscribe(() => {
 	const address = get(currentUserAddress);
@@ -19,7 +17,10 @@ appDataToTriggerReload.subscribe(() => {
 });
 
 export async function refreshProfileData() {
-	const newProfileData = await fetchProfileData(get(currentUserAddress));
+	const newProfileData = await fetchCurrentUserData();
+
+	console.log(newProfileData);
+
 	profileData.set(newProfileData);
 }
 
@@ -36,6 +37,8 @@ export async function refreshLikedNfts(address: string) {
 
 export const userLikedNfts = writable<{ nft: ApiNftData }[]>([]);
 export const likedNftIds = derived(userLikedNfts, (userLiked) => userLiked.map((nft) => nft.nft.nftId));
+
+export const userCreatedListing = writable<boolean>(false);
 
 export const nftBalances = derived(profileData, (d) => d.nftBalances);
 

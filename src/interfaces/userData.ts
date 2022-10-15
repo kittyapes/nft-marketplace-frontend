@@ -8,19 +8,17 @@ export interface LoginHistoryEntry {
 }
 
 export interface UserData {
+	_id: string;
 	address: string;
 	createdAt: string;
-	email: string;
-	thumbnailUrl: string;
-	coverUrl: string;
-	loginHistories: LoginHistoryEntry[];
-	nickname: string;
-	status: 'USER' | 'AWAITING_VERIFIED' | 'VERIFIED' | 'AWAITING_INACTIVATED' | 'INACTIVATED';
 	updatedAt: string;
 	username: string;
-	_id: string;
+	thumbnailUrl: string;
+	queueDate: number;
+	coverUrl: string;
 	bio: string;
 	social: { instagram: string; discord: string; twitter: string; website: string; pixiv: string; deviantart: string; artstation: string };
 	roles: UserRole[];
-	nftBalances: Record<string, number>;
+	// Not Sure who removed this before
+	status: string; // more to be added later (enum)
 }

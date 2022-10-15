@@ -5,6 +5,7 @@
 	import ListingProperties from '$lib/components/primary-listing/ListingProperties.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import { userCreatedListing } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
@@ -36,13 +37,13 @@
 					_id: options.nfts[0].databaseId,
 					nftId: options.nfts[0].onChainId,
 					collectionAddress: options.nfts[0]?.contractAddress ?? getContractData('storage').address,
-					amount: listingProps.quantity || 1
-				}
+					amount: listingProps.quantity || 1,
+				},
 			],
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: 'WETH',
 			listingType: listingType,
-			...listingProps
+			...listingProps,
 		};
 
 		try {
@@ -55,6 +56,7 @@
 		}
 
 		isListing = false;
+		$userCreatedListing = true;
 	}
 
 	async function refreshBalance() {
@@ -70,7 +72,7 @@
 
 <div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto">
 	<!-- Listing Type -->
-	<div class="mt-4 font-semibold">Listing Type</div>
+	<div class="mt-2 font-semibold">Listing Type</div>
 	<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} /></div>
 
 	<div class="mt-4">

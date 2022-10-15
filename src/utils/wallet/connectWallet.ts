@@ -30,7 +30,7 @@ const getProviderOptions = () => {
 			display: {
 				logo: metamaskLogo,
 				name: 'MetaMask',
-				description: 'Connect to your MetaMask Wallet'
+				description: 'Connect to your MetaMask Wallet',
 			},
 			package: true,
 			connector: async () => {
@@ -55,7 +55,7 @@ const getProviderOptions = () => {
 				}
 
 				return provider;
-			}
+			},
 		};
 	}
 
@@ -64,22 +64,22 @@ const getProviderOptions = () => {
 		providerOptions['walletconnect'] = {
 			package: (window as any).WalletConnectProvider.default, // required
 			options: {
-				infuraId: infuraId // required
-			}
+				infuraId: infuraId, // required
+			},
 		};
 	}
 
 	// Torus
 	if ((window as any).Torus) {
 		providerOptions['torus'] = {
-			package: (window as any).Torus // required
+			package: (window as any).Torus, // required
 		};
 	}
 
 	if ((window as any).Authereum) {
 		// Authereum
 		providerOptions['authereum'] = {
-			package: (window as any).Authereum.default // required
+			package: (window as any).Authereum.default, // required
 		};
 	}
 
@@ -89,24 +89,24 @@ const getProviderOptions = () => {
 			display: {
 				logo: coinbaseLogo,
 				name: 'Coinbase',
-				description: 'Scan with WalletLink to connect'
+				description: 'Scan with WalletLink to connect',
 			},
 			options: {
 				appName: appName, // Your app name
 				networkUrl: `https://mainnet.infura.io/v3/${infuraId}`,
 				chainId: 1,
-				network: 'mainnet'
+				network: 'mainnet',
 			},
 			package: (window as any).WalletLink.default,
 			connector: async (_, options) => {
 				const { appName, networkUrl, chainId } = options;
 				const walletLink = new (window as any).WalletLink.default({
-					appName
+					appName,
 				});
 				const provider = walletLink.makeWeb3Provider(networkUrl, chainId);
 				await provider.enable();
 				return provider;
-			}
+			},
 		};
 	}
 
@@ -121,7 +121,7 @@ export const initWeb3ModalInstance = () => {
 		// Disabled the default injected Metamask (also launches other injected if enabled + present)
 		disableInjectedProvider: true,
 		cacheProvider: true,
-		providerOptions
+		providerOptions,
 	});
 
 	web3ModalInstance.set(web3Modal);
@@ -223,6 +223,12 @@ const isAllowedNetworks = async (provider: ethers.providers.ExternalProvider) =>
 		if (allowedNetworks.some((item) => item === 4)) {
 			items.push('Ethereum Rinkeby');
 		}
+		if (allowedNetworks.some((item) => item === 5)) {
+			items.push('Ethereum Goerli');
+		}
+		if (allowedNetworks.some((item) => item === 1337)) {
+			items.push('Staging Genache');
+		}
 		notifyError(`You can only connect to these networks: ${items.join(' | ')}. Please switch your wallet network and reconnect.`);
 		return false;
 	}
@@ -298,7 +304,7 @@ export const refreshConnection = async () => {
 
 			walletState.set(WalletState.CONNECTED);
 		} else {
-			// notifyError('You can only connect to mainnet or Rinkeby Test Network');
+			// notifyError('You can only connect to mainnet or Rinkeby or Goerli Test Network');
 		}
 	} else {
 		walletState.set(WalletState.DISCONNECTED);

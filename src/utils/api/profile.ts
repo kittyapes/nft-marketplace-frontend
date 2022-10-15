@@ -1,5 +1,6 @@
-import { appSigner } from '$stores/wallet';
+import { appSigner, currentUserAddress } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
+import { sanitizeHtmlInternal } from '$utils/html';
 import { htmlize } from '$utils/misc/htmlize';
 import type { SupportedSocialNetworks } from '$utils/validator/isValidSocialLink';
 import isValidSocialLink from '$utils/validator/isValidSocialLink';
@@ -24,7 +25,18 @@ export interface LoginHistoryEntry {
 export async function fetchProfileData(address: string) {
 	if (!address) return null;
 
-	const res = await axios.get(getApiUrl('latest', 'users/' + address)).catch(() => null);
+	let res = null;
+
+	if (address.toLowerCase() === get(currentUserAddress)?.toLowerCase()) {
+		// Fetch personal profile
+		res = await axios.get(getApiUrl('latest', 'users'), await getAxiosConfig()).catch(() => null);
+	} else {
+		try {
+			res = await axios.get(getApiUrl('latest', 'users/' + address), await getAxiosConfig()).catch(() => null);
+		} catch (error) {
+			res = await axios.get(getApiUrl('latest', 'users/' + address)).catch(() => null);
+		}
+	}
 
 	if (!res) {
 		return null;
@@ -32,7 +44,47 @@ export async function fetchProfileData(address: string) {
 
 	const data = res.data.data as UserData;
 
+	if (data.bio) {
+		data.bio = sanitizeHtmlInternal(htmlize(data.bio));
+	}
+
 	return data as UserData;
+}
+
+/**
+ * Fetch the user data of the currently connected user wallet. This data is different from the data
+ * returned by the `fetchProfileData` function, which returns stripped user data. This function instead
+ * returns all the data available, including the data that is only supposed to be seen by the owner
+ * of the account.
+ * @returns An object representing the profile data of the currently connected user.
+ */
+export async function fetchCurrentUserData(): Promise<{
+	_id: string;
+	address: string;
+	bio: string;
+	coverUrl: string;
+	createdAt: string;
+	email: string;
+	loginHistories: any[];
+	nftBalances: Record<number, number>;
+	roles: string[];
+	social: {
+		artstation: string;
+		deviantart: string;
+		discord: string;
+		instagram: string;
+		pixiv: string;
+		twitter: string;
+		website: string;
+	};
+	thumbnailUrl: string;
+	queueDate: number;
+	updatedAt: string;
+	username: string;
+}> {
+	const res = await axios.get(getApiUrl('latest', 'users'), await getAxiosConfig());
+
+	return res.data.data;
 }
 
 export interface EditableProfileData {
@@ -84,7 +136,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 	});
 
 	// Escape stuff
-	data.bio = htmlize(data.bio);
+	data.bio = sanitizeHtmlInternal(htmlize(data.bio));
 
 	const message = [
 		data.email,
@@ -99,7 +151,7 @@ export async function updateProfile(address: string, data: Partial<EditableProfi
 		data.social.website,
 		data.social.pixiv,
 		data.social.deviantart,
-		data.social.artstation
+		data.social.artstation,
 	]
 		.map((v) => v || '')
 		.join('');

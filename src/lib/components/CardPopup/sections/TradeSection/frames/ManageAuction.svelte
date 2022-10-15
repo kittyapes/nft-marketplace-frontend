@@ -30,6 +30,11 @@
 	let biddings: BidRow[] = [];
 
 	async function acceptHighest() {
+		if (!chainListing?.isValidOnChainListing) {
+			notifyError('Failed to Accept Highest Bid: Listing is no longer valid (not on chain)');
+			return;
+		}
+
 		isAccepting = true;
 
 		const { err, res } = await contractCompleteAuction(options.listingData.onChainId);
@@ -40,6 +45,7 @@
 		} else {
 			options.staleResource.set({ reason: 'bid-accepted' });
 			dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Auction completed successfully.' } });
+			dispatch('force-expire');
 			frame.set(Success);
 		}
 
@@ -49,12 +55,18 @@
 	let cancelButtonContainer: HTMLElement;
 
 	async function cancelListing() {
+		if (!chainListing?.isValidOnChainListing) {
+			notifyError('Failed to Cancel Listing: Listing is no longer valid (not on chain)');
+			return;
+		}
+
 		isCancelling = true;
 
 		try {
 			await contractCancelListing(options.listingData.onChainId);
 			frame.set(Success);
 			options.staleResource.set({ reason: 'cancelled' });
+			dispatch('force-expire');
 		} catch (err) {
 			console.error(err);
 			notifyError('Failed to cancel listing!');
@@ -82,8 +94,10 @@
 	}
 </script>
 
-<div class="flex flex-col h-full pb-12 mt-4">
-	<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} />
+<div class="flex flex-col flex-grow mt-4">
+	<div class="min-h-[300px] flex-grow">
+		<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} />
+	</div>
 
 	<div class="flex my-4 font-semibold">
 		<div>
