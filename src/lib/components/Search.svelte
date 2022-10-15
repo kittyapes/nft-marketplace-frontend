@@ -136,9 +136,6 @@
 														{result.username}
 													</div>
 												</div>
-												{#if result.roles?.includes('verified_user')}
-													<VerifiedBadge />
-												{/if}
 											</div>
 										{:else if section === 'collections'}
 											<div
