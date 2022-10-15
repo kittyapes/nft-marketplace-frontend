@@ -15,7 +15,7 @@
 			<img
 				src={profileImg ||
 					'https://media.istockphoto.com/photos/abstract-geometric-network-polygon-globe-graphic-background-picture-id1208738316?b=1&k=20&m=1208738316&s=170667a&w=0&h=f4KWULKjL770nceDM6xi32EbfIgMtBwSp5fPxIx08wc='}
-				alt="Collection Logo."
+				alt="Artist profile."
 				class="w-12 h-12 rounded-full object-cover"
 			/>
 		</div>
