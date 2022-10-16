@@ -21,7 +21,7 @@
 		if ($page.url.searchParams.has('id')) {
 			const id = $page.url.searchParams.get('id');
 			const listing = await getListing(id);
-			const options = listingToCardOptions(listing);
+			const options = await listingToCardOptions(listing);
 
 			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
 		}
@@ -56,7 +56,7 @@
 						{ label: 'Oldest', value: 'OLDEST' },
 						// commenting it out for now because it doesn't work on be
 						//{ label: 'Most Popular', value: 'POPULAR' },
-						{ label: 'Ending Now', value: 'END1MIN' }
+						{ label: 'Ending Now', value: 'END1MIN' },
 					]}
 				/>
 			</div>

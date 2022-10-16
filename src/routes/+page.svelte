@@ -29,7 +29,7 @@
 	const getExploreMarketData = async () => {
 		loadedExploreListings.set(false);
 		exploreListings.set(await getRandomListings(10));
-		exploreListingsData = $exploreListings.map(listingToCardOptions).filter((e) => e);
+		exploreListingsData = (await Promise.all($exploreListings.map(listingToCardOptions))).filter((e) => e);
 		loadedExploreListings.set(true);
 	};
 

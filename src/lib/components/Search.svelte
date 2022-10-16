@@ -35,7 +35,7 @@
 		const res = await globalSearch(query, resultCategoryLimit).catch((err) => console.error(err));
 		searchResults = {
 			collections: res?.collections || [],
-			items: res?.nfts.map(nftToCardOptions) || [],
+			items: (await Promise.all(res?.nfts.map(nftToCardOptions))) || [],
 			users: res?.verifiedCreators || [],
 		};
 

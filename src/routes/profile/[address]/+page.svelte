@@ -49,10 +49,10 @@
 			let options: CardOptions;
 
 			if (listing) {
-				options = listingToCardOptions(listing);
+				options = await listingToCardOptions(listing);
 			} else {
 				const nft = await getNft(id);
-				options = nftToCardOptions(nft);
+				options = await nftToCardOptions(nft);
 			}
 
 			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
@@ -105,7 +105,7 @@
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
 				res.res = await apiGetUserNfts(address, 'COLLECTED', page, limit);
-				res.adapted = res.res.res.map(nftToCardOptions);
+				res.adapted = await Promise.all(res.res.res.map(nftToCardOptions));
 
 				for (const nft of res.adapted) {
 					nft.rawResourceData.owner = address;
@@ -120,7 +120,7 @@
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
 				res.res = await apiGetUserNfts(address, 'MINTED', page, limit);
-				res.adapted = res.res.res.map((nft) => nftToCardOptions(nft));
+				res.adapted = await Promise.all(res.res.res.map((nft) => nftToCardOptions(nft)));
 				return res;
 			},
 			label: 'Created NFTs',
@@ -136,7 +136,7 @@
 
 				const res = {} as FetchFunctionResult;
 				res.res = await getListings({ seller: address, listingStatus }, page, limit);
-				res.adapted = res.res.map(listingToCardOptions);
+				res.adapted = await Promise.all(res.res.map(listingToCardOptions));
 
 				return res;
 			},
@@ -147,7 +147,7 @@
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
 				res.res = await getUserFavoriteNfts(address, page, limit);
-				res.adapted = res.res.map((nft) => nftToCardOptions(nft.nft));
+				res.adapted = await Promise.all(res.res.map((nft) => nftToCardOptions(nft.nft)));
 
 				return res;
 			},
@@ -159,7 +159,7 @@
 				const res = {} as FetchFunctionResult;
 
 				res.res = await apiGetHiddenNfts(address, page, limit);
-				res.adapted = res.res.map(nftToCardOptions);
+				res.adapted = await Promise.all(res.res.map(nftToCardOptions));
 
 				res.adapted.forEach((i) => (i.allowTrade = false));
 
