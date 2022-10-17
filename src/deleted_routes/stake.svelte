@@ -20,14 +20,14 @@
 		hoursToCollect: 3,
 		totalVolume: 1862,
 		totalRewards: 5184,
-		nextRewardDate: '12 hours 20 min'
+		nextRewardDate: '12 hours 20 min',
 	};
 	export let hinataRewards: CollectableRewards = {
 		collectionAmount: 5000,
 		lastCollected: 369,
 		collectedToDate: '26.2.2022',
 		earnedToDate: 5600003.55,
-		rewardCurrency: 'HiNATA'
+		rewardCurrency: 'HiNATA',
 	};
 	export let hinataLpRewards: CollectableRewards[] = [
 		{
@@ -35,15 +35,15 @@
 			lastCollected: 369,
 			collectedToDate: '26.2.2022',
 			earnedToDate: 5600003.55,
-			rewardCurrency: 'HiNATA'
+			rewardCurrency: 'HiNATA',
 		},
 		{
 			collectionAmount: 1000,
 			lastCollected: 369,
 			collectedToDate: '26.2.2022',
 			earnedToDate: 5600003.55,
-			rewardCurrency: 'WAIFU'
-		}
+			rewardCurrency: 'WAIFU',
+		},
 	];
 
 	let currency: 'HiNATA' | 'HiNATA-LP' = 'HiNATA';
