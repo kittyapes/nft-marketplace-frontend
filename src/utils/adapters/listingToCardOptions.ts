@@ -1,13 +1,24 @@
 import type { CardOptions } from '$interfaces/ui';
 import type { Listing } from '$utils/api/listing';
+import { getOnChainMetadata, makeHttps } from '$utils/ipfs';
 import dayjs from 'dayjs';
 import { writable } from 'svelte/store';
 
-export function listingToCardOptions(listing: Listing, fallback?: any): CardOptions {
+export async function listingToCardOptions(listing: Listing): Promise<CardOptions> {
 	const nft = listing.nfts?.[0]?.nft || listing.nfts?.[0];
 
 	if (!nft) {
 		return null;
+	}
+
+	if (!nft.thumbnailUrl || !nft.metadata) {
+		if (nft) {
+			const nftMetadata = await getOnChainMetadata(nft?.contractAddress, nft?.nftId.toString());
+			nft.metadata = nftMetadata ?? nft.metadata;
+			// TODO: Add temporary image for nfts that did not load here
+			nft.thumbnailUrl = nftMetadata?.image ?? nft.thumbnailUrl ?? '';
+			nft.assetUrl = nftMetadata?.animation_url ?? nft.assetUrl ?? nft.thumbnailUrl ?? nftMetadata?.image ?? '';
+		}
 	}
 
 	const ret: CardOptions = {
@@ -29,8 +40,8 @@ export function listingToCardOptions(listing: Listing, fallback?: any): CardOpti
 					name: nft?.collectionName,
 				},
 				likes: nft?.favoriteCount,
-				thumbnailUrl: nft.thumbnailUrl,
-				assetUrl: nft?.metadata?.animation_url || nft?.assetUrl || nft?.thumbnailUrl,
+				thumbnailUrl: makeHttps(nft.thumbnailUrl) ?? '',
+				assetUrl: makeHttps(nft?.metadata?.animation_url || nft?.assetUrl || nft?.thumbnailUrl) ?? '',
 				quantity: listing.nfts[0].amount ?? nft.amount,
 			},
 		],

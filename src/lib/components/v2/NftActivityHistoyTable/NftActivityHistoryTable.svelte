@@ -1,4 +1,5 @@
 <script lang="ts">
+	import EthAddress from '$lib/components/EthAddress.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { tick } from 'svelte';
 	import EthIcon from './EthIcon.svelte';
@@ -60,8 +61,10 @@
 		{:else}
 			<div />
 		{/if}
-		<div><a href="/profile/{row.from}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.from}</a></div>
-		<div><a href="/profile/{row.to}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.to}</a></div>
+		<!--<div><a href="/profile/{row.from}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.from}</a></div>
+		<div><a href="/profile/{row.to}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.to}</a></div>-->
+		<div><a href="/profile/{row.from}" target="_blank"><EthAddress address={row.from} etherScanLink={false} copyIcon={false} concat class="!text-black !font-semibold hover:!text-blue-500" /></a></div>
+		<div><a href="/profile/{row.to}" target="_blank"><EthAddress address={row.to} etherScanLink={false} copyIcon={false} concat class="!text-black !font-semibold hover:!text-blue-500" /></a></div>
 		<div>{row.date}</div>
 	{/each}
 
@@ -83,10 +86,10 @@
 	{/if}
 </div>
 
-<style>
+<style type="postcss">
 	#grid-container {
 		grid-template-rows: repeat(var(--list-length), min-content);
-		grid-template-columns: minmax(10rem, auto) minmax(4rem, auto) minmax(10rem, auto) minmax(10rem, auto) minmax(10rem, auto);
+		grid-template-columns: minmax(10rem, auto) minmax(12rem, auto) minmax(8rem, auto) minmax(8rem, auto) minmax(10rem, auto);
 	}
 
 	#grid-container > :nth-child(-n + 5) {

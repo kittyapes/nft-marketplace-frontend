@@ -125,12 +125,12 @@
 	{/if}
 
 	{#if searching}
-		<div class="z-30 w-full mt-2 bg-white rounded-md" in:fly={{ y: -40, duration: 300 }}>
+		<div class="z-30 w-full mt-2 bg-white rounded-md overflow-y-auto custom-scrollbar max-h-36 overscroll-contain" in:fly={{ y: -40, duration: 300 }}>
 			{#if opened}
 				{#if collections.length > 0}
 					{#each collections as collection}
-						<div class="" on:click={() => handleSelect(collection)}>
-							<div class="flex flex-col gap-4 py-4">
+						<div class="" on:click={() => handleSelect(collection)} in:fly={{ y: -40, duration: 300 }}>
+							<div class="flex flex-col gap-4 py-2">
 								<div class="flex items-center gap-4 btn">
 									<div class="grid w-8 h-8 bg-gray-100 rounded-full place-items-center">
 										<div class="w-8 h-8 bg-cover rounded-full shadow" style="background-image: url({collection.iconUrl})" />

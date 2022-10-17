@@ -44,7 +44,7 @@
 	<div class="flex justify-between items-center">
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Highest Sale</div>
-			<div class="text-lg font-semibold">${collection.highestSale || 0}M</div>
+			<div class="text-lg font-semibold">${collection.highestSale || 0}</div>
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Floor Price</div>
@@ -52,19 +52,19 @@
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Total Volume</div>
-			<div class="text-lg font-semibold">${collection.totalVol || 0}B</div>
+			<div class="text-lg font-semibold">${collection.totalVol || 0}</div>
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Items</div>
-			<div class="text-lg font-semibold">{collection.items || 0}K</div>
+			<div class="text-lg font-semibold">{collection.items || 0}</div>
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Owners</div>
-			<div class="text-lg font-semibold">{collection.owners || 0}K</div>
+			<div class="text-lg font-semibold">{collection.owners || 0}</div>
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">24hr Volume</div>
-			<div class="text-lg font-semibold">${collection.total24hours || 0}M</div>
+			<div class="text-lg font-semibold">${collection.total24hours || 0}</div>
 		</div>
 	</div>
 	<div class="flex items-center justify-center gap-4">

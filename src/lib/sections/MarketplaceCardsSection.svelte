@@ -2,7 +2,6 @@
 	import { page } from '$app/stores';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import NftList from '$lib/components/NftList.svelte';
-	import { currentUserAddress } from '$stores/wallet';
 	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
 	import type { ListingFetchOptions } from '$utils/api/listing';
 	import { getListings, type ListingType } from '$utils/api/listing';
@@ -21,7 +20,7 @@
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await getListings({ ...fetchOptions, listingStatus: ['UNLISTED', 'ACTIVE'] }, index, 20);
-		res.adapted = res.res.map(listingToCardOptions);
+		res.adapted = await Promise.all(res.res.map(listingToCardOptions));
 
 		return res;
 	};

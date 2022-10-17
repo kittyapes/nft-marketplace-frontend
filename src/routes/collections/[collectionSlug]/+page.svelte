@@ -35,7 +35,7 @@
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await apiGetCollectionBySlug($page.params.collectionSlug, limit, index);
-		res.adapted = res.res.nfts.map(nftToCardOptions);
+		res.adapted = await Promise.all(res.res.nfts.map(nftToCardOptions));
 		return res;
 	};
 
@@ -242,7 +242,7 @@
 				class="grid place-items-center border border-dashed border-opacity-30 border-color-gray-base h-60 clickable hover:scale-105 transition-all p10 rounded-2xl max-w-[246px] my-10"
 				on:click={() => {
 					$nftDraft = {};
-					$nftDraft.collectionName = collectionData.name;
+					$nftDraft.collectionId = collectionData.id;
 					goto('/create');
 				}}
 			>
