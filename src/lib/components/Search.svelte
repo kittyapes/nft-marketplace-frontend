@@ -88,7 +88,7 @@
 		}}
 		type="text"
 		class="w-96 focus:outline-none bg-transparent placeholder:text-white placeholder:text-opacity-60"
-		placeholder="Search nfts, collections, and artists"
+		placeholder="Search"
 	/>
 	{#if searching}
 		<div class="w-full top-16 right-0 border-black border-opacity-30 rounded-md border z-30 absolute bg-inherit" in:fly={{ y: -40, duration: 300 }}>

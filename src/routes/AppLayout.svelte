@@ -73,11 +73,11 @@
 	{#if errorCode}
 		<ErrorPage {errorCode} />
 	{:else}
-		<!-- <PageTransition {url}> -->
+		<!-- <PageTransition {url}>-->
 		<div class="mx-auto">
 			<slot />
 		</div>
-		<!-- </PageTransition> -->
+		<!--</PageTransition> -->
 	{/if}
 
 	<Footer />

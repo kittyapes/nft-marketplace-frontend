@@ -51,8 +51,8 @@
 	});
 </script>
 
-<div class="absolute z-10 flex w-full bg-gradient ">
-	<div class="fixed z-10 flex items-center w-full h-16 pl-8 pr-2 overflow-x-visible scrollbar-hidden snap-mandatory snap-x navbar text-white">
+<div class="absolute z-10 flex w-full ">
+	<div class="fixed z-10 flex items-center w-full h-20 pl-8 pr-2 overflow-x-visible scrollbar-hidden snap-mandatory snap-x navbar text-white">
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
 			{#if useTestnets}
@@ -137,7 +137,16 @@
 	}
 
 	.btn-gradient-border {
-		background: linear-gradient(white, white) padding-box, linear-gradient(to right, #868bf7, #6cc7f8) border-box;
+		border-image-source: linear-gradient(
+				56.67deg,
+				rgba(167, 148, 255, 0) 11.15%,
+				rgba(167, 148, 255, 0.93) 57.47%,
+				rgba(142, 119, 247, 0) 127.41%,
+				rgba(142, 119, 247, 0) 127.41%,
+				rgba(167, 148, 255, 0) 127.41%
+			),
+			linear-gradient(0deg, #67d4f8, #67d4f8);
+
 		@apply border-transparent border-2;
 	}
 </style>

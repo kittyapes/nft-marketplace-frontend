@@ -289,85 +289,85 @@
 	}
 </script>
 
-<div class="relative max-w-screen-xl px-32 mx-auto">
-	<div class="h-72 bg-color-gray-light pt-16">
-		{#if $localProfileData?.coverUrl}
-			<div style="background-image: url({$localProfileData?.coverUrl})" class="w-full h-full bg-center bg-no-repeat bg-cover" />
-		{/if}
-	</div>
-	<!-- Profile image -->
-	<div class="absolute top-0 grid w-32 h-32 overflow-hidden transform -translate-y-1/2 bg-white border-4 border-white rounded-full shadow place-items-center">
-		{#if $localProfileData?.thumbnailUrl}
-			<img src={$localProfileData?.thumbnailUrl} class="h-full rounded-full" alt="User avatar." />
-		{:else}
-			<GuestUserAvatar />
-		{/if}
-	</div>
-
-	<div class="flex items-center pt-20">
-		<span class="w-32 mr-2 text-xl font-semibold text-center whitespace-nowrap">
-			{#if $localProfileData?.username}
-				{$localProfileData?.username}
-			{:else}
-				<span class="font-bold opacity-50 whitespace-nowrap">No username</span>
-			{/if}
-
-			{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
-				<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || !storage.hasRole('minter', address)} class="inline-block translate-x-1 translate-y-1">
-					<VerifiedBadge />
-				</div>
-			{/if}
-		</span>
-	</div>
-
-	<div class="flex mt-8">
-		<!-- Buttons -->
-		<div class="flex flex-col gap-3 h-[min-content] w-72 pt-10">
-			<CopyAddressButton {address} />
-
-			{#if address === $currentUserAddress}
-				<div transition:fade|local>
-					<button class="btn btn-rounded btn-shadow w-[11rem] py-2 uppercase" on:click={() => goto('/profile/edit')}>
-						{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}
-					</button>
-				</div>
+<div class="bg-gradient">
+	<div class="relative max-w-screen-xl px-32 pt-24 mx-auto">
+		<div class="h-96 bg-color-gray-light border-b-4 gradient-border">
+			{#if $localProfileData?.coverUrl}
+				<div style="background-image: url({$localProfileData?.coverUrl})" class="w-full h-full bg-center bg-no-repeat bg-cover" />
 			{/if}
 		</div>
 
-		<!-- Bio -->
-		<div class="max-w-[600px] flex-grow">
-			<div class="pl-16 font-bold text-color-gray-dark">BIO</div>
-			<p class="h-32 px-16 mt-4 overflow-y-auto font-semibold break-words border-l border-r border-black border-opacity-30">
-				{#if $localProfileData?.bio}
-					{@html $localProfileData?.bio}
-				{:else}
-					<span class="font-bold opacity-50">No bio.</span>
-				{/if}
-			</p>
-		</div>
+		<div class="flex mt-8 text-white justify-between gap-20">
+			<div class="flex gap-4">
+				<!-- Profile image -->
+				<div class="grid w-24 h-24 overflow-hidden place-items-center">
+					{#if $localProfileData?.thumbnailUrl}
+						<img src={$localProfileData?.thumbnailUrl} class="h-full" alt="User avatar." />
+					{:else}
+						<GuestUserAvatar />
+					{/if}
+				</div>
+				<div class="flex flex-col gap-4">
+					<div class="flex gap-2 items-center">
+						{#if $localProfileData?.username}
+							<div class="font-semibold text-4xl">
+								{$localProfileData?.username}
+							</div>
+						{:else}
+							<span class="font-bold opacity-50 whitespace-nowrap">No username</span>
+						{/if}
 
-		<!-- Social links -->
-		<div class="px-16 overflow-hidden">
-			<div class="font-bold text-color-gray-dark whitespace-nowrap">SOCIAL LINKS</div>
-
-			<div class="flex flex-wrap mt-4">
-				{#if areSocialLinks}
-					{#each Object.entries(socialLinks) as [key, link]}
-						{#if link}
-							<div class="mb-2 mr-2">
-								<SocialButton social={key} href={link} />
+						{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
+							<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || !storage.hasRole('minter', address)} class="">
+								<VerifiedBadge />
 							</div>
 						{/if}
-					{/each}
-				{:else}
-					<div class="font-bold opacity-50 whitespace-nowrap">No social links.</div>
-				{/if}
+					</div>
+
+					<!-- Buttons -->
+					{#if address === $currentUserAddress}
+						<div transition:fade|local>
+							<button class="btn btn-rounded btn-shadow w-[11rem] py-2 uppercase" on:click={() => goto('/profile/edit')}>
+								{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}
+							</button>
+						</div>
+					{/if}
+				</div>
+			</div>
+
+			<!-- Bio -->
+			<div class="max-w-[600px] flex-grow">
+				<div class="font-semibold text-4xl">BIO</div>
+				<p class="mt-4 overflow-y-auto break-words">
+					{#if $localProfileData?.bio}
+						{@html $localProfileData?.bio}
+					{:else}
+						<span class="">No bio.</span>
+					{/if}
+				</p>
+			</div>
+
+			<!-- Social links -->
+			<div class="overflow-hidden">
+				<div class="font-bold text-color-gray-dark whitespace-nowrap">SOCIAL LINKS</div>
+
+				<div class="flex flex-wrap mt-4">
+					{#if areSocialLinks}
+						{#each Object.entries(socialLinks) as [key, link]}
+							{#if link}
+								<div class="mb-2 mr-2">
+									<SocialButton social={key} href={link} />
+								</div>
+							{/if}
+						{/each}
+					{:else}
+						<div class="font-bold opacity-50 whitespace-nowrap">No social links.</div>
+					{/if}
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
-<div>
 	<div class="container flex max-w-screen-xl px-32 mx-auto mt-16 space-x-8">
 		{#each tabs as tab}
 			{#if displayedTabs.includes(tab.name)}
@@ -383,8 +383,15 @@
 	<div class="max-w-screen-xl mx-auto">
 		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:refresh-tabs={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
 	</div>
+
+	{#if $localProfileData && $userHasRole('admin', 'superadmin')}
+		<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
+	{/if}
 </div>
 
-{#if $localProfileData && $userHasRole('admin', 'superadmin')}
-	<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
-{/if}
+<style type="postcss">
+	.gradient-border {
+		background: linear-gradient(white, white) padding-box, linear-gradient(to right, #868bf7, #6cc7f8) border-box;
+		@apply border-transparent;
+	}
+</style>
