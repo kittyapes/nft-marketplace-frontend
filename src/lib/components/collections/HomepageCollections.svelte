@@ -24,7 +24,7 @@
 
 		{#if reachedEnd}
 			<div class="grid place-items-center">
-				<a href="/" class="uppercase underline font-bold mt-8 text-sm">Go Back</a>
+				<div on:click={() => history.back()} class="uppercase underline font-bold mt-8 text-sm clickable">Go Back</div>
 			</div>
 		{/if}
 	</div>
