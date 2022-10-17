@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
 	export let tab;
-	const TABS = ['MARKET']; // , 'COMING SOON'
-	const ROUTES = ['marketplace']; // , 'marketplace'
+
+	const TABS = ['MARKET', 'COLLECTIONS'];
+	const ROUTES = ['marketplace', 'collections'];
 </script>
 
-<div class="w-full flex flex-row gap-5 text-xs z-0 items-center">
+<div class="w-full flex flex-row gap-5 text-sm z-0 items-center">
 	{#each TABS as tabName, i}
 		<a href={`/${ROUTES[i]}`} class="font-bold" class:text-color-purple={tab == i} class:underline={tab == i}>
 			{tabName}

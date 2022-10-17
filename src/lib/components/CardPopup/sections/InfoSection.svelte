@@ -34,7 +34,7 @@
 		{ name: 'Creator', value: singleNft.creator || options.rawResourceData.metadata?.creator?.address },
 		{ name: 'Collection name', value: singleNft.collectionData?.name },
 		{ name: 'Edition', value: singleNft.metadata?.edition },
-		{ name: 'Description', value: singleNft.metadata?.description },
+		{ name: 'Description', value: singleNft.metadata?.description || options.rawResourceData.description },
 	];
 
 	$: technicalProperties = [

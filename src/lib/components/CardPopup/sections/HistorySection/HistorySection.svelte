@@ -24,6 +24,10 @@
 
 	let nftActivityHistoryData: NftActivityHistoryTableRowData[] = [];
 
+	function clearData() {
+		nftActivityHistoryData = [];
+	}
+
 	let isLoading = true;
 
 	const pageLimit = 10;
@@ -69,6 +73,11 @@
 		loadNextPage();
 	}
 
+	function handleFilterUpdate() {
+		clearData();
+		refreshTable();
+	}
+
 	onMount(refreshTable);
 </script>
 
@@ -94,7 +103,7 @@
 		</button>
 
 		<div class="w-40">
-			<CheckFilterDropdown bind:options={filterOptions} bind:this={checkFilterDropdown} on:update={refreshTable} />
+			<CheckFilterDropdown bind:options={filterOptions} bind:this={checkFilterDropdown} on:update={handleFilterUpdate} />
 		</div>
 	</div>
 
