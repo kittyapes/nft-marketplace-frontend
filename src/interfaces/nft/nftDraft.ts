@@ -1,10 +1,10 @@
 export interface NftDraft {
 	thumbnailBlob: Blob;
-    assetBlob: Blob;
-    assetPreview: string;
-    thumbnailPreview: string;
-    description: string;
+	assetBlob: Blob;
+	assetPreview: string;
+	thumbnailPreview: string;
+	description: string;
 	name: string;
-	collectionName: string;
-    quantity: number;
+	collectionId: string;
+	quantity: number;
 }
