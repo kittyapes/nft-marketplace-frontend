@@ -6,7 +6,6 @@
 	import LargeCollectionCard from '$lib/components/LargeCollectionCard.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import { searchQuery } from '$stores/search';
-	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
 	import { getCollectionsByTitle, getNftsByTitle, searchUsersByName } from '$utils/api/search/globalSearch';
 	import { debounce } from 'lodash-es';
 	import { inview } from 'svelte-inview';
@@ -43,7 +42,7 @@
 
 				searchResults.nfts.index++;
 				let nfts = res;
-				searchResults.nfts.data = [...searchResults.nfts.data, ...nfts.map(nftToCardOptions)];
+				searchResults.nfts.data = [...searchResults.nfts.data, ...(await Promise.all(nfts.map(nftToCardOptions)))];
 				searchResults.nfts.isLoading = false;
 
 				searchResults = searchResults;
