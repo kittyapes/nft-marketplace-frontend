@@ -3,7 +3,7 @@
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import ChevronRight from '$icons/chevron-right.svelte';
 	import Loader from '$icons/loader.svelte';
-	import { welcomeNftsMainnet, welcomeNftsRinkeby } from '$constants/nfts';
+	import { welcomeNftsMainnet, welcomeNftsGoerli } from '$constants/nfts';
 	import { clone } from 'lodash-es';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import type { PopupHandler } from '$utils/popup';
@@ -60,9 +60,18 @@
 		networkId = $connectionDetails?.chainId;
 	});
 
-	let nfts = clone($connectionDetails?.chainId === 1 || +import.meta.env.VITE_DEFAULT_NETWORK === 1 ? welcomeNftsMainnet : welcomeNftsRinkeby);
+	let nfts = clone(
+		$connectionDetails?.chainId === 1 || +import.meta.env.VITE_DEFAULT_NETWORK === 1 || $connectionDetails?.chainId === 1337 || +import.meta.env.VITE_DEFAULT_NETWORK === 1337
+			? welcomeNftsMainnet
+			: welcomeNftsGoerli,
+	);
+
 	$: if ($connectionDetails?.chainId !== networkId || $currentUserAddress !== uAddress) {
-		nfts = clone($connectionDetails?.chainId === 1 || (!$connectionDetails && +import.meta.env.VITE_DEFAULT_NETWORK === 1) ? welcomeNftsMainnet : welcomeNftsRinkeby);
+		nfts = clone(
+			$connectionDetails?.chainId === 1 || +import.meta.env.VITE_DEFAULT_NETWORK === 1 || $connectionDetails?.chainId === 1337 || +import.meta.env.VITE_DEFAULT_NETWORK === 1337
+				? welcomeNftsMainnet
+				: welcomeNftsGoerli,
+		);
 	}
 	$: console.log(nfts);
 	$: data = nfts[0];
