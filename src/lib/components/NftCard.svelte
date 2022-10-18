@@ -23,6 +23,7 @@
 	import CardPopup from './CardPopup/CardPopup.svelte';
 	import { reject } from 'lodash-es';
 	import Loader from '$icons/loader.svelte';
+	import Error from './CardPopup/sections/TradeSection/frames/Error.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -143,7 +144,7 @@
 	onMount(() => {
 		if (options.resourceType !== 'listing') return;
 
-		timerInterval = setInterval(updateTimerHtml, 60_000);
+		timerInterval = setInterval(updateTimerHtml, 15_000);
 		updateTimerHtml();
 	});
 

@@ -3,6 +3,7 @@
 	import { acceptedImages, acceptedVideos } from '$constants';
 	import Back from '$icons/back_.svelte';
 	import type { NftDraft } from '$interfaces/nft/nftDraft';
+	import type { CardOptions } from '$interfaces/ui';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
@@ -11,6 +12,7 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import { nftDraft } from '$stores/create';
+	import { refreshProfileData } from '$stores/user';
 	import { connectionDetails, currentUserAddress } from '$stores/wallet';
 	import { adaptCollectionToMintingDropdown } from '$utils/adapters/adaptCollectionToMintingDropdown';
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
@@ -22,21 +24,19 @@
 	import { setPopup, updatePopupProps } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
 	import { writable } from 'svelte/store';
-	import type { CardOptions } from '$interfaces/ui';
 
 	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
-	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }>(null);
+	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string; collectionId: string }>(null);
 
 	let dumpDraft = false;
 
-	let selectedCollectionId: string;
 	// for displaying in the collection dropdown
-	let selectedCollectionRow;
+	let selectedCollectionRow: ReturnType<typeof adaptCollectionToMintingDropdown>;
 
 	let nftData: Partial<NftDraft> = {
 		name: '' || $nftDraft?.name,
 		quantity: 1 || $nftDraft?.quantity,
-		collectionName: 'Hinata General Collection',
+		collectionId: $nftDraft?.collectionId,
 		description: $nftDraft?.description,
 		assetPreview: $nftDraft?.assetPreview,
 		thumbnailPreview: $nftDraft?.thumbnailPreview,
@@ -59,21 +59,15 @@
 
 		isLoadingCollections = true;
 
-		// Fetch general collection
-		const searchRes = await apiSearchCollections({ collectionAddress: getContract('storage', true).address });
+		await refreshProfileData();
 
-		const genCollection = searchRes.collections?.[0];
-		if (!genCollection) {
-			generalCollection.set(null);
-		} else {
-			const genCollectionAdapted = adaptCollectionToMintingDropdown(genCollection);
-			generalCollection.set(genCollectionAdapted);
-		}
+		// Fetch general collection
+		let genColl = (await apiSearchCollections({ collectionAddress: getContract('storage', true).address })).collections;
+		genColl = genColl.map(adaptCollectionToMintingDropdown);
+		generalCollection.set(genColl[0]);
 
 		let collections: Collection[] = [];
 		let page = 1;
-
-		if ($nftDraft?.collectionName) nftData.collectionName = $nftDraft?.collectionName;
 
 		while (true) {
 			const beforeLength = collections.length;
@@ -85,22 +79,28 @@
 			page++;
 		}
 
-		if (nftData.collectionName) {
-			let selectedCollection = collections.filter((c) => c.name === nftData.collectionName)[0];
-
-			if (selectedCollection) {
-				selectedCollectionRow = adaptCollectionToMintingDropdown(selectedCollection);
-				selectedCollectionId = selectedCollection.id;
-			} else if (nftData.collectionName === 'Hinata General Collection' && $generalCollection?.value) {
-				selectedCollectionRow = $generalCollection;
-				selectedCollectionId = $generalCollection.value;
-			}
-		}
+		const available = collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown);
 
 		if ($generalCollection) {
-			$availableCollections = [$generalCollection, ...collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown)];
-		} else {
-			$availableCollections = collections.filter((c) => c.slug).map(adaptCollectionToMintingDropdown);
+			// Insert general collection if available and set it as selected
+			available.unshift($generalCollection);
+		}
+
+		$availableCollections = available;
+
+		// Make sure to visually select the selected collection
+		let collectionToSelect = null;
+
+		if ($nftDraft?.collectionId) {
+			// User could have previously selected a collection which is now saved in a draft
+			collectionToSelect = available.find((i) => i.collectionId === $nftDraft.collectionId);
+		} else if (available.length) {
+			// If no collection is saved in draft, select the first available collection
+			collectionToSelect = available[0];
+		}
+
+		if (collectionToSelect) {
+			handleCollectionSelection({ detail: collectionToSelect });
 		}
 
 		isLoadingCollections = false;
@@ -109,10 +109,6 @@
 	$: $currentUserAddress && $connectionDetails && prepData();
 
 	async function mintAndContinue() {
-		// Keep for skipping mint
-		// goto('/create/choose-listing-format');
-		// return;
-
 		newBundleData.set({} as NewBundleData);
 		const progress = writable(0);
 		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
@@ -121,8 +117,6 @@
 		console.info('[Create] Using new NFT contract ID:', nftId);
 
 		// Create NFT on the server
-		const selectedCollection = $availableCollections.find((c) => c.value === selectedCollectionId);
-
 		const createNftRes = await createNFTOnAPI({
 			description: nftData.description,
 			amount: nftData.quantity,
@@ -130,7 +124,7 @@
 			creator: $currentUserAddress,
 			thumbnail: nftData.thumbnailBlob,
 			asset: nftData.assetBlob,
-			collectionId: selectedCollection.value,
+			collectionId: selectedCollectionRow.collectionId,
 		});
 
 		if (!createNftRes) {
@@ -147,7 +141,7 @@
 			await createNFTOnChain({
 				id: createNftRes.nftId.toString(),
 				amount: nftData.quantity.toString(),
-				collectionAddress: selectedCollection.collectionAddress,
+				collectionAddress: selectedCollectionRow.collectionAddress,
 			});
 		} catch (err) {
 			notifyError('Failed to create NFT on chain!');
@@ -163,19 +157,20 @@
 		dumpDraft = true;
 	}
 
-	const handleCollectionSelection = (event) => {
-		// Skip this function during collection loading
+	const handleCollectionSelection = (event: { detail: ReturnType<typeof adaptCollectionToMintingDropdown> }) => {
 		if (event.detail?.label === 'Create new collection') {
 			goto(event.detail?.value);
-		} else if ($availableCollections.length < 2) return;
-		else {
-			nftData.collectionName = event.detail?.label;
-			selectedCollectionId = event.detail?.value;
+		} else if ($availableCollections.length < 1) {
+			// Skip this function during collection loading
+			return;
+		} else {
+			selectedCollectionRow = event.detail;
+			nftData.collectionId = selectedCollectionRow.collectionId;
 		}
 	};
 
 	$: quantityValid = nftData.quantity > 0;
-	$: inputValid = nftData.name && nftData.name.length <= 25 && selectedCollectionId && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
+	$: inputValid = nftData.name && nftData.name.length <= 25 && selectedCollectionRow && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
 
 	$: if (nftData) {
 		$formValidity.name = !!nftData.name ? (nftData.name.length > 25 ? 'Name Cannot be more than 25 characters' : true) : !nftData.name ? 'Name is Required' : true;
@@ -194,7 +189,7 @@
 			{
 				name: nftData.name || 'No Title',
 				thumbnailUrl: nftData.thumbnailPreview || nftData.assetPreview,
-				collectionData: { name: nftData.collectionName },
+				collectionData: { name: selectedCollectionRow?.label },
 			},
 		],
 	} as CardOptions;

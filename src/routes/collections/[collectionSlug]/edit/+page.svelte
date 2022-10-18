@@ -214,7 +214,7 @@
 
 		// where to go next based on URL params
 		if ($page.url.searchParams.has('to')) {
-			$nftDraft.collectionName = $collectionData.name;
+			$nftDraft.collectionId = $collectionData.id;
 			goto('/' + $page.url.searchParams.get('to'));
 		} else goto('/collections/' + apiRes.data.data.slug);
 	}
@@ -234,7 +234,7 @@
 
 		// where to go next based on URL params
 		if ($page.url.searchParams.has('to')) {
-			$nftDraft.collectionName = $collectionData.name;
+			$nftDraft.collectionId = $collectionData.id;
 			goto('/' + $page.url.searchParams.get('to'));
 		} else goto('/collections/' + $collectionData.slug);
 	}

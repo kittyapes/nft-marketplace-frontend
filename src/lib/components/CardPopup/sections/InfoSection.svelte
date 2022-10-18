@@ -34,7 +34,7 @@
 		{ name: 'Creator', value: singleNft.creator || options.rawResourceData.metadata?.creator?.address },
 		{ name: 'Collection name', value: singleNft.collectionData?.name },
 		{ name: 'Edition', value: singleNft.metadata?.edition },
-		{ name: 'Description', value: singleNft.metadata?.description },
+		{ name: 'Description', value: singleNft.metadata?.description || options.rawResourceData.description },
 	];
 
 	$: technicalProperties = [
@@ -51,8 +51,6 @@
 			value: balance !== null ? `${ownedOrListedNfts} of ${supply}` : null,
 		},
 	];
-
-	$: console.log(options);
 
 	onMount(async () => {
 		// When its not a listing
@@ -78,7 +76,7 @@
 
 <div class="flex-grow h-full pr-4 overflow-y-auto blue-scrollbar">
 	<!-- Properties -->
-	<div class="mt-4">
+	<div class="mt-2">
 		{#each properties as prop}
 			{#if prop.name === 'Collection name' && prop.value}
 				<div

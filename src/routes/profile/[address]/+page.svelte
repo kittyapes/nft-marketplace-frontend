@@ -13,7 +13,7 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
-	import { profileCompletionProgress } from '$stores/user';
+	import { profileCompletionProgress, userCreatedListing } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
 	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
@@ -49,14 +49,16 @@
 			let options: CardOptions;
 
 			if (listing) {
-				options = listingToCardOptions(listing);
+				options = await listingToCardOptions(listing);
 			} else {
 				const nft = await getNft(id);
-				options = nftToCardOptions(nft);
+				options = await nftToCardOptions(nft);
 			}
 
 			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
 		}
+
+		if (browser && $currentUserAddress) selectTab($tabParam);
 	});
 
 	const fetchLimit = 10;
@@ -68,6 +70,16 @@
 	}
 
 	$: browser && fetchData(address);
+	$: if (browser && address && $currentUserAddress) {
+		refreshAllTabs();
+	}
+
+	userCreatedListing.subscribe((value) => {
+		if (value) {
+			refreshAllTabs();
+			userCreatedListing.set(false);
+		}
+	});
 
 	$: socialLinks = $localProfileData?.social || { instagram: '', discord: '', twitter: '', website: '', pixiv: '', deviantart: '', artstation: '' };
 
@@ -93,7 +105,7 @@
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
 				res.res = await apiGetUserNfts(address, 'COLLECTED', page, limit);
-				res.adapted = res.res.res.map(nftToCardOptions);
+				res.adapted = await Promise.all(res.res.res.map(nftToCardOptions));
 
 				for (const nft of res.adapted) {
 					nft.rawResourceData.owner = address;
@@ -108,7 +120,7 @@
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
 				res.res = await apiGetUserNfts(address, 'MINTED', page, limit);
-				res.adapted = res.res.res.map((nft) => nftToCardOptions(nft));
+				res.adapted = await Promise.all(res.res.res.map((nft) => nftToCardOptions(nft)));
 				return res;
 			},
 			label: 'Created NFTs',
@@ -124,7 +136,7 @@
 
 				const res = {} as FetchFunctionResult;
 				res.res = await getListings({ seller: address, listingStatus }, page, limit);
-				res.adapted = res.res.map(listingToCardOptions);
+				res.adapted = await Promise.all(res.res.map(listingToCardOptions));
 
 				return res;
 			},
@@ -134,10 +146,8 @@
 		{
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
-				res.res = await getUserFavoriteNfts(address);
-				res.adapted = res.res.map((nft) => nftToCardOptions(nft.nft));
-
-				tab.reachedEnd = true;
+				res.res = await getUserFavoriteNfts(address, page, limit);
+				res.adapted = await Promise.all(res.res.map((nft) => nftToCardOptions(nft.nft)));
 
 				return res;
 			},
@@ -149,7 +159,7 @@
 				const res = {} as FetchFunctionResult;
 
 				res.res = await apiGetHiddenNfts(address, page, limit);
-				res.adapted = res.res.map(nftToCardOptions);
+				res.adapted = await Promise.all(res.res.map(nftToCardOptions));
 
 				res.adapted.forEach((i) => (i.allowTrade = false));
 
@@ -172,44 +182,51 @@
 	// Reset tabs on the initial load
 	resetTabs();
 
+	const refreshTab = (name: string) => {
+		const tab = tabs.find((t) => t.name === name);
+
+		if (!tab) return;
+
+		tab.index = 1;
+		tab.data = [];
+		tab.reachedEnd = false;
+
+		fetch();
+	};
+
 	let refreshNftTabs = (event: CustomEvent) => {
 		if (!event.detail) return;
 
 		event.detail.tabs.forEach((tabName) => {
-			tabs.forEach((tab) => {
-				if (tabName === tab.name) {
-					tab.index = 1;
-					tab.data = [];
-					tab.reachedEnd = false;
+			refreshTab(tabName);
+		});
+	};
 
-					tab.isFetching = true;
-					isFetchingNfts = true;
-
-					tab.fetchFunction(tab, tab.index, fetchLimit);
-
-					tab.isFetching = false;
-					isFetchingNfts = false;
-				}
-			});
+	const refreshAllTabs = () => {
+		tabs.forEach((t) => {
+			refreshTab(t.name);
 		});
 	};
 
 	let selectedTab: typeof tabs[0] = tabs[0];
 
-	function selectTab(name: string) {
-		if (browser && name) {
-			goto('?tab=' + name, { noscroll: true });
-		}
-
-		selectedTab = tabs.find((i) => i.name === name) || tabs.find((t) => t.name === 'collected');
-
-		if (browser && !selectedTab.data.length && !selectedTab.isFetching) {
+	function fetch() {
+		if (browser && !selectedTab.data.length && !selectedTab.isFetching && !selectedTab.reachedEnd) {
 			fetchMore();
 		}
 	}
 
+	function selectTab(name: string) {
+		if (browser && name) {
+			goto('?tab=' + name, { noscroll: true, replaceState: false });
+		}
+
+		selectedTab = tabs.find((i) => i.name === name) || tabs.find((t) => t.name === 'collected');
+
+		fetch();
+	}
+
 	const tabParam = derived(page, (p) => p.url.searchParams.get('tab'));
-	$: if (browser && $currentUserAddress) selectTab($tabParam);
 
 	let isFetchingNfts = false;
 
@@ -220,7 +237,6 @@
 
 		isFetchingNfts = true;
 		tab.isFetching = true;
-
 		const res = await tab.fetchFunction(tab, tab.index, fetchLimit);
 
 		if (res.err) {
