@@ -314,7 +314,7 @@
 				<span class="font-bold opacity-50 whitespace-nowrap">No username</span>
 			{/if}
 
-			{#if ($localProfileData?.status === 'VERIFIED', $localProfileData?.roles.includes('verified_user'))}
+			{#if $localProfileData?.status === 'VERIFIED' || $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.roles.includes('verified_user')}
 				<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || !storage.hasRole('minter', address)} class="inline-block translate-x-1 translate-y-1">
 					<VerifiedBadge />
 				</div>
