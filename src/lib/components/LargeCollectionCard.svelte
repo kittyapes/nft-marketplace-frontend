@@ -13,6 +13,8 @@
 		isLoading = true;
 		collectionDetail = await apiGetCollectionBySlug(collection.slug);
 		isLoading = false;
+
+		console.log(collectionDetail);
 	});
 </script>
 
@@ -44,15 +46,15 @@
 	<div class="flex justify-between items-center">
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Highest Sale</div>
-			<div class="text-lg font-semibold">${collection.highestSale || 0}</div>
+			<div class="text-lg font-semibold">{collection.highestSale || 0} WETH</div>
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Floor Price</div>
-			<div class="text-lg font-semibold">{collection.floorPrice || 0} {collection.paymentTokenTicker}</div>
+			<div class="text-lg font-semibold">{collection.floorPrice || 0} WETH</div>
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Total Volume</div>
-			<div class="text-lg font-semibold">${collection.totalVol || 0}</div>
+			<div class="text-lg font-semibold">{collection.totalVol || 0} WETH</div>
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Items</div>
@@ -64,7 +66,7 @@
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">24hr Volume</div>
-			<div class="text-lg font-semibold">${collection.total24hours || 0}</div>
+			<div class="text-lg font-semibold">{collection.total24hours || 0} WETH</div>
 		</div>
 	</div>
 	<div class="flex items-center justify-center gap-4">

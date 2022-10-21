@@ -79,7 +79,7 @@
 		totalVol: {
 			stat: 'Total Volume',
 			value: 0,
-			symbol: '',
+			symbol: 'WETh',
 		},
 		items: {
 			stat: 'Items',
