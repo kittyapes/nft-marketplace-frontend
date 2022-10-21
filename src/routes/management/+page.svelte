@@ -32,7 +32,6 @@
 	import PaginationFooter from '$lib/components/management/render-components/PaginationFooter.svelte';
 	import { onDestroy, onMount } from 'svelte';
 
-
 	const fetchLimit = 20;
 
 	let tab: 'USER' | 'COLLECTION' = 'USER';
@@ -187,6 +186,7 @@
 
 	const handleFilter = async (event: CustomEvent) => {
 		if (tab === 'USER') {
+			console.log(event.detail);
 			userFetchingOptions.filter = {
 				createdBefore: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdBefore,
 				role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
@@ -200,6 +200,7 @@
 				userFetchingOptions.filter.role = undefined;
 				userFetchingOptions.filter.status = undefined;
 			}
+			if (event.detail.createdBefore === 'all') userFetchingOptions.filter.createdBefore = undefined;
 
 			await getSearchedUsers();
 		} else {
@@ -413,7 +414,7 @@
 	const debouncedSearch = debounce(async () => (tab === 'USER' ? await getSearchedUsers() : await getSearchedCollections()), 300);
 
 	const getSearchedUsers = async () => {
-		const res = await await getUsers(getUsersFetchingOptions());
+		const res = await getUsers(getUsersFetchingOptions());
 		users = res.users;
 		totalUserEntries = res.totalCount;
 	};
@@ -511,7 +512,7 @@
 					<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
 				</div>
 				<div class="">
-					<Filter on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter' }} />
+					<Filter on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', createdBefore: 'all' }} />
 				</div>
 			</div>
 		{:else}
