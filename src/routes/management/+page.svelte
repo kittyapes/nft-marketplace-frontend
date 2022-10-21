@@ -419,7 +419,7 @@
 		totalUserEntries = res.totalCount;
 	};
 
-	$: if (userFetchingOptions.query || collectionFetchingOptions.name) {
+	$: if (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0) {
 		loaded = false;
 		debouncedSearch();
 	}
