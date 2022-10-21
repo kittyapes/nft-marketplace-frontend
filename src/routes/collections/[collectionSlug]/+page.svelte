@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import AddCircle from '$icons/add-circle.svelte';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import type { UserData } from '$interfaces/userData';
 	import ActionMenu from '$lib/components/ActionMenu.svelte';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import NftList from '$lib/components/NftList.svelte';
-	import { nftDraft } from '$stores/create';
 	import { currentUserAddress } from '$stores/wallet';
 	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
 	import { apiGetCollectionBySlug, type Collection } from '$utils/api/collection';
@@ -79,7 +77,7 @@
 		totalVol: {
 			stat: 'Total Volume',
 			value: 0,
-			symbol: '',
+			symbol: 'WETh',
 		},
 		items: {
 			stat: 'Items',
@@ -235,24 +233,8 @@
 	</div>
 
 	<div class="mt-16 border-t border-[#0000004D]">
-		{#if nfts.length}
-			<NftList options={nfts} {isLoading} {reachedEnd} on:end-reached={fetchMore} />
-		{:else if collectionData && !nfts.length && $currentUserAddress === collectionData.creator}
-			<div
-				class="grid place-items-center border border-dashed border-opacity-30 border-color-gray-base h-60 clickable hover:scale-105 transition-all p10 rounded-2xl max-w-[246px] my-10"
-				on:click={() => {
-					$nftDraft = {};
-					$nftDraft.collectionId = collectionData.id;
-					goto('/create');
-				}}
-			>
-				<div class="flex flex-col items-center justify-center gap-4">
-					<button class="rounded-full btn">
-						<AddCircle />
-					</button>
-					<div class="text-color-gray-dark">Create a new NFT</div>
-				</div>
-			</div>
+		{#if nfts.length && collectionData}
+			<NftList options={nfts} {isLoading} {reachedEnd} createNewNftBtn={{ include: $currentUserAddress === collectionData.creator, collectionId: collectionData.id }} on:end-reached={fetchMore} />
 		{/if}
 	</div>
 </main>
