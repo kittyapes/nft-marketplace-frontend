@@ -25,10 +25,17 @@
 	let creatorData: UserData;
 
 	let reachedEnd = false;
-	let isLoading = true;
+	let isLoading = false;
 
 	let index = 1;
 	const limit = 15;
+
+	const resetNfts = () => {
+		nfts = [];
+		index = 1;
+		reachedEnd = false;
+		isLoading = false;
+	};
 
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
@@ -42,7 +49,7 @@
 	};
 
 	async function fetchMore() {
-		if (reachedEnd) return;
+		if (reachedEnd || isLoading) return;
 		isLoading = true;
 
 		const res = await fetchFunction();
@@ -101,6 +108,7 @@
 	};
 
 	async function fetchCollectionData() {
+		resetNfts();
 		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => undefined);
 
 		// Populate collection stats
@@ -112,9 +120,10 @@
 		});
 
 		creatorData = await fetchProfileData(collectionData?.creator).catch((e) => undefined);
+		await fetchMore();
 	}
 
-	$: fetchCollectionData();
+	$: $page.params.collectionSlug && fetchCollectionData();
 
 	let collectionMenuButtonOptions = [
 		// REMEMBER TO SET THESE TO TRUE
