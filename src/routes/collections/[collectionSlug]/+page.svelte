@@ -33,7 +33,11 @@
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await apiGetCollectionBySlug($page.params.collectionSlug, limit, index);
-		res.adapted = await Promise.all(res.res.nfts.map(nftToCardOptions));
+		res.adapted = await Promise.all(res.res.nfts?.map(nftToCardOptions)).catch((err) => {
+			console.error(err);
+			return [];
+		});
+
 		return res;
 	};
 
@@ -49,7 +53,7 @@
 			return;
 		}
 
-		if (res.adapted.length === 0) {
+		if (res.adapted?.length === 0) {
 			reachedEnd = true;
 		} else {
 			nfts = [...nfts, ...res.adapted];
