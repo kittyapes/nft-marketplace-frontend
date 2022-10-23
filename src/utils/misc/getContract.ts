@@ -45,6 +45,13 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goe
 	{ name: 'factory', network: 'staging-genache', address: '0x41a508E15F391b2AA3129c9fE054f9A48226AC4F', abi: factoryAbi },
 	{ name: 'token', network: 'staging-genache', address: '0x91a09acc7a76624f593990c4456fc318d705c761', abi: tokenAbi },
 	{ name: 'weth', network: 'staging-genache', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', abi: erc20Abi },
+
+	// Staging Goerli
+	{ name: 'marketplace', network: 'staging-genache', address: '0x1fBf287d7026f5d43549424886B439Fc1d405c58', abi: marketplaceAbi },
+	{ name: 'storage', network: 'staging-genache', address: '0xE09dA477881DDC07D8DAD107dd71021EA43aCFf8', abi: storageAbi },
+	{ name: 'factory', network: 'staging-genache', address: '0x7E6b4e3daE0C60Fa3FD9bfa8dB2215b8B237b4FC', abi: factoryAbi },
+	{ name: 'token', network: 'staging-genache', address: '0xf41f5a3f6497687738F1cBd0B262f577da9384Bf', abi: tokenAbi },
+	{ name: 'weth', network: 'staging-genache', address: '0xbA5029aAF14672ef662aD8eB38CDB4E4C16AdF6D', abi: erc20Abi },
 ];
 
 export function getContractData(name: ContractName) {
@@ -66,14 +73,14 @@ export function getContractData(name: ContractName) {
 		throw new Error(`Network with the ID ${networkId} not supported.`);
 	}
 
-	if ((environment?.trim() === 'development' || environment?.trim() === 'testing') && networkName === 'goerli') {
+	if ((environment?.trim() === 'development' || environment?.trim() === 'testing' || environment?.trim() === 'staging') && networkName === 'goerli') {
 		networkName = `${environment.trim()}-goerli`;
 	}
 
 	const contractData = contracts.find((c) => c.name === name && c.network === networkName);
 
 	if (!contractData) {
-		if (!['development', 'testing'].includes(environment) && networkName === 'goerli') {
+		if (!['development', 'testing', 'staging'].includes(environment) && networkName === 'goerli') {
 			console.warn('Network is set to goerli but CONTRACTS_ENVIRONMENT variable is not set, app may not function properly.');
 		}
 
