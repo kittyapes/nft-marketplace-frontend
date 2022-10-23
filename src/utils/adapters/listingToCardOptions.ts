@@ -12,13 +12,11 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 	}
 
 	if (!nft.thumbnailUrl || !nft.metadata) {
-		if (nft) {
-			const nftMetadata = await getOnChainMetadata(nft?.contractAddress, nft?.nftId.toString());
-			nft.metadata = nftMetadata ?? nft.metadata;
-			// TODO: Add temporary image for nfts that did not load here
-			nft.thumbnailUrl = nftMetadata?.image ?? nft.thumbnailUrl ?? '';
-			nft.assetUrl = nftMetadata?.animation_url ?? nft.assetUrl ?? nft.thumbnailUrl ?? nftMetadata?.image ?? '';
-		}
+		const nftMetadata = await getOnChainMetadata(nft?.contractAddress, nft?.nftId.toString());
+		nft.metadata = nftMetadata ?? nft.metadata;
+		// TODO: Add temporary image for nfts that did not load here
+		nft.thumbnailUrl = nftMetadata?.image ?? nft.thumbnailUrl ?? '';
+		nft.assetUrl = nftMetadata?.animation_url ?? nft.assetUrl ?? nft.thumbnailUrl ?? nftMetadata?.image ?? '';
 	}
 
 	const ret: CardOptions = {
