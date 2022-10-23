@@ -22,11 +22,12 @@
 	export let disableQuantity = false;
 	export let disableStartDate = false;
 	export let disabled = false;
+	export let minDuration = 0;
 
 	$: sale = listingType === 'sale';
 	$: auction = listingType === 'auction';
 
-	$: durationOptions = buildListingDurationOptions($userHasRole('admin', 'superadmin'));
+	$: durationOptions = buildListingDurationOptions($userHasRole('admin', 'superadmin'), minDuration);
 
 	export let formErrors: string[] = [];
 
