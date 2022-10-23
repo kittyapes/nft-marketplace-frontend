@@ -77,11 +77,17 @@
 
 	$: if (maxQuantity <= 1) props.quantity = 1;
 
-	export function setValues(options: { startDateTs: number; quantity: number; durationSeconds: number; price: string }) {
-		_setDuration(durationOptions.find((v) => v.value === options.durationSeconds));
-		_setStartDateTs(options.startDateTs);
-		props.quantity = options.quantity;
-		props.price = options.price;
+	export function setValues(options: Partial<{ startDateTs: number; quantity: number; durationSeconds: number; price: string }>) {
+		options.durationSeconds && _setDuration(durationOptions.find((v) => v.value === options.durationSeconds));
+		options.startDateTs && _setStartDateTs(options.startDateTs);
+
+		if (options.quantity) {
+			props.quantity = options.quantity;
+		}
+
+		if (options.price) {
+			props.price = options.price;
+		}
 	}
 
 	let _setDuration;
