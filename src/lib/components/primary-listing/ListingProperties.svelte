@@ -4,7 +4,7 @@
 	import type { ConfigurableListingProps } from '$interfaces/listing';
 	import type { ListingType } from '$utils/api/listing';
 	import { userHasRole } from '$utils/auth/userRoles';
-	import { buildListingDurationOptions } from '$utils/misc';
+	import { buildListingDurationOptions, type ListingDurationOption } from '$utils/misc';
 	import { isPrice } from '$utils/validator/isPrice';
 	import Datepicker from '../Datepicker.svelte';
 	import Dropdown from '../Dropdown.svelte';
@@ -94,6 +94,10 @@
 	let _setStartDateTs;
 
 	$: _disableQuantity = maxQuantity <= 1 || disabled || disableQuantity;
+
+	function handleDurationOptionsSelect(ev: { detail: ListingDurationOption }) {
+		props.durationSeconds = ev.detail.value;
+	}
 </script>
 
 <div class="grid gap-x-8 gap-y-4" class:grid-cols-2={compact}>
@@ -102,7 +106,7 @@
 	</InputSlot>
 
 	<InputSlot label="Duration">
-		<Dropdown options={durationOptions} on:select={(ev) => (props.durationSeconds = ev.detail.value)} bind:setSelected={_setDuration} {disabled} />
+		<Dropdown options={durationOptions} on:select={handleDurationOptionsSelect} bind:setSelected={_setDuration} {disabled} />
 	</InputSlot>
 
 	<InputSlot label="Quantity" hidden={hideQuantity}>

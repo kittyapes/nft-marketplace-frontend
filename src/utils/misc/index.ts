@@ -4,12 +4,20 @@ export function matches(a: string, b: string) {
 	return a?.toLocaleLowerCase() === b?.toLocaleLowerCase();
 }
 
+export interface ListingDurationOption {
+	// Used for example in the duration dropdown
+	label: string;
+
+	// Number of seconds a listing should last
+	value: number;
+}
+
 /**
  * Returns an array of objects to be used when populating the listing duration setting
  * dropdown. The contents of the array depend on whether the user is an admin or not.
  * @param isAdmin Whether values that are supposed to be only used by admins should be returned.
  */
-export function buildListingDurationOptions(isAdmin: boolean) {
+export function buildListingDurationOptions(isAdmin: boolean): ListingDurationOption[] {
 	const options: { label: string; value: number; style?: string }[] = [
 		{ label: '1 day', value: 1 * 24 * 3600 },
 		{ label: '3 days', value: 3 * 24 * 3600 },
