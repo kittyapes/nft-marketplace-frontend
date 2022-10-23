@@ -1,12 +1,12 @@
 <script lang="ts">
 	import type { CardOptions } from '$interfaces/ui';
-
 	import { likedNftIds } from '$stores/user';
+	import { sanitizeNftData } from '$utils/adapters/cardOptions';
+	import { getNft } from '$utils/api/nft';
 	import { makeHttps } from '$utils/ipfs';
-
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import type { PopupHandler } from '$utils/popup';
-
+	import { onMount } from 'svelte';
 	import Popup from '../Popup.svelte';
 	import AssetContainer from './sections/AssetContainer.svelte';
 	import RightSection from './sections/RightSection.svelte';
@@ -29,6 +29,20 @@
 			countdownData.expired = true;
 		}
 	}
+
+	async function fetchNftDetail() {
+		const detailedNftData = await getNft(options.nfts[0].databaseId);
+		const sanitized = await sanitizeNftData(detailedNftData);
+
+		options.nfts[0] = sanitized;
+	}
+
+	onMount(() => {
+		// We wanna refresh the NFT data from the NFT detail endpoint when the use opens
+		// the popup. That will allow us to display more data than what's available from
+		// the /nfts/search endpoint.
+		fetchNftDetail();
+	});
 </script>
 
 <Popup class="w-full h-full overflow-y-auto rounded-none lg:rounded-xl lg:w-[1000px] lg:max-h-[700px] transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>

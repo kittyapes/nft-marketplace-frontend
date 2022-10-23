@@ -11,7 +11,7 @@
 	import { inview } from 'svelte-inview';
 	import { page } from '$app/stores';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
-	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { onMount } from 'svelte';
 
 	const fullResultsLimit = 20;

@@ -8,7 +8,7 @@
 	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
-	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
+	import { listingToCardOptions } from '$utils/adapters/cardOptions';
 	import { getListing } from '$utils/api/listing';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { setPopup } from '$utils/popup';

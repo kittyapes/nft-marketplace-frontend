@@ -15,8 +15,8 @@
 	import TabButton from '$lib/components/TabButton.svelte';
 	import { profileCompletionProgress, userCreatedListing } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
-	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
-	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import { listingToCardOptions } from '$utils/adapters/cardOptions';
+	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { getListing, getListings } from '$utils/api/listing';
 	import { apiGetUserNfts, getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
