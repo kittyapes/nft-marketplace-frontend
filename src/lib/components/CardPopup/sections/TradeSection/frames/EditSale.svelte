@@ -19,8 +19,10 @@
 	import { notifyError } from '$utils/toast';
 	import { chain } from 'lodash-es';
 	import { onDestroy } from 'svelte';
-	import { frame } from '../tradeSection';
+	import { createEventDispatcher } from 'svelte';
 	import Success from './Success.svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
@@ -62,7 +64,7 @@
 
 		try {
 			await contractUpdateListing(options.listingData.onChainId, chainListing.payToken, listingProps);
-			frame.set(Success);
+			dispatch('set-frame', { component: Success });
 			options.staleResource.set({ reason: 'cancelled' });
 		} catch (err) {
 			console.error(err);
