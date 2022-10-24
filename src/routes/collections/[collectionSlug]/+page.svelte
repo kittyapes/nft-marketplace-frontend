@@ -25,20 +25,31 @@
 	let creatorData: UserData;
 
 	let reachedEnd = false;
-	let isLoading = true;
+	let isLoading = false;
 
 	let index = 1;
 	const limit = 15;
 
+	const resetNfts = () => {
+		nfts = [];
+		index = 1;
+		reachedEnd = false;
+		isLoading = false;
+	};
+
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await apiGetCollectionBySlug($page.params.collectionSlug, limit, index);
-		res.adapted = await Promise.all(res.res.nfts.map(nftToCardOptions));
+		res.adapted = await Promise.all(res.res.nfts?.map(nftToCardOptions)).catch((err) => {
+			console.error(err);
+			return [];
+		});
+
 		return res;
 	};
 
 	async function fetchMore() {
-		if (reachedEnd) return;
+		if (reachedEnd || isLoading) return;
 		isLoading = true;
 
 		const res = await fetchFunction();
@@ -49,7 +60,7 @@
 			return;
 		}
 
-		if (res.adapted.length === 0) {
+		if (res.adapted?.length === 0) {
 			reachedEnd = true;
 		} else {
 			nfts = [...nfts, ...res.adapted];
@@ -97,6 +108,7 @@
 	};
 
 	async function fetchCollectionData() {
+		resetNfts();
 		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => undefined);
 
 		// Populate collection stats
@@ -108,9 +120,10 @@
 		});
 
 		creatorData = await fetchProfileData(collectionData?.creator).catch((e) => undefined);
+		await fetchMore();
 	}
 
-	$: fetchCollectionData();
+	$: $page.params.collectionSlug && fetchCollectionData();
 
 	let collectionMenuButtonOptions = [
 		// REMEMBER TO SET THESE TO TRUE

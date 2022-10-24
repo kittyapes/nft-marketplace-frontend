@@ -7,7 +7,6 @@
 	import { fly } from 'svelte/transition';
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import { beforeNavigate, goto } from '$app/navigation';
-	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import { setPopup } from '$utils/popup';
 	import { page } from '$app/stores';
 	import { searchQuery } from '$stores/search';
