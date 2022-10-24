@@ -8,6 +8,7 @@
 	import type { CardOptions } from '$interfaces/ui';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
+	import InfoBox from '$lib/components/InfoBox.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
@@ -100,7 +101,7 @@
 		index?: number;
 		reachedEnd?: boolean;
 		isFetching?: boolean;
-		data?: [];
+		data?: CardOptions[];
 	}[] = [
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -131,7 +132,7 @@
 			fetchFunction: async (tab, page, limit) => {
 				const listingStatus = ['UNLISTED', 'ACTIVE'] as any;
 
-				if ($currentUserAddress === address) {
+				if ($currentUserAddress === address || $userHasRole('admin', 'superadmin')) {
 					listingStatus.push('EXPIRED');
 				}
 
@@ -383,6 +384,12 @@
 	<div class="h-px bg-black opacity-30" />
 
 	<div class="max-w-screen-xl mx-auto">
+		{#if $userHasRole('admin', 'superadmin') && selectedTab.data.some((i) => i.rawResourceData?.listingStatus === 'EXPIRED')}
+			<div class="m-2 -mb-4">
+				<InfoBox>Expired listings of this user are displayed because you are viewing this profile as an admin.</InfoBox>
+			</div>
+		{/if}
+
 		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:refresh-tabs={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
 	</div>
 </div>
