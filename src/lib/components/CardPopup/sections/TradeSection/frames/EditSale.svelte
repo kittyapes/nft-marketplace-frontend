@@ -102,6 +102,7 @@
 			{disableStartDate}
 			maxPrice={chainListing.price}
 			minDuration={chainListing.duration}
+			disabled={updatingListing || cancellingListing}
 			bind:formErrors
 			bind:props={listingProps}
 			bind:this={_listingProperties}
