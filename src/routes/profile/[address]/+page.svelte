@@ -13,7 +13,7 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
-	import { profileCompletionProgress, userCreatedListing } from '$stores/user';
+	import { profileCompletionProgress, profileData, userCreatedListing } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
 	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
@@ -85,7 +85,9 @@
 	$: socialLinks = $localProfileData?.social || { instagram: '', discord: '', twitter: '', website: '', pixiv: '', deviantart: '', artstation: '' };
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
-	$: firstTimeUser = $localProfileData?.createdAt === $localProfileData?.updatedAt;
+	$: firstTimeUser = $profileData?.createdAt === $profileData?.updatedAt;
+
+	$: console.log($localProfileData);
 
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
@@ -327,7 +329,7 @@
 		<div class="flex flex-col gap-3 h-[min-content] w-72 pt-10">
 			<CopyAddressButton {address} />
 
-			{#if address === $currentUserAddress}
+			{#if address === $currentUserAddress && $profileData}
 				<div transition:fade|local>
 					<button class="btn btn-rounded btn-shadow w-[11rem] py-2 uppercase" on:click={() => goto('/profile/edit')}>
 						{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}
