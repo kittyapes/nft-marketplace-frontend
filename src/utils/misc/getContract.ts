@@ -47,11 +47,11 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goe
 	{ name: 'weth', network: 'staging-genache', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', abi: erc20Abi },
 
 	// Staging Goerli
-	{ name: 'marketplace', network: 'staging-genache', address: '0x1fBf287d7026f5d43549424886B439Fc1d405c58', abi: marketplaceAbi },
-	{ name: 'storage', network: 'staging-genache', address: '0xE09dA477881DDC07D8DAD107dd71021EA43aCFf8', abi: storageAbi },
-	{ name: 'factory', network: 'staging-genache', address: '0x7E6b4e3daE0C60Fa3FD9bfa8dB2215b8B237b4FC', abi: factoryAbi },
-	{ name: 'token', network: 'staging-genache', address: '0xf41f5a3f6497687738F1cBd0B262f577da9384Bf', abi: tokenAbi },
-	{ name: 'weth', network: 'staging-genache', address: '0xbA5029aAF14672ef662aD8eB38CDB4E4C16AdF6D', abi: erc20Abi },
+	{ name: 'marketplace', network: 'staging-goerli', address: '0x1fBf287d7026f5d43549424886B439Fc1d405c58', abi: marketplaceAbi },
+	{ name: 'storage', network: 'staging-goerli', address: '0xE09dA477881DDC07D8DAD107dd71021EA43aCFf8', abi: storageAbi },
+	{ name: 'factory', network: 'staging-goerli', address: '0x7E6b4e3daE0C60Fa3FD9bfa8dB2215b8B237b4FC', abi: factoryAbi },
+	{ name: 'token', network: 'staging-goerli', address: '0xf41f5a3f6497687738F1cBd0B262f577da9384Bf', abi: tokenAbi },
+	{ name: 'weth', network: 'staging-goerli', address: '0xbA5029aAF14672ef662aD8eB38CDB4E4C16AdF6D', abi: erc20Abi },
 ];
 
 export function getContractData(name: ContractName) {
