@@ -292,7 +292,7 @@
 
 <div class="">
 	<div class="pt-24 mx-auto max-w-screen-2xl px-20">
-		<div class="h-96 border-b-4 btn-gradient-border w-full">
+		<div class="h-96 btn-gradient-border border-t-0 border-x-0 border-b-4 w-full">
 			{#if $localProfileData?.coverUrl}
 				<div style="background-image: url({$localProfileData?.coverUrl})" class="w-full h-full bg-center bg-no-repeat bg-cover" />
 			{/if}
