@@ -91,7 +91,7 @@
 		// Make sure to visually select the selected collection
 		let collectionToSelect = null;
 
-		if ($nftDraft.collectionId) {
+		if ($nftDraft?.collectionId) {
 			// User could have previously selected a collection which is now saved in a draft
 			collectionToSelect = available.find((i) => i.collectionId === $nftDraft.collectionId);
 		} else if (available.length) {

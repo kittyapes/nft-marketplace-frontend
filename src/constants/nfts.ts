@@ -1,4 +1,4 @@
-export const welcomeNftsRinkeby = [
+export const welcomeNftsGoerli = [
 	{
 		nftAirdropNonce: 0,
 		id: 987654,
@@ -7,7 +7,7 @@ export const welcomeNftsRinkeby = [
 		collectionName: 'Hinata',
 		likes: 0,
 		priceEth: 0,
-		ownedByUser: false
+		ownedByUser: false,
 	},
 	{
 		nftAirdropNonce: 0,
@@ -17,8 +17,8 @@ export const welcomeNftsRinkeby = [
 		collectionName: 'Hinata',
 		likes: 100,
 		priceEth: 3.2,
-		ownedByUser: false
-	}
+		ownedByUser: false,
+	},
 ];
 export const welcomeNftsMainnet = [
 	{
@@ -29,7 +29,7 @@ export const welcomeNftsMainnet = [
 		collectionName: 'Hinata',
 		likes: 0,
 		priceEth: 0,
-		ownedByUser: false
+		ownedByUser: false,
 	},
 	{
 		nftAirdropNonce: 0,
@@ -39,6 +39,6 @@ export const welcomeNftsMainnet = [
 		collectionName: 'Hinata',
 		likes: 100,
 		priceEth: 3.2,
-		ownedByUser: false
-	}
+		ownedByUser: false,
+	},
 ];

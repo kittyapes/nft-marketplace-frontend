@@ -38,7 +38,7 @@
 	const progressbarPoints = [
 		{ at: 20, label: 'Email', top_value: '25%' },
 		{ at: 40, label: 'Bio', top_value: '50%' },
-		{ at: 60, label: '	icture', top_value: '75%' },
+		{ at: 60, label: 'Picture', top_value: '75%' },
 		{ at: 80, label: 'Banner Image', top_value: '100%' },
 		{ at: 100, label: '', top_value: 'Free NFT' },
 	];
@@ -144,7 +144,7 @@
 		[isEmail($localDataStore?.email), isBioValid($localDataStore?.bio), isProfileImage, isCoverImage, 0]
 			.map((v) => (v ? 1 : 0))
 			.join('')
-			.indexOf('0') * 20;
+			.indexOf('0') * 25;
 
 	async function handleNftClaim() {
 		setPopup(FreeNftPopup);
