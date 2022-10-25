@@ -25,7 +25,7 @@
 	import { notifyError } from '$utils/toast';
 	import { writable } from 'svelte/store';
 
-	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
+	const dragDropText = 'Drag and drop an image <br> or <span class="gradient-text">click to browse</span>';
 	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string; collectionId: string }>(null);
 
 	let dumpDraft = false;
@@ -196,68 +196,47 @@
 </script>
 
 <!-- Back button -->
-<button class="flex items-center pt-16 mb-8 space-x-2 text-sm font-semibold uppercase btn" on:click={goBack}>
+<button class="flex items-center pt-16 mb-8 space-x-2 text-sm font-semibold uppercase btn text-white" on:click={goBack}>
 	<Back />
 	<div>Go Back</div>
 </button>
 
-<hr class="separator" />
-
-<div class="flex mb-32">
+<div class="flex mb-32 text-white border-t border-white">
 	<!-- Left side -->
 	<div class="flex-grow">
 		<!-- Title -->
 		<h1 class="mt-8 text-xl font-light uppercase">Step 1: Creating your drop</h1>
 
-		<hr class="mt-8 separator" />
-
-		<!-- File upload -->
-		<div class="flex h-56 mt-8 mr-8">
-			<div class="w-80">
-				<div class="text-xs font-light uppercase text-color-black">Upload file</div>
-
-				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
-				<div class="mt-1 text-sm font-semibold text-color-black w-max">
-					PNG, JPG, JPEG, GIF, WEBP, MP4, MP3 <br />
-					Max 50 MB
+		<div class="grid grid-cols-2 mt-8 gap-16 pr-16">
+			<!-- File upload -->
+			<div>Upload file*</div>
+			<div>
+				<DragDropImage class="h-56" max_file_size={50_000_000} bind:blob={nftData.assetBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos} />
+				<div class="text-xs text-center">
+					MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="gradient-text">MAX 50MB</span>
 				</div>
 			</div>
 
-			<div class="grid flex-grow place-items-stretch">
-				<DragDropImage max_file_size={50_000_000} bind:blob={nftData.assetBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos} />
-			</div>
-		</div>
-
-		<!-- Thumbnail upload -->
-		<div class="flex h-56 mt-8 mr-8">
-			<div class="w-80">
-				<div class="text-xs font-light uppercase text-color-black">Upload thumbnail</div>
-
-				<div class="text-[#1D1D1DB2] mt-4 text-sm">For other marketplaces:</div>
-				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
-				<div class="mt-1 text-sm font-semibold text-color-black w-max">
-					PNG, JPG, JPEG, GIF, WEBP <br />
-					Max 3MB
+			<div>Upload Thumbnail (Optional)</div>
+			<!-- Thumbnail upload -->
+			<div>
+				<DragDropImage class="h-56" max_file_size={3_000_000} bind:blob={nftData.thumbnailBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages} />
+				<div class="text-xs text-center">
+					MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="gradient-text">MAX 50MB</span>
 				</div>
 			</div>
-
-			<div class="grid flex-grow place-items-stretch">
-				<DragDropImage max_file_size={3_000_000} bind:blob={nftData.thumbnailBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages} />
-			</div>
 		</div>
-
-		<hr class="mt-12 separator" />
 
 		<!-- NFT details -->
-		<div class="flex mt-8 space-x-32">
+		<div class="flex mt-8 space-x-32 border-b border-white pb-12">
 			<div class="w-1/2">
-				<div class="uppercase text-[#1D1D1DB2]">Create name</div>
+				<div>Create name</div>
 				<input type="text" class="w-full mt-2 font-semibold input" bind:value={nftData.name} />
 
-				<div class="uppercase text-[#1D1D1DB2] mt-8">NFT Quantity</div>
+				<div class="mt-8">NFT Quantity</div>
 				<input type="number" class="w-full mt-2 font-semibold input input-hide-controls" step={1} bind:value={nftData.quantity} min={1} />
 
-				<div class="uppercase text-[#1D1D1DB2] mt-8">Collection</div>
+				<div class="uppercase mt-8">Collection</div>
 				{#if isLoadingCollections}
 					<div class="flex items-center h-12 mt-2 border rounded-lg">
 						<div class="relative w-12 h-full">
@@ -278,12 +257,10 @@
 			</div>
 
 			<div class="w-1/2">
-				<div class="uppercase text-[#1D1D1DB2]">Description</div>
-				<TextArea outline containerClass="mt-2 mr-8" maxChars={200} placeholder="Enter description..." bind:value={nftData.description} />
+				<div>Description</div>
+				<TextArea containerClass="mt-2 mr-8" maxChars={200} placeholder="Enter description..." bind:value={nftData.description} />
 			</div>
 		</div>
-
-		<hr class="mt-12 separator" />
 
 		<FormErrorList validity={$formValidity} />
 
@@ -294,7 +271,7 @@
 	</div>
 
 	<!-- Right side -->
-	<div class="p-8 border-0 border-l separator w-80">
+	<div class="p-8 border-0 border-l border-white separator w-80">
 		<div class="mb-4 text-xl uppercase">Preview</div>
 		<NftCard options={previewMockOptions} hideLikes />
 	</div>

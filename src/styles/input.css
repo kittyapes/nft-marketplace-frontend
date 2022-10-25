@@ -1,5 +1,5 @@
 .input {
-	@apply rounded-md py-2 px-4 text-sm border outline-none;
+	@apply py-2 px-4 text-sm border outline-none bg-transparent;
 }
 
 .input:invalid {
@@ -11,7 +11,7 @@
 }
 
 .input:focus {
-	@apply border-[#1d1d1d];
+	@apply border-color-purple;
 }
 
 .input-gray-outline {
