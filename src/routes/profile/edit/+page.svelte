@@ -216,8 +216,8 @@
 </script>
 
 <LoadedContent loaded={$localDataStore}>
-	<div class="bg-[#f2f2f2] py-16">
-		<div class="max-w-4xl px-16 py-16 mx-auto bg-white">
+	<div class=" py-16">
+		<div class="max-w-4xl px-16 py-16 mx-auto ">
 			<h1 class="text-5xl font-semibold text-center uppercase">
 				{firstTimeUser ? 'Setup' : 'Edit'} Your
 				<span class="gradient-text">Profile</span>

@@ -3,7 +3,7 @@
 	import { socials } from '$constants/socials';
 </script>
 
-<div class="border-t h-80 border-color-gray-light bg-gradient">
+<div class="border-t h-80 border-color-gray-light">
 	<div class="container flex justify-between py-12 mx-auto">
 		<div class="flex flex-col w-1/4 px-8">
 			<div class="h-12" on:click={() => goto('/')}>

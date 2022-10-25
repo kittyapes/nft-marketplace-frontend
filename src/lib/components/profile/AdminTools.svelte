@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { postVerificationQueueAdd, postInactivationQueueAdd } from '$utils/api/admin/userManagement';
-	import { userHasRole } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
 
 	import { httpErrorHandler, notifySuccess } from '$utils/toast';
@@ -63,8 +62,8 @@
 	$: inactivateDisabled = !isVerifiedUser || isChangingverifiedStatus || !profileData;
 </script>
 
-<div class="items-center px-32 py-24 gap-x-2">
-	<div class="px-8 py-6 border bg-gray-50 rounded-xl">
+<div class="items-center px-32 py-24 gap-x-2 ">
+	<div class="px-8 py-6 border rounded-xl bg-card-gradient text-white">
 		<div class="text-lg font-semibold uppercase">Admin tools</div>
 
 		<hr class="mt-4 border-px" />

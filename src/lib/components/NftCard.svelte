@@ -12,7 +12,7 @@
 	import { makeHttps } from '$utils/ipfs';
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
-	import { getListingCardTimerHtml } from '$utils/misc/time';
+	import { getListingCardTimerHtml, isFuture } from '$utils/misc/time';
 	import { favoriteNft } from '$utils/nfts/favoriteNft';
 	import { setPopup, updatePopupProps } from '$utils/popup';
 	import { notifyError, notifySuccess } from '$utils/toast';
@@ -151,13 +151,9 @@
 	onDestroy(() => clearInterval(timerInterval));
 </script>
 
-<div class="relative p-4 overflow-hidden border border-color-gray-base border-opacity-50 rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options.allowPopup}>
-	<div class="flex items-center h-8 gap-x-2">
-		<div class="font-bold text-[10px] uppercase">
-			{@html timerHtml}
-		</div>
-
-		<!-- Owned by user -->
+<div class="relative overflow-hidden w-[320px] h-[530px]" in:fade on:click={handleClick} class:cursor-pointer={options.allowPopup}>
+	<!--
+		// Owned by user
 		{#if menuItems?.length}
 			<button on:click={toggleDots} class="w-8 h-8 hover:opacity-50" transition:fade|local={{ duration: 150 }}>
 				<ThreeDots />
@@ -172,14 +168,14 @@
 			</div>
 			<div class="font-medium select-none">{options?.nfts?.[0].likes ?? 'N/A'}</div>
 		{/if}
-	</div>
+		-->
 
-	<div class="w-full mx-auto mt-2 overflow-hidden transition bg-gray-100 rounded-lg select-none aspect-1" class:animate-pulse={!imgLoaded}>
+	<div class="w-full mx-auto overflow-hidden transition bg-card-gradient select-none aspect-1 h-[400px]" class:animate-pulse={!imgLoaded}>
 		{#await preload(options.nfts[0].thumbnailUrl)}
 			<Loader />
 		{:then}
 			{#if fileType === 'video'}
-				<video crossorigin="anonymous" class="max-w-full max-h-full shadow-xl object-cover object-top w-full h-full transition" autoplay loop class:opacity-0={!imgLoaded}>
+				<video crossorigin="anonymous" class="max-w-full max-h-full object-cover object-top w-full h-full transition" autoplay loop class:opacity-0={!imgLoaded}>
 					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
@@ -188,7 +184,7 @@
 			{/if}
 		{:catch _err}
 			{#if fileType === 'video'}
-				<video crossorigin="anonymous" class="max-w-full max-h-full shadow-xl object-cover object-top w-full h-full transition" autoplay loop class:opacity-0={!imgLoaded}>
+				<video crossorigin="anonymous" class="max-w-full max-h-full object-cover object-top w-full h-full transition" autoplay loop class:opacity-0={!imgLoaded}>
 					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
@@ -197,30 +193,38 @@
 			{/if}
 		{/await}
 	</div>
+	<div class="flex flex-col gap-2 bg-dark-gradient p-2 letter-spacing">
+		<div class="flex flex-col">
+			<div class="flex-grow truncate text-sm font-bold gradient-text">{options.nfts[0].collectionData.name || 'N/A'}</div>
 
-	<div class="flex mt-2 text-sm font-medium text-gray-600">
-		<div class="flex-grow truncate">{options.nfts[0].collectionData.name || 'N/A'}</div>
-
-		<!-- Hide price info when not present/listed -->
-		{#if options?.resourceType === 'listing'}
-			<div>Price</div>
-		{/if}
-	</div>
-
-	<div class="flex items-center mt-2 font-semibold">
-		<div class="flex-grow truncate whitespace-nowrap" class:text-xs={!options.nfts[0]?.name}>
-			{options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
-		</div>
-		<!-- Hide price info when not present/listed -->
-		{#if options?.resourceType === 'listing'}
-			<Eth />
-			<!-- TEMPORARY FIX - ADDITIONAL FIX FOR BIDS WILL BE ADDED ONCE BIDDING DATA IS PRESENT ON LISTINGS RESPONSE -->
-			<div class="ml-1">
-				{options?.saleData?.formatPrice || options?.auctionData?.priceToDisplay || 'N/A'}
+			<!-- Hide price info when not present/listed -->
+			<div class="flex-grow truncate whitespace-nowrap font-semibold text-xl" class:text-xs={!options.nfts[0]?.name}>
+				{options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
 			</div>
-		{/if}
+		</div>
+		<div class="flex justify-between">
+			{#if !isFuture(options?.listingData?.startTime)}
+				<div class="flex flex-col">
+					{#if options?.resourceType === 'listing'}
+						<div class="text-sm font-bold gradient-text">Price</div>
+						<div class="flex gap-1 items-center text-lg font-semibold">
+							<Eth />
+							<!-- TEMPORARY FIX - ADDITIONAL FIX FOR BIDS WILL BE ADDED ONCE BIDDING DATA IS PRESENT ON LISTINGS RESPONSE -->
+							<div>
+								{options?.saleData?.formatPrice || options?.auctionData?.priceToDisplay || 'N/A'} ETH
+							</div>
+						</div>
+					{/if}
+				</div>
+			{/if}
+
+			<div class="">
+				{@html timerHtml}
+			</div>
+		</div>
 	</div>
 
+	<!--
 	{#if dotsOpened}
 		<div id="popup" class="absolute flex flex-col w-32 font-bold bg-white rounded-md top-10">
 			{#if menuItems.includes('transfer')}
@@ -235,7 +239,7 @@
 				<button class="transition-btn" on:click={revealNft}>REVEAL</button>
 			{/if}
 		</div>
-	{/if}
+	{/if}-->
 </div>
 
 <style type="postcss">
@@ -246,5 +250,9 @@
 
 	#popup > button {
 		@apply text-left font-bold;
+	}
+
+	.letter-spacing {
+		letter-spacing: 0.02em;
 	}
 </style>

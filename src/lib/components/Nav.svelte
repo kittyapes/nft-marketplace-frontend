@@ -62,13 +62,13 @@
 			{/if}
 		</a>
 
-		<Search class="snap-start ml-20" />
+		<Search class="snap-start ml-20 mr-4" />
 
 		<!-- Flex filler -->
 		<div class="flex-grow" />
 
 		<!-- Marketplace -->
-		<a id="marketplace-link" href="/marketplace" class="relative font-semibold snap-center bg-card-gradient h-1/2 grid place-items-center px-4">Marketplace</a>
+		<a id="marketplace-link" href="/marketplace" class="relative font-semibold snap-center bg-card-gradient h-1/2 grid place-items-center px-4 btn">Marketplace</a>
 
 		<!-- Staking - HIDDEN FOR V1 -->
 		<!-- <a href="/stake" class="relative font-semibold uppercase text-md snap-center min-w-fit" class:-mr-8={!showCreate}>Staking</a> -->
@@ -92,7 +92,7 @@
 					title={profileButtonTitle}
 				>
 					<!-- Profile image or guest user icon -->
-					<div class="w-8 h-8 btn-gradient-border border">
+					<div class="w-8 h-8 btn-gradient-border">
 						{#if $profileData?.thumbnailUrl}
 							<img on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"} src={$profileData.thumbnailUrl} alt="Current account avatar." class="object-cover w-full h-full" />
 						{:else}
