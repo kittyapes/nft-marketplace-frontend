@@ -7,10 +7,10 @@
 	export let textAreaClass = '';
 </script>
 
-<div class={containerClass}>
+<div class="relative {containerClass}">
 	<textarea
 		rows="10"
-		class="w-full resize-none border border-white py-2 px-4 text-sm bg-transparent {textAreaClass}"
+		class="w-full resize-none border border-white p-4 text-sm bg-transparent outline-none focus:border-color-purple  {textAreaClass}"
 		{placeholder}
 		class:!outline-red-500={value.length < minChars}
 		maxlength={maxChars}
@@ -18,13 +18,13 @@
 	/>
 
 	{#if maxChars}
-		<div class="text-right text-xs font-semibold">{value?.length || 0}/{maxChars}</div>
+		<div class="text-right text-xs font-semibold absolute bottom-0 right-0 mb-4 mr-3">{value?.length || 0}/{maxChars}</div>
 	{/if}
 </div>
 
 <style lang="postcss">
 	textarea::placeholder {
-		@apply text-black opacity-40;
+		@apply opacity-40;
 		@apply transition-all duration-200;
 	}
 </style>

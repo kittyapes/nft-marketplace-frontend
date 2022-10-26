@@ -11,6 +11,7 @@
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { nftDraft } from '$stores/create';
 	import { refreshProfileData } from '$stores/user';
 	import { connectionDetails, currentUserAddress } from '$stores/wallet';
@@ -228,17 +229,22 @@
 		</div>
 
 		<!-- NFT details -->
-		<div class="flex mt-8 space-x-32 border-b border-white pb-12">
-			<div class="w-1/2">
+		<div class="grid  grid-cols-2 mt-8 border-b border-white pb-12">
+			<div class="mr-32">
 				<div>Create name</div>
-				<input type="text" class="w-full mt-2 font-semibold input" bind:value={nftData.name} />
+				<input type="text" placeholder="Your NFT name" class="w-full mt-2 font-semibold input" bind:value={nftData.name} />
 
 				<div class="mt-8">NFT Quantity</div>
 				<input type="number" class="w-full mt-2 font-semibold input input-hide-controls" step={1} bind:value={nftData.quantity} min={1} />
+			</div>
 
-				<div class="uppercase mt-8">Collection</div>
+			<div class="mr-8">
+				<div>Description</div>
+				<TextArea containerClass="mt-2" maxChars={200} placeholder="Enter description..." bind:value={nftData.description} />
+
+				<!-- Collection dropdown -->
 				{#if isLoadingCollections}
-					<div class="flex items-center h-12 mt-2 border rounded-lg">
+					<div class="flex items-center h-12 mt-2 border">
 						<div class="relative w-12 h-full">
 							<ButtonSpinner secondary class="w-4 h-4 ml-4" />
 						</div>
@@ -255,18 +261,13 @@
 					/>
 				{/if}
 			</div>
-
-			<div class="w-1/2">
-				<div>Description</div>
-				<TextArea containerClass="mt-2 mr-8" maxChars={200} placeholder="Enter description..." bind:value={nftData.description} />
-			</div>
 		</div>
 
 		<FormErrorList validity={$formValidity} />
 
 		<!-- Mint button -->
 		<div class="w-full pr-8">
-			<button class="w-full mt-8 font-semibold uppercase btn btn-gradient btn-rounded w- h-14" on:click={mintAndContinue} disabled={!inputValid}>Mint</button>
+			<PrimaryButton class="mt-8" on:click={mintAndContinue} disabled={!inputValid}>Mint</PrimaryButton>
 		</div>
 	</div>
 

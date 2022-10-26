@@ -4,6 +4,6 @@
 	export let disabled: boolean = false;
 </script>
 
-<button class="bg-gradient-to-r from-color-purple to-color-blue uppercase text-white {buttonBaseClasses} {$$props.class}" {disabled} on:click>
+<button class="uppercase text-white {buttonBaseClasses} {$$props.class}" {disabled} on:click>
 	<slot />
 </button>

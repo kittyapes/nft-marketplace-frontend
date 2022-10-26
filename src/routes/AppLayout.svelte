@@ -67,21 +67,23 @@
 	<script src={walletsScript}></script>
 </svelte:head>
 
-{#key appReloadHelper}
-	<Nav />
+<div class="bg-gradient">
+	{#key appReloadHelper}
+		<Nav />
 
-	{#if errorCode}
-		<ErrorPage {errorCode} />
-	{:else}
-		<!-- <PageTransition {url}>-->
-		<div class="mx-auto">
-			<slot />
-		</div>
-		<!--</PageTransition> -->
-	{/if}
+		{#if errorCode}
+			<ErrorPage {errorCode} />
+		{:else}
+			<!-- <PageTransition {url}>-->
+			<div class="mx-auto">
+				<slot />
+			</div>
+			<!--</PageTransition> -->
+		{/if}
 
-	<Footer />
-	<Toast />
-	<PopupManager />
-	<NavigationHandlers bind:errorCode={navigationErrorCode} />
-{/key}
+		<Footer />
+		<Toast />
+		<PopupManager />
+		<NavigationHandlers bind:errorCode={navigationErrorCode} />
+	{/key}
+</div>
