@@ -1,12 +1,10 @@
 <script lang="ts">
 	import type { CardOptions } from '$interfaces/ui';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
-
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { matches } from '$utils/misc';
 	import { isZeroAddress } from '$utils/misc/address';
-	import { unpackedComponentStore } from '$utils/ui';
 	import BrowseAuction from './frames/BrowseAuction.svelte';
 	import BrowseSale from './frames/BrowseSale.svelte';
 	import CreateListing from './frames/CreateListing.svelte';
@@ -15,19 +13,30 @@
 	import ManageSale from './frames/ManageSale.svelte';
 	import NotTradable from './frames/NotTradable.svelte';
 	import Success from './frames/Success.svelte';
-	import { frame } from './tradeSection';
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
 	export let showBackButton = false;
 
+	let frameComponent: ConstructorOfATypedSvelteComponent;
+	let frameProps: any;
+
+	function handleSetFrame(ev: { detail: { component: ConstructorOfATypedSvelteComponent; props?: any } }) {
+		frameComponent = ev.detail.component;
+		frameProps = ev.detail.props || {};
+	}
+
+	function setFrameWithoutProps(component: ConstructorOfATypedSvelteComponent) {
+		handleSetFrame({ detail: { component: component } });
+	}
+
 	export function goBack() {
 		if (!options.listingData) {
-			frame.set(CreateListing);
+			setFrameWithoutProps(CreateListing);
 			return;
 		}
 
-		options.listingData.listingType === 'sale' ? frame.set(BrowseSale) : frame.set(BrowseAuction);
+		options.listingData.listingType === 'sale' ? setFrameWithoutProps(BrowseSale) : setFrameWithoutProps(BrowseAuction);
 	}
 
 	$: (options || chainListing) && updateState();
@@ -35,33 +44,31 @@
 	function updateState() {
 		if (options.resourceType === 'listing') {
 			if (!chainListing) {
-				frame.set(DiamondsLoader);
+				setFrameWithoutProps(DiamondsLoader);
 				return;
 			}
 
 			if (isZeroAddress(chainListing.seller)) {
-				frame.set(NotTradable);
+				setFrameWithoutProps(NotTradable);
 				return;
 			}
 
 			if (matches(chainListing.seller, $currentUserAddress)) {
-				if (options.listingData.listingType === 'auction') frame.set(ManageAuction);
-				if (options.listingData.listingType === 'sale') frame.set(ManageSale);
+				if (options.listingData.listingType === 'auction') setFrameWithoutProps(ManageAuction);
+				if (options.listingData.listingType === 'sale') setFrameWithoutProps(ManageSale);
 			} else {
-				if (options.listingData.listingType === 'auction') frame.set(BrowseAuction);
-				if (options.listingData.listingType === 'sale') frame.set(BrowseSale);
+				if (options.listingData.listingType === 'auction') setFrameWithoutProps(BrowseAuction);
+				if (options.listingData.listingType === 'sale') setFrameWithoutProps(BrowseSale);
 			}
 		} else if (options.resourceType === 'nft') {
-			frame.set(CreateListing);
+			setFrameWithoutProps(CreateListing);
 		}
 	}
 
-	$: showBackButton = $frame === Success || $frame === Error;
+	$: showBackButton = frameComponent === Success || frameComponent === Error;
 
 	// Initialize state
 	goBack();
-
-	const { component, props } = unpackedComponentStore(frame);
 </script>
 
-<svelte:component this={$component} {...$props} {options} {chainListing} on:close-popup on:listing-created on:force-expire />
+<svelte:component this={frameComponent} {...frameProps} {options} {chainListing} on:close-popup on:listing-created on:force-expire on:set-frame={handleSetFrame} />

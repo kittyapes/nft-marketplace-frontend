@@ -14,7 +14,6 @@
 	import { notifyError } from '$utils/toast';
 	import { createEventDispatcher } from 'svelte';
 	import { onMount } from 'svelte';
-	import { frame } from '../tradeSection';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
 	import Success from './Success.svelte';
 
@@ -51,8 +50,11 @@
 
 		try {
 			await createListingFlow(flowOptions);
-			frame.set([Success, { successDescription: 'Successfully listed.', showMarketplaceButton: false }]);
 			dispatch('listing-created');
+			dispatch('set-frame', {
+				component: Success,
+				props: { successDescription: 'Successfully listed.', showMarketplaceButton: false },
+			});
 		} catch (err) {
 			console.error(err);
 			notifyError(err.message);

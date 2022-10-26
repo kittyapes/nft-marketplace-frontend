@@ -8,8 +8,6 @@
 	import { getInterval } from '$utils/scheduler';
 	import { notifyError } from '$utils/toast';
 	import { createEventDispatcher, onDestroy } from 'svelte';
-
-	import { frame } from '../tradeSection';
 	import EditSale from './EditSale.svelte';
 	import Success from './Success.svelte';
 
@@ -38,7 +36,7 @@
 
 		try {
 			await contractCancelListing(options.listingData.onChainId);
-			frame.set(Success);
+			dispatch('set-frame', { component: Success });
 			options.staleResource.set({ reason: 'cancelled' });
 			dispatch('force-expire');
 		} catch (err) {
@@ -57,7 +55,7 @@
 
 	<div class="flex gap-2 mt-4">
 		{#if allowEdit}
-			<SecondaryButton on:click={() => frame.set(EditSale)}>Edit Listing</SecondaryButton>
+			<SecondaryButton on:click={() => dispatch('set-frame', { component: EditSale })}>Edit Listing</SecondaryButton>
 		{/if}
 
 		<SecondaryButton disabled={cancellingListing} on:click={cancelListing}>
