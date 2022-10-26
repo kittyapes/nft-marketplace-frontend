@@ -22,7 +22,11 @@ export async function getOnChainMetadata(contractAddress: string, tokenId: strin
 
 	const contract = new ethers.Contract(contractAddress, tokenType === 'ERC1155' ? erc1155abi : erc721abi, provider);
 
-	const uri = tokenType === 'ERC1155' ? await contract.uri(tokenId) : await contract.tokenURI(tokenId);
+	const uri: string = tokenType === 'ERC1155' ? await contract.uri(tokenId) : await contract.tokenURI(tokenId);
+
+	if (!(uri.startsWith('https://') || uri.startsWith('http://'))) {
+		return {};
+	}
 
 	const metadata = await axios
 		.get(makeHttps(uri))

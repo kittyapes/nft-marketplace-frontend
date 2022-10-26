@@ -14,7 +14,6 @@
 	import { notifyError } from '$utils/toast';
 	import { createEventDispatcher } from 'svelte';
 	import { onMount } from 'svelte';
-	import { frame } from '../tradeSection';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
 	import Success from './Success.svelte';
 
@@ -29,6 +28,8 @@
 
 	async function completeListing() {
 		isListing = true;
+
+		console.log({ options });
 
 		const flowOptions: CreateListingFlowOptions = {
 			title: options.nfts[0].metadata?.name,
@@ -49,8 +50,11 @@
 
 		try {
 			await createListingFlow(flowOptions);
-			frame.set([Success, { successDescription: 'Successfully listed.', showMarketplaceButton: false }]);
 			dispatch('listing-created');
+			dispatch('set-frame', {
+				component: Success,
+				props: { successDescription: 'Successfully listed.', showMarketplaceButton: false },
+			});
 		} catch (err) {
 			console.error(err);
 			notifyError(err.message);
@@ -83,7 +87,7 @@
 	<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} /></div>
 
 	<div class="mt-4">
-		<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} bind:this={_listingProperties} />
+		<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} bind:this={_listingProperties} disabled={isListing} />
 	</div>
 
 	<div class="flex-grow" />

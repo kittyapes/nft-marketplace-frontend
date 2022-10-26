@@ -34,11 +34,6 @@ const getProviderOptions = () => {
 			},
 			package: true,
 			connector: async () => {
-				if (!isMetaMaskInstalled()) {
-					// window.location = "https://metamask.app.link/dapp/www.ethbox.org/app/"; // <-- LOOK HERE
-					return;
-				}
-
 				let provider = null;
 				if (window.ethereum.providers) {
 					let providers = window.ethereum.providers;
@@ -55,6 +50,21 @@ const getProviderOptions = () => {
 				}
 
 				return provider;
+			},
+		};
+	}
+	// Display an install metamask button if metamask is not installed
+	else {
+		providerOptions['custom-metamask'] = {
+			display: {
+				logo: metamaskLogo,
+				name: 'MetaMask',
+				description: 'Install the MetaMask extension',
+			},
+			package: {},
+			connector: async () => {
+				window.open('https://metamask.io');
+				return;
 			},
 		};
 	}

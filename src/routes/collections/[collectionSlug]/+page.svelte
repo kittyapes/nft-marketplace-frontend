@@ -7,7 +7,7 @@
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import { currentUserAddress } from '$stores/wallet';
-	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { apiGetCollectionBySlug, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
