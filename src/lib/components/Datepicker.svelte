@@ -92,7 +92,7 @@
 				dayjs: viewedDate
 					.subtract(1, 'month')
 					.date(i + 1)
-					.startOf('day')
+					.startOf('day'),
 			}));
 
 		const currentMonthDays = Array(viewedDate.daysInMonth())
@@ -102,7 +102,7 @@
 				dayjs: viewedDate
 					.clone()
 					.date(i + 1)
-					.startOf('day')
+					.startOf('day'),
 			}));
 
 		const fillAfterDays = Array(42 - fillBeforeDays.length - currentMonthDays.length)
@@ -113,7 +113,7 @@
 				dayjs: viewedDate
 					.add(1, 'month')
 					.date(i + 1)
-					.startOf('day')
+					.startOf('day'),
 			}));
 
 		monthDays = [...fillBeforeDays, ...currentMonthDays, ...fillAfterDays] as DayInTable[];

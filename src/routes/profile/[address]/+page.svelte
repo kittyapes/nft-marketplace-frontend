@@ -67,6 +67,7 @@
 
 	async function fetchData(forAdress: string) {
 		$localProfileData = await fetchProfileData(forAdress);
+		console.log($localProfileData);
 	}
 
 	$: browser && fetchData(address);
@@ -289,9 +290,9 @@
 	}
 </script>
 
-<div class="bg-gradient">
-	<div class="relative max-w-screen-xl px-32 pt-24 mx-auto">
-		<div class="h-96 bg-color-gray-light border-b-4 gradient-border">
+<div class="">
+	<div class="pt-24 mx-auto max-w-screen-2xl px-20">
+		<div class="h-96 btn-gradient-border border-t-0 border-x-0 border-b-4 w-full">
 			{#if $localProfileData?.coverUrl}
 				<div style="background-image: url({$localProfileData?.coverUrl})" class="w-full h-full bg-center bg-no-repeat bg-cover" />
 			{/if}
@@ -349,7 +350,7 @@
 
 			<!-- Social links -->
 			<div class="overflow-hidden">
-				<div class="font-bold text-color-gray-dark whitespace-nowrap">SOCIAL LINKS</div>
+				<div class="font-bold whitespace-nowrap">SOCIAL LINKS</div>
 
 				<div class="flex flex-wrap mt-4">
 					{#if areSocialLinks}
@@ -366,32 +367,22 @@
 				</div>
 			</div>
 		</div>
-	</div>
+		<div class="container flex max-w-screen-xl mt-28 space-x-10 text-white gapx">
+			{#each tabs as tab}
+				{#if displayedTabs.includes(tab.name)}
+					<TabButton on:click={() => selectTab(tab.name)} selected={selectedTab.name === tab.name} uppercase>
+						{tab.label}
+					</TabButton>
+				{/if}
+			{/each}
+		</div>
 
-	<div class="container flex max-w-screen-xl px-32 mx-auto mt-16 space-x-8">
-		{#each tabs as tab}
-			{#if displayedTabs.includes(tab.name)}
-				<TabButton on:click={() => selectTab(tab.name)} selected={selectedTab.name === tab.name} uppercase>
-					{tab.label}
-				</TabButton>
-			{/if}
-		{/each}
-	</div>
+		<div class="h-px bg-white opacity-30 w-full" />
 
-	<div class="h-px bg-black opacity-30" />
-
-	<div class="max-w-screen-xl mx-auto">
 		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:refresh-tabs={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
+
+		{#if $localProfileData && $userHasRole('admin', 'superadmin')}
+			<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
+		{/if}
 	</div>
-
-	{#if $localProfileData && $userHasRole('admin', 'superadmin')}
-		<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
-	{/if}
 </div>
-
-<style type="postcss">
-	.gradient-border {
-		background: linear-gradient(white, white) padding-box, linear-gradient(to right, #868bf7, #6cc7f8) border-box;
-		@apply border-transparent;
-	}
-</style>

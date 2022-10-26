@@ -39,6 +39,7 @@
 
 	export function setSelected(option: Option) {
 		selected = option;
+		dispatch('select', option);
 	}
 
 	onMount(() => {

@@ -4,7 +4,7 @@
 	import type { ConfigurableListingProps } from '$interfaces/listing';
 	import type { ListingType } from '$utils/api/listing';
 	import { userHasRole } from '$utils/auth/userRoles';
-	import { buildListingDurationOptions } from '$utils/misc';
+	import { buildListingDurationOptions, type ListingDurationOption } from '$utils/misc';
 	import { isPrice } from '$utils/validator/isPrice';
 	import Datepicker from '../Datepicker.svelte';
 	import Dropdown from '../Dropdown.svelte';
@@ -22,11 +22,12 @@
 	export let disableQuantity = false;
 	export let disableStartDate = false;
 	export let disabled = false;
+	export let minDuration = 0;
 
 	$: sale = listingType === 'sale';
 	$: auction = listingType === 'auction';
 
-	$: durationOptions = buildListingDurationOptions($userHasRole('admin', 'superadmin'));
+	$: durationOptions = buildListingDurationOptions($userHasRole('admin', 'superadmin'), minDuration);
 
 	export let formErrors: string[] = [];
 
@@ -77,17 +78,27 @@
 
 	$: if (maxQuantity <= 1) props.quantity = 1;
 
-	export function setValues(options: { startDateTs: number; quantity: number; durationSeconds: number; price: string }) {
-		_setDuration(durationOptions.find((v) => v.value === options.durationSeconds));
-		_setStartDateTs(options.startDateTs);
-		props.quantity = options.quantity;
-		props.price = options.price;
+	export function setValues(options: Partial<{ startDateTs: number; quantity: number; durationSeconds: number; price: string }>) {
+		options.durationSeconds && _setDuration(durationOptions.find((v) => v.value === options.durationSeconds));
+		options.startDateTs && _setStartDateTs(options.startDateTs);
+
+		if (options.quantity) {
+			props.quantity = options.quantity;
+		}
+
+		if (options.price) {
+			props.price = options.price;
+		}
 	}
 
 	let _setDuration;
 	let _setStartDateTs;
 
 	$: _disableQuantity = maxQuantity <= 1 || disabled || disableQuantity;
+
+	function handleDurationOptionsSelect(ev: { detail: ListingDurationOption }) {
+		props.durationSeconds = ev.detail.value;
+	}
 </script>
 
 <div class="grid gap-x-8 gap-y-4" class:grid-cols-2={compact}>
@@ -96,7 +107,7 @@
 	</InputSlot>
 
 	<InputSlot label="Duration">
-		<Dropdown options={durationOptions} on:select={(ev) => (props.durationSeconds = ev.detail.value)} bind:setSelected={_setDuration} {disabled} />
+		<Dropdown options={durationOptions} on:select={handleDurationOptionsSelect} bind:setSelected={_setDuration} {disabled} />
 	</InputSlot>
 
 	<InputSlot label="Quantity" hidden={hideQuantity}>
