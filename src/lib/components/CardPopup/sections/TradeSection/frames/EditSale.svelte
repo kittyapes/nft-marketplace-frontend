@@ -17,6 +17,7 @@
 	import { createToggle } from '$utils/misc/toggle';
 	import { getInterval } from '$utils/scheduler';
 	import { notifyError } from '$utils/toast';
+	import { chain } from 'lodash-es';
 	import { onDestroy } from 'svelte';
 	import { frame } from '../tradeSection';
 	import Success from './Success.svelte';
@@ -100,6 +101,7 @@
 			disableQuantity
 			{disableStartDate}
 			maxPrice={chainListing.price}
+			minDuration={chainListing.duration}
 			bind:formErrors
 			bind:props={listingProps}
 			bind:this={_listingProperties}
