@@ -30,6 +30,8 @@
 	async function completeListing() {
 		isListing = true;
 
+		console.log({ options });
+
 		const flowOptions: CreateListingFlowOptions = {
 			title: options.nfts[0].metadata?.name,
 			description: options.nfts[0].metadata?.description,

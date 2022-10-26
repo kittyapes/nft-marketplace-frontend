@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import NftList from '$lib/components/NftList.svelte';
-	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
+	import { listingToCardOptions } from '$utils/adapters/cardOptions';
 	import type { ListingFetchOptions } from '$utils/api/listing';
 	import { getListings, type ListingType } from '$utils/api/listing';
 	import { notifyError } from '$utils/toast';
