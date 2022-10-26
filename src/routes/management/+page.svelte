@@ -261,7 +261,7 @@
 		{ label: 'Unclaimed', value: false },
 	];
 
-	$: if ($currentUserAddress && tab) createTable();
+	$: if ($currentUserAddress && tab && browser) createTable();
 
 	let createTable = async () => {
 		loaded = false;
@@ -319,7 +319,7 @@
 					mode: tab,
 					disableAllOnSelect: true,
 					role: u.status,
-					color: getRoleColor(u.status === 'INACTIVE' ? 'INACTIVATED' : 'verified_user'),
+					color: getRoleColor(u.status === 'INACTIVE' ? 'INACTIVATED' : 'ACTIVE'),
 					options: [
 						{ label: 'Active', checked: u.status === 'ACTIVE', value: 'ACTIVE' },
 						{ label: 'Inactive', checked: u.status === 'INACTIVE', value: 'INACTIVE' },
@@ -419,7 +419,7 @@
 		totalUserEntries = res.totalCount;
 	};
 
-	$: if (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0) {
+	$: if (browser && (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0)) {
 		loaded = false;
 		debouncedSearch();
 	}
@@ -449,13 +449,13 @@
 					id: u.address,
 					dispatchAllOptions: true,
 					mode: tab,
-					role: getHighestRole([...u.roles, u.status]),
-					color: getRoleColor(getHighestRole([...u.roles, u.status])),
+					role: getHighestRole([...u.roles]),
+					color: getRoleColor(getHighestRole([...u.roles])),
 					options: [
 						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin' },
 						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user' },
 						{ label: 'blogger', checked: false, cb: (e) => e.roles?.includes('blogger'), value: 'blogger' },
-						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED', value: 'inactivated_user' },
+						{ label: 'inactive', checked: u.roles?.includes('inactivated_user'), cb: (e) => e.roles?.includes('inactivated_user'), value: 'inactivated_user' },
 					],
 				})),
 			},
