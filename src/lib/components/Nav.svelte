@@ -51,7 +51,7 @@
 	});
 </script>
 
-<div class="absolute z-10 flex w-full ">
+<div class="fixed z-10 flex w-full ">
 	<div class="fixed z-10 flex items-center w-full h-20 pl-8 pr-2 overflow-x-visible scrollbar-hidden snap-mandatory snap-x navbar text-white">
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
