@@ -24,7 +24,6 @@ export interface CardOptions {
 			likes: number;
 			thumbnailUrl: string;
 			assetUrl: string;
-			quantity: number;
 		},
 	];
 
@@ -45,6 +44,7 @@ export interface CardOptions {
 	saleData?: {
 		price: string;
 		formatPrice: string;
+		nftQuantities: Record<string, number>;
 	};
 
 	/** Data used when adapting a listing of the type Auction. */

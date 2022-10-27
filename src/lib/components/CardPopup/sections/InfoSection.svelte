@@ -15,7 +15,7 @@
 	let balance = null;
 	let supply = null;
 
-	$: ownedOrListedNfts = options.resourceType === 'listing' ? options?.nfts[0].quantity ?? 1 : balance;
+	$: ownedOrListedNfts = options.resourceType === 'listing' ? options?.saleData.nftQuantities[options.nfts[0].onChainId] ?? 1 : balance;
 
 	// Never show the back button on this tab
 	export const showBackButton = false;
@@ -30,11 +30,12 @@
 	// It is possible to pass data of multiple NFTs into the popup to support
 	// the bundle section
 	$: singleNft = options.nfts?.[0];
+	$: console.log(singleNft);
 	$: properties = [
 		{ name: 'Creator', value: singleNft.creator || options.rawResourceData.metadata?.creator?.address },
 		{ name: 'Collection name', value: singleNft.collectionData?.name },
 		{ name: 'Edition', value: singleNft.metadata?.edition },
-		{ name: 'Description', value: singleNft.metadata?.description || options.rawResourceData.description },
+		{ name: 'Description', value: singleNft.metadata?.description },
 	];
 
 	$: technicalProperties = [

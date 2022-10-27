@@ -14,7 +14,6 @@
 	import { createToggle } from '$utils/misc/toggle';
 	import { notifyError } from '$utils/toast';
 	import { createEventDispatcher } from 'svelte';
-	import { frame } from '../tradeSection';
 	import Success from './Success.svelte';
 	import dayjs from 'dayjs';
 
@@ -46,7 +45,7 @@
 			options.staleResource.set({ reason: 'bid-accepted' });
 			dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Auction completed successfully.' } });
 			dispatch('force-expire');
-			frame.set(Success);
+			dispatch('set-frame', { component: Success });
 		}
 
 		isAccepting = false;
@@ -64,7 +63,7 @@
 
 		try {
 			await contractCancelListing(options.listingData.onChainId);
-			frame.set(Success);
+			dispatch('set-frame', { component: Success });
 			options.staleResource.set({ reason: 'cancelled' });
 			dispatch('force-expire');
 		} catch (err) {

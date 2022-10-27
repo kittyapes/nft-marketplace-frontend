@@ -23,14 +23,14 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goe
 	{ name: 'storage', network: 'testing-goerli', address: '0x5c7db52089565A5c3F701135d9015Bc4Df339B1b', abi: storageAbi },
 	{ name: 'factory', network: 'testing-goerli', address: '0xa0B39FCC5FdeB3D839288c3Ec7210AAaf6fB972D', abi: factoryAbi },
 	{ name: 'token', network: 'testing-goerli', address: '0x15733Ab0E019B8Ff529EceB3FA2F33BcdCc4c3a7', abi: tokenAbi },
-	{ name: 'weth', network: 'testing-goerli', address: '0x0c84c20673341B5bae28D80F54926269A64B47a5', abi: erc20Abi },
+	{ name: 'weth', network: 'testing-goerli', address: '0xbA5029aAF14672ef662aD8eB38CDB4E4C16AdF6D', abi: erc20Abi },
 
 	// Goerli Development Environment
 	{ name: 'marketplace', network: 'development-goerli', address: '0x1F2C31095e8D9947e7FEb3202e9fd20C1eC0FF4B', abi: marketplaceAbi },
 	{ name: 'storage', network: 'development-goerli', address: '0xb3f40a5fe7f1621A36C540CF74BC76F8bc10fbAc', abi: storageAbi },
 	{ name: 'factory', network: 'development-goerli', address: '0x7FeDd7Cc42E5486f2Ff73147DD9c06b80665B2A1', abi: factoryAbi },
 	{ name: 'token', network: 'development-goerli', address: '0xaA8aF7853c6E449197a1369dE255A92264F65A6a', abi: tokenAbi },
-	{ name: 'weth', network: 'development-goerli', address: '0x6aA500DBe47b19437cB93D84492BDD175AA333BB', abi: erc20Abi },
+	{ name: 'weth', network: 'development-goerli', address: '0xbA5029aAF14672ef662aD8eB38CDB4E4C16AdF6D', abi: erc20Abi },
 
 	// Eth
 	{ name: 'marketplace', network: 'eth', address: '0x9A986d8B2cB50e827393Ec329cb0003535b5Ff75', abi: marketplaceAbi },
@@ -47,11 +47,11 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goe
 	{ name: 'weth', network: 'staging-genache', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', abi: erc20Abi },
 
 	// Staging Goerli
-	{ name: 'marketplace', network: 'staging-genache', address: '0x1fBf287d7026f5d43549424886B439Fc1d405c58', abi: marketplaceAbi },
-	{ name: 'storage', network: 'staging-genache', address: '0xE09dA477881DDC07D8DAD107dd71021EA43aCFf8', abi: storageAbi },
-	{ name: 'factory', network: 'staging-genache', address: '0x7E6b4e3daE0C60Fa3FD9bfa8dB2215b8B237b4FC', abi: factoryAbi },
-	{ name: 'token', network: 'staging-genache', address: '0xf41f5a3f6497687738F1cBd0B262f577da9384Bf', abi: tokenAbi },
-	{ name: 'weth', network: 'staging-genache', address: '0xbA5029aAF14672ef662aD8eB38CDB4E4C16AdF6D', abi: erc20Abi },
+	{ name: 'marketplace', network: 'staging-goerli', address: '0x1fBf287d7026f5d43549424886B439Fc1d405c58', abi: marketplaceAbi },
+	{ name: 'storage', network: 'staging-goerli', address: '0xE09dA477881DDC07D8DAD107dd71021EA43aCFf8', abi: storageAbi },
+	{ name: 'factory', network: 'staging-goerli', address: '0x7E6b4e3daE0C60Fa3FD9bfa8dB2215b8B237b4FC', abi: factoryAbi },
+	{ name: 'token', network: 'staging-goerli', address: '0xf41f5a3f6497687738F1cBd0B262f577da9384Bf', abi: tokenAbi },
+	{ name: 'weth', network: 'staging-goerli', address: '0xbA5029aAF14672ef662aD8eB38CDB4E4C16AdF6D', abi: erc20Abi },
 ];
 
 export function getContractData(name: ContractName) {
