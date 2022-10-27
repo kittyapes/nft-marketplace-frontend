@@ -118,7 +118,7 @@
 
 	interface CollectionFetchingOptions {
 		filter: Partial<{
-			status: string;
+			status: 'ACTIVE' | 'INACTIVE' | 'ALL';
 			isClaimed: boolean;
 		}>;
 		sort: Partial<{
@@ -271,7 +271,7 @@
 	//COLLECTION section
 
 	let createCollectionTable = async () => {
-		await apiSearchCollections()
+		await apiSearchCollections({ status: 'ALL' })
 			.then((res) => {
 				collections = res.collections.filter((c) => c.slug);
 				totalCollectionEntries = res.totalCount;
@@ -290,6 +290,7 @@
 			...collectionFetchingOptions.sort,
 			limit: collectionFetchingOptions.limit,
 			page: collectionPage,
+			status: 'ALL',
 		};
 	};
 
