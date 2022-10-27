@@ -157,7 +157,7 @@ export async function apiGetMostActiveCollections(): Promise<{ collections: Coll
 	return res.data.data;
 }
 
-export interface collectionSearchOptions {
+export interface CollectionSearchOptions {
 	creator?: string;
 	slug?: string;
 	name?: string;
@@ -169,7 +169,7 @@ export interface collectionSearchOptions {
 	status?: 'ACTIVE' | 'INACTIVE' | 'ALL';
 }
 
-export async function apiSearchCollections(options?: collectionSearchOptions) {
+export async function apiSearchCollections(options?: CollectionSearchOptions) {
 	if (options && !options.name) options.name = null;
 
 	if (options && !options.limit) options.limit = 20;

@@ -16,7 +16,7 @@
 	import Filters from '$icons/filters.svelte';
 	import EntryRole from '$lib/components/management/render-components/EntryRole.svelte';
 	import { debounce } from 'lodash-es';
-	import { apiSearchCollections, type Collection } from '$utils/api/collection';
+	import { apiSearchCollections, type Collection, type CollectionSearchOptions } from '$utils/api/collection';
 	import CollectionName from '$lib/components/management/render-components/CollectionName.svelte';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { whitelistCollection } from '$utils/api/management/whitelistCollection';
@@ -283,7 +283,7 @@
 		await createCollectionTableData();
 	};
 
-	let getCollectionsFetchingOptions = () => {
+	let getCollectionsFetchingOptions = (): CollectionSearchOptions => {
 		return {
 			...collectionFetchingOptions.filter,
 			name: collectionFetchingOptions.name,
@@ -390,6 +390,7 @@
 	}
 
 	const getSearchedCollections = async () => {
+		// @ts-ignore
 		await apiSearchCollections(getCollectionsFetchingOptions()).then((res) => {
 			collections = res.collections.filter((c) => c.slug);
 			totalCollectionEntries = res.totalCount;
