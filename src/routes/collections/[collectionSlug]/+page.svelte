@@ -88,7 +88,7 @@
 		totalVol: {
 			stat: 'Total Volume',
 			value: 0,
-			symbol: 'WETh',
+			symbol: 'WETH',
 		},
 		items: {
 			stat: 'Items',
@@ -246,7 +246,7 @@
 	</div>
 
 	<div class="mt-16 border-t border-[#0000004D]">
-		{#if nfts.length && collectionData}
+		{#if collectionData}
 			<NftList options={nfts} {isLoading} {reachedEnd} createNewNftBtn={{ include: $currentUserAddress === collectionData.creator, collectionId: collectionData.id }} on:end-reached={fetchMore} />
 		{/if}
 	</div>

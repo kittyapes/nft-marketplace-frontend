@@ -16,6 +16,8 @@
 	export let reachedEnd = false;
 	export let createNewNftBtn = { include: false, collectionId: '' };
 
+	$: console.log(createNewNftBtn, options);
+
 	const inviewOptions = {};
 
 	function onChange(event) {
@@ -48,15 +50,15 @@
 </script>
 
 <div class="w-full">
-	{#if !isLoading && options?.length === 0}
+	{#if !isLoading && options?.length === 0 && !createNewNftBtn.include}
 		<div class="placeholder">Nothing to see here, move along.</div>
 	{/if}
 
-	{#if options?.length}
+	{#if options?.length || options?.length === 0}
 		<div class="nftGrid">
 			{#if createNewNftBtn.include}
 				<div
-					class="grid place-items-center border border-dashed border-opacity-30 border-color-gray-base h-full clickable hover:scale-105 transition-all rounded-2xl max-w-[266px] "
+					class="grid place-items-center border border-dashed border-opacity-30 border-color-gray-base clickable hover:scale-105 transition-all rounded-2xl max-w-[246px] min-h-[315px]"
 					on:click={() => {
 						$nftDraft = {};
 						$nftDraft.collectionId = createNewNftBtn.collectionId;
