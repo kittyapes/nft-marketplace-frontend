@@ -16,8 +16,6 @@
 	export let reachedEnd = false;
 	export let createNewNftBtn = { include: false, collectionId: '' };
 
-	$: console.log(createNewNftBtn, options);
-
 	const inviewOptions = {};
 
 	function onChange(event) {
