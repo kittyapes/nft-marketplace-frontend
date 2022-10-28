@@ -32,6 +32,7 @@
 	import type { UserData } from 'src/interfaces/userData';
 	import { onMount } from 'svelte';
 	import { derived, writable } from 'svelte/store';
+	import { fade } from 'svelte/transition';
 
 	$: address = $page.params.address;
 
@@ -326,12 +327,11 @@
 					</div>
 
 					<!-- Buttons -->
-					<div class="flex gap-4" on:click={() => goto('/profile/edit')}>
+					<div class="flex gap-4">
 						<!-- Edit Button
 						{#if address === $currentUserAddress}
 							<div transition:fade|local>
 								<button class="btn btn-rounded btn-shadow w-[11rem] py-2 uppercase" on:click={() => goto('/profile/edit')}>
-									{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}
 								</button>
 							</div>
 						{/if}
@@ -343,7 +343,9 @@
 							<ShareV2 />
 						</PrimaryButton>
 						{#if address === $currentUserAddress}
-							<PrimaryButton class="w-24">Edit</PrimaryButton>
+							<div class="" transition:fade|local>
+								<PrimaryButton on:click={() => goto('/profile/edit')} class="w-24">{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}</PrimaryButton>
+							</div>
 						{/if}
 					</div>
 				</div>
