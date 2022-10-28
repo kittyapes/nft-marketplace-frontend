@@ -1,8 +1,6 @@
 <script lang="ts">
 	export let value: number;
 	export let points: { at: number; label: string; dot?: boolean; top_value?: string; bottom_value?: string }[] = [];
-
-	$: console.log(value);
 </script>
 
 <div class="relative">
