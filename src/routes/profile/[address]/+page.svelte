@@ -3,16 +3,15 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
+	import ShareV2 from '$icons/share-v2.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import type { CardOptions } from '$interfaces/ui';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
-	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
-	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { profileCompletionProgress, userCreatedListing } from '$stores/user';
@@ -33,7 +32,6 @@
 	import type { UserData } from 'src/interfaces/userData';
 	import { onMount } from 'svelte';
 	import { derived, writable } from 'svelte/store';
-	import { fade } from 'svelte/transition';
 
 	$: address = $page.params.address;
 
@@ -300,9 +298,9 @@
 			{/if}
 		</div>
 
-		<div class="flex mt-8 text-white justify-between">
-			<!-- Profile image -->
-			<div class="flex gap-4">
+		<div class="flex mt-8 text-white justify-between w-full">
+			<div class="flex gap-4 w-[600px]">
+				<!-- Profile image -->
 				<div class="grid w-28 h-28 overflow-hidden place-items-center">
 					{#if $localProfileData?.thumbnailUrl}
 						<img src={$localProfileData?.thumbnailUrl} class="h-full" alt="User avatar." />
@@ -328,7 +326,7 @@
 					</div>
 
 					<!-- Buttons -->
-					<div class="flex">
+					<div class="flex gap-4">
 						<!-- Edit Button
 						{#if address === $currentUserAddress}
 							<div transition:fade|local>
@@ -339,7 +337,10 @@
 						{/if}
 						-->
 						<PrimaryButton>
-							<div>Follow</div>
+							<div class="text-lg">Follow</div>
+						</PrimaryButton>
+						<PrimaryButton>
+							<ShareV2 />
 						</PrimaryButton>
 					</div>
 				</div>

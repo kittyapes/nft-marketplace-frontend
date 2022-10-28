@@ -10,6 +10,8 @@
 	class="uppercase text-white p-[2px] gradient-stroke-bg outer-shadow {buttonBaseClasses} {$$props.class}"
 	{disabled}
 	on:click
+	on:mouseover
+	on:focus
 	on:mouseover={() => (isHovered = true)}
 	on:focus={() => (isHovered = true)}
 	on:mouseout={() => (isHovered = false)}
