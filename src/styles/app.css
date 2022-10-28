@@ -95,6 +95,11 @@ body {
 		linear-gradient(180deg, rgba(136, 234, 255, 0.05) 0%, rgba(133, 141, 247, 0.05) 100%), #000000;
 }
 
+.gradient-border {
+	background: linear-gradient(white, white) padding-box, linear-gradient(to right, #868bf7, #6cc7f8) border-box;
+	@apply border-transparent border;
+}
+
 .clickable {
 	@apply transition-transform duration-200 transform active:scale-95 cursor-pointer;
 }

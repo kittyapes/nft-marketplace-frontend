@@ -92,7 +92,7 @@
 					title={profileButtonTitle}
 				>
 					<!-- Profile image or guest user icon -->
-					<div class="w-8 h-8 btn-gradient-border">
+					<div class="w-10 h-10 gradient-border !border-2">
 						{#if $profileData?.thumbnailUrl}
 							<img on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"} src={$profileData.thumbnailUrl} alt="Current account avatar." class="object-cover w-full h-full" />
 						{:else}
@@ -134,19 +134,5 @@
 
 	.navbar {
 		background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
-	}
-
-	.btn-gradient-border {
-		border-image-source: linear-gradient(
-				56.67deg,
-				rgba(167, 148, 255, 0) 11.15%,
-				rgba(167, 148, 255, 0.93) 57.47%,
-				rgba(142, 119, 247, 0) 127.41%,
-				rgba(142, 119, 247, 0) 127.41%,
-				rgba(167, 148, 255, 0) 127.41%
-			),
-			linear-gradient(0deg, #67d4f8, #67d4f8);
-
-		@apply border-transparent border-2;
 	}
 </style>
