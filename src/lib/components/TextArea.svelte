@@ -18,7 +18,7 @@
 	/>
 
 	{#if maxChars}
-		<div class="text-right text-xs font-semibold absolute bottom-0 right-0 mb-4 mr-3">{value?.length || 0}/{maxChars}</div>
+		<div class="text-right text-xs absolute bottom-0 right-0 mb-4 mr-3">{value?.length || 0}/{maxChars}</div>
 	{/if}
 </div>
 

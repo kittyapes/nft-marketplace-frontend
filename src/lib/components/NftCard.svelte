@@ -175,7 +175,7 @@
 				<div class="p-3 clickable h-12" on:click|stopPropagation={() => false}>@Seller</div>
 				{#if !hideLikes}
 					<div class="text-transparent clickable p-3 h-12" class:text-white={isUserLiked} on:click|stopPropagation={favNFT}>
-						<Heart class="w-6 h-6" />
+						<Heart />
 					</div>
 				{/if}
 			</div>

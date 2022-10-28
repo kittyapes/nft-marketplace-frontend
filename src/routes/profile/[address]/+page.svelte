@@ -9,15 +9,15 @@
 	import type { CardOptions } from '$interfaces/ui';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
+	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
+	import InfoBox from '$lib/components/InfoBox.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { profileCompletionProgress, userCreatedListing } from '$stores/user';
-	import { currentUserAddress } from '$stores/wallet';
-	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
-	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import { profileCompletionProgress, profileData, userCreatedListing } from '$stores/user';
+	import { listingToCardOptions, nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { getListing, getListings } from '$utils/api/listing';
 	import { apiGetUserNfts, getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
@@ -32,6 +32,8 @@
 	import type { UserData } from 'src/interfaces/userData';
 	import { onMount } from 'svelte';
 	import { derived, writable } from 'svelte/store';
+	import { fade } from 'svelte/transition';
+	import { currentUserAddress } from '$stores/wallet';
 
 	$: address = $page.params.address;
 
@@ -67,7 +69,6 @@
 
 	async function fetchData(forAdress: string) {
 		$localProfileData = await fetchProfileData(forAdress);
-		console.log($localProfileData);
 	}
 
 	$: browser && fetchData(address);
@@ -85,7 +86,9 @@
 	$: socialLinks = $localProfileData?.social || { instagram: '', discord: '', twitter: '', website: '', pixiv: '', deviantart: '', artstation: '' };
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
-	$: firstTimeUser = $localProfileData?.createdAt === $localProfileData?.updatedAt;
+	$: firstTimeUser = $profileData?.createdAt === $profileData?.updatedAt;
+
+	$: console.log($localProfileData);
 
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
@@ -100,7 +103,7 @@
 		index?: number;
 		reachedEnd?: boolean;
 		isFetching?: boolean;
-		data?: [];
+		data?: CardOptions[];
 	}[] = [
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -131,7 +134,7 @@
 			fetchFunction: async (tab, page, limit) => {
 				const listingStatus = ['UNLISTED', 'ACTIVE'] as any;
 
-				if ($currentUserAddress === address) {
+				if ($currentUserAddress === address || $userHasRole('admin', 'superadmin')) {
 					listingStatus.push('EXPIRED');
 				}
 
@@ -299,7 +302,7 @@
 		</div>
 
 		<div class="flex mt-8 text-white justify-between w-full">
-			<div class="flex gap-4 w-[600px]">
+			<div class="flex gap-4 ">
 				<!-- Profile image -->
 				<div class="grid w-28 h-28 overflow-hidden place-items-center">
 					{#if $localProfileData?.thumbnailUrl}
@@ -308,7 +311,7 @@
 						<GuestUserAvatar />
 					{/if}
 				</div>
-				<div class="flex flex-col gap-5">
+				<div class="flex flex-col gap-5 w-2/3">
 					<div class="flex gap-2 items-center">
 						{#if $localProfileData?.username}
 							<div class="font-semibold text-4xl whitespace-nowrap">
@@ -318,7 +321,7 @@
 							<span class="font-bold opacity-50 whitespace-nowrap">No username</span>
 						{/if}
 
-						{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
+						{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED' || $localProfileData?.roles?.includes('verified_user') || $localProfileData?.roles?.includes('inactivated_user')}
 							<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || !storage.hasRole('minter', address)}>
 								<VerifiedBadge class="w-6 h-6" />
 							</div>
@@ -327,21 +330,17 @@
 
 					<!-- Buttons -->
 					<div class="flex gap-4">
-						<!-- Edit Button
-						{#if address === $currentUserAddress}
-							<div transition:fade|local>
-								<button class="btn btn-rounded btn-shadow w-[11rem] py-2 uppercase" on:click={() => goto('/profile/edit')}>
-									{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}
-								</button>
-							</div>
-						{/if}
-						-->
-						<PrimaryButton>
+						<PrimaryButton class="w-40">
 							<div class="text-lg">Follow</div>
 						</PrimaryButton>
-						<PrimaryButton>
+						<PrimaryButton class="w-16">
 							<ShareV2 />
 						</PrimaryButton>
+						{#if address === $currentUserAddress}
+							<div class="" transition:fade|local>
+								<PrimaryButton on:click={() => goto('/profile/edit')} class="w-24">{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}</PrimaryButton>
+							</div>
+						{/if}
 					</div>
 				</div>
 			</div>
@@ -404,6 +403,15 @@
 		</div>
 
 		<div class="h-px bg-white w-full" />
+	</div>
+	<div class="h-px bg-black opacity-30" />
+
+	<div class="max-w-screen-xl mx-auto">
+		{#if $userHasRole('admin', 'superadmin') && selectedTab.data.some((i) => i.rawResourceData?.listingStatus === 'EXPIRED')}
+			<div class="m-2 -mb-4">
+				<InfoBox>Expired listings of this user are displayed because you are viewing this profile as an admin.</InfoBox>
+			</div>
+		{/if}
 
 		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:refresh-tabs={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
 
