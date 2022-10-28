@@ -17,7 +17,7 @@
 	import TabButton from '$lib/components/TabButton.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { profileCompletionProgress, profileData, userCreatedListing } from '$stores/user';
-	import { listingToCardOptions } from '$utils/adapters/cardOptions';
+	import { listingToCardOptions, nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { getListing, getListings } from '$utils/api/listing';
 	import { apiGetUserNfts, getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
@@ -33,6 +33,7 @@
 	import { onMount } from 'svelte';
 	import { derived, writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
+	import { currentUserAddress } from '$stores/wallet';
 
 	$: address = $page.params.address;
 
@@ -320,7 +321,7 @@
 							<span class="font-bold opacity-50 whitespace-nowrap">No username</span>
 						{/if}
 
-						{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
+						{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED' || $localProfileData?.roles?.includes('verified_user') || $localProfileData?.roles?.includes('inactivated_user')}
 							<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || !storage.hasRole('minter', address)}>
 								<VerifiedBadge class="w-6 h-6" />
 							</div>
@@ -402,7 +403,7 @@
 		</div>
 
 		<div class="h-px bg-white w-full" />
-
+	</div>
 	<div class="h-px bg-black opacity-30" />
 
 	<div class="max-w-screen-xl mx-auto">
@@ -418,5 +419,4 @@
 			<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
 		{/if}
 	</div>
-	
 </div>
