@@ -343,7 +343,7 @@
 							<ShareV2 />
 						</PrimaryButton>
 						{#if address === $currentUserAddress}
-							<PrimaryButton class="w-24">{firstTimeUser ? 'Setup' : 'Edit'}</PrimaryButton>
+							<PrimaryButton class="w-24">Edit</PrimaryButton>
 						{/if}
 					</div>
 				</div>
