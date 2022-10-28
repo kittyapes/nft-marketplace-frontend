@@ -1,6 +1,8 @@
 <script lang="ts">
 	export let value: number;
-	export let points: { at: number; label: string; dot?: boolean; top_value?: string }[] = [];
+	export let points: { at: number; label: string; dot?: boolean; top_value?: string; bottom_value?: string }[] = [];
+
+	$: console.log(value);
 </script>
 
 <div class="relative">
@@ -9,7 +11,7 @@
 	{#each points as point}
 		{#if point.top_value}
 			<div
-				class="-translate-x-1/2 uppercase text-xs text-center font-light absolute -top-[150%] whitespace-nowrap"
+				class="-translate-x-1/2 uppercase text-xs text-center font-light absolute -top-[700%] whitespace-nowrap text-white"
 				class:text-gradient={value >= point.at || point.at === 100}
 				class:font-extrabold={point.at === 100}
 				style="left: {point.at}%"
@@ -30,6 +32,16 @@
 				{point.label}
 			</div> -->
 		</div>
+		{#if point.bottom_value}
+			<div
+				class="-translate-x-1/2 uppercase text-xs text-center font-light absolute top-[700%] whitespace-nowrap text-white"
+				class:text-gradient={value >= point.at || point.at === 100}
+				class:font-extrabold={point.at === 100}
+				style="left: {point.at}%"
+			>
+				{point.bottom_value}
+			</div>
+		{/if}
 	{/each}
 </div>
 

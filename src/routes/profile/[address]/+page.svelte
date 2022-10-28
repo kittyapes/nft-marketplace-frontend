@@ -299,7 +299,7 @@
 		</div>
 
 		<div class="flex mt-8 text-white justify-between w-full">
-			<div class="flex gap-4 w-[600px]">
+			<div class="flex gap-4 ">
 				<!-- Profile image -->
 				<div class="grid w-28 h-28 overflow-hidden place-items-center">
 					{#if $localProfileData?.thumbnailUrl}
@@ -308,7 +308,7 @@
 						<GuestUserAvatar />
 					{/if}
 				</div>
-				<div class="flex flex-col gap-5">
+				<div class="flex flex-col gap-5 w-2/3">
 					<div class="flex gap-2 items-center">
 						{#if $localProfileData?.username}
 							<div class="font-semibold text-4xl whitespace-nowrap">
@@ -326,7 +326,7 @@
 					</div>
 
 					<!-- Buttons -->
-					<div class="flex gap-4">
+					<div class="flex gap-4" on:click={() => goto('/profile/edit')}>
 						<!-- Edit Button
 						{#if address === $currentUserAddress}
 							<div transition:fade|local>
@@ -336,12 +336,15 @@
 							</div>
 						{/if}
 						-->
-						<PrimaryButton>
+						<PrimaryButton class="w-40">
 							<div class="text-lg">Follow</div>
 						</PrimaryButton>
-						<PrimaryButton>
+						<PrimaryButton class="w-16">
 							<ShareV2 />
 						</PrimaryButton>
+						{#if address === $currentUserAddress}
+							<PrimaryButton class="w-24">{firstTimeUser ? 'Setup' : 'Edit'}</PrimaryButton>
+						{/if}
 					</div>
 				</div>
 			</div>
