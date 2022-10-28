@@ -17,22 +17,31 @@ export function makeHttps(url: string) {
 }
 
 export async function getOnChainMetadata(contractAddress: string, tokenId: string) {
-	const provider = get(appProvider) || ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
-	const tokenType = await getContractInterface(contractAddress, provider);
+	try {
+		const provider = get(appProvider) || ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
+		const tokenType = await getContractInterface(contractAddress, provider);
 
-	const contract = new ethers.Contract(contractAddress, tokenType === 'ERC1155' ? erc1155abi : erc721abi, provider);
+		if (tokenType === 'UNKNOWN') {
+			return null;
+		}
 
-	const uri: string = tokenType === 'ERC1155' ? await contract.uri(tokenId) : await contract.tokenURI(tokenId);
+		const contract = new ethers.Contract(contractAddress, tokenType === 'ERC1155' ? erc1155abi : erc721abi, provider);
 
-	if (!(uri.startsWith('https://') || uri.startsWith('http://'))) {
-		return {};
+		const uri: string = tokenType === 'ERC1155' ? await contract.uri(tokenId) : await contract.tokenURI(tokenId);
+
+		if (!(uri.startsWith('https://') || uri.startsWith('http://'))) {
+			return {};
+		}
+
+		const metadata = await axios
+			.get(makeHttps(uri))
+			.then((res) => res.data)
+			.catch((_err) => null);
+
+		// fetch metadata
+		return metadata;
+	} catch (error) {
+		console.log(error);
+		return null;
 	}
-
-	const metadata = await axios
-		.get(makeHttps(uri))
-		.then((res) => res.data)
-		.catch((_err) => null);
-
-	// fetch metadata
-	return metadata;
 }
