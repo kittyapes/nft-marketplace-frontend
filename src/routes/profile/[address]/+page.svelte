@@ -8,11 +8,13 @@
 	import type { CardOptions } from '$interfaces/ui';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
+	import EthAddress from '$lib/components/EthAddress.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { profileCompletionProgress, userCreatedListing } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
@@ -298,20 +300,20 @@
 			{/if}
 		</div>
 
-		<div class="flex mt-8 text-white justify-between gap-20">
+		<div class="flex mt-8 text-white justify-between">
+			<!-- Profile image -->
 			<div class="flex gap-4">
-				<!-- Profile image -->
-				<div class="grid w-24 h-24 overflow-hidden place-items-center">
+				<div class="grid w-28 h-28 overflow-hidden place-items-center">
 					{#if $localProfileData?.thumbnailUrl}
 						<img src={$localProfileData?.thumbnailUrl} class="h-full" alt="User avatar." />
 					{:else}
 						<GuestUserAvatar />
 					{/if}
 				</div>
-				<div class="flex flex-col gap-4">
+				<div class="flex flex-col gap-5">
 					<div class="flex gap-2 items-center">
 						{#if $localProfileData?.username}
-							<div class="font-semibold text-4xl">
+							<div class="font-semibold text-4xl whitespace-nowrap">
 								{$localProfileData?.username}
 							</div>
 						{:else}
@@ -319,36 +321,43 @@
 						{/if}
 
 						{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
-							<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || !storage.hasRole('minter', address)} class="">
-								<VerifiedBadge />
+							<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || !storage.hasRole('minter', address)}>
+								<VerifiedBadge class="w-6 h-6" />
 							</div>
 						{/if}
 					</div>
 
 					<!-- Buttons -->
-					{#if address === $currentUserAddress}
-						<div transition:fade|local>
-							<button class="btn btn-rounded btn-shadow w-[11rem] py-2 uppercase" on:click={() => goto('/profile/edit')}>
-								{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}
-							</button>
-						</div>
-					{/if}
+					<div class="flex">
+						<!-- Edit Button
+						{#if address === $currentUserAddress}
+							<div transition:fade|local>
+								<button class="btn btn-rounded btn-shadow w-[11rem] py-2 uppercase" on:click={() => goto('/profile/edit')}>
+									{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}
+								</button>
+							</div>
+						{/if}
+						-->
+						<PrimaryButton>
+							<div>Follow</div>
+						</PrimaryButton>
+					</div>
 				</div>
 			</div>
 
 			<!-- Bio -->
-			<div class="max-w-[600px] flex-grow">
+			<div class="max-w-[600px] ">
 				<div class="font-semibold text-4xl">BIO</div>
 				<p class="mt-4 overflow-y-auto break-words">
 					{#if $localProfileData?.bio}
 						{@html $localProfileData?.bio}
 					{:else}
-						<span class="">No bio.</span>
+						<span class="text-sm">No bio.</span>
 					{/if}
 				</p>
 			</div>
 
-			<!-- Social links -->
+			<!-- Social links 
 			<div class="overflow-hidden">
 				<div class="font-bold whitespace-nowrap">SOCIAL LINKS</div>
 
@@ -365,9 +374,25 @@
 						<div class="font-bold opacity-50 whitespace-nowrap">No social links.</div>
 					{/if}
 				</div>
+			</div>-->
+
+			<!-- Followers and address -->
+			<div class="flex flex-col gap-4">
+				<div class="flex justify-between items-center gap-10">
+					<div class="">Followers</div>
+					<div class="">{0}</div>
+				</div>
+				<div class="flex justify-between items-center gap-10">
+					<div class="">Following</div>
+					<div class="">{0}</div>
+				</div>
+				<div class="flex justify-between items-center gap-10">
+					<div class="">Address</div>
+					<EthAddress {address} concat etherScanLink={false} class="!text-white !gap-2" />
+				</div>
 			</div>
 		</div>
-		<div class="container flex max-w-screen-xl mt-28 space-x-10 text-white gapx">
+		<div class="container flex max-w-screen-xl mt-16 space-x-10 text-white">
 			{#each tabs as tab}
 				{#if displayedTabs.includes(tab.name)}
 					<TabButton on:click={() => selectTab(tab.name)} selected={selectedTab.name === tab.name} uppercase>
@@ -377,7 +402,7 @@
 			{/each}
 		</div>
 
-		<div class="h-px bg-white opacity-30 w-full" />
+		<div class="h-px bg-white w-full" />
 
 		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:refresh-tabs={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
 

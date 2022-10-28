@@ -71,7 +71,7 @@
 		</div>
 	</div>
 
-	<hr class="w-full h-0 btn-gradient-border border-x-0 border-b-0" />
+	<hr class="w-full h-0 gradient-border border-x-0 border-b-0" />
 
 	<!-- Copyright -->
 	<div class="relative flex items-center justify-center text-sm w-full py-4">
