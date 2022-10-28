@@ -13,14 +13,14 @@
 			listingType: 'auction',
 			title: 'Auction',
 			hoverText: 'Allow other users to make bids on your NFT.',
-			confirmDetail: 'Listing an NFT for Auction allows any user to bid with Weth. Select the duration and reserve price for your item.',
+			confirmDetail: 'Listing an NFT for Auction allows any user to bid with WETH. Select the duration and reserve price for your item. ',
 			iconComponent: AuctionListingTypeOption,
 		},
 		{
 			listingType: 'sale',
 			title: 'Sale',
 			hoverText: 'Allows users to sell an NFT for a Fixed Cost and Time-Frame.',
-			confirmDetail: 'Listing an NFT for sale posts the item to the Marketplace for a fixed price.',
+			confirmDetail: 'Sell your NFT for a Fixed price of your choosing!',
 			iconComponent: SaleListingTypeOption,
 		},
 	];

@@ -20,20 +20,6 @@ html {
 
 body {
 	font-family: 'Chakra Petch', sans-serif;
-}
-
-/* Fonts */
-.font-chakra {
-	font-family: 'Chakra Petch', sans-serif;
-}
-
-/* Utils */
-.stretch-child > * {
-	width: 100%;
-	height: 100%;
-}
-
-body {
 	background: linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), radial-gradient(70.5% 10.55% at 50% -4.27%, #88eaff 2.16%, rgba(167, 148, 255, 0.38) 60.42%, rgba(167, 148, 255, 0) 100%),
 		radial-gradient(67.83% 33.54% at 0% 63.11%, #88eaff 0%, #8e77f7 55.73%, rgba(145, 124, 244, 0) 100%),
 		radial-gradient(54.72% 41.67% at 100% 100%, #88eaff 0%, rgba(167, 148, 255, 0.3) 60.42%, rgba(167, 148, 255, 0) 100%),
@@ -45,6 +31,17 @@ body {
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
+}
+
+/* Fonts */
+.font-chakra {
+	font-family: 'Chakra Petch', sans-serif;
+}
+
+/* Utils */
+.stretch-child > * {
+	width: 100%;
+	height: 100%;
 }
 
 .transition-btn:not(:disabled) {
@@ -100,6 +97,11 @@ body {
 .gradient-border {
 	background: linear-gradient(white, white) padding-box, linear-gradient(to left, #868bf7, #6cc7f8) border-box;
 	@apply border-transparent border;
+}
+
+.gradient-border-bg {
+	background: linear-gradient(56.67deg, rgba(167, 148, 255, 0) 11.15%, rgba(167, 148, 255, 0.93) 57.47%, rgba(142, 119, 247, 0) 127.41%, rgba(142, 119, 247, 0) 127.41%, rgba(167, 148, 255, 0) 127.41%),
+		linear-gradient(0deg, #67d4f8, #67d4f8);
 }
 
 .clickable {
