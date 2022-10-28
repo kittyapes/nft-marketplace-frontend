@@ -10,7 +10,7 @@
 		{#if point.top_value}
 			<div
 				class="-translate-x-1/2 uppercase text-xs text-center font-light absolute -top-[150%] whitespace-nowrap"
-				class:gradient-text={value >= point.at || point.at === 100}
+				class:text-gradient={value >= point.at || point.at === 100}
 				class:font-extrabold={point.at === 100}
 				style="left: {point.at}%"
 			>
@@ -25,7 +25,7 @@
 				class:opacity-0={point.dot == false}
 			/>
 
-			<div class="-translate-x-1/2 uppercase text-xs italic text-center font-light" class:gradient-text={value >= point.at}>
+			<div class="-translate-x-1/2 uppercase text-xs italic text-center font-light" class:text-gradient={value >= point.at}>
 				{point.label}
 			</div>
 		</div>

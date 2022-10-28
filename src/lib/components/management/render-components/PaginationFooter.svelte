@@ -63,7 +63,7 @@
 			<div class="text-color-gray-light clickable" on:click={firstPage}>First</div>
 			<div class="flex items-center clickable" on:click={previousPage}>
 				<ArrowDownGradient class="rotate-90" />
-				<div class="gradient-text ">Previous</div>
+				<div class="text-gradient ">Previous</div>
 			</div>
 		</div>
 		<div class="flex-grow justify-self-center select-none">
@@ -87,7 +87,7 @@
 		</div>
 		<div class="flex gap-4 text-lg font-semibold items-center mx-8">
 			<div class="flex items-center clickable" on:click={nextPage}>
-				<div class="gradient-text ">Next</div>
+				<div class="text-gradient ">Next</div>
 				<ArrowDownGradient class="-rotate-90" />
 			</div>
 			<div class="text-color-gray-light clickable" on:click={lastPage}>Last</div>

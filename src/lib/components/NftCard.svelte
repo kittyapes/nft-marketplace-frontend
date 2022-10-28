@@ -33,6 +33,7 @@
 
 	// Helpers
 	let imgLoaded = false;
+	let isHovered = false;
 
 	// Menu
 	let dotsOpened = false;
@@ -77,10 +78,8 @@
 			console.error(err);
 		} else if (res.data.message) {
 			notifySuccess('Unfavorited NFT.');
-			options.nfts[0].likes--;
 		} else {
 			notifySuccess('Favorited NFT.');
-			options.nfts[0].likes++;
 		}
 
 		await refreshLikedNfts($currentUserAddress);
@@ -151,26 +150,37 @@
 	onDestroy(() => clearInterval(timerInterval));
 </script>
 
-<div class="relative overflow-hidden w-[320px] h-[530px]" in:fade on:click={handleClick} class:cursor-pointer={options.allowPopup}>
+<div
+	class="relative overflow-hidden group !border-2 border-transparent"
+	class:gradient-border={isHovered}
+	in:fade
+	on:click={handleClick}
+	class:cursor-pointer={options.allowPopup}
+	on:mouseover={() => (isHovered = true)}
+	on:focus={() => (isHovered = true)}
+	on:mouseout={() => (isHovered = false)}
+	on:blur={() => (isHovered = false)}
+>
 	<!--
 		// Owned by user
 		{#if menuItems?.length}
 			<button on:click={toggleDots} class="w-8 h-8 hover:opacity-50" transition:fade|local={{ duration: 150 }}>
 				<ThreeDots />
 			</button>
-		{/if}
+		{/if} 
+	-->
 
-		<div class="flex-grow" />
-
-		{#if !hideLikes}
-			<div class="text-white btn" class:text-color-red={isUserLiked} on:click|stopPropagation={favNFT}>
-				<Heart class="w-6 h-6" />
+	<div class="w-full mx-auto overflow-hidden transition bg-card-gradient select-none aspect-1 h-[400px] relative" class:animate-pulse={!imgLoaded}>
+		{#if isHovered}
+			<div class="absolute flex justify-between w-full h-full px-2 bg-black bg-opacity-60" transition:fade={{ duration: 200 }}>
+				<div class="p-3 clickable h-12" on:click|stopPropagation={() => false}>@Seller</div>
+				{#if !hideLikes}
+					<div class="text-transparent clickable p-3 h-12" class:text-white={isUserLiked} on:click|stopPropagation={favNFT}>
+						<Heart class="w-6 h-6" />
+					</div>
+				{/if}
 			</div>
-			<div class="font-medium select-none">{options?.nfts?.[0].likes ?? 'N/A'}</div>
 		{/if}
-		-->
-
-	<div class="w-full mx-auto overflow-hidden transition bg-card-gradient select-none aspect-1 h-[400px]" class:animate-pulse={!imgLoaded}>
 		{#await preload(options.nfts[0].thumbnailUrl)}
 			<Loader />
 		{:then}
@@ -195,7 +205,7 @@
 	</div>
 	<div class="flex flex-col gap-2 bg-dark-gradient p-2 letter-spacing">
 		<div class="flex flex-col">
-			<div class="flex-grow truncate text-sm font-bold gradient-text">{options.nfts[0].collectionData.name || 'N/A'}</div>
+			<div class="flex-grow truncate text-sm font-bold text-gradient">{options.nfts[0].collectionData.name || 'N/A'}</div>
 
 			<!-- Hide price info when not present/listed -->
 			<div class="flex-grow truncate whitespace-nowrap font-semibold text-xl" class:text-xs={!options.nfts[0]?.name}>
@@ -206,7 +216,7 @@
 			{#if !isFuture(options?.listingData?.startTime)}
 				<div class="flex flex-col">
 					{#if options?.resourceType === 'listing'}
-						<div class="text-sm font-bold gradient-text">Price</div>
+						<div class="text-sm font-bold text-gradient">Price</div>
 						<div class="flex gap-1 items-center text-lg font-semibold">
 							<Eth />
 							<!-- TEMPORARY FIX - ADDITIONAL FIX FOR BIDS WILL BE ADDED ONCE BIDDING DATA IS PRESENT ON LISTINGS RESPONSE -->
@@ -228,7 +238,7 @@
 	{#if dotsOpened}
 		<div id="popup" class="absolute flex flex-col w-32 font-bold bg-white rounded-md top-10">
 			{#if menuItems.includes('transfer')}
-				<button class="gradient-text transition-btn disabled:opacity-75" disabled>TRANSFER</button>
+				<button class="text-gradient transition-btn disabled:opacity-75" disabled>TRANSFER</button>
 			{/if}
 
 			{#if menuItems.includes('hide')}

@@ -77,7 +77,7 @@
 	<div class="relative flex items-center justify-center text-sm w-full py-4">
 		<span>
 			&copy; 2021 - {new Date().getFullYear()}
-			<span class="gradient-text">Hinata Foundation</span>
+			<span class="text-gradient">Hinata Foundation</span>
 		</span>
 		<!-- <div class="absolute right-0 flex items-center justify-center w-auto tos">
 			<a href="/terms-and-conditions">Terms & Conditions</a>

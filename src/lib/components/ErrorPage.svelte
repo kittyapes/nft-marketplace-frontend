@@ -12,7 +12,7 @@
 		<div class="flex flex-col gap-10 p-40 items-center">
 			<Error404 />
 			<h1 class="text-7xl py-4 font-semibold text-color-gray-base">Something's missing.</h1>
-			<button class="btn btn-rounded gradient-text font-semibold text-5xl" on:click={() => window.history.back()}>Go Back</button>
+			<button class="btn btn-rounded text-gradient font-semibold text-5xl" on:click={() => window.history.back()}>Go Back</button>
 		</div>
 	</div>
 {/if}

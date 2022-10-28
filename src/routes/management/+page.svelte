@@ -500,8 +500,8 @@
 
 <div class="flex flex-col w-full h-full gap-12 p-40">
 	<div class="flex gap-14">
-		<div class="{tab === 'USER' ? 'gradient-text gradient-underline' : 'text-color-gray-base'} font-bold text-3xl relative btn" on:click={() => (tab = 'USER')}>User Management</div>
-		<div class="{tab === 'COLLECTION' ? 'gradient-text gradient-underline' : 'text-color-gray-dark'} font-bold text-3xl relative btn" on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
+		<div class="{tab === 'USER' ? 'text-gradient gradient-underline' : 'text-color-gray-base'} font-bold text-3xl relative btn" on:click={() => (tab = 'USER')}>User Management</div>
+		<div class="{tab === 'COLLECTION' ? 'text-gradient gradient-underline' : 'text-color-gray-dark'} font-bold text-3xl relative btn" on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
 	</div>
 	<div class="flex gap-4">
 		{#if tab === 'USER'}
@@ -554,7 +554,7 @@
 
 	{#if tab === 'COLLECTION'}
 		<div>
-			<h2 class="text-xl font-bold gradient-text">Whitelist a collection</h2>
+			<h2 class="text-xl font-bold text-gradient">Whitelist a collection</h2>
 			<div class="flex flex-col w-full gap-10 mt-1">
 				<!-- Network picker -->
 				<!-- <div class="flex flex-col gap-1 w-[36rem]">

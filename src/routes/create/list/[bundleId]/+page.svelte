@@ -73,7 +73,7 @@
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: 'WETH',
 			listingType: listingType,
-			...listingProps
+			...listingProps,
 		};
 
 		try {
@@ -102,9 +102,9 @@
 			{
 				name: $fetchedNftData?.name || 'No Title',
 				thumbnailUrl: $fetchedNftData?.thumbnailUrl || $fetchedNftData?.assetUrl,
-				collectionData: { name: $fetchedNftData?.collectionName }
-			}
-		]
+				collectionData: { name: $fetchedNftData?.collectionName },
+			},
+		],
 	} as CardOptions;
 </script>
 
@@ -121,7 +121,7 @@
 		<h1 class="mt-8 text-xl uppercase">
 			<span class="font-light">Step 3: Setting details</span>
 			|
-			<span class="pr-1 font-bold gradient-text">{listingType}</span>
+			<span class="pr-1 font-bold text-gradient">{listingType}</span>
 		</h1>
 
 		<hr class="mt-4 separator" />
