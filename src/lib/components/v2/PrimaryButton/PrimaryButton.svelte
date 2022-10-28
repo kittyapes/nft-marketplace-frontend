@@ -36,7 +36,7 @@
 		filter: drop-shadow(0px 4px 0px rgba(0, 0, 0, 0.35));
 	}
 
-	.outer-shadow:hover {
+	.outer-shadow:not(:disabled):hover {
 		filter: drop-shadow(0px 4px 0px rgba(0, 0, 0, 0.35)) brightness(1.25);
 	}
 
