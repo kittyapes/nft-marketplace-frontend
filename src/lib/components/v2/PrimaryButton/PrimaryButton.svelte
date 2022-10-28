@@ -4,9 +4,9 @@
 	export let disabled: boolean = false;
 </script>
 
-<button class="uppercase text-white p-[2px] gradient-stroke-bg hover:brightness-125 {buttonBaseClasses} {$$props.class}" {disabled} on:click>
+<button class="uppercase text-white p-[2px] gradient-stroke-bg outer-shadow {buttonBaseClasses} {$$props.class}" {disabled} on:click>
 	<div class="bg-[#1d1832]">
-		<div class="gradient-bg h-12 flex items-center justify-center">
+		<div class="gradient-bg h-12 flex items-center justify-center inner-shadow">
 			<slot />
 		</div>
 	</div>
@@ -30,5 +30,17 @@
 
 	.gradient-bg::before {
 		background: #1d1832;
+	}
+
+	.outer-shadow {
+		filter: drop-shadow(0px 4px 0px rgba(0, 0, 0, 0.35));
+	}
+
+	.outer-shadow:hover {
+		filter: drop-shadow(0px 4px 0px rgba(0, 0, 0, 0.35)) brightness(1.25);
+	}
+
+	.inner-shadow {
+		box-shadow: inset 0px 0px 17px rgba(120, 171, 248, 0.2);
 	}
 </style>
