@@ -10,11 +10,12 @@
 
 	import Popup from '../Popup.svelte';
 	import Progressbar from '../Progressbar.svelte';
+	import PrimaryButton from '../v2/PrimaryButton/PrimaryButton.svelte';
 
 	const points = [
 		{ at: 0, label: 'Upload', top_value: null },
 		{ at: 50, label: 'NFT TX', top_value: null },
-		{ at: 100, label: 'Finished', top_value: null }
+		{ at: 100, label: 'Finished', top_value: null },
 	];
 
 	export let handler: PopupHandler;
@@ -30,30 +31,28 @@
 		goto(`/profile/${$currentUserAddress}?tab=created&id=${id}`);
 		handler.close();
 	}
+
+	$: mintingComplete = $progress === 100;
 </script>
 
-<Popup class={`min-w-[800px] ${$progress === 100 && 'min-h-[500px]'}`}>
-	<div class="font-semibold text-center mt-16 text-lg">Minting progress</div>
+<div class="w-[800px] h-[400px] grid items-stretch text-white">
+	<Popup>
+		<div class="p-16">
+			<div class="text-center text-4xl">Proceed to List your NFT?</div>
 
-	<div class="w-3/4 mx-auto mt-8">
-		<Progressbar value={$progress} {points} />
-	</div>
+			<div class="text-center mt-4">Listing an NFT will reqiure a small network fee. Once you choose the listing format you will be prompted to send an WETHereum transaction.</div>
 
-	{#if $progress === 100}
-		<div class="text-2xl font-semibold text-center mt-16">Proceed to List your Drop?</div>
+			<div class="w-3/4 mx-auto mt-12">
+				<Progressbar value={$progress} {points} />
+			</div>
 
-		<p class="max-w-prose text-center mx-auto mt-2">Listing an NFT will reqiure a small network fee. Once you choose the listing format you will be prompted to send an Ethereum transaction.</p>
-
-		<div class="flex justify-center gap-x-8 mt-8">
-			<button class="btn btn-rounded btn-gradient h-14 w-64 uppercase" on:click={clickViewNft}>View NFT</button>
-			<button class="btn btn-rounded btn-gradient h-14 w-64 uppercase" on:click={clickChooseFormat}>Choose listing format</button>
+			<div class="flex justify-center gap-x-4 mt-16 w-[500px] mx-auto">
+				<PrimaryButton on:click={clickViewNft} disabled={!mintingComplete}>View NFT</PrimaryButton>
+				<PrimaryButton on:click={clickChooseFormat} disabled={!mintingComplete}>Choose listing format</PrimaryButton>
+			</div>
 		</div>
-	{:else}
-		<div class="loading-animation">
-			<Loader />
-		</div>
-	{/if}
-</Popup>
+	</Popup>
+</div>
 
 <style lang="postcss">
 	.loading-animation {
