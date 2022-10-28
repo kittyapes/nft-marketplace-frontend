@@ -68,7 +68,6 @@
 
 	async function fetchData(forAdress: string) {
 		$localProfileData = await fetchProfileData(forAdress);
-		console.log($localProfileData);
 	}
 
 	$: browser && fetchData(address);

@@ -16,7 +16,7 @@
 	import Filters from '$icons/filters.svelte';
 	import EntryRole from '$lib/components/management/render-components/EntryRole.svelte';
 	import { debounce } from 'lodash-es';
-	import { apiSearchCollections, type Collection } from '$utils/api/collection';
+	import { apiSearchCollections, type Collection, type CollectionSearchOptions } from '$utils/api/collection';
 	import CollectionName from '$lib/components/management/render-components/CollectionName.svelte';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { whitelistCollection } from '$utils/api/management/whitelistCollection';
@@ -118,7 +118,7 @@
 
 	interface CollectionFetchingOptions {
 		filter: Partial<{
-			status: string;
+			status: 'ACTIVE' | 'INACTIVE' | 'ALL';
 			isClaimed: boolean;
 		}>;
 		sort: Partial<{
@@ -261,7 +261,7 @@
 		{ label: 'Unclaimed', value: false },
 	];
 
-	$: if ($currentUserAddress && tab) createTable();
+	$: if ($currentUserAddress && tab && browser) createTable();
 
 	let createTable = async () => {
 		loaded = false;
@@ -271,7 +271,7 @@
 	//COLLECTION section
 
 	let createCollectionTable = async () => {
-		await apiSearchCollections()
+		await apiSearchCollections({ status: 'ALL' })
 			.then((res) => {
 				collections = res.collections.filter((c) => c.slug);
 				totalCollectionEntries = res.totalCount;
@@ -283,13 +283,14 @@
 		await createCollectionTableData();
 	};
 
-	let getCollectionsFetchingOptions = () => {
+	let getCollectionsFetchingOptions = (): CollectionSearchOptions => {
 		return {
 			...collectionFetchingOptions.filter,
 			name: collectionFetchingOptions.name,
 			...collectionFetchingOptions.sort,
 			limit: collectionFetchingOptions.limit,
 			page: collectionPage,
+			status: 'ALL',
 		};
 	};
 
@@ -319,7 +320,7 @@
 					mode: tab,
 					disableAllOnSelect: true,
 					role: u.status,
-					color: getRoleColor(u.status === 'INACTIVE' ? 'INACTIVATED' : 'verified_user'),
+					color: getRoleColor(u.status === 'INACTIVE' ? 'INACTIVATED' : 'ACTIVE'),
 					options: [
 						{ label: 'Active', checked: u.status === 'ACTIVE', value: 'ACTIVE' },
 						{ label: 'Inactive', checked: u.status === 'INACTIVE', value: 'INACTIVE' },
@@ -389,6 +390,7 @@
 	}
 
 	const getSearchedCollections = async () => {
+		// @ts-ignore
 		await apiSearchCollections(getCollectionsFetchingOptions()).then((res) => {
 			collections = res.collections.filter((c) => c.slug);
 			totalCollectionEntries = res.totalCount;
@@ -419,7 +421,7 @@
 		totalUserEntries = res.totalCount;
 	};
 
-	$: if (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0) {
+	$: if (browser && (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0)) {
 		loaded = false;
 		debouncedSearch();
 	}
@@ -449,13 +451,13 @@
 					id: u.address,
 					dispatchAllOptions: true,
 					mode: tab,
-					role: getHighestRole([...u.roles, u.status]),
-					color: getRoleColor(getHighestRole([...u.roles, u.status])),
+					role: getHighestRole([...u.roles]),
+					color: getRoleColor(getHighestRole([...u.roles])),
 					options: [
 						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin' },
 						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user' },
 						{ label: 'blogger', checked: false, cb: (e) => e.roles?.includes('blogger'), value: 'blogger' },
-						{ label: 'inactive', checked: u.status === 'INACTIVATED', cb: (e) => e.status === 'INACTIVATED', value: 'inactivated_user' },
+						{ label: 'inactive', checked: u.roles?.includes('inactivated_user'), cb: (e) => e.roles?.includes('inactivated_user'), value: 'inactivated_user' },
 					],
 				})),
 			},
