@@ -58,6 +58,7 @@ body {
 	-webkit-text-fill-color: transparent;
 	background-clip: text;
 	text-fill-color: transparent;
+	@apply max-w-fit;
 }
 
 .text-color-gradient {
