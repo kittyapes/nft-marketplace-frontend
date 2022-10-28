@@ -2,11 +2,21 @@
 	import { buttonBaseClasses } from '../ButtonBase/buttonBase';
 
 	export let disabled: boolean = false;
+
+	let isHovered = false;
 </script>
 
-<button class="uppercase text-white p-[2px] gradient-stroke-bg outer-shadow {buttonBaseClasses} {$$props.class}" {disabled} on:click>
-	<div class="bg-[#1d1832]">
-		<div class="gradient-bg h-12 flex items-center justify-center inner-shadow">
+<button
+	class="uppercase text-white p-[2px] gradient-stroke-bg outer-shadow {buttonBaseClasses} {$$props.class}"
+	{disabled}
+	on:click
+	on:mouseover={() => (isHovered = true)}
+	on:focus={() => (isHovered = true)}
+	on:mouseout={() => (isHovered = false)}
+	on:blur={() => (isHovered = false)}
+>
+	<div class="bg-[#1d1832] hover:bg-transparent">
+		<div class="h-12 flex items-center justify-center inner-shadow" class:gradient-bg={!isHovered}>
 			<slot />
 		</div>
 	</div>
@@ -30,14 +40,6 @@
 
 	.gradient-bg::before {
 		background: #1d1832;
-	}
-
-	.outer-shadow {
-		filter: drop-shadow(0px 4px 0px rgba(0, 0, 0, 0.35));
-	}
-
-	.outer-shadow:hover {
-		filter: drop-shadow(0px 4px 0px rgba(0, 0, 0, 0.35)) brightness(1.25);
 	}
 
 	.inner-shadow {

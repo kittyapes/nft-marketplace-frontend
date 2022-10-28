@@ -2,6 +2,11 @@
 	import Copy from '$icons/copy.svelte';
 	import { notifySuccess } from '$utils/toast';
 	import { hoverHint } from '$actions/hoverHint';
+	import ThemedCheck from '$icons/themed-check.svelte';
+	import { fade } from 'svelte/transition';
+	import SuccessCheckmark from '$icons/success-checkmark.svelte';
+	import VerifiedCheckWhite from '$icons/verified-check-white.svelte';
+	import Checkmark from '$icons/checkmark.svelte';
 
 	export let address = '';
 	export let concat = false;
@@ -11,9 +16,13 @@
 	export let etherScanLink = true;
 	export let tooltip = false;
 
+	let checkmark = false;
+
 	const copyToClipboard = () => {
 		navigator.clipboard.writeText(address);
 		notifySuccess('Address Copied to Clipboard');
+		checkmark = true;
+		setTimeout(() => (checkmark = false), 3000);
 	};
 
 	const concatAddress = (id) => {
@@ -38,9 +47,17 @@
 		{/if}
 
 		{#if copyIcon}
-			<button on:click={copyToClipboard} class="transition-btn">
-				<Copy />
-			</button>
+			<div class="w-5 h-5 grid place-items-center">
+				{#if checkmark}
+					<div class="grid place-items-center" in:fade>
+						<Checkmark />
+					</div>
+				{:else}
+					<button on:click={copyToClipboard} class="transition-btn grid place-items-center" in:fade>
+						<Copy />
+					</button>
+				{/if}
+			</div>
 		{/if}
 	</div>
 </div>
