@@ -26,7 +26,7 @@
 	import { notifyError } from '$utils/toast';
 	import { writable } from 'svelte/store';
 
-	const dragDropText = 'Drag and drop an image <br> or <span class="gradient-text">click to browse</span>';
+	const dragDropText = 'Drag and drop an image <br> or <span class="text-gradient">click to browse</span>';
 	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string; collectionId: string }>(null);
 
 	let dumpDraft = false;
@@ -214,7 +214,7 @@
 			<div>
 				<DragDropImage class="h-56" max_file_size={50_000_000} bind:blob={nftData.assetBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos} />
 				<div class="text-xs text-center">
-					MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="gradient-text">MAX 50MB</span>
+					MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
 				</div>
 			</div>
 
@@ -223,7 +223,7 @@
 			<div>
 				<DragDropImage class="h-56" max_file_size={3_000_000} bind:blob={nftData.thumbnailBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages} />
 				<div class="text-xs text-center">
-					MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="gradient-text">MAX 50MB</span>
+					MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
 				</div>
 			</div>
 		</div>

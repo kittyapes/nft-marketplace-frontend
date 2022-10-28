@@ -17,7 +17,7 @@ export function getListingCardTimerHtml(startDate: number, duration: number) {
 		const in_ = dayjs.duration(inSeconds, 's').format('D[d] H[h] m[m]');
 
 		return `<div class="flex flex-col">
-				<div class="gradient-text font-bold text-sm">
+				<div class="text-gradient font-bold text-sm">
 					Starts in: 
 				</div>
 				<div class="text-white font-semibold text-lg">
@@ -34,7 +34,7 @@ export function getListingCardTimerHtml(startDate: number, duration: number) {
 
 		if (endingIn.asMilliseconds() === 0) return `<div class="listing-timer text-[10px] font-bold uppercase text-color-red">Expired</div>`;
 		return `<div class="flex flex-col">
-					<div class="gradient-text font-bold text-sm">
+					<div class="text-gradient font-bold text-sm">
 						Ends in: 
 					</div>
 					<div class="text-white font-semibold text-lg">

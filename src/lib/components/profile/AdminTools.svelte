@@ -70,7 +70,7 @@
 
 		<!-- Verified creator promoting and inactivating -->
 		<div class="mt-6 font-semibold uppercase">
-			Verified creator status: <span class="gradient-text">
+			Verified creator status: <span class="text-gradient">
 				{#if isVerifiedUser}
 					Verified
 				{:else if isInactivatedUser}

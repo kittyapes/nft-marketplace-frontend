@@ -205,7 +205,7 @@
 	</div>
 	<div class="flex flex-col gap-2 bg-dark-gradient p-2 letter-spacing">
 		<div class="flex flex-col">
-			<div class="flex-grow truncate text-sm font-bold gradient-text">{options.nfts[0].collectionData.name || 'N/A'}</div>
+			<div class="flex-grow truncate text-sm font-bold text-gradient">{options.nfts[0].collectionData.name || 'N/A'}</div>
 
 			<!-- Hide price info when not present/listed -->
 			<div class="flex-grow truncate whitespace-nowrap font-semibold text-xl" class:text-xs={!options.nfts[0]?.name}>
@@ -216,7 +216,7 @@
 			{#if !isFuture(options?.listingData?.startTime)}
 				<div class="flex flex-col">
 					{#if options?.resourceType === 'listing'}
-						<div class="text-sm font-bold gradient-text">Price</div>
+						<div class="text-sm font-bold text-gradient">Price</div>
 						<div class="flex gap-1 items-center text-lg font-semibold">
 							<Eth />
 							<!-- TEMPORARY FIX - ADDITIONAL FIX FOR BIDS WILL BE ADDED ONCE BIDDING DATA IS PRESENT ON LISTINGS RESPONSE -->
@@ -238,7 +238,7 @@
 	{#if dotsOpened}
 		<div id="popup" class="absolute flex flex-col w-32 font-bold bg-white rounded-md top-10">
 			{#if menuItems.includes('transfer')}
-				<button class="gradient-text transition-btn disabled:opacity-75" disabled>TRANSFER</button>
+				<button class="text-gradient transition-btn disabled:opacity-75" disabled>TRANSFER</button>
 			{/if}
 
 			{#if menuItems.includes('hide')}

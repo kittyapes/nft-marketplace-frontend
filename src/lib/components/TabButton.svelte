@@ -8,7 +8,7 @@
 	$: underlineTranslate = 0.5 * (underlineWidth - 100);
 </script>
 
-<button on:click class:selected class:gradient-text={selected} style="--underline-width: {underlineWidth}%; --underline-translate: {underlineTranslate}%" class:uppercase transition:fade|local>
+<button on:click class:selected class:text-gradient={selected} style="--underline-width: {underlineWidth}%; --underline-translate: {underlineTranslate}%" class:uppercase transition:fade|local>
 	<slot />
 </button>
 

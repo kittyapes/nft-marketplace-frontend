@@ -60,15 +60,15 @@
 						<div class="text-color-black text-xl font-semibold">Choose tokens to stake</div>
 						<div class="flex gap-3 ">
 							<button class="w-1/2 {currency === 'HiNATA' ? 'btn-primary' : 'btn btn-rounded uppercase gradient-border'}" on:click={() => (currency = 'HiNATA')}>
-								<div class="text-lg font-semibold transition-colors {currency === 'HiNATA' ? '' : 'gradient-text'}">hinata</div>
+								<div class="text-lg font-semibold transition-colors {currency === 'HiNATA' ? '' : 'text-gradient'}">hinata</div>
 							</button>
 							<button class="w-1/2  {currency === 'HiNATA-LP' ? 'btn-primary' : 'btn btn-rounded uppercase gradient-border'}" on:click={() => (currency = 'HiNATA-LP')}>
-								<div class="text-lg font-semibold transition-colors {currency === 'HiNATA-LP' ? '' : 'gradient-text'}">Hinata LP</div>
+								<div class="text-lg font-semibold transition-colors {currency === 'HiNATA-LP' ? '' : 'text-gradient'}">Hinata LP</div>
 							</button>
 						</div>
 						<div class="flex flex-col">
 							<div class="flex font-semibold text-2xl gap-2">
-								<div class="gradient-text">{currency}</div>
+								<div class="text-gradient">{currency}</div>
 								<div>Staking</div>
 							</div>
 							{#if currency === 'HiNATA'}
@@ -99,7 +99,7 @@
 											: 'gradient-border'}"
 										on:click={() => (mode = 'stake')}
 									>
-										<div class="transition-colors font-semibold text-center {mode === 'stake' ? '' : 'gradient-text'}">Stake</div>
+										<div class="transition-colors font-semibold text-center {mode === 'stake' ? '' : 'text-gradient'}">Stake</div>
 									</button>
 									<button
 										class="btn btn-gradient active:scale-100 px-4 py-3 w-[40%] rounded-r-md transition-opacity {mode === 'unstake'
@@ -107,7 +107,7 @@
 											: 'gradient-border'}"
 										on:click={() => (mode = 'unstake')}
 									>
-										<div class="transition-colors font-semibold text-center {mode === 'unstake' ? '' : 'gradient-text'}">Unstake</div>
+										<div class="transition-colors font-semibold text-center {mode === 'unstake' ? '' : 'text-gradient'}">Unstake</div>
 									</button>
 								</div>
 								<div class="flex w-full gap-6 relative items-center">
@@ -123,7 +123,7 @@
 								</div>
 								<div class="flex flex-col">
 									<div class="flex font-semibold text-2xl gap-2 w-full items-center">
-										<div class="gradient-text ">${currency}</div>
+										<div class="text-gradient ">${currency}</div>
 										<div>Wallet Balance:</div>
 										<div class="text-lg font-semibold">
 											{#if currency === 'HiNATA'}

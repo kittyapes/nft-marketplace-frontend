@@ -74,9 +74,9 @@
 			{/each}
 
 			<div class="flex justify-center px-2 mb-2 font-bold gap-x-2">
-				<button class="btn gradient-text small-button" on:click={selectAll}>Select all</button>
-				<div class="text-lg gradient-text">&middot;</div>
-				<button class="btn gradient-text small-button" on:click={clearAll}>Clear all</button>
+				<button class="btn text-gradient small-button" on:click={selectAll}>Select all</button>
+				<div class="text-lg text-gradient">&middot;</div>
+				<button class="btn text-gradient small-button" on:click={clearAll}>Clear all</button>
 			</div>
 		</div>
 	{/if}

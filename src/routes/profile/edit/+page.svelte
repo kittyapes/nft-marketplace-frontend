@@ -220,11 +220,11 @@
 		<div class="max-w-4xl px-16 py-16 mx-auto ">
 			<h1 class="text-5xl font-semibold text-center uppercase">
 				{firstTimeUser ? 'Setup' : 'Edit'} Your
-				<span class="gradient-text">Profile</span>
+				<span class="text-gradient">Profile</span>
 			</h1>
 
 			<div class="mt-4 text-sm font-bold text-center">
-				Profile completion progress: <span class="gradient-text">{profileCompletionProgress}%</span>
+				Profile completion progress: <span class="text-gradient">{profileCompletionProgress}%</span>
 			</div>
 
 			<div class="w-4/5 mx-auto mt-5">
@@ -276,7 +276,7 @@
 				</div>
 
 				<div class="grid items-stretch grid-cols-2">
-					<div class="flex items-center transition input-label gradient-text">
+					<div class="flex items-center transition input-label text-gradient">
 						<div class="mr-2" class:text-color-gray-light={!isEmail($localDataStore.email)}>25%</div>
 						<div class:text-black={!isEmail($localDataStore.email)}>Email</div>
 						<span class="text-red-500 text-base">*</span>
@@ -292,7 +292,7 @@
 				</div>
 
 				<div class="grid grid-cols-2 items-start">
-					<div class="flex items-center transition input-label gradient-text">
+					<div class="flex items-center transition input-label text-gradient">
 						<div class="mr-2" class:text-color-gray-light={!($localDataStore.bio && isValidBio($localDataStore.bio))}>25%</div>
 						<div class:text-black={!($localDataStore.bio && isValidBio($localDataStore.bio))}>Bio</div>
 					</div>
@@ -306,7 +306,7 @@
 				</div>
 
 				<div class="grid grid-cols-2 items-start">
-					<div class="gradient-text input-label flex">
+					<div class="text-gradient input-label flex">
 						<div class="mr-2" class:text-color-gray-light={!isProfileImage}>25%</div>
 						<div>
 							<div class="transition">
@@ -332,7 +332,7 @@
 				</div>
 
 				<div class="grid grid-cols-2 items-start">
-					<div class="gradient-text input-label flex">
+					<div class="text-gradient input-label flex">
 						<div class="mr-2" class:text-color-gray-light={!isCoverImage}>25%</div>
 						<div>
 							<div class="input-label">
@@ -356,7 +356,7 @@
 
 				<div class="grid grid-cols-2">
 					<div>
-						<div class="transition input-label gradient-text brightness-0 peer-focus-within:brightness-100">Social links</div>
+						<div class="transition input-label text-gradient brightness-0 peer-focus-within:brightness-100">Social links</div>
 						<div class="text-xs text-[#A9A8A8]">optional</div>
 					</div>
 

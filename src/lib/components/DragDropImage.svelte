@@ -7,7 +7,7 @@
 	const dispatch = createEventDispatcher();
 
 	// TODO refactor to completely remove this and use the placeholder named slot instead
-	export let text = 'Drag and drop an image here <span class="gradient-text">or click to browse</span>';
+	export let text = 'Drag and drop an image here <span class="text-gradient">or click to browse</span>';
 	export let dimensions: string = '';
 	export let blob: Blob | null = null;
 	export let currentImgUrl: string = null;

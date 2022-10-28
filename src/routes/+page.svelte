@@ -126,7 +126,7 @@
 			</p>
 
 			<!-- Read more
-			<div class="mt-4 text-lg font-light gradient-text">Read more</div>
+			<div class="mt-4 text-lg font-light text-gradient">Read more</div>
 			 -->
 		</div>
 	</div>

@@ -28,7 +28,7 @@
 				<div class="text-[#1D1D1DB2]">{data.pubDate} ∙ 5 min read</div>
 
 				<!-- Read more -->
-				<div class="mt-4 text-lg font-light gradient-text">Read more</div>
+				<div class="mt-4 text-lg font-light text-gradient">Read more</div>
 			</div>
 		</a>
 	{:else}

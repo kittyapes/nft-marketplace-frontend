@@ -101,9 +101,9 @@
 			</div>
 		</div>
 
-		<div class="gradient-text">Hinata Fees:</div>
+		<div class="text-gradient">Hinata Fees:</div>
 		<div class="flex justify-end space-x-3">
-			<div class="gradient-text">0%</div>
+			<div class="text-gradient">0%</div>
 			<div class="w-6">
 				<Info />
 			</div>
