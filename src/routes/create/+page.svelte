@@ -266,7 +266,7 @@
 
 		<!-- Mint button -->
 		<div class="w-full pr-8">
-			<PrimaryButton class="mt-8" on:click={mintAndContinue} disabled={!inputValid && false}>Mint</PrimaryButton>
+			<PrimaryButton class="mt-8" on:click={mintAndContinue} disabled={!inputValid}>MINT</PrimaryButton>
 		</div>
 	</div>
 
