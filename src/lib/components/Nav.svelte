@@ -51,7 +51,7 @@
 	});
 </script>
 
-<div class="absolute z-10 flex w-full ">
+<div class="fixed z-10 flex w-full ">
 	<div class="fixed z-10 flex items-center w-full h-20 pl-8 pr-2 overflow-x-visible scrollbar-hidden snap-mandatory snap-x navbar text-white">
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
@@ -96,7 +96,7 @@
 						{#if $profileData?.thumbnailUrl}
 							<img on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"} src={$profileData.thumbnailUrl} alt="Current account avatar." class="object-cover w-full h-full" />
 						{:else}
-							<div class="text-color-purple" in:fade|local>
+							<div class="text-color-purple grid place-items-center" in:fade|local>
 								<UserCircle />
 							</div>
 						{/if}
