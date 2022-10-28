@@ -15,22 +15,28 @@ const knownTokens: { ticker: string; address: string; network: string; decimals:
 		network: 'rinkeby',
 		decimals: 18,
 	},
-	{
-		ticker: 'WETH',
-		address: '0x0c84c20673341B5bae28D80F54926269A64B47a5',
-		network: 'testing-goerli',
-		decimals: 18,
-	},
-	{
-		ticker: 'WETH',
-		address: '0x6aA500DBe47b19437cB93D84492BDD175AA333BB',
-		network: 'development-goerli',
-		decimals: 18,
-	},
+	// {
+	// 	ticker: 'WETH',
+	// 	address: '0x0c84c20673341B5bae28D80F54926269A64B47a5',
+	// 	network: 'testing-goerli',
+	// 	decimals: 18,
+	// },
+	// {
+	// 	ticker: 'WETH',
+	// 	address: '0x6aA500DBe47b19437cB93D84492BDD175AA333BB',
+	// 	network: 'development-goerli',
+	// 	decimals: 18,
+	// },
+	// {
+	// 	ticker: 'WETH',
+	// 	address: '0xbA5029aAF14672ef662aD8eB38CDB4E4C16AdF6D',
+	// 	network: 'staging-goerli',
+	// 	decimals: 18,
+	// },
 	{
 		ticker: 'WETH',
 		address: '0xbA5029aAF14672ef662aD8eB38CDB4E4C16AdF6D',
-		network: 'staging-goerli',
+		network: 'goerli',
 		decimals: 18,
 	},
 	{
@@ -67,10 +73,10 @@ export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: 
 		network = 'goerli';
 	}
 
-	const environment: string | undefined = import.meta.env.VITE_CONTRACTS_ENVIRONMENT;
-	if ((environment?.trim() === 'development' || environment?.trim() === 'testing' || environment?.trim() === 'staging') && network === 'goerli') {
-		(network as string) = `${environment.trim()}-goerli`;
-	}
+	// const environment: string | undefined = import.meta.env.VITE_CONTRACTS_ENVIRONMENT;
+	// if ((environment?.trim() === 'development' || environment?.trim() === 'testing' || environment?.trim() === 'staging') && network === 'goerli') {
+	// 	(network as string) = `${environment.trim()}-goerli`;
+	// }
 
 	if (!network) {
 		network = 'eth';

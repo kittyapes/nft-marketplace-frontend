@@ -12,7 +12,7 @@
 	import NftList from '$lib/components/NftList.svelte';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
-	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
+	import { listingToCardOptions } from '$utils/adapters/cardOptions';
 
 	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);

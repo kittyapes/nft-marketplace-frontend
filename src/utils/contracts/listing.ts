@@ -112,21 +112,21 @@ export async function getOnChainListing(listingId: string): Promise<ChainListing
 	const onChainListing = await contract.listings(listingId);
 
 	// if on chain listing is not valid, return null
-	const onChainId = ethers.utils.formatUnits(onChainListing.id, 0);
+	const onChainId = ethers.utils.formatUnits(onChainListing?.id, 0);
 
-	const token = await getTokenDetails(onChainListing.payToken);
+	const token = await getTokenDetails(onChainListing?.payToken);
 
 	// Copying over the values to remove the first array vars from chain
 	const onChainObj = {
-		duration: onChainListing.duration.toNumber(),
-		id: ethers.utils.formatUnits(onChainListing.id, 0),
-		listingType: onChainListing.listingType,
-		payToken: onChainListing.payToken,
-		price: ethers.utils.formatUnits(onChainListing.price, token.decimals),
-		reservePrice: ethers.utils.formatUnits(onChainListing.reservePrice),
-		quantity: onChainListing.quantity.toNumber(),
-		seller: onChainListing.seller,
-		startTime: onChainListing.startTime ? onChainListing.startTime.toNumber() : null,
+		duration: onChainListing?.duration.toNumber(),
+		id: ethers.utils.formatUnits(onChainListing?.id, 0),
+		listingType: onChainListing?.listingType,
+		payToken: onChainListing?.payToken,
+		price: ethers.utils.formatUnits(onChainListing?.price, token.decimals),
+		reservePrice: ethers.utils.formatUnits(onChainListing?.reservePrice),
+		quantity: onChainListing?.quantity.toNumber(),
+		seller: onChainListing?.seller,
+		startTime: onChainListing?.startTime ? onChainListing?.startTime.toNumber() : null,
 		isValidOnChainListing: onChainId === listingId.toString(),
 	};
 

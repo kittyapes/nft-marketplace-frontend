@@ -19,8 +19,6 @@ appDataToTriggerReload.subscribe(() => {
 export async function refreshProfileData() {
 	const newProfileData = await fetchCurrentUserData();
 
-	console.log(newProfileData);
-
 	profileData.set(newProfileData);
 }
 
