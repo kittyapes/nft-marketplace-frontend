@@ -1,36 +1,28 @@
 <script>
 	import { setPopup } from '$utils/popup';
-	import CardButton from '$lib/components/create/CardButton.svelte';
-	import ListingType from '$lib/components/create/ListingType.svelte';
 	import ConfirmListingTypePopup from '$lib/components/create/ConfirmListingTypePopup.svelte';
 	import { fade } from 'svelte/transition';
 	import Back from '$icons/back_.svelte';
 	import { goBack } from '$utils/navigation';
+	import ListingTypeButton from '$lib/components/v2/ListingTypeButton/ListingTypeButton.svelte';
+	import SaleListingTypeOption from '$icons/sale-listing-type-option.svelte';
+	import AuctionListingTypeOption from '$icons/auction-listing-type-option.svelte';
 
 	const listingTypes = [
 		{
-			listingType: 'sale',
-			title: 'Sale',
-			imgUrl: '/img/create/drop-type-sale.svg',
-			hoverText: 'Allows users to sell an NFT for a Fixed Cost and Time-Frame.',
-			confirmDetail: 'Listing an NFT for sale posts the item to the Marketplace for a fixed price.',
-			show: () => true
-		},
-		{
 			listingType: 'auction',
 			title: 'Auction',
-			imgUrl: '/img/create/drop-type-auction.svg',
 			hoverText: 'Allow other users to make bids on your NFT.',
 			confirmDetail: 'Listing an NFT for Auction allows any user to bid with Weth. Select the duration and reserve price for your item.',
-			show: () => true
+			iconComponent: AuctionListingTypeOption,
 		},
 		{
-			listingType: 'raffle',
-			title: 'Raffle',
-			imgUrl: '/img/create/drop-type-raffle.svg',
-			hoverText: 'No description',
-			show: () => false
-		}
+			listingType: 'sale',
+			title: 'Sale',
+			hoverText: 'Allows users to sell an NFT for a Fixed Cost and Time-Frame.',
+			confirmDetail: 'Listing an NFT for sale posts the item to the Marketplace for a fixed price.',
+			iconComponent: SaleListingTypeOption,
+		},
 	];
 
 	function handleClick(dropType) {
@@ -41,16 +33,14 @@
 </script>
 
 <!-- Back button -->
-<button class="flex items-center mt-16 mb-8 space-x-2 text-sm font-semibold uppercase btn" on:click={goBack}>
+<button class="flex items-center mt-16 mb-8 space-x-2 text-sm font-semibold btn" on:click={goBack}>
 	<Back />
 	<div>Go Back</div>
 </button>
 
-<hr class="separator" />
+<h1 class="mt-8 text-3xl font-light border-t border-white pt-4">Choose Listing Format</h1>
 
-<h1 class="mt-8 text-xl font-light uppercase">Step 2: Choose listing format</h1>
-
-<div class="font-poppins text-[#585858] mt-8 h-6">
+<div class="mt-2 h-6 font-normal text-lg">
 	{#if hoveredListingType}
 		<div transition:fade={{ duration: 100 }}>
 			{listingTypes.find((v) => v.listingType === hoveredListingType)?.hoverText || ''}
@@ -58,21 +48,16 @@
 	{/if}
 </div>
 
-<div class="flex flex-wrap justify-center gap-16 mt-8 mb-64">
+<div class="flex flex-wrap justify-center gap-4 mt-24 mb-64">
 	{#each listingTypes as listingType}
-		{#if listingType.show?.()}
-			<div class="w-64">
-				<CardButton
-					on:click={() => handleClick(listingType)}
-					on:pointerenter={() => (hoveredListingType = listingType.listingType)}
-					on:pointerleave={() => {
-						if (hoveredListingType === listingType.listingType) hoveredListingType = null;
-					}}
-					disabled={listingType.disabled}
-				>
-					<ListingType imgUrl={listingType.imgUrl} title={listingType.title} />
-				</CardButton>
-			</div>
-		{/if}
+		<ListingTypeButton
+			on:click={() => handleClick(listingType)}
+			on:pointerenter={() => (hoveredListingType = listingType.listingType)}
+			on:pointerleave={() => {
+				if (hoveredListingType === listingType.listingType) hoveredListingType = null;
+			}}
+			iconComponent={listingType.iconComponent}
+			title={listingType.title}
+		/>
 	{/each}
 </div>
