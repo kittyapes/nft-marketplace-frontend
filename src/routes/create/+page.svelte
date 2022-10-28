@@ -113,7 +113,6 @@
 		newBundleData.set({} as NewBundleData);
 		const progress = writable(0);
 		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
-
 		const nftId = await getNftId();
 		console.info('[Create] Using new NFT contract ID:', nftId);
 
