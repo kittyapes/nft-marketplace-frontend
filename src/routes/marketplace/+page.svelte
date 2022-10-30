@@ -44,24 +44,6 @@
 
 		<div class="w-full h-px bg-gray-400 mt-7" />
 
-		<div class="flex justify-between w-full mt-3">
-			<div />
-
-			<div class="w-52 ">
-				<Dropdown
-					dropdownIcon={Sort}
-					on:select={(e) => handleSelectSort(e)}
-					options={[
-						{ label: 'Newest', value: 'NEWEST' },
-						{ label: 'Oldest', value: 'OLDEST' },
-						// commenting it out for now because it doesn't work on be
-						//{ label: 'Most Popular', value: 'POPULAR' },
-						{ label: 'Ending Now', value: 'END1MIN' },
-					]}
-				/>
-			</div>
-		</div>
-
 		<div>
 			<CardsSection bind:refreshWithFilters />
 		</div>
