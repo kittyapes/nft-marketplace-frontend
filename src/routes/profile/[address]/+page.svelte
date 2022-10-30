@@ -9,7 +9,7 @@
 	import type { CardOptions } from '$interfaces/ui';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
-	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
+	import { slide } from 'svelte/transition';
 	import InfoBox from '$lib/components/InfoBox.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
@@ -34,6 +34,16 @@
 	import { derived, writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 	import { currentUserAddress } from '$stores/wallet';
+	import Twitter from '$icons/socials/twitter.svelte';
+	import Instagram from '$icons/socials/instagram.svelte';
+	import Web from '$icons/socials/web.svelte';
+	import Deviantart from '$icons/socials/deviantart.svelte';
+	import Artstation from '$icons/socials/artstation.svelte';
+	import SocialCopy from '$icons/socials/social-copy.svelte';
+	import { outsideClickCallback } from '$actions/outsideClickCallback';
+	import { copyUrlToClipboard } from '$utils/misc/clipboard';
+	import Pixiv from '$icons/socials/pixiv.svelte';
+	import Discord from '$icons/socials/discord.svelte';
 
 	$: address = $page.params.address;
 
@@ -95,6 +105,10 @@
 
 	let totalNfts: number | null = null;
 	$: totalNfts;
+
+	let shareButtonOpen = false;
+	let elemOpen: HTMLDivElement;
+	let elemOpenBtn: HTMLDivElement;
 
 	const tabs: {
 		fetchFunction: (tab: any, page: number, limit: number) => Promise<{ res: any; adapted: []; err: Error }>;
@@ -291,6 +305,8 @@
 			cardPropsMapper = (v) => ({ options: v });
 		}
 	}
+
+	$: console.log(shareButtonOpen);
 </script>
 
 <div class="">
@@ -330,17 +346,84 @@
 
 					<!-- Buttons -->
 					<div class="flex gap-4">
-						<PrimaryButton class="w-40">
-							<div class="text-lg">Follow</div>
-						</PrimaryButton>
-						<PrimaryButton class="w-16">
-							<ShareV2 />
-						</PrimaryButton>
 						{#if address === $currentUserAddress}
 							<div class="" transition:fade|local>
 								<PrimaryButton on:click={() => goto('/profile/edit')} class="w-24">{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}</PrimaryButton>
 							</div>
+						{:else}
+							<PrimaryButton class="w-40">
+								<div class="text-lg">Follow</div>
+							</PrimaryButton>
 						{/if}
+						<div class="relative">
+							<div class="" on:click|stopPropagation={() => (shareButtonOpen = !shareButtonOpen)} bind:this={elemOpenBtn}>
+								<PrimaryButton class="w-16">
+									<ShareV2 />
+								</PrimaryButton>
+							</div>
+							{#if shareButtonOpen}
+								<div
+									bind:this={elemOpen}
+									class="absolute text-white top-16 share-dropdown-outer z-30"
+									transition:slide|local
+									use:outsideClickCallback={{
+										cb: (e) => {
+											if (!e.composedPath().includes(elemOpen) && !e.composedPath().includes(elemOpenBtn)) {
+												shareButtonOpen = false;
+											}
+										},
+									}}
+								>
+									<div class="share-dropdown-mid">
+										<div class="gradient-border !border-2 ">
+											<div class="share-dropdown-inner p-5 flex gap-4">
+												{#if $localProfileData.social.instagram}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.instagram)}>
+														<Instagram class="w-10 h-10" />
+													</div>
+												{/if}
+												{#if $localProfileData.social.discord}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.discord)}>
+														<Discord class="w-10 h-10" />
+													</div>
+												{/if}
+
+												{#if $localProfileData.social.twitter}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.twitter)}>
+														<Twitter class="w-10 h-10" />
+													</div>
+												{/if}
+
+												{#if $localProfileData.social.website}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.website)}>
+														<Web class="w-10 h-10" />
+													</div>
+												{/if}
+												{#if $localProfileData.social.pixiv}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.pixiv)}>
+														<Pixiv class="w-10 h-10" />
+													</div>
+												{/if}
+												{#if $localProfileData.social.deviantart}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.deviantart)}>
+														<Deviantart class="w-10 h-10" />
+													</div>
+												{/if}
+												{#if $localProfileData.social.artstation}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.artstation)}>
+														<Artstation class="w-10 h-10" />
+													</div>
+												{/if}
+
+												<div class="clickable" on:click={() => copyUrlToClipboard()}>
+													<SocialCopy class="w-10 h-10" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							{/if}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -404,7 +487,6 @@
 
 		<div class="h-px bg-white w-full" />
 	</div>
-	<div class="h-px bg-black opacity-30" />
 
 	<div class="max-w-screen-xl mx-auto">
 		{#if $userHasRole('admin', 'superadmin') && selectedTab.data.some((i) => i.rawResourceData?.listingStatus === 'EXPIRED')}
@@ -420,3 +502,24 @@
 		{/if}
 	</div>
 </div>
+
+<style type="postcss">
+	.share-dropdown-outer {
+		background: linear-gradient(0deg, #67d4f8, #67d4f8);
+	}
+
+	.share-dropdown-mid {
+		background: linear-gradient(
+			56.67deg,
+			rgba(167, 148, 255, 0) 11.15%,
+			rgba(167, 148, 255, 0.93) 57.47%,
+			rgba(142, 119, 247, 0) 127.41%,
+			rgba(142, 119, 247, 0) 127.41%,
+			rgba(167, 148, 255, 0) 127.41%
+		);
+	}
+
+	.share-dropdown-inner {
+		background: linear-gradient(180deg, #181f2a 0%, #131220 100%);
+	}
+</style>
