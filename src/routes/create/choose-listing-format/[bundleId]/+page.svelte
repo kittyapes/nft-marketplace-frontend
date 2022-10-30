@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { setPopup } from '$utils/popup';
 	import ConfirmListingTypePopup from '$lib/components/create/ConfirmListingTypePopup.svelte';
 	import { fade } from 'svelte/transition';
@@ -27,10 +27,12 @@
 	];
 
 	function handleClick(dropType) {
-		setPopup(ConfirmListingTypePopup, { props: dropType });
+		setPopup(ConfirmListingTypePopup, { props: { ...dropType, gasless } });
 	}
 
 	let hoveredListingType = null;
+
+	let gasless: boolean;
 </script>
 
 <!-- Back button -->
@@ -51,7 +53,7 @@
 
 <div class="flex mt-4">
 	<div class="flex-grow text-lg">Gasless Listing</div>
-	<Toggle />
+	<Toggle bind:state={gasless} />
 </div>
 
 <div class="flex flex-wrap justify-center gap-4 mt-24 mb-64">

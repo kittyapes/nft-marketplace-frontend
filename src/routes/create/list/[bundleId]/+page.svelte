@@ -25,6 +25,9 @@
 	// URL params
 	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
 	const listingType = $page.url.searchParams.get('type') as ListingType;
+	const isGasless = $page.url.searchParams.get('gasless') as ListingType;
+
+	console.info('Listing as gasless:', isGasless);
 
 	const fetchedNftData = writable<ApiNftData>(null);
 

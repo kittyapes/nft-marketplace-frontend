@@ -10,10 +10,11 @@
 	export let listingType: ListingType;
 	export let handler: PopupHandler;
 	export let confirmDetail: string;
+	export let gasless: boolean;
 
 	function handleConfirm() {
 		handler.close();
-		goto('/create/list/' + $page.params.bundleId + '?type=' + listingType);
+		goto('/create/list/' + $page.params.bundleId + '?type=' + listingType + '&gasless=' + (gasless ? '1' : '0'));
 	}
 </script>
 
