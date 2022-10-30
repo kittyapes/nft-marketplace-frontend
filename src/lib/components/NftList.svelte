@@ -47,7 +47,7 @@
 	);
 </script>
 
-<div class="w-full">
+<div class="w-full text-white">
 	{#if !isLoading && options?.length === 0 && !createNewNftBtn.include}
 		<div class="placeholder">Nothing to see here, move along.</div>
 	{/if}
