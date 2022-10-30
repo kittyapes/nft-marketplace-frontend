@@ -85,7 +85,9 @@
 		{/if}
 	</button>
 
-	<slot name="lower_text" />
+	<span class="text-xs mt-3">
+		<slot name="lower_text" />
+	</span>
 
 	<input type="file" accept={acceptedFormats.join(',')} class="hidden" bind:this={fileInput} bind:files />
 </div>
