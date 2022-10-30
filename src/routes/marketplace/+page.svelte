@@ -1,10 +1,6 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-
 	import { page } from '$app/stores';
-	import Sort from '$icons/sort.svelte';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
-	import Dropdown from '$lib/components/Dropdown.svelte';
 	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
@@ -26,12 +22,6 @@
 			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
 		}
 	});
-
-	const handleSelectSort = (event: CustomEvent) => {
-		$page.url.searchParams.set('sortBy', event.detail.value);
-		goto('?' + $page.url.searchParams);
-		refreshWithFilters();
-	};
 
 	let refreshWithFilters: () => void;
 </script>
