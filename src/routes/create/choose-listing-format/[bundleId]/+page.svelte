@@ -7,6 +7,7 @@
 	import ListingTypeButton from '$lib/components/v2/ListingTypeButton/ListingTypeButton.svelte';
 	import SaleListingTypeOption from '$icons/sale-listing-type-option.svelte';
 	import AuctionListingTypeOption from '$icons/auction-listing-type-option.svelte';
+	import Toggle from '$lib/components/Toggle.svelte';
 
 	const listingTypes = [
 		{
@@ -40,12 +41,17 @@
 
 <h1 class="mt-8 text-3xl font-light border-t border-white pt-4">Choose Listing Format</h1>
 
-<div class="mt-2 h-6 font-normal text-lg">
+<div class="mt-4 h-6 font-normal text-lg">
 	{#if hoveredListingType}
 		<div transition:fade={{ duration: 100 }}>
 			{listingTypes.find((v) => v.listingType === hoveredListingType)?.hoverText || ''}
 		</div>
 	{/if}
+</div>
+
+<div class="flex mt-4">
+	<div class="flex-grow text-lg">Gasless Listing</div>
+	<Toggle />
 </div>
 
 <div class="flex flex-wrap justify-center gap-4 mt-24 mb-64">
