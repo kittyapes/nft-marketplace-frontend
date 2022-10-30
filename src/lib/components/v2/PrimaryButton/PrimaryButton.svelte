@@ -5,7 +5,7 @@
 </script>
 
 <button class="text-white p-[2px] gradient-stroke-bg outer-shadow group outline-none {buttonBaseClasses} {$$props.class}" {disabled} on:click>
-	<div class="bg-[#1d1832] hover:bg-transparent group-focus-visible:bg-transparent">
+	<div class="group-focus-visible:bg-transparent">
 		<div class="gradient-bg h-12 flex items-center justify-center inner-shadow">
 			<slot />
 		</div>
@@ -18,7 +18,15 @@
 			linear-gradient(0deg, #67d4f8, #67d4f8);
 	}
 
-	.gradient-bg:not(:hover) {
+	button > div {
+		@apply bg-[#1d1832];
+	}
+
+	button:not(:disabled) > div:hover {
+		@apply bg-transparent;
+	}
+
+	.gradient-bg:enabled:not(:hover) {
 		background: radial-gradient(55.65% 55.65% at 51.68% 130.43%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%)
 				/* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
 			radial-gradient(55.22% 148.72% at 98.83% 0%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%)
