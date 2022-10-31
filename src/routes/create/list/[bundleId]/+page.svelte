@@ -19,6 +19,7 @@
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
+	import { capitalize } from 'lodash-es';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -117,17 +118,12 @@
 	<div>Go Back</div>
 </button>
 
-<hr class="separator" />
-
 <div class="flex mb-32">
 	<div class="flex-grow">
-		<h1 class="mt-8 text-xl uppercase">
-			<span class="font-light">Step 3: Setting details</span>
-			|
-			<span class="pr-1 font-bold text-gradient">{listingType}</span>
+		<h1 class="mt-8 text-2xl">
+			Setting Details |
+			{capitalize(listingType)}
 		</h1>
-
-		<hr class="mt-4 separator" />
 
 		<div class="pr-8 mt-8">
 			<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} compact />
