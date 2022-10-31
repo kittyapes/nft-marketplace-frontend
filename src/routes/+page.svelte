@@ -90,12 +90,11 @@
 {/if}
 
 <!-- Latest blog posts -->
-<div class="px-16 mt-24 mb-16">
+<div class="font-open-sans px-16 2xl:px-52 mt-24 mb-16">
 	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Latest Blog Posts</h2>
-		<a href="/blog" class="uppercase underline text-sm font-bold">View Latest Posts</a>
+		<h2 class="text-[120px] leading-none font-semibold text-white uppercase flex-grow">BLOG</h2>
 	</div>
-	<hr class="mt-4 border-[#0000004D]" />
+	<hr class="mt-4 border-[#FFFFFF1E]" />
 
 	{#if $blogPosts.length}
 		{#each $blogPosts.slice(0, 2) as post}

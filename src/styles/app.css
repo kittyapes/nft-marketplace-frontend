@@ -37,6 +37,9 @@ body {
 .font-chakra {
 	font-family: 'Chakra Petch', sans-serif;
 }
+.font-open-sans {
+	font-family: 'Open Sans', sans-serif;
+}
 
 /* Utils */
 .stretch-child > * {
