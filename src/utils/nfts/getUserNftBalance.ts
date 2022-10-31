@@ -4,12 +4,13 @@ import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import erc1155Abi from '$constants/contracts/abis/Erc1155Mock.json';
 import erc721Abi from '$constants/contracts/abis/Erc721Mock.json';
+import defaultProvider from '$utils/contracts/defaultProvider';
 
 export default async function (nftContractAddress: string, tokenId: string) {
 	// Get total supply first
 	let collectionInterface = null;
 	let totalSupply = 1;
-	const provider = get(appProvider) ?? ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
+	const provider = get(appProvider) ?? defaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
 
 	try {
 		const collInterface = await getContractInterface(nftContractAddress, provider);
