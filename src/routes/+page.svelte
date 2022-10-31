@@ -92,7 +92,7 @@
 <!-- Latest blog posts -->
 <div class="font-open-sans px-16 2xl:px-52 mt-24 mb-16">
 	<div class="flex items-end">
-		<h2 class="text-[120px] leading-none font-semibold text-white uppercase flex-grow">BLOG</h2>
+		<h2 class="text-8xl leading-none font-semibold text-white uppercase flex-grow">BLOG</h2>
 	</div>
 	<hr class="mt-4 border-[#FFFFFF1E]" />
 
@@ -104,29 +104,25 @@
 </div>
 
 <!-- Monthly airdrop -->
-<div class="px-16 mt-24 mb-16">
+<div class="font-open-sans px-16 2xl:px-52 mt-24 mb-16">
 	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Monthly Airdrop</h2>
+		<h2 class="text-8xl leading-none font-semibold text-white uppercase flex-grow">Monthly Airdrop</h2>
 	</div>
-	<hr class="mt-4 border-[#0000004D]" />
+	<hr class="mt-4 border-[#FFFFFF1E]" />
 
-	<div class="flex flex-col h-full overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-gray-100" in:fade>
-		<div class="flex-shrink-0 h-full py-8 lg:h-72">
+	<div class="flex flex-col h-full py-11 overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-[#FFFFFF1E]" in:fade>
+		<div class="flex-shrink-0 h-full lg:h-[250px]">
 			<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
 		</div>
 
-		<div class="flex flex-col flex-grow py-8 lg:ml-16">
-			<div class="text-3xl font-light uppercase text-color-black line-clamp-2">
+		<div class="flex flex-col flex-grow text-white pt-8 lg:py-0 lg:ml-44">
+			<div class="text-4xl font-light uppercase line-clamp-2 italic">
 				{aidrop.title}
 			</div>
 
-			<p class="flex-grow mt-4">
+			<p class="flex-grow mt-8">
 				{aidrop.textPreview}
 			</p>
-
-			<!-- Read more
-			<div class="mt-4 text-lg font-light text-gradient">Read more</div>
-			 -->
 		</div>
 	</div>
 </div>
