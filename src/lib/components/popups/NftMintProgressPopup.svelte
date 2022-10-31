@@ -11,6 +11,7 @@
 	import Popup from '../Popup.svelte';
 	import Progressbar from '../Progressbar.svelte';
 	import PrimaryButton from '../v2/PrimaryButton/PrimaryButton.svelte';
+	import Spinner from '../v2/Spinner/Spinner.svelte';
 
 	const points = [
 		{ at: 0, label: 'Upload', top_value: null },
@@ -42,8 +43,16 @@
 
 			<div class="text-center mt-4">Listing an NFT will reqiure a small network fee. Once you choose the listing format you will be prompted to send an WETHereum transaction.</div>
 
-			<div class="w-3/4 mx-auto mt-12">
-				<Progressbar value={$progress} {points} />
+			<div class="w-3/4 mx-auto mt-12 flex items-center gap-2">
+				<div class="flex-grow w-full flex-shrink-0">
+					<Progressbar value={$progress} {points} />
+				</div>
+
+				{#if !mintingComplete}
+					<div class="w-8 h-8 flex-shrink-0">
+						<Spinner />
+					</div>
+				{/if}
 			</div>
 
 			<div class="flex justify-center gap-x-4 mt-16 w-[500px] mx-auto">
