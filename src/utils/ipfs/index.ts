@@ -5,6 +5,7 @@ import { appProvider } from '$stores/wallet';
 import { get } from 'svelte/store';
 import { getContractInterface } from '$utils/contracts/collection';
 import axios from 'axios';
+import defaultProvider from '$utils/contracts/defaultProvider';
 
 export function makeHttps(url: string) {
 	if (!url) return null;
@@ -18,7 +19,8 @@ export function makeHttps(url: string) {
 
 export async function getOnChainMetadata(contractAddress: string, tokenId: string) {
 	try {
-		const provider = get(appProvider) || ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
+		const provider = get(appProvider) || defaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
+
 		const tokenType = await getContractInterface(contractAddress, provider);
 
 		if (tokenType === 'UNKNOWN') {
@@ -41,7 +43,8 @@ export async function getOnChainMetadata(contractAddress: string, tokenId: strin
 		// fetch metadata
 		return metadata;
 	} catch (error) {
-		console.error(error);
+		console.log(error);
+
 		return null;
 	}
 }

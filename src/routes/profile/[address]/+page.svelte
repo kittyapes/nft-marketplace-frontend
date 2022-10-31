@@ -59,7 +59,7 @@
 			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
 		}
 
-		if (browser && $currentUserAddress) selectTab($tabParam);
+		if (browser) selectTab($tabParam);
 	});
 
 	const fetchLimit = 10;
@@ -68,7 +68,6 @@
 
 	async function fetchData(forAdress: string) {
 		$localProfileData = await fetchProfileData(forAdress);
-		console.log($localProfileData);
 	}
 
 	$: browser && fetchData(address);

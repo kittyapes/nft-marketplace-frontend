@@ -44,9 +44,10 @@ export const getCollectionsByTitle = async (query: string, limit?: number, page?
 			name: query ? query : undefined,
 			limit: limit ? limit : undefined,
 			page: page ? page : 1,
+			status: 'ACTIVE',
 		};
 
-		const res = await axios.get(getApiUrl('latest', 'collections/search'), { params });
+		const res = await axios.get(getApiUrl('v2', 'collections/search'), { params });
 
 		return res.data.data;
 	} catch {
