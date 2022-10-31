@@ -83,11 +83,16 @@ export async function getContractInterface(address: string, provider: ethers.Sig
 	}
 }
 
+/* This function is only used on create listing and we don't need to check for the contract type on chain
+ * since it does not matter, the function exists in both interface types so we can remove the call
+ * if this function is ever used elsewhere and the call is needed, you can uncomment
+ */
 export async function getCollectionContract(address: string) {
 	const storageAddress = getContract('storage')?.address;
 	address = address ?? storageAddress;
-	const contractType = await getContractInterface(address, get(appSigner));
-	const contractAbi = address === storageAddress ? storageAbi : contractType === 'ERC721' ? erc721Abi : erc1155Abi;
+	// const contractType = await getContractInterface(address, get(appSigner));
+	// const contractAbi = address === storageAddress ? storageAbi : contractType === 'ERC721' ? erc721Abi : erc1155Abi;
+	const contractAbi = address === storageAddress ? storageAbi : erc1155Abi;
 	const contract = new ethers.Contract(address, contractAbi, get(appSigner));
 
 	return contract;
