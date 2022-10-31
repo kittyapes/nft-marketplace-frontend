@@ -23,6 +23,7 @@ export interface SanitizedNftData {
 	thumbnailUrl: string;
 	assetUrl: string;
 	quantity: number;
+	fullId: string;
 }
 
 export async function sanitizeNftData(data: ApiNftData) {
@@ -51,6 +52,7 @@ export async function sanitizeNftData(data: ApiNftData) {
 		likes: data?.favoriteCount,
 		thumbnailUrl: makeHttps(data.thumbnailUrl) ?? '',
 		assetUrl: makeHttps(data?.metadata?.animation_url || data?.assetUrl || data?.thumbnailUrl) ?? '',
+		fullId: data?.fullId ?? `${data.contractAddress}:${data.nftId}`,
 	};
 
 	return ret;

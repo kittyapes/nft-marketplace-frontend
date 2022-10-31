@@ -91,6 +91,7 @@ export interface Listing {
 		collectionSlug: string;
 		_id: string;
 		nft: ApiNftData;
+		fullId: string;
 	}[];
 
 	paymentTokenTicker: string;
@@ -119,7 +120,7 @@ export interface ListingFetchOptions {
 	listingStatus?: ('ACTIVE' | 'UNLISTED' | 'EXPIRED')[];
 }
 
-export async function getListings(filters?: ListingFetchOptions, page: number = 1, limit: number = 20) {
+export async function getListings(filters?: ListingFetchOptions, page = 1, limit = 20) {
 	const params = Object.entries({ ...filters, page, limit }).reduce((p, [k, v]: [string, any]) => {
 		if (k === 'listingStatus') {
 			v.forEach((i) => p.append('listingStatus', i));
@@ -135,7 +136,7 @@ export async function getListings(filters?: ListingFetchOptions, page: number = 
 	return res.data.data as Listing[];
 }
 
-export async function getRandomListings(limit: number = 10) {
+export async function getRandomListings(limit = 10) {
 	const params = {
 		limit,
 	};
