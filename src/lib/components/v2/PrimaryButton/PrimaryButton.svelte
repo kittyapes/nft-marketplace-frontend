@@ -4,7 +4,7 @@
 	export let disabled: boolean = false;
 </script>
 
-<button class="text-white p-[2px] gradient-stroke-bg outer-shadow group outline-none relative block {buttonBaseClasses} {$$props.class}" {disabled} on:click>
+<button class="text-white p-[2px] gradient-stroke-bg outer-shadow group outline-none relative block whitespace-nowrap {buttonBaseClasses} {$$props.class}" {disabled} on:click>
 	<div class="group-focus-visible:bg-transparent">
 		<div class="gradient-bg h-12 flex items-center justify-center inner-shadow px-6">
 			<slot />

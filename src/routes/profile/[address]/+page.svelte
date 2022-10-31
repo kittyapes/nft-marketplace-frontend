@@ -347,8 +347,8 @@
 					<!-- Buttons -->
 					<div class="flex gap-4">
 						{#if address === $currentUserAddress}
-							<div class="" transition:fade|local>
-								<PrimaryButton on:click={() => goto('/profile/edit')} class="w-24">{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}</PrimaryButton>
+							<div class="w-32" transition:fade|local>
+								<PrimaryButton on:click={() => goto('/profile/edit')}>{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}</PrimaryButton>
 							</div>
 						{:else}
 							<PrimaryButton class="w-40">
