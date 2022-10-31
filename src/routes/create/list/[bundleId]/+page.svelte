@@ -141,6 +141,6 @@
 
 	<div class="p-8 border-0 border-l separator w-80">
 		<div class="mb-4 text-xl uppercase">Preview</div>
-		<NftCard options={previewMockOptions} hideLikes />
+		<NftCard options={previewMockOptions} hideLikes disabled />
 	</div>
 </div>

@@ -28,6 +28,7 @@
 	export let options: CardOptions;
 	export let menuItems: ('hide' | 'reveal' | 'transfer')[] = [];
 	export let hideLikes = false;
+	export let disabled = false;
 
 	// Helpers
 	let imgLoaded = false;
@@ -150,7 +151,7 @@
 
 <div
 	class="relative overflow-hidden group !border-2 border-transparent"
-	class:gradient-border={isHovered}
+	class:gradient-border={isHovered && !disabled}
 	in:fade
 	on:click={handleClick}
 	class:cursor-pointer={options.allowPopup}
@@ -169,7 +170,7 @@
 	-->
 
 	<div class="w-full mx-auto overflow-hidden transition bg-card-gradient select-none aspect-1 h-[400px] relative" class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}>
-		{#if isHovered}
+		{#if isHovered && !disabled}
 			<div class="absolute flex justify-between w-full h-full px-2 bg-black bg-opacity-60" transition:fade={{ duration: 200 }}>
 				<div class="p-3 clickable h-12" on:click|stopPropagation={() => false}>@Seller</div>
 				{#if !hideLikes}
