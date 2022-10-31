@@ -20,6 +20,7 @@ export function makeHttps(url: string) {
 export async function getOnChainMetadata(contractAddress: string, tokenId: string) {
 	try {
 		const provider = get(appProvider) || defaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
+
 		const tokenType = await getContractInterface(contractAddress, provider);
 
 		if (tokenType === 'UNKNOWN') {
@@ -43,6 +44,7 @@ export async function getOnChainMetadata(contractAddress: string, tokenId: strin
 		return metadata;
 	} catch (error) {
 		console.log(error);
+
 		return null;
 	}
 }
