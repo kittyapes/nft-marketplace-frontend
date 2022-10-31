@@ -168,7 +168,8 @@
 							{viewedDate.format('MMM')}
 							{viewedDate.year()}
 						</div>
-						<div class="flex space-x-2">
+						<div class="flex-grow" />
+						<div class="flex space-x-2 text-white">
 							<button class="btn" on:click={previousMonth}><ChevronLeft /></button>
 							<button class="btn" on:click={nextMonth}><ChevronRight /></button>
 						</div>
