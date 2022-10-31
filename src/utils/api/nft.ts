@@ -2,7 +2,7 @@ import type { ApiNftData } from '$interfaces/apiNftData';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
 import { noTryAsync } from 'no-try';
-import { getApiUrl, type ApiCallResult } from '.';
+import { getAlchemyUrl, getApiUrl, type ApiCallResult } from '.';
 
 export async function getNft(id: string) {
 	const res = await axios.get(getApiUrl('latest', 'nfts/' + id));
@@ -12,7 +12,7 @@ export async function getNft(id: string) {
 
 export async function apiGetUserOwnedNftsAlchemy(address: string, pageKey?: string, pageSize = 100) {
 	const [err, res] = await noTryAsync(() =>
-		axios.get(`${import.meta.env.VITE_ALCHEMY_SERVER}/nfts/user/${address}`, {
+		axios.get(getAlchemyUrl(`/nfts/user/${address}`), {
 			params: { pageKey, pageSize },
 		}),
 	);
