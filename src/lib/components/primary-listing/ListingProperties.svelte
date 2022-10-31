@@ -111,8 +111,14 @@
 	</InputSlot>
 
 	<InputSlot label="Quantity" hidden={hideQuantity}>
-		<div class="relative flex items-center gap-3 pr-4 rounded-md border {(quantityError && 'border-red-500 focus:border-red-500') || ''}" class:bg-gray-100={_disableQuantity}>
-			<input type="number" class="w-full h-12 border-none outline-none input input-hide-controls" bind:value={props.quantity} disabled={_disableQuantity} />
+		<div class="relative flex items-center gap-3 pr-4 border {(quantityError && 'border-red-500 focus:border-red-500') || ''}">
+			<input
+				type="number"
+				class="w-full h-12 border-none outline-none input-hide-controls pl-4 bg-transparent"
+				class:bg-[#ffffff22]={_disableQuantity}
+				bind:value={props.quantity}
+				disabled={_disableQuantity}
+			/>
 
 			<!-- Disable quantity is true only on EditSale screen. We do not wanna show it since the edit quantity
 		functionality is not implemented.  -->
