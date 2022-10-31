@@ -8,7 +8,6 @@
 	import NftCard from '$lib/components/NftCard.svelte';
 	import ListingSuccessPopup from '$lib/components/popups/ListingSuccessPopup.svelte';
 	import ListingProperties from '$lib/components/primary-listing/ListingProperties.svelte';
-	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
@@ -22,6 +21,7 @@
 	import { capitalize } from 'lodash-es';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import Spinner from '$lib/components/v2/Spinner/Spinner.svelte';
 
 	// URL params
 	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
@@ -152,10 +152,13 @@
 
 		<div class="pr-8 mt-8">
 			<PrimaryButton on:click={list} disabled={!!formErrors.length || isListing}>
-				List for {listingType || 'N/A'}
 				{#if isListing}
-					<ButtonSpinner />
+					<div class="w-8 absolute left-2">
+						<Spinner />
+					</div>
 				{/if}
+
+				List for {listingType || 'N/A'}
 			</PrimaryButton>
 		</div>
 	</div>
