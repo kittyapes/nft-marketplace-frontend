@@ -25,8 +25,9 @@
 
 	// URL params
 	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
-	const listingType = $page.url.searchParams.get('type') as ListingType;
-	const isGasless = $page.url.searchParams.get('gasless') as ListingType;
+	const isGasless = $page.url.searchParams.get('gasless') as string;
+
+	let listingType = $page.url.searchParams.get('type') as ListingType;
 
 	console.info('Listing as gasless:', isGasless);
 
@@ -110,15 +111,35 @@
 			},
 		],
 	} as CardOptions;
+
+	function setListingType(listingType_: string) {
+		$page.url.searchParams.set('type', listingType_);
+		goto($page.url);
+
+		listingType = listingType_ as ListingType;
+	}
 </script>
 
 <!-- Back button -->
-<button class="flex items-center mt-16 mb-8 space-x-2 text-sm font-semibold uppercase btn" on:click={goBack}>
+<button class="flex items-center mt-8 space-x-2 text-sm btn" on:click={goBack}>
 	<Back />
 	<div>Go Back</div>
 </button>
 
-<div class="flex mb-32">
+<div class="mt-8 font-semibold gap-4 flex mb-1">
+	{#each ['sale', 'auction'] as t}
+		{@const isSelected = t === listingType}
+		<button class="uppercase relative" class:text-gradient={isSelected} on:click={() => setListingType(t)}>
+			{capitalize(t)}
+
+			{#if isSelected}
+				<div class="gradient-border-bg h-[2px] absolute w-full bottom-[-5px]" />
+			{/if}
+		</button>
+	{/each}
+</div>
+
+<div class="flex mb-32 border-t pt-2">
 	<div class="flex-grow">
 		<h1 class="mt-8 text-2xl">
 			Setting Details |
@@ -139,7 +160,7 @@
 		</div>
 	</div>
 
-	<div class="p-8 border-0 border-l separator w-80">
+	<div class="p-8 border-0 border-l border-white separator w-80">
 		<div class="mb-4 text-xl uppercase">Preview</div>
 		<NftCard options={previewMockOptions} hideLikes disabled />
 	</div>
