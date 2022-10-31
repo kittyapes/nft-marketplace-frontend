@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
 	import Heart from '$icons/heart.svelte';
-	import ThreeDots from '$icons/three-dots.svelte';
 	import type { CardOptions } from '$interfaces/ui';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { likedNftIds, refreshLikedNfts } from '$stores/user';
@@ -169,7 +168,7 @@
 		{/if} 
 	-->
 
-	<div class="w-full mx-auto overflow-hidden transition bg-card-gradient select-none aspect-1 h-[400px] relative" class:animate-pulse={!imgLoaded}>
+	<div class="w-full mx-auto overflow-hidden transition bg-card-gradient select-none aspect-1 h-[400px] relative" class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}>
 		{#if isHovered}
 			<div class="absolute flex justify-between w-full h-full px-2 bg-black bg-opacity-60" transition:fade={{ duration: 200 }}>
 				<div class="p-3 clickable h-12" on:click|stopPropagation={() => false}>@Seller</div>
