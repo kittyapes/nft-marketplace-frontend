@@ -1,6 +1,7 @@
 <script lang="ts">
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import RewardsToCollect from '$lib/components/v2/Stake/RewardsToCollect.svelte';
+	import Marketing from './Marketing.svelte';
 	import StakeSection from './StakeSection.svelte';
 	import Stats from './Stats.svelte';
 	import TradingRewards from './TradingRewards.svelte';
@@ -13,10 +14,11 @@
 </script>
 
 <LoadedContent>
-	<div class="pr-[8vw] pl-[9vw] text-white">
+	<div class="pr-[8vw] pl-[9vw] pb-[8.7vw] text-white">
 		<Stats bind:apr bind:dailyHinata bind:dailyWaifu />
 		<StakeSection bind:token bind:action bind:hinataWalletBalance />
 		<RewardsToCollect bind:token />
 		<TradingRewards />
+		<Marketing />
 	</div>
 </LoadedContent>

@@ -29,7 +29,7 @@
 			</div>
 			<div>
 				<div class="flex flex-row items-center gap-x-[1vw]">
-					<Input class="rounded-none bg-transparent pl-[1vw]" noLeftPadding height="2.9vw"><Eth gradient /></Input>
+					<Input class="rounded-none bg-transparent pl-[1vw]" noLeftPadding height="2.9vw"><Eth gradient class="w-[0.7vw] h-[1vw]" /></Input>
 					<Button dullgradient variant="square" class="h-[2.9vw] w-[11.85vw] btn-gradient-border">Stake</Button>
 				</div>
 				<p class="mt-[1.1vw] font-medium text-[1.16vw]">You can collect your rewards every X hours.</p>
