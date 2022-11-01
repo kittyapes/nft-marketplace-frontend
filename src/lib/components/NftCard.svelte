@@ -67,6 +67,7 @@
 	async function favNFT() {
 		if (!$walletConnected) {
 			setPopup(WalletNotConnectedPopup, { unique: true });
+			return;
 		}
 
 		const [err, res] = await noTryAsync(() => favoriteNft(options.nfts[0].databaseId));
