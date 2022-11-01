@@ -14,7 +14,7 @@
 		<h3 class="text-[1.4vw] leading-[1.8vw] mb-[3.6vw]">Choose tokens to stake</h3>
 		<div class="w-[20vw] flex flex-col gap-y-[2vw]">
 			<Button
-				class="h-[2.9vw]"
+				class="h-[2.9vw] {token !== 'HINATA' ? 'border-gradient' : ''}"
 				variant="square"
 				stretch
 				gradient={token === 'HINATA'}
@@ -26,7 +26,7 @@
 				HINATA
 			</Button>
 			<Button
-				class="h-[2.9vw]"
+				class="h-[2.9vw] {token !== 'HINATA LP' ? 'border-gradient' : ''}"
 				variant="square"
 				stretch
 				gradient={token === 'HINATA LP'}
@@ -46,11 +46,10 @@
 		<CardWrapper class="gap-y-[1.75vw]">
 			<div class="flex flex-row items-center">
 				<Button
-					class="h-[2.9vw]"
+					class="h-[2.9vw] {action === 'STAKE' ? 'border-gradient' : ''}"
 					variant="square"
 					stretch
-					gradient={action === 'STAKE'}
-					dullgradient={action !== 'STAKE'}
+					dullgradient
 					on:click={() => {
 						action = 'STAKE';
 					}}
@@ -58,11 +57,10 @@
 					Stake
 				</Button>
 				<Button
-					class="h-[2.9vw]"
+					class="h-[2.9vw] {action === 'UNSTAKE' ? 'border-gradient' : ''}"
 					variant="square"
 					stretch
-					gradient={action === 'UNSTAKE'}
-					dullgradient={action !== 'UNSTAKE'}
+					dullgradient
 					on:click={() => {
 						action = 'UNSTAKE';
 					}}
@@ -72,7 +70,7 @@
 			</div>
 			<div class="flex flex-row items-center gap-x-[1vw]">
 				<Input class="rounded-none bg-transparent pl-[1vw]" height="2.9vw">Max</Input>
-				<Button dullgradient variant="square" class="h-[2.9vw] w-[11.85vw] btn-gradient-border">Stake</Button>
+				<Button dullgradient variant="square" class="h-[2.9vw] w-[11.85vw] border-gradient">Stake</Button>
 			</div>
 			<div class="flex flex-col gap-y-[0.3vw]">
 				<h3 class="text-[1.4vw] leading-[1.4vw]">

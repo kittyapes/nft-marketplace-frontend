@@ -1,6 +1,7 @@
 <script lang="ts">
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import RewardsToCollect from '$lib/components/v2/Stake/RewardsToCollect.svelte';
+	import Trading from './Trading.svelte';
 	import Marketing from './Marketing.svelte';
 	import StakeSection from './StakeSection.svelte';
 	import Stats from './Stats.svelte';
@@ -20,5 +21,6 @@
 		<RewardsToCollect bind:token />
 		<TradingRewards />
 		<Marketing />
+		<Trading />
 	</div>
 </LoadedContent>
