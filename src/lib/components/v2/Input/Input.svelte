@@ -16,4 +16,7 @@
 	}
 </script>
 
-<input type="text" bind:value {placeholder} class="w-full px-4 border rounded-lg outline-color-purple {$$props.class}" class:outline-red-400={!valid} style:height on:input={validate} {disabled} />
+<div class="w-full flex flex-row items-center border rounded-lg  outline-color-purple {$$props.class}" class:outline-red-400={!valid} style:height>
+	<div><slot /></div>
+	<input type="text" bind:value {placeholder} class="w-full h-full px-4 bg-inherit outline-none" on:input={validate} {disabled} />
+</div>
