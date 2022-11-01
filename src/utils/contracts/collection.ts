@@ -5,6 +5,7 @@ import { get } from 'svelte/store';
 import { appSigner } from '$stores/wallet';
 import erc1155Abi from '$constants/contracts/abis/Erc1155Mock.json';
 import storageAbi from '$constants/contracts/abis/HinataMarketplaceStorage.json';
+import defaultProvider from './defaultProvider';
 
 export async function contractCreateCollection(options: {
 	royalties: {
@@ -60,7 +61,7 @@ export async function getContractInterface(address: string, provider: ethers.Sig
 	const ERC721InterfaceId = '0x80ac58cd';
 
 	if (!provider) {
-		provider = ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
+		provider = defaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
 	}
 
 	const contract = new ethers.Contract(address, ERC165Abi, provider);
