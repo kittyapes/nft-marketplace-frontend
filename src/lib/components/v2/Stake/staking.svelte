@@ -3,6 +3,7 @@
 	import RewardsToCollect from '$lib/components/v2/Stake/RewardsToCollect.svelte';
 	import StakeSection from './StakeSection.svelte';
 	import Stats from './Stats.svelte';
+	import TradingRewards from './TradingRewards.svelte';
 	let apr: number;
 	let dailyHinata: number;
 	let dailyWaifu: number;
@@ -16,5 +17,6 @@
 		<Stats bind:apr bind:dailyHinata bind:dailyWaifu />
 		<StakeSection bind:token bind:action bind:hinataWalletBalance />
 		<RewardsToCollect bind:token />
+		<TradingRewards />
 	</div>
 </LoadedContent>
