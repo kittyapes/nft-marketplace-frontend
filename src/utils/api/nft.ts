@@ -4,8 +4,12 @@ import axios from 'axios';
 import { noTryAsync } from 'no-try';
 import { getAlchemyUrl, getApiUrl, type ApiCallResult } from '.';
 
-export async function getNft(id: string) {
-	const res = await axios.get(getApiUrl('latest', 'nfts/' + id));
+export async function getNft(id: string, lean = false) {
+	const res = await axios.get(getApiUrl('latest', 'nfts/' + id), {
+		params: {
+			lean: lean,
+		},
+	});
 
 	return res.data.data as ApiNftData;
 }
@@ -32,6 +36,13 @@ export async function apiGetUserNfts(address: string, type: 'MINTED', page: numb
 
 export async function apiHideNft(id: string): Promise<ApiCallResult<{ success: boolean }>> {
 	try {
+		// Check if the ID Supplied is in the format contractAddress:tokenId
+		if (id.includes(':')) {
+			// Find the Correct ID and then submit call to the BE
+			const leanNftdata = await getNft(id, true);
+			id = leanNftdata._id;
+		}
+
 		const res = await axios.post(getApiUrl('latest', 'nfts/hide/' + id), null, await getAxiosConfig());
 		return { res, data: { success: true } };
 	} catch (err) {
@@ -41,6 +52,13 @@ export async function apiHideNft(id: string): Promise<ApiCallResult<{ success: b
 
 export async function apiRevealNft(id: string): Promise<ApiCallResult<{ success: boolean }>> {
 	try {
+		// Check if the ID Supplied is in the format contractAddress:tokenId
+		if (id.includes(':')) {
+			// Find the Correct ID and then submit call to the BE
+			const leanNftdata = await getNft(id, true);
+			id = leanNftdata._id;
+		}
+
 		const res = await axios.post(getApiUrl('latest', 'nfts/reveal/' + id), null, await getAxiosConfig());
 		return { res, data: { success: true } };
 	} catch (err) {
