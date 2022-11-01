@@ -1,4 +1,4 @@
-<div class="card-bg p-[1.75vw] w-[42.8vw] flex flex-col gap-y-[1.75vw]"><slot /></div>
+<div class="card-bg p-[1.75vw] w-[42.8vw] flex flex-col {$$props.class} "><slot /></div>
 
 <style>
 	.card-bg {

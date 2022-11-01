@@ -9,7 +9,7 @@
 	export let hinataWalletBalance = 369;
 </script>
 
-<SectionWrapper>
+<SectionWrapper split>
 	<div class="flex flex-col items-start text-white font-semibold">
 		<h3 class="text-[1.4vw] leading-[1.8vw] mb-[3.6vw]">Choose tokens to stake</h3>
 		<div class="w-[20vw] flex flex-col gap-y-[2vw]">
@@ -43,7 +43,7 @@
 	</div>
 	<div class="flex flex-col items-start text-white font-semibold">
 		<h3 class="text-[1.4vw] leading-[1.8vw] mb-[1.86vw]">Your Stake</h3>
-		<CardWrapper>
+		<CardWrapper class="gap-y-[1.75vw]">
 			<div class="flex flex-row items-center">
 				<Button
 					class="h-[2.9vw]"

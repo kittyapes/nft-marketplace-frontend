@@ -6,7 +6,7 @@
 	export let valid = true;
 	export let validator: (v: string) => boolean = (): boolean => true;
 	export let disabled = false;
-
+	export let noLeftPadding = false;
 	function validate() {
 		if (regex) {
 			valid = !!value.match(regex);
@@ -18,5 +18,5 @@
 
 <div class="w-full flex flex-row items-center border rounded-lg  outline-color-purple {$$props.class}" class:outline-red-400={!valid} style:height>
 	<div><slot /></div>
-	<input type="text" bind:value {placeholder} class="w-full h-full px-4 bg-inherit outline-none" on:input={validate} {disabled} />
+	<input type="text" bind:value {placeholder} class:pl-0={noLeftPadding} class="w-full h-full px-4 bg-inherit outline-none" on:input={validate} {disabled} />
 </div>
