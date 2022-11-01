@@ -6,6 +6,6 @@
 	<div class="flex items-start gap-4 px-6 py-4 bg-white rounded-[10px]">
 		<img class="w-6" src={getIconUrl('info')} alt="Info." />
 
-		<div class="font-bold gradient-text"><slot /></div>
+		<div class="font-bold text-gradient"><slot /></div>
 	</div>
 </div>

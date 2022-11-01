@@ -1,4 +1,4 @@
-	import { api } from '$constants/api';
+import { api } from '$constants/api';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { httpErrorHandler } from '$utils/toast';
 import axios from 'axios';
@@ -8,22 +8,21 @@ import { forceBatchProcess } from './admin/batchProcessing';
 import { postInactivationQueueAdd, postVerificationQueueAdd } from './admin/userManagement';
 
 export async function addUserRole(address: string, roles: UserRole[]) {
-
 	// 🔥 fix
-	if(roles.includes('inactivated_user')) {
+	if (roles.includes('inactivated_user')) {
 		const res = await postInactivationQueueAdd(address).catch(httpErrorHandler);
 
 		if (res?.status !== 200) {
 			throw new Error(res?.data.message);
-		}		
+		}
 
 		await forceBatchProcess().catch(httpErrorHandler);
-	} else if (roles.includes('verified_user')){
+	} else if (roles.includes('verified_user')) {
 		const res = await postVerificationQueueAdd(address).catch(httpErrorHandler);
 
 		if (res?.status !== 200) {
 			throw new Error(res?.data.message);
-		}		
+		}
 
 		await forceBatchProcess().catch(httpErrorHandler);
 	}
@@ -34,7 +33,7 @@ export async function addUserRole(address: string, roles: UserRole[]) {
 			{
 				roles,
 			},
-			await getAxiosConfig()
+			await getAxiosConfig(),
 		)
 		.catch(() => null);
 

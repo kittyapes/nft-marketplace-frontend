@@ -26,7 +26,7 @@
 	import { notifyError } from '$utils/toast';
 	import { writable } from 'svelte/store';
 
-	const dragDropText = 'Drag and drop an image <br> or <span class="gradient-text">click to browse</span>';
+	const dragDropText = 'Drag and drop an image <br> or <span class="text-gradient">click to browse</span>';
 	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string; collectionId: string }>(null);
 
 	let dumpDraft = false;
@@ -113,7 +113,6 @@
 		newBundleData.set({} as NewBundleData);
 		const progress = writable(0);
 		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
-
 		const nftId = await getNftId();
 		console.info('[Create] Using new NFT contract ID:', nftId);
 
@@ -197,7 +196,7 @@
 </script>
 
 <!-- Back button -->
-<button class="flex items-center pt-16 mb-8 space-x-2 text-sm font-semibold uppercase btn text-white" on:click={goBack}>
+<button class="flex items-center my-8 space-x-2 text-sm font-semibold btn text-white" on:click={goBack}>
 	<Back />
 	<div>Go Back</div>
 </button>
@@ -212,19 +211,33 @@
 			<!-- File upload -->
 			<div>Upload file*</div>
 			<div>
-				<DragDropImage class="h-56" max_file_size={50_000_000} bind:blob={nftData.assetBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos} />
-				<div class="text-xs text-center">
-					MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="gradient-text">MAX 50MB</span>
-				</div>
+				<DragDropImage class="h-56" max_file_size={50_000_000} bind:blob={nftData.assetBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos}>
+					<div slot="lower_text">
+						MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
+					</div>
+
+					<div slot="placeholder">
+						Drag and drop an image <br />
+						or
+						<span class="text-gradient">click to browse</span>
+					</div>
+				</DragDropImage>
 			</div>
 
 			<div>Upload Thumbnail (Optional)</div>
 			<!-- Thumbnail upload -->
 			<div>
-				<DragDropImage class="h-56" max_file_size={3_000_000} bind:blob={nftData.thumbnailBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages} />
-				<div class="text-xs text-center">
-					MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="gradient-text">MAX 50MB</span>
-				</div>
+				<DragDropImage class="h-56" max_file_size={3_000_000} bind:blob={nftData.thumbnailBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages}>
+					<div slot="lower_text">
+						MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
+					</div>
+
+					<div slot="placeholder">
+						Drag and drop an image <br />
+						or
+						<span class="text-gradient">click to browse</span>
+					</div>
+				</DragDropImage>
 			</div>
 		</div>
 
@@ -267,7 +280,7 @@
 
 		<!-- Mint button -->
 		<div class="w-full pr-8">
-			<PrimaryButton class="mt-8" on:click={mintAndContinue} disabled={!inputValid}>Mint</PrimaryButton>
+			<PrimaryButton class="mt-8" on:click={mintAndContinue} disabled={!inputValid}>MINT</PrimaryButton>
 		</div>
 	</div>
 

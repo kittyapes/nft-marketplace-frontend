@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { CardOptions } from '$interfaces/ui';
-
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
@@ -10,9 +9,8 @@
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import { isFuture } from '$utils/misc/time';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
-	import { derived } from 'svelte/store';
 	import { createEventDispatcher } from 'svelte';
-	import { frame } from '../tradeSection';
+	import { derived } from 'svelte/store';
 	import Success from './Success.svelte';
 
 	const dispatch = createEventDispatcher();
@@ -30,7 +28,7 @@
 		const success = await salePurchase(options.listingData.onChainId, price);
 
 		if (success) {
-			frame.set(Success);
+			dispatch('set-frame', { component: Success });
 			dispatch('force-expire');
 		}
 

@@ -1,14 +1,10 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-
 	import { page } from '$app/stores';
-	import Sort from '$icons/sort.svelte';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
-	import Dropdown from '$lib/components/Dropdown.svelte';
 	import MainTabs from '$lib/components/marketplace/MainTabs.svelte';
 	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import CardsSection from '$lib/sections/MarketplaceCardsSection.svelte';
-	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
+	import { listingToCardOptions } from '$utils/adapters/cardOptions';
 	import { getListing } from '$utils/api/listing';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { setPopup } from '$utils/popup';
@@ -27,12 +23,6 @@
 		}
 	});
 
-	const handleSelectSort = (event: CustomEvent) => {
-		$page.url.searchParams.set('sortBy', event.detail.value);
-		goto('?' + $page.url.searchParams);
-		refreshWithFilters();
-	};
-
 	let refreshWithFilters: () => void;
 </script>
 
@@ -43,24 +33,6 @@
 		<MainTabs tab={0} />
 
 		<div class="w-full h-px bg-gray-400 mt-7" />
-
-		<div class="flex justify-between w-full mt-3">
-			<div />
-
-			<div class="w-52 ">
-				<Dropdown
-					dropdownIcon={Sort}
-					on:select={(e) => handleSelectSort(e)}
-					options={[
-						{ label: 'Newest', value: 'NEWEST' },
-						{ label: 'Oldest', value: 'OLDEST' },
-						// commenting it out for now because it doesn't work on be
-						//{ label: 'Most Popular', value: 'POPULAR' },
-						{ label: 'Ending Now', value: 'END1MIN' },
-					]}
-				/>
-			</div>
-		</div>
 
 		<div>
 			<CardsSection bind:refreshWithFilters />

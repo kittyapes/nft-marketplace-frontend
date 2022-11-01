@@ -24,14 +24,14 @@
 
 	<div class="font-bold text-center mt-6 text-color-black">
 		Profile completion progress:
-		<span class="gradient-text">{progress}%</span>
+		<span class="text-gradient">{progress}%</span>
 	</div>
 
 	<div class="w-4/5 mx-auto mt-2">
 		<Progressbar value={$profileCompletionProgress} />
 	</div>
 
-	<div class="gradient-text text-right ml-auto max-w-max mr-[10%] font-black mt-1">Free NFT</div>
+	<div class="text-gradient text-right ml-auto max-w-max mr-[10%] font-black mt-1">Free NFT</div>
 
 	<button class="rounded-full bg-gradient-to-r from-color-purple to-color-blue py-4 w-1/2 mx-auto text-white uppercase block mt-6 font-semibold transition-btn" on:click={handleCompleteProfile}>
 		Complete your profile

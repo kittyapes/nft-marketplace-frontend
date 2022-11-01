@@ -13,12 +13,12 @@
 
 	const sortByOptions = [
 		{ label: 'Date', value: 'UPDATED_AT' },
-		{ label: 'Alphabetical', value: 'ALPHABETICAL' }
+		{ label: 'Alphabetical', value: 'ALPHABETICAL' },
 	];
 	const filterByOptions = [
 		{ label: 'active', value: 'VERIFIED' },
 		{ label: 'Inactive', value: 'INACTIVATED' },
-		{ label: 'All', value: 'VERIFIED,INACTIVATED' }
+		{ label: 'All', value: 'VERIFIED,INACTIVATED' },
 	] as any;
 
 	const filterBy = writable<string>('VERIFIED,INACTIVATED');
@@ -116,7 +116,7 @@
 					</td>
 
 					<td class="whitespace-nowrap">
-						Status: <span class="font-semibold uppercase gradient-text">{row.status}</span>
+						Status: <span class="font-semibold uppercase text-gradient">{row.status}</span>
 					</td>
 
 					<td class="px-6">
@@ -130,7 +130,7 @@
 									Inactivate
 								</button>
 								<button
-									class="px-2 ml-2 italic uppercase btn gradient-text w-28"
+									class="px-2 ml-2 italic uppercase btn text-gradient w-28"
 									on:click={openPromotePopup}
 								>
 									Promote
@@ -141,7 +141,7 @@
 								>
 									Inactive
 								</button>
-								<button class="px-2 ml-2 italic uppercase btn gradient-text w-28">
+								<button class="px-2 ml-2 italic uppercase btn text-gradient w-28">
 									Reactivate
 								</button>
 							{/if}

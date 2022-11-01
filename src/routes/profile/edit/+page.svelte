@@ -34,12 +34,13 @@
 	import { acceptedImages } from '$constants';
 	import isValidSocialLink, { type SupportedSocialNetworks } from '$utils/validator/isValidSocialLink';
 	import FormErrorList from '$lib/components/FormErrorList.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 
 	const progressbarPoints = [
-		{ at: 20, label: 'Email', top_value: '25%' },
-		{ at: 40, label: 'Bio', top_value: '50%' },
-		{ at: 60, label: 'Picture', top_value: '75%' },
-		{ at: 80, label: 'Banner Image', top_value: '100%' },
+		{ at: 20, label: 'Email', top_value: '25%', bottom_value: 'Email' },
+		{ at: 40, label: 'Bio', top_value: '50%', bottom_value: 'Bio' },
+		{ at: 60, label: 'Picture', top_value: '75%', bottom_value: 'Profile Image' },
+		{ at: 80, label: 'Banner Image', top_value: '100%', bottom_value: 'Background Image' },
 		{ at: 100, label: '', top_value: 'Free NFT' },
 	];
 
@@ -146,6 +147,12 @@
 			.join('')
 			.indexOf('0') * 25;
 
+	$: progressBarValue =
+		[isEmail($localDataStore?.email), isBioValid($localDataStore?.bio), isProfileImage, isCoverImage, 0]
+			.map((v) => (v ? 1 : 0))
+			.join('')
+			.indexOf('0') * 20;
+
 	async function handleNftClaim() {
 		setPopup(FreeNftPopup);
 	}
@@ -179,7 +186,7 @@
 		}
 	});
 
-	$: usernameValid = $usernameAvailable && $usernameValidLength;
+	$: usernameValid = $localDataStore?.username && $usernameAvailable && $usernameValidLength;
 
 	$: isSynced = isEqual($fetchedDataStore, $localDataStore);
 
@@ -216,19 +223,19 @@
 </script>
 
 <LoadedContent loaded={$localDataStore}>
-	<div class=" py-16">
-		<div class="max-w-4xl px-16 py-16 mx-auto ">
+	<div class="py-16">
+		<div class="max-w-4xl px-16 py-16 mx-auto text-white">
 			<h1 class="text-5xl font-semibold text-center uppercase">
 				{firstTimeUser ? 'Setup' : 'Edit'} Your
-				<span class="gradient-text">Profile</span>
+				<span class="text-gradient">Profile</span>
 			</h1>
 
-			<div class="mt-4 text-sm font-bold text-center">
-				Profile completion progress: <span class="gradient-text">{profileCompletionProgress}%</span>
+			<div class="mt-4 text-sm text-center">
+				Profile completion progress: <span class="text-gradient">{profileCompletionProgress}%</span>
 			</div>
 
-			<div class="w-4/5 mx-auto mt-5">
-				<Progressbar class="mt-2" value={profileCompletionProgress} points={progressbarPoints} />
+			<div class="w-4/5 mx-auto mt-14">
+				<Progressbar class="mt-2" value={progressBarValue} points={progressbarPoints} />
 			</div>
 
 			{#if $freeNftStatus !== 'claimed'}
@@ -247,25 +254,11 @@
 			{/if}
 
 			<div id="form-container" class="grid mt-20 gap-y-6">
-				<div class="grid grid-cols-1">
-					<div>
-						<div class="">
-							<span class="text-red-500">*</span>
-							Required Fields
-						</div>
-					</div>
-				</div>
-
 				<div class="grid grid-cols-2">
-					<div>
-						<div class="input-label">
-							Username
-							<span class="text-red-500 text-base">*</span>
-						</div>
-					</div>
+					<div class="input-label" class:text-gradient={usernameValid}>Username</div>
 
 					<div>
-						<input type="text" class="input input-gray-outline" placeholder="Username" bind:value={$localDataStore.username} />
+						<input type="text" class="input " placeholder="Username" bind:value={$localDataStore.username} />
 
 						{#if $usernameAvailable === false}
 							<div class="mt-2 ml-auto text-xs font-semibold text-red-500 uppercase" transition:slide|local>Username already taken</div>
@@ -276,13 +269,11 @@
 				</div>
 
 				<div class="grid items-stretch grid-cols-2">
-					<div class="flex items-center transition input-label gradient-text">
-						<div class="mr-2" class:text-color-gray-light={!isEmail($localDataStore.email)}>25%</div>
-						<div class:text-black={!isEmail($localDataStore.email)}>Email</div>
-						<span class="text-red-500 text-base">*</span>
+					<div class="flex items-center transition input-label">
+						<div class:text-gradient={isEmail($localDataStore.email)}>Email</div>
 					</div>
 					<div>
-						<input type="email" class="input input-gray-outline" placeholder="example@email.com" bind:value={$localDataStore.email} />
+						<input type="email" class="input " placeholder="example@email.com" bind:value={$localDataStore.email} />
 						{#if $localDataStore.email && !isEmail($localDataStore.email)}
 							<div transition:slide|local class="mt-2 ml-auto text-xs font-semibold text-red-500 uppercase" class:hidden={!$localDataStore.email || isEmail($localDataStore.email)}>
 								Please enter a valid email address
@@ -292,54 +283,57 @@
 				</div>
 
 				<div class="grid grid-cols-2 items-start">
-					<div class="flex items-center transition input-label gradient-text">
-						<div class="mr-2" class:text-color-gray-light={!($localDataStore.bio && isValidBio($localDataStore.bio))}>25%</div>
-						<div class:text-black={!($localDataStore.bio && isValidBio($localDataStore.bio))}>Bio</div>
+					<div class="flex items-center transition input-label">
+						<div class:text-gradient={$localDataStore.bio && isValidBio($localDataStore.bio)}>Bio</div>
 					</div>
 
 					<div>
-						<TextArea outline placeholder="Enter your short bio" maxChars={200} bind:value={$localDataStore.bio} />
+						<TextArea placeholder="Enter your short bio" maxChars={200} bind:value={$localDataStore.bio} />
 						{#if $localDataStore.bio && !isValidBio($localDataStore.bio)}
-							<div class="ml-auto text-xs font-semibold text-red-500 uppercase -translate-y-3" transition:slide|local>Bio must be at least three words</div>
+							<div class="ml-auto text-xs font-semibold text-red-500 uppercase" transition:slide|local>Bio must be at least three words</div>
 						{/if}
 					</div>
 				</div>
 
 				<div class="grid grid-cols-2 items-start">
-					<div class="gradient-text input-label flex">
-						<div class="mr-2" class:text-color-gray-light={!isProfileImage}>25%</div>
-						<div>
-							<div class="transition">
-								<div class="flex flex-col">
-									<div class:text-black={!isProfileImage}>PROFILE</div>
-									<div class:text-black={!isProfileImage}>PICTURE</div>
-								</div>
+					<div class="input-label flex">
+						<div class="transition">
+							<div class="flex flex-col">
+								<div class:text-gradient={isProfileImage}>PROFILE</div>
+								<div class:text-gradient={isProfileImage}>PICTURE</div>
 							</div>
-							<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
-							<div class="text-xs text-[#A9A8A8]">Max 10MB</div>
 						</div>
 					</div>
 					<div class="flex flex-col w-full">
 						<DragDropImage
-							max_file_size={10_000_000}
+							max_file_size={5_000_000}
 							bind:blob={$localDataStore.profileImage}
 							currentImgUrl={$fetchedDataStore?.thumbnailUrl}
 							acceptedFormats={acceptedImages}
-							dimensions="180x180 px"
+							dimensions="200 X 200 PX Max 5MB"
 							class="!w-48 !h-44 mx-auto"
-						/>
+						>
+							<div class="flex flex-col gap-2 items-center" slot="placeholder">
+								<span>Drag and drop an image here or click to browse</span>
+								<div class="text-gradient">GIF, PNG, JPEG</div>
+							</div>
+							<div class="text-xs text-white flex justify-center" slot="lower_text">
+								<span class="text-center flex flex-col gap-1 items-center">
+									<span>
+										We recommend an image of atleast <span class="text-gradient">200 x 200 PX</span>
+										| GIFs work too.
+									</span>
+									<span class="text-gradient">Max 5MB</span>
+								</span>
+							</div>
+						</DragDropImage>
 					</div>
 				</div>
 
 				<div class="grid grid-cols-2 items-start">
-					<div class="gradient-text input-label flex">
-						<div class="mr-2" class:text-color-gray-light={!isCoverImage}>25%</div>
-						<div>
-							<div class="input-label">
-								<div class:text-black={!isCoverImage}>BANNER</div>
-							</div>
-							<div class="text-xs text-[#A9A8A8]">gif, png, jpeg</div>
-							<div class="text-xs text-[#A9A8A8]">Max 10MB</div>
+					<div class=" input-label flex">
+						<div class="input-label">
+							<div class:text-gradient={isCoverImage}>BANNER</div>
 						</div>
 					</div>
 					<div class="flex flex-col w-full">
@@ -348,58 +342,61 @@
 							bind:blob={$localDataStore.coverImage}
 							currentImgUrl={$fetchedDataStore?.coverUrl}
 							acceptedFormats={acceptedImages}
-							dimensions="2550x290 px"
+							dimensions="2550 x 290 px"
 							class="!h-24 !px-12"
-						/>
+						>
+							<div class="flex flex-col gap-2 items-center" slot="placeholder">
+								<span>Drag and drop an image here or click to browse</span>
+								<div class="text-gradient">GIF, PNG, JPEG</div>
+							</div>
+							<span class="text-gradient text-xs" slot="lower_text">2550 x 290 PX</span>
+						</DragDropImage>
 					</div>
 				</div>
 
 				<div class="grid grid-cols-2">
-					<div>
-						<div class="transition input-label gradient-text brightness-0 peer-focus-within:brightness-100">Social links</div>
-						<div class="text-xs text-[#A9A8A8]">optional</div>
-					</div>
+					<div class="transition input-label text-white peer-focus-within:brightness-100">Social links</div>
 
-					<div id="socials-container" class="grid gap-y-3 peer">
+					<div id="socials-container" class="grid gap-y-3 peer text-white">
 						<div>
-							<Instagram />
-							<input type="text" class="input input-gray-outline" placeholder="Instagram link" bind:value={$localDataStore.social.instagram} />
+							<Instagram class="w-14 h-14" />
+							<input type="text" class="input " placeholder="Instagram link" bind:value={$localDataStore.social.instagram} />
 						</div>
 
 						<div>
-							<Discord />
-							<input type="text" class="input input-gray-outline" placeholder="Discord link" bind:value={$localDataStore.social.discord} />
+							<Discord class="w-14 h-14" />
+							<input type="text" class="input " placeholder="Discord link" bind:value={$localDataStore.social.discord} />
 						</div>
 
 						<div>
-							<Twitter />
-							<input type="text" class="input input-gray-outline" placeholder="Twitter link" bind:value={$localDataStore.social.twitter} />
+							<Twitter class="w-14 h-14" />
+							<input type="text" class="input " placeholder="Twitter link" bind:value={$localDataStore.social.twitter} />
 						</div>
 
 						<div>
-							<Web />
+							<Web class="w-14 h-14" />
 							<input
 								type="text"
 								pattern={'^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?'}
-								class="input input-gray-outline"
+								class="input "
 								placeholder="Personal Website"
 								bind:value={$localDataStore.social.website}
 							/>
 						</div>
 
 						<div>
-							<Pixiv />
-							<input type="text" class="input input-gray-outline" placeholder="Pixiv link" bind:value={$localDataStore.social.pixiv} />
+							<Pixiv class="w-14 h-14" />
+							<input type="text" class="input" placeholder="Pixiv link" bind:value={$localDataStore.social.pixiv} />
 						</div>
 
 						<div>
-							<Deviantart />
-							<input type="text" class="input input-gray-outline" placeholder="Deviantart link" bind:value={$localDataStore.social.deviantart} />
+							<Deviantart class="w-14 h-14" />
+							<input type="text" class="input" placeholder="Deviantart link" bind:value={$localDataStore.social.deviantart} />
 						</div>
 
 						<div>
-							<Artstation />
-							<input type="text" class="input input-gray-outline" placeholder="Artstation link" bind:value={$localDataStore.social.artstation} />
+							<Artstation class="w-14 h-14" />
+							<input type="text" class="input" placeholder="Artstation link" bind:value={$localDataStore.social.artstation} />
 						</div>
 					</div>
 				</div>
@@ -412,7 +409,7 @@
 
 			<FormErrorList validity={$socialLinksValidity} class="mb-10 -mt-10" />
 
-			<Button rounded variant="rounded-black" stretch on:click={onSave} disabled={isSynced || !dataChanged || !dataValid || isSaving} class="!font-medium">Save changes</Button>
+			<PrimaryButton on:click={onSave} disabled={isSynced || !dataChanged || !dataValid || isSaving} class="text-lg">Save changes</PrimaryButton>
 		</div>
 	</div>
 </LoadedContent>

@@ -3,20 +3,21 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import GuestUserAvatar from '$icons/guest-user-avatar.svelte';
+	import ShareV2 from '$icons/share-v2.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import type { CardOptions } from '$interfaces/ui';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
-	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
+	import EthAddress from '$lib/components/EthAddress.svelte';
+	import { slide } from 'svelte/transition';
+	import InfoBox from '$lib/components/InfoBox.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
-	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
-	import { profileCompletionProgress, userCreatedListing } from '$stores/user';
-	import { currentUserAddress } from '$stores/wallet';
-	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
-	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import { profileCompletionProgress, profileData, userCreatedListing } from '$stores/user';
+	import { listingToCardOptions, nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { getListing, getListings } from '$utils/api/listing';
 	import { apiGetUserNfts, getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
@@ -32,6 +33,17 @@
 	import { onMount } from 'svelte';
 	import { derived, writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
+	import { currentUserAddress } from '$stores/wallet';
+	import Twitter from '$icons/socials/twitter.svelte';
+	import Instagram from '$icons/socials/instagram.svelte';
+	import Web from '$icons/socials/web.svelte';
+	import Deviantart from '$icons/socials/deviantart.svelte';
+	import Artstation from '$icons/socials/artstation.svelte';
+	import SocialCopy from '$icons/socials/social-copy.svelte';
+	import { outsideClickCallback } from '$actions/outsideClickCallback';
+	import { copyUrlToClipboard } from '$utils/misc/clipboard';
+	import Pixiv from '$icons/socials/pixiv.svelte';
+	import Discord from '$icons/socials/discord.svelte';
 
 	$: address = $page.params.address;
 
@@ -67,7 +79,6 @@
 
 	async function fetchData(forAdress: string) {
 		$localProfileData = await fetchProfileData(forAdress);
-		console.log($localProfileData);
 	}
 
 	$: browser && fetchData(address);
@@ -85,13 +96,19 @@
 	$: socialLinks = $localProfileData?.social || { instagram: '', discord: '', twitter: '', website: '', pixiv: '', deviantart: '', artstation: '' };
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
-	$: firstTimeUser = $localProfileData?.createdAt === $localProfileData?.updatedAt;
+	$: firstTimeUser = $profileData?.createdAt === $profileData?.updatedAt;
+
+	$: console.log($localProfileData);
 
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
 
 	let totalNfts: number | null = null;
 	$: totalNfts;
+
+	let shareButtonOpen = false;
+	let elemOpen: HTMLDivElement;
+	let elemOpenBtn: HTMLDivElement;
 
 	const tabs: {
 		fetchFunction: (tab: any, page: number, limit: number) => Promise<{ res: any; adapted: []; err: Error }>;
@@ -100,7 +117,7 @@
 		index?: number;
 		reachedEnd?: boolean;
 		isFetching?: boolean;
-		data?: [];
+		data?: CardOptions[];
 	}[] = [
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -131,7 +148,7 @@
 			fetchFunction: async (tab, page, limit) => {
 				const listingStatus = ['UNLISTED', 'ACTIVE'] as any;
 
-				if ($currentUserAddress === address) {
+				if ($currentUserAddress === address || $userHasRole('admin', 'superadmin')) {
 					listingStatus.push('EXPIRED');
 				}
 
@@ -288,67 +305,142 @@
 			cardPropsMapper = (v) => ({ options: v });
 		}
 	}
+
+	$: console.log(shareButtonOpen);
 </script>
 
 <div class="">
 	<div class="pt-24 mx-auto max-w-screen-2xl px-20">
-		<div class="h-96 btn-gradient-border border-t-0 border-x-0 border-b-4 w-full">
+		<div class="h-96 gradient-border !border-t-0 !border-x-0 !border-b-4 w-full">
 			{#if $localProfileData?.coverUrl}
 				<div style="background-image: url({$localProfileData?.coverUrl})" class="w-full h-full bg-center bg-no-repeat bg-cover" />
 			{/if}
 		</div>
 
-		<div class="flex mt-8 text-white justify-between gap-20">
-			<div class="flex gap-4">
+		<div class="flex mt-8 text-white justify-between w-full">
+			<div class="flex gap-4 ">
 				<!-- Profile image -->
-				<div class="grid w-24 h-24 overflow-hidden place-items-center">
+				<div class="grid w-28 h-28 overflow-hidden place-items-center">
 					{#if $localProfileData?.thumbnailUrl}
 						<img src={$localProfileData?.thumbnailUrl} class="h-full" alt="User avatar." />
 					{:else}
 						<GuestUserAvatar />
 					{/if}
 				</div>
-				<div class="flex flex-col gap-4">
+				<div class="flex flex-col gap-5 w-2/3">
 					<div class="flex gap-2 items-center">
 						{#if $localProfileData?.username}
-							<div class="font-semibold text-4xl">
+							<div class="font-semibold text-4xl whitespace-nowrap">
 								{$localProfileData?.username}
 							</div>
 						{:else}
 							<span class="font-bold opacity-50 whitespace-nowrap">No username</span>
 						{/if}
 
-						{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
-							<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || !storage.hasRole('minter', address)} class="">
-								<VerifiedBadge />
+						{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED' || $localProfileData?.roles?.includes('verified_user') || $localProfileData?.roles?.includes('inactivated_user')}
+							<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || !storage.hasRole('minter', address)}>
+								<VerifiedBadge class="w-6 h-6" />
 							</div>
 						{/if}
 					</div>
 
 					<!-- Buttons -->
-					{#if address === $currentUserAddress}
-						<div transition:fade|local>
-							<button class="btn btn-rounded btn-shadow w-[11rem] py-2 uppercase" on:click={() => goto('/profile/edit')}>
-								{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}
-							</button>
+					<div class="flex gap-4">
+						{#if address === $currentUserAddress}
+							<div class="w-32" transition:fade|local>
+								<PrimaryButton on:click={() => goto('/profile/edit')}>{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}</PrimaryButton>
+							</div>
+						{:else}
+							<PrimaryButton class="w-40">
+								<div class="text-lg">Follow</div>
+							</PrimaryButton>
+						{/if}
+						<div class="relative">
+							<div class="" on:click|stopPropagation={() => (shareButtonOpen = !shareButtonOpen)} bind:this={elemOpenBtn}>
+								<PrimaryButton class="w-16">
+									<ShareV2 />
+								</PrimaryButton>
+							</div>
+							{#if shareButtonOpen}
+								<div
+									bind:this={elemOpen}
+									class="absolute text-white top-16 share-dropdown-outer z-30"
+									transition:slide|local
+									use:outsideClickCallback={{
+										cb: (e) => {
+											if (!e.composedPath().includes(elemOpen) && !e.composedPath().includes(elemOpenBtn)) {
+												shareButtonOpen = false;
+											}
+										},
+									}}
+								>
+									<div class="share-dropdown-mid">
+										<div class="gradient-border !border-2 ">
+											<div class="share-dropdown-inner p-5 flex gap-4">
+												{#if $localProfileData.social.instagram}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.instagram)}>
+														<Instagram class="w-10 h-10" />
+													</div>
+												{/if}
+												{#if $localProfileData.social.discord}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.discord)}>
+														<Discord class="w-10 h-10" />
+													</div>
+												{/if}
+
+												{#if $localProfileData.social.twitter}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.twitter)}>
+														<Twitter class="w-10 h-10" />
+													</div>
+												{/if}
+
+												{#if $localProfileData.social.website}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.website)}>
+														<Web class="w-10 h-10" />
+													</div>
+												{/if}
+												{#if $localProfileData.social.pixiv}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.pixiv)}>
+														<Pixiv class="w-10 h-10" />
+													</div>
+												{/if}
+												{#if $localProfileData.social.deviantart}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.deviantart)}>
+														<Deviantart class="w-10 h-10" />
+													</div>
+												{/if}
+												{#if $localProfileData.social.artstation}
+													<div class="clickable" on:click={() => window.open($localProfileData.social.artstation)}>
+														<Artstation class="w-10 h-10" />
+													</div>
+												{/if}
+
+												<div class="clickable" on:click={() => copyUrlToClipboard()}>
+													<SocialCopy class="w-10 h-10" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							{/if}
 						</div>
-					{/if}
+					</div>
 				</div>
 			</div>
 
 			<!-- Bio -->
-			<div class="max-w-[600px] flex-grow">
+			<div class="max-w-[600px] ">
 				<div class="font-semibold text-4xl">BIO</div>
 				<p class="mt-4 overflow-y-auto break-words">
 					{#if $localProfileData?.bio}
 						{@html $localProfileData?.bio}
 					{:else}
-						<span class="">No bio.</span>
+						<span class="text-sm">No bio.</span>
 					{/if}
 				</p>
 			</div>
 
-			<!-- Social links -->
+			<!-- Social links 
 			<div class="overflow-hidden">
 				<div class="font-bold whitespace-nowrap">SOCIAL LINKS</div>
 
@@ -365,9 +457,25 @@
 						<div class="font-bold opacity-50 whitespace-nowrap">No social links.</div>
 					{/if}
 				</div>
+			</div>-->
+
+			<!-- Followers and address -->
+			<div class="flex flex-col gap-4">
+				<div class="flex justify-between items-center gap-10">
+					<div class="">Followers</div>
+					<div class="">{0}</div>
+				</div>
+				<div class="flex justify-between items-center gap-10">
+					<div class="">Following</div>
+					<div class="">{0}</div>
+				</div>
+				<div class="flex justify-between items-center gap-10">
+					<div class="">Address</div>
+					<EthAddress {address} concat etherScanLink={false} class="!text-white !gap-2" />
+				</div>
 			</div>
 		</div>
-		<div class="container flex max-w-screen-xl mt-28 space-x-10 text-white gapx">
+		<div class="container flex max-w-screen-xl mt-16 space-x-10 text-white">
 			{#each tabs as tab}
 				{#if displayedTabs.includes(tab.name)}
 					<TabButton on:click={() => selectTab(tab.name)} selected={selectedTab.name === tab.name} uppercase>
@@ -377,7 +485,15 @@
 			{/each}
 		</div>
 
-		<div class="h-px bg-white opacity-30 w-full" />
+		<div class="h-px bg-white w-full" />
+	</div>
+
+	<div class="max-w-screen-xl mx-auto">
+		{#if $userHasRole('admin', 'superadmin') && selectedTab.data.some((i) => i.rawResourceData?.listingStatus === 'EXPIRED')}
+			<div class="m-2 -mb-4">
+				<InfoBox>Expired listings of this user are displayed because you are viewing this profile as an admin.</InfoBox>
+			</div>
+		{/if}
 
 		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:refresh-tabs={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
 
@@ -386,3 +502,24 @@
 		{/if}
 	</div>
 </div>
+
+<style type="postcss">
+	.share-dropdown-outer {
+		background: linear-gradient(0deg, #67d4f8, #67d4f8);
+	}
+
+	.share-dropdown-mid {
+		background: linear-gradient(
+			56.67deg,
+			rgba(167, 148, 255, 0) 11.15%,
+			rgba(167, 148, 255, 0.93) 57.47%,
+			rgba(142, 119, 247, 0) 127.41%,
+			rgba(142, 119, 247, 0) 127.41%,
+			rgba(167, 148, 255, 0) 127.41%
+		);
+	}
+
+	.share-dropdown-inner {
+		background: linear-gradient(180deg, #181f2a 0%, #131220 100%);
+	}
+</style>
