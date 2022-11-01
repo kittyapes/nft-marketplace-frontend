@@ -13,7 +13,7 @@
 
 <SectionWrapper split>
 	<div class="w-[28vw]">
-		<h2 class="gradient-text text-[1.4vw] leading-[1.4vw] mb-[1.85vw]">Trading rewards</h2>
+		<h2 class="text-gradient text-[1.4vw] leading-[1.4vw] mb-[1.85vw]">Trading rewards</h2>
 		<p class="font-medium text-[1.1vw] text-justify tracking">Earn trading rewards when you buy or sell any NFT on Hinata. Rewards are calculated and distributed once daily.</p>
 	</div>
 	<div>
@@ -21,7 +21,7 @@
 		<CardWrapper class="gap-y-[2.31vw]">
 			<div class="flex flex-col gap-y-[1.1vw]">
 				<div class="flex items-center justify-between">
-					<h3 class="gradient-text text-[1.4vw] leading-[1.4vw]">$HiNATA</h3>
+					<h3 class="text-gradient text-[1.4vw] leading-[1.4vw]">$HiNATA</h3>
 					<div class="h-[1.3vw] w-[1.3vw]">
 						<QuestionMarkIcon />
 					</div>

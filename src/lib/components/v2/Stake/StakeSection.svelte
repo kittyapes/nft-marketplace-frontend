@@ -38,7 +38,7 @@
 				HINATA LP
 			</Button>
 		</div>
-		<h2 class="gradient-text text-[1.4vw] leading-[1.4vw] mt-[1.5vw] mb-[0.5vw]">HINATA Staking</h2>
+		<h2 class="text-gradient text-[1.4vw] leading-[1.4vw] mt-[1.5vw] mb-[0.5vw]">HINATA Staking</h2>
 		<p class="text-[1vw] leading-[1vw]">Stake HINATA | Earn WAIFU</p>
 	</div>
 	<div class="flex flex-col items-start text-white font-semibold">
@@ -74,7 +74,7 @@
 			</div>
 			<div class="flex flex-col gap-y-[0.3vw]">
 				<h3 class="text-[1.4vw] leading-[1.4vw]">
-					<span class="gradient-text">$HiNATA Wallet Balance:</span>
+					<span class="text-gradient">$HiNATA Wallet Balance:</span>
 					{hinataWalletBalance?.toFixed(2) || 0.0}
 				</h3>
 				<p class="text-[1.15vw] leading-[1.15vw]">Your Stake (compounding)</p>
