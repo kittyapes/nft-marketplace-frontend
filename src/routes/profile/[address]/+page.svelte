@@ -490,8 +490,8 @@
 
 	<div class="max-w-screen-xl mx-auto">
 		{#if $userHasRole('admin', 'superadmin') && selectedTab.data.some((i) => i.rawResourceData?.listingStatus === 'EXPIRED')}
-			<div class="m-2 -mb-4">
-				<InfoBox>Expired listings of this user are displayed because you are viewing this profile as an admin.</InfoBox>
+			<div class="m-2 -mb-4 ">
+				<InfoBox class="bg-dark-gradient">Expired listings of this user are displayed because you are viewing this profile as an admin.</InfoBox>
 			</div>
 		{/if}
 

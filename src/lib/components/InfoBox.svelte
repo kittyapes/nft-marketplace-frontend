@@ -3,7 +3,7 @@
 </script>
 
 <div class="p-[2px] rounded-xl bg-gradient-to-r from-color-purple to-color-blue">
-	<div class="flex items-start gap-4 px-6 py-4 bg-white rounded-[10px]">
+	<div class="flex items-start gap-4 px-6 py-4 bg-white rounded-[10px] {$$props.class}">
 		<img class="w-6" src={getIconUrl('info')} alt="Info." />
 
 		<div class="font-bold text-gradient"><slot /></div>
