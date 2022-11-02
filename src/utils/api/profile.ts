@@ -1,4 +1,4 @@
-import { appSigner, currentUserAddress } from '$stores/wallet';
+import { appSigner } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { sanitizeHtmlInternal } from '$utils/html';
 import { htmlize } from '$utils/misc/htmlize';
@@ -6,7 +6,7 @@ import type { SupportedSocialNetworks } from '$utils/validator/isValidSocialLink
 import isValidSocialLink from '$utils/validator/isValidSocialLink';
 import axios from 'axios';
 import { sha512 } from 'hash.js';
-import type { UserData } from 'src/interfaces/userData';
+import type { PublicProfileData } from 'src/interfaces/userData';
 import { get } from 'svelte/store';
 import { getApiUrl } from '.';
 
@@ -18,37 +18,26 @@ export interface LoginHistoryEntry {
 }
 
 /**
- * Fetch profile data from the server.
+ * Fetch profile data from the from the public user data API endpoint.
  * @param address The address of the profile.
  * @returns Profile data or `null` in case of an error.
  */
 export async function fetchProfileData(address: string) {
 	if (!address) return null;
 
-	let res = null;
-
-	if (address.toLowerCase() === get(currentUserAddress)?.toLowerCase()) {
-		// Fetch personal profile
-		res = await axios.get(getApiUrl('latest', 'users'), await getAxiosConfig()).catch(() => null);
-	} else {
-		try {
-			res = await axios.get(getApiUrl('latest', 'users/' + address), await getAxiosConfig()).catch(() => null);
-		} catch (error) {
-			res = await axios.get(getApiUrl('latest', 'users/' + address)).catch(() => null);
-		}
-	}
+	const res = await axios.get(getApiUrl('latest', 'users/' + address));
 
 	if (!res) {
 		return null;
 	}
 
-	const data = res.data.data as UserData;
+	const data = res.data.data as PublicProfileData;
 
 	if (data.bio) {
 		data.bio = sanitizeHtmlInternal(htmlize(data.bio));
 	}
 
-	return data as UserData;
+	return data as PublicProfileData;
 }
 
 /**
