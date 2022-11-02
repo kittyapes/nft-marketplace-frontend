@@ -8,15 +8,16 @@
 	import type { CardOptions } from '$interfaces/ui';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import CopyAddressButton from '$lib/components/CopyAddressButton.svelte';
+	import InfoBox from '$lib/components/InfoBox.svelte';
 	import NftList from '$lib/components/NftList.svelte';
 	import AdminTools from '$lib/components/profile/AdminTools.svelte';
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
-	import { profileCompletionProgress, userCreatedListing } from '$stores/user';
+	import { profileCompletionProgress, profileData, userCreatedListing } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
-	import { listingToCardOptions } from '$utils/adapters/listingToCardOptions';
-	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import { listingToCardOptions } from '$utils/adapters/cardOptions';
+	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { getListing, getListings } from '$utils/api/listing';
 	import { apiGetUserNfts, getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
@@ -58,7 +59,7 @@
 			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
 		}
 
-		if (browser && $currentUserAddress) selectTab($tabParam);
+		if (browser) selectTab($tabParam);
 	});
 
 	const fetchLimit = 10;
@@ -84,7 +85,9 @@
 	$: socialLinks = $localProfileData?.social || { instagram: '', discord: '', twitter: '', website: '', pixiv: '', deviantart: '', artstation: '' };
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
-	$: firstTimeUser = $localProfileData?.createdAt === $localProfileData?.updatedAt;
+	$: firstTimeUser = $profileData?.createdAt === $profileData?.updatedAt;
+
+	$: console.log($localProfileData);
 
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
@@ -99,7 +102,7 @@
 		index?: number;
 		reachedEnd?: boolean;
 		isFetching?: boolean;
-		data?: [];
+		data?: CardOptions[];
 	}[] = [
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -130,7 +133,7 @@
 			fetchFunction: async (tab, page, limit) => {
 				const listingStatus = ['UNLISTED', 'ACTIVE'] as any;
 
-				if ($currentUserAddress === address) {
+				if ($currentUserAddress === address || $userHasRole('admin', 'superadmin')) {
 					listingStatus.push('EXPIRED');
 				}
 
@@ -313,7 +316,7 @@
 				<span class="font-bold opacity-50 whitespace-nowrap">No username</span>
 			{/if}
 
-			{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED'}
+			{#if $localProfileData?.status === 'VERIFIED' || $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.roles?.includes('verified_user')}
 				<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || !storage.hasRole('minter', address)} class="inline-block translate-x-1 translate-y-1">
 					<VerifiedBadge />
 				</div>
@@ -326,7 +329,7 @@
 		<div class="flex flex-col gap-3 h-[min-content] w-72 pt-10">
 			<CopyAddressButton {address} />
 
-			{#if address === $currentUserAddress}
+			{#if address === $currentUserAddress && $profileData}
 				<div transition:fade|local>
 					<button class="btn btn-rounded btn-shadow w-[11rem] py-2 uppercase" on:click={() => goto('/profile/edit')}>
 						{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}
@@ -382,6 +385,12 @@
 	<div class="h-px bg-black opacity-30" />
 
 	<div class="max-w-screen-xl mx-auto">
+		{#if $userHasRole('admin', 'superadmin') && selectedTab.data.some((i) => i.rawResourceData?.listingStatus === 'EXPIRED')}
+			<div class="m-2 -mb-4">
+				<InfoBox>Expired listings of this user are displayed because you are viewing this profile as an admin.</InfoBox>
+			</div>
+		{/if}
+
 		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:refresh-tabs={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
 	</div>
 </div>

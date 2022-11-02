@@ -148,7 +148,7 @@ export interface CollectionTableRow {
 
 export async function apiGetMostActiveCollections(): Promise<{ collections: Collection[]; totalCount: number }> {
 	const limit = 7;
-	const res = await axios.get(getApiUrl('latest', 'collections/search'), { params: { limit } });
+	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: { limit, status: 'ACTIVE' } });
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -157,7 +157,7 @@ export async function apiGetMostActiveCollections(): Promise<{ collections: Coll
 	return res.data.data;
 }
 
-export interface collectionSearchOptions {
+export interface CollectionSearchOptions {
 	creator?: string;
 	slug?: string;
 	name?: string;
@@ -166,10 +166,11 @@ export interface collectionSearchOptions {
 	sortBy?: 'ALPHABETICAL' | 'CREATED_AT';
 	sortReversed?: boolean;
 	collectionAddress?: string;
+	status?: 'ACTIVE' | 'INACTIVE' | 'ALL';
 }
 
-export async function apiSearchCollections(options?: collectionSearchOptions) {
-	if (options && !options.name) options.name = undefined;
+export async function apiSearchCollections(options?: CollectionSearchOptions) {
+	if (options && !options.name) options.name = null;
 
 	if (options && !options.limit) options.limit = 20;
 	else if (!options && !options?.limit) {
@@ -177,6 +178,9 @@ export async function apiSearchCollections(options?: collectionSearchOptions) {
 			limit: 20,
 		};
 	}
+
+	if (!options.status) options.status = 'ACTIVE';
+	else if (options.status === 'ALL') options.status = null;
 
 	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: options });
 	if (res.status !== 200) {

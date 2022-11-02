@@ -23,7 +23,6 @@
 	import CardPopup from './CardPopup/CardPopup.svelte';
 	import { reject } from 'lodash-es';
 	import Loader from '$icons/loader.svelte';
-	import Error from './CardPopup/sections/TradeSection/frames/Error.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -68,6 +67,7 @@
 	async function favNFT() {
 		if (!$walletConnected) {
 			setPopup(WalletNotConnectedPopup, { unique: true });
+			return;
 		}
 
 		const [err, res] = await noTryAsync(() => favoriteNft(options.nfts[0].databaseId));

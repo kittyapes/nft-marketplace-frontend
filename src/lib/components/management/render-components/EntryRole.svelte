@@ -35,8 +35,7 @@
 				notifyError("Failed to update user's roles");
 				return;
 			}
-			console.log(res);
-			localProps.role = getHighestRole([...roles, res.status]);
+			localProps.role = getHighestRole([...roles, ...res.roles]);
 			localProps.color = getRoleColor(localProps.role);
 			localProps = localProps;
 		} else if (event.detail?.checked) {

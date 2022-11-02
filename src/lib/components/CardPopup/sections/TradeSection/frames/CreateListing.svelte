@@ -13,7 +13,7 @@
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { notifyError } from '$utils/toast';
 	import { createEventDispatcher } from 'svelte';
-	import { frame } from '../tradeSection';
+	import { onMount } from 'svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
 	import Success from './Success.svelte';
 
@@ -28,6 +28,8 @@
 
 	async function completeListing() {
 		isListing = true;
+
+		console.log({ options });
 
 		const flowOptions: CreateListingFlowOptions = {
 			title: options.nfts[0].metadata?.name,
@@ -48,8 +50,11 @@
 
 		try {
 			await createListingFlow(flowOptions);
-			frame.set([Success, { successDescription: 'Successfully listed.', showMarketplaceButton: false }]);
 			dispatch('listing-created');
+			dispatch('set-frame', {
+				component: Success,
+				props: { successDescription: 'Successfully listed.', showMarketplaceButton: false },
+			});
 		} catch (err) {
 			console.error(err);
 			notifyError(err.message);
@@ -68,6 +73,12 @@
 
 	let listingProps: Partial<ConfigurableListingProps> = { quantity: 1 };
 	let formErrors: string[] = [];
+
+	let _listingProperties: ListingProperties;
+
+	onMount(() => {
+		_listingProperties.setValues({ durationSeconds: 60 * 60 * 24 });
+	});
 </script>
 
 <div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto">
@@ -76,7 +87,7 @@
 	<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} /></div>
 
 	<div class="mt-4">
-		<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} />
+		<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} bind:this={_listingProperties} disabled={isListing} />
 	</div>
 
 	<div class="flex-grow" />

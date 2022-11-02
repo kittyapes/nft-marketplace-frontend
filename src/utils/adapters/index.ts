@@ -11,7 +11,7 @@ const friendlyEventNames: Record<string, (e: ApiNftActivityHistoryEntry) => stri
 	LISTING_PURCHASED: (e: ApiNftActivityHistoryEntry) => {
 		return (
 			{
-				sale: 'Listing purchased',
+				sale: 'Sale purchased',
 				auction: 'Auction completed',
 			}[e.detail?.listingType] || 'Listing purchased'
 		);

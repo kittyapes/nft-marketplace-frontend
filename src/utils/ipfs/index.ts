@@ -5,6 +5,7 @@ import { appProvider } from '$stores/wallet';
 import { get } from 'svelte/store';
 import { getContractInterface } from '$utils/contracts/collection';
 import axios from 'axios';
+import defaultProvider from '$utils/contracts/defaultProvider';
 
 export function makeHttps(url: string) {
 	if (!url) return null;
@@ -17,18 +18,33 @@ export function makeHttps(url: string) {
 }
 
 export async function getOnChainMetadata(contractAddress: string, tokenId: string) {
-	const provider = get(appProvider) || ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
-	const tokenType = await getContractInterface(contractAddress, provider);
+	try {
+		const provider = get(appProvider) || defaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
 
-	const contract = new ethers.Contract(contractAddress, tokenType === 'ERC1155' ? erc1155abi : erc721abi, provider);
+		const tokenType = await getContractInterface(contractAddress, provider);
 
-	const uri = tokenType === 'ERC1155' ? await contract.uri(tokenId) : await contract.tokenURI(tokenId);
+		if (tokenType === 'UNKNOWN') {
+			return null;
+		}
 
-	const metadata = await axios
-		.get(makeHttps(uri))
-		.then((res) => res.data)
-		.catch((_err) => null);
+		const contract = new ethers.Contract(contractAddress, tokenType === 'ERC1155' ? erc1155abi : erc721abi, provider);
 
-	// fetch metadata
-	return metadata;
+		const uri: string = tokenType === 'ERC1155' ? await contract.uri(tokenId) : await contract.tokenURI(tokenId);
+
+		if (!(uri.startsWith('https://') || uri.startsWith('http://'))) {
+			return {};
+		}
+
+		const metadata = await axios
+			.get(makeHttps(uri))
+			.then((res) => res.data)
+			.catch((_err) => null);
+
+		// fetch metadata
+		return metadata;
+	} catch (error) {
+		console.log(error);
+
+		return null;
+	}
 }

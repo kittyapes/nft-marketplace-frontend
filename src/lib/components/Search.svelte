@@ -7,12 +7,11 @@
 	import { fly } from 'svelte/transition';
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import { beforeNavigate, goto } from '$app/navigation';
-	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import { setPopup } from '$utils/popup';
 	import { page } from '$app/stores';
 	import { searchQuery } from '$stores/search';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
-	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { browser } from '$app/environment';
 
 	let query: string;

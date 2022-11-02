@@ -7,6 +7,7 @@ import factoryAbi from '$constants/contracts/abis/HinataCollectionFactory.json';
 import marketplaceAbi from '$constants/contracts/abis/HinataMarketplace.json';
 import storageAbi from '$constants/contracts/abis/HinataMarketplaceStorage.json';
 import tokenAbi from '$constants/contracts/abis/hinataToken.json';
+import defaultProvider from '$utils/contracts/defaultProvider';
 
 type ContractName = 'marketplace' | 'storage' | 'factory' | 'token' | 'weth';
 
@@ -23,14 +24,14 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goe
 	{ name: 'storage', network: 'testing-goerli', address: '0x5c7db52089565A5c3F701135d9015Bc4Df339B1b', abi: storageAbi },
 	{ name: 'factory', network: 'testing-goerli', address: '0xa0B39FCC5FdeB3D839288c3Ec7210AAaf6fB972D', abi: factoryAbi },
 	{ name: 'token', network: 'testing-goerli', address: '0x15733Ab0E019B8Ff529EceB3FA2F33BcdCc4c3a7', abi: tokenAbi },
-	{ name: 'weth', network: 'testing-goerli', address: '0x0c84c20673341B5bae28D80F54926269A64B47a5', abi: erc20Abi },
+	{ name: 'weth', network: 'testing-goerli', address: '0xbA5029aAF14672ef662aD8eB38CDB4E4C16AdF6D', abi: erc20Abi },
 
 	// Goerli Development Environment
 	{ name: 'marketplace', network: 'development-goerli', address: '0x1F2C31095e8D9947e7FEb3202e9fd20C1eC0FF4B', abi: marketplaceAbi },
 	{ name: 'storage', network: 'development-goerli', address: '0xb3f40a5fe7f1621A36C540CF74BC76F8bc10fbAc', abi: storageAbi },
 	{ name: 'factory', network: 'development-goerli', address: '0x7FeDd7Cc42E5486f2Ff73147DD9c06b80665B2A1', abi: factoryAbi },
 	{ name: 'token', network: 'development-goerli', address: '0xaA8aF7853c6E449197a1369dE255A92264F65A6a', abi: tokenAbi },
-	{ name: 'weth', network: 'development-goerli', address: '0x6aA500DBe47b19437cB93D84492BDD175AA333BB', abi: erc20Abi },
+	{ name: 'weth', network: 'development-goerli', address: '0xbA5029aAF14672ef662aD8eB38CDB4E4C16AdF6D', abi: erc20Abi },
 
 	// Eth
 	{ name: 'marketplace', network: 'eth', address: '0x9A986d8B2cB50e827393Ec329cb0003535b5Ff75', abi: marketplaceAbi },
@@ -55,7 +56,7 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goe
 ];
 
 export function getContractData(name: ContractName) {
-	const provider = get(appProvider) || ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
+	const provider = get(appProvider) || defaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
 	const networkId = provider.network?.chainId || +import.meta.env.VITE_DEFAULT_NETWORK;
 	const environment: string | undefined = import.meta.env.VITE_CONTRACTS_ENVIRONMENT;
 
@@ -96,7 +97,7 @@ export function getContract(name: ContractName, canUseFallback = false) {
 	let provider: providers.Provider | Signer = get(appSigner);
 
 	if (!provider && canUseFallback) {
-		provider = ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK) as unknown as providers.Provider;
+		provider = defaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK) as unknown as providers.Provider;
 	} else if (!provider) {
 		throw new Error('Web 3 provider has not been set yet!');
 	}

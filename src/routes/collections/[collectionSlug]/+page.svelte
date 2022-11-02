@@ -1,15 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import AddCircle from '$icons/add-circle.svelte';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import type { UserData } from '$interfaces/userData';
 	import ActionMenu from '$lib/components/ActionMenu.svelte';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import NftList from '$lib/components/NftList.svelte';
-	import { nftDraft } from '$stores/create';
 	import { currentUserAddress } from '$stores/wallet';
-	import { nftToCardOptions } from '$utils/adapters/nftToCardOptions';
+	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { apiGetCollectionBySlug, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
@@ -27,20 +25,31 @@
 	let creatorData: UserData;
 
 	let reachedEnd = false;
-	let isLoading = true;
+	let isLoading = false;
 
 	let index = 1;
 	const limit = 15;
 
+	const resetNfts = () => {
+		nfts = [];
+		index = 1;
+		reachedEnd = false;
+		isLoading = false;
+	};
+
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await apiGetCollectionBySlug($page.params.collectionSlug, limit, index);
-		res.adapted = await Promise.all(res.res.nfts.map(nftToCardOptions));
+		res.adapted = await Promise.all(res.res.nfts?.map(nftToCardOptions)).catch((err) => {
+			console.error(err);
+			return [];
+		});
+
 		return res;
 	};
 
 	async function fetchMore() {
-		if (reachedEnd) return;
+		if (reachedEnd || isLoading) return;
 		isLoading = true;
 
 		const res = await fetchFunction();
@@ -51,7 +60,7 @@
 			return;
 		}
 
-		if (res.adapted.length === 0) {
+		if (res.adapted?.length === 0) {
 			reachedEnd = true;
 		} else {
 			nfts = [...nfts, ...res.adapted];
@@ -79,7 +88,7 @@
 		totalVol: {
 			stat: 'Total Volume',
 			value: 0,
-			symbol: '',
+			symbol: 'WETH',
 		},
 		items: {
 			stat: 'Items',
@@ -99,6 +108,7 @@
 	};
 
 	async function fetchCollectionData() {
+		resetNfts();
 		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => undefined);
 
 		// Populate collection stats
@@ -110,9 +120,10 @@
 		});
 
 		creatorData = await fetchProfileData(collectionData?.creator).catch((e) => undefined);
+		await fetchMore();
 	}
 
-	$: fetchCollectionData();
+	$: $page.params.collectionSlug && fetchCollectionData();
 
 	let collectionMenuButtonOptions = [
 		// REMEMBER TO SET THESE TO TRUE
@@ -235,24 +246,8 @@
 	</div>
 
 	<div class="mt-16 border-t border-[#0000004D]">
-		{#if nfts.length}
-			<NftList options={nfts} {isLoading} {reachedEnd} on:end-reached={fetchMore} />
-		{:else if collectionData && !nfts.length && $currentUserAddress === collectionData.creator}
-			<div
-				class="grid place-items-center border border-dashed border-opacity-30 border-color-gray-base h-60 clickable hover:scale-105 transition-all p10 rounded-2xl max-w-[246px] my-10"
-				on:click={() => {
-					$nftDraft = {};
-					$nftDraft.collectionId = collectionData.id;
-					goto('/create');
-				}}
-			>
-				<div class="flex flex-col items-center justify-center gap-4">
-					<button class="rounded-full btn">
-						<AddCircle />
-					</button>
-					<div class="text-color-gray-dark">Create a new NFT</div>
-				</div>
-			</div>
+		{#if collectionData}
+			<NftList options={nfts} {isLoading} {reachedEnd} createNewNftBtn={{ include: $currentUserAddress === collectionData.creator, collectionId: collectionData.id }} on:end-reached={fetchMore} />
 		{/if}
 	</div>
 </main>
