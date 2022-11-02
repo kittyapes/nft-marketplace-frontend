@@ -1,7 +1,7 @@
 import type { ApiNftData } from '$interfaces/apiNftData';
 import type { CardOptions } from '$interfaces/ui';
 import type { Listing } from '$utils/api/listing';
-import { getOnChainMetadata, makeHttps } from '$utils/ipfs';
+import { getMetadataFromUri, getOnChainUri, makeHttps } from '$utils/ipfs';
 import dayjs from 'dayjs';
 import { writable } from 'svelte/store';
 
@@ -26,8 +26,12 @@ export interface SanitizedNftData {
 }
 
 export async function sanitizeNftData(data: ApiNftData) {
+	if (!data.uri) {
+		data.uri = await getOnChainUri(data?.contractAddress, data?.nftId.toString());
+	}
+
 	if (!data.thumbnailUrl || !data.metadata) {
-		const nftMetadata = await getOnChainMetadata(data?.contractAddress, data?.nftId.toString());
+		const nftMetadata = data.uri ? await getMetadataFromUri(data.uri) : null;
 		data.metadata = nftMetadata ?? data.metadata;
 		// TODO: Add temporary image for nfts that did not load here
 		data.thumbnailUrl = nftMetadata?.image ?? data.thumbnailUrl ?? '';
