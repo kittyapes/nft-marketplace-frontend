@@ -211,7 +211,7 @@
 				{options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
 			</div>
 		</div>
-		<div class="flex justify-between">
+		<div class="flex justify-between items-center">
 			{#if !isFuture(options?.listingData?.startTime)}
 				<div class="flex flex-col">
 					{#if options?.resourceType === 'listing'}
