@@ -229,6 +229,14 @@
 	const handleVerify = async () => {
 		whitelisting = true;
 
+		whitelistingCollectionSlug.update((str) => {
+			if (str.startsWith('http')) {
+				return str.substring(str.lastIndexOf('/') + 1);
+			}
+
+			return str;
+		});
+
 		await whitelistCollection($whitelistingCollectionAddress, $whitelistingCollectionSlug).catch((e) => console.log(e));
 
 		whitelisting = false;
