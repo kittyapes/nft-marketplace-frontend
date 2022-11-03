@@ -4,7 +4,7 @@
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { appSigner, connectionDetails, currentUserAddress } from '$stores/wallet';
 	import { onMount } from 'svelte';
-	import { profileData } from '$stores/user';
+	import { publicProfileData } from '$stores/user';
 	import { fade } from 'svelte/transition';
 	import UserCircle from '$icons/user-circle.svelte';
 	import { goto } from '$app/navigation';
@@ -27,7 +27,7 @@
 		window.addEventListener('click', closeModalIfNotInElement);
 	});
 
-	$: displayedUsername = $profileData?.username;
+	$: displayedUsername = $publicProfileData?.username;
 	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
 
 	let imageFailedToLoad = false;
@@ -99,7 +99,7 @@
 					title={profileButtonTitle}
 				>
 					<div class="flex-grow" in:fade>
-						{#if $profileData?.username}
+						{#if $publicProfileData?.username}
 							{displayedUsername && displayedUsername.length > 15 ? `${displayedUsername.substring(0, 13)}...` : displayedUsername}
 						{:else}
 							Guest User
@@ -108,10 +108,10 @@
 
 					<!-- Profile image or guest user icon -->
 					<div class="w-8 h-8">
-						{#if $profileData?.thumbnailUrl}
+						{#if $publicProfileData?.thumbnailUrl}
 							<img
 								on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"}
-								src={$profileData.thumbnailUrl}
+								src={$publicProfileData.thumbnailUrl}
 								alt="Current account avatar."
 								class="object-cover w-full h-full rounded-full"
 							/>
