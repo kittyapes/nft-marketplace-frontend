@@ -209,7 +209,7 @@
 
 	<div class="flex items-center mt-2 font-semibold">
 		<div class="flex-grow truncate whitespace-nowrap" class:text-xs={!options.nfts[0]?.name}>
-			{options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
+			{options.nfts[0].name || options.nfts[0]?.metadata?.name || `#${options.nfts[0]?.onChainId}` || 'No Title'}
 		</div>
 		<!-- Hide price info when not present/listed -->
 		{#if options?.resourceType === 'listing'}
