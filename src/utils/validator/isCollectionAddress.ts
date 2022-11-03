@@ -1,6 +1,7 @@
 import { appProvider } from '$stores/wallet';
 import { getContractInterface } from '$utils/contracts/collection';
-import { ethers } from 'ethers';
+import defaultProvider from '$utils/contracts/defaultProvider';
+import type { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import { isContractAddress } from './isContractAddress';
 
@@ -10,10 +11,10 @@ export default async function (address: string, networkId?: number) {
 	let provider: ethers.providers.BaseProvider;
 
 	if (networkId !== undefined) {
-		provider = ethers.getDefaultProvider(networkId);
+		provider = defaultProvider(networkId);
 	} else {
 		// Checks mainnet by default if no wallet is connected
-		provider = get(appProvider) ?? ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
+		provider = get(appProvider) ?? defaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
 	}
 
 	try {

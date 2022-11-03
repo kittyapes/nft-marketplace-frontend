@@ -103,7 +103,7 @@
 
 	interface UserFetchingOptions {
 		filter: Partial<{
-			createdBefore: number;
+			createdAfter: number;
 			role: string;
 			status: string;
 		}>;
@@ -188,7 +188,7 @@
 		if (tab === 'USER') {
 			console.log(event.detail);
 			userFetchingOptions.filter = {
-				createdBefore: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdBefore,
+				createdAfter: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdAfter,
 				role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
 				status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status,
 			};
@@ -200,7 +200,7 @@
 				userFetchingOptions.filter.role = undefined;
 				userFetchingOptions.filter.status = undefined;
 			}
-			if (event.detail.createdBefore === 'all') userFetchingOptions.filter.createdBefore = undefined;
+			if (event.detail.createdBefore === 'all') userFetchingOptions.filter.createdAfter = undefined;
 
 			await getSearchedUsers();
 		} else {
