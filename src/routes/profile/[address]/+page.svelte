@@ -486,20 +486,19 @@
 		</div>
 
 		<div class="h-px bg-white w-full" />
-	</div>
+		<div class="">
+			{#if $userHasRole('admin', 'superadmin') && selectedTab.data.some((i) => i.rawResourceData?.listingStatus === 'EXPIRED')}
+				<div class="m-2 -mb-4 ">
+					<InfoBox class="bg-dark-gradient">Expired listings of this user are displayed because you are viewing this profile as an admin.</InfoBox>
+				</div>
+			{/if}
 
-	<div class="max-w-screen-xl mx-auto">
-		{#if $userHasRole('admin', 'superadmin') && selectedTab.data.some((i) => i.rawResourceData?.listingStatus === 'EXPIRED')}
-			<div class="m-2 -mb-4 ">
-				<InfoBox class="bg-dark-gradient">Expired listings of this user are displayed because you are viewing this profile as an admin.</InfoBox>
-			</div>
-		{/if}
+			<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:refresh-tabs={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
 
-		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:refresh-tabs={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
-
-		{#if $localProfileData && $userHasRole('admin', 'superadmin')}
-			<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
-		{/if}
+			{#if $localProfileData && $userHasRole('admin', 'superadmin')}
+				<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
+			{/if}
+		</div>
 	</div>
 </div>
 
