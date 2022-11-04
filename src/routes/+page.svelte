@@ -62,72 +62,74 @@
 	}}
 />
 
-<!-- Top collections section -->
-<div class="px-16 pt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Most Active Collections</h2>
-		<a href="/collections" class="uppercase underline text-sm font-bold">View all</a>
-	</div>
-	<hr class="mt-4 border-[#0000004D]" />
-	{#if collections.length > 0}
-		<CollectionsTable {collections} />
-	{:else}
-		<DiamondsLoader />
-	{/if}
-</div>
-
-<!-- Explore Market Section -->
-{#if $loadedExploreListings && exploreListingsData?.length > 0}
-	<div class="px-16 mt-24 mb-16" in:slide>
+<div class="text-white">
+	<!-- Top collections section -->
+	<div class="px-16 pt-24 mb-16">
 		<div class="flex items-end">
-			<h2 class="text-4xl font-light uppercase flex-grow">Explore Market</h2>
-			<a href="/marketplace" class="uppercase underline text-sm font-bold">View All</a>
+			<h2 class="text-4xl font-light uppercase flex-grow">Most Active Collections</h2>
+			<a href="/collections" class="uppercase underline text-sm font-bold">View all</a>
+		</div>
+		<hr class="mt-4 border-[#0000004D]" />
+		{#if collections.length > 0}
+			<CollectionsTable {collections} />
+		{:else}
+			<DiamondsLoader />
+		{/if}
+	</div>
+
+	<!-- Explore Market Section -->
+	{#if $loadedExploreListings && exploreListingsData?.length > 0}
+		<div class="px-16 mt-24 mb-16" in:slide>
+			<div class="flex items-end">
+				<h2 class="text-4xl font-light uppercase flex-grow">Explore Market</h2>
+				<a href="/marketplace" class="uppercase underline text-sm font-bold">View All</a>
+			</div>
+			<hr class="mt-4 border-[#0000004D]" />
+
+			<NftList options={exploreListingsData} />
+		</div>
+	{/if}
+
+	<!-- Latest blog posts -->
+	<div class="px-16 mt-24 mb-16">
+		<div class="flex items-end">
+			<h2 class="text-4xl font-light uppercase flex-grow">Latest Blog Posts</h2>
+			<a href="/blog" class="uppercase underline text-sm font-bold">View Latest Posts</a>
 		</div>
 		<hr class="mt-4 border-[#0000004D]" />
 
-		<NftList options={exploreListingsData} />
+		{#if $blogPosts.length}
+			{#each $blogPosts.slice(0, 2) as post}
+				<BlogPostPreview data={post} />
+			{/each}
+		{/if}
 	</div>
-{/if}
 
-<!-- Latest blog posts -->
-<div class="px-16 mt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Latest Blog Posts</h2>
-		<a href="/blog" class="uppercase underline text-sm font-bold">View Latest Posts</a>
-	</div>
-	<hr class="mt-4 border-[#0000004D]" />
-
-	{#if $blogPosts.length}
-		{#each $blogPosts.slice(0, 2) as post}
-			<BlogPostPreview data={post} />
-		{/each}
-	{/if}
-</div>
-
-<!-- Monthly airdrop -->
-<div class="px-16 mt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Monthly Airdrop</h2>
-	</div>
-	<hr class="mt-4 border-[#0000004D]" />
-
-	<div class="flex flex-col h-full overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-gray-100" in:fade>
-		<div class="flex-shrink-0 h-full py-8 lg:h-72">
-			<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
+	<!-- Monthly airdrop -->
+	<div class="px-16 mt-24 mb-16">
+		<div class="flex items-end">
+			<h2 class="text-4xl font-light uppercase flex-grow">Monthly Airdrop</h2>
 		</div>
+		<hr class="mt-4 border-[#0000004D]" />
 
-		<div class="flex flex-col flex-grow py-8 lg:ml-16">
-			<div class="text-3xl font-light uppercase text-color-black line-clamp-2">
-				{aidrop.title}
+		<div class="flex flex-col h-full overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-gray-100" in:fade>
+			<div class="flex-shrink-0 h-full py-8 lg:h-72">
+				<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
 			</div>
 
-			<p class="flex-grow mt-4">
-				{aidrop.textPreview}
-			</p>
+			<div class="flex flex-col flex-grow py-8 lg:ml-16">
+				<div class="text-3xl font-light uppercase text-color-black line-clamp-2">
+					{aidrop.title}
+				</div>
 
-			<!-- Read more
+				<p class="flex-grow mt-4">
+					{aidrop.textPreview}
+				</p>
+
+				<!-- Read more
 			<div class="mt-4 text-lg font-light text-gradient">Read more</div>
 			 -->
+			</div>
 		</div>
 	</div>
 </div>
