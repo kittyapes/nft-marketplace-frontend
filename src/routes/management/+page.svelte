@@ -449,7 +449,7 @@
 				renderComponent: EntryRole,
 				renderComponentProps: users?.map((u) => ({
 					id: u.address,
-					dispatchAllOptions: true,
+					dispatchAllOptions: false,
 					mode: tab,
 					role: getHighestRole([...u.roles]),
 					color: getRoleColor(getHighestRole([...u.roles])),
