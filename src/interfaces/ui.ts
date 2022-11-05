@@ -14,6 +14,7 @@ export interface CardOptions {
 		{
 			databaseId: string;
 			onChainId: string;
+			fullId: string;
 			name: string;
 			metadata?: any;
 			contractType: TokenStandard;

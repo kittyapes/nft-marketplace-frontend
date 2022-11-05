@@ -32,4 +32,55 @@ export interface ApiNftData {
 	collectionName: string;
 	collectionSlug: string;
 	_id: MongoId;
+	fullId: string;
 }
+
+// export interface AlchemyNft {
+// 	contract: {
+// 		address: EthAddress;
+// 		name: string;
+// 		symbol: string;
+// 		tokenType: 'ERC721' | 'ERC1155' | 'UNKNOWN';
+// 	};
+// 	tokenId: string;
+// 	tokenType: 'ERC721' | 'ERC1155' | 'UNKNOWN';
+// 	title: string;
+// 	description: Date;
+// 	timeLastUpdated: Date;
+// 	rawMetadata:
+// 		| {
+// 				external_url: string;
+// 				image: string;
+// 				name: string;
+// 				description: string;
+// 				animation_url?: string;
+// 		  }
+// 		| { metadata: any; attributes: any }; // when you encounter the second iteration, it is an error and should fetch from the chain
+// 	tokenUri: {
+// 		raw: string;
+// 		gateway: string;
+// 	};
+// 	media: {
+// 		raw: string;
+// 		gateway: string;
+// 		thumbnail: string;
+// 		format: 'png' | 'jpeg' | string; // basically image formats
+// 		bytes: number; // size of asset in bytes
+// 	}[];
+// 	balance: number;
+
+// 	// pollyfilled for hinata compatibility
+// 	collectionSlug: string;
+// 	collectionName: string;
+// 	collectionId: string;
+// }
+
+// export interface AlchemyUserNftData {
+// 	pageKey?: string;
+// 	ownedNfts: AlchemyNft[];
+// }
+
+// export interface AlchemyCollectionNftData {
+// 	pageKey?: string;
+// 	nfts: AlchemyNft[];
+// }
