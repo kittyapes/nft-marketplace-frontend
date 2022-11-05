@@ -98,11 +98,7 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 	};
 
 	const makeNice = (n: number) => {
-		if (n.toString().includes('.')) {
-			return n.toString();
-		}
-
-		return n.toString() + '.0';
+		return n.toString();
 	};
 
 	if (listing.listingType === 'sale') {
