@@ -2,6 +2,7 @@ import { appSigner } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { sanitizeHtmlInternal } from '$utils/html';
 import { htmlize } from '$utils/misc/htmlize';
+import { notifyError } from '$utils/toast';
 import type { SupportedSocialNetworks } from '$utils/validator/isValidSocialLink';
 import isValidSocialLink from '$utils/validator/isValidSocialLink';
 import axios from 'axios';
@@ -71,9 +72,17 @@ export async function fetchCurrentUserData(): Promise<{
 	updatedAt: string;
 	username: string;
 }> {
-	const res = await axios.get(getApiUrl('latest', 'users'), await getAxiosConfig());
+	try {
+		const res = await axios.get(getApiUrl('latest', 'users'), await getAxiosConfig());
 
-	return res.data.data;
+		return res.data.data;
+	} catch (err) {
+		console.error(err);
+
+		notifyError('Failed to load user data.');
+
+		return null;
+	}
 }
 
 export interface EditableProfileData {
