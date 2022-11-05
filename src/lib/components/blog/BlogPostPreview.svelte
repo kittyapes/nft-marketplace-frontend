@@ -7,7 +7,7 @@
 	export let skeleton = false;
 </script>
 
-<div class="relative font-open-sans">
+<div class="relative">
 	{#if !skeleton}
 		<a class="flex flex-col h-full py-11 overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-[#FFFFFF1E]" href={'/blog/' + data.segment} in:fade>
 			<div class="flex-shrink-0 h-full lg:h-[250px]">

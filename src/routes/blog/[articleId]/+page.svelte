@@ -22,7 +22,7 @@
 </script>
 
 <LoadedContent loaded={!!articleData}>
-	<main class="container max-w-screen-lg px-8 py-16 mx-auto mb-32 overflow-hidden text-white font-open-sans">
+	<main class="container max-w-screen-lg px-8 py-16 mx-auto mb-32 overflow-hidden text-white">
 		<img src={articleData?.thumbnail} alt="" class="object-contain w-full" />
 
 		<div class="mt-16 gap-x-16 max-w-screen-lg">

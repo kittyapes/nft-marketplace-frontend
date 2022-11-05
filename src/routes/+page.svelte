@@ -90,7 +90,7 @@
 {/if}
 
 <!-- Latest blog posts -->
-<div class="font-open-sans px-16 2xl:px-52 mt-24 mb-16">
+<div class="px-16 2xl:px-52 mt-24 mb-16">
 	<div class="flex items-end">
 		<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">BLOG</h2>
 		<a href="/blog" class="uppercase text-white underline text-sm font-bold">View Latest Posts</a>
@@ -105,7 +105,7 @@
 </div>
 
 <!-- Monthly airdrop -->
-<div class="font-open-sans px-16 2xl:px-52 mt-24 mb-16">
+<div class="px-16 2xl:px-52 mt-24 mb-16">
 	<div class="flex items-end">
 		<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">Monthly Airdrop</h2>
 	</div>
