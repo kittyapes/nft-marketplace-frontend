@@ -11,6 +11,9 @@ export async function favoriteNft(id: string) {
 		id = leanNftdata._id;
 	}
 
-	const res = await axios.post(getApiUrl('latest', 'nfts/favourite/' + id), null, await getAxiosConfig()).catch((e) => e.response);
+	const res = await axios.post(getApiUrl('latest', 'nfts/favourite/' + id), null, await getAxiosConfig()).catch((e) => {
+		throw new Error('Failed to favorite NFT');
+	});
+  
 	return res?.data;
 }

@@ -229,6 +229,14 @@
 	const handleVerify = async () => {
 		whitelisting = true;
 
+		whitelistingCollectionSlug.update((str) => {
+			if (str.startsWith('http')) {
+				return str.substring(str.lastIndexOf('/') + 1);
+			}
+
+			return str;
+		});
+
 		await whitelistCollection($whitelistingCollectionAddress, $whitelistingCollectionSlug).catch((e) => console.log(e));
 
 		whitelisting = false;
@@ -449,7 +457,7 @@
 				renderComponent: EntryRole,
 				renderComponentProps: users?.map((u) => ({
 					id: u.address,
-					dispatchAllOptions: true,
+					dispatchAllOptions: false,
 					mode: tab,
 					role: getHighestRole([...u.roles]),
 					color: getRoleColor(getHighestRole([...u.roles])),
