@@ -306,9 +306,9 @@
 	<!-- Title -->
 	<h1 class="text-2xl font-semibold uppercase">
 		{#if isNewCollection}
-			Create <span class="gradient-text">New Collection</span>
+			Create <span class="text-gradient">New Collection</span>
 		{:else}
-			Edit <span class="gradient-text">Collection</span>
+			Edit <span class="text-gradient">Collection</span>
 		{/if}
 	</h1>
 

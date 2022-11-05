@@ -31,11 +31,6 @@
 	@apply disabled:opacity-50;
 }
 
-.btn-gradient-border {
-	background: linear-gradient(white, white) padding-box, linear-gradient(to right, #868bf7, #6cc7f8) border-box;
-	@apply border-transparent border-2;
-}
-
 /* Duplicate CSS code, because applying btn class does not work. >_< */
 @layer components {
 	.btn-primary {

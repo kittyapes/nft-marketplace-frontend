@@ -81,7 +81,7 @@
 				transition:fade|local
 			>
 				<img class="h-8" src={getIconUrl('card-popup-tab-icon/' + tab.icon + (tab.text === selectedTab.text ? '.selected' : ''))} alt={tab.text} />
-				<div class="" class:gradient-text={tab.text === selectedTab.text}>{tab.text}</div>
+				<div class="" class:text-gradient={tab.text === selectedTab.text}>{tab.text}</div>
 			</button>
 		{/each}
 	</div>

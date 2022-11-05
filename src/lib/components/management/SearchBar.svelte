@@ -4,10 +4,22 @@
 
 	export let placeholder = '';
 	export let query: string;
+
+	let focused = false;
 </script>
 
-<div class="input flex gap-4 border-2 focus-within:border-[#1d1d1d] items-center">
+<div class="input flex-grow flex gap-4 border-2 {focused ? 'border-color-purple' : ''} items-center font-medium">
 	<Search />
 
-	<input type="text" class="w-72 focus:outline-none" {placeholder} bind:value={query} />
+	<input
+		on:focus={() => {
+			focused = true;
+		}}
+		on:blur={() => {
+			focused = false;
+		}}
+		type="text"
+		class="bg-transparent text-white w-full focus:outline-none"
+		{placeholder}
+		bind:value={query} />
 </div>

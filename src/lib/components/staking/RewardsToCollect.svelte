@@ -17,7 +17,7 @@
 <Container class="w-full {$$props.class}">
 	<div class="w-full flex flex-col gap-2">
 		<div class="flex">
-			<div class="gradient-text text-2xl font-semibold">${rewardCurrency}</div>
+			<div class="text-gradient text-2xl font-semibold">${rewardCurrency}</div>
 			<div class="flex-grow" />
 			<button class="btn self-end flex gap-3">
 				<div class="text-lg">What’s this</div>

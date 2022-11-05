@@ -16,7 +16,14 @@ export function getListingCardTimerHtml(startDate: number, duration: number) {
 		const inSeconds = startDate - dayjs().unix();
 		const in_ = dayjs.duration(inSeconds, 's').format('D[d] H[h] m[m]');
 
-		return `<span class="text-transparent bg-gradient-to-r bg-clip-text from-color-purple to-color-blue">Starting in: ${in_}</span>`;
+		return `<div class="flex flex-col">
+				<div class="text-gradient font-bold text-sm">
+					Starts in: 
+				</div>
+				<div class="text-white font-semibold text-lg">
+					${in_}
+				</div>
+				</div>`;
 	}
 
 	if (isFuture(startDate + duration)) {
@@ -26,7 +33,14 @@ export function getListingCardTimerHtml(startDate: number, duration: number) {
 		const in_ = endingIn.format('D[d] H[h] m[m]');
 
 		if (endingIn.asMilliseconds() === 0) return `<div class="listing-timer text-[10px] font-bold uppercase text-color-red">Expired</div>`;
-		return `<span class="text-color-red">Ending in: ${in_}</span>`;
+		return `<div class="flex flex-col">
+					<div class="text-gradient font-bold text-sm">
+						Ends in: 
+					</div>
+					<div class="text-white font-semibold text-lg">
+						${in_}
+					</div>
+				</div>`;
 	}
 
 	return `<div class="listing-timer text-[10px] font-bold uppercase text-color-red">Expired</div>`;

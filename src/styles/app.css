@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&display=swap');
 @import 'button.css';
 @import 'input.css';
 @import 'scrollbar.css';
-@import 'select.css';
 @import 'separator.css';
 
 /* Write your global styles here, in PostCSS syntax */
@@ -19,7 +19,23 @@ html {
 }
 
 body {
-	font-family: 'Open Sans', sans-serif;
+	font-family: 'Chakra Petch', sans-serif;
+	background: linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), radial-gradient(70.5% 10.55% at 50% -4.27%, #88eaff 2.16%, rgba(167, 148, 255, 0.38) 60.42%, rgba(167, 148, 255, 0) 100%),
+		radial-gradient(67.83% 33.54% at 0% 63.11%, #88eaff 0%, #8e77f7 55.73%, rgba(145, 124, 244, 0) 100%),
+		radial-gradient(54.72% 41.67% at 100% 100%, #88eaff 0%, rgba(167, 148, 255, 0.3) 60.42%, rgba(167, 148, 255, 0) 100%),
+		radial-gradient(54.72% 41.67% at 100% 100%, #88eaff 0%, #a794ff 53.12%, rgba(167, 148, 255, 0) 94.79%),
+		radial-gradient(67.61% 27.44% at 3.82% 100%, #8e77f7 0%, #c7bbff 28.12%, #88eaff 51.56%, rgba(136, 234, 255, 0) 84.38%),
+		radial-gradient(141.93% 89.35% at 78.65% 58.38%, #8e77f7 0%, #88eaff 54.17%, rgba(136, 234, 255, 0) 87.5%, rgba(136, 234, 255, 0) 100%),
+		radial-gradient(53.89% 53.36% at 50.89% 50.04%, #a794ff 0%, #88eaff 100%);
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+/* Fonts */
+.font-chakra {
+	font-family: 'Chakra Petch', sans-serif;
 }
 
 /* Utils */
@@ -32,8 +48,14 @@ body {
 	@apply transition-transform duration-200 transform active:scale-95;
 }
 
-.gradient-text {
-	@apply bg-gradient-to-r from-color-purple to-color-blue text-transparent bg-clip-text;
+.text-gradient {
+	background: linear-gradient(56.67deg, rgba(167, 148, 255, 0) 11.15%, rgba(167, 148, 255, 0.93) 57.47%, rgba(142, 119, 247, 0) 127.41%, rgba(142, 119, 247, 0) 127.41%, rgba(167, 148, 255, 0) 127.41%),
+		#67d4f8;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	text-fill-color: transparent;
+	@apply max-w-fit;
 }
 
 .text-color-gradient {
@@ -42,10 +64,59 @@ body {
 	background-clip: text;
 }
 
+.gradient-line {
+	background: linear-gradient(56.67deg, rgba(167, 148, 255, 0) 11.15%, rgba(167, 148, 255, 0.93) 57.47%, rgba(142, 119, 247, 0) 127.41%, rgba(142, 119, 247, 0) 127.41%, rgba(167, 148, 255, 0) 127.41%),
+		#67d4f8;
+}
+
 .gradient-stroke {
 	background: linear-gradient(to right, #868bf7, #6cc7f8);
 	@apply bg-clip-text font-extrabold;
 	-webkit-text-stroke: 4px transparent;
+}
+
+.bg-card-gradient {
+	background: radial-gradient(55.65% 55.65% at 51.68% 130.43%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%),
+		radial-gradient(55.22% 148.72% at 98.83% 0%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%),
+		radial-gradient(64.35% 166.74% at 8.56% -7.83%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%),
+		linear-gradient(180deg, rgba(136, 234, 255, 0.1) 0%, rgba(133, 141, 247, 0.056) 100%, rgba(133, 141, 247, 0.1) 100%), rgba(0, 0, 0, 0.1);
+}
+
+.bg-gradient {
+	background: linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), radial-gradient(70.5% 10.55% at 50% -4.27%, #88eaff 2.16%, rgba(167, 148, 255, 0.38) 60.42%, rgba(167, 148, 255, 0) 100%),
+		radial-gradient(67.83% 33.54% at 0% 63.11%, #88eaff 0%, #8e77f7 55.73%, rgba(145, 124, 244, 0) 100%),
+		radial-gradient(54.72% 41.67% at 100% 100%, #88eaff 0%, rgba(167, 148, 255, 0.3) 60.42%, rgba(167, 148, 255, 0) 100%),
+		radial-gradient(54.72% 41.67% at 100% 100%, #88eaff 0%, #a794ff 53.12%, rgba(167, 148, 255, 0) 94.79%),
+		radial-gradient(67.61% 27.44% at 3.82% 100%, #8e77f7 0%, #c7bbff 28.12%, #88eaff 51.56%, rgba(136, 234, 255, 0) 84.38%),
+		radial-gradient(141.93% 89.35% at 78.65% 58.38%, #8e77f7 0%, #88eaff 54.17%, rgba(136, 234, 255, 0) 87.5%, rgba(136, 234, 255, 0) 100%),
+		radial-gradient(53.89% 53.36% at 50.89% 50.04%, #a794ff 0%, #88eaff 100%);
+}
+
+.bg-dark-gradient {
+	background: radial-gradient(55.65% 55.65% at 51.68% 130.43%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%),
+		radial-gradient(55.22% 148.72% at 98.83% 0%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%),
+		radial-gradient(64.35% 166.74% at 8.56% -7.83%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%),
+		linear-gradient(180deg, rgba(136, 234, 255, 0.05) 0%, rgba(133, 141, 247, 0.05) 100%), #000000;
+}
+
+.gradient-border {
+	background: linear-gradient(white, white) padding-box, linear-gradient(to left, #868bf7, #6cc7f8) border-box;
+	@apply border-transparent border;
+}
+
+.button-vertical-gradient {
+	background: radial-gradient(55.65% 55.65% at 51.68% 130.43%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%)
+			/* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
+		radial-gradient(55.22% 148.72% at 98.83% 0%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%)
+			/* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
+		radial-gradient(64.35% 166.74% at 8.56% -7.83%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%)
+			/* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
+		linear-gradient(180deg, rgba(136, 234, 255, 0.1) 0%, rgba(133, 141, 247, 0.056) 100%, rgba(133, 141, 247, 0.1) 100%), rgba(0, 0, 0, 0.1);
+}
+
+.gradient-border-bg {
+	background: linear-gradient(56.67deg, rgba(167, 148, 255, 0) 11.15%, rgba(167, 148, 255, 0.93) 57.47%, rgba(142, 119, 247, 0) 127.41%, rgba(142, 119, 247, 0) 127.41%, rgba(167, 148, 255, 0) 127.41%),
+		linear-gradient(0deg, #67d4f8, #67d4f8);
 }
 
 .clickable {
