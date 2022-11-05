@@ -247,7 +247,6 @@
 						out:fade|local
 						disabled={isSaving || $freeNftStatus === 'unclaimable'}
 					>
-						<!-- {@debug isSaving, $freeNftStatus, isSynced} -->
 						Claim your NFT
 					</button>
 				</div>
@@ -317,10 +316,12 @@
 								<span>Drag and drop an image here or click to browse</span>
 								<div class="text-gradient">GIF, PNG, JPEG</div>
 							</div>
-							<div class="text-xs mt-2 text-white flex justify-center" slot="lower_text">
-								<span class="text-center">
-									We recommend an image of atleast <span class="text-gradient">200 x 200 PX</span>
-									| GIFs work too.
+							<div class="text-xs text-white flex justify-center" slot="lower_text">
+								<span class="text-center flex flex-col gap-1 items-center">
+									<span>
+										We recommend an image of atleast <span class="text-gradient">200 x 200 PX</span>
+										| GIFs work too.
+									</span>
 									<span class="text-gradient">Max 5MB</span>
 								</span>
 							</div>
@@ -347,7 +348,7 @@
 								<span>Drag and drop an image here or click to browse</span>
 								<div class="text-gradient">GIF, PNG, JPEG</div>
 							</div>
-							<div class="text-gradient text-xs mt-2" slot="lower_text">2550 x 290 PX</div>
+							<span class="text-gradient text-xs" slot="lower_text">2550 x 290 PX</span>
 						</DragDropImage>
 					</div>
 				</div>

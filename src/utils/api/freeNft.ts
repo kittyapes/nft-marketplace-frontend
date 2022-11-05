@@ -62,8 +62,8 @@ export async function hasClaimedFreeNft(address: string) {
 	let status: FreeNftStatus;
 	let rest: IsClaimedResponse = {} as any;
 
-	if (res.status === 404) {
-		// Profile has not been completed and free NFT cannot be claimed
+	if (res.status === 404 || res.status === 400) {
+		// Profile has not been completed and free NFT cannot be claimed or no more free NFTS available
 		console.info('[Free NFT] not claimed and unclaimable.');
 		console.info('[Free NFT] ' + res.data.message);
 

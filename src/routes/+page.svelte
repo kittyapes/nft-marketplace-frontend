@@ -62,32 +62,33 @@
 	}}
 />
 
-<!-- Top collections section -->
-<div class="px-16 pt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Most Active Collections</h2>
-		<a href="/collections" class="uppercase underline text-sm font-bold">View all</a>
-	</div>
-	<hr class="mt-4 border-[#0000004D]" />
-	{#if collections.length > 0}
-		<CollectionsTable {collections} />
-	{:else}
-		<DiamondsLoader />
-	{/if}
-</div>
-
-<!-- Explore Market Section -->
-{#if $loadedExploreListings && exploreListingsData?.length > 0}
-	<div class="px-16 mt-24 mb-16" in:slide>
+<div class="text-white">
+	<!-- Top collections section -->
+	<div class="px-16 pt-24 mb-16">
 		<div class="flex items-end">
-			<h2 class="text-4xl font-light uppercase flex-grow">Explore Market</h2>
-			<a href="/marketplace" class="uppercase underline text-sm font-bold">View All</a>
+			<h2 class="text-4xl font-light uppercase flex-grow">Most Active Collections</h2>
+			<a href="/collections" class="uppercase underline text-sm font-bold">View all</a>
 		</div>
 		<hr class="mt-4 border-[#0000004D]" />
-
-		<NftList options={exploreListingsData} />
+		{#if collections.length > 0}
+			<CollectionsTable {collections} />
+		{:else}
+			<DiamondsLoader />
+		{/if}
 	</div>
-{/if}
+
+	<!-- Explore Market Section -->
+	{#if $loadedExploreListings && exploreListingsData?.length > 0}
+		<div class="px-16 mt-24 mb-16" in:slide>
+			<div class="flex items-end">
+				<h2 class="text-4xl font-light uppercase flex-grow">Explore Market</h2>
+				<a href="/marketplace" class="uppercase underline text-sm font-bold">View All</a>
+			</div>
+			<hr class="mt-4 border-[#0000004D]" />
+
+			<NftList options={exploreListingsData} />
+		</div>
+	{/if}
 
 <!-- Latest blog posts -->
 <div class="px-16 2xl:px-52 mt-24 mb-16">
@@ -115,6 +116,7 @@
 		<div class="flex-shrink-0 h-full lg:h-[250px]">
 			<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
 		</div>
+		<hr class="mt-4 border-[#0000004D]" />
 
 		<div class="flex flex-col flex-grow text-white pt-8 lg:py-0 lg:ml-44">
 			<div class="text-4xl font-light uppercase line-clamp-2 italic">
@@ -126,4 +128,5 @@
 			</p>
 		</div>
 	</div>
+</div>
 </div>

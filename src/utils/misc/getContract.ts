@@ -7,6 +7,7 @@ import factoryAbi from '$constants/contracts/abis/HinataCollectionFactory.json';
 import marketplaceAbi from '$constants/contracts/abis/HinataMarketplace.json';
 import storageAbi from '$constants/contracts/abis/HinataMarketplaceStorage.json';
 import tokenAbi from '$constants/contracts/abis/hinataToken.json';
+import defaultProvider from '$utils/contracts/defaultProvider';
 
 type ContractName = 'marketplace' | 'storage' | 'factory' | 'token' | 'weth';
 
@@ -55,7 +56,7 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goe
 ];
 
 export function getContractData(name: ContractName) {
-	const provider = get(appProvider) || ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
+	const provider = get(appProvider) || defaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
 	const networkId = provider.network?.chainId || +import.meta.env.VITE_DEFAULT_NETWORK;
 	const environment: string | undefined = import.meta.env.VITE_CONTRACTS_ENVIRONMENT;
 
@@ -96,7 +97,7 @@ export function getContract(name: ContractName, canUseFallback = false) {
 	let provider: providers.Provider | Signer = get(appSigner);
 
 	if (!provider && canUseFallback) {
-		provider = ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK) as unknown as providers.Provider;
+		provider = defaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK) as unknown as providers.Provider;
 	} else if (!provider) {
 		throw new Error('Web 3 provider has not been set yet!');
 	}

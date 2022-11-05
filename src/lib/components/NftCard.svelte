@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
 	import Heart from '$icons/heart.svelte';
-	import ThreeDots from '$icons/three-dots.svelte';
 	import type { CardOptions } from '$interfaces/ui';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { likedNftIds, refreshLikedNfts } from '$stores/user';
@@ -29,6 +28,7 @@
 	export let options: CardOptions;
 	export let menuItems: ('hide' | 'reveal' | 'transfer')[] = [];
 	export let hideLikes = false;
+	export let disabled = false;
 
 	// Helpers
 	let imgLoaded = false;
@@ -68,6 +68,7 @@
 	async function favNFT() {
 		if (!$walletConnected) {
 			setPopup(WalletNotConnectedPopup, { unique: true });
+			return;
 		}
 
 		const [err, res] = await noTryAsync(() => favoriteNft(options.nfts[0].databaseId));
@@ -151,7 +152,7 @@
 
 <div
 	class="relative overflow-hidden group !border-2 border-transparent"
-	class:gradient-border={isHovered}
+	class:gradient-border={isHovered && !disabled}
 	in:fade
 	on:click={handleClick}
 	class:cursor-pointer={options.allowPopup}
@@ -169,9 +170,9 @@
 		{/if} 
 	-->
 
-	<div class="w-full mx-auto overflow-hidden transition bg-card-gradient select-none aspect-1 h-[400px] relative" class:animate-pulse={!imgLoaded}>
-		{#if isHovered}
-			<div class="absolute flex justify-between w-full h-full px-2 bg-black bg-opacity-60" transition:fade={{ duration: 200 }}>
+	<div class="w-full mx-auto overflow-hidden transition bg-card-gradient select-none aspect-1 h-[400px] relative" class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}>
+		{#if isHovered && !disabled}
+			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60" transition:fade={{ duration: 200 }}>
 				<div class="p-3 clickable h-12" on:click|stopPropagation={() => false}>@Seller</div>
 				{#if !hideLikes}
 					<div class="text-transparent clickable p-3 h-12" class:text-white={isUserLiked} on:click|stopPropagation={favNFT}>
@@ -211,7 +212,7 @@
 				{options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
 			</div>
 		</div>
-		<div class="flex justify-between">
+		<div class="flex justify-between items-center">
 			{#if !isFuture(options?.listingData?.startTime)}
 				<div class="flex flex-col">
 					{#if options?.resourceType === 'listing'}

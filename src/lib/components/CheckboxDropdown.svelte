@@ -36,7 +36,7 @@
 <div class="relative {!opened ? 'z-[1]' : 'z-[9]'}">
 	<button
 		{id}
-		class="group min-w-fit relative text-left text-color-black h-full min-h-[3rem] rounded-md pl-4 pr-2 w-full outline-none flex items-center gap-2 transition {$$props.class} "
+		class="group min-w-fit relative text-left text-color-black h-full min-h-[3rem] rounded-md pl-4 pr-2 w-full outline-none flex items-center transition {$$props.class} "
 		{disabled}
 		class:opacity-50={disabled}
 		bind:this={elemOpenButton}

@@ -4,7 +4,7 @@
 	import ArrowLinkGradient from '$icons/arrow-link-gradient.svelte';
 </script>
 
-<div class="border-t border-white border-opacity-50 text-white">
+<div class="border-t border-white text-white">
 	<div class="flex justify-between py-12 px-32 gap-10">
 		<div class="flex flex-col px-8 gap-4">
 			<div class="h-12" on:click={() => goto('/')}>

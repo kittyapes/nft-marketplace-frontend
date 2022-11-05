@@ -70,7 +70,7 @@
 			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
 		}
 
-		if (browser && $currentUserAddress) selectTab($tabParam);
+		if (browser) selectTab($tabParam);
 	});
 
 	const fetchLimit = 10;
@@ -322,7 +322,7 @@
 				<!-- Profile image -->
 				<div class="grid w-28 h-28 overflow-hidden place-items-center">
 					{#if $localProfileData?.thumbnailUrl}
-						<img src={$localProfileData?.thumbnailUrl} class="h-full" alt="User avatar." />
+						<img src={$localProfileData?.thumbnailUrl} class="h-full rounded-full object-cover" alt="User avatar." />
 					{:else}
 						<GuestUserAvatar />
 					{/if}
@@ -347,8 +347,8 @@
 					<!-- Buttons -->
 					<div class="flex gap-4">
 						{#if address === $currentUserAddress}
-							<div class="" transition:fade|local>
-								<PrimaryButton on:click={() => goto('/profile/edit')} class="w-24">{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}</PrimaryButton>
+							<div class="w-32" transition:fade|local>
+								<PrimaryButton on:click={() => goto('/profile/edit')}>{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}</PrimaryButton>
 							</div>
 						{:else}
 							<PrimaryButton class="w-40">
@@ -486,20 +486,19 @@
 		</div>
 
 		<div class="h-px bg-white w-full" />
-	</div>
+		<div class="">
+			{#if $userHasRole('admin', 'superadmin') && selectedTab.data.some((i) => i.rawResourceData?.listingStatus === 'EXPIRED')}
+				<div class="m-2 -mb-4 ">
+					<InfoBox class="bg-dark-gradient">Expired listings of this user are displayed because you are viewing this profile as an admin.</InfoBox>
+				</div>
+			{/if}
 
-	<div class="max-w-screen-xl mx-auto">
-		{#if $userHasRole('admin', 'superadmin') && selectedTab.data.some((i) => i.rawResourceData?.listingStatus === 'EXPIRED')}
-			<div class="m-2 -mb-4">
-				<InfoBox>Expired listings of this user are displayed because you are viewing this profile as an admin.</InfoBox>
-			</div>
-		{/if}
+			<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:refresh-tabs={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
 
-		<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:refresh-tabs={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
-
-		{#if $localProfileData && $userHasRole('admin', 'superadmin')}
-			<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
-		{/if}
+			{#if $localProfileData && $userHasRole('admin', 'superadmin')}
+				<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
+			{/if}
+		</div>
 	</div>
 </div>
 

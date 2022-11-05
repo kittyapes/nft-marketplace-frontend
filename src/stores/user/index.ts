@@ -1,20 +1,33 @@
 import type { ApiNftData } from '$interfaces/apiNftData';
+import type { PublicProfileData } from '$interfaces/userData';
 import { appDataToTriggerReload, currentUserAddress } from '$stores/wallet';
-import { fetchCurrentUserData } from '$utils/api/profile';
+import { fetchCurrentUserData, fetchProfileData } from '$utils/api/profile';
+import { isAuthTokenExpired } from '$utils/auth/token';
 import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 import { derived, get, writable } from 'svelte/store';
 
 export const profileData = writable<Awaited<ReturnType<typeof fetchCurrentUserData>>>(null);
+export const publicProfileData = writable<PublicProfileData>(null);
 
 appDataToTriggerReload.subscribe(() => {
 	const address = get(currentUserAddress);
 	if (!address) return;
 
-	if (address) {
+	refreshPublicProfileData(address);
+
+	if (!isAuthTokenExpired(address)) {
 		refreshProfileData();
 		refreshLikedNfts(address);
 	}
 });
+
+async function refreshPublicProfileData(address?: string) {
+	address = address || get(currentUserAddress);
+
+	const data = await fetchProfileData(address);
+
+	publicProfileData.set(data);
+}
 
 export async function refreshProfileData() {
 	const newProfileData = await fetchCurrentUserData();
