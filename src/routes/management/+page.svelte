@@ -13,7 +13,7 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import dayjs from 'dayjs';
 	import UserManage from '$icons/user-manage.svelte';
-	import Filters from '$icons/filters.svelte';
+	import Filters from '$icons/filters-v2.svelte';
 	import EntryRole from '$lib/components/management/render-components/EntryRole.svelte';
 	import { debounce } from 'lodash-es';
 	import { apiSearchCollections, type Collection, type CollectionSearchOptions } from '$utils/api/collection';
@@ -34,7 +34,7 @@
 
 	const fetchLimit = 20;
 
-	let tab: 'USER' | 'COLLECTION' = 'USER';
+	let tab: 'USER' | 'COLLECTION' = 'COLLECTION';
 
 	let users: UserData[] = [];
 	let totalUserEntries = 0;
@@ -500,32 +500,41 @@
 	// selectedNetworkOption.subscribe(() => validateContractAddress($whitelistingCollectionAddress));
 </script>
 
-<div class="flex flex-col w-full h-full gap-12 p-40">
-	<div class="flex gap-14">
-		<div class="{tab === 'USER' ? 'text-gradient gradient-underline' : 'text-color-gray-base'} font-bold text-3xl relative btn" on:click={() => (tab = 'USER')}>User Management</div>
-		<div class="{tab === 'COLLECTION' ? 'text-gradient gradient-underline' : 'text-color-gray-dark'} font-bold text-3xl relative btn" on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
+<div class="flex flex-col w-full h-full gap-16 p-16 2xl:p-40">
+	<div class="flex">
+		<div class="{tab === 'COLLECTION' ? 'text-gradient' : 'text-white'} font-medium text-2xl relative btn" on:click={() => (tab = 'COLLECTION')}>
+			<div class="px-6">Collection Management</div>
+			<div class="{tab === 'COLLECTION' ? "gradient-line delay-300" : "bg-white bg-opacity-30"} h-1 mt-2 transition-all duration-300" />
+		</div>
+		<div class="w-14 mt-auto">
+			<div class="bg-white bg-opacity-30 h-1 w-full" />
+		</div>
+		<div class="{tab === 'USER' ? 'text-gradient' : 'text-white'} font-medium text-2xl relative btn" on:click={() => (tab = 'USER')}>
+			<div class="px-6">
+				User Management
+			</div>
+			<div class="{tab === 'USER' ? "gradient-line delay-300" : "bg-white bg-opacity-30"} h-1 mt-2 transition-all duration-300" />
+		</div>
 	</div>
-	<div class="flex gap-4">
+	<div class="flex gap-40 2xl:gap-96">
 		{#if tab === 'USER'}
 			<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
-			<div class="flex-grow" />
 			<div class="flex gap-10">
-				<div class="">
+				<!-- <div class="">
 					<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
-				</div>
+				</div> -->
 				<div class="">
-					<Filter on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', createdBefore: 'all' }} />
+					<Filter v2 on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', createdBefore: 'all' }} />
 				</div>
 			</div>
 		{:else}
 			<SearchBar bind:query={collectionFetchingOptions.name} placeholder={searchPlaceholder} />
-			<div class="flex-grow" />
 			<div class="flex gap-10">
-				<div class="">
+				<!-- <div class="">
 					<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
-				</div>
+				</div> -->
 				<div class="">
-					<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'all' }} />
+					<Filter v2 on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'all' }} />
 				</div>
 			</div>
 		{/if}
@@ -534,6 +543,7 @@
 	{#if tab === 'USER'}
 		<LoadedContent {loaded}>
 			<InteractiveTable
+				v2
 				on:event={handleTableEvent}
 				tableData={userTableData}
 				rows={users.length}
@@ -543,6 +553,7 @@
 	{:else}
 		<LoadedContent {loaded}>
 			<InteractiveTable
+				v2
 				on:event={handleTableEvent}
 				tableData={collectionTableData}
 				rows={collections.length}
@@ -556,7 +567,7 @@
 
 	{#if tab === 'COLLECTION'}
 		<div>
-			<h2 class="text-xl font-bold text-gradient">Whitelist a collection</h2>
+			<!-- <h2 class="text-xl font-bold text-gradient">Add address to Whitelisted Collections</h2> -->
 			<div class="flex flex-col w-full gap-10 mt-1">
 				<!-- Network picker -->
 				<!-- <div class="flex flex-col gap-1 w-[36rem]">
@@ -564,36 +575,40 @@
 					<Dropdown options={networkPickerOptions} bind:selected={$selectedNetworkOption} />
 				</div> -->
 
-				<div class="flex flex-col gap-1">
+				<!-- <div class="flex flex-col gap-1">
 					<div class="font-semibold">Opensea collection URL part</div>
 					<div class="flex gap-10">
 						<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input opensea route, e.g. azuki" bind:value={$whitelistingCollectionSlug} />
 
 						<div class="flex-grow" />
 					</div>
-				</div>
-				<div class="flex flex-col gap-1">
-					<div class="font-semibold">Contract address</div>
-					<div class="flex gap-10">
-						<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
+				</div> -->
+				<div class="flex flex-col gap-5">
+					<div class="font-medium text-white text-opacity-80">Add address to Whitelisted Collections</div>
+					<div class="flex justify-between">
+						<input type="text" class="input text-white max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
 
-						<button class="w-40 px-10 py-2 text-lg font-semibold btn btn-gradient btn-rounded" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>
-							Whitelist
-						</button>
+						<div class="gradient-border-bg p-[2px]">
+							<div class="bg-black">
+								<button class="text-lg text-white font-medium px-32 py-2 button-vertical-gradient" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>
+									Add
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 
 				{#if validating}
 					<div class="flex items-center">
 						<Loader class="w-6 mx-2" />
-						<div class="font-semibold">Validating...</div>
+						<div class="font-medium text-white">Validating...</div>
 					</div>
 				{/if}
 
 				{#if whitelisting}
 					<div class="flex items-center">
 						<Loader class="w-6 mx-2" />
-						<div class="font-semibold">Whitelisting...</div>
+						<div class="font-medium text-white">Whitelisting...</div>
 					</div>
 				{/if}
 
