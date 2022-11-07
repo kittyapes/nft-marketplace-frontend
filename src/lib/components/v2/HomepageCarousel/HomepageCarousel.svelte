@@ -23,7 +23,6 @@
 	let refreshAnim = true;
 
 	async function timerPing() {
-		refreshAnim = true;
 		console.log('timer:', refreshAnim);
 
 		if (currentBlob.id === data.length - 1) {
