@@ -7,9 +7,9 @@ import { getApiUrl } from '.';
 import { forceBatchProcess } from './admin/batchProcessing';
 import { postInactivationQueueAdd, postVerificationQueueAdd } from './admin/userManagement';
 
-export async function addUserRole(address: string, roles: UserRole[]) {
+export async function addUserRole(address: string, roles: UserRole[], roleToAdd: UserRole) {
 	// 🔥 fix
-	if (roles.includes('inactivated_user')) {
+	if (roleToAdd === 'inactivated_user') {
 		const res = await postInactivationQueueAdd(address).catch(httpErrorHandler);
 
 		if (res?.status !== 200) {
@@ -17,7 +17,7 @@ export async function addUserRole(address: string, roles: UserRole[]) {
 		}
 
 		await forceBatchProcess().catch(httpErrorHandler);
-	} else if (roles.includes('verified_user')) {
+	} else if (roleToAdd === 'verified_user') {
 		const res = await postVerificationQueueAdd(address).catch(httpErrorHandler);
 
 		if (res?.status !== 200) {

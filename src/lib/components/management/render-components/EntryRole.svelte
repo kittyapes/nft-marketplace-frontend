@@ -24,12 +24,14 @@
 	let handleSelect = async (event: CustomEvent) => {
 		if (props.mode === 'USER') {
 			let roles: UserRole[] = [];
+			console.log(event);
+			console.log(props);
 
-			event.detail.forEach((e) => {
-				if (e.checked) roles.push(e.value);
+			localProps.options.forEach((o) => {
+				if (o.checked) roles.push(o.value);
 			});
 
-			const [error, res] = await noTryAsync(() => addUserRole(props.id, roles));
+			const [error, res] = await noTryAsync(() => addUserRole(props.id, roles, event.detail.value));
 
 			if (error) {
 				notifyError("Failed to update user's roles");
@@ -55,7 +57,7 @@
 
 <ColumnComponentContainer>
 	<CheckboxDropdown
-		class="pl-0 {localProps.color || ''} z-[9] font-semibold"
+		class="pl-0 {localProps.color || ''} z-[9] font-medium"
 		id={localProps.id}
 		on:change={handleSelect}
 		options={localProps.options}

@@ -12,13 +12,15 @@
 </script>
 
 <ColumnComponentContainer on:click={() => goto('/collections/' + props.slug)}>
-	<div class=" h-full clickable flex gap-3 items-center min-w-max">
+	<div class=" h-full clickable flex gap-4 items-center min-w-max">
 		{#if props.imageUrl}
-			<div class="bg-cover rounded-full w-12 h-12 clickable" style="background-image: url({props.imageUrl})" />
+		<div class="gradient-border-bg p-[2px]">
+			<div class="bg-cover w-12 h-12 clickable" style="background-image: url({props.imageUrl})" />
+		</div>
 		{:else}
 			<GuestUserAvatar class="w-12 scale-110" />
 		{/if}
-		<div class="text-color-black font-bold clickable">{props.name}</div>
+		<div class="text-white font-medium clickable">{props.name}</div>
 		{#if props.badge}
 			<HinataBadge class="w-6 h-6" />
 		{/if}

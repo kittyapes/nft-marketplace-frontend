@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Eth from '$icons/eth.svelte';
+	import Eth from '$icons/eth-v2.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import ColumnComponentContainer from '../ColumnComponentContainer.svelte';
 	import { notifySuccess } from '$utils/toast';
@@ -17,11 +17,11 @@
 	<EthAddress
 		address={props.address}
 		concat
-		copyIcon={false}
 		etherScanLink={false}
 		charsFromStart={11}
 		charsFromEnd={5}
 		tooltip
+		v2
 		class="!text-lg !not-italic !font-semibold !text-color-black clickable w-full h-full"
 		on:click={copyToClipboard}
 	/>
