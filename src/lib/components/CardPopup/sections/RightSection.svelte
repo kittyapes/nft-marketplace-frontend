@@ -7,7 +7,6 @@
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { _refreshOnChainListingHelper } from '../cardPopup';
 	import HistorySection from './HistorySection/HistorySection.svelte';
 	import InfoSection from './InfoSection.svelte';
 	import TradeSection from './TradeSection/TradeSection.svelte';
@@ -38,8 +37,6 @@
 		chainListing = await getOnChainListing(options.listingData.onChainId);
 		console.debug('[On chain listing data]:', chainListing);
 	}
-
-	_refreshOnChainListingHelper.subscribe(() => options.listingData && refreshOnChainListing());
 
 	// The back button is controlled by dynamic components
 	export let showBackButton: boolean;

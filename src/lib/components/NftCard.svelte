@@ -169,7 +169,6 @@
 			</button>
 		{/if} 
 	-->
-
 	<div class="w-full mx-auto overflow-hidden transition bg-card-gradient select-none aspect-1 h-[400px] relative" class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}>
 		{#if isHovered && !disabled}
 			<div class="absolute flex justify-between w-full h-full px-2 bg-black bg-opacity-60" transition:fade={{ duration: 200 }}>
@@ -208,7 +207,7 @@
 			<div class="flex-grow truncate text-sm font-bold text-gradient">{options.nfts[0].collectionData.name || 'N/A'}</div>
 
 			<!-- Hide price info when not present/listed -->
-			<div class="flex-grow truncate whitespace-nowrap font-semibold text-xl" class:text-xs={!options.nfts[0]?.name}>
+			<div class="flex-grow truncate whitespace-nowrap font-semibold text-xl text-white" class:text-xs={!options.nfts[0]?.name}>
 				{options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
 			</div>
 		</div>
