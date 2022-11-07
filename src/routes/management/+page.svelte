@@ -30,7 +30,7 @@
 	import { page } from '$app/stores';
 	import { browser } from '$app/environment';
 	import PaginationFooter from '$lib/components/management/render-components/PaginationFooter.svelte';
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy } from 'svelte';
 
 	const fetchLimit = 20;
 
@@ -184,13 +184,12 @@
 		eventId = event.detail.id;
 	};
 
+	// TODO: split into multiple functions
 	const handleFilter = async (event: CustomEvent) => {
 		if (tab === 'USER') {
-			console.log(event.detail);
 			userFetchingOptions.filter = {
 				createdAfter: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdAfter,
 				role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
-				status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status,
 			};
 
 			if (event.detail.status) userFetchingOptions.filter.role = undefined;
@@ -209,7 +208,6 @@
 				isClaimed: typeof event.detail.value === 'boolean' ? event.detail.value : collectionFetchingOptions.filter.isClaimed,
 			};
 
-			if (event.detail.status === 'all') collectionFetchingOptions.filter.status = undefined;
 			if (event.detail.value === 'all') collectionFetchingOptions.filter.isClaimed = undefined;
 
 			await getSearchedCollections();
@@ -229,6 +227,14 @@
 	const handleVerify = async () => {
 		whitelisting = true;
 
+		whitelistingCollectionSlug.update((str) => {
+			if (str.startsWith('http')) {
+				return str.substring(str.lastIndexOf('/') + 1);
+			}
+
+			return str;
+		});
+
 		await whitelistCollection($whitelistingCollectionAddress, $whitelistingCollectionSlug).catch((e) => console.log(e));
 
 		whitelisting = false;
@@ -240,7 +246,7 @@
 		{ label: 'Admin', role: 'admin' },
 		{ label: 'Verified Creator', role: 'verified_user' },
 		{ label: 'Blogger' },
-		{ label: 'Inactive', status: 'INACTIVATED' },
+		{ label: 'Inactive', role: 'inactivated_user' },
 	];
 
 	let userFilterOptions = [
@@ -251,7 +257,7 @@
 	];
 
 	let statusFilterOptions = [
-		{ label: 'All', status: 'all' },
+		{ label: 'All', status: 'ALL' },
 		{ label: 'Active', status: 'ACTIVE' },
 		{ label: 'Inactive', status: 'INACTIVE' },
 	];
@@ -290,7 +296,7 @@
 			...collectionFetchingOptions.sort,
 			limit: collectionFetchingOptions.limit,
 			page: collectionPage,
-			status: 'ALL',
+			status: collectionFetchingOptions.filter.status,
 		};
 	};
 
@@ -449,7 +455,7 @@
 				renderComponent: EntryRole,
 				renderComponentProps: users?.map((u) => ({
 					id: u.address,
-					dispatchAllOptions: true,
+					dispatchAllOptions: false,
 					mode: tab,
 					role: getHighestRole([...u.roles]),
 					color: getRoleColor(getHighestRole([...u.roles])),
@@ -525,7 +531,7 @@
 					<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
 				</div>
 				<div class="">
-					<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'all' }} />
+					<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'ALL' }} />
 				</div>
 			</div>
 		{/if}
