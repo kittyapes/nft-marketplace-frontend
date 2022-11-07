@@ -5,7 +5,7 @@
 
 {#if !hidden}
 	<div>
-		<div class="uppercase mb-2">{label}</div>
+		<div class="font-medium mb-2">{label}</div>
 		<slot />
 	</div>
 {/if}
