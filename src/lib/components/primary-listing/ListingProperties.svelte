@@ -102,6 +102,12 @@
 </script>
 
 <div class="grid gap-x-8 gap-y-4" class:grid-cols-2={compact}>
+	{#if sale}
+		<InputSlot label="Price">
+			<PriceInput bind:value={props.price} placeholder="1.0" tokenIconClass={Weth} tokenLabel="wETH" {disabled} />
+		</InputSlot>
+	{/if}
+
 	<InputSlot label="Start Date">
 		<Datepicker dateOnly on:new-value={(ev) => (props.startDateTs = ev.detail.unix())} bind:setWithTimestamp={_setStartDateTs} disabled={disableStartDate || disabled} />
 	</InputSlot>
@@ -136,12 +142,6 @@
 
 	{#if auction && compact}
 		<div />
-	{/if}
-
-	{#if sale}
-		<InputSlot label="Price">
-			<PriceInput bind:value={props.price} placeholder="1.0" tokenIconClass={Weth} {disabled} />
-		</InputSlot>
 	{/if}
 
 	{#if auction}
