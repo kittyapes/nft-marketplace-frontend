@@ -13,11 +13,6 @@
 	import AssetContainer from './sections/AssetContainer.svelte';
 	import Tabs from './Tabs.svelte';
 	import { getOnChainListing, type ChainListing } from '$utils/contracts/listing';
-	import NftCard from '../NftCard.svelte';
-	import ChevronLeft from '$icons/chevron-left.svelte';
-	import ChevronRight from '$icons/chevron-right.svelte';
-	import { tweened } from 'svelte/motion';
-	import { cubicOut } from 'svelte/easing';
 	import CardCarousel from '../v2/CardCarousel/CardCarousel.svelte';
 
 	export let options: CardOptions;
@@ -80,8 +75,8 @@
 	$: similarCards = Array(10).fill(options);
 </script>
 
-<Popup class="w-full h-full rounded-none lg:w-[1400px] lg:max-h-[700px] transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>
-	<div class="bg-gradient overflow-y-auto h-full">
+<Popup class="w-full h-full rounded-none lg:w-[1400px] lg:max-h-[800px] transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>
+	<div class="bg-gradient overflow-y-auto bg-repeat-y h-full">
 		<div class="bg-black bg-opacity-40 py-4">
 			<!-- Tabs -->
 			<div class="flex px-16 gap-4">
