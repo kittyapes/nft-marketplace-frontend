@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 
-	export let data: { imageUrl: string; imageAlt: string; title: string; subtitle: string }[] = [
+	export let data: { imageUrl: string; imageAlt?: string; title: string; subtitle: string }[] = [
 		{ imageUrl: 'img/placeholder/carousel_image.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
 		{ imageUrl: 'img/placeholder/carousel_image.png', title: 'Second Hinata message', subtitle: 'This is the second Hinata subtitle.' },
+		{ imageUrl: 'img/placeholder/carousel_image.png', title: 'Third Hinata message', subtitle: 'This is the second Hinata subtitle.' },
 	];
 
 	let currentBlob = data[0];
@@ -12,10 +13,10 @@
 		currentBlob = data[index];
 	}
 
-	let foo = 0;
+	let timer = 0;
 
 	function timerPing() {
-		foo += 0.1;
+		timer += 0.1;
 	}
 
 	let interval;
@@ -32,7 +33,7 @@
 <div class="h-[400px] flex flex-col relative overflow-hidden">
 	<img src={currentBlob.imageUrl} alt="" class="flex-grow object-cover min-h-0" />
 
-	<div class="bg-dark-gradient text-white p-3 h-24 flex-shrink-0">
+	<div class="bg-dark-gradient text-white p-3 h-24 flex-shrink-0 flex flex-col items-center">
 		<div class="text-4xl uppercase text-center text-gradient">{currentBlob.title}</div>
 		<div class="text-center mt-2">{currentBlob.subtitle}</div>
 	</div>
