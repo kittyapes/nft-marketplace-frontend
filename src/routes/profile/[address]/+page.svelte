@@ -322,7 +322,7 @@
 				<!-- Profile image -->
 				<div class="grid w-28 h-28 overflow-hidden place-items-center">
 					{#if $localProfileData?.thumbnailUrl}
-						<img src={$localProfileData?.thumbnailUrl} class="h-full rounded-full object-cover" alt="User avatar." />
+						<img src={$localProfileData?.thumbnailUrl} class="h-full object-cover" alt="User avatar." />
 					{:else}
 						<GuestUserAvatar />
 					{/if}
