@@ -2,7 +2,7 @@ import type { ApiNftData } from '$interfaces/apiNftData';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
 import { noTryAsync } from 'no-try';
-import { getAlchemyUrl, getApiUrl, type ApiCallResult } from '.';
+import { getApiUrl, type ApiCallResult } from '.';
 
 export async function getNft(id: string, lean = false) {
 	const res = await axios.get(getApiUrl('latest', 'nfts/' + id), {
@@ -16,12 +16,12 @@ export async function getNft(id: string, lean = false) {
 
 export async function apiGetUserOwnedNftsAlchemy(address: string, pageKey?: string, pageSize = 100) {
 	const [err, res] = await noTryAsync(() =>
-		axios.get(getAlchemyUrl(`/nfts/user/${address}`), {
-			params: { pageKey, pageSize },
+		axios.get(getApiUrl('latest', `nfts/alchemy/user/${address}`), {
+			params: { pageKey, pageSize, omitMetadata: false },
 		}),
 	);
 
-	return { err, res: res.data.data as { ownedNfts: ApiNftData[]; pageKey: string | undefined } };
+	return { err, res: res.data.data as { nfts: ApiNftData[]; pageKey: string | undefined } };
 }
 
 export async function apiGetUserNfts(address: string, type: 'MINTED', page: number, limit: number) {

@@ -27,20 +27,19 @@
 	let reachedEnd = false;
 	let isLoading = false;
 
-	const pageSize = 100;
-	let pageKey = undefined; // undefined for the first page
+	let index = 1;
+	const limit = 15;
 
 	const resetNfts = () => {
 		nfts = [];
-		pageKey = undefined;
+		index = 1;
 		reachedEnd = false;
 		isLoading = false;
 	};
 
 	let fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
-		res.res = await apiGetCollectionBySlug($page.params.collectionSlug, pageSize, pageKey);
-		pageKey = res.res.pageKey === undefined ? '' : res.res.pageKey;
+		res.res = await apiGetCollectionBySlug($page.params.collectionSlug, limit, index);
 		res.adapted = await Promise.all(res.res.nfts?.map(nftToCardOptions)).catch((err) => {
 			console.error(err);
 			return [];
@@ -61,10 +60,11 @@
 			return;
 		}
 
-		if (pageKey === '') {
+		if (res.adapted?.length === 0) {
 			reachedEnd = true;
 		} else {
 			nfts = [...nfts, ...res.adapted];
+			index++;
 		}
 
 		isLoading = false;

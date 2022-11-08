@@ -2,7 +2,7 @@ import { currentUserAddress } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
 import { get } from 'svelte/store';
-import { getAlchemyUrl, getApiUrl } from '.';
+import { getApiUrl } from '.';
 
 export interface Collection {
 	mintedFrom: string;
@@ -115,8 +115,8 @@ export async function apiUpdateCollection(options: UpdateCollectionOptions) {
 	return res;
 }
 
-export async function apiGetCollectionBySlug(slug: string, pageSize?: number, pageKey?: string) {
-	const res = await axios.get(getAlchemyUrl(`/nfts/collection/${slug}`), { params: { pageSize, pageKey } });
+export async function apiGetCollectionBySlug(slug: string, limit?: number, page?: number) {
+	const res = await axios.get(getApiUrl('latest', 'collections/' + slug), { params: { limit, page } });
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);

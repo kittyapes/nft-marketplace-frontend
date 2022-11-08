@@ -38,19 +38,6 @@ export function getApiUrl(apiVersion: ApiVersion, apiPath: string): string {
 	return apiUrl + apiPath;
 }
 
-export function getAlchemyUrl(apiPath: string): string {
-	let url = import.meta.env.VITE_ALCHEMY_SERVER;
-	if (url.endsWith('/')) {
-		url = url.replace(/\/$/, '');
-	}
-
-	if (!apiPath.startsWith('/')) {
-		apiPath = '/' + apiPath;
-	}
-
-	return url + apiPath;
-}
-
 export interface ApiCallResult<T> {
 	err?: AxiosError;
 	res?: AxiosResponse;

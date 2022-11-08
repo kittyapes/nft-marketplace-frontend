@@ -99,18 +99,19 @@
 		fetchFunction: (tab: any, page: number, limit: number) => Promise<{ res: any; adapted: []; err: Error }>;
 		label: string;
 		name: string;
-		index?: number | string;
+		index?: number;
 		reachedEnd?: boolean;
 		isFetching?: boolean;
 		isAlchemyTab: boolean;
+		alchemyPageKey?: string;
 		data?: CardOptions[];
 	}[] = [
 		{
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
-				res.res = await apiGetUserOwnedNftsAlchemy(address, tab.index);
-				res.adapted = await Promise.all(res.res.res.ownedNfts.map(nftToCardOptions));
-				tab.index = res.res.res.pageKey;
+				res.res = await apiGetUserOwnedNftsAlchemy(address, tab.alchemyPageKey ?? undefined);
+				res.adapted = await Promise.all(res.res.res.nfts.map(nftToCardOptions));
+				tab.alchemyPageKey = res.res.res.pageKey;
 
 				for (const nft of res.adapted) {
 					nft.rawResourceData.owner = address;
@@ -260,7 +261,7 @@
 		} else {
 			tab.data = [...tab.data, ...res.adapted];
 			if (tab.isAlchemyTab) {
-				tab.reachedEnd = typeof tab.index === 'string' ? false : true;
+				tab.reachedEnd = typeof tab.alchemyPageKey === 'string' ? false : true;
 			} else {
 				(tab.index as number)++;
 			}
