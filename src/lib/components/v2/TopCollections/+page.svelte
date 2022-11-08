@@ -8,9 +8,9 @@
 	export let collections: Collection[];
 </script>
 
-<div class="px-[7.85vw] pt-[5.6vw] mb-[3.75vw]">
-	<div class="text-white w-full flex flex-row items-center justify-between mb-[2.32vw]">
-		<h1 class="font-semibold text-[1.4vw] leading-[1.6vw]">Top Collections</h1>
+<div class="px-36 pt-16 mb-20">
+	<div class="text-white w-full flex flex-row items-center justify-between mb-10">
+		<h1 class="font-semibold text-2xl leading-7">Top Collections</h1>
 		<ButtonGroup on:period={(e) => console.log(e?.detail?.period)} />
 	</div>
 	{#if collections.length > 0}
@@ -18,9 +18,7 @@
 	{:else}
 		<DiamondsLoader />
 	{/if}
-	<div class="flex justify-center mt-[2.9vw]">
-		<Button variant="square" dullgradient class="border-gradient w-[12vw] h-[3.19vw] whitespace-nowrap text-white text-[1vw] leading-[1.7vw]" on:click={() => goto(`/collections`)}>
-			See all collections
-		</Button>
+	<div class="flex justify-center mt-12">
+		<Button variant="square" dullgradient class="border-gradient w-52 h-14 whitespace-nowrap text-white text-lg leading-7" on:click={() => goto(`/collections`)}>See all collections</Button>
 	</div>
 </div>
