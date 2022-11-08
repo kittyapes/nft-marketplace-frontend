@@ -15,7 +15,7 @@
 </script>
 
 <LoadedContent>
-	<div class="pr-[8vw] pl-[9vw] pb-[8.7vw] text-white">
+	<div class="px-36 pb-36 text-white">
 		<Stats bind:apr bind:dailyHinata bind:dailyWaifu />
 		<StakeSection bind:token bind:action bind:hinataWalletBalance />
 		<RewardsToCollect bind:token />

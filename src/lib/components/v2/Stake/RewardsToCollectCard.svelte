@@ -11,20 +11,18 @@
 	export let collectedToDate = new Date();
 </script>
 
-<CardWrapper class="gap-y-[2.31vw]">
-	<div class="flex flex-col gap-y-[1.1vw]">
-		<div class="flex items-center justify-between">
-			<h3 class="text-gradient text-[1.4vw] leading-[1.4vw]">${tokenSymbol}</h3>
-			<div class="h-[1.3vw] w-[1.3vw]">
-				<QuestionMarkIcon />
-			</div>
+<CardWrapper>
+	<div class="flex items-center justify-between mb-5">
+		<h3 class="text-gradient text-2xl leading-6">${tokenSymbol}</h3>
+		<div class="h-5 w-5">
+			<QuestionMarkIcon />
 		</div>
 	</div>
-	<div class="flex flex-row items-center gap-x-[1vw]">
-		<Input class="rounded-none bg-transparent pl-[1vw]" bind:value noLeftPadding height="2.9vw"><Eth gradient class="w-[0.7vw] h-[1vw]" /></Input>
-		<Button dullgradient variant="square" class="h-[2.9vw] w-[11.85vw] border-gradient">Stake</Button>
+	<div class="flex flex-row items-center gap-x-5 mb-14">
+		<Input class="rounded-none bg-transparent pl-5" bind:value noLeftPadding height="50px"><Eth gradient class="w-3 h-5" /></Input>
+		<Button dullgradient variant="square" class="h-12 w-52 border-gradient">Stake</Button>
 	</div>
-	<div class="flex flex-col gap-y-[1vw] font-medium">
+	<div class="flex flex-col gap-y-4 font-medium">
 		<div class="flex flex-row items-center justify-between">
 			<h4>Last collected:</h4>
 			<h4>{lastCollectedAmount?.toFixed(2) || 0.0}</h4>

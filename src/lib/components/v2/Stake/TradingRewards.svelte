@@ -12,29 +12,27 @@
 </script>
 
 <SectionWrapper split>
-	<div class="w-[28vw]">
-		<h2 class="text-gradient text-[1.4vw] leading-[1.4vw] mb-[1.85vw]">Trading rewards</h2>
-		<p class="font-medium text-[1.1vw] text-justify tracking">Earn trading rewards when you buy or sell any NFT on Hinata. Rewards are calculated and distributed once daily.</p>
+	<div class="w-[498px]">
+		<h2 class="font-semibold text-gradient text-2xl leading-2 mb-8">Trading rewards</h2>
+		<p class="font-medium text-xl text-justify tracking">Earn trading rewards when you buy or sell any NFT on Hinata. Rewards are calculated and distributed once daily.</p>
 	</div>
 	<div>
-		<h3 class=" text-left text-[1.4vw] leading-[1.4vw] mb-[1.85vw]">Rewards</h3>
-		<CardWrapper class="gap-y-[2.31vw]">
-			<div class="flex flex-col gap-y-[1.1vw]">
-				<div class="flex items-center justify-between">
-					<h3 class="text-gradient text-[1.4vw] leading-[1.4vw]">$HiNATA</h3>
-					<div class="h-[1.3vw] w-[1.3vw]">
-						<QuestionMarkIcon />
-					</div>
+		<h3 class="w-1/2 text-left text-2xl leading-2 mb-8">Rewards</h3>
+		<CardWrapper>
+			<div class="flex items-center justify-between mb-5">
+				<h3 class="text-gradient text-2xl leading-2">$HiNATA</h3>
+				<div class="h-5 w-5">
+					<QuestionMarkIcon />
 				</div>
 			</div>
 			<div>
-				<div class="flex flex-row items-center gap-x-[1vw]">
-					<Input class="rounded-none bg-transparent pl-[1vw]" noLeftPadding height="2.9vw"><Eth gradient class="w-[0.7vw] h-[1vw]" /></Input>
-					<Button dullgradient variant="square" class="h-[2.9vw] w-[11.85vw] border-gradient">Stake</Button>
+				<div class="flex flex-row items-center gap-x-5">
+					<Input class="rounded-none bg-transparent pl-5" noLeftPadding height="50px"><Eth gradient class="w-3 h-5" /></Input>
+					<Button dullgradient variant="square" class="h-12 w-52 border-gradient">Stake</Button>
 				</div>
-				<p class="mt-[1.1vw] font-medium text-[1.16vw]">You can collect your rewards every X hours.</p>
+				<p class="mt-5 mb-7 font-medium text-xl">You can collect your rewards every X hours.</p>
 			</div>
-			<div class="flex flex-col gap-y-[1vw] font-medium">
+			<div class="flex flex-col gap-y-4 font-medium">
 				<div class="flex flex-row items-center justify-between">
 					<h4>Total Volume:</h4>
 					<h4>{totalVolume?.toFixed(2) || 0.0}</h4>
