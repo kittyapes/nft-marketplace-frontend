@@ -1,5 +1,4 @@
 <script lang="ts">
-	import ArrowDown from '$icons/arrow-down.svelte';
 	import Calendar from '$icons/calendar.svelte';
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import ChevronRight from '$icons/chevron-right.svelte';
@@ -128,10 +127,13 @@
 <div class="relative">
 	<input {id} type="text" class="input w-full h-12" class:disabled:bg-gray-100={disabled} {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
 
-	<button class="w-20 absolute top-0 right-0 h-full border-l dropdown-gradient" on:click={() => (open = !open)} {disabled}>
-		<div class="flex items-center justify-center space-x-2">
-			<Calendar />
-			<ArrowDown />
+	<button class="w-24 absolute top-0 right-0 h-full border-l bg-gradient-a" on:click={() => (open = !open)} {disabled}>
+		<div class="flex items-center justify-center gap-3">
+			<div>Date</div>
+
+			<div class="w-4">
+				<Calendar />
+			</div>
 		</div>
 	</button>
 
@@ -169,9 +171,9 @@
 							{viewedDate.year()}
 						</div>
 						<div class="flex-grow" />
-						<div class="flex space-x-2 text-white">
-							<button class="btn" on:click={previousMonth}><ChevronLeft /></button>
-							<button class="btn" on:click={nextMonth}><ChevronRight /></button>
+						<div class="flex gap-4 text-white">
+							<button class="btn w-4" on:click={previousMonth}><ChevronLeft /></button>
+							<button class="btn w-4" on:click={nextMonth}><ChevronRight /></button>
 						</div>
 					</div>
 
@@ -185,12 +187,7 @@
 						{#each monthDays as day}
 							{@const isSelected = day.dayjs.toISOString() === value.toISOString()}
 							<button class="flex-grow text-center aspect-1 text-sm font-medium bg-dark-gradient" class:font-bold={day.isToday} on:click={() => selectDate(day.dayjs)} disabled={day.isDisabled}>
-								<div
-									class="w-full h-full grid place-items-center"
-									class:bg-dark-gradient={day.isDisabled}
-									class:dropdown-gradient={!day.isDisabled && !isSelected}
-									class:gradient-border-bg={isSelected}
-								>
+								<div class="w-full h-full grid place-items-center" class:bg-dark-gradient={day.isDisabled} class:bg-gradient-a={!day.isDisabled && !isSelected} class:gradient-border-bg={isSelected}>
 									{day.day}
 								</div>
 							</button>
@@ -286,15 +283,5 @@
 		height: 2px;
 		cursor: pointer;
 		background: rgba(29, 29, 29, 0.3);
-	}
-
-	.dropdown-gradient {
-		background: radial-gradient(55.65% 55.65% at 51.68% 130.43%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%)
-				/* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
-			radial-gradient(55.22% 148.72% at 98.83% 0%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%)
-				/* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
-			radial-gradient(64.35% 166.74% at 8.56% -7.83%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%)
-				/* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
-			linear-gradient(180deg, rgba(136, 234, 255, 0.1) 0%, rgba(133, 141, 247, 0.056) 100%, rgba(133, 141, 247, 0.1) 100%), rgba(0, 0, 0, 0.1);
 	}
 </style>
