@@ -81,7 +81,7 @@
 	});
 </script>
 
-<div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto">
+<div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto text-white">
 	<!-- Listing Type -->
 	<div class="mt-2 font-semibold">Listing Type</div>
 	<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} /></div>
@@ -105,9 +105,9 @@
 			</div>
 		</div>
 
-		<div class="gradient-text">Hinata Fees:</div>
+		<div class="text-gradient">Hinata Fees:</div>
 		<div class="flex justify-end space-x-3">
-			<div class="gradient-text">0%</div>
+			<div class="text-gradient">0%</div>
 			<div class="w-6">
 				<Info />
 			</div>

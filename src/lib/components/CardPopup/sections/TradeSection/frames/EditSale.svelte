@@ -3,7 +3,6 @@
 	import type { ConfigurableListingProps } from '$interfaces/listing';
 	import type { CardOptions } from '$interfaces/ui';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
-	import { refreshOnChainListing } from '$lib/components/CardPopup/cardPopup';
 	import ListingProperties from '$lib/components/primary-listing/ListingProperties.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
@@ -71,7 +70,7 @@
 			notifyError('Failed to update listing.');
 		}
 
-		refreshOnChainListing();
+		dispatch('refresh-chain-data');
 		updatingListing = false;
 	}
 
@@ -124,9 +123,9 @@
 			</div>
 		</div>
 
-		<div class="gradient-text">Hinata Fees:</div>
+		<div class="text-gradient">Hinata Fees:</div>
 		<div class="flex items-center justify-end space-x-3">
-			<div class="gradient-text">0%</div>
+			<div class="text-gradient">0%</div>
 			<div class="w-5">
 				<Info />
 			</div>

@@ -7,6 +7,7 @@
 	import CheckFilterDropdownDemo from './CheckFilterDropdownDemo.svelte';
 	import DemoContainer from './DemoContainer.svelte';
 	import FilterChipDemo from './FilterChipDemo.svelte';
+	import HomepageCarouselDemo from './HomepageCarouselDemo.svelte';
 	import NftActivityHistoryTableDemo from './NftActivityHistoryTableDemo.svelte';
 
 	let listingId: string;
@@ -49,19 +50,20 @@
 		<button on:click={cancelListing}>Cancel Auction</button>
 	</div>
 
-	<!-- FilterChip -->
 	<DemoContainer title="FilterChip">
 		<FilterChipDemo />
 	</DemoContainer>
 
-	<!-- CheckFilterDropdown -->
 	<DemoContainer title="CheckFilterDropdown">
 		<CheckFilterDropdownDemo />
 	</DemoContainer>
 
-	<!-- NftActivityHistoryTable -->
 	<DemoContainer title="NftActivityHistoryTable">
 		<NftActivityHistoryTableDemo />
+	</DemoContainer>
+
+	<DemoContainer title="HomepageCarousel">
+		<HomepageCarouselDemo />
 	</DemoContainer>
 </main>
 
