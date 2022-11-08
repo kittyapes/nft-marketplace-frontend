@@ -5,6 +5,7 @@ import { appProvider } from '$stores/wallet';
 import { get } from 'svelte/store';
 import { getContractInterface } from '$utils/contracts/collection';
 import axios from 'axios';
+import defaultProvider from '$utils/contracts/defaultProvider';
 
 export function makeHttps(url: string) {
 	if (!url) return null;
@@ -16,13 +17,21 @@ export function makeHttps(url: string) {
 	return url.replace(/^ipfs:\/\//, 'https://hinata-prod.mypinata.cloud/ipfs/');
 }
 
-export async function getOnChainMetadata(contractAddress: string, tokenId: string) {
+export async function getMetadataFromUri(uri: string) {
+	return axios
+		.get(makeHttps(uri))
+		.then((res) => res.data)
+		.catch((_err) => null);
+}
+
+export async function getOnChainUri(contractAddress: string, tokenId: string) {
 	try {
-		const provider = get(appProvider) || ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
+		const provider = get(appProvider) || defaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
+
 		const tokenType = await getContractInterface(contractAddress, provider);
 
 		if (tokenType === 'UNKNOWN') {
-			return null;
+			return '';
 		}
 
 		const contract = new ethers.Contract(contractAddress, tokenType === 'ERC1155' ? erc1155abi : erc721abi, provider);
@@ -30,18 +39,14 @@ export async function getOnChainMetadata(contractAddress: string, tokenId: strin
 		const uri: string = tokenType === 'ERC1155' ? await contract.uri(tokenId) : await contract.tokenURI(tokenId);
 
 		if (!(uri.startsWith('https://') || uri.startsWith('http://'))) {
-			return {};
+			return '';
 		}
 
-		const metadata = await axios
-			.get(makeHttps(uri))
-			.then((res) => res.data)
-			.catch((_err) => null);
-
 		// fetch metadata
-		return metadata;
+		return uri;
 	} catch (error) {
 		console.log(error);
-		return null;
+
+		return '';
 	}
 }

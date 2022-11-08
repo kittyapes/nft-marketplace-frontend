@@ -46,7 +46,7 @@
 <style type="postcss">
 	#rail::after {
 		@apply block absolute top-[-2px] bottom-[-2px]
-		bg-gradient-to-r from-color-purple to-color-blue
+		bg-gradient-to-r from-color-blue to-color-purple
 		transition-all duration-300;
 		content: '';
 		width: var(--after-width);

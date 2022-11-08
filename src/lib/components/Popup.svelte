@@ -25,7 +25,7 @@
 	onDestroy(() => removeEventListener('keydown', onKeydown));
 </script>
 
-<div class="relative outer-div">
+<div class="relative outer-div {$$props.class}">
 	<div class="inner-div h-full">
 		<!-- {#if closeButton}
 			<button on:click={onClose} class="absolute z-50 opacity-60 right-4 top-4 transition-btn">
@@ -39,7 +39,7 @@
 
 <style>
 	.outer-div {
-		@apply p-1;
+		@apply p-[2px];
 		background: linear-gradient(
 				56.67deg,
 				rgba(167, 148, 255, 0) 11.15%,

@@ -6,6 +6,7 @@ import { appSigner } from '$stores/wallet';
 import erc1155Abi from '$constants/contracts/abis/Erc1155Mock.json';
 import erc721Abi from '$constants/contracts/abis/Erc721Mock.json';
 import storageAbi from '$constants/contracts/abis/HinataMarketplaceStorage.json';
+import defaultProvider from './defaultProvider';
 
 export async function contractCreateCollection(options: {
 	royalties: {
@@ -61,7 +62,7 @@ export async function getContractInterface(address: string, provider: ethers.Sig
 	const ERC721InterfaceId = '0x80ac58cd';
 
 	if (!provider) {
-		provider = ethers.getDefaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
+		provider = defaultProvider(+import.meta.env.VITE_DEFAULT_NETWORK);
 	}
 
 	const contract = new ethers.Contract(address, ERC165Abi, provider);
@@ -83,11 +84,16 @@ export async function getContractInterface(address: string, provider: ethers.Sig
 	}
 }
 
+/* This function is only used on create listing and we don't need to check for the contract type on chain
+ * since it does not matter, the function exists in both interface types so we can remove the call
+ * if this function is ever used elsewhere and the call is needed, you can uncomment
+ */
 export async function getCollectionContract(address: string) {
 	const storageAddress = getContract('storage')?.address;
 	address = address ?? storageAddress;
-	const contractType = await getContractInterface(address, get(appSigner));
-	const contractAbi = address === storageAddress ? storageAbi : contractType === 'ERC721' ? erc721Abi : erc1155Abi;
+	// const contractType = await getContractInterface(address, get(appSigner));
+	// const contractAbi = address === storageAddress ? storageAbi : contractType === 'ERC721' ? erc721Abi : erc1155Abi;
+	const contractAbi = address === storageAddress ? storageAbi : erc1155Abi;
 	const contract = new ethers.Contract(address, contractAbi, get(appSigner));
 
 	return contract;

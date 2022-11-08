@@ -11,6 +11,7 @@
 	import { capitalize, reject } from 'lodash-es';
 	import { noTryAsync } from 'no-try';
 	import { makeHttps } from '$utils/ipfs';
+	import { walletConnected } from '$utils/wallet';
 
 	export let title: string;
 	export let assetUrl: string;
@@ -71,9 +72,9 @@
 </script>
 
 <!-- NFT Image side-->
-<div class="flex flex-col w-full h-full pt-20 overflow-hidden text-center scrollbar-hide max-h-[650px]">
+<div class="flex flex-col w-full h-full overflow-hidden scrollbar-hide">
 	<!-- Asset render container -->
-	<div class="flex items-center self-center justify-center flex-shrink-0 object-contain w-full max-w-lg overflow-hidden bg-gray-100 border aspect-1 rounded-xl">
+	<div class="flex items-center self-center justify-center flex-shrink-0 object-contain w-full overflow-hidden bg-gray-100 aspect-1">
 		{#await preload(assetUrl)}
 			<Loader />
 		{:then}
@@ -98,17 +99,17 @@
 	</div>
 
 	<!-- NFT Name -->
-	<div class="mt-4 text-2xl font-bold opacity-70 justify-self-end">
+	<div class="text-4xl font-medium text-white flex-shrink-0 mt-4">
 		{title || 'No title'}
 	</div>
 
 	<!-- Buttons -->
-	<div class="flex justify-center mt-4 mb-6 gap-x-12">
-		<button class="w-6 h-6 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}><img src={getIconUrl('share')} alt="Share." /></button>
-		<button class="w-6 h-6 btn disabled:opacity-50" on:click={handleLike}>
+	<div class="flex mt-4 mb-6 gap-x-12">
+		<button class="w-5 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}><img src={getIconUrl('share')} alt="Share." /></button>
+		<button class="w-5 btn disabled:opacity-50" on:click={handleLike} disabled={!$walletConnected}>
 			<img src={favorited ? getIconUrl('heart-filled') : getIconUrl('heart-outline')} alt="Heart." class:text-color-red={favorited} />
 		</button>
-		<button class="w-6 h-6 btn" disabled={!videoAsset && !assetUrl} on:click={handleFullscreen}>
+		<button class="w-5 btn" disabled={!videoAsset && !assetUrl} on:click={handleFullscreen}>
 			<img src={getIconUrl('fullscreen')} alt="Fullscreen." />
 		</button>
 	</div>

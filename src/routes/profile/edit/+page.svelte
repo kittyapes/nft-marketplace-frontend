@@ -247,7 +247,6 @@
 						out:fade|local
 						disabled={isSaving || $freeNftStatus === 'unclaimable'}
 					>
-						<!-- {@debug isSaving, $freeNftStatus, isSynced} -->
 						Claim your NFT
 					</button>
 				</div>
