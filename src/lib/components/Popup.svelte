@@ -26,7 +26,7 @@
 </script>
 
 <div class="relative outer-div {$$props.class}">
-	<div class="inner-div h-full">
+	<div class="inner-div h-full w-full">
 		<!-- {#if closeButton}
 			<button on:click={onClose} class="absolute z-50 opacity-60 right-4 top-4 transition-btn">
 				<CloseButton />
@@ -37,7 +37,7 @@
 	</div>
 </div>
 
-<style>
+<style type="postcss">
 	.outer-div {
 		@apply p-[2px];
 		background: linear-gradient(

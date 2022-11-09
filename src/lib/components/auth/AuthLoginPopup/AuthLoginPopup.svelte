@@ -7,6 +7,7 @@
 	import type { AuthLoginPopupAdapter, AuthLoginPopupState } from './authLoginPopupAdapter';
 	import type { PopupHandler } from '$utils/popup';
 	import { refreshProfileData } from '$stores/user';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -77,41 +78,58 @@
 	$: prompt = adapter.getPrompt();
 </script>
 
-<Popup closeButton class="w-[500px] h-[220px] flex flex-col items-center pt-8" on:close>
+<Popup closeButton class="w-[500px] h-[220px] flex flex-col items-center text-white bg-dark-gradient" on:close>
 	{#if state === 'prompt'}
-		<div class="title">
-			{@html prompt.title}
+		<div class=" bg-dark-gradient w-full h-full">
+			<div class="flex flex-col gap-10 p-8 items-center">
+				<div class="title">
+					{@html prompt.title}
+				</div>
+				<PrimaryButton on:click={onSignIn}><span class="uppercase">Sign In</span></PrimaryButton>
+			</div>
 		</div>
-
-		<button class="mt-12 uppercase btn btn-gradient btn-rounded" on:click={onSignIn}>Sign In</button>
 	{/if}
 
 	{#if state === 'loading'}
-		<div class="mb-12 title">Sign this message</div>
-		<Loader />
+		<div class="flex flex-col gap-6 p-6 items-center bg-dark-gradient w-full h-full">
+			<div class="title">Sign this message</div>
+			<Loader />
+		</div>
 	{/if}
 
 	{#if state === 'confirm'}
-		<div class="title">Sign this message</div>
-		<div class="mt-8 text-xs">{message}</div>
-		<div class="flex mt-6 scale-75 gap-x-8">
-			<Button variant="rounded-outline" rounded on:click={onSignCancel}>Cancel</Button>
-			<Button gradient rounded on:click={onSignConfirm}>Sign</Button>
+		<div class=" bg-dark-gradient w-full h-full">
+			<div class="flex flex-col gap-6 p-6 items-center">
+				<div class="title">Sign this message</div>
+				<div class="text-xs">{message}</div>
+				<div class="flex gap-x-12">
+					<PrimaryButton on:click={onSignCancel}><span class="uppercase">Cancel</span></PrimaryButton>
+					<PrimaryButton on:click={onSignConfirm}><span class="uppercase">Sign</span></PrimaryButton>
+				</div>
+			</div>
 		</div>
 	{/if}
 
 	{#if state === 'success'}
-		<div class="title">Sign this message</div>
-		<div class="mt-8 text-sm font-bold">Signing Successful!</div>
-		<Button gradient rounded class="mt-6" on:click={onSuccessClose}>Continue</Button>
+		<div class=" bg-dark-gradient w-full h-full">
+			<div class="flex flex-col gap-6 p-6 items-center">
+				<div class="title">Sign this message</div>
+				<div class="text-sm font-bold">Signing Successful!</div>
+				<PrimaryButton on:click={onSuccessClose}><span class="uppercase">Continue</span></PrimaryButton>
+			</div>
+		</div>
 	{/if}
 
 	{#if state === 'error'}
-		<div class="title">Sign this message</div>
-		<div class="mt-8 text-sm font-bold">Signing Failed!</div>
-		<div class="flex mt-6 scale-75 gap-x-8">
-			<Button variant="rounded-outline" rounded on:click={dispatchClose}>Cancel</Button>
-			<Button gradient rounded on:click={onSignIn}>Try again</Button>
+		<div class=" bg-dark-gradient w-full h-full">
+			<div class="flex flex-col gap-6 p-6 items-center">
+				<div class="title">Sign this message</div>
+				<div class="text-sm font-bold">Signing Failed!</div>
+				<div class="flex gap-x-12">
+					<PrimaryButton on:click={dispatchClose}><span class="uppercase">Cancel</span></PrimaryButton>
+					<PrimaryButton on:click={onSignIn}><span class="uppercase">Try again</span></PrimaryButton>
+				</div>
+			</div>
 		</div>
 	{/if}
 </Popup>
