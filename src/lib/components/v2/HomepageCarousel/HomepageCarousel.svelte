@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
 	import { onDestroy, onMount } from 'svelte';
 
 	// this component will assign ID's by itself so it's better not to include it
@@ -15,12 +14,25 @@
 
 	let currentBlob = data[0];
 	let currentIndex = 0;
+
 	let animatedImage: HTMLImageElement;
+
+	let interval;
+
+	function reset_animation() {
+		animatedImage.style.animation = 'none';
+		animatedImage.offsetHeight; /* trigger reflow */
+		animatedImage.style.animation = null;
+	}
 
 	function handleButtonClick(index: number) {
 		currentBlob = data[index];
+		currentIndex = index;
+
 		clearInterval(interval);
 		interval = setInterval(timerPing, 5000);
+
+		reset_animation();
 	}
 
 	async function timerPing() {
@@ -31,8 +43,6 @@
 			currentBlob = data[currentIndex++ + 1];
 		}
 	}
-
-	let interval;
 
 	onMount(() => {
 		if (data.length) interval = setInterval(timerPing, 5000);
