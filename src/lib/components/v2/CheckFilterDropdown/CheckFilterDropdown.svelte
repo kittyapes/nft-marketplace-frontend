@@ -59,7 +59,7 @@
 		<div id="list-container" class="absolute -left-16 z-10 right-0 overflow-hidden translate-y-full -bottom-2 bg-dark-gradient gradient-border">
 			{#each options as option}
 				<button
-					class="flex items-center w-full px-4 py-2 font-semibold text-left hover:bg-color-purple hover:bg-opacity-20 active:scale-y-90 transition-transform duration-100 gap-x-3 outline-none focus-visible:bg-gray-100"
+					class="flex items-center w-full px-4 py-2 font-semibold text-left hover:bg-color-purple hover:bg-opacity-20 transition-transform duration-100 gap-x-3 outline-none focus-visible:bg-gray-100"
 					on:click|stopPropagation={() => toggleOption(option)}
 				>
 					<div class="w-4">
