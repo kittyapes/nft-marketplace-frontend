@@ -43,6 +43,12 @@
 		null,
 	);
 
+	$: console.log(
+		Number(options.saleData.formatPrice)
+			.toFixed(16)
+			.replace(/(\.?0+$)/, ''),
+	);
+
 	// prettier-ignore
 	$: purchaseError =
 		(isFuture(chainListing.startTime) && "This listing isn't for sale yet.") ||
@@ -59,9 +65,9 @@
 	<div class="flex items-center justify-center mt-2">
 		<img src={getIconUrl('eth')} alt="" />
 		<div class="{(options.saleData?.formatPrice || options.saleData?.price || 'N/A').toString().length > 12 ? 'text-3xl' : 'text-5xl'} font-bold">
-			{Number(options.saleData?.formatPrice)
+			{Number(options.saleData.formatPrice)
 				.toFixed(16)
-				.replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, '$1') ||
+				.replace(/(\.?0+$)/, '') ||
 				options.saleData?.price ||
 				'N/A'}
 		</div>
