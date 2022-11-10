@@ -5,6 +5,7 @@ import { getMetadataFromUri, getOnChainUri, makeHttps } from '$utils/ipfs';
 import { scientificToDecimal } from '$utils/misc/scientificToDecimal';
 import dayjs from 'dayjs';
 import { writable } from 'svelte/store';
+import { ethers } from 'ethers';
 
 export interface SanitizedNftData {
 	databaseId: string;
@@ -95,8 +96,22 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 			startTime: dayjs(listing.startTime).unix(),
 			endTime: dayjs(listing.startTime).unix() + listing.duration,
 			duration: listing.duration,
+			shortDisplayPrice: null,
 		},
 	};
+
+	function toShortDisplayPrice(floatingPrice: string) {
+		const bigNumber = ethers.utils.parseEther(floatingPrice);
+
+		const thresholdStr = '0.01';
+		const threshold = ethers.utils.parseEther(thresholdStr);
+
+		if (bigNumber.lt(threshold)) {
+			return '< ' + thresholdStr;
+		} else {
+			return floatingPrice;
+		}
+	}
 
 	if (listing.listingType === 'sale') {
 		const fPrice = scientificToDecimal(listing.listing?.formatPrice);
@@ -107,6 +122,8 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 			// Has to be updated for when we support listing bundles
 			nftQuantities: { [nft.nftId]: nft.amount },
 		};
+
+		ret.listingData.shortDisplayPrice = toShortDisplayPrice(fPrice);
 	}
 
 	if (listing.listingType === 'auction') {
@@ -122,8 +139,9 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 			reservePrice: listing.listing?.reservePrice,
 			formatReservePrice,
 			highestBid,
-			priceToDisplay,
 		};
+
+		ret.listingData.shortDisplayPrice = toShortDisplayPrice(priceToDisplay);
 	}
 
 	return ret;
