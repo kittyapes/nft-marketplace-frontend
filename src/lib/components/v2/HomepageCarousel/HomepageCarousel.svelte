@@ -35,6 +35,7 @@
 		reset_animation();
 	}
 
+	$: if (animatedImage) animatedImage.style.animationPlayState = 'running';
 	$: if (animatedBar) animatedBar.style.animationPlayState = 'running';
 
 	async function timerPing() {
@@ -43,16 +44,11 @@
 			currentIndex = 0;
 		} else {
 			currentBlob = data[++currentIndex];
-			console.log(currentIndex);
-			console.log(currentBlob, data[currentIndex]);
 		}
 	}
 
 	onMount(() => {
-		if (data.length) {
-			interval = setInterval(timerPing, 5000);
-			animatedImage.style.animationPlayState = 'running';
-		}
+		if (data.length) interval = setInterval(timerPing, 5000);
 	});
 
 	onDestroy(() => {
@@ -62,7 +58,7 @@
 
 <div class="h-full relative overflow-hidden w-full wrapper">
 	<div class="h-4/5 max-h-4/5 max-w-full overflow-hidden bg-dark-gradient">
-		<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="flex-grow object-cover object-bottom w-full min-h-0 h-full animated-image !bg-black" />
+		<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="flex-grow object-cover object-bottom w-full min-h-0 h-full animated-image" />
 	</div>
 
 	<div class="bg-dark-gradient text-white p-3 h-1/5 flex-shrink-0 flex flex-col items-center ">
