@@ -16,7 +16,7 @@ export async function getTokenDetails(tokenAddress: string) {
 			return {
 				name: 'ETH',
 				decimals: 18,
-				symbol: 'ETH'
+				symbol: 'ETH',
 			};
 		}
 		const contract = getMockErc20TokenContract(get(appProvider), tokenAddress);
@@ -36,7 +36,7 @@ export async function getTokenDetails(tokenAddress: string) {
 		return {
 			name: 'ETH',
 			decimals: 18,
-			symbol: 'ETH'
+			symbol: 'ETH',
 		};
 	}
 }
@@ -57,7 +57,7 @@ export async function getTokenBalance(tokenAddress: string, userAddress: string,
 }
 
 export async function hasEnoughBalance(tokenAddress: string, userAddress: string, requiredBalance: string) {
-	console.log(tokenAddress, userAddress, requiredBalance);
+	console.log('Has enough balance: ', tokenAddress, userAddress, requiredBalance, typeof requiredBalance);
 
 	const tokenDetails = await getTokenDetails(tokenAddress);
 	const balance = await getTokenBalance(tokenAddress, userAddress, tokenDetails.decimals);
