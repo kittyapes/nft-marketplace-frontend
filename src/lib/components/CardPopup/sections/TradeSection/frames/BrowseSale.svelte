@@ -43,12 +43,6 @@
 		null,
 	);
 
-	$: console.log(
-		Number(options.saleData.formatPrice)
-			.toFixed(16)
-			.replace(/(\.?0+$)/, ''),
-	);
-
 	// prettier-ignore
 	$: purchaseError =
 		(isFuture(chainListing.startTime) && "This listing isn't for sale yet.") ||
