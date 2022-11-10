@@ -3,8 +3,8 @@
 
 	export let data: { imageUrl: string; imageAlt?: string; title: string; subtitle: string }[] = [
 		{ imageUrl: 'img/placeholder/carousel_image.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
-		{ imageUrl: 'https://picsum.photos/200', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
-		{ imageUrl: 'https://picsum.photos/200/300', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
+		{ imageUrl: 'img/png/airdrop-banner.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
+		{ imageUrl: 'img/placeholder/latest-drop.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
 	];
 
 	let currentBlob = data[0];
@@ -35,10 +35,9 @@
 		reset_animation();
 	}
 
-	async function timerPing() {
-		//animatedBar.style.animationPlayState = 'running';
-		//animatedImage.style.animationPlayState = 'running';
+	$: if (animatedBar) animatedBar.style.animationPlayState = 'running';
 
+	async function timerPing() {
 		if (currentIndex === data.length - 1) {
 			currentBlob = data[0];
 			currentIndex = 0;
@@ -50,7 +49,10 @@
 	}
 
 	onMount(() => {
-		if (data.length) interval = setInterval(timerPing, 5000);
+		if (data.length) {
+			interval = setInterval(timerPing, 5000);
+			animatedImage.style.animationPlayState = 'running';
+		}
 	});
 
 	onDestroy(() => {
@@ -59,8 +61,8 @@
 </script>
 
 <div class="h-full relative overflow-hidden w-full wrapper">
-	<div class="h-4/5 max-h-4/5 max-w-full overflow-hidden">
-		<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="flex-grow object-cover object-bottom w-full min-h-0 h-full animated-image" />
+	<div class="h-4/5 max-h-4/5 max-w-full overflow-hidden bg-dark-gradient">
+		<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="flex-grow object-cover object-bottom w-full min-h-0 h-full animated-image !bg-black" />
 	</div>
 
 	<div class="bg-dark-gradient text-white p-3 h-1/5 flex-shrink-0 flex flex-col items-center ">
@@ -85,19 +87,39 @@
 
 <style type="postcss">
 	.animated-image {
-		animation: zoom 5s infinite linear;
+		animation: zoom 5s infinite linear, crossfade 5s infinite linear;
+		animation-play-state: paused;
 	}
 	@keyframes zoom {
 		from {
 			transform: scale(1);
 		}
 		to {
-			transform: scale(1.5);
+			transform: scale(1.25);
+		}
+	}
+
+	@keyframes crossfade {
+		0% {
+			opacity: 0;
+		}
+
+		5% {
+			opacity: 1;
+		}
+
+		95% {
+			opacity: 1;
+		}
+
+		100% {
+			opacity: 0;
 		}
 	}
 
 	.animated-bar {
 		animation: fill-bar 5s infinite linear;
+		animation-play-state: paused;
 	}
 
 	.wrapper {
