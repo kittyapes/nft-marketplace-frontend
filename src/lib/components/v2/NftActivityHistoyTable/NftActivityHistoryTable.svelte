@@ -38,7 +38,7 @@
 
 <div
 	id="grid-container"
-	class="grid h-full py-2 overflow-auto font-semibold bg-white border border-gray-300 rounded-xl blue-scrollbar overscroll-contain"
+	class="grid h-full py-2 overflow-auto border border-white overscroll-contain text-white"
 	style:--list-length={skeleton ? data.length + skeletonLength : data.length}
 	on:scroll={handleScroll}
 	bind:this={gridContainer}
@@ -63,15 +63,15 @@
 		{/if}
 		<!--<div><a href="/profile/{row.from}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.from}</a></div>
 		<div><a href="/profile/{row.to}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.to}</a></div>-->
-		<div><a href="/profile/{row.from}" target="_blank"><EthAddress address={row.from} etherScanLink={false} copyIcon={false} concat class="!text-black !font-semibold hover:!text-blue-500" /></a></div>
-		<div><a href="/profile/{row.to}" target="_blank"><EthAddress address={row.to} etherScanLink={false} copyIcon={false} concat class="!text-black !font-semibold hover:!text-blue-500" /></a></div>
+		<div><a href="/profile/{row.from}" target="_blank"><EthAddress address={row.from} etherScanLink={false} copyIcon={false} concat class="!text-white hover:!text-blue-500" /></a></div>
+		<div><a href="/profile/{row.to}" target="_blank"><EthAddress address={row.to} etherScanLink={false} copyIcon={false} concat class="!text-white hover:!text-blue-500" /></a></div>
 		<div>{row.date}</div>
 	{/each}
 
 	{#if skeleton}
 		{#each Array(skeletonLength * 5).fill(0) as i, index}
 			<div>
-				<div class="bg-gray-100 h-6 w-full rounded-md" />
+				<div class="bg-gray-800 opacity-50 h-6 w-full" />
 			</div>
 		{/each}
 	{/if}
@@ -93,18 +93,13 @@
 	}
 
 	#grid-container > :nth-child(-n + 5) {
-		@apply border-b border-inherit;
+		@apply border-b border-inherit font-semibold;
 	}
 
+	#grid-container > :nth-child(5n + 1) {
+		@apply px-14;
+	}
 	#grid-container > div {
-		@apply px-4 h-12 flex items-center truncate;
-	}
-
-	#grid-container > :nth-child(10n + 6),
-	#grid-container > :nth-child(10n + 7),
-	#grid-container > :nth-child(10n + 8),
-	#grid-container > :nth-child(10n + 9),
-	#grid-container > :nth-child(10n + 10) {
-		@apply bg-gray-50;
+		@apply px-4 h-16 flex items-center truncate;
 	}
 </style>
