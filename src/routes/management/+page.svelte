@@ -30,7 +30,7 @@
 	import { page } from '$app/stores';
 	import { browser } from '$app/environment';
 	import PaginationFooter from '$lib/components/management/render-components/PaginationFooter.svelte';
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy } from 'svelte';
 
 	const fetchLimit = 20;
 
@@ -184,13 +184,12 @@
 		eventId = event.detail.id;
 	};
 
+	// TODO: split into multiple functions
 	const handleFilter = async (event: CustomEvent) => {
 		if (tab === 'USER') {
-			console.log(event.detail);
 			userFetchingOptions.filter = {
 				createdAfter: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdAfter,
 				role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
-				status: event.detail.status ? event.detail.status : userFetchingOptions.filter.status,
 			};
 
 			if (event.detail.status) userFetchingOptions.filter.role = undefined;
@@ -209,7 +208,6 @@
 				isClaimed: typeof event.detail.value === 'boolean' ? event.detail.value : collectionFetchingOptions.filter.isClaimed,
 			};
 
-			if (event.detail.status === 'all') collectionFetchingOptions.filter.status = undefined;
 			if (event.detail.value === 'all') collectionFetchingOptions.filter.isClaimed = undefined;
 
 			await getSearchedCollections();
@@ -248,7 +246,7 @@
 		{ label: 'Admin', role: 'admin' },
 		{ label: 'Verified Creator', role: 'verified_user' },
 		{ label: 'Blogger' },
-		{ label: 'Inactive', status: 'INACTIVATED' },
+		{ label: 'Inactive', role: 'inactivated_user' },
 	];
 
 	let userFilterOptions = [
@@ -259,7 +257,7 @@
 	];
 
 	let statusFilterOptions = [
-		{ label: 'All', status: 'all' },
+		{ label: 'All', status: 'ALL' },
 		{ label: 'Active', status: 'ACTIVE' },
 		{ label: 'Inactive', status: 'INACTIVE' },
 	];
@@ -298,7 +296,7 @@
 			...collectionFetchingOptions.sort,
 			limit: collectionFetchingOptions.limit,
 			page: collectionPage,
-			status: 'ALL',
+			status: collectionFetchingOptions.filter.status,
 		};
 	};
 
@@ -512,16 +510,14 @@
 	<div class="flex">
 		<div class="{tab === 'COLLECTION' ? 'text-gradient' : 'text-white'} font-medium text-2xl relative btn" on:click={() => (tab = 'COLLECTION')}>
 			<div class="px-6">Collection Management</div>
-			<div class="{tab === 'COLLECTION' ? "gradient-line delay-300" : "bg-white bg-opacity-30"} h-1 mt-2 transition-all duration-300" />
+			<div class="{tab === 'COLLECTION' ? 'gradient-line delay-300' : 'bg-white bg-opacity-30'} h-1 mt-2 transition-all duration-300" />
 		</div>
 		<div class="w-14 mt-auto">
 			<div class="bg-white bg-opacity-30 h-1 w-full" />
 		</div>
 		<div class="{tab === 'USER' ? 'text-gradient' : 'text-white'} font-medium text-2xl relative btn" on:click={() => (tab = 'USER')}>
-			<div class="px-6">
-				User Management
-			</div>
-			<div class="{tab === 'USER' ? "gradient-line delay-300" : "bg-white bg-opacity-30"} h-1 mt-2 transition-all duration-300" />
+			<div class="px-6">User Management</div>
+			<div class="{tab === 'USER' ? 'gradient-line delay-300' : 'bg-white bg-opacity-30'} h-1 mt-2 transition-all duration-300" />
 		</div>
 	</div>
 	<div class="flex gap-40 2xl:gap-96">
@@ -542,7 +538,7 @@
 					<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
 				</div> -->
 				<div class="">
-					<Filter v2 on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'all' }} />
+					<Filter v2 on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'ALL' }} />
 				</div>
 			</div>
 		{/if}
