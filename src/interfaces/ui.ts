@@ -38,6 +38,7 @@ export interface CardOptions {
 		startTime: number;
 		endTime: number;
 		duration: number;
+		shortDisplayPrice: string;
 	};
 
 	/** Data used when adapting a listing of the type Sale. */
@@ -54,7 +55,6 @@ export interface CardOptions {
 		formatStartingPrice: string;
 		formatReservePrice?: string;
 		highestBid: string;
-		priceToDisplay: string;
 	};
 
 	/** The raw data that was used by an adapter to generate this data object. */
