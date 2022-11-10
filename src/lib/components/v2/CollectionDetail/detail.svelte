@@ -5,14 +5,19 @@
 	import type { UserData } from '$interfaces/userData';
 	import ActionMenu from '$lib/components/ActionMenu.svelte';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
+	import NftList from '$lib/components/NftList.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { apiGetCollectionBySlug, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
+	import copyTextToClipboard from '$utils/copyTextToClipboard';
+	import { copyUrlToClipboard } from '$utils/misc/clipboard';
+	import { shortenAddress } from '$utils/misc/shortenAddress';
 	import { notifyError } from '$utils/toast';
 	import { onMount } from 'svelte';
 	import { MetaTags } from 'svelte-meta-tags';
-	import CollectionDetail from '$lib/components/v2/CollectionDetail/+page.svelte';
+	import HinataBadge from '$icons/hinata-badge.svelte';
+
 	export let data;
 
 	let collectionData: Collection;
@@ -105,7 +110,7 @@
 	async function fetchCollectionData() {
 		resetNfts();
 		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => undefined);
-		// console.log(collectionData);
+
 		// Populate collection stats
 		let formatter = Intl.NumberFormat('en', { notation: 'compact' });
 		Object.keys(collectionStats).map((key) => {
@@ -163,7 +168,90 @@
 		}}
 	/>
 {/if}
-<CollectionDetail bind:collectionData bind:nfts />
+
+<main class="px-16 mx-auto">
+	<div class="relative mt-8">
+		<!-- Cover image -->
+		{#if collectionData?.backgroundImageUrl}
+			<img class="object-cover w-full h-64 rounded-md" src={collectionData?.backgroundImageUrl} alt="" />
+		{:else}
+			<div class="w-full h-64 rounded-md bg-gray-100" />
+		{/if}
+
+		<!-- Creator profile image - TODO ADD LOGIC FOR VERIFIED CREATOR BADGE -->
+		<div class="absolute bottom-0 left-0 right-0 w-24 h-24 mx-auto translate-y-12 grid place-items-center">
+			<img class="object-cover w-20 h-20 bg-white border-4 border-white rounded-full " src={collectionData?.logoImageUrl || '/svg/icons/guest-avatar.svg'} alt="Collection creator avatar." />
+
+			<!-- Verified creator badge -->
+			{#if collectionData?.mintedFrom?.toLowerCase() === 'hinata'}
+				<HinataBadge class="w-6 h-6 absolute right-2 translate-y-6" />
+			{/if}
+		</div>
+	</div>
+
+	<!-- Collection title -->
+	<h1 class="mx-auto mt-12 text-2xl font-semibold max-w-max">
+		{#if collectionData}
+			{collectionData?.name || 'N/A'}
+		{:else}
+			<div class="w-32 h-8 bg-gray-100 rounded-lg" />
+		{/if}
+	</h1>
+
+	<!-- Creator username and collection address -->
+	<div class="flex items-center justify-center mt-2 space-x-3">
+		{#if creatorData?.username}
+			<div class="text-xl font-medium text-color-gradient max-w-max font-poppins">
+				@{creatorData?.username}
+			</div>
+		{:else}
+			<div class="bg-gray-100 rounded-lg w-24 h-6" />
+		{/if}
+
+		<button class="btn bg-[#F5F5F5] flex rounded-full px-4 py-2 space-x-2 w-36" on:click={() => copyTextToClipboard(collectionData?.collectionAddress)}>
+			<img class="w-5" src="/svg/icons/collection-gradient-eth.svg" alt="Ethereum." />
+			{#if collectionData}
+				<div class="font-mono text-[#6E6E6E] text-sm">{shortenAddress(collectionData?.collectionAddress)}</div>
+			{:else}
+				<div class="w-24 h-5 bg-gray-200 rounded-lg" />
+			{/if}
+		</button>
+	</div>
+
+	<!-- Stats table -->
+	{#if collectionData}
+		<div class="flex h-24 max-w-3xl mx-auto mt-8 border border-black rounded-lg justify-evenly">
+			{#each Object.keys(collectionStats) as statKey}
+				<div class="flex flex-col items-center justify-center w-full border-r border-black last:border-0">
+					<div class="text-sm">{collectionStats[statKey].stat}</div>
+					<div class="mt-1 text-xl font-semibold">{collectionStats[statKey].value} {collectionStats[statKey].symbol}</div>
+				</div>
+			{/each}
+		</div>
+	{:else}
+		<div class="h-24 max-w-3xl mx-auto mt-8 bg-gray-100 rounded-lg" />
+	{/if}
+
+	<!-- Share and menu buttons -->
+	<div class="flex justify-center mt-6 space-x-4">
+		<!-- Share button -->
+		<button class="grid border border-black rounded-full btn w-14 h-14 place-items-center" on:click={copyUrlToClipboard}>
+			<img src="/svg/icons/collection-upload.svg" alt="Share." />
+		</button>
+
+		<!-- Menu button -->
+		<button class="grid border border-black rounded-full btn w-14 h-14 place-items-center" bind:this={menuButton} on:click={() => (showCollectionMenu = !showCollectionMenu)}>
+			<img src="/svg/icons/collection-menu.svg" alt="Upload." />
+		</button>
+	</div>
+
+	<div class="mt-16 border-t border-[#0000004D]">
+		{#if collectionData}
+			<NftList options={nfts} {isLoading} {reachedEnd} createNewNftBtn={{ include: $currentUserAddress === collectionData.creator, collectionId: collectionData.id }} on:end-reached={fetchMore} />
+		{/if}
+	</div>
+</main>
+
 {#if showCollectionMenu}
 	<AttachToElement to={menuButton} bottom right bind:this={menuAttachElement}>
 		<ActionMenu options={collectionMenuButtonOptions} on:optionClick={() => (showCollectionMenu = false)} />

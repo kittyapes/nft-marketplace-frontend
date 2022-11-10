@@ -4,7 +4,6 @@
 	export let stretch: boolean = false;
 	export let gradient: boolean = false;
 	export let dullgradient: boolean = false;
-	export let gradientborder: boolean = false;
 	export let uppercase: boolean = true;
 	export let outline: boolean = ['rounded-outline'].includes(variant);
 	export let rounded: boolean = false;
