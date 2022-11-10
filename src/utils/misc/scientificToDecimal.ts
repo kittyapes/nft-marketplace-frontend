@@ -1,4 +1,4 @@
-export function scientificToDecimal(num) {
+export function scientificToDecimal(num): string {
 	var nsign = Math.sign(num);
 	//remove the sign
 	num = Math.abs(num);
@@ -28,5 +28,5 @@ export function scientificToDecimal(num) {
 		}
 	}
 
-	return nsign < 0 ? '-' + num : num;
+	return (nsign < 0 ? '-' + num : num) + '';
 }
