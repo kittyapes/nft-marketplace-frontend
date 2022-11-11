@@ -2,8 +2,10 @@ import type { ApiNftData } from '$interfaces/apiNftData';
 import type { CardOptions } from '$interfaces/ui';
 import type { Listing } from '$utils/api/listing';
 import { getMetadataFromUri, getOnChainUri, makeHttps } from '$utils/ipfs';
+import { scientificToDecimal } from '$utils/misc/scientificToDecimal';
 import dayjs from 'dayjs';
 import { writable } from 'svelte/store';
+import { ethers } from 'ethers';
 
 export interface SanitizedNftData {
 	databaseId: string;
@@ -94,39 +96,52 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 			startTime: dayjs(listing.startTime).unix(),
 			endTime: dayjs(listing.startTime).unix() + listing.duration,
 			duration: listing.duration,
+			shortDisplayPrice: null,
 		},
 	};
 
-	const makeNice = (n: number) => {
-		return n.toString();
-	};
+	function toShortDisplayPrice(floatingPrice: string) {
+		const bigNumber = ethers.utils.parseEther(floatingPrice);
+
+		const thresholdStr = '0.01';
+		const threshold = ethers.utils.parseEther(thresholdStr);
+
+		if (bigNumber.lt(threshold)) {
+			return '< ' + thresholdStr;
+		} else {
+			return floatingPrice;
+		}
+	}
 
 	if (listing.listingType === 'sale') {
-		const fPrice = listing.listing?.formatPrice;
+		const fPrice = scientificToDecimal(listing.listing?.formatPrice);
 
 		ret.saleData = {
 			price: listing.listing.price,
-			formatPrice: fPrice ? makeNice(fPrice) : 'N/A',
+			formatPrice: fPrice,
 			// Has to be updated for when we support listing bundles
 			nftQuantities: { [nft.nftId]: nft.amount },
 		};
+
+		ret.listingData.shortDisplayPrice = toShortDisplayPrice(fPrice);
 	}
 
 	if (listing.listingType === 'auction') {
-		const fStarting = listing.listing?.formatStartingPrice;
-		const fReserve = listing.listing?.formatReservePrice;
-		const highestBid = listing.highestBid;
+		const formatStartingPrice = listing.listing?.formatStartingPrice.toString();
+		const formatReservePrice = listing.listing?.formatReservePrice.toString();
+		const highestBid = listing.highestBid.toString();
 		// Highest Bid is Always 0 when there is no highest bid
-		const priceToDisplay = highestBid !== 0 && highestBid ? highestBid : fStarting;
+		const priceToDisplay = highestBid !== '0' && highestBid ? highestBid : formatStartingPrice;
 
 		ret.auctionData = {
 			startingPrice: listing.listing?.startingPrice,
-			formatStartingPrice: fStarting ? makeNice(fStarting) : 'N/A',
+			formatStartingPrice,
 			reservePrice: listing.listing?.reservePrice,
-			formatReservePrice: fReserve ? makeNice(fReserve) : 'N/A',
-			highestBid: highestBid ? makeNice(highestBid) : 'N/A',
-			priceToDisplay: priceToDisplay ? makeNice(priceToDisplay) : 'N/A',
+			formatReservePrice,
+			highestBid,
 		};
+
+		ret.listingData.shortDisplayPrice = toShortDisplayPrice(priceToDisplay);
 	}
 
 	return ret;

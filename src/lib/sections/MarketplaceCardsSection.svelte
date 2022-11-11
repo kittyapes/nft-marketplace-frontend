@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import NftList from '$lib/components/NftList.svelte';
@@ -26,7 +27,7 @@
 	};
 
 	async function fetchMore() {
-		if (reachedEnd) return;
+		if (reachedEnd || !browser) return;
 		isLoading = true;
 
 		const res = await fetchFunction();
