@@ -21,11 +21,14 @@
 </script>
 
 <div>
-	<div class="flex flex-col justify-center gradient-border-green gap-12 aspect-1 mb-8">
-		<div class="text-center mt-4 text-3xl text-white">{message}</div>
-		<div class="flex items-center justify-center gap-8">
-			<SuccessCheck />
-			<div class="gradient-text-green text-7xl">Success!</div>
+	<div class="flex flex-col justify-center gradient-border-green gap-8 aspect-1 mb-8">
+		<div class="text-center mt-4 text-xl text-white">{message}</div>
+		<div class="flex items-center justify-center gap-3">
+			<div class="w-16">
+				<SuccessCheck />
+			</div>
+
+			<div class="gradient-text-green text-4xl">Success!</div>
 		</div>
 	</div>
 

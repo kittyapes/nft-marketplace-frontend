@@ -8,12 +8,12 @@
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { hasEnoughBalance } from '$utils/contracts/token';
 	import { salePurchase } from '$utils/flows/salePurchase';
-	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import { scientificToDecimal } from '$utils/misc/scientificToDecimal';
 	import { isFuture } from '$utils/misc/time';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { createEventDispatcher } from 'svelte';
 	import { derived } from 'svelte/store';
+	import Error from './Error.svelte';
 	import Success from './Success.svelte';
 
 	const dispatch = createEventDispatcher();
@@ -31,8 +31,10 @@
 		const success = await salePurchase(options.listingData.onChainId, price);
 
 		if (success) {
-			dispatch('set-frame', { component: Success });
+			dispatch('set-frame', { component: Success, props: { message: 'Successfully purchased listing!' } });
 			dispatch('force-expire');
+		} else {
+			dispatch('set-frame', { component: Error, props: { message: 'Failed to purchase listing!' } });
 		}
 
 		purchasing = false;

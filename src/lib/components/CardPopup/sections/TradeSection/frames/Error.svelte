@@ -11,10 +11,13 @@
 
 <div>
 	<div class="flex flex-col justify-center gradient-border-red aspect-1 gap-8 mb-8">
-		<div class="text-center mt-4 text-3xl text-white">{message}</div>
-		<div class="flex items-center justify-center gap-8">
-			<ErrorCross />
-			<div class="gradient-text-red text-7xl">Error!</div>
+		<div class="text-center mt-4 text-xl text-white">{message}</div>
+		<div class="flex items-center justify-center gap-3">
+			<div class="w-16">
+				<ErrorCross />
+			</div>
+
+			<div class="gradient-text-red text-4xl">Error!</div>
 		</div>
 	</div>
 
