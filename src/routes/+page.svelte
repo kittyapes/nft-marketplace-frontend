@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { links } from '$constants/links';
-	import { socials } from '$constants/socials';
-	import CollectionsTable from '$lib/components/collections/CollectionsTable.svelte';
 	import { apiGetMostActiveCollections, type Collection } from '$utils/api/collection';
 	import { fade, slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
@@ -10,10 +7,9 @@
 	import { writable } from 'svelte/store';
 	import { getRandomListings, type Listing } from '$utils/api/listing';
 	import NftList from '$lib/components/NftList.svelte';
-	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
-
+	import TopCollections from '$components/v2/TopCollections/+page.svelte';
 	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
 	let loadedExploreListings = writable(false);
@@ -64,18 +60,7 @@
 
 <div class="text-white">
 	<!-- Top collections section -->
-	<div class="px-16 pt-24 mb-16">
-		<div class="flex items-end">
-			<h2 class="text-4xl font-light uppercase flex-grow">Most Active Collections</h2>
-			<a href="/collections" class="uppercase underline text-sm font-bold">View all</a>
-		</div>
-		<hr class="mt-4 border-[#0000004D]" />
-		{#if collections.length > 0}
-			<CollectionsTable {collections} />
-		{:else}
-			<DiamondsLoader />
-		{/if}
-	</div>
+	<TopCollections bind:collections />
 
 	<!-- Explore Market Section -->
 	{#if $loadedExploreListings && exploreListingsData?.length > 0}
@@ -90,43 +75,43 @@
 		</div>
 	{/if}
 
-<!-- Latest blog posts -->
-<div class="px-16 2xl:px-52 mt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">BLOG</h2>
-		<a href="/blog" class="uppercase text-white underline text-sm font-bold">View Latest Posts</a>
-	</div>
-	<hr class="mt-4 border-[#FFFFFF1E]" />
-
-	{#if $blogPosts.length}
-		{#each $blogPosts.slice(0, 2) as post}
-			<BlogPostPreview data={post} />
-		{/each}
-	{/if}
-</div>
-
-<!-- Monthly airdrop -->
-<div class="px-16 2xl:px-52 mt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">Monthly Airdrop</h2>
-	</div>
-	<hr class="mt-4 border-[#FFFFFF1E]" />
-
-	<div class="flex flex-col h-full py-11 overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-[#FFFFFF1E]" in:fade>
-		<div class="flex-shrink-0 h-full lg:h-[250px]">
-			<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
+	<!-- Latest blog posts -->
+	<div class="px-16 2xl:px-52 mt-24 mb-16">
+		<div class="flex items-end">
+			<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">BLOG</h2>
+			<a href="/blog" class="uppercase text-white underline text-sm font-bold">View Latest Posts</a>
 		</div>
-		<hr class="mt-4 border-[#0000004D]" />
+		<hr class="mt-4 border-[#FFFFFF1E]" />
 
-		<div class="flex flex-col flex-grow text-white pt-8 lg:py-0 lg:ml-44">
-			<div class="text-4xl font-light uppercase line-clamp-2 italic">
-				{aidrop.title}
+		{#if $blogPosts.length}
+			{#each $blogPosts.slice(0, 2) as post}
+				<BlogPostPreview data={post} />
+			{/each}
+		{/if}
+	</div>
+
+	<!-- Monthly airdrop -->
+	<div class="px-16 2xl:px-52 mt-24 mb-16">
+		<div class="flex items-end">
+			<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">Monthly Airdrop</h2>
+		</div>
+		<hr class="mt-4 border-[#FFFFFF1E]" />
+
+		<div class="flex flex-col h-full py-11 overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-[#FFFFFF1E]" in:fade>
+			<div class="flex-shrink-0 h-full lg:h-[250px]">
+				<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
 			</div>
+			<hr class="mt-4 border-[#0000004D]" />
 
-			<p class="flex-grow mt-8">
-				{aidrop.textPreview}
-			</p>
+			<div class="flex flex-col flex-grow text-white pt-8 lg:py-0 lg:ml-44">
+				<div class="text-4xl font-light uppercase line-clamp-2 italic">
+					{aidrop.title}
+				</div>
+
+				<p class="flex-grow mt-8">
+					{aidrop.textPreview}
+				</p>
+			</div>
 		</div>
 	</div>
-</div>
 </div>
