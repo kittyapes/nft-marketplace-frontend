@@ -17,9 +17,6 @@
 
 	$: ownedOrListedNfts = options.resourceType === 'listing' ? options?.saleData?.nftQuantities[options.nfts[0].onChainId] ?? 1 : balance;
 
-	// Never show the back button on this tab
-	export const showBackButton = false;
-
 	// The Hinata General collection should always have a 1.5 % royalties,
 	// you know we cannot rely on the backend :)
 	// prettier-ignore

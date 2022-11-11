@@ -16,7 +16,6 @@
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
-	export let showBackButton = false;
 
 	let frameComponent: ConstructorOfATypedSvelteComponent;
 	let frameProps: any;

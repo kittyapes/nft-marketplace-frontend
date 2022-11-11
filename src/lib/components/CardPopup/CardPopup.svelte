@@ -20,8 +20,6 @@
 
 	let chainListing: ChainListing;
 
-	let showBackButton = false;
-
 	const countdownData = options?.resourceType === 'listing' ? { startTime: options.listingData?.startTime, duration: options.listingData?.duration, expired: false } : null;
 
 	// Log data that was used by the adapter to generate the CardPopup
@@ -77,15 +75,17 @@
 	function handleClosePopup() {
 		handler.close();
 	}
+
+	$: enableBack = typeof tabComponentInstance?.goBack === 'function';
 </script>
 
 <Popup class="w-full h-full rounded-none lg:w-[1400px] lg:max-h-[800px] transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>
 	<div class="bg-gradient overflow-y-auto bg-repeat-y h-full">
 		<div class="bg-black bg-opacity-40 py-4">
 			<!-- Tabs -->
-			<div class="flex px-16 gap-4">
+			<div class="flex px-24 gap-4">
 				<!-- Back button -->
-				<button class="btn disabled:opacity-0" disabled={!showBackButton && false} on:click={tabComponentInstance.goBack()}>
+				<button class="btn disabled:opacity-0" disabled={!enableBack} on:click={tabComponentInstance.goBack()}>
 					<img class="h-6" src={getIconUrl('back-button')} alt="Arrow pointing left." />
 				</button>
 
@@ -114,7 +114,6 @@
 						{chainListing}
 						on:close-popup={handleClosePopup}
 						on:force-expire
-						bind:showBackButton
 						bind:this={tabComponentInstance}
 						on:listing-created={refreshBalance}
 					/>
