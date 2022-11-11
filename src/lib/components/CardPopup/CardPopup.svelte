@@ -73,6 +73,10 @@
 	let tabComponentInstance: SvelteComponent;
 
 	$: similarCards = Array(10).fill(options);
+
+	function handleClosePopup() {
+		handler.close();
+	}
 </script>
 
 <Popup class="w-full h-full rounded-none lg:w-[1400px] lg:max-h-[800px] transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>
@@ -108,7 +112,7 @@
 						this={selectedTab?.sectionComponent}
 						{options}
 						{chainListing}
-						on:close-popup
+						on:close-popup={handleClosePopup}
 						on:force-expire
 						bind:showBackButton
 						bind:this={tabComponentInstance}

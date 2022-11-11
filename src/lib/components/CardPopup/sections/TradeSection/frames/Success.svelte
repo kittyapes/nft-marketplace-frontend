@@ -1,14 +1,37 @@
-<script>
+<script lang="ts">
+	import { goto } from '$app/navigation';
 	import SuccessCheck from '$icons/success-check.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import { currentUserAddress } from '$stores/wallet';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let message = 'Action performed successfully.';
+
+	function handleViewProfile() {
+		dispatch('close-popup');
+		goto('/profile/' + $currentUserAddress);
+	}
+
+	function handleContinueShopping() {
+		dispatch('close-popup');
+		goto('/marketplace');
+	}
 </script>
 
-<div class="flex flex-col justify-center gradient-border-green gap-12 aspect-1">
-	<div class="text-center mt-4 text-3xl text-white">{message}</div>
-	<div class="flex items-center justify-center gap-8">
-		<SuccessCheck />
-		<div class="gradient-text-green text-7xl">Success!</div>
+<div>
+	<div class="flex flex-col justify-center gradient-border-green gap-12 aspect-1 mb-8">
+		<div class="text-center mt-4 text-3xl text-white">{message}</div>
+		<div class="flex items-center justify-center gap-8">
+			<SuccessCheck />
+			<div class="gradient-text-green text-7xl">Success!</div>
+		</div>
+	</div>
+
+	<div class="flex gap-4">
+		<PrimaryButton on:click={handleViewProfile}>View Profile</PrimaryButton>
+		<PrimaryButton on:click={handleContinueShopping}>Continue Shopping</PrimaryButton>
 	</div>
 </div>
 

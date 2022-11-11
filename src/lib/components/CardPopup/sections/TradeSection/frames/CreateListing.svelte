@@ -52,7 +52,7 @@
 			dispatch('listing-created');
 			dispatch('set-frame', {
 				component: Success,
-				props: { successDescription: 'Successfully listed.', showMarketplaceButton: false },
+				props: { message: 'Listing created successfully.' },
 			});
 		} catch (err) {
 			notifyError(err.message);

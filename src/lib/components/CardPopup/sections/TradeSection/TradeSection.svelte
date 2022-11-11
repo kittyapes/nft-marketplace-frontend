@@ -71,4 +71,4 @@
 	goBack();
 </script>
 
-<svelte:component this={frameComponent} {...frameProps} {options} {chainListing} on:close-popup on:listing-created on:force-expire on:refresh-chain-data on:set-frame={handleSetFrame} />
+<svelte:component this={Success || frameComponent} {...frameProps} {options} {chainListing} on:close-popup on:listing-created on:force-expire on:refresh-chain-data on:set-frame={handleSetFrame} />
