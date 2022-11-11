@@ -216,7 +216,7 @@
 				<div class="flex flex-col">
 					{#if options?.resourceType === 'listing'}
 						<div class="text-sm font-bold text-gradient">Price</div>
-						<div class="flex gap-1 items-center text-lg font-semibold">
+						<div class="flex gap-1 items-center text-lg font-semibold text-white">
 							<div>
 								{options.listingData.shortDisplayPrice || 'N/A'}
 							</div>
