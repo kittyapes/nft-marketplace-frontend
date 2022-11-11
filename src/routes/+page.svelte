@@ -60,7 +60,7 @@
 	}}
 />
 <div class="px-14 pt-32 w-full grid place-items-center ">
-	<div class="w-1/2 h-[600px] ">
+	<div class="w-2/3 h-[600px] ">
 		<HomepageCarousel />
 	</div>
 </div>
