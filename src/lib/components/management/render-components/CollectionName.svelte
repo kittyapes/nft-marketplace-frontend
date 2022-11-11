@@ -14,7 +14,7 @@
 <ColumnComponentContainer on:click={() => goto('/collections/' + props.slug)}>
 	<div class=" h-full clickable flex gap-4 items-center min-w-max">
 		{#if props.imageUrl}
-		<div class="gradient-border-bg p-[2px]">
+		<div class="gradient-border-btn-new">
 			<div class="bg-cover w-12 h-12 clickable" style="background-image: url({props.imageUrl})" />
 		</div>
 		{:else}
