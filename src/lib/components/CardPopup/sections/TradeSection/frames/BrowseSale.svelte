@@ -50,6 +50,8 @@
 	$: purchaseError =
 		(isFuture(chainListing.startTime) && "This listing isn't for sale yet.") ||
 		!$hasEnoughTokens 				  && `You do not have enough ${options.listingData.paymentTokenTicker} to purchase this item.`;
+
+	$: quantity = options.saleData.nftQuantities[options.nfts[0].onChainId];
 </script>
 
 <div class="flex flex-col text-white aspect-1 pb-px">
@@ -67,7 +69,7 @@
 	</div>
 
 	<div class="text-gradient mt-4">Quantity</div>
-	<div class="mt-1 pl-1 text-2xl">{chainListing?.quantity ?? options?.rawResourceData?.listing?.quantity ?? options?.nfts[0]?.quantity ?? '1'}</div>
+	<div class="mt-1 pl-1 text-2xl">{quantity}</div>
 
 	<div class="flex-grow" />
 
