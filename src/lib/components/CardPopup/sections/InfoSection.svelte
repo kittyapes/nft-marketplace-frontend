@@ -30,7 +30,7 @@
 	// It is possible to pass data of multiple NFTs into the popup to support
 	// the bundle section
 	$: singleNft = options.nfts?.[0];
-	$: console.log(singleNft);
+
 	$: properties = [
 		{
 			name: 'Creator',
@@ -109,7 +109,7 @@
 	</div>
 
 	<div class="text-gradient text-lg font-medium mt-16">Description</div>
-	<div>{singleNft.metadata.description.repeat(50)}</div>
+	<div>{singleNft.metadata.description}</div>
 
 	<!-- NFT attributes -->
 	{#if singleNft.metadata?.attributes}

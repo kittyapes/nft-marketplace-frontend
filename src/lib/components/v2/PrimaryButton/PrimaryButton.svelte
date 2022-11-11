@@ -12,7 +12,7 @@
 	</div>
 </button>
 
-<style>
+<style type="postcss">
 	.gradient-stroke-bg {
 		background: linear-gradient(10deg, rgba(167, 148, 255, 0) 11.15%, rgba(167, 148, 255, 0.93) 57.47%, rgba(142, 119, 247, 0) 127.41%, rgba(142, 119, 247, 0) 127.41%, rgba(167, 148, 255, 0) 127.41%),
 			linear-gradient(0deg, #67d4f8, #67d4f8);

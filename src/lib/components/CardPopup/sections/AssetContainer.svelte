@@ -74,7 +74,7 @@
 <!-- NFT Image side-->
 <div class="flex flex-col w-full h-full overflow-hidden scrollbar-hide">
 	<!-- Asset render container -->
-	<div class="flex items-center self-center justify-center flex-shrink-0 object-contain w-full overflow-hidden bg-gray-100 aspect-1">
+	<div class="flex items-center self-center justify-center flex-shrink-0 object-contain w-full overflow-hidden bg-gray-800 bg-opacity-50 aspect-1">
 		{#await preload(assetUrl)}
 			<Loader />
 		{:then}

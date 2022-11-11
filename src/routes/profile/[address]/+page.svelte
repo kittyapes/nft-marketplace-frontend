@@ -357,7 +357,7 @@
 						{/if}
 						<div class="relative">
 							<div class="" on:click|stopPropagation={() => (shareButtonOpen = !shareButtonOpen)} bind:this={elemOpenBtn}>
-								<PrimaryButton class="w-16">
+								<PrimaryButton class="w-20">
 									<ShareV2 />
 								</PrimaryButton>
 							</div>

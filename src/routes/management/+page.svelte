@@ -538,7 +538,7 @@
 					<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
 				</div> -->
 				<div class="">
-					<Filter v2 on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'ALL' }} />
+					<Filter v2 on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'all' }} />
 				</div>
 			</div>
 		{/if}
