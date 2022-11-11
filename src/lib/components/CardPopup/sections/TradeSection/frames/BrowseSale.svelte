@@ -1,12 +1,15 @@
 <script lang="ts">
+	import Eth from '$icons/eth.svelte';
 	import type { CardOptions } from '$interfaces/ui';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { hasEnoughBalance } from '$utils/contracts/token';
 	import { salePurchase } from '$utils/flows/salePurchase';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
+	import { scientificToDecimal } from '$utils/misc/scientificToDecimal';
 	import { isFuture } from '$utils/misc/time';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { createEventDispatcher } from 'svelte';
@@ -49,39 +52,31 @@
 		!$hasEnoughTokens 				  && `You do not have enough ${options.listingData.paymentTokenTicker} to purchase this item.`;
 </script>
 
-<div class="flex flex-col justify-center h-full pb-16">
-	<img class="h-24" src={getIconUrl('cart')} alt="" />
+<div class="flex flex-col text-white aspect-1 pb-px">
+	<div class="text-gradient">Buy the NFT</div>
+	<div class="mt-1">Click BUY NOW button to own this NFT</div>
 
-	<div class="text-2xl font-bold text-center opacity-70">Buy the NFT</div>
-	<div class="mt-4 text-center opacity-50">Click buy now button to own this NFT</div>
+	<div class="text-gradient mt-4">Price</div>
+	<div class="flex gap-2 items-center">
+		<Eth gradient />
 
-	<div class="mt-8 font-bold text-center opacity-50">Price:</div>
-	<div class="flex items-center justify-center mt-2">
-		<img src={getIconUrl('eth')} alt="" />
-		<div class="{(options.saleData?.formatPrice || options.saleData?.price || 'N/A').toString().length > 12 ? 'text-3xl' : 'text-5xl'} font-bold">
-			{Number(options.saleData.formatPrice)
-				.toFixed(16)
-				.replace(/(\.?0+$)/, '') ||
-				options.saleData?.price ||
-				'N/A'}
-		</div>
-		<div class="grid h-full ml-2 font-bold opacity-70 place-items-end">wETH</div>
-	</div>
-
-	<div class="mt-8 font-bold text-center opacity-50">Quantity:</div>
-	<div class="flex items-center justify-center mt-2">
-		<div class="{(options?.rawResourceData?.listing?.quantity ?? options?.nfts[0]?.quantity) > 10000000000000 ? 'text-3xl' : 'text-5xl'} font-bold">
-			{chainListing?.quantity ?? options?.rawResourceData?.listing?.quantity ?? options?.nfts[0]?.quantity ?? '1'}
+		<div class="font-light text-sm">
+			<span class="text-2xl ">{scientificToDecimal(options.saleData?.formatPrice)}</span>
+			wETH
 		</div>
 	</div>
+
+	<div class="text-gradient mt-4">Quantity</div>
+	<div class="mt-1 pl-1 text-2xl">{chainListing?.quantity ?? options?.rawResourceData?.listing?.quantity ?? options?.nfts[0]?.quantity ?? '1'}</div>
+
+	<div class="flex-grow" />
 
 	<div class="grid mt-12 place-items-center">
 		{#if $appSigner}
-			<div class="relative">
-				<button
+			<div class="relative w-full">
+				<PrimaryButton
 					on:pointerenter={() => (hoveringPurchase = true)}
 					on:pointerleave={() => (hoveringPurchase = false)}
-					class="font-bold uppercase btn btn-gradient btn-rounded w-80"
 					on:click={handlePurchase}
 					disabled={purchasing || !!purchaseError || !chainListing.isValidOnChainListing}
 				>
@@ -89,7 +84,7 @@
 						<ButtonSpinner />
 					{/if}
 					Buy Now
-				</button>
+				</PrimaryButton>
 
 				{#if hoveringPurchase && purchaseError && chainListing.isValidOnChainListing}
 					<div class="absolute top-12">
@@ -104,7 +99,7 @@
 				{/if}
 			</div>
 		{:else}
-			<button class="font-bold uppercase btn btn-gradient btn-rounded w-80" on:click={connectToWallet}>Connect To Wallet</button>
+			<PrimaryButton on:click={connectToWallet}>Connect To Wallet</PrimaryButton>
 		{/if}
 	</div>
 </div>
