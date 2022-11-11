@@ -98,35 +98,40 @@
 		{/await}
 	</div>
 
-	<!-- NFT Name -->
-	<div class="text-4xl font-medium text-white flex-shrink-0 mt-4">
-		{title || 'No title'}
-	</div>
+	<div class="flex gap-8 flex-wrap mt-8">
+		<div>
+			<!-- NFT Name -->
+			<div class="text-4xl font-medium text-white whitespace-nowrap">
+				{title || 'No title'}
+			</div>
 
-	<!-- Buttons -->
-	<div class="flex mt-4 mb-6 gap-x-12">
-		<button class="w-5 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}><img src={getIconUrl('share')} alt="Share." /></button>
-		<button class="w-5 btn disabled:opacity-50" on:click={handleLike} disabled={!$walletConnected}>
-			<img src={favorited ? getIconUrl('heart-filled') : getIconUrl('heart-outline')} alt="Heart." class:text-color-red={favorited} />
-		</button>
-		<button class="w-5 btn" disabled={!videoAsset && !assetUrl} on:click={handleFullscreen}>
-			<img src={getIconUrl('fullscreen')} alt="Fullscreen." />
-		</button>
-	</div>
+			<!-- Buttons -->
+			<div class="flex mt-4 mb-6 gap-x-12">
+				<button class="w-5 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}><img src={getIconUrl('share')} alt="Share." /></button>
+				<button class="w-5 btn disabled:opacity-50" on:click={handleLike} disabled={!$walletConnected}>
+					<img src={favorited ? getIconUrl('heart-filled') : getIconUrl('heart-outline')} alt="Heart." class:text-color-red={favorited} />
+				</button>
+				<button class="w-5 btn" disabled={!videoAsset && !assetUrl} on:click={handleFullscreen}>
+					<img src={getIconUrl('fullscreen')} alt="Fullscreen." />
+				</button>
+			</div>
+		</div>
 
-	<div class="flex-grow" />
+		<div>
+			<!-- Auction timer -->
+			{#if countdown}
+				<div class="pb-4 text-white text-lg mt-4">
+					{capitalize(options.listingData?.listingType)}
 
-	<!-- Auction timer -->
-	{#if countdown}
-		<div class="pb-4 font-medium opacity-50">
-			{capitalize(options.listingData?.listingType)}
+					{#if countdown.expired}
+						ended
+					{:else}
+						ending in:
+					{/if}
+				</div>
 
-			{#if countdown.expired}
-				ended
-			{:else}
-				ending in:
+				<Countdown {...countdown} />
 			{/if}
 		</div>
-		<Countdown {...countdown} />
-	{/if}
+	</div>
 </div>
