@@ -217,11 +217,10 @@
 					{#if options?.resourceType === 'listing'}
 						<div class="text-sm font-bold text-gradient">Price</div>
 						<div class="flex gap-1 items-center text-lg font-semibold">
-							<Eth />
-							<!-- TEMPORARY FIX - ADDITIONAL FIX FOR BIDS WILL BE ADDED ONCE BIDDING DATA IS PRESENT ON LISTINGS RESPONSE -->
 							<div>
-								{options?.saleData?.formatPrice || options?.auctionData?.priceToDisplay || 'N/A'} ETH
+								{options.listingData.shortDisplayPrice || 'N/A'}
 							</div>
+							<Eth />
 						</div>
 					{/if}
 				</div>

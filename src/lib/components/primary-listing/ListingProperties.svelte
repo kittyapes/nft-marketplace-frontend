@@ -117,7 +117,7 @@
 	</InputSlot>
 
 	<InputSlot label="Quantity" hidden={hideQuantity}>
-		<div class="relative flex items-center gap-3 pr-4 border {(quantityError && 'border-red-500 focus:border-red-500') || ''}">
+		<div class="relative flex items-center gap-3 pr-4 border {(quantityError && 'border-red-500 focus:border-red-500') || ''}" class:opacity-50={disabled}>
 			<input
 				type="number"
 				class="w-full h-12 border-none outline-none input-hide-controls pl-4 bg-transparent"

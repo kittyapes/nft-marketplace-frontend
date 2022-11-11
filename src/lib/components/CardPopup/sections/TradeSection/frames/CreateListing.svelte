@@ -29,8 +29,6 @@
 	async function completeListing() {
 		isListing = true;
 
-		console.log({ options });
-
 		const flowOptions: CreateListingFlowOptions = {
 			title: options.nfts[0].metadata?.name,
 			description: options.nfts[0].metadata?.description,
@@ -84,7 +82,7 @@
 <div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto text-white">
 	<!-- Listing Type -->
 	<div class="mt-2 font-semibold">Listing Type</div>
-	<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} /></div>
+	<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} disabled={isListing} /></div>
 
 	<div class="mt-4">
 		<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} bind:this={_listingProperties} disabled={isListing} />

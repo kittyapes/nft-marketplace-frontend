@@ -30,7 +30,9 @@
 
 <div class="flex gap-4 w-full overflow-hidden justify-stretch items-stretch">
 	<button class="w-16 enabled:hover:bg-black enabled:hover:bg-opacity-10 flex-shrink-0 grid place-items-center btn" on:click={handleChevronLeft} disabled={disableChevronLeft}>
-		<ChevronLeft />
+		<div class="w-4">
+			<ChevronLeft />
+		</div>
 	</button>
 
 	<div class="flex flex-grow overflow-x-auto scrollbar-hide snap-mandatory snap-x scroll-smooth gap-4" bind:this={cardContainer} on:scroll={handleContainerScroll}>
@@ -42,6 +44,8 @@
 	</div>
 
 	<button class="w-16 enabled:hover:bg-black enabled:hover:bg-opacity-10 flex-shrink-0 grid place-items-center btn" on:click={handleChevronRight} disabled={disableChevronRight}>
-		<ChevronRight />
+		<div class="w-4">
+			<ChevronRight />
+		</div>
 	</button>
 </div>

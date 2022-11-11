@@ -16,7 +16,7 @@
 	}
 
 	function titleToHash(title: string, omitHash: boolean = false): string {
-		return (omitHash ? '' : '#') + title.toLowerCase().replace(/\s/g, '-').replace(/\?/g, '');
+		return (omitHash ? '' : '#') + title?.toLowerCase().replace(/\s/g, '-').replace(/\?/g, '');
 	}
 
 	let currentHash = browser && window.location.hash;
@@ -49,7 +49,8 @@
 			}
 		}
 
-		const visibleHash = (titles[visibleTitleIndex] && titleToHash(titles[visibleTitleIndex].querySelector('div').querySelector('span').innerText)) || titleToHash(titles[visibleTitleIndex].innerText);
+		const visibleHash =
+			(titles[visibleTitleIndex] && titleToHash(titles[visibleTitleIndex].querySelector('div').querySelector('span')?.innerText)) || titleToHash(titles[visibleTitleIndex]?.innerText);
 
 		if (visibleHash) {
 			currentHash = visibleHash;
