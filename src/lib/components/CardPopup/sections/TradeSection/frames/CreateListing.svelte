@@ -14,6 +14,7 @@
 	import { notifyError } from '$utils/toast';
 	import { createEventDispatcher } from 'svelte';
 	import { onMount } from 'svelte';
+	import Error from './Error.svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
 	import Success from './Success.svelte';
 
@@ -54,8 +55,12 @@
 				props: { successDescription: 'Successfully listed.', showMarketplaceButton: false },
 			});
 		} catch (err) {
-			console.error(err);
 			notifyError(err.message);
+			dispatch('set-frame', {
+				component: Error,
+				props: { message: 'Failed to create listing!' },
+			});
+			console.error(err);
 		}
 
 		isListing = false;
