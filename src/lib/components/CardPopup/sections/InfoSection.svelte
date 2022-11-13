@@ -84,14 +84,6 @@
 
 		return attributes;
 	}
-	$: console.log({ singleNft });
-	$: if (singleNft) {
-		singleNft.metadata.attributes = [
-			{ trait_type: 'Ugliness', value: '100%' },
-			{ trait_type: 'Ugliness', value: '100%' },
-			{ trait_type: 'Ugliness', value: '100%' },
-		];
-	}
 </script>
 
 <div class="flex-grow h-full pr-4 overflow-y-auto blue-scrollbar text-white">
