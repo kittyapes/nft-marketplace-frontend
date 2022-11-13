@@ -81,7 +81,7 @@
 
 <Popup class="w-full h-full rounded-none lg:w-[1400px] lg:max-h-[800px] transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>
 	<div class="bg-gradient overflow-y-auto bg-repeat-y h-full">
-		<div class="bg-black bg-opacity-40 py-4">
+		<div class="bg-black bg-opacity-40 py-8">
 			<!-- Tabs -->
 			<div class="flex px-24 gap-4">
 				<!-- Back button -->
@@ -93,7 +93,7 @@
 			</div>
 
 			<!-- Main content -->
-			<div class="grid grid-cols-2 h-full gap-8 mt-4 px-32">
+			<div class="grid grid-cols-2 h-full gap-8 mt-8 px-32">
 				<!-- Left part with image and buttons -->
 				<div class="pb-8">
 					<AssetContainer
