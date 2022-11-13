@@ -99,7 +99,7 @@
 	</div>
 
 	<div class="flex gap-8 flex-wrap mt-8">
-		<div>
+		<div class="w-full">
 			<!-- NFT Name -->
 			<div class="text-4xl font-medium text-white whitespace-nowrap">
 				{title || 'No title'}
