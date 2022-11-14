@@ -5,7 +5,7 @@ import { getContract } from '$utils/misc/getContract';
 import { getIconUrl } from '$utils/misc/getIconUrl';
 import { parseToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { get } from 'svelte/store';
 import { getCollectionContract } from './collection';
 import contractCaller from './contractCaller';
@@ -99,6 +99,7 @@ export interface ChainListing {
 	seller: string;
 	payToken: string;
 	price: string;
+	rawPrice: BigNumber;
 	reservePrice: string;
 	startTime: number;
 	duration: number;
@@ -123,6 +124,7 @@ export async function getOnChainListing(listingId: string): Promise<ChainListing
 		listingType: onChainListing?.listingType,
 		payToken: onChainListing?.payToken,
 		price: ethers.utils.formatUnits(onChainListing?.price, token.decimals),
+		rawPrice: onChainListing?.price,
 		reservePrice: ethers.utils.formatUnits(onChainListing?.reservePrice),
 		quantity: onChainListing?.quantity.toNumber(),
 		seller: onChainListing?.seller,

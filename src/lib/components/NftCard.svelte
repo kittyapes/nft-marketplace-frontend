@@ -209,15 +209,14 @@
 
 	<div class="flex items-center mt-2 font-semibold">
 		<div class="flex-grow truncate whitespace-nowrap" class:text-xs={!options.nfts[0]?.name}>
-			{options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
+			{options.nfts[0].name || options.nfts[0]?.metadata?.name || `#${options.nfts[0]?.onChainId}` || 'No Title'}
 		</div>
 		<!-- Hide price info when not present/listed -->
 		{#if options?.resourceType === 'listing'}
-			<Eth />
-			<!-- TEMPORARY FIX - ADDITIONAL FIX FOR BIDS WILL BE ADDED ONCE BIDDING DATA IS PRESENT ON LISTINGS RESPONSE -->
-			<div class="ml-1">
-				{options?.saleData?.formatPrice || options?.auctionData?.priceToDisplay || 'N/A'}
+			<div class="mr-1 whitespace-nowrap">
+				{options.listingData.shortDisplayPrice || 'N/A'}
 			</div>
+			<Eth />
 		{/if}
 	</div>
 

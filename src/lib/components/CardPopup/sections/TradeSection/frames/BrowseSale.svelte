@@ -59,7 +59,11 @@
 	<div class="flex items-center justify-center mt-2">
 		<img src={getIconUrl('eth')} alt="" />
 		<div class="{(options.saleData?.formatPrice || options.saleData?.price || 'N/A').toString().length > 12 ? 'text-3xl' : 'text-5xl'} font-bold">
-			{options.saleData?.formatPrice || options.saleData?.price || 'N/A'}
+			{Number(options.saleData.formatPrice)
+				.toFixed(16)
+				.replace(/(\.?0+$)/, '') ||
+				options.saleData?.price ||
+				'N/A'}
 		</div>
 		<div class="grid h-full ml-2 font-bold opacity-70 place-items-end">wETH</div>
 	</div>
