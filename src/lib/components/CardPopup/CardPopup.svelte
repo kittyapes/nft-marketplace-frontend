@@ -76,7 +76,7 @@
 		handler.close();
 	}
 
-	$: enableBack = typeof tabComponentInstance?.goBack === 'function';
+	let enableBack = false;
 </script>
 
 <Popup class="w-full h-full rounded-none lg:w-[1400px] lg:max-h-[800px] transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>
@@ -85,7 +85,7 @@
 			<!-- Tabs -->
 			<div class="flex px-24 gap-4">
 				<!-- Back button -->
-				<button class="btn disabled:opacity-0" disabled={!enableBack} on:click={tabComponentInstance.goBack()}>
+				<button class="btn disabled:opacity-0 transition duration-200" disabled={!enableBack} on:click={tabComponentInstance.goBack()}>
 					<img class="h-6" src={getIconUrl('back-button')} alt="Arrow pointing left." />
 				</button>
 
@@ -114,8 +114,9 @@
 						{chainListing}
 						on:close-popup={handleClosePopup}
 						on:force-expire
-						bind:this={tabComponentInstance}
 						on:listing-created={refreshBalance}
+						bind:this={tabComponentInstance}
+						bind:enableBack
 					/>
 				</div>
 			</div>

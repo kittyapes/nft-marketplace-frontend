@@ -8,6 +8,7 @@
 	import BrowseAuction from './frames/BrowseAuction.svelte';
 	import BrowseSale from './frames/BrowseSale.svelte';
 	import CreateListing from './frames/CreateListing.svelte';
+	import EditSale from './frames/EditSale.svelte';
 	import Error from './frames/Error.svelte';
 	import ManageAuction from './frames/ManageAuction.svelte';
 	import ManageSale from './frames/ManageSale.svelte';
@@ -16,6 +17,7 @@
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
+	export let enableBack = false;
 
 	let frameComponent: ConstructorOfATypedSvelteComponent;
 	let frameProps: any;
@@ -37,6 +39,9 @@
 
 		options.listingData.listingType === 'sale' ? setFrameWithoutProps(BrowseSale) : setFrameWithoutProps(BrowseAuction);
 	}
+
+	// @ts-ignore
+	$: enableBack = [Success, Error, EditSale].includes(frameComponent);
 
 	$: (options || chainListing) && updateState();
 
