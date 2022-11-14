@@ -80,7 +80,7 @@
 </script>
 
 <Popup class="w-full h-full rounded-none lg:w-[1400px] lg:max-h-[800px] transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>
-	<div class="bg-gradient overflow-y-auto bg-repeat-y h-full">
+	<div class="bg-gradient overflow-y-auto bg-repeat-y h-full blue-scrollbar">
 		<div class="bg-black bg-opacity-40 py-8">
 			<!-- Tabs -->
 			<div class="flex px-24 gap-4">
