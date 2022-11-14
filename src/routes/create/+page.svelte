@@ -116,6 +116,11 @@
 		const nftId = await getNftId();
 		console.info('[Create] Using new NFT contract ID:', nftId);
 
+		if (!nftId) {
+			popupHandler.close();
+			return;
+		}
+
 		// Create NFT on the server
 		const createNftRes = await createNFTOnAPI({
 			description: nftData.description,
