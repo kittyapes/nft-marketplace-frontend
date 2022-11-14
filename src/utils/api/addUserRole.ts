@@ -1,4 +1,3 @@
-import { api } from '$constants/api';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { httpErrorHandler } from '$utils/toast';
 import axios from 'axios';
@@ -6,9 +5,9 @@ import type { UserRole } from 'src/interfaces/userData';
 import { getApiUrl } from '.';
 import { forceBatchProcess } from './admin/batchProcessing';
 import { postInactivationQueueAdd, postVerificationQueueAdd } from './admin/userManagement';
+import { userHasRole } from '$utils/auth/userRoles';
 
 export async function addUserRole(address: string, roles: UserRole[], roleToAdd: UserRole) {
-	// 🔥 fix
 	if (roleToAdd === 'inactivated_user') {
 		const res = await postInactivationQueueAdd(address).catch(httpErrorHandler);
 

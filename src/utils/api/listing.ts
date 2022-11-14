@@ -91,6 +91,7 @@ export interface Listing {
 		collectionSlug: string;
 		_id: string;
 		nft: ApiNftData;
+		fullId: string;
 	}[];
 
 	paymentTokenTicker: string;

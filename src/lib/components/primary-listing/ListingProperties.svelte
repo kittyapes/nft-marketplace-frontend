@@ -47,6 +47,7 @@
 
 		if (props.quantity < 1) {
 			quantityError = 'You must list at least one token.';
+			formErrors.push(quantityError);
 		}
 
 		// Sale

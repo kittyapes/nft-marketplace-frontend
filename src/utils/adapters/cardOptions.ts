@@ -25,6 +25,7 @@ export interface SanitizedNftData {
 	thumbnailUrl: string;
 	assetUrl: string;
 	quantity: number;
+	fullId: string;
 }
 
 export async function sanitizeNftData(data: ApiNftData) {
@@ -32,7 +33,7 @@ export async function sanitizeNftData(data: ApiNftData) {
 		data.uri = await getOnChainUri(data?.contractAddress, data?.nftId.toString());
 	}
 
-	if (!data.thumbnailUrl || !data.metadata) {
+	if (!data.metadata || !data.thumbnailUrl) {
 		const nftMetadata = data.uri ? await getMetadataFromUri(data.uri) : null;
 		data.metadata = nftMetadata ?? data.metadata;
 		// TODO: Add temporary image for nfts that did not load here
@@ -57,6 +58,7 @@ export async function sanitizeNftData(data: ApiNftData) {
 		likes: data?.favoriteCount,
 		thumbnailUrl: makeHttps(data.thumbnailUrl) ?? '',
 		assetUrl: makeHttps(data?.metadata?.animation_url || data?.assetUrl || data?.thumbnailUrl) ?? '',
+		fullId: data?.fullId ?? `${data.contractAddress}:${data.nftId}`,
 	};
 
 	return ret;
@@ -141,7 +143,7 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 			highestBid,
 		};
 
-		ret.listingData.shortDisplayPrice = toShortDisplayPrice(priceToDisplay);
+		ret.listingData.shortDisplayPrice = toShortDisplayPrice(scientificToDecimal(priceToDisplay));
 	}
 
 	return ret;
