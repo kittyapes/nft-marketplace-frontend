@@ -121,7 +121,7 @@
 				<div class="relative property-value">
 					{prop.value || 'N/A'}
 					{#if prop.value === null}
-						<div class="absolute top-0 w-24 h-6 mt-1 bg-gray-100 rounded" out:fade|local />
+						<div class="absolute top-0 w-24 h-6 mt-1 bg-gray-700 rounded" out:fade|local />
 					{/if}
 				</div>
 			</div>
