@@ -143,7 +143,7 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 			highestBid,
 		};
 
-		ret.listingData.shortDisplayPrice = toShortDisplayPrice(priceToDisplay);
+		ret.listingData.shortDisplayPrice = toShortDisplayPrice(scientificToDecimal(priceToDisplay));
 	}
 
 	return ret;
