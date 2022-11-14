@@ -93,12 +93,11 @@
 	let listingProps: Partial<ConfigurableListingProps> = {};
 </script>
 
-<div class="flex flex-col h-full p-4 pb-8 overflow-y-scroll overscroll-contain">
+<div class="flex flex-col h-full p-4 pb-8 overflow-y-scroll overscroll-contain text-white">
 	<div class="mt-2">
 		<!-- TODO maxQuantity needs to be checked on chain -->
 		<ListingProperties
 			listingType={options.listingData.listingType}
-			maxQuantity={getTokenBalance(options.nfts[0].onChainId)}
 			disableQuantity
 			{disableStartDate}
 			maxPrice={chainListing.price}

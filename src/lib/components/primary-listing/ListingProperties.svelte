@@ -17,7 +17,7 @@
 	export let compact = false;
 
 	export let maxPrice: string = null;
-	export let maxQuantity: number;
+	export let maxQuantity: number = null;
 	export let hideQuantity = false;
 	export let disableQuantity = false;
 	export let disableStartDate = false;
@@ -117,7 +117,7 @@
 	</InputSlot>
 
 	<InputSlot label="Quantity" hidden={hideQuantity}>
-		<div class="relative flex items-center gap-3 pr-4 border {(quantityError && 'border-red-500 focus:border-red-500') || ''}" class:opacity-50={disabled}>
+		<div class="relative flex items-center gap-3 border {(quantityError && 'border-red-500 focus:border-red-500') || ''}" class:opacity-50={disabled} class:pr-4={!disableQuantity}>
 			<input
 				type="number"
 				class="w-full h-12 border-none outline-none input-hide-controls pl-4 bg-transparent"
