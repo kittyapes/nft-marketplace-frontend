@@ -25,7 +25,7 @@
 			>
 				<!-- TODO add share icon -->
 			</button>
-			<div class:hidden={!showSocials} class="absolute right-0 z-10 top-12 2xl:top-16 border-gradient py-5 2xl:py-7 px-5 2xl:px-6 bg-dark-gradient flex flex-row items-center gap-x-3 2xl:gap-x-4">
+			<div class:hidden={!showSocials} class="absolute right-0 z-10 top-12 2xl:top-16 border-gradient py-5 2xl:py-7 px-5 2xl:px-6 bg-dark-gradient flex flex-row items-end gap-x-3 2xl:gap-x-4">
 				<div class:hidden={collectionData?.facebookUrl} class="flex flex-col items-center gap-y-1 2xl:gap-y-1.5 font-semibold text-[10px] 2xl:text-sm">
 					<p class:hidden={hoveredSocial !== collectionData?.facebookUrl}>Facebook</p>
 					<a
