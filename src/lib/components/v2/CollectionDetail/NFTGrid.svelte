@@ -7,7 +7,6 @@
 	import { goto } from '$app/navigation';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import Card from './Card.svelte';
-	export let filtersShown = false;
 	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions[];
@@ -53,7 +52,7 @@
 	{/if}
 
 	{#if options?.length || options?.length === 0}
-		<div class:normal-grid={gridStyle === 'normal' || filtersShown} class:dense-grid={gridStyle === 'dense'} class:masonry-grid={gridStyle === 'masonry'}>
+		<div class:normal-grid={gridStyle === 'normal'} class:dense-grid={gridStyle === 'dense'} class:masonry-grid={gridStyle === 'masonry'}>
 			{#if createNewNftBtn.include}
 				<div
 					class="grid place-items-center border border-dashed border-opacity-30 border-color-gray-base clickable hover:scale-105 transition-all rounded-2xl max-w-[246px] min-h-[315px]"

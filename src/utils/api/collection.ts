@@ -18,8 +18,12 @@ export interface Collection {
 	royalties?: { fees: string | null; address: string; createdAt?: string }[];
 	walletAddress?: string;
 	discordUrl?: string;
+	deviantartUrl?: string;
+	artstationUrl?: string;
 	instagramUrl?: string;
+	facebookUrl?: string;
 	twitterUrl?: string;
+	websiteUrl?: string;
 	otherUrl?: string;
 	telegramUrl?: string;
 	blockchain?: string;
