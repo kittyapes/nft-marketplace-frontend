@@ -5,6 +5,8 @@
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { matches } from '$utils/misc';
 	import { isZeroAddress } from '$utils/misc/address';
+	import { size } from 'lodash-es';
+	import { onMount } from 'svelte';
 	import BrowseAuction from './frames/BrowseAuction.svelte';
 	import BrowseSale from './frames/BrowseSale.svelte';
 	import CreateListing from './frames/CreateListing.svelte';
@@ -19,33 +21,30 @@
 	export let chainListing: ChainListing;
 	export let enableBack = false;
 
-	let frameComponent: ConstructorOfATypedSvelteComponent;
-	let frameProps: any;
+	let frameStack: { component: ConstructorOfATypedSvelteComponent; props: any }[] = [];
+
+	export function goBack() {
+		frameStack.shift();
+		frameStack = frameStack;
+	}
 
 	function handleSetFrame(ev: { detail: { component: ConstructorOfATypedSvelteComponent; props?: any } }) {
-		frameComponent = ev.detail.component;
-		frameProps = ev.detail.props || {};
+		frameStack.unshift({ component: ev.detail.component, props: ev.detail.props });
+		frameStack = frameStack;
 	}
 
 	function setFrameWithoutProps(component: ConstructorOfATypedSvelteComponent) {
 		handleSetFrame({ detail: { component: component } });
 	}
 
-	export function goBack() {
+	function setBaseFrame() {
+		frameStack = [];
+
 		if (!options.listingData) {
 			setFrameWithoutProps(CreateListing);
 			return;
 		}
 
-		options.listingData.listingType === 'sale' ? setFrameWithoutProps(BrowseSale) : setFrameWithoutProps(BrowseAuction);
-	}
-
-	// @ts-ignore
-	$: enableBack = [Success, Error, EditSale].includes(frameComponent);
-
-	$: (options || chainListing) && updateState();
-
-	function updateState() {
 		if (options.resourceType === 'listing') {
 			if (!chainListing) {
 				setFrameWithoutProps(DiamondsLoader);
@@ -69,10 +68,22 @@
 		}
 	}
 
-	$: showBackButton = frameComponent === Success || frameComponent === Error;
+	onMount(setBaseFrame);
 
-	// Initialize state
-	goBack();
+	// @ts-ignore
+	$: enableBack = [Success, Error, EditSale].includes(frameStack[0]?.component);
+
+	$: (options || chainListing) && setBaseFrame();
 </script>
 
-<svelte:component this={frameComponent} {...frameProps} {options} {chainListing} on:close-popup on:listing-created on:force-expire on:refresh-chain-data on:set-frame={handleSetFrame} />
+<svelte:component
+	this={frameStack[0].component}
+	{...frameStack[0].props}
+	{options}
+	{chainListing}
+	on:close-popup
+	on:listing-created
+	on:force-expire
+	on:refresh-chain-data
+	on:set-frame={handleSetFrame}
+/>

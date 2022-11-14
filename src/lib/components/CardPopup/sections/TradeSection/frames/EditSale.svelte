@@ -16,7 +16,6 @@
 	import { createToggle } from '$utils/misc/toggle';
 	import { getInterval } from '$utils/scheduler';
 	import { notifyError } from '$utils/toast';
-	import { chain } from 'lodash-es';
 	import { onDestroy } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 	import Success from './Success.svelte';
