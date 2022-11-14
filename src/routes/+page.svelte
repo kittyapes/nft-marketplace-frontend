@@ -104,7 +104,7 @@
 		</div>
 		<hr class="mt-4 border-[#FFFFFF1E]" />
 
-		<div class="flex flex-col h-full py-11 overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-[#FFFFFF1E]" in:fade>
+		<div class="flex flex-col h-full py-11 pr-4 overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-[#FFFFFF1E]" in:fade>
 			<div class="flex-shrink-0 h-full lg:h-[250px]">
 				<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
 			</div>
