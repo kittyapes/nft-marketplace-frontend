@@ -32,7 +32,7 @@ export async function sanitizeNftData(data: ApiNftData) {
 		data.uri = await getOnChainUri(data?.contractAddress, data?.nftId.toString());
 	}
 
-	if (!data.thumbnailUrl || !data.metadata) {
+	if (!data.metadata || !data.thumbnailUrl) {
 		const nftMetadata = data.uri ? await getMetadataFromUri(data.uri) : null;
 		data.metadata = nftMetadata ?? data.metadata;
 		// TODO: Add temporary image for nfts that did not load here
