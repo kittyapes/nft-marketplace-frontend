@@ -12,6 +12,7 @@
 	import { noTryAsync } from 'no-try';
 	import { makeHttps } from '$utils/ipfs';
 	import { walletConnected } from '$utils/wallet';
+	import Heart from '$icons/heart.svelte';
 
 	export let title: string;
 	export let assetUrl: string;
@@ -108,8 +109,8 @@
 			<!-- Buttons -->
 			<div class="flex mt-4 mb-6 gap-x-12">
 				<button class="w-5 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}><img src={getIconUrl('share')} alt="Share." /></button>
-				<button class="w-5 btn disabled:opacity-50" on:click={handleLike} disabled={!$walletConnected}>
-					<img src={favorited ? getIconUrl('heart-filled') : getIconUrl('heart-outline')} alt="Heart." class:text-color-red={favorited} />
+				<button class="w-5 btn disabled:opacity-50" class:text-white={favorited} on:click={handleLike} disabled={!$walletConnected}>
+					<Heart />
 				</button>
 				<button class="w-5 btn" disabled={!videoAsset && !assetUrl} on:click={handleFullscreen}>
 					<img src={getIconUrl('fullscreen')} alt="Fullscreen." />
