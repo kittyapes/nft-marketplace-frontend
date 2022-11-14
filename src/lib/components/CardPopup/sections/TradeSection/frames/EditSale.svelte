@@ -92,7 +92,7 @@
 	let listingProps: Partial<ConfigurableListingProps> = {};
 </script>
 
-<div class="flex flex-col h-full p-4 pb-8 overflow-y-scroll overscroll-contain text-white">
+<div class="flex flex-col pb-8 overscroll-contain text-white aspect-1 overflow-hidden ">
 	<div class="mt-2">
 		<!-- TODO maxQuantity needs to be checked on chain -->
 		<ListingProperties
@@ -131,12 +131,12 @@
 	</div>
 
 	<div class="flex gap-2 mt-4">
-		<SecondaryButton disabled={updatingListing || cancellingListing} on:click={cancelListing}>
+		<PrimaryButton disabled={updatingListing || cancellingListing} on:click={cancelListing}>
 			{#if cancellingListing}
 				<ButtonSpinner secondary />
 			{/if}
 			Cancel Listing
-		</SecondaryButton>
+		</PrimaryButton>
 
 		<div bind:this={updatebuttonContainer} class="w-full" on:pointerenter={isUpdateHovered.toggle} on:pointerleave={isUpdateHovered.toggle}>
 			<PrimaryButton on:click={updateListing} disabled={!!formErrors.length || updatingListing || cancellingListing || !allowEdit}>
