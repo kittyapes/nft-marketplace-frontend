@@ -2,47 +2,64 @@
 	import Eth from '$icons/eth.svelte';
 	import type { Collection } from '$utils/api/collection';
 	export let collectionData: Collection;
+	const collectionStats = {
+		highestSale: {
+			stat: 'Highest Sale',
+			value: 0,
+			symbol: 'WETH',
+		},
+		floorPrice: {
+			stat: 'Floor Price',
+			value: 0,
+			symbol: 'WETH',
+		},
+		totalVol: {
+			stat: 'Total Volume',
+			value: 0,
+			symbol: 'WETH',
+		},
+		items: {
+			stat: 'Items',
+			value: 0,
+			symbol: '',
+		},
+		owners: {
+			stat: 'Owners',
+			value: 0,
+			symbol: '',
+		},
+		total24hours: {
+			stat: '24Hr Volume',
+			value: 0,
+			symbol: 'WETH',
+		},
+	};
+	$: if (collectionData) {
+		let formatter = Intl.NumberFormat('en', { notation: 'compact' });
+		Object.keys(collectionStats).map((key) => {
+			if (collectionData?.[key]) {
+				collectionStats[key].value = formatter.format(collectionData[key]);
+			}
+		});
+	}
 </script>
 
-<div class="flex flex-row items-center text-base leading-6">
-	<div class="hover:bg-main-gradient flex flex-col items-center justify-center border-gradient border-r-0 w-[106px] 2xl:w-[132px] h-[86px] 2xl:h-[106px]">
-		<p class="text-xs 2xl:text-base leading-5 2xl:leading-6">Highest Sale</p>
-		<div class="flex items-center gap-x-1.5">
-			<Eth class="w-2.5 h-4" />
-			<span class="text-[14px] 2xl:text-[18px] leading-5 2xl:leading-6">{collectionData?.highestSale || 0.0}</span>
+<div class="flex flex-row items-center text-base leading-6 stat-wrapper">
+	{#each Object.keys(collectionStats) as statKey}
+		<div class="hover:bg-main-gradient flex flex-col items-center justify-center border-gradient border-r-0 w-[106px] 2xl:w-[132px] h-[86px] 2xl:h-[106px]">
+			<p class="text-xs 2xl:text-base leading-5 2xl:leading-6">{collectionStats[statKey].stat}</p>
+			<h2 class="flex items-center gap-x-1.5">
+				{#if collectionStats[statKey].symbol}
+					<Eth class="w-2.5 h-4" />
+				{/if}
+				<span class="text-[14px] 2xl:text-[18px] leading-5 2xl:leading-6">{collectionStats[statKey].value || 0.0}</span>
+			</h2>
 		</div>
-	</div>
-	<div class="hover:bg-main-gradient flex flex-col items-center justify-center border-gradient border-r-0 w-[106px] 2xl:w-[132px] h-[86px] 2xl:h-[106px]">
-		<p class="text-xs 2xl:text-base leading-5 2xl:leading-6">Floor Price</p>
-		<div class="flex items-center gap-x-1.5">
-			<Eth class="w-2.5 h-4" />
-			<span class="text-[14px] 2xl:text-[18px] leading-5 2xl:leading-6">{collectionData?.floorPrice || 0.0}</span>
-		</div>
-	</div>
-	<div class="hover:bg-main-gradient flex flex-col items-center justify-center border-gradient border-r-0 w-[106px] 2xl:w-[132px] h-[86px] 2xl:h-[106px]">
-		<p class="text-xs 2xl:text-base leading-5 2xl:leading-6">Total Volume</p>
-		<div class="flex items-center gap-x-1.5">
-			<Eth class="w-2.5 h-4" />
-			<span class="text-[14px] 2xl:text-[18px] leading-5 2xl:leading-6">{collectionData?.totalVol || 0.0}</span>
-		</div>
-	</div>
-	<div class="hover:bg-main-gradient flex flex-col items-center justify-center border-gradient border-r-0 w-[106px] 2xl:w-[132px] h-[86px] 2xl:h-[106px]">
-		<p class="text-xs 2xl:text-base leading-5 2xl:leading-6">Items</p>
-		<div class="flex items-center gap-x-1.5">
-			<span class="text-[14px] 2xl:text-[18px] leading-5 2xl:leading-6">{collectionData?.items || 0.0}</span>
-		</div>
-	</div>
-	<div class="hover:bg-main-gradient flex flex-col items-center justify-center border-gradient border-r-0 w-[106px] 2xl:w-[132px] h-[86px] 2xl:h-[106px]">
-		<p class="text-xs 2xl:text-base leading-5 2xl:leading-6">Owners</p>
-		<div class="flex items-center gap-x-1.5">
-			<span class="text-[14px] 2xl:text-[18px] leading-5 2xl:leading-6">{collectionData?.owners || 0.0}</span>
-		</div>
-	</div>
-	<div class="hover:bg-main-gradient flex flex-col items-center justify-center border-gradient hover: w-[106px] 2xl:w-[132px] h-[86px] 2xl:h-[106px]">
-		<p class="text-xs 2xl:text-base leading-5 2xl:leading-6">24hr Volume</p>
-		<div class="flex items-center gap-x-1.5">
-			<Eth class="w-2.5 h-4" />
-			<span class="text-[14px] 2xl:text-[18px] leading-5 2xl:leading-6">{collectionData?.total24hours || 0.0}</span>
-		</div>
-	</div>
+	{/each}
 </div>
+
+<style lang="postcss">
+	.stat-wrapper div:last-child {
+		@apply border-r-2;
+	}
+</style>

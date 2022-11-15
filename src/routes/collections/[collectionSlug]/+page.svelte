@@ -107,12 +107,6 @@
 		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => undefined);
 		// console.log(collectionData);
 		// Populate collection stats
-		let formatter = Intl.NumberFormat('en', { notation: 'compact' });
-		Object.keys(collectionStats).map((key) => {
-			if (collectionData?.[key]) {
-				collectionStats[key].value = formatter.format(collectionData[key]);
-			}
-		});
 
 		creatorData = await fetchProfileData(collectionData?.creator).catch((e) => undefined);
 		await fetchMore();
