@@ -21,7 +21,7 @@ export async function apiGetUserOwnedNftsAlchemy(address: string, pageKey?: stri
 		}),
 	);
 
-	return { err, res: res.data.data as { nfts: ApiNftData[]; pageKey: string | undefined } };
+	return { err, res: (res?.data?.data ?? { pageKey: undefined, nfts: [] }) as { nfts: ApiNftData[]; pageKey: string | undefined } };
 }
 
 export async function apiGetUserNfts(address: string, type: 'MINTED', page: number, limit: number) {
