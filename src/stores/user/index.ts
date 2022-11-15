@@ -5,6 +5,7 @@ import { fetchCurrentUserData, fetchProfileData } from '$utils/api/profile';
 import { isAuthTokenExpired } from '$utils/auth/token';
 import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 import { derived, get, writable } from 'svelte/store';
+import { storage } from '$utils/contracts';
 
 export const profileData = writable<Awaited<ReturnType<typeof fetchCurrentUserData>>>(null);
 export const publicProfileData = writable<PublicProfileData>(null);
@@ -31,6 +32,12 @@ async function refreshPublicProfileData(address?: string) {
 
 export async function refreshProfileData() {
 	const newProfileData = await fetchCurrentUserData();
+
+	const isVerified = get(currentUserAddress) && (await storage.hasRole('minter', get(currentUserAddress)).catch(() => false));
+
+	if (!newProfileData.roles.includes('verified_user') && isVerified) {
+		newProfileData.roles.push('verified_user');
+	}
 
 	profileData.set(newProfileData);
 }
