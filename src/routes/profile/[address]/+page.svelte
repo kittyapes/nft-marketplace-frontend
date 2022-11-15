@@ -19,7 +19,7 @@
 	import { profileCompletionProgress, profileData, userCreatedListing } from '$stores/user';
 	import { listingToCardOptions, nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { getListing, getListings } from '$utils/api/listing';
-	import { apiGetUserNfts, getNft } from '$utils/api/nft';
+	import { apiGetUserNfts, apiGetUserOwnedNftsAlchemy, getNft } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { apiGetHiddenNfts } from '$utils/api/user';
 	import { userHasRole } from '$utils/auth/userRoles';
@@ -117,13 +117,16 @@
 		index?: number;
 		reachedEnd?: boolean;
 		isFetching?: boolean;
+		isAlchemyTab: boolean;
+		alchemyPageKey?: string;
 		data?: CardOptions[];
 	}[] = [
 		{
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
-				res.res = await apiGetUserNfts(address, 'COLLECTED', page, limit);
-				res.adapted = await Promise.all(res.res.res.map(nftToCardOptions));
+				res.res = await apiGetUserOwnedNftsAlchemy(address, tab.alchemyPageKey ?? undefined);
+				res.adapted = await Promise.all(res.res.res.nfts.map(nftToCardOptions));
+				tab.alchemyPageKey = res.res.res.pageKey;
 
 				for (const nft of res.adapted) {
 					nft.rawResourceData.owner = address;
@@ -133,6 +136,7 @@
 			},
 			label: 'Collected NFTs',
 			name: 'collected',
+			isAlchemyTab: true,
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -143,6 +147,7 @@
 			},
 			label: 'Created NFTs',
 			name: 'created',
+			isAlchemyTab: false,
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -160,6 +165,7 @@
 			},
 			label: 'Listings',
 			name: 'listings',
+			isAlchemyTab: false,
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -171,6 +177,7 @@
 			},
 			label: 'Favorites',
 			name: 'favorites',
+			isAlchemyTab: false,
 		},
 		{
 			fetchFunction: async (tab, page, limit) => {
@@ -185,6 +192,7 @@
 			},
 			label: 'Hidden',
 			name: 'hidden',
+			isAlchemyTab: false,
 		},
 	];
 
@@ -255,7 +263,7 @@
 
 		isFetchingNfts = true;
 		tab.isFetching = true;
-		const res = await tab.fetchFunction(tab, tab.index, fetchLimit);
+		const res = await tab.fetchFunction(tab, tab.index as number, fetchLimit);
 
 		if (res.err) {
 			console.error(res.err);
@@ -263,11 +271,15 @@
 			return;
 		}
 
-		if (res.adapted.length === 0) {
+		if (res.adapted.length === 0 && !tab.isAlchemyTab) {
 			tab.reachedEnd = true;
 		} else {
 			tab.data = [...tab.data, ...res.adapted];
-			tab.index++;
+			if (tab.isAlchemyTab) {
+				tab.reachedEnd = typeof tab.alchemyPageKey === 'string' ? false : true;
+			} else {
+				(tab.index as number)++;
+			}
 		}
 
 		selectedTab.data = selectedTab.data;

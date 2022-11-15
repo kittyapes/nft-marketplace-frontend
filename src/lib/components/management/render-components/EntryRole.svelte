@@ -24,8 +24,6 @@
 	let handleSelect = async (event: CustomEvent) => {
 		if (props.mode === 'USER') {
 			let roles: UserRole[] = [];
-			console.log(event);
-			console.log(props);
 
 			localProps.options.forEach((o) => {
 				if (o.checked) roles.push(o.value);

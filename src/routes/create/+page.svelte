@@ -19,7 +19,6 @@
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { newBundleData, type NewBundleData } from '$utils/create';
 	import { createNFTOnAPI, createNFTOnChain } from '$utils/create/createNFT';
-	import { getNftId } from '$utils/create/getNftId';
 	import { getContract } from '$utils/misc/getContract';
 	import { goBack } from '$utils/navigation';
 	import { setPopup, updatePopupProps } from '$utils/popup';
@@ -113,8 +112,6 @@
 		newBundleData.set({} as NewBundleData);
 		const progress = writable(0);
 		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
-		const nftId = await getNftId();
-		console.info('[Create] Using new NFT contract ID:', nftId);
 
 		// Create NFT on the server
 		const createNftRes = await createNFTOnAPI({
