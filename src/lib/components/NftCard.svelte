@@ -46,7 +46,7 @@
 	async function handleClick(ev) {
 		if (!options.allowPopup) return;
 
-		const id = options.resourceType === 'nft' ? options.nfts[0].databaseId : options.listingData.onChainId;
+		const id = options.resourceType === 'nft' ? options.nfts[0].fullId : options.listingData.onChainId;
 
 		addUrlParam('id', id);
 

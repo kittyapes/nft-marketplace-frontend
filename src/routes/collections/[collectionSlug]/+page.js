@@ -1,7 +1,5 @@
-import { page } from '$app/stores';
 import { getApiUrl } from '$utils/api';
 import axios from 'axios';
-import { get } from 'svelte/store';
 
 /** @type {import('./$types').PageLoad} */
 export async function load(event) {
