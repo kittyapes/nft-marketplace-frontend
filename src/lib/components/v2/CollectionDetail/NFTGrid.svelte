@@ -5,33 +5,15 @@
 	import { nftDraft } from '$stores/create';
 	import AddCircle from '$icons/add-circle.svelte';
 	import { goto } from '$app/navigation';
-	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import Card from './Card.svelte';
-	import { browser } from '$app/environment';
 	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions[];
 	export let cardPropsMapper: (v: CardOptions) => { options: CardOptions } = (v) => ({ options: v });
 	export let isLoading = false;
-	export let reachedEnd = false;
 	export let createNewNftBtn = { include: false, collectionId: '' };
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
-	const inviewOptions = {};
-
-	function onChange(event) {
-		if (event.detail.inView) {
-			dispatch('end-reached');
-		}
-	}
-
-	function hideCard(index) {
-		options.splice(index, 1);
-		options = options;
-		dispatch('refresh-tabs', {
-			tabs: ['collected', 'created', 'hidden'],
-		});
-	}
-
+	export let reachedEnd: boolean;
 	let hidden = new WeakMap();
 
 	$: options.forEach((o) =>
@@ -45,15 +27,6 @@
 			}
 		}),
 	);
-
-	$: if (options?.length > 0 && gridStyle === 'masonry' && browser) {
-		const allNftImages = document.getElementsByClassName('nft-image-wrapper');
-		console.log(allNftImages.length, '  TOTAL');
-		for (let i = 0; i < allNftImages?.length; i++) {
-			const nftImage = allNftImages[i];
-			console.log(nftImage.id);
-		}
-	}
 </script>
 
 <div class="w-full text-white">
@@ -92,13 +65,7 @@
 			{/each}
 		</div>
 	{/if}
-
-	{#if isLoading}
-		<DiamondsLoader />
-	{:else}
-		<div use:inview={inviewOptions} on:change={onChange} />
-	{/if}
-	{#if reachedEnd && options?.length !== 0}
+	{#if reachedEnd}
 		<div class="text-center placeholder ">You have reached the end of this list.</div>
 	{/if}
 </div>

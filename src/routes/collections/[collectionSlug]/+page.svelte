@@ -18,12 +18,12 @@
 	let collectionData: Collection;
 	let nfts = [];
 	let creatorData: UserData;
-
+	let nftsLoading = false;
 	let reachedEnd = false;
 	let isLoading = false;
 
 	let index = 1;
-	const limit = 15;
+	const limit = 12;
 
 	const resetNfts = () => {
 		nfts = [];
@@ -163,7 +163,7 @@
 		}}
 	/>
 {/if}
-<CollectionDetail bind:collectionData bind:nfts />
+<CollectionDetail bind:collectionData bind:nfts on:load-more={fetchMore} bind:isLoading bind:reachedEnd />
 {#if showCollectionMenu}
 	<AttachToElement to={menuButton} bottom right bind:this={menuAttachElement}>
 		<ActionMenu options={collectionMenuButtonOptions} on:optionClick={() => (showCollectionMenu = false)} />
