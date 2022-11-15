@@ -8,9 +8,6 @@
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import Card from './Card.svelte';
 	import { browser } from '$app/environment';
-	import imagesLoaded from 'imagesloaded';
-	import { log } from '$utils/debug';
-	import { bind } from 'svelte/internal';
 	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions[];
@@ -119,7 +116,7 @@
 		@apply justify-between gap-y-8 2xl:gap-y-10;
 	}
 	.masonry-container {
-		@apply columns-6 2xl:columns-[206px];
+		@apply columns-[166px] 2xl:columns-[206px];
 		@apply gap-x-5 2xl:gap-x-6;
 	}
 </style>

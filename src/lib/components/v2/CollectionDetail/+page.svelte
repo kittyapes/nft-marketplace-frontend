@@ -11,7 +11,7 @@
 	import CollectionValues from './CollectionValues.svelte';
 	import CollectionIdentity from './CollectionIdentity.svelte';
 	import CollectionDescription from './CollectionDescription.svelte';
-	let gridStyle: 'normal' | 'dense' | 'masonry' = 'masonry';
+	let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 
 	export let collectionData: Collection;
 	export let nfts = [];

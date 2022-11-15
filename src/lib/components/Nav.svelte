@@ -51,16 +51,12 @@
 		<a id="marketplace-link" href="/marketplace" class="relative font-semibold snap-center bg-card-gradient h-1/2 grid place-items-center px-4 btn">Marketplace</a>
 
 		<!-- Staking - HIDDEN FOR V1 -->
-		<a href="/staking" class="relative font-semibold capitalize text-md snap-center min-w-fit" class:-mr-8={!showCreate}>Staking</a>
+		<a href="/staking" class="relative font-semibold capitalize text-md snap-center min-w-fit">Staking</a>
 
 		<!-- Airdrop HIDDEN FOR NOW -->
 		<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
 
 		<!-- Create -->
-<<<<<<< HEAD
-		{#if showCreate}
-			<button on:click={() => goto('/create')} class="relative font-semibold bg-card-gradient h-1/2 grid place-items-center px-4 snap-center">Create</button>
-=======
 		{#if $profileData?.roles.includes('verified_user')}
 			<button
 				on:click={() => goto('/create')}
@@ -68,7 +64,6 @@
 			>
 				Create
 			</button>
->>>>>>> master
 		{/if}
 
 		<!-- Profile -->
