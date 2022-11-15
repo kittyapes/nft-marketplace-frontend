@@ -8,8 +8,33 @@
 	import type { Collection } from '$utils/api/collection';
 
 	export let collectionData: Collection;
-	let showSocials = false;
+	let showSocials = true;
 	let hoveredSocial = '';
+	let socials: { name?: string; url?: string; component?: any }[] = [];
+	const populateSocials = () => {
+		// if (collectionData?.facebookUrl) {
+		socials.push({ name: 'Facebook', url: collectionData?.facebookUrl, component: Facebook });
+		// }
+		// if (collectionData?.twitterUrl) {
+		socials.push({ name: 'Twitter', url: collectionData?.twitterUrl, component: Twitter });
+		// }
+		// if (collectionData?.instagramUrl) {
+		socials.push({ name: 'Instagram', url: collectionData?.instagramUrl, component: Instagram });
+		// }
+		// if (collectionData?.websiteUrl) {
+		socials.push({ name: 'Website', url: collectionData?.websiteUrl, component: Web });
+		// }
+		// if (collectionData?.deviantartUrl) {
+		socials.push({ name: 'Deviantart', url: collectionData?.deviantartUrl, component: Deviantart });
+		// }
+		// if (collectionData?.artstationUrl) {
+		socials.push({ name: 'Artstation', url: collectionData?.artstationUrl, component: Artstation });
+		// }
+	};
+	$: if (collectionData) {
+		populateSocials();
+		console.log(socials);
+	}
 </script>
 
 <div class="flex items-center justify-between mt-11">
@@ -26,78 +51,22 @@
 				<!-- TODO add share icon -->
 			</button>
 			<div class:hidden={!showSocials} class="absolute right-0 z-10 top-12 2xl:top-16 border-gradient py-5 2xl:py-7 px-5 2xl:px-6 bg-dark-gradient flex flex-row items-end gap-x-3 2xl:gap-x-4">
-				<div class:hidden={collectionData?.facebookUrl} class="flex flex-col items-center gap-y-1 2xl:gap-y-1.5 font-semibold text-[10px] 2xl:text-sm">
-					<p class:hidden={hoveredSocial !== collectionData?.facebookUrl}>Facebook</p>
-					<a
-						href={collectionData?.facebookUrl}
-						target="_blank"
-						on:mouseenter={() => (hoveredSocial = collectionData?.facebookUrl)}
-						on:mouseleave={() => (hoveredSocial = '')}
-						class="w-8 h-8 2xl:w-9 2xl:h-9 hover:border-gradient border border-white flex items-center justify-center transition-btn"
-					>
-						<Facebook gradient={hoveredSocial === collectionData?.facebookUrl} />
-					</a>
-				</div>
-				<div class:hidden={collectionData?.twitterUrl} class="flex flex-col items-center gap-y-1 2xl:gap-y-1.5 font-semibold text-[10px] 2xl:text-sm">
-					<p class:hidden={hoveredSocial !== collectionData?.twitterUrl}>Twitter</p>
-					<a
-						href={collectionData?.twitterUrl}
-						target="_blank"
-						on:mouseenter={() => (hoveredSocial = collectionData?.twitterUrl)}
-						on:mouseleave={() => (hoveredSocial = '')}
-						class="w-8 h-8 2xl:w-9 2xl:h-9 hover:border-gradient border border-white flex items-center justify-center transition-btn"
-					>
-						<Twitter gradient={hoveredSocial === collectionData?.twitterUrl} />
-					</a>
-				</div>
-				<div class:hidden={!collectionData?.instagramUrl} class="flex flex-col items-center gap-y-1 2xl:gap-y-1.5 font-semibold text-[10px] 2xl:text-sm">
-					<p class:hidden={hoveredSocial !== collectionData?.instagramUrl}>Instagram</p>
-					<a
-						href={collectionData?.instagramUrl}
-						target="_blank"
-						on:mouseenter={() => (hoveredSocial = collectionData?.instagramUrl)}
-						on:mouseleave={() => (hoveredSocial = '')}
-						class="w-8 h-8 2xl:w-9 2xl:h-9 hover:border-gradient border border-white flex items-center justify-center transition-btn"
-					>
-						<Instagram gradient={hoveredSocial === collectionData?.instagramUrl} />
-					</a>
-				</div>
-				<div class:hidden={!collectionData?.websiteUrl} class="flex flex-col items-center gap-y-1 2xl:gap-y-1.5 font-semibold text-[10px] 2xl:text-sm">
-					<p class:hidden={hoveredSocial !== collectionData?.websiteUrl}>Website</p>
-					<a
-						href={collectionData?.websiteUrl}
-						target="_blank"
-						on:mouseenter={() => (hoveredSocial = collectionData?.websiteUrl)}
-						on:mouseleave={() => (hoveredSocial = '')}
-						class="w-8 h-8 2xl:w-9 2xl:h-9 hover:border-gradient border border-white flex items-center justify-center transition-btn"
-					>
-						<Web gradient={hoveredSocial === collectionData?.websiteUrl} />
-					</a>
-				</div>
-				<div class:hidden={!collectionData?.deviantartUrl} class="flex flex-col items-center gap-y-1 2xl:gap-y-1.5 font-semibold text-[10px] 2xl:text-sm">
-					<p class:hidden={hoveredSocial !== collectionData?.deviantartUrl}>DeviantArt</p>
-					<a
-						href={collectionData?.deviantartUrl}
-						target="_blank"
-						on:mouseenter={() => (hoveredSocial = collectionData?.deviantartUrl)}
-						on:mouseleave={() => (hoveredSocial = '')}
-						class="w-8 h-8 2xl:w-9 2xl:h-9 hover:border-gradient border border-white flex items-center justify-center transition-btn"
-					>
-						<Deviantart gradient={hoveredSocial === collectionData?.deviantartUrl} />
-					</a>
-				</div>
-				<div class:hidden={!collectionData?.artstationUrl} class="flex flex-col items-center gap-y-1 2xl:gap-y-1.5 font-semibold text-[10px] 2xl:text-sm">
-					<p class:hidden={hoveredSocial !== collectionData?.artstationUrl}>ArtStation</p>
-					<a
-						href={collectionData?.artstationUrl}
-						target="_blank"
-						on:mouseenter={() => (hoveredSocial = collectionData?.artstationUrl)}
-						on:mouseleave={() => (hoveredSocial = '')}
-						class="w-8 h-8 2xl:w-9 2xl:h-9 hover:border-gradient border border-white flex items-center justify-center transition-btn"
-					>
-						<Artstation gradient={hoveredSocial === collectionData?.artstationUrl} />
-					</a>
-				</div>
+				<!-- {#if socials?.length > 0} -->
+				{#each socials as social}
+					<div class="flex flex-col items-center gap-y-1 2xl:gap-y-1.5 font-semibold text-[10px] 2xl:text-sm">
+						<p class:hidden={hoveredSocial !== social.name}>{social.name}</p>
+						<a
+							href={social.url}
+							target="_blank"
+							on:mouseenter={() => (hoveredSocial = social.name)}
+							on:mouseleave={() => (hoveredSocial = '')}
+							class="w-8 h-8 2xl:w-9 2xl:h-9 hover:border-gradient border border-white flex items-center justify-center transition-btn"
+						>
+							<svelte:component this={social.component} />
+						</a>
+					</div>
+				{/each}
+				<!-- {/if} -->
 			</div>
 		</div>
 	</div>

@@ -31,7 +31,7 @@
 			<div class="w-full h-full bg-gray-100" />
 		{/if}
 	</div>
-	<div class="w-full flex items-center justify-between mt-10 2xl:mt-12">
+	<div class="w-full flex flex-row flex-wrap overflow-scroll gap-y-5 items-center justify-between mt-10 2xl:mt-12">
 		<CollectionIdentity bind:collectionData />
 		<CollectionValues bind:collectionData />
 	</div>
