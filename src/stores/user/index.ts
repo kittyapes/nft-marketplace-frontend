@@ -33,10 +33,10 @@ async function refreshPublicProfileData(address?: string) {
 export async function refreshProfileData() {
 	const newProfileData = await fetchCurrentUserData();
 
-	const isVerified = get(currentUserAddress) && (await storage.hasRole('minter', get(currentUserAddress)).catch(() => false));
+	if (!newProfileData.roles.includes('verified_user')) {
+		const isVerified = get(currentUserAddress) && (await storage.hasRole('minter', get(currentUserAddress)).catch(() => false));
 
-	if (!newProfileData.roles.includes('verified_user') && isVerified) {
-		newProfileData.roles.push('verified_user');
+		isVerified && newProfileData.roles.push('verified_user');
 	}
 
 	profileData.set(newProfileData);
