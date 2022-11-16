@@ -6,6 +6,7 @@ import { scientificToDecimal } from '$utils/misc/scientificToDecimal';
 import dayjs from 'dayjs';
 import { writable } from 'svelte/store';
 import { ethers } from 'ethers';
+import { random } from 'lodash-es';
 
 export interface SanitizedNftData {
 	databaseId: string;
@@ -64,16 +65,16 @@ export async function sanitizeNftData(data: ApiNftData) {
 	return ret;
 }
 
-function buildCommonObject(): Partial<CardOptions> {
-	return {
-		allowPopup: true,
-		allowTrade: true,
-		staleResource: writable(),
-	};
+function buildCommonObject() {
+	return { localId: getUniqueId(), allowPopup: true, allowTrade: true, staleResource: writable<{ reason: string }>() };
 }
 
 export async function nftToCardOptions(nft: ApiNftData): Promise<CardOptions> {
 	return { ...buildCommonObject(), resourceType: 'nft', rawResourceData: nft, nfts: [await sanitizeNftData(nft)] };
+}
+
+function getUniqueId() {
+	return Date.now().toString() + random(0, 10_000);
 }
 
 export async function listingToCardOptions(listing: Listing): Promise<CardOptions> {
