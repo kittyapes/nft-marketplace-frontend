@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import Artstation from '$icons/socials/artstation.svelte';
 	import Deviantart from '$icons/socials/deviantart.svelte';
 	import Facebook from '$icons/socials/facebook.svelte';
@@ -45,6 +46,9 @@
 				<!-- TODO add share icon -->
 			</button>
 			<div
+				use:outsideClickCallback={{
+					cb: () => (showSocials = false),
+				}}
 				class:hidden={!showSocials}
 				class="absolute right-0 z-10 top-12 2xl:top-16 border-gradient py-5 2xl:py-7 px-5 2xl:px-6 bg-dark-gradient flex flex-row items-end gap-x-3 2xl:gap-x-4 font-semibold text-[10px] 2xl:text-sm"
 			>

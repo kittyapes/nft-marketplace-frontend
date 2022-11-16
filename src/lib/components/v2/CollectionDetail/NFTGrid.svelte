@@ -55,11 +55,11 @@
 			{#each options as cardOptions, index (cardOptions.rawResourceData._id)}
 				{#if !hidden.get(cardOptions)}
 					{@const props = cardPropsMapper(cardOptions)}
-					{#if gridStyle === 'masonry'}
+					<!-- {#if gridStyle === 'masonry'}
 						<img class="w-full h-auto object-center object-cover mb-4 2xl:mb-5" src={props?.options?.nfts?.[0]?.thumbnailUrl} alt={props?.options?.nfts?.[0]?.name} />
-					{:else}
-						<Card options={props?.options} bind:gridStyle />
-					{/if}
+					{:else} -->
+					<Card options={props?.options} bind:gridStyle />
+					<!-- {/if} -->
 				{/if}
 			{/each}
 		</div>
