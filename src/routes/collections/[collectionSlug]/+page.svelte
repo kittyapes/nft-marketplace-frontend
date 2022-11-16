@@ -18,7 +18,6 @@
 	let collectionData: Collection;
 	let nfts = [];
 	let creatorData: UserData;
-	let nftsLoading = false;
 	let reachedEnd = false;
 	let isLoading = false;
 
@@ -69,45 +68,9 @@
 		await fetchMore();
 	});
 
-	const collectionStats = {
-		highestSale: {
-			stat: 'Highest Sale',
-			value: 0,
-			symbol: 'WETH',
-		},
-		floorPrice: {
-			stat: 'Floor Price',
-			value: 0,
-			symbol: 'WETH',
-		},
-		totalVol: {
-			stat: 'Total Volume',
-			value: 0,
-			symbol: 'WETH',
-		},
-		items: {
-			stat: 'Items',
-			value: 0,
-			symbol: '',
-		},
-		owners: {
-			stat: 'Owners',
-			value: 0,
-			symbol: '',
-		},
-		total24hours: {
-			stat: '24Hr Volume',
-			value: 0,
-			symbol: 'WETH',
-		},
-	};
-
 	async function fetchCollectionData() {
 		resetNfts();
 		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => undefined);
-		// console.log(collectionData);
-		// Populate collection stats
-
 		creatorData = await fetchProfileData(collectionData?.creator).catch((e) => undefined);
 		await fetchMore();
 	}

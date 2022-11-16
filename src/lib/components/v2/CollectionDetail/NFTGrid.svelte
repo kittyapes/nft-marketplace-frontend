@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { inview } from 'svelte-inview';
 	import { createEventDispatcher } from 'svelte';
 	import type { CardOptions } from '$interfaces/ui';
 	import { nftDraft } from '$stores/create';

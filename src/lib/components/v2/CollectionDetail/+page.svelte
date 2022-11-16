@@ -13,14 +13,23 @@
 	import CollectionDescription from './CollectionDescription.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
+	import { filterNfts } from '$utils/nfts/search';
 
 	let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 	const dispatch = createEventDispatcher();
 
 	export let collectionData: Collection;
 	export let nfts = [];
+	export let displayedNfts = [];
 	export let isLoading: boolean;
 	export let reachedEnd: boolean;
+	let searchPhrase: string;
+	$: if (searchPhrase) {
+		displayedNfts = filterNfts(nfts, searchPhrase.toLocaleUpperCase());
+	} else {
+		displayedNfts = nfts;
+	}
+	// $: console.log(nfts[0]?.nfts[0]?.metadata?.traits);
 </script>
 
 <main class="px-36 pt-24 mx-auto text-white">
@@ -39,7 +48,7 @@
 	<CollectionDescription bind:collectionData />
 	<!-- Filter and grid selection-->
 	<div class="flex flex-row items-center gap-x-5 mt-8">
-		<Input class="rounded-none border-2 border-gradient h-11 2xl:h-14 hover:text-white" placeholder="Search by name or attribute" height="44px">
+		<Input bind:value={searchPhrase} class="rounded-none border-2 border-gradient h-11 2xl:h-14 hover:text-white" placeholder="Search by name or attribute" height="44px">
 			<Search class="ml-6 w-5 h-6" />
 		</Input>
 		<Button dullgradient variant="square" class="w-24 h-11 2xl:h-14 2xl:w-[123px] border-gradient flex flex-row items-center justify-between px-3.5  hover:bg-main-gradient">
@@ -73,7 +82,7 @@
 	<!-- Filter panel and NFT grid -->
 	<div class="w-full flex flex-row items-start gap-x-4 2xl:gap-x-5 mt-6 ">
 		<div class="w-full">
-			<NftGrid bind:options={nfts} bind:gridStyle bind:reachedEnd bind:isLoading />
+			<NftGrid bind:options={displayedNfts} bind:gridStyle bind:reachedEnd bind:isLoading />
 			{#if isLoading}
 				<DiamondsLoader />
 			{/if}
