@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
+	import ShareV2 from '$icons/share-v2.svelte';
 	import Artstation from '$icons/socials/artstation.svelte';
 	import Deviantart from '$icons/socials/deviantart.svelte';
 	import Facebook from '$icons/socials/facebook.svelte';
@@ -44,6 +45,7 @@
 				class="w-full min-h-full border-gradient dull-gradient flex items-center justify-center transition-btn hover:bg-main-gradient"
 			>
 				<!-- TODO add share icon -->
+				<ShareV2 class="w-5 2xl:w-6 h-5 2xl:h-6" />
 			</button>
 			<div
 				use:outsideClickCallback={{
