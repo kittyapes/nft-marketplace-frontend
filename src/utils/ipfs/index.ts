@@ -6,6 +6,8 @@ import { get } from 'svelte/store';
 import { getContractInterface } from '$utils/contracts/collection';
 import axios from 'axios';
 import defaultProvider from '$utils/contracts/defaultProvider';
+import { noTryAsync } from 'no-try';
+import { getApiUrl } from '$utils/api';
 
 export function makeHttps(url: string) {
 	if (!url) return null;
@@ -15,6 +17,27 @@ export function makeHttps(url: string) {
 	}
 
 	return url.replace(/^ipfs:\/\//, 'https://hinata-prod.mypinata.cloud/ipfs/');
+}
+
+export async function getHinataMetadata(contractAddress: string, tokenId: string) {
+	const apiUri = getApiUrl('latest', '').match(/(?:^https?:\/\/([^/]+)(?:[/,]|$)|^(.*)$)/gm)[0];
+
+	if (apiUri) {
+		const [err, res] = await noTryAsync(() => axios.get(`${apiUri}${contractAddress}/${tokenId}`));
+
+		if (err) {
+			return null;
+		}
+
+		return res.data as {
+			external_url: string;
+			image: string;
+			name: string;
+			description: string;
+		};
+	}
+
+	return null;
 }
 
 export async function getMetadataFromUri(uri: string) {

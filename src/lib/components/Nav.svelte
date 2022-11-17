@@ -2,14 +2,12 @@
 	import Search from './Search.svelte';
 	import ProfilePopup from './ProfilePopup.svelte';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
-	import { appSigner, connectionDetails, currentUserAddress } from '$stores/wallet';
+	import { appSigner, connectionDetails } from '$stores/wallet';
 	import { onMount } from 'svelte';
-	import { publicProfileData } from '$stores/user';
+	import { publicProfileData, profileData } from '$stores/user';
 	import { fade } from 'svelte/transition';
 	import UserCircle from '$icons/user-circle.svelte';
 	import { goto } from '$app/navigation';
-	import { storage } from '$utils/contracts';
-	import { browser } from '$app/environment';
 
 	let displayProfilePopup = false;
 	let showProfileButton = false;
@@ -30,25 +28,7 @@
 	$: displayedUsername = $publicProfileData?.username;
 	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
 
-	let imageFailedToLoad = false;
-
 	$: useTestnets = $connectionDetails ? $connectionDetails?.chainId !== 1 : import.meta.env.VITE_DEFAULT_NETWORK !== '1';
-
-	// Create button display logic
-	let showCreate = false;
-
-	currentUserAddress.subscribe(async (a) => {
-		try {
-			showCreate = browser && a && (await storage.hasRole('minter', a));
-		} catch (err) {
-			console.error(err);
-		}
-	});
-
-	connectionDetails.subscribe(async (cDetails) => {
-		//console.log(browser, cDetails, $currentUserAddress, await storage.hasRole('minter', $currentUserAddress).catch(() => false));
-		showCreate = browser && cDetails && $currentUserAddress && (await storage.hasRole('minter', $currentUserAddress).catch(() => false));
-	});
 </script>
 
 <div class="fixed z-10 flex w-full ">
@@ -71,14 +51,19 @@
 		<a id="marketplace-link" href="/marketplace" class="relative font-semibold snap-center bg-card-gradient h-1/2 grid place-items-center px-4 btn">Marketplace</a>
 
 		<!-- Staking - HIDDEN FOR V1 -->
-		<a href="/staking" class="relative font-semibold capitalize text-md snap-center min-w-fit" class:-mr-8={!showCreate}>Staking</a>
+		<a href="/staking" class="relative font-semibold capitalize text-md snap-center min-w-fit">Staking</a>
 
 		<!-- Airdrop HIDDEN FOR NOW -->
 		<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
 
 		<!-- Create -->
-		{#if showCreate}
-			<button on:click={() => goto('/create')} class="relative font-semibold bg-card-gradient h-1/2 grid place-items-center px-4 snap-center">Create</button>
+		{#if $profileData?.roles.includes('verified_user')}
+			<button
+				on:click={() => goto('/create')}
+				class="relative grid h-full px-16 font-semibold text-white uppercase text-md bg-gradient-to-r from-color-purple to-color-blue place-items-center snap-center"
+			>
+				Create
+			</button>
 		{/if}
 
 		<!-- Profile -->
