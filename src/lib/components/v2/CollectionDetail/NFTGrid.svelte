@@ -5,6 +5,7 @@
 	import AddCircle from '$icons/add-circle.svelte';
 	import { goto } from '$app/navigation';
 	import Card from './Card.svelte';
+	import NftCard from '$lib/components/NftCard.svelte';
 	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions[];
@@ -13,6 +14,13 @@
 	export let createNewNftBtn = { include: false, collectionId: '' };
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 	export let reachedEnd: boolean;
+	function hideCard(index) {
+		options.splice(index, 1);
+		options = options;
+		dispatch('refresh-tabs', {
+			tabs: ['collected', 'created', 'hidden'],
+		});
+	}
 	let hidden = new WeakMap();
 
 	$: options.forEach((o) =>
@@ -55,7 +63,7 @@
 			{#each options as cardOptions, index (cardOptions.rawResourceData._id)}
 				{#if !hidden.get(cardOptions)}
 					{@const props = cardPropsMapper(cardOptions)}
-					<Card options={props?.options} bind:gridStyle />
+					<NftCard {...props} on:hide-me={() => hideCard(index)} bind:gridStyle />
 				{/if}
 			{/each}
 		</div>
