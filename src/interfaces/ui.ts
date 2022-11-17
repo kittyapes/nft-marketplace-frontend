@@ -4,6 +4,8 @@ import type { ListingType } from '$utils/api/listing';
 import type { Writable } from 'svelte/store';
 
 export interface CardOptions {
+	localId: string;
+
 	/** Determines whether the popup is rendering a listing or an NFT in the user's wallet. */
 	resourceType: 'nft' | 'listing';
 
