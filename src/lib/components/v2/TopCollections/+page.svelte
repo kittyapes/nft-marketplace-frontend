@@ -5,6 +5,7 @@
 	import ButtonGroup from './ButtonGroup.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
+
 	export let collections: Collection[];
 </script>
 

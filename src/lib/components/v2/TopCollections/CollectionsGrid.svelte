@@ -5,16 +5,19 @@
 	import HinataBadge from '$icons/hinata-badge.svelte';
 	import type { Collection } from '$utils/api/collection';
 
-	const dispatch = createEventDispatcher();
-
 	export let collections: Collection[];
 	export let isLoading = false;
+
+	const dispatch = createEventDispatcher();
+
 	const inviewOptions = {};
+
 	function onChange(event) {
 		if (event.detail.inView) {
 			dispatch('end-reached');
 		}
 	}
+
 	const gridTemplateRows = collections?.length >= 4 ? 'grid-rows-4' : `grid-rows-${collections?.length}`;
 </script>
 
