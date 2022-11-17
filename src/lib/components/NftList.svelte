@@ -70,7 +70,7 @@
 						<div class="text-color-gray-dark">Create a new NFT</div>
 					</div>
 				</div>{/if}
-			{#each options as cardOptions, index (cardOptions.resourceType === 'nft' ? cardOptions.rawResourceData.fullId : cardOptions.rawResourceData.listingId)}
+			{#each options as cardOptions, index (cardOptions.localId)}
 				{#if !hidden.get(cardOptions)}
 					{@const props = cardPropsMapper(cardOptions)}
 					<NftCard {...props} on:hide-me={() => hideCard(index)} />
