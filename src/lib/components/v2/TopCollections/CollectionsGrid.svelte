@@ -25,7 +25,7 @@
 				<p>{i + 1}</p>
 				<div class="relative w-[70px] h-[70px] border-gradient">
 					<div class="w-full h-full overflow-hidden">
-						<img class="object-center object-contain" src={collection?.logoImageUrl} alt="Collection Logo" />
+						<img class="object-center object-cover w-full h-full" src={collection?.logoImageUrl} alt="Collection Logo" />
 					</div>
 					<HinataBadge class="absolute -bottom-2.5 -right-2.5 z-50  w-5 h-5 {!collection?.verified ? 'hidden' : ''}" />
 				</div>
