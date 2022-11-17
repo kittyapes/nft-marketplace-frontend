@@ -29,7 +29,6 @@
 	} else {
 		displayedNfts = nfts;
 	}
-	// $: console.log(nfts[0]?.nfts[0]?.metadata?.traits);
 </script>
 
 <main class="px-36 pt-24 mx-auto text-white">

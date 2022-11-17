@@ -10,7 +10,9 @@
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	let showCollectionMenu = false;
-	const reportCollection = async () => {};
+	const reportCollection = async () => {
+		// TODO logic to report a collection
+	};
 </script>
 
 <div class="flex flex-row gap-x-4 2xl:gap-x-5 items-end">

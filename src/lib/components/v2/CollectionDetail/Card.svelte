@@ -55,43 +55,44 @@
 </script>
 
 <div on:click={handleClick} class:cursor-pointer={options.allowPopup} class="flex flex-col">
-	{#await preload(options.nfts[0].thumbnailUrl)}
-		<div class="min-h-[255px]">
-			<Loader />
-		</div>
-	{:then}
-		{#if fileType === 'video'}
-			<video
-				crossorigin="anonymous"
-				class="max-w-full max-h-full object-cover object-top w-full h-full transition {gridStyle === 'masonry' ? 'mb-4 2xl:mb-5' : ''}"
-				autoplay
-				loop
-				class:opacity-0={!imgLoaded}
-			>
-				<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
-				<track kind="captions" />
-			</video>
-		{:else if fileType === 'image'}
-			<img alt="" src={options.nfts[0].thumbnailUrl} class="w-full h-auto object-center object-cover transition {gridStyle === 'masonry' ? 'mb-4 2xl:mb-5' : ''}" class:opacity-0={!imgLoaded} />
-		{/if}
-	{:catch _err}
-		{#if fileType === 'video'}
-			<video
-				crossorigin="anonymous"
-				class="max-w-full max-h-full object-cover object-top w-full h-full transition {gridStyle === 'masonry' ? 'mb-4 2xl:mb-5' : ''}"
-				autoplay
-				loop
-				class:opacity-0={!imgLoaded}
-			>
-				<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
-				<track kind="captions" />
-			</video>
-		{:else if fileType === 'image'}
-			<img alt="" src={options.nfts[0].thumbnailUrl} class="w-full h-auto object-center object-cover transition {gridStyle === 'masonry' ? 'mb-4 2xl:mb-5' : ''}" class:opacity-0={!imgLoaded} />
-		{/if}
-	{/await}
-
-	<div class:normal-card={gridStyle === 'normal'} class:dense-card={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient w-full">
+	<div class:normal-nft-media={gridStyle === 'normal'} class:dense-nft-media={gridStyle === 'dense'}>
+		{#await preload(options.nfts[0].thumbnailUrl)}
+			<div class="w-full h-full bg-dark-gradient">
+				<Loader />
+			</div>
+		{:then}
+			{#if fileType === 'video'}
+				<video
+					crossorigin="anonymous"
+					class="max-w-full max-h-full object-cover object-top w-full h-full transition {gridStyle === 'masonry' ? 'mb-4 2xl:mb-5' : ''}"
+					autoplay
+					loop
+					class:opacity-0={!imgLoaded}
+				>
+					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
+					<track kind="captions" />
+				</video>
+			{:else if fileType === 'image'}
+				<img alt="" src={options.nfts[0].thumbnailUrl} class="w-full h-full object-center object-cover transition {gridStyle === 'masonry' ? 'mb-4 2xl:mb-5' : ''}" class:opacity-0={!imgLoaded} />
+			{/if}
+		{:catch _err}
+			{#if fileType === 'video'}
+				<video
+					crossorigin="anonymous"
+					class="max-w-full max-h-full object-cover object-top w-full h-full transition {gridStyle === 'masonry' ? 'mb-4 2xl:mb-5' : ''}"
+					autoplay
+					loop
+					class:opacity-0={!imgLoaded}
+				>
+					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
+					<track kind="captions" />
+				</video>
+			{:else if fileType === 'image'}
+				<img alt="" src={options.nfts[0].thumbnailUrl} class="w-full h-full object-center object-cover transition {gridStyle === 'masonry' ? 'mb-4 2xl:mb-5' : ''}" class:opacity-0={!imgLoaded} />
+			{/if}
+		{/await}
+	</div>
+	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient w-full">
 		<h4 class="text-gradient font-bold {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
 			{nft?.collectionData?.name}
 		</h4>
@@ -113,10 +114,16 @@
 </div>
 
 <style lang="postcss">
-	.normal-card {
+	.normal-nft-details {
 		@apply py-2.5 2xl:py-3 px-4 2xl:px-5;
 	}
-	.dense-card {
+	.dense-nft-details {
 		@apply py-1.5 px-2.5;
+	}
+	.normal-nft-media {
+		@apply h-[321px] 2xl:h-[400px];
+	}
+	.dense-nft-media {
+		@apply h-44 2xl:h-56;
 	}
 </style>
