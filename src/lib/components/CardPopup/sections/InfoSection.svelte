@@ -17,9 +17,6 @@
 
 	$: ownedOrListedNfts = options.resourceType === 'listing' ? options?.saleData?.nftQuantities[options.nfts[0].onChainId] ?? 1 : balance;
 
-	// Never show the back button on this tab
-	export const showBackButton = false;
-
 	// The Hinata General collection should always have a 1.5 % royalties,
 	// you know we cannot rely on the backend :)
 	// prettier-ignore
@@ -87,14 +84,6 @@
 
 		return attributes;
 	}
-	$: console.log({ singleNft });
-	$: if (singleNft) {
-		singleNft.metadata.attributes = [
-			{ trait_type: 'Ugliness', value: '100%' },
-			{ trait_type: 'Ugliness', value: '100%' },
-			{ trait_type: 'Ugliness', value: '100%' },
-		];
-	}
 </script>
 
 <div class="flex-grow h-full pr-4 overflow-y-auto blue-scrollbar text-white">
@@ -132,7 +121,7 @@
 				<div class="relative property-value">
 					{prop.value || 'N/A'}
 					{#if prop.value === null}
-						<div class="absolute top-0 w-24 h-6 mt-1 bg-gray-100 rounded" out:fade|local />
+						<div class="absolute top-0 w-24 h-6 mt-1 bg-gray-700 rounded" out:fade|local />
 					{/if}
 				</div>
 			</div>

@@ -38,7 +38,7 @@
 
 <div
 	id="grid-container"
-	class="grid h-full py-2 overflow-auto border border-white overscroll-contain text-white"
+	class="grid h-full py-2 overflow-auto border border-white overscroll-contain text-white blue-scrollbar"
 	style:--list-length={skeleton ? data.length + skeletonLength : data.length}
 	on:scroll={handleScroll}
 	bind:this={gridContainer}

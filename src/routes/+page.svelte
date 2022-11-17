@@ -9,6 +9,8 @@
 	import NftList from '$lib/components/NftList.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
+	import HomepageCarousel from '$lib/components/v2/HomepageCarousel/HomepageCarousel.svelte';
+
 	import TopCollections from '$components/v2/TopCollections/+page.svelte';
 	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
@@ -57,6 +59,11 @@
 		site_name: 'Hinata',
 	}}
 />
+<div class="px-14 pt-32 w-full grid place-items-center ">
+	<div class="w-2/3 h-[600px] ">
+		<HomepageCarousel />
+	</div>
+</div>
 
 <div class="text-white">
 	<!-- Top collections section -->
@@ -97,7 +104,7 @@
 		</div>
 		<hr class="mt-4 border-[#FFFFFF1E]" />
 
-		<div class="flex flex-col h-full py-11 overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-[#FFFFFF1E]" in:fade>
+		<div class="flex flex-col h-full py-11 pr-4 overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-[#FFFFFF1E]" in:fade>
 			<div class="flex-shrink-0 h-full lg:h-[250px]">
 				<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
 			</div>
