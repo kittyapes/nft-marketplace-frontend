@@ -237,14 +237,14 @@
 				<Progressbar class="mt-2" value={progressBarValue} points={progressbarPoints} />
 			</div>
 
-			{#if $freeNftStatus !== 'claimed'}
+			{#if $freeNftStatus === 'claimable'}
 				<div class="px-16 mt-16" in:slide|local out:slide|local={{ delay: 300 }}>
 					<button
 						class="block w-full py-6 text-lg font-semibold text-white uppercase transition-btn bg-gradient-to-r from-color-purple to-color-blue rounded-3xl disabled:opacity-50"
 						on:click={handleNftClaim}
 						in:fade|local={{ delay: 300 }}
 						out:fade|local
-						disabled={isSaving || $freeNftStatus === 'unclaimable'}
+						disabled={isSaving}
 					>
 						Claim your NFT
 					</button>
