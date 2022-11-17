@@ -1,7 +1,7 @@
 import type { ApiNftData } from '$interfaces/apiNftData';
 import type { CardOptions } from '$interfaces/ui';
 import type { Listing } from '$utils/api/listing';
-import { getMetadataFromUri, getOnChainUri, makeHttps } from '$utils/ipfs';
+import { getHinataMetadata, getMetadataFromUri, getOnChainUri, makeHttps } from '$utils/ipfs';
 import { scientificToDecimal } from '$utils/misc/scientificToDecimal';
 import dayjs from 'dayjs';
 import { writable } from 'svelte/store';
@@ -30,6 +30,18 @@ export interface SanitizedNftData {
 }
 
 export async function sanitizeNftData(data: ApiNftData) {
+	// temporarily fetch data from our backend if it is there
+	if (!data.uri || !data.thumbnailUrl || !data.metadata) {
+		const hinataMetadata = await getHinataMetadata(data?.contractAddress, data?.nftId);
+		if (hinataMetadata) {
+			data.uri = hinataMetadata?.external_url ?? data.uri;
+			data.thumbnailUrl = hinataMetadata?.image ?? data.thumbnailUrl;
+			data.assetUrl = hinataMetadata?.image ?? data.assetUrl;
+			data.metadata = hinataMetadata ?? data.metadata;
+			data.name = hinataMetadata?.name ?? data.name;
+		}
+	}
+
 	if (!data.uri) {
 		data.uri = await getOnChainUri(data?.contractAddress, data?.nftId.toString());
 	}
