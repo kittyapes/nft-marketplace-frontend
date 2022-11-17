@@ -20,8 +20,6 @@
 
 	let chainListing: ChainListing;
 
-	let showBackButton = false;
-
 	const countdownData = options?.resourceType === 'listing' ? { startTime: options.listingData?.startTime, duration: options.listingData?.duration, expired: false } : null;
 
 	// Log data that was used by the adapter to generate the CardPopup
@@ -73,15 +71,21 @@
 	let tabComponentInstance: SvelteComponent;
 
 	$: similarCards = Array(10).fill(options);
+
+	function handleClosePopup() {
+		handler.close();
+	}
+
+	let enableBack = false;
 </script>
 
 <Popup class="w-full h-full rounded-none lg:w-[1400px] lg:max-h-[800px] transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>
-	<div class="bg-gradient overflow-y-auto bg-repeat-y h-full">
-		<div class="bg-black bg-opacity-40 py-4">
+	<div class="bg-gradient overflow-y-auto bg-repeat-y h-full blue-scrollbar">
+		<div class="bg-black bg-opacity-40 py-8">
 			<!-- Tabs -->
-			<div class="flex px-16 gap-4">
+			<div class="flex px-24 gap-4">
 				<!-- Back button -->
-				<button class="btn disabled:opacity-0" disabled={!showBackButton && false} on:click={tabComponentInstance.goBack()}>
+				<button class="btn disabled:opacity-0 transition duration-200" disabled={!enableBack} on:click={tabComponentInstance.goBack()}>
 					<img class="h-6" src={getIconUrl('back-button')} alt="Arrow pointing left." />
 				</button>
 
@@ -89,7 +93,7 @@
 			</div>
 
 			<!-- Main content -->
-			<div class="grid grid-cols-2 h-full gap-8 mt-4 px-32">
+			<div class="grid grid-cols-2 h-full gap-8 mt-8 px-32">
 				<!-- Left part with image and buttons -->
 				<div class="pb-8">
 					<AssetContainer
@@ -108,11 +112,11 @@
 						this={selectedTab?.sectionComponent}
 						{options}
 						{chainListing}
-						on:close-popup
+						on:close-popup={handleClosePopup}
 						on:force-expire
-						bind:showBackButton
-						bind:this={tabComponentInstance}
 						on:listing-created={refreshBalance}
+						bind:this={tabComponentInstance}
+						bind:enableBack
 					/>
 				</div>
 			</div>

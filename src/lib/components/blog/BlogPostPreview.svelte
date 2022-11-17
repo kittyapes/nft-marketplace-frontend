@@ -34,7 +34,7 @@
 		<hr class="border-[#FFFFFF1E] border" />
 	{:else}
 		<div class="flex flex-col w-full h-full py-11 overflow-hidden lg:flex-row animate-pulse">
-			<div class="flex-shrink-0 h-48 py-4 lg:py-8 lg:h-full">
+			<div class="flex-shrink-0 h-48 py-4 pr-4 lg:py-8 lg:h-full">
 				<div class="h-full bg-gray-100" style="aspect-ratio: 420/250;" />
 			</div>
 

@@ -31,6 +31,7 @@
 	import { browser } from '$app/environment';
 	import PaginationFooter from '$lib/components/management/render-components/PaginationFooter.svelte';
 	import { onDestroy } from 'svelte';
+	import { userHasRole } from '$utils/auth/userRoles';
 
 	const fetchLimit = 20;
 
@@ -486,10 +487,18 @@
 				renderComponentProps: Array(users.length).map((_) => ({ active: false }))
 			}*/
 		];
+
+		// sorting functionality
 		userTableData.forEach((e, i) => {
 			e.titleRenderComponentProps.id = i;
 			if (i === eventId) e.titleRenderComponentProps.active = true;
 		});
+
+		// remove the ability to edit the admin roles if current user isn't superadmin
+		if (!$userHasRole('superadmin')) {
+			userTableData.find((e) => e.renderComponent === EntryRole).renderComponentProps.forEach((u) => (u.options = u.options.filter((e) => e.value !== 'admin')));
+		}
+
 		loaded = true;
 	}
 

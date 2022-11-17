@@ -4,7 +4,6 @@ import { getContract } from '$utils/misc/getContract';
 import { get } from 'svelte/store';
 import { appSigner } from '$stores/wallet';
 import erc1155Abi from '$constants/contracts/abis/Erc1155Mock.json';
-import erc721Abi from '$constants/contracts/abis/Erc721Mock.json';
 import storageAbi from '$constants/contracts/abis/HinataMarketplaceStorage.json';
 import defaultProvider from './defaultProvider';
 
