@@ -146,6 +146,12 @@
 			.join('')
 			.indexOf('0') * 25;
 
+	$: progressBarValue =
+		[isEmail($localDataStore?.email), isBioValid($localDataStore?.bio), isProfileImage, isCoverImage, 0]
+			.map((v) => (v ? 1 : 0))
+			.join('')
+			.indexOf('0') * 20;
+
 	async function handleNftClaim() {
 		setPopup(FreeNftPopup);
 	}
@@ -228,7 +234,7 @@
 			</div>
 
 			<div class="w-4/5 mx-auto mt-5">
-				<Progressbar class="mt-2" value={profileCompletionProgress} points={progressbarPoints} />
+				<Progressbar class="mt-2" value={progressBarValue} points={progressbarPoints} />
 			</div>
 
 			{#if $freeNftStatus !== 'claimed'}
