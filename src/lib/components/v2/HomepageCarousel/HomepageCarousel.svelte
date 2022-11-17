@@ -61,9 +61,9 @@
 		<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="flex-grow object-cover object-bottom w-full min-h-0 h-full animated-image" />
 	</div>
 
-	<div class="bg-dark-gradient text-white p-3 h-1/5 flex-shrink-0 flex flex-col items-center ">
-		<div class="text-4xl uppercase text-center text-gradient">{currentBlob.title}</div>
-		<div class="text-center mt-2">{currentBlob.subtitle}</div>
+	<div class="bg-dark-gradient text-white p-3 h-1/5 flex-shrink-0 flex flex-col gap-1 items-center">
+		<div class="text-5xl uppercase text-center text-gradient">{currentBlob.title}</div>
+		<div class="text-center mt-2 text-2xl">{currentBlob.subtitle}</div>
 	</div>
 
 	<div class="flex gap-3 absolute bottom-28 left-0 px-3 w-full items-center">
