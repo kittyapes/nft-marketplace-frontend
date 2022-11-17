@@ -9,7 +9,7 @@
 	export let reachedEnd: boolean;
 </script>
 
-<div class="grid place-items-center w-full my-20">
+<div class="grid place-items-center w-full py-20 text-white">
 	<div class="w-5/6 flex flex-col">
 		<div class="flex flex-col max-w-min gap-4 mt-20 mb-16">
 			<h1 class="uppercase font-bold text-7xl">Collections</h1>
