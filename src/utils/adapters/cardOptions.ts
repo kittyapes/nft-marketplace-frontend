@@ -118,13 +118,19 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 	function toShortDisplayPrice(floatingPrice: string) {
 		const bigNumber = ethers.utils.parseEther(floatingPrice);
 
+		const maxCharsOnDisplay = 10;
 		const thresholdStr = '0.01';
 		const threshold = ethers.utils.parseEther(thresholdStr);
 
 		if (bigNumber.lt(threshold)) {
 			return '< ' + thresholdStr;
 		} else {
-			return floatingPrice;
+			return floatingPrice.length > maxCharsOnDisplay
+				? `~ ${(+floatingPrice)
+						.toFixed(maxCharsOnDisplay)
+						.toString()
+						.replace(/(\.?0+$)/, '')}`
+				: floatingPrice;
 		}
 	}
 

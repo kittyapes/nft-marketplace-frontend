@@ -96,6 +96,6 @@
 
 	.nftGrid {
 		@apply grid min-w-full gap-3 my-5 mx-auto;
-		grid-template-columns: repeat(auto-fit, 310px);
+		grid-template-columns: repeat(auto-fit, 380px);
 	}
 </style>
