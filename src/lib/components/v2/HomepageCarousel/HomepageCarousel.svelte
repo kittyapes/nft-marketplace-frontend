@@ -56,28 +56,28 @@
 	});
 </script>
 
-<div class="h-full relative overflow-hidden w-full wrapper">
-	<div class="h-4/5 max-h-4/5 max-w-full overflow-hidden bg-dark-gradient">
-		<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="flex-grow object-cover object-bottom w-full min-h-0 h-full animated-image" />
+<div class="relative overflow-hidden w-full wrapper h-full">
+	<div class="overflow-hidden bg-dark-gradient relative h-[500px]">
+		<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="flex-grow object-cover object-top w-full h-full animated-image" />
+
+		<div class="flex gap-3 absolute bottom-0 left-0 px-3 w-full items-center">
+			{#each data as _, index}
+				<div class="flex-grow flex items-end group cursor-pointer h-6 pb-2">
+					<div class="bg-white bg-opacity-50 h-[3px] group-hover:h-4 flex-grow transition-all" style="transition: height 0.1s;" on:click={() => handleButtonClick(index)}>
+						{#if index < currentIndex}
+							<div class="w-full bg-white bg-opacity-100 h-full " />
+						{:else if index === currentIndex}
+							<div bind:this={animatedBar} class=" bg-white bg-opacity-100 h-full animated-bar" />
+						{/if}
+					</div>
+				</div>
+			{/each}
+		</div>
 	</div>
 
-	<div class="bg-dark-gradient text-white p-3 h-1/5 flex-shrink-0 flex flex-col gap-1 items-center">
+	<div class="bg-dark-gradient text-white p-3 min-h-1/5 flex-shrink-0 flex flex-col gap-1 items-center h-fit">
 		<div class="text-5xl uppercase text-center text-gradient">{currentBlob.title}</div>
 		<div class="text-center mt-2 text-2xl">{currentBlob.subtitle}</div>
-	</div>
-
-	<div class="flex gap-3 absolute bottom-28 left-0 px-3 w-full items-center">
-		{#each data as _, index}
-			<div class="flex-grow flex items-end group cursor-pointer h-6 pb-2">
-				<div class="bg-white bg-opacity-50 h-[3px] group-hover:h-4 flex-grow transition-all" style="transition: height 0.1s;" on:click={() => handleButtonClick(index)}>
-					{#if index < currentIndex}
-						<div class="w-full bg-white bg-opacity-100 h-full " />
-					{:else if index === currentIndex}
-						<div bind:this={animatedBar} class=" bg-white bg-opacity-100 h-full animated-bar" />
-					{/if}
-				</div>
-			</div>
-		{/each}
 	</div>
 </div>
 
