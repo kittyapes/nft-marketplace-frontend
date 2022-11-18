@@ -70,12 +70,15 @@
 		<TopCollections bind:collections />
 	</div>
 
+	<!-- Hottest creators section -->
+	<div class="w-full">
+		<h2 class="text-2xl leading-7">Hottest creators</h2>
+	</div>
+
 	<!-- Tending nfts Section -->
 	{#if $loadedExploreListings && exploreListingsData?.length > 0}
 		<div class="my-24 w-full" in:slide>
-			<div class="flex items-end">
-				<h2 class="text-4xl font-light uppercase flex-grow">Trending NFTs</h2>
-			</div>
+			<h2 class="text-2xl leading-7">Trending NFTs</h2>
 
 			<div class="mb-20">
 				<NftList options={exploreListingsData} />
