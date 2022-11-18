@@ -9,7 +9,7 @@
 	export let collections: Collection[];
 </script>
 
-<div class="px-36 pt-16 mb-20">
+<div class="">
 	<div class="text-white w-full flex flex-row items-center justify-between mb-10">
 		<h1 class="font-semibold text-2xl leading-7">Top Collections</h1>
 		<ButtonGroup on:period={(e) => console.log(e?.detail?.period)} />

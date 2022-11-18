@@ -12,6 +12,7 @@
 	import HomepageCarousel from '$lib/components/v2/HomepageCarousel/HomepageCarousel.svelte';
 
 	import TopCollections from '$components/v2/TopCollections/+page.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
 	let loadedExploreListings = writable(false);
@@ -59,30 +60,32 @@
 		site_name: 'Hinata',
 	}}
 />
-<div class="px-14 pt-32 w-full grid place-items-center ">
-	<div class="w-1/2 h-[600px] ">
+<div class="px-[172px] pt-32 w-full grid place-items-center text-white">
+	<div class="w-1/2  mb-16">
 		<HomepageCarousel />
 	</div>
-</div>
 
-<div class="text-white">
 	<!-- Top collections section -->
-	<TopCollections bind:collections />
+	<div class="w-full">
+		<TopCollections bind:collections />
+	</div>
 
-	<!-- Explore Market Section -->
+	<!-- Tending nfts Section -->
 	{#if $loadedExploreListings && exploreListingsData?.length > 0}
-		<div class="px-16 mt-24 mb-16" in:slide>
+		<div class="my-24 w-full" in:slide>
 			<div class="flex items-end">
-				<h2 class="text-4xl font-light uppercase flex-grow">Explore Market</h2>
-				<a href="/marketplace" class="uppercase underline text-sm font-bold">View All</a>
+				<h2 class="text-4xl font-light uppercase flex-grow">Trending NFTs</h2>
 			</div>
-			<hr class="mt-4 border-[#0000004D]" />
 
-			<NftList options={exploreListingsData} />
+			<div class="mb-20">
+				<NftList options={exploreListingsData} />
+			</div>
+
+			<a href="/marketplace" class="w-full"><PrimaryButton class="w-full">Explore Marketplace</PrimaryButton></a>
 		</div>
 	{/if}
 
-	<!-- Latest blog posts -->
+	<!-- Latest blog posts 
 	<div class="px-16 2xl:px-52 mt-24 mb-16">
 		<div class="flex items-end">
 			<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">BLOG</h2>
@@ -95,9 +98,9 @@
 				<BlogPostPreview data={post} />
 			{/each}
 		{/if}
-	</div>
+	</div>-->
 
-	<!-- Monthly airdrop -->
+	<!-- Monthly airdrop 
 	<div class="px-16 2xl:px-52 mt-24 mb-16">
 		<div class="flex items-end">
 			<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">Monthly Airdrop</h2>
@@ -120,5 +123,5 @@
 				</p>
 			</div>
 		</div>
-	</div>
+	</div>-->
 </div>

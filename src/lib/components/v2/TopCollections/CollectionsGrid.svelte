@@ -22,7 +22,7 @@
 </script>
 
 {#if collections?.length > 0}
-	<div class="grid {gridTemplateRows} grid-flow-col gap-y-10 justify-between">
+	<div class="grid {gridTemplateRows} grid-flow-col gap-10 justify-between">
 		{#each collections as collection, i}
 			<div class="flex flex-row items-center gap-x-6 font-bold text-white text-sm leading-7 ">
 				<p>{i + 1}</p>

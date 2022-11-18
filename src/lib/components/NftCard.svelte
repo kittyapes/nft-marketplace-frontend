@@ -169,7 +169,7 @@
 			</button>
 		{/if} 
 	-->
-	<div class="w-full mx-auto overflow-hidden transition bg-card-gradient select-none aspect-1 h-[400px] relative" class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}>
+	<div class="w-full mx-auto overflow-hidden transition bg-card-gradient select-none aspect-1 h-[530px] relative" class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}>
 		{#if isHovered && !disabled}
 			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60" transition:fade={{ duration: 200 }}>
 				<div class="p-3 clickable h-12" on:click|stopPropagation={() => false}>@Seller</div>
