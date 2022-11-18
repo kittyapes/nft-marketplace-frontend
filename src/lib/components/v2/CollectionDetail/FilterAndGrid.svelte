@@ -11,7 +11,7 @@
 
 	export let searchPhrase: string;
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
-	let showSort = true;
+	let showSort = false;
 	export let nfts: CardOptions[];
 	let sortOptions: { title: string; action?: any }[] = [
 		{
