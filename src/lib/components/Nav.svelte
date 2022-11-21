@@ -48,7 +48,7 @@
 		<div class="flex-grow" />
 
 		<!-- Marketplace -->
-		<a id="marketplace-link" href="/marketplace" class="relative font-semibold snap-center bg-card-gradient h-1/2 grid place-items-center px-4 btn">Marketplace</a>
+		<a id="marketplace-link" href="/marketplace/collections" class="relative font-semibold snap-center bg-card-gradient h-1/2 grid place-items-center px-4 btn">Marketplace</a>
 
 		<!-- Staking - HIDDEN FOR V1 -->
 		<a href="/staking" class="relative font-semibold text-md snap-center min-w-fit bg-card-gradient h-1/2 px-4 grid place-items-center">Staking</a>
