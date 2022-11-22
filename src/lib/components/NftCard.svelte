@@ -23,6 +23,7 @@
 	import CardPopup from './CardPopup/CardPopup.svelte';
 	import { reject } from 'lodash-es';
 	import Loader from '$icons/loader.svelte';
+	import axios from 'axios';
 
 	const dispatch = createEventDispatcher();
 
@@ -122,7 +123,7 @@
 		timerHtml = sanitizeHtmlInternal(getListingCardTimerHtml(options.listingData.startTime, options.listingData.duration));
 	}
 
-	const preload = async (src) => {
+	const preload = async (src: string) => {
 		const resp = await fetch(makeHttps(src));
 		const blob = await resp.blob();
 		fileType = blob.type.split('/')[0];
@@ -188,12 +189,14 @@
 			{/if}
 		{:catch _err}
 			{#if fileType === 'video'}
-				<video crossorigin="anonymous" class="max-w-full max-h-full shadow-xl object-cover object-top w-full h-full transition" autoplay loop class:opacity-0={!imgLoaded}>
+				<video crossorigin="anonymous" class="max-w-full max-h-full shadow-xl object-cover object-top w-full h-full transition" autoplay loop poster={options.nfts[0].thumbnailUrl}>
 					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
 			{:else if fileType === 'image'}
-				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" class:opacity-0={!imgLoaded} />
+				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" />
+			{:else}
+				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" />
 			{/if}
 		{/await}
 	</div>
