@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { CardOptions } from '$interfaces/ui';
 
-	import { currentUserAddress } from '$stores/wallet';
 	import { getOnChainListing, type ChainListing } from '$utils/contracts/listing';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
@@ -18,28 +17,23 @@
 	// Check NFT balance to enable/disable trading functionality
 	let nftBalance = null;
 
-	async function refreshBalance() {
-		if ($currentUserAddress) {
-			nftBalance = (await getUserNftBalance(options.nfts[0].contractAddress, options.nfts[0].onChainId)).balance;
-		} else {
-			nftBalance = 0;
-		}
-	}
-
 	onMount(async () => {
-		if (options.listingData?.onChainId) {
-			refreshOnChainListing();
-		}
-
 		refreshBalance();
 	});
 
-	async function refreshOnChainListing() {
-		chainListing = await getOnChainListing(options.listingData.onChainId);
-		console.debug('[On chain listing data]:', chainListing);
+	async function refreshBalance() {
+		if (options.resourceType === 'listing' && options.listingData?.onChainId) {
+			chainListing = await getOnChainListing(options.listingData.onChainId);
+			console.debug('[On chain listing data]:', chainListing);
+		}
+
+		nftBalance =
+			options.resourceType === 'listing' && options.listingData?.onChainId
+				? chainListing?.quantity ?? 0
+				: (await getUserNftBalance(options.nfts[0].contractAddress, options.nfts[0].onChainId)).balance;
 	}
 
-	_refreshOnChainListingHelper.subscribe(() => options.listingData && refreshOnChainListing());
+	_refreshOnChainListingHelper.subscribe(() => options.listingData && refreshBalance());
 
 	// The back button is controlled by dynamic components
 	export let showBackButton: boolean;

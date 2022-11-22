@@ -7,7 +7,6 @@ import dayjs from 'dayjs';
 import { writable } from 'svelte/store';
 import { ethers } from 'ethers';
 import { random } from 'lodash-es';
-import { isUrl } from '$utils/validator/isUrl';
 
 export interface SanitizedNftData {
 	databaseId: string;
@@ -34,7 +33,7 @@ export async function sanitizeNftData(data: ApiNftData) {
 	// temporarily fetch data from our backend if it is there
 	data.uri = makeHttps(data.uri);
 
-	if (!isUrl(data.uri) || !data.thumbnailUrl || !data.metadata) {
+	if (!data.uri || !isNaN(parseFloat(data.uri)) || !data.thumbnailUrl || !data.metadata) {
 		const hinataMetadata = await getHinataMetadata(data?.contractAddress, data?.nftId);
 		if (hinataMetadata) {
 			data.uri = hinataMetadata?.external_url ?? data.uri;
