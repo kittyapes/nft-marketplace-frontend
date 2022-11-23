@@ -10,7 +10,7 @@
 				<stop offset="100%" stop-color="#6CC7F8" />
 			</linearGradient>
 		</defs>
-		<rect x="0.5" y="0.5" width="39" height="39" stroke="currentColor" />
+		<rect x="0.5" y="0.5" width="39" height="39" stroke="url(#grad)" />
 
 		<g transform="translate(-2,-2)">
 			<path

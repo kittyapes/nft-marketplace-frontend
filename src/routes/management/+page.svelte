@@ -519,16 +519,14 @@
 	<div class="flex">
 		<div class="{tab === 'COLLECTION' ? 'text-gradient' : 'text-white'} font-medium text-2xl relative btn" on:click={() => (tab = 'COLLECTION')}>
 			<div class="px-6">Collection Management</div>
-			<div class="{tab === 'COLLECTION' ? "gradient-line delay-300" : "bg-white bg-opacity-30"} h-1 mt-2 transition-all duration-300" />
+			<div class="{tab === 'COLLECTION' ? 'gradient-line delay-300' : 'bg-white bg-opacity-30'} h-1 mt-2 transition-all duration-300" />
 		</div>
 		<div class="w-14 mt-auto">
 			<div class="bg-white bg-opacity-30 h-1 w-full" />
 		</div>
 		<div class="{tab === 'USER' ? 'text-gradient' : 'text-white'} font-medium text-2xl relative btn" on:click={() => (tab = 'USER')}>
-			<div class="px-6">
-				User Management
-			</div>
-			<div class="{tab === 'USER' ? "gradient-line delay-300" : "bg-white bg-opacity-30"} h-1 mt-2 transition-all duration-300" />
+			<div class="px-6">User Management</div>
+			<div class="{tab === 'USER' ? 'gradient-line delay-300' : 'bg-white bg-opacity-30'} h-1 mt-2 transition-all duration-300" />
 		</div>
 	</div>
 	<div class="flex gap-40 2xl:gap-96">

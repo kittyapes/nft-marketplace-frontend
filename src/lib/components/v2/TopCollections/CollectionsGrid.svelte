@@ -24,7 +24,7 @@
 {#if collections?.length > 0}
 	<div class="grid {gridTemplateRows} grid-flow-col gap-10 justify-between">
 		{#each collections as collection, i}
-			<div class="flex flex-row items-center gap-x-6 font-bold text-white text-sm leading-7 ">
+			<a href="/collections/{collection.slug}" class="flex flex-row items-center gap-x-6 font-bold text-white text-sm leading-7 ">
 				<p>{i + 1}</p>
 				<div class="relative w-[70px] h-[70px] border-gradient">
 					<div class="w-full h-full overflow-hidden">
@@ -49,7 +49,7 @@
 						</h3>
 					</div>
 				</div>
-			</div>
+			</a>
 		{/each}
 	</div>
 {/if}

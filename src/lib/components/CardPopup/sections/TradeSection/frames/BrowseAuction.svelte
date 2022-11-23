@@ -105,7 +105,7 @@
 
 		<div class="flex gap-2">
 			<button class="grid w-12 h-12 p-2 border rounded-lg place-items-center" disabled><Eth /></button>
-			<Input class="border-opacity-20" placeholder="Enter amount" bind:value={bidAmount} validator={bidValidator} bind:valid={bidAmountValid} disabled={listingExpired} />
+			<Input class="border border-opacity-20" placeholder="Enter amount" bind:value={bidAmount} validator={bidValidator} bind:valid={bidAmountValid} disabled={listingExpired} />
 		</div>
 
 		<div class="flex gap-2 mt-4">
