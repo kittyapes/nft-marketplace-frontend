@@ -1,5 +1,4 @@
 <script lang="ts">
-	import ArrowDown from '$icons/arrow-down.svelte';
 	import Calendar from '$icons/calendar.svelte';
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import ChevronRight from '$icons/chevron-right.svelte';
@@ -9,6 +8,7 @@
 	import isoWeek from 'dayjs/plugin/isoWeek.js';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import Toggle from './Toggle.svelte';
+	import PrimaryButton from './v2/PrimaryButton/PrimaryButton.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -92,7 +92,7 @@
 				dayjs: viewedDate
 					.subtract(1, 'month')
 					.date(i + 1)
-					.startOf('day')
+					.startOf('day'),
 			}));
 
 		const currentMonthDays = Array(viewedDate.daysInMonth())
@@ -102,7 +102,7 @@
 				dayjs: viewedDate
 					.clone()
 					.date(i + 1)
-					.startOf('day')
+					.startOf('day'),
 			}));
 
 		const fillAfterDays = Array(42 - fillBeforeDays.length - currentMonthDays.length)
@@ -113,7 +113,7 @@
 				dayjs: viewedDate
 					.add(1, 'month')
 					.date(i + 1)
-					.startOf('day')
+					.startOf('day'),
 			}));
 
 		monthDays = [...fillBeforeDays, ...currentMonthDays, ...fillAfterDays] as DayInTable[];
@@ -124,115 +124,119 @@
 	}
 </script>
 
-<div class="relative">
-	<input {id} type="text" class="input w-full h-12 disabled:bg-white" class:disabled:bg-gray-100={disabled} {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
+<div class="relative" class:opacity-50={disabled}>
+	<input {id} type="text" class="input w-full h-12" {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
 
-	<button class="bg-color-black text-white w-20 absolute top-0 right-0 h-full rounded-r-md" on:click={() => (open = !open)} {disabled}>
-		<div class="flex items-center justify-center space-x-2">
-			<Calendar />
-			<ArrowDown />
+	<button class="w-24 absolute top-0 right-0 h-full border-l bg-gradient-a" on:click={() => (open = !open)} {disabled}>
+		<div class="flex items-center justify-center gap-3">
+			<div>Date</div>
+
+			<div class="w-4">
+				<Calendar />
+			</div>
 		</div>
 	</button>
 
 	{#if open}
-		<div class="absolute top-0 right-0 w-full max-w-xs bg-white flex flex-col rounded-xl translate-y-14 p-4 z-10" style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);">
-			<!-- use:outsideClickCallback={{ cb: () => (open = false) }} -->
-			<!-- Date/Time switch -->
-			{#if !dateOnly}
-				<div class="border-color-black border rounded-xl h-12 grid grid-cols-2 overflow-hidden flex-shrink-0">
-					<button
-						class="uppercase font-semibold transition flex items-center justify-center
-                    {section === 'date' ? 'bg-black text-white' : ''}"
-						on:click={() => (section = 'date')}
-					>
-						<Calendar />
-						<span class="ml-2">Date</span>
-					</button>
-
-					<button
-						class="uppercase font-semibold transition flex items-center justify-center
-                    {section === 'time' ? 'bg-black text-white' : ''}"
-						on:click={() => (section = 'time')}
-					>
-						<Time />
-						<span class="ml-2">Time</span>
-					</button>
-				</div>
-			{/if}
-
-			{#if section === 'date'}
-				<div class="flex mt-4">
-					<div class="flex-grow font-bold">
-						{viewedDate.format('MMM')}
-						{viewedDate.year()}
-					</div>
-					<div class="flex space-x-2">
-						<button class="btn" on:click={previousMonth}><ChevronLeft /></button>
-						<button class="btn" on:click={nextMonth}><ChevronRight /></button>
-					</div>
-				</div>
-
-				<div class="flex font-semibold mt-6">
-					{#each days as day}
-						<div class="flex-grow text-center">{day}</div>
-					{/each}
-				</div>
-
-				<div class="grid grid-cols-7 gap-px bg-[#DFDFDF] border mt-3">
-					{#each monthDays as day}
+		<div class="absolute top-0 right-0 w-full max-w-xs gradient-border-bg flex flex-col translate-y-14 p-[2px] z-10" style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);">
+			<div class="bg-dark-gradient p-4">
+				<!-- use:outsideClickCallback={{ cb: () => (open = false) }} -->
+				<!-- Date/Time switch -->
+				{#if !dateOnly}
+					<div class="border-color-black border rounded-xl h-12 grid grid-cols-2 overflow-hidden flex-shrink-0">
 						<button
-							class="btn flex-grow text-center aspect-1 bg-white grid place-items-center text-sm font-medium
-							{day.dayjs.toISOString() === value.toISOString() ? 'bg-[#388DFC] text-white' : ''}
-							{day.isDisabled ? 'text-[#747474] bg-[#FCFCFC]' : ''}"
-							class:font-bold={day.isToday}
-							on:click={() => selectDate(day.dayjs)}
-							disabled={day.isDisabled}
+							class="uppercase font-semibold transition flex items-center justify-center
+                    {section === 'date' ? 'bg-black text-white' : ''}"
+							on:click={() => (section = 'date')}
 						>
-							{day.day}
+							<Calendar />
+							<span class="ml-2">Date</span>
 						</button>
-					{/each}
-				</div>
 
-				{#if dateOnly}
-					<button class="btn btn-black btn-rounded mt-4" on:click={handleDone}>Confirm</button>
-				{:else}
-					<button class="btn btn-outline btn-rounded mt-4" on:click={() => (section = 'time')}>Select Time</button>
+						<button
+							class="uppercase font-semibold transition flex items-center justify-center
+                    {section === 'time' ? 'bg-black text-white' : ''}"
+							on:click={() => (section = 'time')}
+						>
+							<Time />
+							<span class="ml-2">Time</span>
+						</button>
+					</div>
 				{/if}
-			{/if}
 
-			{#if section === 'time'}
-				<div class="flex justify-center mt-8">
-					<Toggle onInsideLabel="PM" offInsideLabel="AM" bind:state={isPm} />
-				</div>
-
-				<div class="flex items-center justify-center space-x-2 mt-4">
-					<div class="grid place-items-center border w-24 h-24 text-3xl">
-						{hours}
+				{#if section === 'date'}
+					<div class="flex mt-4">
+						<div class="flex-grow font-bold text-gradient text-lg">
+							{viewedDate.format('MMM')}
+							{viewedDate.year()}
+						</div>
+						<div class="flex-grow" />
+						<div class="flex gap-4 text-white">
+							<button class="btn w-4" on:click={previousMonth}><ChevronLeft /></button>
+							<button class="btn w-4" on:click={nextMonth}><ChevronRight /></button>
+						</div>
 					</div>
 
-					<div class="text-6xl opacity-40 font-semibold">:</div>
-
-					<div class="grid place-items-center border w-24 h-24 text-3xl">
-						{minutes}
+					<div class="flex font-semibold mt-6">
+						{#each days as day}
+							<div class="flex-grow text-center">{day}</div>
+						{/each}
 					</div>
-				</div>
 
-				<div class="mt-8">
-					<label class="font-semibold">
-						<div>Hours:</div>
-						<input type="range" bind:value={hours} max="12" class="mt-2" />
-					</label>
+					<div class="grid grid-cols-7 gap-px bg-white border mt-3">
+						{#each monthDays as day}
+							{@const isSelected = day.dayjs.toISOString() === value.toISOString()}
+							<button class="flex-grow text-center aspect-1 text-sm font-medium bg-dark-gradient" class:font-bold={day.isToday} on:click={() => selectDate(day.dayjs)} disabled={day.isDisabled}>
+								<div class="w-full h-full grid place-items-center" class:bg-dark-gradient={day.isDisabled} class:bg-gradient-a={!day.isDisabled && !isSelected} class:gradient-border-bg={isSelected}>
+									{day.day}
+								</div>
+							</button>
+						{/each}
+					</div>
 
-					<label class="font-semibold">
-						<div>Minutes:</div>
-						<input type="range" bind:value={minutes} max="60" class="mt-2" />
-					</label>
-				</div>
+					{#if dateOnly}
+						<div class="mt-4">
+							<PrimaryButton on:click={handleDone}>Confirm</PrimaryButton>
+						</div>
+					{:else}
+						<button class="btn btn-outline btn-rounded mt-4" on:click={() => (section = 'time')}>Select Time</button>
+					{/if}
+				{/if}
 
-				<div class="flex-grow" />
+				{#if section === 'time'}
+					<div class="flex justify-center mt-8">
+						<Toggle bind:state={isPm} />
+					</div>
 
-				<button class="btn btn-rounded mt-4 btn-black uppercase" on:click={handleDone}>Done</button>
-			{/if}
+					<div class="flex items-center justify-center space-x-2 mt-4">
+						<div class="grid place-items-center border w-24 h-24 text-3xl">
+							{hours}
+						</div>
+
+						<div class="text-6xl opacity-40 font-semibold">:</div>
+
+						<div class="grid place-items-center border w-24 h-24 text-3xl">
+							{minutes}
+						</div>
+					</div>
+
+					<div class="mt-8">
+						<label class="font-semibold">
+							<div>Hours:</div>
+							<input type="range" bind:value={hours} max="12" class="mt-2" />
+						</label>
+
+						<label class="font-semibold">
+							<div>Minutes:</div>
+							<input type="range" bind:value={minutes} max="60" class="mt-2" />
+						</label>
+					</div>
+
+					<div class="flex-grow" />
+
+					<button class="btn btn-rounded mt-4 btn-black uppercase" on:click={handleDone}>Done</button>
+				{/if}
+			</div>
 		</div>
 	{/if}
 </div>

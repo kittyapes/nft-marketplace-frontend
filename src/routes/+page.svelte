@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { links } from '$constants/links';
-	import { socials } from '$constants/socials';
-	import CollectionsTable from '$lib/components/collections/CollectionsTable.svelte';
 	import { apiGetMostActiveCollections, type Collection } from '$utils/api/collection';
 	import { fade, slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
@@ -10,10 +7,12 @@
 	import { writable } from 'svelte/store';
 	import { getRandomListings, type Listing } from '$utils/api/listing';
 	import NftList from '$lib/components/NftList.svelte';
-	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
+	import HomepageCarousel from '$lib/components/v2/HomepageCarousel/HomepageCarousel.svelte';
 
+	import TopCollections from '$components/v2/TopCollections/+page.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
 	let loadedExploreListings = writable(false);
@@ -61,107 +60,71 @@
 		site_name: 'Hinata',
 	}}
 />
+<div class="px-[172px] pt-32 w-full grid place-items-center text-white">
+	<div class="w-1/2  mb-16">
+		<HomepageCarousel />
+	</div>
 
-<div
-	class="
-		relative
-		max-w-[100vw]
-		overflow-hidden bg-cover bg-no-repeat bg-[#194665]
-		bg-[url('/img/graphics/home-bg.640.png')] h-[500px] bg-[center_top_-400px]
-		sm:bg-[url('/img/graphics/home-bg.768.png')] sm:bg-[length:1280px] sm:h-[760px]
-		md:bg-[url('/img/graphics/home-bg.1024.png')]
-		lg:bg-[url('/img/graphics/home-bg.1280.png')] lg:bg-[length:1280px] lg:bg-[center_top_-150px]
-		xl:bg-[url('/img/graphics/home-bg.1920.png')] xl:bg-[length:1536px] xl:bg-[center_top_-400px]
-		2xl:bg-[url('/img/graphics/home-bg.4k.png')] 2xl:bg-cover 2xl:bg-[center_calc(50%+600px)]
-		2k:h-[1300px]
-		4k:h-[1500px] 4k:bg-[length:calc(max(100vw,4000px))] 4k:bg-[center_calc(50%+1000px)]
-	"
->
-	<div class="absolute top-1/4 -translate-y-1/4 left-0 w-full grid place-items-center">
-		<div class="px-8">
-			<h1 class="uppercase text-white font-bold text-7xl">
-				Hinata
-				<br />
-				Marketplace
-			</h1>
+	<!-- Top collections section -->
+	<div class="w-full">
+		<TopCollections bind:collections />
+	</div>
 
-			<div class="text-white py-6 px-1 text-lg w-1/2 font-semibold">Welcome to the anime NFT marketplace featuring top collections on Ethereum curated by users and artists.</div>
+	<!-- Hottest creators section -->
+	<div class="w-full">
+		<h2 class="text-2xl leading-7">Hottest creators</h2>
+	</div>
 
-			<div class="flex gap-x-4 mt-6 h-16 uppercase font-semibold">
-				<a class="flex flex-col justify-center items-center bg-white w-48 transition-btn" href={socials.twitter} target="_blank">Follow Us</a>
+	<!-- Tending nfts Section -->
+	{#if $loadedExploreListings && exploreListingsData?.length > 0}
+		<div class="my-24 w-full" in:slide>
+			<h2 class="text-2xl leading-7">Trending NFTs</h2>
 
-				<a class="flex flex-col justify-center items-center bg-white w-48 transition-btn" href={links.snapshot} target="_blank">Our Dao</a>
+			<div class="mb-20">
+				<NftList options={exploreListingsData} />
 			</div>
+
+			<a href="/marketplace" class="w-full"><PrimaryButton class="w-full">Explore Marketplace</PrimaryButton></a>
 		</div>
-	</div>
-</div>
-
-<!-- Top collections section -->
-<div class="px-16 mt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Most Active Collections</h2>
-		<a href="/collections" class="uppercase underline text-sm font-bold">View all</a>
-	</div>
-	<hr class="mt-4 border-[#0000004D]" />
-	{#if collections.length > 0}
-		<CollectionsTable {collections} />
-	{:else}
-		<DiamondsLoader />
 	{/if}
-</div>
 
-<!-- Explore Market Section -->
-{#if $loadedExploreListings && exploreListingsData?.length > 0}
-	<div class="px-16 mt-24 mb-16" in:slide>
+	<!-- Latest blog posts 
+	<div class="px-16 2xl:px-52 mt-24 mb-16">
 		<div class="flex items-end">
-			<h2 class="text-4xl font-light uppercase flex-grow">Explore Market</h2>
-			<a href="/marketplace" class="uppercase underline text-sm font-bold">View All</a>
+			<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">BLOG</h2>
+			<a href="/blog" class="uppercase text-white underline text-sm font-bold">View Latest Posts</a>
 		</div>
-		<hr class="mt-4 border-[#0000004D]" />
+		<hr class="mt-4 border-[#FFFFFF1E]" />
 
-		<NftList options={exploreListingsData} />
-	</div>
-{/if}
+		{#if $blogPosts.length}
+			{#each $blogPosts.slice(0, 2) as post}
+				<BlogPostPreview data={post} />
+			{/each}
+		{/if}
+	</div>-->
 
-<!-- Latest blog posts -->
-<div class="px-16 mt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Latest Blog Posts</h2>
-		<a href="/blog" class="uppercase underline text-sm font-bold">View Latest Posts</a>
-	</div>
-	<hr class="mt-4 border-[#0000004D]" />
-
-	{#if $blogPosts.length}
-		{#each $blogPosts.slice(0, 2) as post}
-			<BlogPostPreview data={post} />
-		{/each}
-	{/if}
-</div>
-
-<!-- Monthly airdrop -->
-<div class="px-16 mt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Monthly Airdrop</h2>
-	</div>
-	<hr class="mt-4 border-[#0000004D]" />
-
-	<div class="flex flex-col h-full overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-gray-100" in:fade>
-		<div class="flex-shrink-0 h-full py-8 lg:h-72">
-			<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
+	<!-- Monthly airdrop 
+	<div class="px-16 2xl:px-52 mt-24 mb-16">
+		<div class="flex items-end">
+			<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">Monthly Airdrop</h2>
 		</div>
+		<hr class="mt-4 border-[#FFFFFF1E]" />
 
-		<div class="flex flex-col flex-grow py-8 lg:ml-16">
-			<div class="text-3xl font-light uppercase text-color-black line-clamp-2">
-				{aidrop.title}
+		<div class="flex flex-col h-full py-11 pr-4 overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-[#FFFFFF1E]" in:fade>
+			<div class="flex-shrink-0 h-full lg:h-[250px]">
+				<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
 			</div>
+			<hr class="mt-4 border-[#0000004D]" />
 
-			<p class="flex-grow mt-4">
-				{aidrop.textPreview}
-			</p>
+			<div class="flex flex-col flex-grow text-white pt-8 lg:py-0 lg:ml-44">
+				<div class="text-4xl font-light uppercase line-clamp-2 italic">
+					{aidrop.title}
+				</div>
 
-			<!-- Read more
-			<div class="mt-4 text-lg font-light gradient-text">Read more</div>
-			 -->
+				<p class="flex-grow mt-8">
+					{aidrop.textPreview}
+				</p>
+			</div>
 		</div>
-	</div>
+	</div>-->
 </div>

@@ -4,14 +4,13 @@
 
 <div class="w-full grid grid-cols-[2fr_3fr] py-8 gap-20">
 	<div class="flex flex-col gap-6">
-		<div class="gradient-text text-5xl font-semibold">Earn with HINATA</div>
+		<div class="text-gradient text-5xl font-semibold">Earn with HINATA</div>
 		<div class="font-bold text-xl flex flex-col">
 			<div>HINATA helps you earn rewards.</div>
 			<div>It's neat.</div>
 		</div>
 		<div class="max-w-md text-xl">
-			Later on, it’ll be the governance token in Hinata’s future DAO, but you can already benefit
-			from Hinata as an incentive for participating in the Hinata ecosystem.
+			Later on, it’ll be the governance token in Hinata’s future DAO, but you can already benefit from Hinata as an incentive for participating in the Hinata ecosystem.
 		</div>
 		<button class="btn btn-rounded btn-gradient font-semibold w-3/4 mt-8">Buy Hinata</button>
 	</div>

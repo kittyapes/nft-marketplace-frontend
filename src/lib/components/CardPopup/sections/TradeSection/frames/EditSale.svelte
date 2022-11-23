@@ -3,7 +3,6 @@
 	import type { ConfigurableListingProps } from '$interfaces/listing';
 	import type { CardOptions } from '$interfaces/ui';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
-	import { refreshOnChainListing } from '$lib/components/CardPopup/cardPopup';
 	import ListingProperties from '$lib/components/primary-listing/ListingProperties.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
@@ -17,7 +16,6 @@
 	import { createToggle } from '$utils/misc/toggle';
 	import { getInterval } from '$utils/scheduler';
 	import { notifyError } from '$utils/toast';
-	import { chain } from 'lodash-es';
 	import { onDestroy } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 	import Success from './Success.svelte';
@@ -71,7 +69,7 @@
 			notifyError('Failed to update listing.');
 		}
 
-		refreshOnChainListing();
+		dispatch('refresh-chain-data');
 		updatingListing = false;
 	}
 
@@ -94,12 +92,11 @@
 	let listingProps: Partial<ConfigurableListingProps> = {};
 </script>
 
-<div class="flex flex-col h-full p-4 pb-8 overflow-y-scroll overscroll-contain">
+<div class="flex flex-col pb-8 overscroll-contain text-white aspect-1 overflow-hidden ">
 	<div class="mt-2">
 		<!-- TODO maxQuantity needs to be checked on chain -->
 		<ListingProperties
 			listingType={options.listingData.listingType}
-			maxQuantity={getTokenBalance(options.nfts[0].onChainId)}
 			disableQuantity
 			{disableStartDate}
 			maxPrice={chainListing.price}
@@ -124,9 +121,9 @@
 			</div>
 		</div>
 
-		<div class="gradient-text">Hinata Fees:</div>
+		<div class="text-gradient">Hinata Fees:</div>
 		<div class="flex items-center justify-end space-x-3">
-			<div class="gradient-text">0%</div>
+			<div class="text-gradient">0%</div>
 			<div class="w-5">
 				<Info />
 			</div>
@@ -134,12 +131,12 @@
 	</div>
 
 	<div class="flex gap-2 mt-4">
-		<SecondaryButton disabled={updatingListing || cancellingListing} on:click={cancelListing}>
+		<PrimaryButton disabled={updatingListing || cancellingListing} on:click={cancelListing}>
 			{#if cancellingListing}
 				<ButtonSpinner secondary />
 			{/if}
 			Cancel Listing
-		</SecondaryButton>
+		</PrimaryButton>
 
 		<div bind:this={updatebuttonContainer} class="w-full" on:pointerenter={isUpdateHovered.toggle} on:pointerleave={isUpdateHovered.toggle}>
 			<PrimaryButton on:click={updateListing} disabled={!!formErrors.length || updatingListing || cancellingListing || !allowEdit}>

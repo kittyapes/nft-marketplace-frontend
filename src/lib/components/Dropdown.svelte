@@ -19,7 +19,6 @@
 	export let selected: Option = options?.[0];
 	export let opened: boolean = false;
 	export let disabled = false;
-	export let borderOpacity = 0.3;
 	export let dropdownIcon: any = '';
 	export let dispatchOnMount = true;
 
@@ -48,8 +47,14 @@
 	});
 </script>
 
-<div class="relative select-container select-none transition {$$props.class}" class:opacity-50={disabled}>
-	<button style:--tw-border-opacity={borderOpacity} class="flex items-center space-x-2 text-left select" on:click|stopPropagation={() => (opened = !opened)} bind:this={elemOpenButton} {disabled}>
+<div class="relative select-none transition {$$props.class}" class:opacity-50={disabled}>
+	<button
+		class="flex items-center space-x-2 text-left border border-white min-h-[3rem] pl-4 outline-none cursor-pointer
+	appearance-none w-full"
+		on:click|stopPropagation={() => (opened = !opened)}
+		bind:this={elemOpenButton}
+		{disabled}
+	>
 		<!-- Icon -->
 		{#if selected?.iconUrl}
 			<img src={selected.iconUrl} alt="" class="object-cover w-6 h-6 rounded-full" />
@@ -58,19 +63,19 @@
 		{/if}
 
 		<!-- Label -->
-		<div>
+		<div class="flex-grow">
 			{selected?.label}
+		</div>
+
+		<div class="arrow-background h-12 w-12 grid place-items-center border-l">
+			<img src="/svg/dropdown-arrow.svg" alt="" />
 		</div>
 	</button>
 
 	{#if opened}
-		<div id="list-container" class="absolute bottom-0 z-20 w-full overflow-hidden overflow-y-auto translate-y-full bg-white rounded-lg max-h-72 custom-scrollbar">
+		<div class="absolute bottom-0 z-20 w-full overflow-hidden overflow-y-auto translate-y-full bg-color-bg-purple max-h-72 blue-scrollbar">
 			{#each options as option}
-				<button
-					class="flex items-center w-full px-4 h-12 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded gap-x-2"
-					style={option.style}
-					on:click={() => handleOptionSelect(option)}
-				>
+				<button class="flex items-center w-full px-4 h-12 font-semibold text-left hover:bg-gray-900 transition-btn gap-x-2" style={option.style} on:click={() => handleOptionSelect(option)}>
 					{#if option.iconUrl}
 						<img src={option.iconUrl} alt="" class="object-cover w-6 h-6 rounded-full" />
 					{/if}
@@ -82,7 +87,13 @@
 </div>
 
 <style>
-	#list-container {
-		box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.12);
+	.arrow-background {
+		background: radial-gradient(55.65% 55.65% at 51.68% 130.43%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%)
+				/* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
+			radial-gradient(55.22% 148.72% at 98.83% 0%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%)
+				/* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
+			radial-gradient(64.35% 166.74% at 8.56% -7.83%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%)
+				/* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
+			linear-gradient(180deg, rgba(136, 234, 255, 0.1) 0%, rgba(133, 141, 247, 0.056) 100%, rgba(133, 141, 247, 0.1) 100%), rgba(0, 0, 0, 0.1);
 	}
 </style>

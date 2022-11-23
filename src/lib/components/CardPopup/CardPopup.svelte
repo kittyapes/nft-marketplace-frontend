@@ -1,4 +1,6 @@
 <script lang="ts">
+	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
+	import { currentUserAddress } from '$stores/wallet';
 	import type { CardOptions } from '$interfaces/ui';
 	import { likedNftIds } from '$stores/user';
 	import { sanitizeNftData } from '$utils/adapters/cardOptions';
@@ -6,18 +8,17 @@
 	import { makeHttps } from '$utils/ipfs';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import type { PopupHandler } from '$utils/popup';
-	import { onMount } from 'svelte';
+	import { onMount, SvelteComponent } from 'svelte';
 	import Popup from '../Popup.svelte';
 	import AssetContainer from './sections/AssetContainer.svelte';
-	import RightSection from './sections/RightSection.svelte';
+	import Tabs from './Tabs.svelte';
+	import { getOnChainListing, type ChainListing } from '$utils/contracts/listing';
+	import CardCarousel from '../v2/CardCarousel/CardCarousel.svelte';
 
 	export let options: CardOptions;
 	export let handler: PopupHandler;
 
-	// Showing of the back button is controlled by the RightSection component
-	let showBackButton = false;
-
-	let rightSectionInstance;
+	let chainListing: ChainListing;
 
 	const countdownData = options?.resourceType === 'listing' ? { startTime: options.listingData?.startTime, duration: options.listingData?.duration, expired: false } : null;
 
@@ -37,38 +38,92 @@
 		options.nfts[0] = sanitized;
 	}
 
+	// Check NFT balance to enable/disable trading functionality
+	let nftBalance = null;
+
+	async function refreshBalance() {
+		if ($currentUserAddress) {
+			nftBalance = (await getUserNftBalance(options.nfts[0].contractAddress, options.nfts[0].onChainId)).balance;
+		} else {
+			nftBalance = 0;
+		}
+	}
+
+	async function refreshOnChainListing() {
+		chainListing = await getOnChainListing(options.listingData.onChainId);
+		console.debug('[On chain listing data]:', chainListing);
+	}
+
 	onMount(() => {
 		// We wanna refresh the NFT data from the NFT detail endpoint when the use opens
 		// the popup. That will allow us to display more data than what's available from
 		// the /nfts/search endpoint.
 		fetchNftDetail();
+
+		if (options.listingData?.onChainId) {
+			refreshOnChainListing();
+		}
+
+		refreshBalance();
 	});
+
+	let selectedTab;
+	let tabComponentInstance: SvelteComponent;
+
+	$: similarCards = Array(10).fill(options);
+
+	function handleClosePopup() {
+		handler.close();
+	}
+
+	let enableBack = false;
 </script>
 
-<Popup class="w-full h-full overflow-y-auto rounded-none lg:rounded-xl lg:w-[1000px] lg:max-h-[700px] transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>
-	<!-- Back button -->
-	<button class="absolute flex items-center flex-grow-0 gap-2 px-10 btn disabled:opacity-0 top-4" disabled={!showBackButton} on:click={rightSectionInstance.goBack()}>
-		<img src={getIconUrl('back-button')} alt="Arrow pointing left." />
-		<p class="text-sm font-semibold text-color-black">GO BACK</p>
-	</button>
+<Popup class="w-full h-full rounded-none lg:w-[1400px] lg:max-h-[800px] transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>
+	<div class="bg-gradient overflow-y-auto bg-repeat-y h-full blue-scrollbar">
+		<div class="bg-black bg-opacity-40 py-8">
+			<!-- Tabs -->
+			<div class="flex px-24 gap-4">
+				<!-- Back button -->
+				<button class="btn disabled:opacity-0 transition duration-200" disabled={!enableBack} on:click={tabComponentInstance.goBack()}>
+					<img class="h-6" src={getIconUrl('back-button')} alt="Arrow pointing left." />
+				</button>
 
-	<!-- Main content -->
-	<div class="flex flex-row flex-wrap justify-around h-full mx-10 gap-y-8">
-		<!-- Left part with image and buttons -->
-		<div class="min-h-[500px] w-[320px] overflow-y-auto pb-8">
-			<AssetContainer
-				assetUrl={makeHttps(options.nfts[0].assetUrl)}
-				title={options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
-				{options}
-				favorited={$likedNftIds.includes(options.nfts[0].onChainId)}
-				countdown={countdownData}
-				thumbnailUrl={makeHttps(options.nfts[0]?.thumbnailUrl)}
-			/>
+				<Tabs bind:selectedTab />
+			</div>
+
+			<!-- Main content -->
+			<div class="grid grid-cols-2 h-full gap-8 mt-8 px-32">
+				<!-- Left part with image and buttons -->
+				<div class="pb-8">
+					<AssetContainer
+						assetUrl={makeHttps(options.nfts[0].assetUrl)}
+						title={options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
+						{options}
+						favorited={$likedNftIds.includes(options.nfts[0].onChainId)}
+						countdown={countdownData}
+						thumbnailUrl={makeHttps(options.nfts[0]?.thumbnailUrl)}
+					/>
+				</div>
+
+				<!-- Right part with info and actions -->
+				<div class="border-t lg:border-none pb-8">
+					<svelte:component
+						this={selectedTab?.sectionComponent}
+						{options}
+						{chainListing}
+						on:close-popup={handleClosePopup}
+						on:force-expire
+						on:listing-created={refreshBalance}
+						bind:this={tabComponentInstance}
+						bind:enableBack
+					/>
+				</div>
+			</div>
 		</div>
 
-		<!-- Right part with info and actions -->
-		<div class="pt-8 w-[450px] flex-grow border-t lg:border-none pb-8">
-			<RightSection {options} on:close-popup={handler.close} bind:showBackButton bind:this={rightSectionInstance} on:force-expire={onForceExpire} />
+		<div class="pt-24 pb-32 px-16">
+			<CardCarousel cards={similarCards} />
 		</div>
 	</div>
 </Popup>

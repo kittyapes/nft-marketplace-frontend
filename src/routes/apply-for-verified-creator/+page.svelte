@@ -44,7 +44,7 @@
 		<div slot="header" class="flex flex-col max-w-3xl gap-5">
 			<h1 class="font-bold uppercase text-7xl">
 				<p>Apply to be a</p>
-				<p class="gradient-text">verified creator</p>
+				<p class="text-gradient">verified creator</p>
 			</h1>
 		</div>
 		<div slot="content" id="form-container" class="flex flex-col max-w-xl gap-8">
@@ -60,11 +60,11 @@
 				using open-source NFT technology. 100% of minting costs on Ethereum are covered by the Hinata DAO.
 			</p>
 			<div class="grid grid-cols-[1fr_1.5fr]">
-				<div class="text-lg uppercase gradient-text brightness-0" class:brightness-100={name}>Contact name</div>
+				<div class="text-lg uppercase text-gradient brightness-0" class:brightness-100={name}>Contact name</div>
 				<input type="text" class="input input-gray-outline" placeholder="Legal name or alias" bind:value={name} />
 			</div>
 			<div class="grid grid-cols-[1fr_1.5fr] mb-2">
-				<div class="text-lg uppercase gradient-text brightness-0" class:brightness-100={isEmail(email)}>Email</div>
+				<div class="text-lg uppercase text-gradient brightness-0" class:brightness-100={isEmail(email)}>Email</div>
 				<div>
 					<input type="text" class="input input-gray-outline" placeholder="example@email.com" bind:value={email} />
 					{#if email && !isEmail(email)}
@@ -74,7 +74,7 @@
 			</div>
 			<div class="grid grid-cols-[1fr_1.5fr] mb-8">
 				<div>
-					<div class="text-lg uppercase transition gradient-text brightness-0 peer-focus:brightness-100">Social links</div>
+					<div class="text-lg uppercase transition text-gradient brightness-0 peer-focus:brightness-100">Social links</div>
 					<div class="text-xs text-[#A9A8A8]">optional</div>
 				</div>
 
@@ -130,7 +130,7 @@
 				</div>
 			</div>
 			<div class="grid grid-cols-[1fr_1.5fr]">
-				<div class="uppercase text-lg input-label gradient-text brightness-0 transition max-w-[12rem]" class:brightness-100={isValidBio(contentStyle)}>what do you want to create?</div>
+				<div class="uppercase text-lg input-label text-gradient brightness-0 transition max-w-[12rem]" class:brightness-100={isValidBio(contentStyle)}>what do you want to create?</div>
 
 				<div>
 					<TextArea outline placeholder="What are you most excited about?" maxChars={200} bind:value={contentStyle} />
@@ -140,7 +140,7 @@
 				</div>
 			</div>
 			<div class="grid grid-cols-[1fr_1.5fr]">
-				<div class="uppercase text-lg input-label gradient-text brightness-0 transition max-w-[12rem]" class:brightness-100={isValidBio(knowledgeDescription)}>
+				<div class="uppercase text-lg input-label text-gradient brightness-0 transition max-w-[12rem]" class:brightness-100={isValidBio(knowledgeDescription)}>
 					Have you minted NFts before? if so, where?
 				</div>
 
