@@ -5,27 +5,30 @@
 	import HinataBadge from '$icons/hinata-badge.svelte';
 	import type { Collection } from '$utils/api/collection';
 
-	const dispatch = createEventDispatcher();
-
 	export let collections: Collection[];
 	export let isLoading = false;
+
+	const dispatch = createEventDispatcher();
+
 	const inviewOptions = {};
+
 	function onChange(event) {
 		if (event.detail.inView) {
 			dispatch('end-reached');
 		}
 	}
+
 	const gridTemplateRows = collections?.length >= 4 ? 'grid-rows-4' : `grid-rows-${collections?.length}`;
 </script>
 
 {#if collections?.length > 0}
-	<div class="grid {gridTemplateRows} grid-flow-col gap-y-10 justify-between">
+	<div class="grid {gridTemplateRows} grid-flow-col gap-10 justify-between">
 		{#each collections as collection, i}
-			<div class="flex flex-row items-center gap-x-6 font-bold text-white text-sm leading-7 ">
+			<a href="/collections/{collection.slug}" class="flex flex-row items-center gap-x-6 font-bold text-white text-sm leading-7 ">
 				<p>{i + 1}</p>
 				<div class="relative w-[70px] h-[70px] border-gradient">
 					<div class="w-full h-full overflow-hidden">
-						<img class="object-center object-contain" src={collection?.logoImageUrl} alt="Collection Logo" />
+						<img class="object-center object-cover w-full h-full" src={collection?.logoImageUrl} alt="Collection Logo" />
 					</div>
 					<HinataBadge class="absolute -bottom-2.5 -right-2.5 z-50  w-5 h-5 {!collection?.verified ? 'hidden' : ''}" />
 				</div>
@@ -46,7 +49,7 @@
 						</h3>
 					</div>
 				</div>
-			</div>
+			</a>
 		{/each}
 	</div>
 {/if}

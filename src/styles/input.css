@@ -14,13 +14,15 @@
 	@apply border-[#1d1d1d4d];
 }
 
-.input-hide-controls::-webkit-outer-spin-button,
-.input-hide-controls::-webkit-inner-spin-button {
-	/* display: none; <- Crashes Chrome on hover */
+/* Hide Arrows on Number input */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
 	-webkit-appearance: none;
-	margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+	margin: 0;
 }
 
-.input-hide-controls[type='number'] {
-	-moz-appearance: textfield; /* Firefox */
+/* Firefox */
+input[type='number'] {
+	-moz-appearance: textfield;
 }

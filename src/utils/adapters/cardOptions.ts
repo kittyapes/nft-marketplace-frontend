@@ -31,7 +31,9 @@ export interface SanitizedNftData {
 
 export async function sanitizeNftData(data: ApiNftData) {
 	// temporarily fetch data from our backend if it is there
-	if (!data.uri || !data.thumbnailUrl || !data.metadata) {
+	data.uri = makeHttps(data.uri);
+
+	if (!data.uri || !isNaN(parseFloat(data.uri)) || !data.thumbnailUrl || !data.metadata) {
 		const hinataMetadata = await getHinataMetadata(data?.contractAddress, data?.nftId);
 		if (hinataMetadata) {
 			data.uri = hinataMetadata?.external_url ?? data.uri;
@@ -118,13 +120,19 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 	function toShortDisplayPrice(floatingPrice: string) {
 		const bigNumber = ethers.utils.parseEther(floatingPrice);
 
+		const maxCharsOnDisplay = 10;
 		const thresholdStr = '0.01';
 		const threshold = ethers.utils.parseEther(thresholdStr);
 
 		if (bigNumber.lt(threshold)) {
 			return '< ' + thresholdStr;
 		} else {
-			return floatingPrice;
+			return floatingPrice.length > maxCharsOnDisplay
+				? `~ ${(+floatingPrice)
+						.toFixed(maxCharsOnDisplay)
+						.toString()
+						.replace(/(\.?0+$)/, '')}`
+				: floatingPrice;
 		}
 	}
 

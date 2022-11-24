@@ -22,6 +22,7 @@
 	import CardPopup from './CardPopup/CardPopup.svelte';
 	import { reject } from 'lodash-es';
 	import Loader from '$icons/loader.svelte';
+	import axios from 'axios';
 
 	const dispatch = createEventDispatcher();
 
@@ -29,7 +30,7 @@
 	export let menuItems: ('hide' | 'reveal' | 'transfer')[] = [];
 	export let hideLikes = false;
 	export let disabled = false;
-
+	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 	// Helpers
 	let imgLoaded = false;
 	let isHovered = false;
@@ -121,7 +122,7 @@
 		timerHtml = sanitizeHtmlInternal(getListingCardTimerHtml(options.listingData.startTime, options.listingData.duration));
 	}
 
-	const preload = async (src) => {
+	const preload = async (src: string) => {
 		const resp = await fetch(makeHttps(src));
 		const blob = await resp.blob();
 		fileType = blob.type.split('/')[0];
@@ -153,6 +154,7 @@
 <div
 	class="relative overflow-hidden group !border-2 border-transparent"
 	class:gradient-border={isHovered && !disabled}
+	class:mb-4={gridStyle === 'masonry'}
 	in:fade
 	on:click={handleClick}
 	class:cursor-pointer={options.allowPopup}
@@ -169,7 +171,12 @@
 			</button>
 		{/if} 
 	-->
-	<div class="w-full mx-auto overflow-hidden transition bg-card-gradient select-none aspect-1 h-[400px] relative" class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}>
+	<div
+		class:normal-nft-media={gridStyle === 'normal'}
+		class:dense-nft-media={gridStyle === 'dense'}
+		class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}
+		class="w-full mx-auto  transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} relative"
+	>
 		{#if isHovered && !disabled}
 			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60" transition:fade={{ duration: 200 }}>
 				<div class="p-3 clickable h-12" on:click|stopPropagation={() => false}>@Seller</div>
@@ -193,42 +200,55 @@
 			{/if}
 		{:catch _err}
 			{#if fileType === 'video'}
-				<video crossorigin="anonymous" class="max-w-full max-h-full object-cover object-top w-full h-full transition" autoplay loop class:opacity-0={!imgLoaded}>
+				<video crossorigin="anonymous" class="max-w-full max-h-full object-cover object-top w-full h-full transition" autoplay loop poster={options.nfts[0].thumbnailUrl}>
 					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
 			{:else if fileType === 'image'}
-				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" class:opacity-0={!imgLoaded} />
+				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" />
+			{:else}
+				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" />
 			{/if}
 		{/await}
 	</div>
-	<div class="flex flex-col gap-2 bg-dark-gradient p-2 letter-spacing">
-		<div class="flex flex-col">
-			<div class="flex-grow truncate text-sm font-bold text-gradient">{options.nfts[0].collectionData.name || 'N/A'}</div>
+	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient w-full">
+		<h4 class="text-gradient font-bold truncate {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
+			{options.nfts[0].collectionData.name || 'N/A'}
+		</h4>
+		<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">{options?.nfts?.[0]?.name}</h3>
+		<div class="flex flex-row items-center justify-between mt-2.5 ">
+			{#if timerHtml?.includes('Starts in')}
+				{@html timerHtml}
+			{:else if timerHtml?.includes('Ends in')}
+				<div class="flex flex-col items-start">
+					<h4 class="text-gradient font-bold {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">Highest bid</h4>
+					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-1' : 'gap-x-0.5'}">
+						<span><Eth class={gridStyle === 'normal' ? 'w-2.5 2xl:w-3 h-3.5 2xl:h-4' : 'w-1.5 2xl:w-2 h-2.5 2xl:h-3'} /></span>
+						<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
+							{options?.auctionData?.highestBid || 'N/A'}
+						</h3>
+					</div>
+				</div>
 
-			<!-- Hide price info when not present/listed -->
-			<div class="flex-grow truncate whitespace-nowrap font-semibold text-xl text-white" class:text-xs={!options.nfts[0]?.name}>
-				{options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
-			</div>
-		</div>
-		<div class="flex justify-between items-center">
-			{#if !isFuture(options?.listingData?.startTime)}
-				<div class="flex flex-col">
-					{#if options?.resourceType === 'listing'}
-						<div class="text-sm font-bold text-gradient">Price</div>
-						<div class="flex gap-1 items-center text-lg font-semibold text-white">
-							<div>
-								{options.listingData.shortDisplayPrice || 'N/A'}
-							</div>
-							<Eth />
-						</div>
-					{/if}
+				{@html timerHtml}
+			{:else}
+				<div class="flex flex-col items-start">
+					<h4 class="text-gradient font-bold {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">Price</h4>
+					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-1' : 'gap-x-0.5'}">
+						<span><Eth class={gridStyle === 'normal' ? 'w-2.5 2xl:w-3 h-3.5 2xl:h-4' : 'w-1.5 2xl:w-2 h-2.5 2xl:h-3'} /></span>
+						<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
+							{options?.listingData?.shortDisplayPrice || 'N/A'}
+						</h3>
+					</div>
+				</div>
+				<div class="flex flex-col items-end">
+					<h4 class="text-gradient font-bold {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">Highest offer</h4>
+					<!-- TODO clarify highest offer -->
+					<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
+						{options?.auctionData?.highestOffer || 'N/A'}
+					</h3>
 				</div>
 			{/if}
-
-			<div class="">
-				{@html timerHtml}
-			</div>
 		</div>
 	</div>
 
@@ -262,5 +282,18 @@
 
 	.letter-spacing {
 		letter-spacing: 0.02em;
+	}
+
+	.normal-nft-details {
+		@apply py-2.5 2xl:py-3 px-4 2xl:px-5;
+	}
+	.dense-nft-details {
+		@apply py-1.5 px-2.5;
+	}
+	.normal-nft-media {
+		@apply h-[321px] 2xl:h-[400px];
+	}
+	.dense-nft-media {
+		@apply h-44 2xl:h-56;
 	}
 </style>

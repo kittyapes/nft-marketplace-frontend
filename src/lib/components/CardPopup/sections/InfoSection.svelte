@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { CardOptions } from '$interfaces/ui';
-	import { getMarketFee } from '$utils/contracts/listing';
+	import { getMarketFee, type ChainListing } from '$utils/contracts/listing';
 	import { getContractData } from '$utils/misc/getContract';
 	import { totalColRoyalties } from '$utils/misc/royalties';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
@@ -10,6 +10,7 @@
 	import { fade } from 'svelte/transition';
 
 	export let options: CardOptions;
+	export let chainListing: ChainListing;
 
 	let marketFee = 0;
 	let balance = null;
@@ -69,8 +70,8 @@
 		marketFee = await getMarketFee();
 		const res = await getUserNftBalance(singleNft.contractAddress, singleNft.onChainId);
 
-		balance = res.balance;
 		supply = res.supply;
+		balance = options.resourceType === 'listing' ? chainListing?.quantity ?? 0 : res.balance;
 	});
 
 	function parseAttributes(attributes) {

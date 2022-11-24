@@ -40,6 +40,8 @@ export async function refreshProfileData() {
 	}
 
 	profileData.set(newProfileData);
+	const newpublicProfileData = (({ _id, address, bio, coverUrl, roles, thumbnailUrl, username }) => ({ _id, address, bio, coverUrl, roles, thumbnailUrl, username }))(newProfileData);
+	publicProfileData.set(newpublicProfileData as PublicProfileData);
 }
 
 export const profileCompletionProgress = derived(profileData, ($profileData) => {
