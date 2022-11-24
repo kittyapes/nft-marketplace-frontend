@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-
+	import { page } from '$app/stores';
 	export let tabs: { title: string; route: string }[] = [
 		{
 			title: 'Collections',
@@ -23,14 +23,13 @@
 		<button
 			type="button"
 			on:click={() => {
-				activeTab = tab.title;
 				goto(tab.route);
 			}}
-			class:text-gradient={activeTab === tab.title}
+			class:text-gradient={tab.route === $page.url.pathname}
 			class="flex flex-col gap-y-0.5  p-0"
 		>
 			<span>{tab.title}</span>
-			<div class:hidden={tab.title !== activeTab} class="h-0.5 w-full bg-white" />
+			<div class:hidden={tab.route !== $page.url.pathname} class="h-0.5 w-full bg-white" />
 		</button>
 	{/each}
 </div>
