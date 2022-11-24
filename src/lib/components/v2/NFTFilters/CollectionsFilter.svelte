@@ -26,10 +26,7 @@
 	<div class="flex flex-col gap-y-8 2xl:gap-y-10">
 		{#each collections as collection, i}
 			<button class="flex flex-row items-center gap-x-4 2xl:gap-x-6 font-bold text-white text-xs 2xl:text-sm leading-5 2xl:leading-7 ">
-				<div class="relative w-14 2xl:w-[70px] h-14 2xl:h-[70px] border-gradient">
-					<div class="w-full h-full overflow-hidden">
-						<img class="object-center object-cover" src={collection?.logoImageUrl} alt="Collection Logo" />
-					</div>
+				<div class="relative w-14 2xl:w-[70px] h-14 2xl:h-[70px] border-gradient thumbnail bg-cover bg-center" style="--url: url({collection?.logoImageUrl ?? ''})">
 					<HinataBadge class="absolute -bottom-2.5 -right-2.5 z-10  w-5 h-5 {!collection?.verified ? 'hidden' : ''}" />
 				</div>
 				<div class="flex-grow whitespace-nowrap truncate">
@@ -60,3 +57,9 @@
 {#if collections?.length > 0}
 	<button on:click={async () => await loadCollections()} class="w-full flex items-center justify-center bg-gradient-a border-gradient h-11 2xl:h-14 mt-7 2xl:mt-9">Load more</button>
 {/if}
+
+<style lang="postcss">
+	.thumbnail {
+		background-image: var(--url);
+	}
+</style>

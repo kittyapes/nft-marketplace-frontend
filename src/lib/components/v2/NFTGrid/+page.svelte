@@ -4,7 +4,6 @@
 	import { nftDraft } from '$stores/create';
 	import AddCircle from '$icons/add-circle.svelte';
 	import { goto } from '$app/navigation';
-	import Card from './Card.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
 	const dispatch = createEventDispatcher();
 

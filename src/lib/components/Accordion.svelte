@@ -6,7 +6,7 @@
 	import Separator from './Separator.svelte';
 
 	export let accordionLabel: string;
-	export let isExpanded = true;
+	export let isExpanded = false;
 	let isFirstChild = false;
 	onMount(() => {
 		const accordionNode = browser && document.getElementById('filter-accordion');
