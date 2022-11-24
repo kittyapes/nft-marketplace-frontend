@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { outsideClickCallback } from '$actions/outsideClickCallback';
-	import ArrowDown from '$icons/arrow-down.svelte';
+	import SortButton from '$components/v2/SortButton/+page.svelte';
 	import MasonryGridIcon from '$icons/masonry-grid-icon.svelte';
 	import Search from '$icons/search.svelte';
 	import ThreeByThreeGridIcon from '$icons/three-by-three-grid-icon.svelte';
@@ -53,7 +52,7 @@
 	<Input bind:value={searchPhrase} class="rounded-none border-2 border-gradient h-11 2xl:h-14 hover:text-white" placeholder="Search by name or attribute" height="44px">
 		<Search class="ml-6 w-5 h-6" />
 	</Input>
-	<div class="h-11 2xl:h-14 min-w-[123px] flex-grow relative">
+	<!-- <div class="h-11 2xl:h-14 min-w-[123px] flex-grow relative">
 		<button on:click={() => (showSort = true)} class="w-full h-full border-gradient flex flex-row items-center justify-between px-3.5  hover:bg-main-gradient">
 			<h2 class="text-base leading-7 capitalize text-opacity-70 whitespace-nowrap">Sort By</h2>
 			<ArrowDown class="w-3.5 h-2.5 transform duration-500 {showSort ? '-rotate-180' : 'rotate-0'}" />
@@ -73,7 +72,9 @@
 				{/each}
 			</div>
 		{/if}
-	</div>
+	</div> -->
+
+	<SortButton bind:sortOptions class="h-11 2xl:h-14 min-w-[123px]" />
 
 	<div class="flex items-center">
 		<button
@@ -98,12 +99,3 @@
 		</button>
 	</div>
 </div>
-
-<style lang="postcss">
-	.sort-list button:last-child {
-		@apply border-b-2;
-	}
-	.sort-border {
-		border-image: linear-gradient(45deg, rgba(134, 139, 247, 0.25), rgba(108, 199, 248, 0.25)) 1;
-	}
-</style>
