@@ -1,5 +1,5 @@
 <script>
-	import Search from './Search.svelte';
+	import Search from '$components/v2/Search/+page.svelte';
 	import ProfilePopup from './ProfilePopup.svelte';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { appSigner, connectionDetails } from '$stores/wallet';
