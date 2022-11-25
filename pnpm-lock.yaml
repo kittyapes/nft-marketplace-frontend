@@ -7,6 +7,7 @@ specifiers:
   '@tailwindcss/aspect-ratio': ^0.4.2
   '@tailwindcss/line-clamp': ^0.4.2
   '@types/dompurify': ^2.3.4
+  '@types/gtag.js': ^0.0.12
   '@types/lodash-es': ^4.17.6
   '@typescript-eslint/eslint-plugin': ^5.36.2
   '@typescript-eslint/parser': ^5.36.2
@@ -83,6 +84,7 @@ devDependencies:
   '@sveltejs/adapter-vercel': 1.0.0-next.73
   '@sveltejs/kit': 1.0.0-next.480_svelte@3.50.1+vite@3.1.0
   '@types/dompurify': 2.3.4
+  '@types/gtag.js': 0.0.12
   '@types/lodash-es': 4.17.6
   '@typescript-eslint/eslint-plugin': 5.36.2_wxqvmnl3i4rbvz4ixyoiufmx3e
   '@typescript-eslint/parser': 5.36.2_irgkl5vooow2ydyo6aokmferha
@@ -1016,6 +1018,10 @@ packages:
     resolution: { integrity: sha512-EXzDatIb5EspL2eb/xPGmaC8pePcTHrkDCONjeisusLFrVfl38Pjea/R0YJGu3k9ZQadSvMqW0WXPI2hEo2Ajg== }
     dependencies:
       '@types/trusted-types': 2.0.2
+    dev: true
+
+  /@types/gtag.js/0.0.12:
+    resolution: { integrity: sha512-YQV9bUsemkzG81Ea295/nF/5GijnD2Af7QhEofh7xu+kvCN6RdodgNwwGWXB5GMI3NoyvQo0odNctoH/qLMIpg== }
     dev: true
 
   /@types/http-cache-semantics/4.0.1:
