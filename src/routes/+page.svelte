@@ -10,13 +10,8 @@
 	import { MetaTags } from 'svelte-meta-tags';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
 	import HomepageCarousel from '$lib/components/v2/HomepageCarousel/HomepageCarousel.svelte';
-
 	import TopCollections from '$components/v2/TopCollections/+page.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	let collections: Collection[] = [];
-	let exploreListings = writable<Listing[]>([]);
-	let loadedExploreListings = writable(false);
-	let exploreListingsData = [];
 
 	const aidrop = {
 		title: 'Claim your monthly airdrop',
@@ -25,6 +20,11 @@
 		thumbnail: '/img/png/airdrop-banner.png',
 	};
 
+	let collections: Collection[] = [];
+	let exploreListings = writable<Listing[]>([]);
+	let loadedExploreListings = writable(false);
+	let exploreListingsData = [];
+
 	const getExploreMarketData = async () => {
 		loadedExploreListings.set(false);
 		exploreListings.set(await getRandomListings(10));
@@ -32,8 +32,6 @@
 		loadedExploreListings.set(true);
 	};
 
-	// Please don't ask me why we need an auth token for this...
-	// We don't anymore 🙂 🔪
 	onMount(async () => {
 		getExploreMarketData();
 		collections = (await apiGetMostActiveCollections()).collections;
