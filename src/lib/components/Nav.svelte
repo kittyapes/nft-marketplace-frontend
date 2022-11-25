@@ -42,7 +42,7 @@
 			{/if}
 		</a>
 
-		<Search class="snap-start ml-20 mr-4" />
+		<Search class="snap-start mx-20 w-full" />
 
 		<!-- Flex filler -->
 		<div class="flex-grow" />

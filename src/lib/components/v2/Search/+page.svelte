@@ -6,6 +6,7 @@
 	import { tick } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
+	import Input from '$components/v2/Input/Input.svelte';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import { setPopup } from '$utils/popup';
 	import { page } from '$app/stores';
@@ -13,11 +14,13 @@
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { browser } from '$app/environment';
+	import EnterKeyIcon from '$icons/enter-key-icon.svelte';
+	import SearchWrapper from './SearchWrapper.svelte';
 
 	let query: string;
 	let searching = false;
 	let show = false;
-
+	let isFocused = true;
 	const resultCategoryLimit = 3;
 
 	let searchResults = {
@@ -71,117 +74,34 @@
 	};
 </script>
 
-<!-- <div
-	class="flex py-2 px-4 items-center gap-x-4 flex-grow-[0.1] relative overflow-visible z-30 bg-card-gradient text-white text-opacity-60 {$$props.class}"
-	use:outsideClickCallback={{
-		cb: () => (searching = false),
-	}}
->
-	<Search />
-	<input
-		bind:value={query}
+<div class="relative {$$props.class}">
+	<Input
 		on:keyup={(e) => {
 			if (e.code === 'Enter') {
 				navigateToSearchResults($searchQuery);
 			}
 		}}
-		type="text"
-		class="w-96 focus:outline-none bg-transparent placeholder:text-white placeholder:text-opacity-60"
+		on:focus={() => {
+			isFocused = true;
+		}}
+		on:blur={() => {
+			isFocused = false;
+		}}
+		bind:value={query}
+		class="rounded-none border-2 bg-gradient-a border-gradient hover:text-white w-full"
 		placeholder="Search"
-	/>
-	{#if searching}
-		<div class="w-full top-16 right-0 border-black border-opacity-30 rounded-md border z-30 absolute bg-inherit" in:fly={{ y: -40, duration: 300 }}>
-			{#if show}
-				<div class=" max-h-[30rem] overflow-y-auto relative blue-scrollbar overscroll-contain">
-					{#each Object.keys(searchResults) as section}
-						{#if searchResults[section].length > 0}
-							<div class="">
-								<div class="first-letter:uppercase font-semibold text-sm p-4">{section}</div>
-								<div class="border-b border-black border-opacity-30" />
-								<div class="p-4 flex flex-col gap-4">
-									{#each searchResults[section] as result}
-										{#if section === 'items'}
-											{@const props = result.nfts[0]}
-											<div
-												class="flex gap-4 items-center btn"
-												on:click={() => {
-													setPopup(CardPopup, { props: { options: result }, onClose: () => (searching = true) });
-												}}
-											>
-												{#if props.thumbnailUrl}
-													<div class="w-12 h-12 rounded-full grid place-items-center">
-														<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({props.thumbnailUrl})" />
-													</div>
-												{/if}
-												<div class="font-semibold w-full max-w-full truncate">
-													{props.name}
-												</div>
-											</div>
-										{:else if section === 'users'}
-											<div
-												class="flex gap-4 items-center btn"
-												on:click={() => {
-													searching = false;
-													goto('/profile/' + result.address);
-												}}
-											>
-												{#if result.thumbnailUrl}
-													<div class="w-12 h-12 rounded-full grid place-items-center">
-														<div class="w-12 h-12 bg-cover rounded-full" style="background-image: url({result.thumbnailUrl})" />
-													</div>
-												{/if}
-												<div class="">
-													<div class="font-semibold username w-full max-w-full truncate">
-														{result.username}
-													</div>
-												</div>
-											</div>
-										{:else if section === 'collections'}
-											<div
-												class="flex gap-4 items-center btn"
-												on:click={() => {
-													searching = false;
-													goto('/collections/' + result.slug);
-												}}
-											>
-												{#if result.logoImageUrl}
-													<div class="w-12 h-12 rounded-full grid place-items-center">
-														<div class="w-12 h-12 rounded-full bg-cover" style="background-image: url({result.logoImageUrl})" />
-													</div>
-												{/if}
-												<div class="font-semibold w-full max-w-full truncate">
-													{result.name}
-												</div>
-											</div>
-										{/if}
-									{/each}
-								</div>
-							</div>
-						{/if}
-					{/each}
-					{#if Object.values(searchResults).filter((e) => e.length > 0).length > 0}
-						<div class="all-results p-4">
-							<button
-								class="btn btn-rounded w-full border-2 btn-gradient-border"
-								on:click={() => {
-									navigateToSearchResults(query);
-								}}
-							>
-								All results
-							</button>
-						</div>
-					{:else}
-						<div class="p-4 text-lg font-semibold">Nothing found</div>
-					{/if}
-				</div>
-			{:else}
-				<Loader />
-			{/if}
-		</div>
-	{/if}
-</div> -->
+		height="40px"
+	>
+		<Search class="ml-6 w-5 h-6" />
 
-<div class="relative {$$props.class}" />
+		<div class:hidden={!query} class="mr-9 p-2 bg-gradient-a " slot="end-icon">
+			<EnterKeyIcon class="w-4 h-3" />
+		</div>
+	</Input>
+	{#if isFocused || query}
+		<SearchWrapper bind:query bind:isFocused />
+	{/if}
+</div>
 
 <style type="postcss">
 	@media (max-height: 540px) {
