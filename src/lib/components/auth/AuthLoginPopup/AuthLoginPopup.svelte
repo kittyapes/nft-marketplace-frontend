@@ -8,6 +8,7 @@
 	import type { PopupHandler } from '$utils/popup';
 	import { refreshProfileData } from '$stores/user';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import GhostButton from '$lib/components/v2/GhostButton.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -99,11 +100,11 @@
 
 	{#if state === 'confirm'}
 		<div class=" bg-dark-gradient w-full h-full">
-			<div class="flex flex-col gap-6 p-6 items-center">
+			<div class="w-full flex flex-col gap-6 p-6 items-center">
 				<div class="title">Sign this message</div>
 				<div class="text-xs">{message}</div>
-				<div class="flex gap-x-12">
-					<PrimaryButton on:click={onSignCancel}><span class="uppercase">Cancel</span></PrimaryButton>
+				<div class="w-full flex gap-x-12">
+					<GhostButton on:click={onSignCancel}><span class="uppercase">Cancel</span></GhostButton>
 					<PrimaryButton on:click={onSignConfirm}><span class="uppercase">Sign</span></PrimaryButton>
 				</div>
 			</div>
@@ -122,11 +123,11 @@
 
 	{#if state === 'error'}
 		<div class=" bg-dark-gradient w-full h-full">
-			<div class="flex flex-col gap-6 p-6 items-center">
+			<div class="w-full flex flex-col gap-6 p-6 items-center">
 				<div class="title">Sign this message</div>
 				<div class="text-sm font-bold">Signing Failed!</div>
-				<div class="flex gap-x-12">
-					<PrimaryButton on:click={dispatchClose}><span class="uppercase">Cancel</span></PrimaryButton>
+				<div class="w-full flex gap-x-12">
+					<GhostButton on:click={dispatchClose}><span class="uppercase">Cancel</span></GhostButton>
 					<PrimaryButton on:click={onSignIn}><span class="uppercase">Try again</span></PrimaryButton>
 				</div>
 			</div>
