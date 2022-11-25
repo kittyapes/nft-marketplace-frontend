@@ -221,7 +221,9 @@
 				{@html timerHtml}
 			{:else if timerHtml?.includes('Ends in')}
 				<div class="flex flex-col items-start">
-					<h4 class="text-gradient font-bold {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">Highest bid</h4>
+					<h4 class="text-gradient font-bold whitespace-nowrap {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
+						Highest bid
+					</h4>
 					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-1' : 'gap-x-0.5'}">
 						<span><Eth class={gridStyle === 'normal' ? 'w-2.5 2xl:w-3 h-3.5 2xl:h-4' : 'w-1.5 2xl:w-2 h-2.5 2xl:h-3'} /></span>
 						<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
