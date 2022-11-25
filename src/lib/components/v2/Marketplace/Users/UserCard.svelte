@@ -6,11 +6,19 @@
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
 
-	let url = 'https://hinata-dev.mypinata.cloud/ipfs/Qman945NptXWjUCgQEpiKhch2AEUCdCfumdbGRFWbpjix4';
+	let url = 'https://hinata-dev.mypinata.cloud/ipfs/QmbQfSbEuFgJQujoEcE5UZDRWg8vhM5JTraWBowPwoUwR2';
+	let isHovered = false;
 </script>
 
 <div class="p-4 2xl:p-5 bg-dark-gradient">
-	<div class="w-full">
+	<div
+		on:mouseover={() => (isHovered = true)}
+		on:focus={() => (isHovered = true)}
+		on:mouseout={() => (isHovered = false)}
+		on:blur={() => (isHovered = false)}
+		class:border-gradient={isHovered}
+		class="w-full"
+	>
 		<div class="background thumbnail min-h-[321px] 2xl:min-h-[400px] bg-cover" style="--url: url({url ?? ''})" />
 		<div class=" w-full p-4 2xl:p-5 bg-gradient flex flex-row justify-between items-center">
 			<div class="flex flex-row items-center gap-x-2 2xl:gap-x-3">

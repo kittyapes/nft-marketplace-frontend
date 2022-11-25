@@ -85,9 +85,3 @@
 		</div>
 	{/if}
 </div>
-
-<style lang="postcss">
-	.thumbnail {
-		background-image: var(--url);
-	}
-</style>

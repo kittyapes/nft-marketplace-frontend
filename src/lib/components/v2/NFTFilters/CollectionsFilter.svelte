@@ -57,9 +57,3 @@
 {#if collections?.length > 0}
 	<button on:click={async () => await loadCollections()} class="w-full flex items-center justify-center bg-gradient-a border-gradient h-11 2xl:h-14 mt-7 2xl:mt-9">Load more</button>
 {/if}
-
-<style lang="postcss">
-	.thumbnail {
-		background-image: var(--url);
-	}
-</style>
