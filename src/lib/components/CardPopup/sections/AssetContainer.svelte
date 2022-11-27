@@ -12,6 +12,7 @@
 	import { noTryAsync } from 'no-try';
 	import { makeHttps } from '$utils/ipfs';
 	import { walletConnected } from '$utils/wallet';
+	import { browser } from '$app/environment';
 
 	export let title: string;
 	export let assetUrl: string;
@@ -69,6 +70,28 @@
 			reader.onerror = (error) => reject(`Error: ${error}`);
 		});
 	};
+
+	// Timer label
+	function getTimerLabel(startTs: number, duration: number) {
+		const now = Date.now() / 1000; // BE stores timestmps in seconds
+
+		if (now <= startTs) {
+			return 'starting in:';
+		}
+
+		if (now <= startTs + duration) {
+			return 'ending in:';
+		}
+
+		return 'ended:';
+	}
+
+	let timerLabel: string;
+
+	const updateTimerLabel = () => (timerLabel = getTimerLabel(countdown?.startTime, countdown?.duration));
+
+	$: countdown, updateTimerLabel();
+	$: browser && setInterval(updateTimerLabel, 1000);
 </script>
 
 <!-- NFT Image side-->
@@ -120,12 +143,7 @@
 	{#if countdown}
 		<div class="pb-4 font-medium opacity-50">
 			{capitalize(options.listingData?.listingType)}
-
-			{#if countdown.expired}
-				ended
-			{:else}
-				ending in:
-			{/if}
+			{timerLabel}
 		</div>
 		<Countdown {...countdown} />
 	{/if}
