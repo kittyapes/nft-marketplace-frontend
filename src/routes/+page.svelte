@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
-	import { writable } from 'svelte/store';
+	import { get, writable } from 'svelte/store';
 	import { getRandomListings, type Listing } from '$utils/api/listing';
 	import NftList from '$lib/components/NftList.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
@@ -13,6 +13,9 @@
 	import TopCollections from '$components/v2/TopCollections/+page.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
+	import type { PublicProfileData } from '$interfaces/userData';
+	import { searchUsersByName } from '$utils/api/search/globalSearch';
+	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 
 	const aidrop = {
 		title: 'Claim your monthly airdrop',
@@ -26,16 +29,25 @@
 	let loadedExploreListings = writable(false);
 	let exploreListingsData = [];
 
+	let hottestCreators = writable<{ verifiedCreators: PublicProfileData[]; totalCount: number }>(null);
+	let loadedHottestCreators = writable(false);
+
 	const getExploreMarketData = async () => {
 		loadedExploreListings.set(false);
 		exploreListings.set(await getRandomListings(10));
 		exploreListingsData = (await Promise.all($exploreListings.map(listingToCardOptions))).filter((e) => e);
-		console.log(exploreListingsData[0]);
 		loadedExploreListings.set(true);
+	};
+
+	const getHottestCreatorsData = async () => {
+		loadedHottestCreators.set(false);
+		hottestCreators.set(await searchUsersByName('ste', 3));
+		loadedHottestCreators.set(true);
 	};
 
 	onMount(async () => {
 		getExploreMarketData();
+		getHottestCreatorsData();
 		collections = (await apiGetMostActiveCollections()).collections;
 	});
 </script>
@@ -80,9 +92,30 @@
 	</div>
 
 	<!-- Hottest creators section -->
-	<div class="w-full">
-		<h2 class="text-2xl leading-7">Hottest creators</h2>
-	</div>
+	{#if $loadedHottestCreators}
+		<div class="pt-20 w-full h-full">
+			<h2 class="text-2xl leading-7">Hottest creators</h2>
+			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
+				{#each get(hottestCreators).verifiedCreators as creator}
+					<div class="p-4 bg-card-gradient flex gap-4 w-full ">
+						<FeaturedArtistCard
+							creatorData={{
+								name: creator.username,
+								address: creator.address,
+								coverImg: creator.coverUrl,
+								profileImg: creator.thumbnailUrl,
+								created: 0,
+							}}
+						/>
+						{#if $loadedExploreListings}
+							<NftCard options={exploreListingsData[0]} />
+							<NftCard options={exploreListingsData[0]} />
+						{/if}
+					</div>
+				{/each}
+			</div>
+		</div>
+	{/if}
 
 	<!-- Tending nfts Section -->
 	{#if $loadedExploreListings && exploreListingsData?.length > 0}
