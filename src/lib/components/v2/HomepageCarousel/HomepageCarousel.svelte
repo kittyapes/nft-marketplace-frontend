@@ -78,7 +78,7 @@
 		</div>
 	</div>
 
-	<div class="bg-dark-gradient text-white p-8 flex flex-col gap-1 items-center flex-grow h-[190px]">
+	<div class="bg-dark-gradient text-white flex flex-col items-center justify-center gap-1 flex-grow h-[200px]">
 		<div class="text-5xl uppercase text-center text-gradient">{currentBlob.title}</div>
 		<div class="text-center mt-2 text-2xl">{currentBlob.subtitle}</div>
 	</div>
