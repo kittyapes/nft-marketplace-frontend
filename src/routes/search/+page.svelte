@@ -10,9 +10,8 @@
 	import { debounce } from 'lodash-es';
 	import { inview } from 'svelte-inview';
 	import { page } from '$app/stores';
-	import Sidebar from '$lib/components/marketplace/Sidebar.svelte';
 	import { nftToCardOptions } from '$utils/adapters/cardOptions';
-	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 
 	const fullResultsLimit = 20;
 
@@ -33,7 +32,7 @@
 
 				const res = await getNftsByTitle(query, fullResultsLimit, searchResults.nfts.index).catch((e) => []);
 
-				if (res.length === 0) {
+				if (res.nfts.length === 0) {
 					searchResults.nfts.reachedEnd = true;
 					searchResults.nfts.isLoading = false;
 					searchResults = searchResults;
@@ -41,7 +40,7 @@
 				}
 
 				searchResults.nfts.index++;
-				let nfts = res;
+				const nfts = res.nfts;
 				searchResults.nfts.data = [...searchResults.nfts.data, ...(await Promise.all(nfts.map(nftToCardOptions)))];
 				searchResults.nfts.isLoading = false;
 
@@ -86,7 +85,7 @@
 
 				const res = await searchUsersByName(query, fullResultsLimit, searchResults.users.index).catch((e) => []);
 
-				if (res.length === 0) {
+				if (res.verifiedCreators.length === 0) {
 					searchResults.users.reachedEnd = true;
 					searchResults.users.isLoading = false;
 					searchResults = searchResults;
@@ -94,7 +93,7 @@
 				}
 
 				searchResults.users.index++;
-				searchResults.users.data = [...searchResults.users.data, ...res];
+				searchResults.users.data = [...searchResults.users.data, ...res.verifiedCreators];
 				searchResults.users.isLoading = false;
 
 				searchResults = searchResults;
@@ -125,7 +124,7 @@
 		await debouncedSearch(val);
 	});
 
-	$: {
+	$: if (browser) {
 		if ($page.url.searchParams.has('query')) {
 			$searchQuery = $page.url.searchParams.get('query');
 		}
