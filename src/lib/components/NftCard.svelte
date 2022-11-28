@@ -152,7 +152,7 @@
 </script>
 
 <div
-	class="relative overflow-hidden group !border-2 border-transparent"
+	class="relative overflow-hidden group !border-2 border-transparent min-w-[345px]"
 	class:gradient-border={isHovered && !disabled}
 	class:mb-4={gridStyle === 'masonry'}
 	in:fade
