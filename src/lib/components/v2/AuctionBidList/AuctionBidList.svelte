@@ -2,7 +2,6 @@
 	import Eth from '$icons/eth.svelte';
 	import Refresh from '$icons/refresh.svelte';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
-	import { getKnownTokenDetails } from '$utils/misc/priceUtils';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import AuctionBidRow from './AuctionBidRow.svelte';
@@ -10,16 +9,13 @@
 	const dispatch = createEventDispatcher();
 
 	export let listingId: string = null;
-	export let tokenAddress: string;
 	export let biddings: BidRow[] = [];
 	export let isRefreshing = false;
-
-	$: tokenDecimals = getKnownTokenDetails({ tokenAddress }).decimals;
 
 	async function refresh() {
 		isRefreshing = true;
 
-		biddings = await getBiddingsFlow(listingId, tokenDecimals);
+		biddings = await getBiddingsFlow(listingId);
 
 		isRefreshing = false;
 	}
