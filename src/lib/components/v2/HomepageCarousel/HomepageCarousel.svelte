@@ -58,7 +58,6 @@
 
 <div class="relative overflow-hidden w-full wrapper h-full flex flex-col">
 	<div class="overflow-hidden h-full w-full bg-dark-gradient relative">
-		<!-- <img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="flex-grow object-cover object-top w-full h-full animated-image" /> -->
 		<div class="w-full h-full flex items-start justify-center overflow-hidden relative">
 			<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="absolute h-full object-cover object-top w-full animated-image" />
 		</div>
