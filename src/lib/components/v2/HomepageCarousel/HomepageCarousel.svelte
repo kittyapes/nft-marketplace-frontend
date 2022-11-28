@@ -56,9 +56,12 @@
 	});
 </script>
 
-<div class="relative overflow-hidden w-full wrapper h-full">
-	<div class="overflow-hidden bg-dark-gradient relative h-[500px]">
-		<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="flex-grow object-cover object-top w-full h-full animated-image" />
+<div class="relative overflow-hidden w-full wrapper h-full flex flex-col">
+	<div class="overflow-hidden h-full w-full bg-dark-gradient relative">
+		<!-- <img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="flex-grow object-cover object-top w-full h-full animated-image" /> -->
+		<div class="w-full h-full flex items-start justify-center overflow-hidden relative">
+			<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="absolute h-full object-cover object-top w-full animated-image" />
+		</div>
 
 		<div class="flex gap-3 absolute bottom-0 left-0 px-3 w-full items-center">
 			{#each data as _, index}
@@ -75,7 +78,7 @@
 		</div>
 	</div>
 
-	<div class="bg-dark-gradient text-white p-3 min-h-1/5 flex-shrink-0 flex flex-col gap-1 items-center h-fit">
+	<div class="bg-dark-gradient text-white p-3 flex flex-col gap-1 items-center flex-grow h-[190px]">
 		<div class="text-5xl uppercase text-center text-gradient">{currentBlob.title}</div>
 		<div class="text-center mt-2 text-2xl">{currentBlob.subtitle}</div>
 	</div>

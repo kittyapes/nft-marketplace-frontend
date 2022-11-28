@@ -12,6 +12,7 @@
 	import HomepageCarousel from '$lib/components/v2/HomepageCarousel/HomepageCarousel.svelte';
 	import TopCollections from '$components/v2/TopCollections/+page.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import NftCard from '$lib/components/NftCard.svelte';
 
 	const aidrop = {
 		title: 'Claim your monthly airdrop',
@@ -29,6 +30,7 @@
 		loadedExploreListings.set(false);
 		exploreListings.set(await getRandomListings(10));
 		exploreListingsData = (await Promise.all($exploreListings.map(listingToCardOptions))).filter((e) => e);
+		console.log(exploreListingsData[0]);
 		loadedExploreListings.set(true);
 	};
 
@@ -59,8 +61,17 @@
 	}}
 />
 <div class="px-[172px] pt-32 w-full grid place-items-center text-white">
-	<div class="w-1/2  mb-16">
-		<HomepageCarousel />
+	<!-- Hero section -->
+	<div class="mb-16 flex gap-5 items-stretch w-full">
+		{#if $loadedExploreListings}
+			<NftCard options={exploreListingsData[0]} />
+		{/if}
+		<div class="min-w-[50%] max-w-[50%] flex-grow-0">
+			<HomepageCarousel />
+		</div>
+		{#if $loadedExploreListings}
+			<NftCard options={exploreListingsData[0]} />
+		{/if}
 	</div>
 
 	<!-- Top collections section -->

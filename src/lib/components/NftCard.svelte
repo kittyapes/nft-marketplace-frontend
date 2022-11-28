@@ -295,7 +295,7 @@
 		@apply py-1.5 px-2.5;
 	}
 	.normal-nft-media {
-		@apply h-[321px] 2xl:h-[400px];
+		@apply h-[400px];
 	}
 	.dense-nft-media {
 		@apply h-44 2xl:h-56;
