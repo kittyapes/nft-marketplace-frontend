@@ -85,6 +85,7 @@
 
 	$: canCancel = biddings.length < 1 || (highestAmount && highestAmount.lt(parseToken(chainListing.reservePrice, chainListing.payToken)));
 	let canAccept = false;
+	$: hasBids = biddings.length > 0;
 
 	$: if (chainListing.reservePrice === chainListing.price) {
 		canAccept = [biddings.length > 0].some((v) => v);
@@ -128,7 +129,7 @@
 			</SecondaryButton>
 		</div>
 
-		<PrimaryButton class="mt-4" disabled={isCancelling || isAccepting || isRefreshingBids || !canAccept} on:click={acceptHighest}>
+		<PrimaryButton class="mt-4" disabled={!hasBids || isCancelling || isAccepting || isRefreshingBids || !canAccept} on:click={acceptHighest}>
 			{#if isAccepting}
 				<ButtonSpinner />
 			{/if}
