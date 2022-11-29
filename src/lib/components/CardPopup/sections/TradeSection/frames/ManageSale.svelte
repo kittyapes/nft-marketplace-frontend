@@ -10,13 +10,14 @@
 	import { createEventDispatcher, onDestroy } from 'svelte';
 	import EditSale from './EditSale.svelte';
 	import Success from './Success.svelte';
+	import { userHasRole } from '$utils/auth/userRoles';
 
 	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
 
-	let allowEdit = true;
+	$: allowEdit = !$userHasRole('inactivated_user');
 
 	const allowEditUnsubscribe = getInterval(1000).subscribe(() => {
 		allowEdit = !isListingExpired(chainListing.startTime, chainListing.duration);
