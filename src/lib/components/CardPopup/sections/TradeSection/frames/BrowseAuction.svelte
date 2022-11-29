@@ -11,7 +11,7 @@
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
-	import { getKnownTokenDetails, parseToken } from '$utils/misc/priceUtils';
+	import { parseToken } from '$utils/misc/priceUtils';
 	import { isFuture } from '$utils/misc/time';
 	import { notifyError } from '$utils/toast';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
@@ -69,7 +69,7 @@
 
 	async function refreshBids() {
 		isRefreshingBids = true;
-		biddings = await getBiddingsFlow(options.rawResourceData.listingId, getKnownTokenDetails({ tokenAddress: options.listingData.paymentTokenAddress }).decimals);
+		biddings = await getBiddingsFlow(options.rawResourceData.listingId);
 		isRefreshingBids = false;
 	}
 
@@ -83,7 +83,7 @@
 <div class="flex flex-col justify-center h-[90%] pr-1">
 	<div class="flex flex-col h-full mt-4">
 		<div class="min-h-[300px] flex-grow">
-			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} on:request-refresh={refreshBids} />
+			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} on:request-refresh={refreshBids} />
 		</div>
 
 		<div class="flex items-center justify-between my-4">
