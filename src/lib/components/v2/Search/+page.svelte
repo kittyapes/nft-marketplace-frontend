@@ -17,17 +17,17 @@
 	import EnterKeyIcon from '$icons/enter-key-icon.svelte';
 	import SearchWrapper from './SearchWrapper.svelte';
 
-	let query: string;
+	let query: string = 'Blue';
 	let searching = false;
+	let isDropdownShown = false;
 	let show = false;
-	let isFocused = true;
 	const resultCategoryLimit = 3;
 
-	let searchResults = {
-		collections: [],
-		items: [],
-		users: [],
-	};
+	let searchResults: {
+		collections?: any[];
+		items?: any[];
+		users?: any[];
+	} = {};
 
 	const debouncedSearch = debounce(async (query: string) => {
 		await searchGlobally(query);
@@ -74,7 +74,12 @@
 	};
 </script>
 
-<div class="relative {$$props.class}">
+<div
+	use:outsideClickCallback={{
+		cb: () => (isDropdownShown = false),
+	}}
+	class="relative {$$props.class}"
+>
 	<Input
 		on:keyup={(e) => {
 			if (e.code === 'Enter') {
@@ -82,10 +87,10 @@
 			}
 		}}
 		on:focus={() => {
-			isFocused = true;
+			isDropdownShown = true;
 		}}
 		on:blur={() => {
-			isFocused = false;
+			isDropdownShown = false;
 		}}
 		bind:value={query}
 		class="rounded-none border-2 bg-gradient-a border-gradient hover:text-white w-full"
@@ -98,8 +103,8 @@
 			<EnterKeyIcon class="w-4 h-3" />
 		</div>
 	</Input>
-	{#if isFocused || query}
-		<SearchWrapper bind:query bind:isFocused />
+	{#if isDropdownShown || query}
+		<SearchWrapper bind:query bind:isDropdownShown bind:searchResults bind:show />
 	{/if}
 </div>
 
