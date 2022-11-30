@@ -65,7 +65,7 @@
 		try {
 			await contractUpdateListing(options.listingData.onChainId, chainListing.payToken, listingProps);
 			dispatch('set-frame', { component: Success });
-			options.staleResource.set({ reason: 'cancelled' });
+			// options.staleResource.set({ reason: 'cancelled' });
 		} catch (err) {
 			console.error(err);
 			notifyError('Failed to update listing.');
