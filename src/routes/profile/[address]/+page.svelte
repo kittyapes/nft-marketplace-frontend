@@ -75,7 +75,6 @@
 	}
 
 	$: if (browser && $currentUserAddress && address && $profileData) {
-		console.log('wtf');
 		selectTab($tabParam);
 	}
 
@@ -92,7 +91,6 @@
 	$: firstTimeUser = $profileData?.createdAt === $profileData?.updatedAt;
 
 	$: console.log($localProfileData);
-	$: console.log($profileData);
 
 	// Display profile completion popup when profile not completed
 	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
