@@ -4,10 +4,14 @@ a `(app)` directory, which we didn't wanna do to prevent the need to update all 
 potentially break the whole app. -->
 <script lang="ts">
 	import { page } from '$app/stores';
+	import GoogleAnalytics from '$lib/components/GoogleAnalytics.svelte';
 	import AppLayout from './AppLayout.svelte';
 	import ComponentsLayout from './ComponentsLayout.svelte';
 </script>
 
+{#if import.meta.env.VITE_ENABLE_GTAG === 'true'}
+	<GoogleAnalytics />
+{/if}
 {#if $page.url.pathname.startsWith('/components')}
 	<ComponentsLayout>
 		<slot />

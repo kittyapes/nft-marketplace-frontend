@@ -1,6 +1,4 @@
-import type { ApiNftData } from '$interfaces/apiNftData';
 import axios from 'axios';
-import type { UserData } from 'src/interfaces/userData';
 import { getApiUrl } from '..';
 
 export const getNftsByTitle = async (query: string, limit?: number, page?: number) => {
@@ -11,9 +9,9 @@ export const getNftsByTitle = async (query: string, limit?: number, page?: numbe
 			limit: limit ? limit : undefined,
 		};
 
-		const res = await axios.get(getApiUrl('latest', 'nfts/search'), { params });
+		const res = await axios.get(getApiUrl('latest', 'search/nfts'), { params });
 
-		return res.data.data as ApiNftData[];
+		return res.data.data;
 	} catch {
 		throw new Error('Failed to search for listings');
 	}
@@ -22,16 +20,16 @@ export const getNftsByTitle = async (query: string, limit?: number, page?: numbe
 export const searchUsersByName = async (query: string, limit?: number, page?: number) => {
 	try {
 		let params = {
-			username: query ? query : undefined,
+			query: query ? query : undefined,
 			limit: limit ? limit : undefined,
 			page: page ? page : 1,
 		};
 
-		if (params.username !== '' || params.username !== undefined || params.username.length < 3) {
-			const res = await axios.get(getApiUrl('latest', 'users/search'), { params });
-			return res.data.data as UserData[];
+		if (params.query !== '' || params.query !== undefined || params.query.length < 3) {
+			const res = await axios.get(getApiUrl('latest', 'search/users'), { params });
+			return res.data.data;
 		} else {
-			return [];
+			return { totalCount: 0, verifiedCreators: [] };
 		}
 	} catch {
 		throw new Error('Failed to search for users');
@@ -41,13 +39,12 @@ export const searchUsersByName = async (query: string, limit?: number, page?: nu
 export const getCollectionsByTitle = async (query: string, limit?: number, page?: number) => {
 	try {
 		let params = {
-			name: query ? query : undefined,
+			query: query ? query : undefined,
 			limit: limit ? limit : undefined,
 			page: page ? page : 1,
-			status: 'ACTIVE',
 		};
 
-		const res = await axios.get(getApiUrl('v2', 'collections/search'), { params });
+		const res = await axios.get(getApiUrl('latest', 'search/collections'), { params });
 
 		return res.data.data;
 	} catch {
