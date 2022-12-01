@@ -58,8 +58,6 @@
 
 			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
 		}
-
-		if (browser) selectTab($tabParam);
 	});
 
 	const fetchLimit = 10;
@@ -73,6 +71,10 @@
 	$: browser && fetchData(address);
 	$: if (browser && address && $currentUserAddress) {
 		refreshAllTabs();
+	}
+
+	$: if (browser && $currentUserAddress && $localProfileData) {
+		selectTab($tabParam);
 	}
 
 	userCreatedListing.subscribe((value) => {
@@ -138,7 +140,7 @@
 			fetchFunction: async (tab, page, limit) => {
 				const listingStatus = ['UNLISTED', 'ACTIVE'] as any;
 
-				if ($currentUserAddress === address || $userHasRole('admin', 'superadmin')) {
+				if ($currentUserAddress === address || $localProfileData.roles?.includes('admin') || $localProfileData.roles?.includes('superadmin')) {
 					listingStatus.push('EXPIRED');
 				}
 
