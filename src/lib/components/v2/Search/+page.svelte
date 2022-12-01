@@ -17,7 +17,7 @@
 	import EnterKeyIcon from '$icons/enter-key-icon.svelte';
 	import SearchWrapper from './SearchWrapper.svelte';
 
-	let query: string = 'Blue';
+	let query: string;
 	let searching = false;
 	let isDropdownShown = false;
 	let show = false;
@@ -85,12 +85,6 @@
 			if (e.code === 'Enter') {
 				navigateToSearchResults($searchQuery);
 			}
-		}}
-		on:focus={() => {
-			isDropdownShown = true;
-		}}
-		on:blur={() => {
-			isDropdownShown = false;
 		}}
 		bind:value={query}
 		class="rounded-none border-2 bg-gradient-a border-gradient hover:text-white w-full"

@@ -5,7 +5,6 @@
 	import SortButton from '$components/v2/SortButton/+page.svelte';
 	import FiltersV2 from '$icons/filters-v2.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import ArrowLeft from '$icons/arrow-left.svelte';
 	import GridSelector from '$components/v2/GridSelector/+page.svelte';
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
@@ -28,7 +27,7 @@
 	import { cubicInOut } from 'svelte/easing';
 
 	let searchPhrase: string;
-	let showFilters = false;
+	let showFilters = true;
 	let sortOptions: { title: string; action?: any }[] = [
 		{
 			title: 'Ending soon',
@@ -53,9 +52,8 @@
 	let index = 1;
 	let fetchOptions: ListingFetchOptions = {};
 	let lastFetchOptions = '';
-	let minPrice = 0;
-	let maxPrice = 0;
-	let fetchFunction = async () => {
+	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
+	const fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await getListings({ ...fetchOptions, listingStatus: ['UNLISTED', 'ACTIVE'] }, index, 20);
 		res.adapted = await Promise.all(res.res.map(listingToCardOptions));
@@ -96,7 +94,6 @@
 
 	export function refreshWithFilters() {
 		const params = $page.url.searchParams;
-
 		fetchOptions.type = params.get('types')?.split('+') as ListingType[];
 		fetchOptions.sortBy = params.get('sortBy') as any;
 		fetchOptions.collectionId = params.get('collections');
@@ -106,7 +103,6 @@
 		debouncedFetchMore();
 	}
 
-	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 	refreshWithFilters();
 	function onChange(event) {
 		if (event.detail.inView) {
@@ -144,16 +140,16 @@
 		{#if showFilters}
 			<div transition:slide={{ easing: cubicInOut, duration: 300 }} class="w-[345px]">
 				<Accordion accordionLabel="Status">
-					<StatusFilter />
+					<StatusFilter on:request-refresh={refreshWithFilters} />
 				</Accordion>
 				<Accordion accordionLabel="Price">
-					<PriceFilter bind:minPrice bind:maxPrice />
+					<PriceFilter />
 				</Accordion>
 				<Accordion accordionLabel="Type">
 					<TypeFilter />
 				</Accordion>
 				<Accordion accordionLabel="Collections">
-					<CollectionsFilter />
+					<CollectionsFilter on:request-refresh={refreshWithFilters} />
 				</Accordion>
 			</div>
 		{/if}

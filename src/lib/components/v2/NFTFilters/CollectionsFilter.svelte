@@ -1,31 +1,59 @@
 <script lang="ts">
 	import HinataBadge from '$icons/hinata-badge.svelte';
+	import Search from '$icons/search.svelte';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { createEventDispatcher } from 'svelte';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
-	import { apiSearchCollections, type CollectionTableRow } from '$utils/api/collection';
+	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { onMount } from 'svelte';
+	import Input from '../Input/Input.svelte';
+
+	const dispatch = createEventDispatcher();
 	let limit = 0;
-	let page = 0;
-	let collections: CollectionTableRow[] = [];
+	let pageNumber = 0;
+	let collections: Collection[] = [];
 
 	let fetchingCollections = false;
+	let searchPhrase = '';
 	onMount(async () => {
 		await loadCollections();
 	});
 	const loadCollections = async () => {
-		console.log('Loading');
 		fetchingCollections = true;
 		limit += 10;
-		page++;
-		const leadedCollections = (await apiSearchCollections({ limit, page })).collections;
-		collections = [...collections, ...leadedCollections];
+		pageNumber++;
+		const loadedCollections = (await apiSearchCollections({ limit, page: pageNumber })).collections;
+		collections = [...collections, ...loadedCollections];
 		fetchingCollections = false;
 	};
+	$: if (searchPhrase) {
+		fetchingCollections = true;
+		setTimeout(async () => {
+			collections = (await apiSearchCollections({ limit, name: searchPhrase })).collections;
+			fetchingCollections = false;
+		}, 500);
+	}
+	$: if (!searchPhrase) {
+		collections = [];
+		loadCollections();
+	}
 </script>
 
+<Input bind:value={searchPhrase} class="rounded-none border-2 bg-gradient-a border-gradient hover:text-white w-full" placeholder="Search by collections" height="40px">
+	<Search class="ml-6 w-5 h-6" />
+</Input>
 {#if collections?.length > 0}
-	<div class="flex flex-col gap-y-8 2xl:gap-y-10">
+	<div class="flex flex-col gap-y-8 2xl:gap-y-10 mt-6 2xl:mt-7">
 		{#each collections as collection, i}
-			<button class="flex flex-row items-center gap-x-4 2xl:gap-x-6 font-bold text-white text-xs 2xl:text-sm leading-5 2xl:leading-7 ">
+			<button
+				on:click={() => {
+					$page?.url?.searchParams?.set('collections', collection?.id);
+					goto(`?${$page?.url?.searchParams}`);
+					dispatch('request-refresh');
+				}}
+				class="flex flex-row items-center gap-x-4 2xl:gap-x-6 font-bold text-white text-xs 2xl:text-sm leading-5 2xl:leading-7 "
+			>
 				<div class="relative w-14 2xl:w-[70px] h-14 2xl:h-[70px] border-gradient thumbnail bg-cover bg-center" style="--url: url({collection?.logoImageUrl ?? ''})">
 					<HinataBadge class="absolute -bottom-2.5 -right-2.5 z-10  w-5 h-5 {!collection?.verified ? 'hidden' : ''}" />
 				</div>
