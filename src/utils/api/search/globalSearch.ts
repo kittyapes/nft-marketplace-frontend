@@ -68,3 +68,31 @@ export const globalSearch = async (query: string, limit?: number) => {
 		throw new Error('Failed to search for collections');
 	}
 };
+
+export const globalCollectionsSearch = async (query: string, limit?: number) => {
+	try {
+		let params = {
+			query: query ? query : undefined,
+			limit: limit ? limit : undefined,
+		};
+
+		const res = await axios.get(getApiUrl('latest', 'search/collections'), { params });
+		return res.data.data;
+	} catch {
+		throw new Error('Failed to search for collections');
+	}
+};
+
+export const globalUsersSearch = async (query: string, limit?: number) => {
+	try {
+		let params = {
+			query: query ? query : undefined,
+			limit: limit ? limit : undefined,
+		};
+
+		const res = await axios.get(getApiUrl('latest', 'search/users'), { params });
+		return res.data.data;
+	} catch {
+		throw new Error('Failed to search for collections');
+	}
+};

@@ -34,13 +34,17 @@
 		{#if collections?.length > 0}
 			{#each collections as collection}
 				<tr class="">
-					<td class="whitespace-nowrap">{collection?.name}</td>
+					<td class="whitespace-nowrap">
+						<a class="w-full" href="/collections/{collection?.slug}">
+							{collection?.name}
+						</a>
+					</td>
 					<td class=" gap-x-1.5">
-						{compactNumberFormat(collection?.totalVol)}
+						{compactNumberFormat(collection?.totalVol || 0)}
 						<span class="text-[10px] 2xl:text-xs text-opacity-70">ETH</span>
 					</td>
 					<td class=" gap-x-1.5">
-						{compactNumberFormat(collection?.floorPrice)}
+						{compactNumberFormat(collection?.floorPrice || 0)}
 						<span class="text-[10px] 2xl:text-xs text-opacity-70">ETH</span>
 					</td>
 					<td class="w-[413px] 2xl:w-[515px]">
@@ -49,6 +53,8 @@
 					</td>
 				</tr>
 			{/each}
+		{:else}
+			<tr class="cols-5 w-full flex items-center justify-center text-lg py-20">No collections found.</tr>
 		{/if}
 	</tbody>
 </table>

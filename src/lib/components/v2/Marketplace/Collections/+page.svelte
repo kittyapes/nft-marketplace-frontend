@@ -7,9 +7,11 @@
 	import { onMount } from 'svelte';
 	import Input from '../../Input/Input.svelte';
 	import SortButton from '$components/v2/SortButton/+page.svelte';
+	import { globalCollectionsSearch } from '$utils/api/search/globalSearch';
+	import { debounce } from 'lodash-es';
 
 	let collections: Collection[] = [];
-	let searchPhrase: string;
+	let query: string;
 	let reachedEnd = false;
 	let isLoading = true;
 	let page = 1;
@@ -22,7 +24,7 @@
 	};
 
 	async function fetchMore() {
-		if (reachedEnd) return;
+		if (reachedEnd || query) return;
 		isLoading = true;
 
 		const res = await fetchFunction();
@@ -65,15 +67,45 @@
 			action: () => {},
 		},
 	];
+
+	const search = async () => {
+		collections = [];
+		isLoading = true;
+		collections = (await globalCollectionsSearch(query, 10)).collections;
+		isLoading = false;
+	};
+	const handleRefresh = async () => {
+		if (query) {
+			await search();
+		} else {
+			collections = [];
+			await fetchMore();
+		}
+	};
+	const debounceSearch = debounce(async () => {
+		await search();
+	}, 500);
+	$: if (query) {
+		debounceSearch();
+	}
+	$: if (!query) {
+		collections = [];
+		debounceSearch.cancel();
+		fetchMore();
+	}
 </script>
 
 <div>
 	<div class="w-full flex flex-row items-center gap-x-4 my-6 2xl:my-8">
-		<!-- TODO clarify what refresh does -->
-		<button class="w-11 h-11 2xl:h-14 2xl:w-14 min-w-[40px] border-gradient flex-grow flex flex-row items-center justify-center transition-btn hover:bg-main-gradient">
+		<button
+			on:click={async () => {
+				await handleRefresh();
+			}}
+			class="w-11 h-11 2xl:h-14 2xl:w-14 min-w-[40px] border-gradient flex-grow flex flex-row items-center justify-center transition-btn hover:bg-main-gradient"
+		>
 			<RefreshStretchedIcon class="w-5 h-5" />
 		</button>
-		<Input bind:value={searchPhrase} class="rounded-none border-2 border-gradient h-11 2xl:h-14 hover:text-white" placeholder="Search by name or address" height="44px">
+		<Input bind:value={query} class="rounded-none border-2 border-gradient h-11 2xl:h-14 hover:text-white" placeholder="Search by name or address" height="44px">
 			<Search class="ml-6 w-5 h-6" />
 		</Input>
 		<SortButton bind:sortOptions class="h-11 2xl:h-14 min-w-[123px]" />
