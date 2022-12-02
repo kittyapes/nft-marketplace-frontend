@@ -7,12 +7,12 @@
 			route: '/marketplace/collections',
 		},
 		{
-			title: 'NFTs',
-			route: '/marketplace/nfts',
-		},
-		{
 			title: 'Users',
 			route: '/marketplace/users',
+		},
+		{
+			title: 'Active Listings',
+			route: '/marketplace/listings',
 		},
 	];
 	let activeTab = tabs[0].title;

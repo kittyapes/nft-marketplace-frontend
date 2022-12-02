@@ -1,11 +1,7 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import type { UserData } from '$interfaces/userData';
-	import ActionMenu from '$lib/components/ActionMenu.svelte';
-	import AttachToElement from '$lib/components/AttachToElement.svelte';
-	import { currentUserAddress } from '$stores/wallet';
 	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { apiGetCollectionBySlug, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
