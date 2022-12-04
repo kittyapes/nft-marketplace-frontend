@@ -63,9 +63,8 @@
 			return false;
 		}
 
-		if ($currentUserAddress && $currentUserAddress !== biddings[0]?.bidderAddress) {
+		if ($currentUserAddress && $currentUserAddress.toLowerCase() === biddings[0]?.bidderAddress) {
 			bidError = 'You are already the top bidder.';
-			console.log('bid');
 			return false;
 		}
 
