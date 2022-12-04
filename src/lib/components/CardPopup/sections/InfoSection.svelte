@@ -11,12 +11,13 @@
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
+	export let listedNfts: number;
 
 	let marketFee = 0;
 	let balance = null;
 	let supply = null;
 
-	$: ownedOrListedNfts = options.resourceType === 'listing' ? options?.saleData?.nftQuantities[options.nfts[0].onChainId] ?? 1 : balance;
+	$: ownedOrListedNfts = options.resourceType === 'listing' ? listedNfts : balance;
 
 	// Never show the back button on this tab
 	export const showBackButton = false;

@@ -17,6 +17,7 @@
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
 	export let showBackButton = false;
+	export let listedNfts: number;
 
 	let frameComponent: ConstructorOfATypedSvelteComponent;
 	let frameProps: any;
@@ -71,4 +72,4 @@
 	goBack();
 </script>
 
-<svelte:component this={frameComponent} {...frameProps} {options} {chainListing} on:close-popup on:listing-created on:force-expire on:set-frame={handleSetFrame} />
+<svelte:component this={frameComponent} {...frameProps} {options} {chainListing} {listedNfts} on:close-popup on:listing-created on:force-expire on:set-frame={handleSetFrame} />

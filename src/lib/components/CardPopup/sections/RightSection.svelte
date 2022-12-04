@@ -12,7 +12,10 @@
 	import TradeSection from './TradeSection/TradeSection.svelte';
 
 	export let options: CardOptions;
+
 	let chainListing: ChainListing;
+
+	$: listedNfts = options.listingData?.nftQuantities[options.nfts[0].onChainId] || chainListing?.quantity;
 
 	// Check NFT balance to enable/disable trading functionality
 	let nftBalance = null;
@@ -84,6 +87,7 @@
 		this={selectedTab.sectionComponent}
 		{options}
 		{chainListing}
+		{listedNfts}
 		on:close-popup
 		on:force-expire
 		bind:showBackButton

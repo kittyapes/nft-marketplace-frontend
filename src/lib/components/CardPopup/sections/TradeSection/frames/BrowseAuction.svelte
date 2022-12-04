@@ -20,6 +20,7 @@
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
+	export let listedNfts: number;
 
 	$: listingExpired = !isFuture(options.listingData.endTime);
 
@@ -90,7 +91,7 @@
 			<div class="font-semibold">
 				<div class="">Quantity</div>
 				<div class="flex items-center justify-start gap-2">
-					{chainListing?.quantity ?? options?.rawResourceData?.listing?.quantity ?? options?.nfts[0]?.quantity ?? '1'}
+					{listedNfts}
 				</div>
 			</div>
 
