@@ -36,8 +36,7 @@
 		if (err) {
 			notifyError('Failed to place your bid!');
 		} else {
-			setTimeout(() => {}, 2000);
-			await refreshBids();
+			setTimeout(async () => await refreshBids(), 10000);
 			bidAmount = '';
 		}
 
