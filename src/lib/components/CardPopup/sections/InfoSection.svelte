@@ -16,7 +16,7 @@
 	let balance = null;
 	let supply = null;
 
-	$: ownedOrListedNfts = options.resourceType === 'listing' ? options?.saleData?.nftQuantities[options.nfts[0].onChainId] ?? 1 : balance;
+	$: ownedOrListedNfts = options.resourceType === 'listing' ? chainListing?.tokensMap[0]?.tokenQuantityInListing ?? 1 : balance;
 
 	// Never show the back button on this tab
 	export const showBackButton = false;
@@ -60,7 +60,7 @@
 		const res = await getUserNftBalance(singleNft.contractAddress, singleNft.onChainId);
 
 		supply = res.supply;
-		balance = options.resourceType === 'listing' ? chainListing?.quantity ?? 0 : res.balance;
+		balance = options.resourceType === 'listing' ? chainListing?.tokensMap[0]?.tokenQuantityInListing ?? 0 : res.balance;
 	});
 
 	function parseAttributes(attributes) {
