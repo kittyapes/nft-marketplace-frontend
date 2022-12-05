@@ -29,7 +29,7 @@
 
 		nftBalance =
 			options.resourceType === 'listing' && options.listingData?.onChainId
-				? chainListing?.quantity ?? 0
+				? chainListing?.tokensMap[0]?.tokenQuantityInListing ?? 0
 				: (await getUserNftBalance(options.nfts[0].contractAddress, options.nfts[0].onChainId)).balance;
 	}
 
