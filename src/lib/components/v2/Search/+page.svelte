@@ -2,16 +2,12 @@
 	import Search from '$icons/search.svelte';
 	import { debounce } from 'lodash-es';
 	import { globalSearch } from '$utils/api/search/globalSearch';
-	import Loader from '$icons/loader.svelte';
 	import { tick } from 'svelte';
-	import { fly } from 'svelte/transition';
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import Input from '$components/v2/Input/Input.svelte';
 	import { beforeNavigate, goto } from '$app/navigation';
-	import { setPopup } from '$utils/popup';
 	import { page } from '$app/stores';
 	import { searchQuery } from '$stores/search';
-	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { browser } from '$app/environment';
 	import EnterKeyIcon from '$icons/enter-key-icon.svelte';
@@ -87,7 +83,7 @@
 			}
 		}}
 		bind:value={query}
-		class="rounded-none border-2 bg-gradient-a hover:text-white w-full"
+		class="rounded-none bg-gradient-a hover:text-white w-full"
 		placeholder="Search"
 		height="40px"
 	>

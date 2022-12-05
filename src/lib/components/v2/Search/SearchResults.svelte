@@ -45,8 +45,10 @@
 					>
 						{#if props.thumbnailUrl}
 							<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] bg-cover" style="background-image: url({props.thumbnailUrl})" />
+						{:else}
+							<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] border-gradient" />
 						{/if}
-						<div class="font-semibold w-full max-w-full truncate">
+						<div class="font-medium text-xs 2xl:text-base leading-5 2xl:leading-6 w-full max-w-full truncate ">
 							{props.name}
 						</div>
 					</div>
@@ -62,7 +64,7 @@
 					<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] border border-white bg-gradient-a flex items-center justify-center">
 						<Search class="w-5 h-6" />
 					</div>
-					<p>See all NFTs</p>
+					<p class="font-medium text-xs 2xl:text-base leading-5 2xl:leading-6">See all NFTs</p>
 				</button>
 			{:else}
 				<div class="w-full flex justify-center py-12 text-lg font-semibold">No NFTs found.</div>
@@ -71,7 +73,7 @@
 			{#if searchResults['collections']?.length > 0}
 				{#each searchResults['collections'] as result}
 					<div
-						class="flex gap-4 items-center btn"
+						class="flex gap-4 items-center pt-1.5 pb-3 btn"
 						on:click={() => {
 							// searching = false;
 							goto('/collections/' + result.slug);
@@ -79,12 +81,27 @@
 					>
 						{#if result.logoImageUrl}
 							<div class="w-11 h-11 2xl:w-12 2xl:h-12 bg-cover" style="background-image: url({result.logoImageUrl})" />
+						{:else}
+							<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] border-gradient" />
 						{/if}
-						<div class="font-semibold w-full max-w-full truncate">
+						<div class="font-medium text-xs 2xl:text-base leading-5 2xl:leading-6 w-full max-w-full truncate ">
 							{result.name}
 						</div>
 					</div>
 				{/each}
+				<button
+					on:click={() => {
+						$page.url.searchParams.set('query', query);
+						query = '';
+						goto(`/search/collections?${$page.url.searchParams}`);
+					}}
+					class="flex items-center gap-4"
+				>
+					<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] border border-white bg-gradient-a flex items-center justify-center">
+						<Search class="w-5 h-6" />
+					</div>
+					<p class="font-medium text-xs 2xl:text-base leading-5 2xl:leading-6">See all collections</p>
+				</button>
 			{:else}
 				<div class="w-full flex justify-center py-12 text-lg font-semibold">No collections found.</div>
 			{/if}
@@ -92,24 +109,35 @@
 			{#if searchResults['users']?.length > 0}
 				{#each searchResults['users'] as result}
 					<div
-						class="flex gap-4 items-center btn"
+						class="flex gap-4 items-center pt-1.5 pb-3 btn"
 						on:click={() => {
 							// searching = false;
 							goto('/profile/' + result.address);
 						}}
 					>
 						{#if result.thumbnailUrl}
-							<div class="w-12 h-12 rounded-full grid place-items-center">
-								<div class="w-12 h-12 bg-cover rounded-full" style="background-image: url({result.thumbnailUrl})" />
-							</div>
+							<div class="w-11 h-11 2xl:w-12 2xl:h-12 bg-cover" style="background-image: url({result.thumbnailUrl})" />
+						{:else}
+							<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] border-gradient" />
 						{/if}
-						<div class="">
-							<div class="font-semibold username w-full max-w-full truncate">
-								{result.username}
-							</div>
+						<div class="font-medium text-xs 2xl:text-base leading-5 2xl:leading-6 w-full max-w-full truncate ">
+							{result.username}
 						</div>
 					</div>
 				{/each}
+				<button
+					on:click={() => {
+						$page.url.searchParams.set('query', query);
+						query = '';
+						goto(`/search/users?${$page.url.searchParams}`);
+					}}
+					class="flex items-center gap-4"
+				>
+					<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] border border-white bg-gradient-a flex items-center justify-center">
+						<Search class="w-5 h-6" />
+					</div>
+					<p class="font-medium text-xs 2xl:text-base leading-5 2xl:leading-6">See all users</p>
+				</button>
 			{:else}
 				<div class="w-full flex justify-center py-12 text-lg font-semibold">No users found.</div>
 			{/if}

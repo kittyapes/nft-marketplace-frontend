@@ -6,19 +6,18 @@
 			title: 'Collections',
 			route: '/marketplace/collections',
 		},
-		{
-			title: 'Users',
-			route: '/marketplace/users',
-		},
+		// {
+		// 	title: 'Users',
+		// 	route: '/marketplace/users',
+		// },
 		{
 			title: 'Active Listings',
 			route: '/marketplace/listings',
 		},
 	];
-	let activeTab = tabs[0].title;
 </script>
 
-<div class="flex flex-row items-center gap-x-6 2xl:gap-x-8 text-xl 2xl:text-2xl leading-5 2xl:leading-6">
+<div class="flex flex-row items-center gap-x-6 2xl:gap-x-8 font-semibold text-xl 2xl:text-2xl leading-5 2xl:leading-6">
 	{#each tabs as tab}
 		<button
 			type="button"
