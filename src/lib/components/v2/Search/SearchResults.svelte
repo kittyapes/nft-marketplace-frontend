@@ -4,10 +4,12 @@
 	import Search from '$icons/search.svelte';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import { setPopup } from '$utils/popup';
+	import { selectedResultTab } from '$stores/search';
 
 	export let tabs = ['NFTs', 'Collections', 'Users'];
 	export let query: string;
 	let activeTab = tabs[0];
+	$selectedResultTab = tabs[0].toLowerCase();
 	export let searchResults: {
 		collections?: any[];
 		items?: any[];
@@ -21,6 +23,7 @@
 			<button
 				type="button"
 				on:click={() => {
+					$selectedResultTab = tab.toLowerCase();
 					activeTab = tab;
 				}}
 				class:text-gradient={activeTab == tab}

@@ -5,13 +5,13 @@
 	import { tick } from 'svelte';
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import Input from '$components/v2/Input/Input.svelte';
-	import { beforeNavigate, goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { searchQuery } from '$stores/search';
 	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { browser } from '$app/environment';
 	import EnterKeyIcon from '$icons/enter-key-icon.svelte';
 	import SearchWrapper from './SearchWrapper.svelte';
+	import { selectedResultTab } from '$stores/search';
+	import { goto } from '$app/navigation';
 
 	let query: string;
 	let searching = false;
@@ -43,30 +43,20 @@
 
 	$: if (browser && !query) {
 		searching = false;
-		$searchQuery = '';
 		debouncedSearch.cancel();
 	}
 
 	$: if (browser && query) {
-		$searchQuery = query.trim();
-
-		if (!$page.url.pathname.startsWith('/search')) {
-			searching = true;
-			show = false;
-			debouncedSearch($searchQuery);
-		}
+		searching = true;
+		show = false;
+		debouncedSearch(query.trim());
 	}
-
-	beforeNavigate(({ to }) => {
-		if (!to?.url.pathname.match(/search*/)) query = '';
-	});
 
 	const navigateToSearchResults = (query: string) => {
 		show = false;
 		searching = false;
-
-		query = query.trim();
-		goto('/search?query=' + query.replace('#', '%23'));
+		$page.url.searchParams.set('query', query);
+		window?.location?.replace(`/search/${$selectedResultTab}?${$page.url.searchParams}`);
 	};
 </script>
 
@@ -78,8 +68,8 @@
 >
 	<Input
 		on:keyup={(e) => {
-			if (e.code === 'Enter') {
-				navigateToSearchResults($searchQuery);
+			if (e.code === 'Enter' && show) {
+				navigateToSearchResults(query.trim());
 			}
 		}}
 		bind:value={query}
@@ -89,7 +79,7 @@
 	>
 		<Search class="ml-6 w-5 h-6" />
 
-		<div class:hidden={!query} class="mr-9 p-2 bg-gradient-a " slot="end-icon">
+		<div class:hidden={!query || !show} class="mr-9 p-2 bg-gradient-a " slot="end-icon">
 			<EnterKeyIcon class="w-4 h-3" />
 		</div>
 	</Input>
@@ -97,11 +87,3 @@
 		<SearchWrapper bind:query bind:isDropdownShown bind:searchResults bind:show />
 	{/if}
 </div>
-
-<style type="postcss">
-	@media (max-height: 540px) {
-		.all-results {
-			@apply my-32;
-		}
-	}
-</style>
