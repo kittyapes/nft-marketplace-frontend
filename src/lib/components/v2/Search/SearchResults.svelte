@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import Search from '$icons/search.svelte';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import { setPopup } from '$utils/popup';
 
 	export let tabs = ['NFTs', 'Collections', 'Users'];
+	export let query: string;
 	let activeTab = tabs[0];
 	export let searchResults: {
 		collections?: any[];
@@ -48,6 +51,19 @@
 						</div>
 					</div>
 				{/each}
+				<button
+					on:click={() => {
+						$page.url.searchParams.set('query', query);
+						query = '';
+						goto(`/search/nfts?${$page.url.searchParams}`);
+					}}
+					class="flex items-center gap-4"
+				>
+					<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] border border-white bg-gradient-a flex items-center justify-center">
+						<Search class="w-5 h-6" />
+					</div>
+					<p>See all NFTs</p>
+				</button>
 			{:else}
 				<div class="w-full flex justify-center py-12 text-lg font-semibold">No NFTs found.</div>
 			{/if}
@@ -62,9 +78,7 @@
 						}}
 					>
 						{#if result.logoImageUrl}
-							<!-- <div class="w-12 h-12 rounded-full grid place-items-center"> -->
 							<div class="w-11 h-11 2xl:w-12 2xl:h-12 bg-cover" style="background-image: url({result.logoImageUrl})" />
-							<!-- </div> -->
 						{/if}
 						<div class="font-semibold w-full max-w-full truncate">
 							{result.name}

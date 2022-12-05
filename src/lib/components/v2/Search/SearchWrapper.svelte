@@ -16,7 +16,7 @@
 	{#if isDropdownShown && !query}
 		<!-- <PopularSearches /> -->
 	{:else if show}
-		<SearchResults bind:searchResults />
+		<SearchResults bind:searchResults bind:query />
 	{:else}
 		<Loader />
 	{/if}

@@ -17,7 +17,7 @@
 	import EnterKeyIcon from '$icons/enter-key-icon.svelte';
 	import SearchWrapper from './SearchWrapper.svelte';
 
-	let query: string;
+	let query: string = 'Novka';
 	let searching = false;
 	let isDropdownShown = false;
 	let show = false;
@@ -87,7 +87,7 @@
 			}
 		}}
 		bind:value={query}
-		class="rounded-none border-2 bg-gradient-a border-gradient hover:text-white w-full"
+		class="rounded-none border-2 bg-gradient-a hover:text-white w-full"
 		placeholder="Search"
 		height="40px"
 	>
