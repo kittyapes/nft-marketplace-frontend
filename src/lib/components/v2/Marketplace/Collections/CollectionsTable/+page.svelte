@@ -53,7 +53,7 @@
 					</td>
 				</tr>
 			{/each}
-		{:else}
+		{:else if collections?.length === 0 && !isLoading}
 			<tr class="cols-5 w-full flex items-center justify-center text-lg py-20">No collections found.</tr>
 		{/if}
 	</tbody>
