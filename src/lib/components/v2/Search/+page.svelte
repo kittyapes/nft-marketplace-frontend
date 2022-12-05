@@ -11,9 +11,8 @@
 	import EnterKeyIcon from '$icons/enter-key-icon.svelte';
 	import SearchWrapper from './SearchWrapper.svelte';
 	import { selectedResultTab } from '$stores/search';
-	import { goto } from '$app/navigation';
 
-	let query: string;
+	let query: string = 'no';
 	let searching = false;
 	let isDropdownShown = false;
 	let show = false;

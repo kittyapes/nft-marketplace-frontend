@@ -15,6 +15,7 @@
 		items?: any[];
 		users?: any[];
 	} = {};
+	let hoveredId = '';
 </script>
 
 <div>
@@ -44,7 +45,13 @@
 						class="flex gap-4 items-center px-5 pt-1.5 pb-3 -mx-5"
 						on:click={() => {
 							setPopup(CardPopup, { props: { options: result }, onClose: () => {} });
+							query = '';
 						}}
+						on:focus={() => (hoveredId = props?.databaseId)}
+						on:mouseenter={() => (hoveredId = props?.databaseId)}
+						on:mouseleave={() => (hoveredId = '')}
+						on:blur={() => (hoveredId = '')}
+						class:bg-gradient-a={hoveredId === props?.databaseId}
 					>
 						{#if props.thumbnailUrl}
 							<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] bg-cover" style="background-image: url({props.thumbnailUrl})" />
@@ -78,9 +85,14 @@
 					<div
 						class="flex gap-4 items-center pt-1.5 pb-3 btn"
 						on:click={() => {
-							// searching = false;
+							query = '';
 							goto('/collections/' + result.slug);
 						}}
+						on:focus={() => (hoveredId = result?.collectionAddress)}
+						on:mouseenter={() => (hoveredId = result?.collectionAddress)}
+						on:mouseleave={() => (hoveredId = '')}
+						on:blur={() => (hoveredId = '')}
+						class:bg-gradient-a={hoveredId === result?.collectionAddress}
 					>
 						{#if result.logoImageUrl}
 							<div class="w-11 h-11 2xl:w-12 2xl:h-12 bg-cover" style="background-image: url({result.logoImageUrl})" />
@@ -114,9 +126,14 @@
 					<div
 						class="flex gap-4 items-center pt-1.5 pb-3 btn"
 						on:click={() => {
-							// searching = false;
+							query = '';
 							goto('/profile/' + result.address);
 						}}
+						on:focus={() => (hoveredId = result?.address)}
+						on:mouseenter={() => (hoveredId = result?.address)}
+						on:mouseleave={() => (hoveredId = '')}
+						on:blur={() => (hoveredId = '')}
+						class:bg-gradient-a={hoveredId === result?.address}
 					>
 						{#if result.thumbnailUrl}
 							<div class="w-11 h-11 2xl:w-12 2xl:h-12 bg-cover" style="background-image: url({result.thumbnailUrl})" />
