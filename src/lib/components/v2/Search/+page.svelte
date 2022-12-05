@@ -17,7 +17,7 @@
 	import EnterKeyIcon from '$icons/enter-key-icon.svelte';
 	import SearchWrapper from './SearchWrapper.svelte';
 
-	let query: string = 'Novka';
+	let query: string;
 	let searching = false;
 	let isDropdownShown = false;
 	let show = false;
