@@ -43,10 +43,11 @@
 		if (props.quantity > (maxQuantity || 1)) {
 			quantityError = 'Quantity field cannot contain a greater value than the number of ERC 1155 tokens you own.';
 			formErrors.push(quantityError);
-		}
-
-		if (props.quantity < 1) {
+		} else if (props.quantity < 1) {
 			quantityError = 'You must list at least one token.';
+			formErrors.push(quantityError);
+		} else if (Math.floor(props.quantity) !== props.quantity) {
+			quantityError = 'Quantity field cannot contain the decimals.';
 			formErrors.push(quantityError);
 		}
 

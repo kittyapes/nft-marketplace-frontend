@@ -1,7 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 	import Disconnect from '$icons/disconnect.svelte';
-	import { profileData } from '$stores/user';
+	import { profileData, publicProfileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { disconnectWallet } from '$utils/wallet/connectWallet';
 	import { slide } from 'svelte/transition';
@@ -10,10 +10,14 @@
 	let showDashboard = false;
 	let showMyCollections = false;
 
+	publicProfileData.subscribe((publicProfile) => {
+		showMyCollections = publicProfile && publicProfile.roles.includes('verified_user');
+	});
+
 	profileData.subscribe((profile) => {
 		// Also checking for superadmin just in case a user has the role but was not assigned the admin too
 		showDashboard = profile && (profile.roles.includes('admin') || profile.roles.includes('superadmin'));
-		showMyCollections = profile && (profile.roles.includes('verified_user') || profile.roles.includes('superadmin'));
+		showMyCollections = showMyCollections || (profile && profile.roles.includes('superadmin'));
 	});
 </script>
 
@@ -24,7 +28,7 @@
 			<Button variant="rounded-outline" class="profile-btn-item" --width="100%" --py="0.5rem" on:click={() => goto('/management')}>Dashboard</Button>
 		{/if}
 		{#if showMyCollections}
-			<Button variant="rounded-outline" class="profile-btn-item" --width="100%" --py="0.5rem" on:click={() => goto(`/profile/${$profileData.address}/collections`)}>My Collections</Button>
+			<Button variant="rounded-outline" class="profile-btn-item" --width="100%" --py="0.5rem" on:click={() => goto(`/profile/${$publicProfileData.address}/collections`)}>My Collections</Button>
 		{/if}
 
 		<Button variant="rounded-outline" class="profile-btn-item bg-red-200" --width="100%" --py="0.5rem" on:click={() => alert('Not Implemented Yet')}>Buy Hinata</Button>

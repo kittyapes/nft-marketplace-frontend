@@ -4,7 +4,7 @@
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { appSigner, connectionDetails } from '$stores/wallet';
 	import { onMount } from 'svelte';
-	import { publicProfileData, profileData } from '$stores/user';
+	import { profileData, publicProfileData } from '$stores/user';
 	import { fade } from 'svelte/transition';
 	import UserCircle from '$icons/user-circle.svelte';
 	import { goto } from '$app/navigation';
@@ -57,8 +57,13 @@
 		<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
 
 		<!-- Create -->
-		{#if $profileData?.roles.includes('verified_user')}
-			<button on:click={() => goto('/create')} class="relative font-semibold bg-card-gradient h-1/2 grid place-items-center px-4 snap-center">Create</button>
+		{#if $publicProfileData?.roles.includes('verified_user') || $profileData?.roles.includes('superadmin')}
+			<button
+				on:click={() => goto('/create')}
+				class="relative grid h-full px-16 font-semibold text-white uppercase text-md bg-gradient-to-r from-color-purple to-color-blue place-items-center snap-center"
+			>
+				Create
+			</button>
 		{/if}
 
 		<!-- Profile -->

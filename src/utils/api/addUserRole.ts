@@ -5,7 +5,6 @@ import type { UserRole } from 'src/interfaces/userData';
 import { getApiUrl } from '.';
 import { forceBatchProcess } from './admin/batchProcessing';
 import { postInactivationQueueAdd, postVerificationQueueAdd } from './admin/userManagement';
-import { userHasRole } from '$utils/auth/userRoles';
 
 export async function addUserRole(address: string, roles: UserRole[], roleToAdd: UserRole) {
 	if (roleToAdd === 'inactivated_user') {

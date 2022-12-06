@@ -26,6 +26,15 @@ async function refreshPublicProfileData(address?: string) {
 	address = address || get(currentUserAddress);
 
 	const data = await fetchProfileData(address);
+	if (!data.roles) data.roles = [];
+
+	if (!data.roles.includes('verified_user')) {
+		const isVerified = get(currentUserAddress) && (await storage.hasRole('minter', get(currentUserAddress)).catch(() => false));
+
+		isVerified && data.roles.push('verified_user');
+	}
+
+	console.log(data);
 
 	publicProfileData.set(data);
 }
