@@ -147,7 +147,9 @@ body {
 .clickable {
 	@apply transition-transform duration-200 transform active:scale-95 cursor-pointer;
 }
-
+.thumbnail {
+	background-image: var(--url);
+}
 #WEB3_CONNECT_MODAL_ID {
 	@apply z-[10000] absolute;
 }

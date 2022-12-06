@@ -26,10 +26,11 @@
 		{#each collections as collection, i}
 			<a href="/collections/{collection.slug}" class="flex flex-row items-center gap-x-6 font-bold text-white text-sm leading-7 ">
 				<p>{i + 1}</p>
-				<div class="relative w-[70px] h-[70px] border-gradient">
-					<div class="w-full h-full overflow-hidden">
+				<!-- <div class="relative w-[70px] h-[70px] border-gradient"> -->
+				<!-- <div class="w-full h-full overflow-hidden">
 						<img class="object-center object-cover w-full h-full" src={collection?.logoImageUrl} alt="Collection Logo" />
-					</div>
+					</div> -->
+				<div class="relative w-14 2xl:w-[70px] h-14 2xl:h-[70px] border-gradient thumbnail bg-cover bg-center" style="--url: url({collection?.logoImageUrl ?? ''})">
 					<HinataBadge class="absolute -bottom-2.5 -right-2.5 z-50  w-5 h-5 {!collection?.verified ? 'hidden' : ''}" />
 				</div>
 				<div class="flex-grow">
