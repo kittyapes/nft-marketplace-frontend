@@ -189,9 +189,13 @@
 	const handleFilter = async (event: CustomEvent) => {
 		if (tab === 'USER') {
 			userFetchingOptions.filter = {
-				createdAfter: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdAfter,
+				createdAfter: event.detail.createdAfter ? event.detail.createdAfter * 1000 : userFetchingOptions.filter.createdAfter,
 				role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
 			};
+
+			if (userFetchingOptions.filter.createdAfter) {
+				userFetchingOptions.sort.sortReversed = true;
+			}
 
 			if (event.detail.status) userFetchingOptions.filter.role = undefined;
 			else if (event.detail.role) userFetchingOptions.filter.status = undefined;
@@ -200,9 +204,7 @@
 				userFetchingOptions.filter.role = undefined;
 				userFetchingOptions.filter.status = undefined;
 			}
-			if (event.detail.createdBefore === 'all') userFetchingOptions.filter.createdAfter = undefined;
-
-			await getSearchedUsers();
+			if (event.detail.createdAfter === 'all') userFetchingOptions.filter.createdAfter = undefined;
 		} else {
 			collectionFetchingOptions.filter = {
 				status: event.detail.status ? event.detail.status : collectionFetchingOptions.filter.status,
@@ -210,9 +212,9 @@
 			};
 
 			if (event.detail.value === 'all') collectionFetchingOptions.filter.isClaimed = undefined;
-
-			await getSearchedCollections();
 		}
+
+		debouncedSearch();
 	};
 
 	$: if (userFetchingOptions) {
@@ -252,9 +254,9 @@
 
 	let userFilterOptions = [
 		{ label: 'Flagged' },
-		{ label: 'Joined 24 hrs ago', createdBefore: dayjs().subtract(1, 'hour').unix() },
-		{ label: 'Joined 7 days ago', createdBefore: dayjs().subtract(1, 'week').unix() },
-		{ label: 'Joined 1 Mon ago', createdBefore: dayjs().subtract(1, 'month').unix() },
+		{ label: 'Joined 24 hrs ago', createdAfter: dayjs().subtract(1, 'hour').unix() },
+		{ label: 'Joined 7 days ago', createdAfter: dayjs().subtract(1, 'week').unix() },
+		{ label: 'Joined 1 Mon ago', createdAfter: dayjs().subtract(1, 'month').unix() },
 	];
 
 	let statusFilterOptions = [
@@ -529,7 +531,7 @@
 					<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
 				</div>
 				<div class="">
-					<Filter on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', createdBefore: 'all' }} />
+					<Filter on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', createdAfter: 'all' }} />
 				</div>
 			</div>
 		{:else}
