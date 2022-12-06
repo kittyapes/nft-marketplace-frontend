@@ -47,9 +47,8 @@
 				</div>
 			</div>
 			<div class="flex flex-col gap-y-5 2xl:gap-y-6 font-semibold text-base xl:text-xl">
+				<!-- TODO implement follow/unfollow logic -->
 				<button class="border-gradient w-28 2xl:w-36  bg-gradient-a hover:bg-main-gradient  leading-6 2xl:leading-7">Follow</button>
-				<!-- TODO clarify what created is -->
-				<p>Created {compactNumberFormat(3200)}</p>
 			</div>
 		</div>
 	</div>
