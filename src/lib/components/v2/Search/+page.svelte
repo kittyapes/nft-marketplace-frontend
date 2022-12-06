@@ -12,7 +12,7 @@
 	import SearchWrapper from './SearchWrapper.svelte';
 	import { selectedResultTab } from '$stores/search';
 
-	let query: string;
+	let query: string = 'no';
 	let searching = false;
 	let isDropdownShown = false;
 	let show = false;
