@@ -12,7 +12,8 @@
 <div class="">
 	<div class="text-white w-full flex flex-row items-center justify-between mb-10">
 		<h1 class=" text-2xl leading-7">Top Collections</h1>
-		<ButtonGroup on:period={(e) => console.log(e?.detail?.period)} />
+		<!-- TODO implement top collections filter -->
+		<!-- <ButtonGroup on:period={(e) => console.log(e?.detail?.period)} /> -->
 	</div>
 	{#if collections.length > 0}
 		<CollectionsGrid bind:collections />
