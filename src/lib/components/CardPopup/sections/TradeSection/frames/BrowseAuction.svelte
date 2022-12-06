@@ -7,7 +7,7 @@
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
-	import { appSigner } from '$stores/wallet';
+	import { appSigner, currentUserAddress } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
@@ -36,7 +36,7 @@
 		if (err) {
 			notifyError('Failed to place your bid!');
 		} else {
-			await refreshBids();
+			setTimeout(async () => await refreshBids(), 10000);
 			bidAmount = '';
 		}
 
@@ -59,6 +59,11 @@
 		}
 
 		if (parsedHighestBid && parsedValue.lte(parsedHighestBid)) {
+			return false;
+		}
+
+		if ($currentUserAddress && $currentUserAddress.toLowerCase() === biddings[0]?.bidderAddress) {
+			bidError = 'You are already the top bidder.';
 			return false;
 		}
 

@@ -11,6 +11,7 @@ dayjs.extend(relativeTime);
 
 export interface BidRow {
 	bidderName: string;
+	bidderAddress: string;
 	imageUrl: string;
 	tokenAmount: string;
 	timeAgo: string;
@@ -32,6 +33,7 @@ export async function getBiddingsFlow(listingId: string): Promise<BidRow[]> {
 
 	const adaptedBids = bids.map((bid) => ({
 		bidderName: bid.user?.username,
+		bidderAddress: bid.bidder,
 		imageUrl: bid.user?.thumbnailUrl,
 		tokenAmount: scientificToDecimal(bid.formatBid),
 		timeAgo: dayjs
