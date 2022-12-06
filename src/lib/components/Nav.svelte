@@ -68,7 +68,7 @@
 					title={profileButtonTitle}
 				>
 					<!-- Profile image or guest user icon -->
-					<div class="w-10 h-10 gradient-border !border-2">
+					<div class="w-10 h-10 gradient-border !border-2 flex items-center justify-center">
 						{#if $publicProfileData?.thumbnailUrl}
 							<img
 								on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"}
@@ -77,7 +77,7 @@
 								class="object-cover w-full h-full"
 							/>
 						{:else}
-							<div class="text-color-purple grid place-items-center" in:fade|local>
+							<div class="text-color-purple flex items-center justify-center" in:fade|local>
 								<UserCircle />
 							</div>
 						{/if}
