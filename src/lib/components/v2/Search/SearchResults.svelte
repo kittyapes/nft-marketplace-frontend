@@ -157,8 +157,18 @@
 						{:else}
 							<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] border-gradient" />
 						{/if}
-						<div class="font-medium text-xs 2xl:text-base leading-5 2xl:leading-6 w-full max-w-full truncate ">
-							{result.username}
+						<div class="font-medium flex items-center justify-between text-xs 2xl:text-base leading-5 2xl:leading-6 w-full max-w-full truncate ">
+							<div class="flex flex-col">
+								<div class="flex items-center gap-x-2">
+									<p>{result?.username}</p>
+									{#if result?.status === 'VERIFIED'}
+										<HinataBadge class="w-5 2xl:w-6 h-5 2xl:h-6" />
+									{/if}
+								</div>
+								<p class="opacity-70">
+									{result?.followers || 0} followers
+								</p>
+							</div>
 						</div>
 					</div>
 				{/each}
