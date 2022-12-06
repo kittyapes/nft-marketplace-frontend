@@ -1,12 +1,12 @@
-<script>
+<script lang="ts">
 	import Copy from '$icons/copy.svelte';
 	import Eth from '$icons/eth.svelte';
 	import HinataBadge from '$icons/hinata-badge.svelte';
-	import { compactNumberFormat } from '$utils/api';
+	import type { UserData } from '$interfaces/userData';
 	import copyTextToClipboard from '$utils/copyTextToClipboard';
 	import { shortenAddress } from '$utils/misc/shortenAddress';
 	// TODO add user type
-	export let user;
+	export let user: Partial<UserData>;
 	let isHovered = false;
 </script>
 

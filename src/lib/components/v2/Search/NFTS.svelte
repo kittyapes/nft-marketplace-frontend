@@ -19,7 +19,6 @@
 	const fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await globalNFTSearch($page?.url?.searchParams.get('query'), limit, pageNumber);
-		console.log(res.res);
 		res.adapted = await Promise.all(res.res.nfts?.map(nftToCardOptions)).catch((err) => {
 			console.error(err);
 			return [];

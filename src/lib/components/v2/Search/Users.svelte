@@ -6,8 +6,9 @@
 	import UserGrid from '$components/v2/UserGrid/+page.svelte';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import { inview } from 'svelte-inview';
+	import type { UserData } from '$interfaces/userData';
 
-	let users = [];
+	let users: Partial<UserData>[] = [];
 	let query: string;
 	let reachedEnd = false;
 	let isLoading = true;
