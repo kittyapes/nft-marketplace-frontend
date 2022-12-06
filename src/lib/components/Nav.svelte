@@ -28,18 +28,13 @@
 	$: displayedUsername = $publicProfileData?.username;
 	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
 
-	$: useTestnets = $connectionDetails ? $connectionDetails?.chainId !== 1 : import.meta.env.VITE_DEFAULT_NETWORK !== '1';
+	// $: useTestnets = $connectionDetails ? $connectionDetails?.chainId !== 1 : import.meta.env.VITE_DEFAULT_NETWORK !== '1';
 </script>
 
 <div class="fixed z-10 flex w-full ">
-	<div class="fixed z-10 flex items-center w-full h-20 pl-8 pr-2 overflow-x-visible scrollbar-hidden snap-mandatory snap-x navbar text-white">
+	<div class="backdrop-blur-xl fixed z-10 flex items-center w-full h-20 pl-8 pr-2 overflow-x-visible scrollbar-hidden snap-mandatory snap-x text-white bg">
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
-			<!-- {#if useTestnets}
-				<img src="/svg/logo/logo.testnets.svg" alt="Hinata Testnets logo." />
-			{:else}
-				<img src="/svg/logo/logo.alpha.svg" alt="Hinata logo." />
-			{/if} -->
 			<img src="/svg/logo/logo.v2.svg" alt="Hinata logo." />
 		</a>
 
