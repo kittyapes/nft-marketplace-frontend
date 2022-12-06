@@ -13,8 +13,6 @@
 		isLoading = true;
 		collectionDetail = await apiGetCollectionBySlug(collection.slug);
 		isLoading = false;
-
-		console.log(collectionDetail);
 	});
 </script>
 

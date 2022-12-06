@@ -42,7 +42,7 @@
 				{visibleAddress}
 			</a>
 		{:else}
-			<div class={v2 ? "text-white font-medium" : ""}>
+			<div class={v2 ? 'text-white font-medium' : ''}>
 				{visibleAddress}
 			</div>
 		{/if}

@@ -4,19 +4,18 @@
 	import { onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
-	import { writable } from 'svelte/store';
+	import { get, writable } from 'svelte/store';
 	import { getRandomListings, type Listing } from '$utils/api/listing';
 	import NftList from '$lib/components/NftList.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
 	import HomepageCarousel from '$lib/components/v2/HomepageCarousel/HomepageCarousel.svelte';
-
 	import TopCollections from '$components/v2/TopCollections/+page.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	let collections: Collection[] = [];
-	let exploreListings = writable<Listing[]>([]);
-	let loadedExploreListings = writable(false);
-	let exploreListingsData = [];
+	import NftCard from '$lib/components/NftCard.svelte';
+	import type { PublicProfileData } from '$interfaces/userData';
+	import { searchUsersByName } from '$utils/api/search/globalSearch';
+	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 
 	const aidrop = {
 		title: 'Claim your monthly airdrop',
@@ -25,6 +24,14 @@
 		thumbnail: '/img/png/airdrop-banner.png',
 	};
 
+	let collections: Collection[] = [];
+	let exploreListings = writable<Listing[]>([]);
+	let loadedExploreListings = writable(false);
+	let exploreListingsData = [];
+
+	let hottestCreators = writable<{ verifiedCreators: PublicProfileData[]; totalCount: number }>(null);
+	let loadedHottestCreators = writable(false);
+
 	const getExploreMarketData = async () => {
 		loadedExploreListings.set(false);
 		exploreListings.set(await getRandomListings(10));
@@ -32,10 +39,15 @@
 		loadedExploreListings.set(true);
 	};
 
-	// Please don't ask me why we need an auth token for this...
-	// We don't anymore 🙂 🔪
+	const getHottestCreatorsData = async () => {
+		loadedHottestCreators.set(false);
+		hottestCreators.set(await searchUsersByName('ste', 3));
+		loadedHottestCreators.set(true);
+	};
+
 	onMount(async () => {
 		getExploreMarketData();
+		getHottestCreatorsData();
 		collections = (await apiGetMostActiveCollections()).collections;
 	});
 </script>
@@ -61,8 +73,17 @@
 	}}
 />
 <div class="px-[172px] pt-32 w-full grid place-items-center text-white">
-	<div class="w-1/2  mb-16">
-		<HomepageCarousel />
+	<!-- Hero section -->
+	<div class="mb-16 flex gap-5 items-stretch w-full">
+		{#if $loadedExploreListings}
+			<NftCard options={exploreListingsData[0]} />
+		{/if}
+		<div class="min-w-[50%] max-w-[50%] flex-grow-0">
+			<HomepageCarousel />
+		</div>
+		{#if $loadedExploreListings}
+			<NftCard options={exploreListingsData[0]} />
+		{/if}
 	</div>
 
 	<!-- Top collections section -->
@@ -71,9 +92,30 @@
 	</div>
 
 	<!-- Hottest creators section -->
-	<div class="w-full">
-		<h2 class="text-2xl leading-7">Hottest creators</h2>
-	</div>
+	{#if $loadedHottestCreators}
+		<div class="pt-20 w-full h-full">
+			<h2 class="text-2xl leading-7">Hottest creators</h2>
+			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
+				{#each get(hottestCreators).verifiedCreators as creator}
+					<div class="p-4 bg-card-gradient flex gap-4 w-full ">
+						<FeaturedArtistCard
+							creatorData={{
+								name: creator.username,
+								address: creator.address,
+								coverImg: creator.coverUrl,
+								profileImg: creator.thumbnailUrl,
+								created: 0,
+							}}
+						/>
+						{#if $loadedExploreListings}
+							<NftCard options={exploreListingsData[0]} />
+							<NftCard options={exploreListingsData[0]} />
+						{/if}
+					</div>
+				{/each}
+			</div>
+		</div>
+	{/if}
 
 	<!-- Tending nfts Section -->
 	{#if $loadedExploreListings && exploreListingsData?.length > 0}

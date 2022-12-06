@@ -152,7 +152,7 @@
 </script>
 
 <div
-	class="relative overflow-hidden group !border-2 border-transparent"
+	class="relative overflow-hidden group !border-2 border-transparent min-w-[345px]"
 	class:gradient-border={isHovered && !disabled}
 	class:mb-4={gridStyle === 'masonry'}
 	in:fade
@@ -221,7 +221,9 @@
 				{@html timerHtml}
 			{:else if timerHtml?.includes('Ends in')}
 				<div class="flex flex-col items-start">
-					<h4 class="text-gradient font-bold {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">Highest bid</h4>
+					<h4 class="text-gradient font-bold whitespace-nowrap {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
+						Highest bid
+					</h4>
 					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-1' : 'gap-x-0.5'}">
 						<span><Eth class={gridStyle === 'normal' ? 'w-2.5 2xl:w-3 h-3.5 2xl:h-4' : 'w-1.5 2xl:w-2 h-2.5 2xl:h-3'} /></span>
 						<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
@@ -242,7 +244,9 @@
 					</div>
 				</div>
 				<div class="flex flex-col items-end">
-					<h4 class="text-gradient font-bold {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">Highest offer</h4>
+					<h4 class="text-gradient font-bold whitespace-nowrap {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
+						Highest offer
+					</h4>
 					<!-- TODO clarify highest offer -->
 					<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
 						{options?.auctionData?.highestOffer || 'N/A'}
@@ -291,7 +295,7 @@
 		@apply py-1.5 px-2.5;
 	}
 	.normal-nft-media {
-		@apply h-[321px] 2xl:h-[400px];
+		@apply h-[400px];
 	}
 	.dense-nft-media {
 		@apply h-44 2xl:h-56;
