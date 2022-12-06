@@ -103,7 +103,7 @@
 			<div class="w-full flex flex-col gap-6 p-6 items-center">
 				<div class="title">Sign this message</div>
 				<div class="text-xs">{message}</div>
-				<div class="w-full flex gap-x-12">
+				<div class="w-full flex gap-x-8 2xl:gap-x-10">
 					<GhostButton on:click={onSignCancel}><span class="uppercase">Cancel</span></GhostButton>
 					<PrimaryButton on:click={onSignConfirm}><span class="uppercase">Sign</span></PrimaryButton>
 				</div>
@@ -126,7 +126,7 @@
 			<div class="w-full flex flex-col gap-6 p-6 items-center">
 				<div class="title">Sign this message</div>
 				<div class="text-sm font-bold">Signing Failed!</div>
-				<div class="w-full flex gap-x-12">
+				<div class="w-full flex gap-x-8 2xl:gap-x-10">
 					<GhostButton on:click={dispatchClose}><span class="uppercase">Cancel</span></GhostButton>
 					<PrimaryButton on:click={onSignIn}><span class="uppercase">Try again</span></PrimaryButton>
 				</div>
