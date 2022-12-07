@@ -9,7 +9,7 @@
 	import UserCircle from '$icons/user-circle.svelte';
 	import { goto } from '$app/navigation';
 
-	let displayProfilePopup = false;
+	let displayProfilePopup = true;
 	let showProfileButton = false;
 	const closeModalIfNotInElement = (e) => {
 		// Click is not on the profile button or popup element

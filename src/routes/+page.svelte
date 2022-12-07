@@ -74,7 +74,7 @@
 />
 <div class="px-[172px] pt-32 w-full grid place-items-center text-white">
 	<!-- Hero section -->
-	<div class="mb-16 flex gap-5 items-stretch w-full overflow-x-auto">
+	<div class="mb-16 flex gap-5 items-stretch w-full">
 		{#if $loadedExploreListings}
 			<NftCard options={exploreListingsData[0]} />
 		{/if}
