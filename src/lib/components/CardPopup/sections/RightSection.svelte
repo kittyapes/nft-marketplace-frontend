@@ -96,7 +96,7 @@
 	/>
 </div>
 
-<style>
+<style type="postcss">
 	.tab-loading {
 		@apply bg-gray-100 text-transparent rounded-lg;
 	}
