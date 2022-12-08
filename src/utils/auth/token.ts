@@ -20,7 +20,7 @@ function getAuthTokenKey(address: string) {
 		throw new Error('No address provided and could not automatically get an address.');
 	}
 
-	return `userData-${address}-${getApiUrl('latest', '')}`;
+	return `authData-${address}-${getApiUrl('latest', '')}`;
 }
 
 export function getAuthToken(address?: string) {
