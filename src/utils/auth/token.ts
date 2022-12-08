@@ -72,6 +72,24 @@ export function setAuthToken(address: string, token: string) {
 	localStorage.setItem(key, JSON.stringify(authData));
 }
 
+export function setAuthRoles(address: string, roles: string[]) {
+	const key = getAuthTokenKey(address);
+
+	const currentAuthData: AuthData = JSON.parse(localStorage.getItem(getAuthTokenKey(address)));
+
+	const authData: AuthData = {
+		token: currentAuthData?.token,
+		roles,
+	};
+
+	localStorage.setItem(key, JSON.stringify(authData));
+}
+
+export function getAuthRoles(address: string) {
+	const authData: AuthData = JSON.parse(localStorage.getItem(getAuthTokenKey(address)));
+	return authData?.roles;
+}
+
 export function isAuthTokenExpired(address: string) {
 	const token = getAuthToken(address);
 
