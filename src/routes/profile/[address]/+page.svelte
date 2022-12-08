@@ -58,8 +58,6 @@
 
 			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
 		}
-
-		if (browser) selectTab($tabParam);
 	});
 
 	const fetchLimit = 10;
@@ -71,8 +69,13 @@
 	}
 
 	$: browser && fetchData(address);
+
 	$: if (browser && address && $currentUserAddress) {
 		refreshAllTabs();
+	}
+
+	$: if (browser && $currentUserAddress && address && $profileData) {
+		selectTab($tabParam);
 	}
 
 	userCreatedListing.subscribe((value) => {
@@ -221,20 +224,20 @@
 
 	let selectedTab: typeof tabs[0] = tabs[0];
 
-	function fetch() {
-		if (browser && !selectedTab.data.length && !selectedTab.isFetching && !selectedTab.reachedEnd) {
-			fetchMore();
-		}
-	}
-
 	function selectTab(name: string) {
-		if (browser && name) {
+		if (browser && name && $tabParam !== name) {
 			goto('?tab=' + name, { noscroll: true, replaceState: false });
 		}
 
 		selectedTab = tabs.find((i) => i.name === name) || tabs.find((t) => t.name === 'collected');
 
 		fetch();
+	}
+
+	function fetch() {
+		if (browser && !selectedTab.data.length && !selectedTab.isFetching && !selectedTab.reachedEnd) {
+			fetchMore();
+		}
 	}
 
 	const tabParam = derived(page, (p) => p.url.searchParams.get('tab'));

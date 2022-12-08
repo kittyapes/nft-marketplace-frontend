@@ -61,7 +61,7 @@
 		const res = await getUserNftBalance(singleNft.contractAddress, singleNft.onChainId);
 
 		supply = res.supply;
-		balance = options.resourceType === 'listing' ? chainListing?.quantity ?? 0 : res.balance;
+		balance = options.resourceType === 'listing' ? chainListing?.tokensMap[0]?.tokenQuantityInListing ?? 0 : res.balance;
 	});
 
 	function parseAttributes(attributes) {

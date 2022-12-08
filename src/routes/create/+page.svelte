@@ -138,6 +138,7 @@
 				id: createNftRes.nftId.toString(),
 				amount: nftData.quantity.toString(),
 				collectionAddress: selectedCollectionRow.collectionAddress,
+				uri: createNftRes.metadata.external_url,
 			});
 		} catch (err) {
 			notifyError('Failed to create NFT on chain!');
