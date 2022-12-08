@@ -92,7 +92,7 @@
 		dotsOpened = false;
 		ev.stopPropagation();
 
-		const res = await apiHideNft(options.nfts[0].databaseId);
+		const res = await apiHideNft(options.nfts[0].fullId);
 
 		if (res.err) {
 			notifyError('Failed to hide NFT. \n' + res.err.message);
@@ -105,7 +105,7 @@
 		dotsOpened = false;
 		ev.stopPropagation();
 
-		const res = await apiRevealNft(options.nfts[0].databaseId);
+		const res = await apiRevealNft(options.nfts[0].fullId);
 
 		if (res.err) {
 			notifyError('Failed to reveal NFT. \n' + res.err.message);
