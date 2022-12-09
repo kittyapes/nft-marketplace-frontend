@@ -85,6 +85,7 @@
 		}
 
 		await refreshLikedNfts($currentUserAddress);
+		dispatch('refresh-tabs', { tabs: ['favorites'] });
 	}
 
 	// Hiding
