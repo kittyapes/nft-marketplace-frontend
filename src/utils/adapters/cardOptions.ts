@@ -120,7 +120,7 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 	function toShortDisplayPrice(floatingPrice: string) {
 		const bigNumber = ethers.utils.parseEther(floatingPrice);
 
-		const thresholdStr = '0.01';
+		const thresholdStr = '0.0001';
 		const threshold = ethers.utils.parseEther(thresholdStr);
 
 		if (bigNumber.lt(threshold)) {
