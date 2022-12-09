@@ -20,11 +20,8 @@
 	// Check NFT balance to enable/disable trading functionality
 	let nftBalance = null;
 
-	onMount(async () => {
-		refreshBalance();
-	});
-
 	async function refreshBalance() {
+		console.log(options);
 		if (options.resourceType === 'listing' && options.listingData?.onChainId) {
 			chainListing = await getOnChainListing(options.listingData.onChainId);
 			console.debug('[On chain listing data]:', chainListing);
