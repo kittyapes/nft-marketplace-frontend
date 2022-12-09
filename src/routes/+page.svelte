@@ -16,13 +16,7 @@
 	import type { PublicProfileData } from '$interfaces/userData';
 	import { searchUsersByName } from '$utils/api/search/globalSearch';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
-
-	const aidrop = {
-		title: 'Claim your monthly airdrop',
-		textPreview:
-			'The Hinata marketplace will be doing an airdrop for active users in the coming months. Buyers, sellers and minters will all be eligible to claim tokens after the token generation event later this year.',
-		thumbnail: '/img/png/airdrop-banner.png',
-	};
+  import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
 
 	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
@@ -145,28 +139,5 @@
 		{/if}
 	</div>-->
 
-	<!-- Monthly airdrop 
-	<div class="px-16 2xl:px-52 mt-24 mb-16">
-		<div class="flex items-end">
-			<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">Monthly Airdrop</h2>
-		</div>
-		<hr class="mt-4 border-[#FFFFFF1E]" />
-
-		<div class="flex flex-col h-full py-11 pr-4 overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-[#FFFFFF1E]" in:fade>
-			<div class="flex-shrink-0 h-full lg:h-[250px]">
-				<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
-			</div>
-			<hr class="mt-4 border-[#0000004D]" />
-
-			<div class="flex flex-col flex-grow text-white pt-8 lg:py-0 lg:ml-44">
-				<div class="text-4xl font-light uppercase line-clamp-2 italic">
-					{aidrop.title}
-				</div>
-
-				<p class="flex-grow mt-8">
-					{aidrop.textPreview}
-				</p>
-			</div>
-		</div>
-	</div>-->
+	<MonthlyAirdropWidget />
 </div>
