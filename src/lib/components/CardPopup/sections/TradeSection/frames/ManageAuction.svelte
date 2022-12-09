@@ -85,6 +85,7 @@
 
 	$: canCancel = biddings.length < 1 || (highestAmount && highestAmount.lt(parseToken(chainListing.reservePrice, chainListing.payToken)));
 	let canAccept = false;
+	$: hasBids = biddings.length > 0;
 
 	$: if (chainListing.reservePrice === chainListing.price) {
 		canAccept = [biddings.length > 0].some((v) => v);
@@ -95,7 +96,7 @@
 
 <div class="flex flex-col flex-grow mt-4">
 	<div class="min-h-[300px] flex-grow">
-		<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} />
+		<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} />
 	</div>
 
 	<div class="flex my-4 font-semibold">
@@ -128,7 +129,7 @@
 			</SecondaryButton>
 		</div>
 
-		<PrimaryButton class="mt-4" disabled={isCancelling || isAccepting || isRefreshingBids || !canAccept} on:click={acceptHighest}>
+		<PrimaryButton class="mt-4" disabled={!hasBids || isCancelling || isAccepting || isRefreshingBids || !canAccept} on:click={acceptHighest}>
 			{#if isAccepting}
 				<ButtonSpinner />
 			{/if}

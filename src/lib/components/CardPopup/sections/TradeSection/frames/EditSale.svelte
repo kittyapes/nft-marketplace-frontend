@@ -38,7 +38,7 @@
 			startDateTs: chainListing.startTime,
 			durationSeconds: chainListing.duration,
 			price: chainListing.price,
-			quantity: chainListing.quantity,
+			quantity: chainListing?.tokensMap[0]?.tokenQuantityInListing,
 		});
 	}
 
@@ -63,7 +63,7 @@
 		try {
 			await contractUpdateListing(options.listingData.onChainId, chainListing.payToken, listingProps);
 			dispatch('set-frame', { component: Success });
-			options.staleResource.set({ reason: 'cancelled' });
+			// options.staleResource.set({ reason: 'cancelled' });
 		} catch (err) {
 			console.error(err);
 			notifyError('Failed to update listing.');

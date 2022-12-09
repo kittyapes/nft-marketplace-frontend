@@ -11,7 +11,7 @@
 </script>
 
 <button
-	class="{variant} {$$props.class} flex items-center justify-center transition-btn"
+	class="{variant} flex items-center justify-center transition-btn {$$props.class}"
 	class:opacity-50={disabled}
 	on:click
 	class:stretch

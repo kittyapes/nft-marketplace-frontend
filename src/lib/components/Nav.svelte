@@ -1,10 +1,10 @@
 <script>
-	import Search from './Search.svelte';
+	import Search from '$components/v2/Search/+page.svelte';
 	import ProfilePopup from './ProfilePopup.svelte';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { appSigner, connectionDetails } from '$stores/wallet';
 	import { onMount } from 'svelte';
-	import { publicProfileData, profileData } from '$stores/user';
+	import { profileData, publicProfileData } from '$stores/user';
 	import { fade } from 'svelte/transition';
 	import UserCircle from '$icons/user-circle.svelte';
 	import { goto } from '$app/navigation';
@@ -42,13 +42,13 @@
 			{/if}
 		</a>
 
-		<Search class="snap-start ml-20 mr-4" />
+		<Search class="snap-start mx-20 w-full" />
 
 		<!-- Flex filler -->
 		<div class="flex-grow" />
 
 		<!-- Marketplace -->
-		<a id="marketplace-link" href="/marketplace" class="relative font-semibold snap-center bg-card-gradient h-1/2 grid place-items-center px-4 btn">Marketplace</a>
+		<a id="marketplace-link" href="/marketplace/collections" class="relative font-semibold snap-center bg-card-gradient h-1/2 grid place-items-center px-4 btn">Marketplace</a>
 
 		<!-- Staking - HIDDEN FOR V1 -->
 		<a href="/staking" class="relative font-semibold text-md snap-center min-w-fit bg-card-gradient h-1/2 px-4 grid place-items-center">Staking</a>
@@ -57,8 +57,13 @@
 		<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
 
 		<!-- Create -->
-		{#if $profileData?.roles.includes('verified_user')}
-			<button on:click={() => goto('/create')} class="relative font-semibold bg-card-gradient h-1/2 grid place-items-center px-4 snap-center">Create</button>
+		{#if $publicProfileData?.roles.includes('verified_user') || $profileData?.roles.includes('superadmin')}
+			<button
+				on:click={() => goto('/create')}
+				class="relative grid h-full px-16 font-semibold text-white uppercase text-md bg-gradient-to-r from-color-purple to-color-blue place-items-center snap-center"
+			>
+				Create
+			</button>
 		{/if}
 
 		<!-- Profile -->

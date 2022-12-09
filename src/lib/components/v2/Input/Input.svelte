@@ -18,5 +18,8 @@
 
 <div class="w-full flex flex-row items-center rounded-lg  outline-color-purple {$$props.class}" class:outline-red-400={!valid} style:height>
 	<div><slot /></div>
-	<input type="text" bind:value {placeholder} class:pl-0={noLeftPadding} class="w-full h-full px-4 bg-inherit outline-none" on:input={validate} {disabled} />
+	<input type="text" bind:value {placeholder} class:pl-0={noLeftPadding} class="w-full h-full px-4 bg-inherit outline-none" on:input={validate} {disabled} on:keyup on:focus on:blur />
+	<div>
+		<slot name="end-icon" />
+	</div>
 </div>

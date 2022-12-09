@@ -56,9 +56,9 @@
 </script>
 
 <div
-	class={`w-full overflow-auto max-h-[calc(100vh-4rem)] scrollbar-hide 
+	class={`w-full overflow-auto scrollbar-hide 
 	${!isOpen ? 'md:w-20' : 'md:w-72'} 
-	h-auto md:h-screen block md:fixed border-t  font-bold transition-all transform duration-200 ${$$props.class}`}
+	block md:fixed border-t bg-white md:border-r border-gray-400 font-bold transition-all transform duration-200 ${$$props.class}`}
 >
 	{#if isOpen}
 		<div class="flex justify-between border-b border-gray-400 p-11">

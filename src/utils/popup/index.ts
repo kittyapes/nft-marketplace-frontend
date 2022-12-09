@@ -37,7 +37,10 @@ export const popupStack = writable<PopupStackItem[]>([]);
 
 export function updatePopupProps(id: string, props: { [key: string]: any }) {
 	popupStack.update((stack) => {
-		stack.find((e) => e.id === id).options.props = props;
+		const item = stack.find((e) => e.id === id);
+		if (item?.options) {
+			item.options.props = props;
+		}
 		return stack;
 	});
 }

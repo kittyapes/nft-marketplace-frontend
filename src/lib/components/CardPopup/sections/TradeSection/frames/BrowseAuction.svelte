@@ -7,11 +7,11 @@
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
-	import { appSigner } from '$stores/wallet';
+	import { appSigner, currentUserAddress } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
-	import { getKnownTokenDetails, parseToken } from '$utils/misc/priceUtils';
+	import { parseToken } from '$utils/misc/priceUtils';
 	import { isFuture } from '$utils/misc/time';
 	import { notifyError } from '$utils/toast';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
@@ -36,7 +36,7 @@
 		if (err) {
 			notifyError('Failed to place your bid!');
 		} else {
-			await refreshBids();
+			setTimeout(async () => await refreshBids(), 10000);
 			bidAmount = '';
 		}
 
@@ -62,6 +62,11 @@
 			return false;
 		}
 
+		if ($currentUserAddress && $currentUserAddress.toLowerCase() === biddings[0]?.bidderAddress) {
+			bidError = 'You are already the top bidder.';
+			return false;
+		}
+
 		return true;
 	}
 
@@ -69,7 +74,7 @@
 
 	async function refreshBids() {
 		isRefreshingBids = true;
-		biddings = await getBiddingsFlow(options.rawResourceData.listingId, getKnownTokenDetails({ tokenAddress: options.listingData.paymentTokenAddress }).decimals);
+		biddings = await getBiddingsFlow(options.rawResourceData.listingId);
 		isRefreshingBids = false;
 	}
 
@@ -83,7 +88,7 @@
 <div class="flex flex-col justify-center h-[90%] pr-1">
 	<div class="flex flex-col h-full mt-4">
 		<div class="min-h-[300px] flex-grow">
-			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} tokenAddress={options.listingData.paymentTokenAddress} on:request-refresh={refreshBids} />
+			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} on:request-refresh={refreshBids} />
 		</div>
 
 		<div class="flex items-center justify-between my-4">
