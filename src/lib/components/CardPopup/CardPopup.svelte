@@ -3,7 +3,7 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import type { CardOptions } from '$interfaces/ui';
 	import { likedNftIds } from '$stores/user';
-	import { sanitizeNftData } from '$utils/adapters/cardOptions';
+	import { listingToCardOptions, sanitizeNftData } from '$utils/adapters/cardOptions';
 	import { getNft } from '$utils/api/nft';
 	import { makeHttps } from '$utils/ipfs';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
@@ -14,9 +14,19 @@
 	import Tabs from './Tabs.svelte';
 	import { getOnChainListing, type ChainListing } from '$utils/contracts/listing';
 	import CardCarousel from '../v2/CardCarousel/CardCarousel.svelte';
+	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
+	import { getListings } from '$utils/api/listing';
+  	import { browser } from '$app/environment';
+  	import { notifyError } from '$utils/toast';
 
 	export let options: CardOptions;
 	export let handler: PopupHandler;
+
+	let isFetchingNfts = false;
+	let reachedEnd = false;
+	let page = 1;
+
+	let similarCards: CardOptions[] = [];
 
 	let chainListing: ChainListing;
 
@@ -70,7 +80,48 @@
 	let selectedTab;
 	let tabComponentInstance: SvelteComponent;
 
-	$: similarCards = Array(10).fill(options);
+	fetch();
+
+	function handleReachedEnd() {
+		if (similarCards.length) {
+			fetchMore();
+		}
+	}
+
+	function fetch() {
+		if (browser && !similarCards.length && !isFetchingNfts && !reachedEnd) {
+			fetchMore();
+		}
+	}
+
+	async function fetchMore() {
+		if (reachedEnd) return;
+
+		isFetchingNfts = true;
+		const res = {} as FetchFunctionResult;
+		res.res = await getListings({ collectionId: options.nfts[0].collectionData.id }, page, 10);
+
+		const currentIndex = res.res.findIndex((nft) => nft.nfts[0].nftId === options.nfts[0].onChainId);
+		if (currentIndex > -1) {
+			res.res.splice(currentIndex, 1);
+		}
+		res.adapted = await Promise.all(res.res.map(listingToCardOptions));
+
+		if (res.err) {
+			console.error(res.err);
+			notifyError("Failed to fetch more NFTs from collection.");
+			return;
+		}
+
+		if (res.adapted.length === 0) {
+			reachedEnd = true;
+		} else {
+			similarCards = [...similarCards, ...res.adapted];
+			page++;
+		}
+
+		isFetchingNfts = false;
+	}
 
 	function handleClosePopup() {
 		handler.close();
@@ -122,8 +173,10 @@
 			</div>
 		</div>
 
-		<div class="pt-24 pb-32 px-16">
-			<CardCarousel cards={similarCards} />
-		</div>
+		{#if similarCards.length > 0}
+			<div class="pt-24 pb-32 px-16">
+				<CardCarousel cards={similarCards} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd}/>
+			</div>
+		{/if}
 	</div>
 </Popup>
