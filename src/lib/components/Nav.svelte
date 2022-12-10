@@ -58,12 +58,7 @@
 
 		<!-- Create -->
 		{#if $publicProfileData?.roles.includes('verified_user') || $profileData?.roles.includes('superadmin')}
-			<button
-				on:click={() => goto('/create')}
-				class="relative grid h-full px-16 font-semibold text-white uppercase text-md bg-gradient-to-r from-color-purple to-color-blue place-items-center snap-center"
-			>
-				Create
-			</button>
+			<button on:click={() => goto('/create')} class="relative font-semibold bg-card-gradient h-1/2 grid place-items-center px-4 snap-center">Create</button>
 		{/if}
 
 		<!-- Profile -->
