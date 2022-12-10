@@ -72,13 +72,12 @@
 			}
 		}}
 		bind:value={query}
-		class="rounded-none bg-gradient-a hover:text-white w-full"
+		class="rounded-none bg-gradient-a hover:text-white w-full max-h-[2.5rem]"
 		placeholder="Search"
-		height="40px"
 	>
 		<Search class="ml-6 w-5 h-6" />
 
-		<div class:hidden={!query || !show} class="mr-9 p-2 bg-gradient-a " slot="end-icon">
+		<div class:hidden={!query || !show} class="mr-9 p-2 bg-gradient-a" slot="end-icon">
 			<EnterKeyIcon class="w-4 h-3" />
 		</div>
 	</Input>
