@@ -11,13 +11,9 @@
 	let showMyCollections = false;
 
 	publicProfileData.subscribe((publicProfile) => {
-		showMyCollections = publicProfile && publicProfile.roles.includes('verified_user');
-	});
-
-	profileData.subscribe((profile) => {
-		// Also checking for superadmin just in case a user has the role but was not assigned the admin too
-		showDashboard = profile && (profile.roles.includes('admin') || profile.roles.includes('superadmin'));
-		showMyCollections = showMyCollections || (profile && profile.roles.includes('superadmin'));
+		// Checking for saved roles since last login present in public profile object
+		showMyCollections = publicProfile && (publicProfile.roles.includes('verified_user') || publicProfile.roles.includes('superadmin'));
+		showDashboard = publicProfile && (publicProfile.roles.includes('admin') || publicProfile.roles.includes('superadmin'));
 	});
 </script>
 

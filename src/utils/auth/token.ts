@@ -6,6 +6,11 @@ import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/a
 import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
 import { refreshProfileData } from '$stores/user';
 
+type AuthData = {
+	token: string;
+	roles: string[];
+};
+
 function getAuthTokenKey(address: string) {
 	if (!address) {
 		address = getAddress();
@@ -15,11 +20,12 @@ function getAuthTokenKey(address: string) {
 		throw new Error('No address provided and could not automatically get an address.');
 	}
 
-	return `authToken-${address}-${getApiUrl('latest', '')}`;
+	return `authData-${address}-${getApiUrl('latest', '')}`;
 }
 
 export function getAuthToken(address?: string) {
-	return localStorage.getItem(getAuthTokenKey(address));
+	const authData: AuthData = JSON.parse(localStorage.getItem(getAuthTokenKey(address)));
+	return authData?.token;
 }
 
 /**
@@ -33,30 +39,55 @@ export function getAuthToken(address?: string) {
 export async function getAuthTokenAsync(address?: string) {
 	const token = getAuthToken(address);
 
-	if (token ? isJwtExpired(token) : true) {
-		const handler = setPopup(AuthLoginPopup, {
-			unique: true,
-			returnPromise: true,
-			props: {
-				adapter: userAuthLoginPopupAdapter,
-				onLoginSuccess: async () => {
-					await refreshProfileData();
-				}
-			}
-		});
+	if (token && !isJwtExpired(token)) return token;
 
-		await handler?.closePromise.promise;
-		if (!handler?.closePromise.fulfilled) return null;
+	const handler = setPopup(AuthLoginPopup, {
+		unique: true,
+		returnPromise: true,
+		props: {
+			adapter: userAuthLoginPopupAdapter,
+			onLoginSuccess: async () => {
+				await refreshProfileData();
+			},
+		},
+	});
 
-		return localStorage.getItem(getAuthTokenKey(address));
-	}
+	await handler?.closePromise.promise;
+	if (!handler?.closePromise.fulfilled) return null;
 
-	return token;
+	const authData: AuthData = JSON.parse(localStorage.getItem(getAuthTokenKey(address)));
+	return authData?.token;
 }
 
 export function setAuthToken(address: string, token: string) {
 	const key = getAuthTokenKey(address);
-	localStorage.setItem(key, token);
+
+	const currentAuthData: AuthData = JSON.parse(localStorage.getItem(getAuthTokenKey(address)));
+
+	const authData: AuthData = {
+		token,
+		roles: currentAuthData?.roles ? currentAuthData.roles : [],
+	};
+
+	localStorage.setItem(key, JSON.stringify(authData));
+}
+
+export function setAuthRoles(address: string, roles: string[]) {
+	const key = getAuthTokenKey(address);
+
+	const currentAuthData: AuthData = JSON.parse(localStorage.getItem(getAuthTokenKey(address)));
+
+	const authData: AuthData = {
+		token: currentAuthData?.token,
+		roles,
+	};
+
+	localStorage.setItem(key, JSON.stringify(authData));
+}
+
+export function getAuthRoles(address: string) {
+	const authData: AuthData = JSON.parse(localStorage.getItem(getAuthTokenKey(address)));
+	return authData?.roles;
 }
 
 export function isAuthTokenExpired(address: string) {
@@ -67,7 +98,7 @@ export function isAuthTokenExpired(address: string) {
 	return isJwtExpired(token);
 }
 
-export function removeAuthToken(address: string) {
+export function removeAuthData(address: string) {
 	const key = getAuthTokenKey(address);
 	localStorage.removeItem(key);
 }
