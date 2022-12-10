@@ -69,15 +69,18 @@
 />
 <div class="px-[172px] pt-32 w-full grid place-items-center text-white">
 	<!-- Hero section -->
-	<div class="mb-16 flex gap-5 items-stretch w-full">
+	<div class="mb-16 w-full">
 		{#if $loadedExploreListings}
-			<NftCard options={exploreListingsData[0]} />
-		{/if}
-		<div class="min-w-[50%] max-w-[50%] flex-grow-0">
-			<HomepageCarousel />
-		</div>
-		{#if $loadedExploreListings}
-			<NftCard options={exploreListingsData[exploreListingsData.length - 1]} />
+			<!-- The animation only works with a hardset 550px (in this case) value, feel free to fix if you can -->
+			<tr class="w-full flex gap-5 items-stretch h-[550px]" in:slide|local={{ duration: 1000 }}>
+				<div class="w-1/4 table-row"><NftCard options={exploreListingsData[0]} /></div>
+				<div class="w-1/2 table-row">
+					<div class="flex-grow-0 h-full w-full max-h-full">
+						<HomepageCarousel />
+					</div>
+				</div>
+				<div class="w-1/4 table-row"><NftCard options={exploreListingsData[exploreListingsData.length - 1]} /></div>
+			</tr>
 		{/if}
 	</div>
 
@@ -88,7 +91,7 @@
 
 	<!-- Hottest creators section -->
 	{#if $loadedHottestCreators}
-		<div class="pt-20 w-full h-full">
+		<div class="pt-20 w-full h-full" in:slide>
 			<h2 class="text-2xl leading-7">Hottest creators</h2>
 			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
 				{#each get(hottestCreators).users as creator}
