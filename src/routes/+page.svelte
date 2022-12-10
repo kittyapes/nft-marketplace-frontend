@@ -16,15 +16,16 @@
 	import type { PublicProfileData } from '$interfaces/userData';
 	import { searchUsersByName } from '$utils/api/search/globalSearch';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
-  import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
+	import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
 
 	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
 	let loadedExploreListings = writable(false);
 	let exploreListingsData = [];
 
-	let hottestCreators = writable<{ verifiedCreators: PublicProfileData[]; totalCount: number }>(null);
+	let hottestCreators = writable<{ users: PublicProfileData[]; totalCount: number }>(null);
 	let loadedHottestCreators = writable(false);
+	const hottestCreatorsCount = 3;
 
 	const getExploreMarketData = async () => {
 		loadedExploreListings.set(false);
@@ -35,7 +36,7 @@
 
 	const getHottestCreatorsData = async () => {
 		loadedHottestCreators.set(false);
-		hottestCreators.set(await searchUsersByName('ste', 3));
+		hottestCreators.set(await searchUsersByName('ste', hottestCreatorsCount));
 		loadedHottestCreators.set(true);
 	};
 
@@ -76,7 +77,7 @@
 			<HomepageCarousel />
 		</div>
 		{#if $loadedExploreListings}
-			<NftCard options={exploreListingsData[0]} />
+			<NftCard options={exploreListingsData[exploreListingsData.length - 1]} />
 		{/if}
 	</div>
 
@@ -90,7 +91,7 @@
 		<div class="pt-20 w-full h-full">
 			<h2 class="text-2xl leading-7">Hottest creators</h2>
 			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
-				{#each get(hottestCreators).verifiedCreators as creator}
+				{#each get(hottestCreators).users as creator}
 					<div class="p-4 bg-card-gradient flex gap-4 w-full ">
 						<FeaturedArtistCard
 							creatorData={{
@@ -103,7 +104,7 @@
 						/>
 						{#if $loadedExploreListings}
 							<NftCard options={exploreListingsData[0]} />
-							<NftCard options={exploreListingsData[0]} />
+							<NftCard options={exploreListingsData[exploreListingsData.length - 1]} />
 						{/if}
 					</div>
 				{/each}
