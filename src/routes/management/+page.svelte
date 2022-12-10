@@ -10,7 +10,6 @@
 	import EntryGenericText from '$lib/components/management/render-components/EntryGenericText.svelte';
 	import Filter from '$lib/components/management/Filter.svelte';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
-	import { currentUserAddress } from '$stores/wallet';
 	import dayjs from 'dayjs';
 	import UserManage from '$icons/user-manage.svelte';
 	import Filters from '$icons/filters-v2.svelte';
@@ -270,27 +269,7 @@
 		{ label: 'Unclaimed', value: false },
 	];
 
-	$: if ($currentUserAddress && tab && browser) createTable();
-
-	let createTable = async () => {
-		loaded = false;
-		tab === 'USER' ? await createUserTable() : await createCollectionTable();
-	};
-
 	//COLLECTION section
-
-	let createCollectionTable = async () => {
-		await apiSearchCollections({ status: 'ALL' })
-			.then((res) => {
-				collections = res.collections.filter((c) => c.slug);
-				totalCollectionEntries = res.totalCount;
-			})
-			.catch((err) => console.log(err));
-
-		if (!collections.length) return;
-
-		await createCollectionTableData();
-	};
 
 	let getCollectionsFetchingOptions = (): CollectionSearchOptions => {
 		return {
@@ -408,21 +387,14 @@
 
 	// USER section
 
-	let createUserTable = async () => {
-		await getUsers(getUsersFetchingOptions())
-			.then((res) => {
-				users = res.users;
-				totalUserEntries = res.totalCount;
-			})
-			.catch((err) => console.log(err));
-		if (!users.length) return;
-	};
-
 	let getUsersFetchingOptions = () => {
 		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort, limit: userFetchingOptions.limit, page: userPage };
 	};
 
-	const debouncedSearch = debounce(async () => (tab === 'USER' ? await getSearchedUsers() : await getSearchedCollections()), 300);
+	const debouncedSearch = debounce(async () => {
+		loaded = false;
+		tab === 'USER' ? await getSearchedUsers() : await getSearchedCollections();
+	}, 300);
 
 	const getSearchedUsers = async () => {
 		const res = await getUsers(getUsersFetchingOptions());
@@ -430,8 +402,7 @@
 		totalUserEntries = res.totalCount;
 	};
 
-	$: if (browser && (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0)) {
-		loaded = false;
+	$: if (browser && tab && (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0)) {
 		debouncedSearch();
 	}
 
