@@ -15,7 +15,7 @@
 
 	let chainListing: ChainListing;
 
-	$: listedNfts = chainListing?.quantity || options.listingData?.nftQuantities[options.nfts[0].onChainId];
+	$: listedNfts = options.listingData?.nftQuantities[options.nfts[0].onChainId] || 0;
 
 	// Check NFT balance to enable/disable trading functionality
 	let nftBalance = null;
