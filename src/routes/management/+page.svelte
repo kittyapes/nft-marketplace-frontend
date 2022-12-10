@@ -192,10 +192,6 @@
 				role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
 			};
 
-			if (userFetchingOptions.filter.createdAfter) {
-				userFetchingOptions.sort.sortReversed = true;
-			}
-
 			if (event.detail.status) userFetchingOptions.filter.role = undefined;
 			else if (event.detail.role) userFetchingOptions.filter.status = undefined;
 

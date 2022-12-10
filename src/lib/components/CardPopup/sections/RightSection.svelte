@@ -12,14 +12,13 @@
 	import TradeSection from './TradeSection/TradeSection.svelte';
 
 	export let options: CardOptions;
+
 	let chainListing: ChainListing;
+
+	$: listedNfts = options.listingData?.nftQuantities[options.nfts[0].onChainId] || 0;
 
 	// Check NFT balance to enable/disable trading functionality
 	let nftBalance = null;
-
-	onMount(async () => {
-		refreshBalance();
-	});
 
 	async function refreshBalance() {
 		if (options.resourceType === 'listing' && options.listingData?.onChainId) {
@@ -84,6 +83,7 @@
 		this={selectedTab.sectionComponent}
 		{options}
 		{chainListing}
+		{listedNfts}
 		on:close-popup
 		on:force-expire
 		bind:showBackButton
@@ -92,7 +92,7 @@
 	/>
 </div>
 
-<style>
+<style type="postcss">
 	.tab-loading {
 		@apply bg-gray-100 text-transparent rounded-lg;
 	}
