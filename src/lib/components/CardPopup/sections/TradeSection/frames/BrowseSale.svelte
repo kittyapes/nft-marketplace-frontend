@@ -17,6 +17,7 @@
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
+	export let listedNfts: number;
 
 	let hoveringPurchase = false;
 	let purchasing = false;
@@ -70,10 +71,8 @@
 
 	<div class="mt-8 font-bold text-center opacity-50">Quantity:</div>
 	<div class="flex items-center justify-center mt-2">
-		<div
-			class="{(chainListing?.tokensMap[0]?.tokenQuantityInListing ?? options?.rawResourceData?.listing?.quantity ?? options?.nfts[0]?.quantity) > 10000000000000 ? 'text-3xl' : 'text-5xl'} font-bold"
-		>
-			{chainListing?.tokensMap[0]?.tokenQuantityInListing ?? options?.rawResourceData?.listing?.quantity ?? options?.nfts[0]?.quantity ?? '1'}
+		<div class="{listedNfts > 10000000000000 ? 'text-3xl' : 'text-5xl'} font-bold">
+			{listedNfts}
 		</div>
 	</div>
 
