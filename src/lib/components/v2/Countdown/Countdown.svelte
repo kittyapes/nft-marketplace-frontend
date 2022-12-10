@@ -29,12 +29,12 @@
 	onDestroy(() => clearInterval(interval));
 </script>
 
-<div class="flex justify-center gap-4">
+<div class="flex justify-center gap-4 text-white">
 	{#each values as [label, value]}
 		<div>
-			<div class="relative grid w-16 h-16 bg-white rounded-lg place-items-center">
-				<div class="absolute w-full h-full rounded-lg bg-gradient-to-r from-color-purple to-color-blue opacity-10" />
-				<span class="text-2xl font-bold opacity-70">
+			<div class="relative grid w-16 h-16 place-items-center border-white border-2">
+				<div class="absolute w-full h-full bg-gradient-to-r from-color-purple to-color-blue opacity-10" />
+				<span class="text-2xl font-bold">
 					{#if expired}
 						0
 					{:else}
@@ -43,7 +43,7 @@
 				</span>
 			</div>
 
-			<div class="mt-2 text-sm text-center opacity-50">{label}</div>
+			<div class="mt-2 text-center">{label}</div>
 		</div>
 	{/each}
 </div>

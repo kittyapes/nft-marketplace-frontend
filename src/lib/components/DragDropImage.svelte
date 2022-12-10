@@ -6,8 +6,6 @@
 
 	const dispatch = createEventDispatcher();
 
-	// TODO refactor to completely remove this and use the placeholder named slot instead
-	export let text = 'Drag and drop an image here, or click to browse';
 	export let dimensions: string = '';
 	export let blob: Blob | null = null;
 	export let currentImgUrl: string = null;
@@ -64,10 +62,10 @@
 	}
 </script>
 
-<div class="overflow-hidden">
+<div class="overflow-hidden flex flex-col items-center">
 	<button
 		id="container"
-		class="h-full w-full border-2 rounded-2xl border-dashed flex items-center justify-center overflow-hidden
+		class="h-full w-full border border-dashed flex items-center justify-center overflow-hidden
 		select-none {$$props.class}"
 		on:click={() => fileInput.click()}
 		on:drop|preventDefault={onDrop}
@@ -83,19 +81,13 @@
 				<track kind="captions" />
 			</video>
 		{:else if !fileType}
-			{#if text}
-				<div class="px-12 text-sm text-center opacity-50 text-color-black">
-					{@html text}
-				</div>
-			{:else}
-				<slot name="placeholder" />
-			{/if}
+			<slot name="placeholder" />
 		{/if}
 	</button>
 
-	<div class="mt-2 text-xs font-semibold text-center text-color-gray-accent">
-		{dimensions}
-	</div>
+	<span class="text-xs mt-3">
+		<slot name="lower_text" />
+	</span>
 
 	<input type="file" accept={acceptedFormats.join(',')} class="hidden" bind:this={fileInput} bind:files />
 </div>

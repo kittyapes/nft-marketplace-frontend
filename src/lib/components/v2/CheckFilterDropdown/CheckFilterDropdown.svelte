@@ -35,16 +35,13 @@
 	}
 </script>
 
-<div class="relative w-40">
+<div class="relative w-28 text-white">
 	<button
-		class="group relative text-left w-full text-color-black border-2 border-color-gray-lighter rounded-lg pl-4 pr-2 outline-none inline-flex items-center gap-2 transition clickable focus-visible:bg-gray-50"
+		class="justify-center gradient-border h-12 group relative text-left w-full border-2 border-color-gray-lighter outline-none inline-flex pr-2 items-center gap-2 transition clickable focus-visible:bg-gray-50 bg-gradient-a"
 		{disabled}
 		class:opacity-50={disabled}
 		on:click={toggleDropdown}
 	>
-		<div class="font-semibold min-w-max">Filter</div>
-		<div class="flex-grow" />
-		<div class="h-12 border-l-2 border-color-gray-lighter max-h-max transition-colors" />
 		<div class="min-w-[2rem] grid place-items-center btn">
 			{#if !opened}
 				<FilterIcon />
@@ -52,13 +49,17 @@
 				<ThemedCross />
 			{/if}
 		</div>
+
+		<div class="font-semibold">Filters</div>
+		<!-- <div class="flex-grow" /> -->
+		<!-- <div class="h-12 border-l-2 border-color-gray-lighter max-h-max transition-colors" /> -->
 	</button>
 
 	{#if opened}
-		<div id="list-container" class="absolute left-0 z-10 w-full overflow-hidden translate-y-full bg-white rounded-lg -bottom-1">
+		<div id="list-container" class="absolute -left-16 z-10 right-0 overflow-hidden translate-y-full -bottom-2 bg-dark-gradient gradient-border">
 			{#each options as option}
 				<button
-					class="flex items-center w-full px-4 py-2 font-semibold text-left hover:bg-gray-100 transition-btn active:rounded gap-x-3 outline-none focus-visible:bg-gray-100"
+					class="flex items-center w-full px-4 py-2 font-semibold text-left hover:bg-color-purple hover:bg-opacity-20 transition-transform duration-100 gap-x-3 outline-none focus-visible:bg-gray-100"
 					on:click|stopPropagation={() => toggleOption(option)}
 				>
 					<div class="w-4">
@@ -74,9 +75,9 @@
 			{/each}
 
 			<div class="flex justify-center px-2 mb-2 font-bold gap-x-2">
-				<button class="btn gradient-text small-button" on:click={selectAll}>Select all</button>
-				<div class="text-lg gradient-text">&middot;</div>
-				<button class="btn gradient-text small-button" on:click={clearAll}>Clear all</button>
+				<button class="btn text-gradient small-button" on:click={selectAll}>Select all</button>
+				<div class="text-lg text-gradient">&middot;</div>
+				<button class="btn text-gradient small-button" on:click={clearAll}>Clear all</button>
 			</div>
 		</div>
 	{/if}

@@ -22,7 +22,7 @@
 
 <Popup class="py-8 px-16">
 	<div class="text-xl uppercase font-semibold text-center">
-		Immediate <span class="gradient-text">batch process</span>
+		Immediate <span class="text-gradient">batch process</span>
 		required
 	</div>
 

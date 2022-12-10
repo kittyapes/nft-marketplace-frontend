@@ -5,5 +5,5 @@
 
 <h1 class="uppercase text-xl mt-6 font-medium font-poppins">
 	{blackText}
-	<span class="gradient-text">{gradientText}</span>
+	<span class="text-gradient">{gradientText}</span>
 </h1>
