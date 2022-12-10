@@ -47,7 +47,7 @@
 	);
 </script>
 
-<div class="w-full">
+<div class="w-full text-white">
 	{#if !isLoading && options?.length === 0 && !createNewNftBtn.include}
 		<div class="placeholder">Nothing to see here, move along.</div>
 	{/if}
@@ -85,17 +85,17 @@
 		<div use:inview={inviewOptions} on:change={onChange} />
 	{/if}
 	{#if reachedEnd && options?.length !== 0}
-		<div class="text-center placeholder">You have reached the end of this list.</div>
+		<div class="text-center placeholder ">You have reached the end of this list.</div>
 	{/if}
 </div>
 
 <style type="postcss">
 	.placeholder {
-		@apply p-36 font-semibold text-lg opacity-60;
+		@apply p-36 font-semibold text-lg opacity-70;
 	}
 
 	.nftGrid {
-		@apply grid min-w-full gap-3 p-2 my-5 mx-auto;
-		grid-template-columns: repeat(auto-fit, 215px);
+		@apply grid min-w-full gap-3 my-5 mx-auto;
+		grid-template-columns: repeat(auto-fit, 365px);
 	}
 </style>

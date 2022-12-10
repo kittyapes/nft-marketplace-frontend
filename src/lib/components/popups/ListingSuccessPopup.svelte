@@ -16,12 +16,14 @@
 
 <Popup>
 	<ResponsovePopupContainer>
-		<div class="flex flex-col items-center justify-center w-full h-full">
+		<div class="flex flex-col items-center justify-center w-full h-full text-white">
 			<ListingSuccessIcon class="w-32 h-32" />
 			<div class="mt-6 text-4xl font-bold">NFT Listed Successfully</div>
-			<p class="max-w-lg mt-4 text-center opacity-50">Congratulations! You have created and listed and NFT successfully, click View NFT to be re-directed to your listing on your profile!</p>
+			<p class="max-w-lg mt-4 text-center">Congratulations! You have created and listed and NFT successfully, click View NFT to be re-directed to your listing on your profile!</p>
 
-			<PrimaryButton class="px-16 mt-16 max-w-max" on:click={click}>View NFT</PrimaryButton>
+			<div class="w-48 grid">
+				<PrimaryButton class="mt-16" on:click={click}>View NFT</PrimaryButton>
+			</div>
 		</div>
 	</ResponsovePopupContainer>
 </Popup>

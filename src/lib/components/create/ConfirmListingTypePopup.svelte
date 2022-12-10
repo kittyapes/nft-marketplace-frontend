@@ -4,29 +4,33 @@
 	import Popup from '$lib/components/Popup.svelte';
 	import type { ListingType } from '$utils/api/listing';
 	import type { PopupHandler } from '$utils/popup';
+	import PrimaryButton from '../v2/PrimaryButton/PrimaryButton.svelte';
 
-	export let imgUrl;
-	export let title;
+	export let iconComponent;
 	export let listingType: ListingType;
 	export let handler: PopupHandler;
 	export let confirmDetail: string;
+	export let gasless: boolean;
 
 	function handleConfirm() {
 		handler.close();
-		goto('/create/list/' + $page.params.bundleId + '?type=' + listingType);
+		goto('/create/list/' + $page.params.bundleId + '?type=' + listingType + '&gasless=' + (gasless ? '1' : '0'));
 	}
 </script>
 
 <Popup closeButton on:close={handler.close}>
-	<div class="min-w-[800px] min-h-[500px] flex flex-col items-center justify-center">
-		<div class="bg-[#F4F4F4] w-48 h-48 rounded-full flex flex-col justify-center items-center">
-			<img src={imgUrl} alt="" class="-mt-4" />
-			<div class="mt-2 text-lg font-bold">{title}</div>
+	<div class="min-w-[800px] min-h-[500px] flex flex-col items-center justify-center text-white">
+		<div class="w-48 h-48 flex flex-col justify-center items-center gradient-border-bg p-1">
+			<div class="bg-dark-gradient w-full h-full flex items-center justify-center">
+				<svelte:component this={iconComponent} />
+			</div>
 		</div>
 
 		<div class="mt-8 text-2xl font-bold text-center">Confirm Your Selection</div>
-		<div class="mt-2 text-center max-w-prose">{confirmDetail || 'N/A'}</div>
+		<div class="mt-2 text-center text-lg max-w-lg">{confirmDetail || 'N/A'}</div>
 
-		<button class="mt-16 font-bold uppercase btn btn-gradient btn-rounded" on:click={handleConfirm}>Confirm</button>
+		<div class="mt-16 w-48">
+			<PrimaryButton on:click={handleConfirm}>Confirm</PrimaryButton>
+		</div>
 	</div>
 </Popup>

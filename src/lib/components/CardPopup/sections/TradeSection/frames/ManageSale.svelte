@@ -2,6 +2,7 @@
 	import type { CardOptions } from '$interfaces/ui';
 	import InfoBox from '$lib/components/InfoBox.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
 	import { contractCancelListing, type ChainListing } from '$utils/contracts/listing';
 	import { isListingExpired } from '$utils/misc';
@@ -49,21 +50,21 @@
 	}
 </script>
 
-<div class="flex flex-col h-full p-4 pb-8 overflow-y-auto overscroll-contain blue-scrollbar">
+<div class="flex flex-col aspect-1">
 	<InfoBox>Offers on sale listings are coming soon!</InfoBox>
 
 	<div class="flex-grow" />
 
-	<div class="flex gap-2 mt-4">
+	<div class="flex gap-4 mt-4">
 		{#if allowEdit}
-			<SecondaryButton on:click={() => dispatch('set-frame', { component: EditSale })}>Edit Listing</SecondaryButton>
+			<PrimaryButton on:click={() => dispatch('set-frame', { component: EditSale })}>Edit Listing</PrimaryButton>
 		{/if}
 
-		<SecondaryButton disabled={cancellingListing} on:click={cancelListing}>
+		<PrimaryButton disabled={cancellingListing} on:click={cancelListing}>
 			{#if cancellingListing}
 				<ButtonSpinner secondary />
 			{/if}
 			Cancel Listing
-		</SecondaryButton>
+		</PrimaryButton>
 	</div>
 </div>

@@ -1,30 +1,28 @@
 .input {
-	@apply rounded-md py-2 px-4 text-sm border outline-none;
+	@apply py-2 px-4 text-sm border outline-none bg-transparent;
 }
 
 .input:invalid {
 	@apply border-red-300 focus:border-red-500;
 }
 
-.input:disabled {
-	@apply bg-gray-100;
-}
-
 .input:focus {
-	@apply border-[#1d1d1d];
+	@apply border-color-purple;
 }
 
 .input-gray-outline {
 	@apply border-[#1d1d1d4d];
 }
 
-.input-hide-controls::-webkit-outer-spin-button,
-.input-hide-controls::-webkit-inner-spin-button {
-	/* display: none; <- Crashes Chrome on hover */
+/* Hide Arrows on Number input */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
 	-webkit-appearance: none;
-	margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+	margin: 0;
 }
 
-.input-hide-controls[type='number'] {
-	-moz-appearance: textfield; /* Firefox */
+/* Firefox */
+input[type='number'] {
+	-moz-appearance: textfield;
 }
