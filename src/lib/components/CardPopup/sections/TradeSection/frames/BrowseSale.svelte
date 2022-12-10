@@ -8,7 +8,7 @@
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { hasEnoughBalance } from '$utils/contracts/token';
 	import { salePurchase } from '$utils/flows/salePurchase';
-	import { scientificToDecimal } from '$utils/misc/scientificToDecimal';
+	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import { isFuture } from '$utils/misc/time';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { createEventDispatcher } from 'svelte';
@@ -63,12 +63,7 @@
 	<div class="text-gradient mt-4">Price</div>
 	<div class="flex gap-2 items-center">
 		<Eth gradient />
-
-<<<<<<< HEAD
-		<div class="font-light text-sm">
-			<span class="text-2xl ">{scientificToDecimal(options.saleData?.formatPrice)}</span>
-			wETH
-=======
+	</div>
 	<div class="mt-8 font-bold text-center opacity-50">Price:</div>
 	<div class="flex items-center justify-center mt-2">
 		<img src={getIconUrl('eth')} alt="" />
@@ -84,11 +79,8 @@
 
 	<div class="mt-8 font-bold text-center opacity-50">Quantity:</div>
 	<div class="flex items-center justify-center mt-2">
-		<div
-			class="{(chainListing?.tokensMap[0]?.tokenQuantityInListing ?? options?.rawResourceData?.listing?.quantity ?? options?.nfts[0]?.quantity) > 10000000000000 ? 'text-3xl' : 'text-5xl'} font-bold"
-		>
-			{chainListing?.tokensMap[0]?.tokenQuantityInListing ?? options?.rawResourceData?.listing?.quantity ?? options?.nfts[0]?.quantity ?? '1'}
->>>>>>> master
+		<div class="{(chainListing?.tokensMap[0]?.tokenQuantityInListing ?? options?.rawResourceData?.listing?.quantity) > 10000000000000 ? 'text-3xl' : 'text-5xl'} font-bold">
+			{chainListing?.tokensMap[0]?.tokenQuantityInListing ?? options?.rawResourceData?.listing?.quantity ?? '1'}
 		</div>
 	</div>
 

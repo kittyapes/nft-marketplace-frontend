@@ -12,11 +12,8 @@
 	import { noTryAsync } from 'no-try';
 	import { makeHttps } from '$utils/ipfs';
 	import { walletConnected } from '$utils/wallet';
-<<<<<<< HEAD
 	import Heart from '$icons/heart.svelte';
-=======
 	import { browser } from '$app/environment';
->>>>>>> master
 
 	export let title: string;
 	export let assetUrl: string;
@@ -150,7 +147,6 @@
 				<div class="pb-4 text-white text-lg mt-4">
 					{capitalize(options.listingData?.listingType)}
 
-<<<<<<< HEAD
 					{#if countdown.expired}
 						ended
 					{:else}
@@ -160,13 +156,6 @@
 
 				<Countdown {...countdown} />
 			{/if}
-=======
-	<!-- Auction timer -->
-	{#if countdown}
-		<div class="pb-4 font-medium opacity-50">
-			{capitalize(options.listingData?.listingType)}
-			{timerLabel}
->>>>>>> master
 		</div>
 	</div>
 </div>

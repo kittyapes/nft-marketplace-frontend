@@ -87,18 +87,11 @@
 	});
 </script>
 
-<<<<<<< HEAD
-<div class="flex flex-col pb-8 pr-6 overflow-y-auto text-white aspect-1 blue-scrollbar">
-	<!-- Listing Type -->
-	<div class="mt-2 font-semibold">Listing Type</div>
-	<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} disabled={isListing} /></div>
-=======
 <div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto">
 	{#if canCreateListing}
 		<!-- Listing Type -->
 		<div class="mt-2 font-semibold">Listing Type</div>
-		<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} /></div>
->>>>>>> master
+		<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} disabled={isListing} /></div>
 
 		<div class="mt-4">
 			<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} bind:this={_listingProperties} disabled={isListing} />
@@ -128,14 +121,6 @@
 			</div>
 		</div>
 
-<<<<<<< HEAD
-		<div class="text-gradient">Hinata Fees:</div>
-		<div class="flex justify-end space-x-3">
-			<div class="text-gradient">0%</div>
-			<div class="w-6">
-				<Info />
-			</div>
-=======
 		<PrimaryButton class="flex-shrink-0 mt-4" disabled={!!formErrors.length || isListing} on:click={completeListing}>
 			Complete Listing
 			{#if isListing}
@@ -145,7 +130,6 @@
 	{:else}
 		<div class="mt-4">
 			<InfoBox>You can't create listings.</InfoBox>
->>>>>>> master
 		</div>
 	{/if}
 </div>
