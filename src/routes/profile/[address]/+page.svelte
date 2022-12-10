@@ -44,8 +44,18 @@
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
 	import Pixiv from '$icons/socials/pixiv.svelte';
 	import Discord from '$icons/socials/discord.svelte';
+  	import { fetchIsFollowing, followUnfollowUser } from '$utils/api/following';
 
 	$: address = $page.params.address;
+	let isFollowing = false;
+	
+	$: if (browser || address || $currentUserAddress) {
+		browser && fetchFollowing();
+	}
+
+	const fetchFollowing = async () => {
+		isFollowing = await fetchIsFollowing(address, $currentUserAddress);
+	}
 
 	onMount(async () => {
 		if (!isEthAddress(address)) {
@@ -366,9 +376,21 @@
 								<PrimaryButton on:click={() => goto('/profile/edit')}>{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}</PrimaryButton>
 							</div>
 						{:else}
-							<PrimaryButton class="w-40">
-								<div class="text-lg">Follow</div>
-							</PrimaryButton>
+							{#if $currentUserAddress}
+								{#if isFollowing}
+									<PrimaryButton class="w-40" on:click={async() => {
+										isFollowing = await followUnfollowUser(address, false);
+									}}>
+										<div class="text-lg">Unfollow</div>
+									</PrimaryButton>
+								{:else}
+									<PrimaryButton class="w-40" on:click={async() => {
+										isFollowing = await followUnfollowUser(address, true);
+									}}>
+										<div class="text-lg">Follow</div>
+									</PrimaryButton>
+								{/if}
+							{/if}
 						{/if}
 						<div class="relative">
 							<div class="" on:click|stopPropagation={() => (shareButtonOpen = !shareButtonOpen)} bind:this={elemOpenBtn}>
