@@ -18,7 +18,6 @@
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
 
-	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
 	let loadedExploreListings = writable(false);
 	let exploreListingsData = [];
@@ -41,9 +40,8 @@
 	};
 
 	onMount(async () => {
-		getExploreMarketData();
-		getHottestCreatorsData();
-		collections = (await apiGetMostActiveCollections()).collections;
+		await getExploreMarketData();
+		await getHottestCreatorsData();
 	});
 </script>
 
@@ -67,26 +65,23 @@
 		site_name: 'Hinata',
 	}}
 />
-<div class="px-[172px] pt-32 w-full grid place-items-center text-white">
+<div class="px-[32px] 2xl:px-[172px] pt-32 w-full grid place-items-center text-white">
 	<!-- Hero section -->
-	<div class="mb-16 w-full">
+	<div class="mb-16 flex gap-5 items-stretch justify-center w-full">
 		{#if $loadedExploreListings}
-			<!-- The animation only works with a hardset 550px (in this case) value, feel free to fix if you can -->
-			<tr class="w-full flex gap-5 items-stretch h-[550px]" in:slide|local={{ duration: 1000 }}>
-				<div class="w-1/4 table-row"><NftCard options={exploreListingsData[0]} /></div>
-				<div class="w-1/2 table-row">
-					<div class="flex-grow-0 h-full w-full max-h-full">
-						<HomepageCarousel />
-					</div>
-				</div>
-				<div class="w-1/4 table-row"><NftCard options={exploreListingsData[exploreListingsData.length - 1]} /></div>
-			</tr>
+			<NftCard options={exploreListingsData[0]} />
+		{/if}
+		<div class="2xl:min-w-[50%] max-w-[50%] min-h-[500px] flex-grow-0">
+			<HomepageCarousel />
+		</div>
+		{#if $loadedExploreListings}
+			<NftCard options={exploreListingsData[0]} />
 		{/if}
 	</div>
 
 	<!-- Top collections section -->
 	<div class="w-full">
-		<TopCollections bind:collections />
+		<TopCollections />
 	</div>
 
 	<!-- Hottest creators section -->
