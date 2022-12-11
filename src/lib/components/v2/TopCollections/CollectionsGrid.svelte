@@ -4,8 +4,9 @@
 	import { createEventDispatcher } from 'svelte';
 	import HinataBadge from '$icons/hinata-badge.svelte';
 	import type { Collection } from '$utils/api/collection';
+  	import CollectionsPlaceholder from '$icons/collections-placeholder.svelte';
 
-	export let collections: Collection[];
+	export let collections: Collection[] = [];
 	export let isLoading = false;
 
 	const dispatch = createEventDispatcher();
@@ -27,8 +28,12 @@
 			<a href="/collections/{collection.slug}" class="flex flex-row items-center gap-x-6 font-bold text-white text-sm leading-7 ">
 				<p>{i + 1}</p>
 				<div class="relative w-[70px] h-[70px] border-gradient">
-					<div class="w-full h-full overflow-hidden">
-						<img class="object-center object-cover w-full h-full" src={collection?.logoImageUrl} alt="Collection Logo" />
+					<div class="w-full h-full overflow-hidden {!collection?.logoImageUrl ? "flex items-center justify-center" : ""}">
+						{#if collection?.logoImageUrl}
+							<img class="object-center object-cover w-full h-full" src={collection?.logoImageUrl} alt="Collection Logo" />
+						{:else}
+							<CollectionsPlaceholder />
+						{/if}
 					</div>
 					<HinataBadge class="absolute -bottom-2.5 -right-2.5 z-50  w-5 h-5 {!collection?.verified ? 'hidden' : ''}" />
 				</div>

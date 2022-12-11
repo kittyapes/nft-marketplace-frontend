@@ -12,7 +12,7 @@
 	let showAirdropInfo = false;
 </script>
 
-<div class="mt-24 mb-16">
+<div class="mt-24 mb-16 w-full">
     <div class="flex items-end">
         <h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">Monthly Airdrop</h2>
     </div>
