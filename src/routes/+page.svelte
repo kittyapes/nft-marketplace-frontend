@@ -39,8 +39,8 @@
 	};
 
 	onMount(async () => {
-		getExploreMarketData();
-		getHottestCreatorsData();
+		await getExploreMarketData();
+		await getHottestCreatorsData();
 	});
 </script>
 
@@ -64,13 +64,13 @@
 		site_name: 'Hinata',
 	}}
 />
-<div class="px-[172px] pt-32 w-full grid place-items-center text-white">
+<div class="px-[32px] 2xl:px-[172px] pt-32 w-full grid place-items-center text-white">
 	<!-- Hero section -->
 	<div class="mb-16 flex gap-5 items-stretch justify-center w-full">
 		{#if $loadedExploreListings}
 			<NftCard options={exploreListingsData[0]} />
 		{/if}
-		<div class="min-w-[50%] max-w-[50%] min-h-[500px] flex-grow-0">
+		<div class="2xl:min-w-[50%] max-w-[50%] min-h-[500px] flex-grow-0">
 			<HomepageCarousel />
 		</div>
 		{#if $loadedExploreListings}
