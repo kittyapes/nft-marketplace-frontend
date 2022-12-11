@@ -16,9 +16,8 @@
 	import type { PublicProfileData } from '$interfaces/userData';
 	import { searchUsersByName } from '$utils/api/search/globalSearch';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
-  import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
+  	import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
 
-	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
 	let loadedExploreListings = writable(false);
 	let exploreListingsData = [];
@@ -42,7 +41,6 @@
 	onMount(async () => {
 		getExploreMarketData();
 		getHottestCreatorsData();
-		collections = (await apiGetMostActiveCollections()).collections;
 	});
 </script>
 
@@ -68,11 +66,11 @@
 />
 <div class="px-[172px] pt-32 w-full grid place-items-center text-white">
 	<!-- Hero section -->
-	<div class="mb-16 flex gap-5 items-stretch w-full">
+	<div class="mb-16 flex gap-5 items-stretch justify-center w-full">
 		{#if $loadedExploreListings}
 			<NftCard options={exploreListingsData[0]} />
 		{/if}
-		<div class="min-w-[50%] max-w-[50%] flex-grow-0">
+		<div class="min-w-[50%] max-w-[50%] min-h-[500px] flex-grow-0">
 			<HomepageCarousel />
 		</div>
 		{#if $loadedExploreListings}
@@ -82,7 +80,7 @@
 
 	<!-- Top collections section -->
 	<div class="w-full">
-		<TopCollections bind:collections />
+		<TopCollections />
 	</div>
 
 	<!-- Hottest creators section -->
