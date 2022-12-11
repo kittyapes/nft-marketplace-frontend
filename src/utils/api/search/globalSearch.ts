@@ -29,7 +29,7 @@ export const searchUsersByName = async (query: string, limit?: number, page?: nu
 			const res = await axios.get(getApiUrl('latest', 'search/users'), { params });
 			return res.data.data;
 		} else {
-			return { totalCount: 0, verifiedCreators: [] };
+			return { totalCount: 0, users: [] };
 		}
 	} catch {
 		throw new Error('Failed to search for users');
