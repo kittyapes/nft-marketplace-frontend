@@ -5,7 +5,7 @@
 	import HinataBadge from '$icons/hinata-badge.svelte';
 	import type { Collection } from '$utils/api/collection';
 
-	export let collections: Collection[];
+	export let collections: Collection[] = [];
 	export let isLoading = false;
 
 	const dispatch = createEventDispatcher();

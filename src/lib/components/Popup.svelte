@@ -27,11 +27,11 @@
 
 <div class="relative outer-div {$$props.class}">
 	<div class="inner-div h-full w-full">
-		<!-- {#if closeButton}
-			<button on:click={onClose} class="absolute z-50 opacity-60 right-4 top-4 transition-btn">
+		{#if closeButton}
+			<button on:click={onClose} class="absolute z-50 right-8 top-8 transition-btn w-12 h-12">
 				<CloseButton />
 			</button>
-		{/if} -->
+		{/if}
 
 		<slot />
 	</div>

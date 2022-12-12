@@ -1,20 +1,18 @@
 <script>
 	import { goto } from '$app/navigation';
 	import DisconnectV2 from '$icons/disconnect-v2.svelte';
-	import QuestionMarkIcon from '$icons/question-mark-icon.svelte';
-	import { profileData } from '$stores/user';
+	import { profileData, publicProfileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { disconnectWallet } from '$utils/wallet/connectWallet';
 	import { slide } from 'svelte/transition';
-	import Button from './Button.svelte';
 
 	let showDashboard = false;
 	let showMyCollections = false;
 
-	profileData.subscribe((profile) => {
-		// Also checking for superadmin just in case a user has the role but was not assigned the admin too
-		showDashboard = profile && (profile.roles.includes('admin') || profile.roles.includes('superadmin'));
-		showMyCollections = profile && (profile.roles.includes('verified_user') || profile.roles.includes('superadmin'));
+	publicProfileData.subscribe((publicProfile) => {
+		// Checking for saved roles since last login present in public profile object
+		showMyCollections = publicProfile && (publicProfile.roles.includes('verified_user') || publicProfile.roles.includes('superadmin'));
+		showDashboard = publicProfile && (publicProfile.roles.includes('admin') || publicProfile.roles.includes('superadmin'));
 	});
 </script>
 

@@ -1,8 +1,8 @@
 import type { ApiNftData } from '$interfaces/apiNftData';
-import type { PublicProfileData } from '$interfaces/userData';
+import type { PublicProfileData, UserRole } from '$interfaces/userData';
 import { appDataToTriggerReload, currentUserAddress } from '$stores/wallet';
 import { fetchCurrentUserData, fetchProfileData } from '$utils/api/profile';
-import { isAuthTokenExpired } from '$utils/auth/token';
+import { getAuthRoles, isAuthTokenExpired, setAuthRoles } from '$utils/auth/token';
 import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 import { derived, get, writable } from 'svelte/store';
 import { storage } from '$utils/contracts';
@@ -26,6 +26,21 @@ async function refreshPublicProfileData(address?: string) {
 	address = address || get(currentUserAddress);
 
 	const data = await fetchProfileData(address);
+	if (!data.roles) data.roles = [];
+
+	// insert saved roles in local storage to public profile data
+	const savedRoles = getAuthRoles(get(currentUserAddress));
+	if (savedRoles?.length > 0) {
+		data.roles = savedRoles as UserRole[];
+	}
+
+	if (!data.roles.includes('verified_user')) {
+		const isVerified = get(currentUserAddress) && (await storage.hasRole('minter', get(currentUserAddress)).catch(() => false));
+
+		isVerified && data.roles.push('verified_user');
+	}
+
+	console.log(data);
 
 	publicProfileData.set(data);
 }
@@ -38,6 +53,9 @@ export async function refreshProfileData() {
 
 		isVerified && newProfileData.roles.push('verified_user');
 	}
+
+	// save current user roles to local storage
+	setAuthRoles(get(currentUserAddress), newProfileData.roles);
 
 	profileData.set(newProfileData);
 	const newpublicProfileData = (({ _id, address, bio, coverUrl, roles, thumbnailUrl, username }) => ({ _id, address, bio, coverUrl, roles, thumbnailUrl, username }))(newProfileData);

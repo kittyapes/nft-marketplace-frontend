@@ -8,7 +8,7 @@
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { hasEnoughBalance } from '$utils/contracts/token';
 	import { salePurchase } from '$utils/flows/salePurchase';
-	import { scientificToDecimal } from '$utils/misc/scientificToDecimal';
+	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import { isFuture } from '$utils/misc/time';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { createEventDispatcher } from 'svelte';
@@ -20,6 +20,7 @@
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
+	export let listedNfts: number;
 
 	let hoveringPurchase = false;
 	let purchasing = false;
@@ -63,10 +64,24 @@
 	<div class="text-gradient mt-4">Price</div>
 	<div class="flex gap-2 items-center">
 		<Eth gradient />
+	</div>
+	<div class="mt-8 font-bold text-center opacity-50">Price:</div>
+	<div class="flex items-center justify-center mt-2">
+		<img src={getIconUrl('eth')} alt="" />
+		<div class="{(options.saleData?.formatPrice || options.saleData?.price || 'N/A').toString().length > 12 ? 'text-3xl' : 'text-5xl'} font-bold">
+			{Number(options.saleData.formatPrice)
+				.toFixed(16)
+				.replace(/(\.?0+$)/, '') ||
+				options.saleData?.price ||
+				'N/A'}
+		</div>
+		<div class="grid h-full ml-2 font-bold opacity-70 place-items-end">wETH</div>
+	</div>
 
-		<div class="font-light text-sm">
-			<span class="text-2xl ">{scientificToDecimal(options.saleData?.formatPrice)}</span>
-			wETH
+	<div class="mt-8 font-bold text-center opacity-50">Quantity:</div>
+	<div class="flex items-center justify-center mt-2">
+		<div class="{listedNfts > 10000000000000 ? 'text-3xl' : 'text-5xl'} font-bold">
+			{listedNfts}
 		</div>
 	</div>
 

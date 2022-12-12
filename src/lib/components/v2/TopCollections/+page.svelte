@@ -1,12 +1,17 @@
 <script lang="ts">
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
-	import type { Collection } from '$utils/api/collection';
+	import { apiGetMostActiveCollections, type Collection } from '$utils/api/collection';
 	import CollectionsGrid from './CollectionsGrid.svelte';
 	import ButtonGroup from './ButtonGroup.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
+  	import { onMount } from 'svelte';
 
-	export let collections: Collection[];
+	export let collections: Collection[] = [];
+
+	onMount(async() => {
+		collections = (await apiGetMostActiveCollections()).collections;
+	})
 </script>
 
 <div class="">

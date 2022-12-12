@@ -16,21 +16,15 @@
 	import type { PublicProfileData } from '$interfaces/userData';
 	import { searchUsersByName } from '$utils/api/search/globalSearch';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
+	import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
 
-	const aidrop = {
-		title: 'Claim your monthly airdrop',
-		textPreview:
-			'The Hinata marketplace will be doing an airdrop for active users in the coming months. Buyers, sellers and minters will all be eligible to claim tokens after the token generation event later this year.',
-		thumbnail: '/img/png/airdrop-banner.png',
-	};
-
-	let collections: Collection[] = [];
 	let exploreListings = writable<Listing[]>([]);
 	let loadedExploreListings = writable(false);
 	let exploreListingsData = [];
 
-	let hottestCreators = writable<{ verifiedCreators: PublicProfileData[]; totalCount: number }>(null);
+	let hottestCreators = writable<{ users: PublicProfileData[]; totalCount: number }>(null);
 	let loadedHottestCreators = writable(false);
+	const hottestCreatorsCount = 3;
 
 	const getExploreMarketData = async () => {
 		loadedExploreListings.set(false);
@@ -41,14 +35,13 @@
 
 	const getHottestCreatorsData = async () => {
 		loadedHottestCreators.set(false);
-		hottestCreators.set(await searchUsersByName('ste', 3));
+		hottestCreators.set(await searchUsersByName('ste', hottestCreatorsCount));
 		loadedHottestCreators.set(true);
 	};
 
 	onMount(async () => {
-		getExploreMarketData();
-		getHottestCreatorsData();
-		collections = (await apiGetMostActiveCollections()).collections;
+		await getExploreMarketData();
+		await getHottestCreatorsData();
 	});
 </script>
 
@@ -72,13 +65,13 @@
 		site_name: 'Hinata',
 	}}
 />
-<div class="px-[172px] pt-32 w-full grid place-items-center text-white">
+<div class="px-[32px] 2xl:px-[172px] pt-32 w-full grid place-items-center text-white">
 	<!-- Hero section -->
-	<div class="mb-16 flex gap-5 items-stretch w-full">
+	<div class="mb-16 flex gap-5 items-stretch justify-center w-full">
 		{#if $loadedExploreListings}
 			<NftCard options={exploreListingsData[0]} />
 		{/if}
-		<div class="min-w-[50%] max-w-[50%] flex-grow">
+		<div class="2xl:min-w-[50%] max-w-[50%] min-h-[500px] flex-grow-0">
 			<HomepageCarousel />
 		</div>
 		{#if $loadedExploreListings}
@@ -88,15 +81,15 @@
 
 	<!-- Top collections section -->
 	<div class="w-full">
-		<TopCollections bind:collections />
+		<TopCollections />
 	</div>
 
 	<!-- Hottest creators section -->
-	<!-- {#if $loadedHottestCreators}
-		<div class="pt-20 w-full h-full">
+	{#if $loadedHottestCreators}
+		<div class="pt-20 w-full h-full" in:slide>
 			<h2 class="text-2xl leading-7">Hottest creators</h2>
 			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
-				{#each get(hottestCreators).verifiedCreators as creator}
+				{#each get(hottestCreators).users as creator}
 					<div class="p-4 bg-card-gradient flex gap-4 w-full ">
 						<FeaturedArtistCard
 							creatorData={{
@@ -109,13 +102,13 @@
 						/>
 						{#if $loadedExploreListings}
 							<NftCard options={exploreListingsData[0]} />
-							<NftCard options={exploreListingsData[0]} />
+							<NftCard options={exploreListingsData[exploreListingsData.length - 1]} />
 						{/if}
 					</div>
 				{/each}
 			</div>
 		</div>
-	{/if} -->
+	{/if}
 
 	<!-- Tending nfts Section -->
 	{#if $loadedExploreListings && exploreListingsData?.length > 0}
@@ -145,28 +138,5 @@
 		{/if}
 	</div>-->
 
-	<!-- Monthly airdrop 
-	<div class="px-16 2xl:px-52 mt-24 mb-16">
-		<div class="flex items-end">
-			<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">Monthly Airdrop</h2>
-		</div>
-		<hr class="mt-4 border-[#FFFFFF1E]" />
-
-		<div class="flex flex-col h-full py-11 pr-4 overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-[#FFFFFF1E]" in:fade>
-			<div class="flex-shrink-0 h-full lg:h-[250px]">
-				<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
-			</div>
-			<hr class="mt-4 border-[#0000004D]" />
-
-			<div class="flex flex-col flex-grow text-white pt-8 lg:py-0 lg:ml-44">
-				<div class="text-4xl font-light uppercase line-clamp-2 italic">
-					{aidrop.title}
-				</div>
-
-				<p class="flex-grow mt-8">
-					{aidrop.textPreview}
-				</p>
-			</div>
-		</div>
-	</div>-->
+	<MonthlyAirdropWidget />
 </div>

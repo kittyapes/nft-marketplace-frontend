@@ -19,6 +19,9 @@
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
+
+	export let showBackButton = false;
+	export let listedNfts: number;
 	export let enableBack = false;
 
 	let frameStack: { component: ConstructorOfATypedSvelteComponent; props: any }[] = [];
@@ -86,4 +89,5 @@
 	on:force-expire
 	on:refresh-chain-data
 	on:set-frame={handleSetFrame}
+  {listedNfts}
 />

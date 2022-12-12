@@ -106,19 +106,23 @@ export interface ChainListing {
 	quantity: number;
 	listingType: LISTING_TYPE;
 	isValidOnChainListing: boolean;
+	tokensMap: {
+		tokenId: string;
+		collectionAddress: string;
+		tokenQuantityInListing: number;
+	};
 }
 
 export async function getOnChainListing(listingId: string): Promise<ChainListing> {
 	const contract = getContract('marketplace', true);
-	const onChainListing = await contract.listings(listingId);
-
+	const onChainListing = await contract.getListingInfo(listingId);
 	// if on chain listing is not valid, return null
 	const onChainId = ethers.utils.formatUnits(onChainListing?.id, 0);
 
 	const token = await getTokenDetails(onChainListing?.payToken);
 
 	// Copying over the values to remove the first array vars from chain
-	const onChainObj = {
+	const onChainObj: ChainListing = {
 		duration: onChainListing?.duration.toNumber(),
 		id: ethers.utils.formatUnits(onChainListing?.id, 0),
 		listingType: onChainListing?.listingType,
@@ -130,6 +134,13 @@ export async function getOnChainListing(listingId: string): Promise<ChainListing
 		seller: onChainListing?.seller,
 		startTime: onChainListing?.startTime ? onChainListing?.startTime.toNumber() : null,
 		isValidOnChainListing: onChainId === listingId.toString(),
+		tokensMap: onChainListing.tokenIds.map((tokenId: ethers.BigNumberish, tokenIndex: number) => {
+			return {
+				tokenId: ethers.utils.formatUnits(tokenId, 0),
+				collectionAddress: onChainListing.collections[tokenIndex],
+				tokenQuantityInListing: onChainListing.tokenAmounts[tokenIndex].toNumber(),
+			};
+		}),
 	};
 
 	return onChainObj;

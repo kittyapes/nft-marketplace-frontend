@@ -2,12 +2,14 @@
 	import Info from '$icons/info.v2.svelte';
 	import type { ConfigurableListingProps } from '$interfaces/listing';
 	import type { CardOptions } from '$interfaces/ui';
+	import InfoBox from '$lib/components/InfoBox.svelte';
 	import ListingProperties from '$lib/components/primary-listing/ListingProperties.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { userCreatedListing } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
+	import { userHasRole } from '$utils/auth/userRoles';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { getContractData } from '$utils/misc/getContract';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
@@ -26,6 +28,7 @@
 	let maxQuantity = 1;
 
 	let isListing = false;
+	$: canCreateListing = !$userHasRole('inactivated_user');
 
 	async function completeListing() {
 		isListing = true;
@@ -80,47 +83,53 @@
 	let _listingProperties: ListingProperties;
 
 	onMount(() => {
-		_listingProperties.setValues({ durationSeconds: 60 * 60 * 24 });
+		_listingProperties?.setValues({ durationSeconds: 60 * 60 * 24 });
 	});
 </script>
 
-<div class="flex flex-col pb-8 pr-6 overflow-y-auto text-white aspect-1 blue-scrollbar">
-	<!-- Listing Type -->
-	<div class="mt-2 font-semibold">Listing Type</div>
-	<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} disabled={isListing} /></div>
+<div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto">
+	{#if canCreateListing}
+		<!-- Listing Type -->
+		<div class="mt-2 font-semibold">Listing Type</div>
+		<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} disabled={isListing} /></div>
 
-	<div class="mt-4">
-		<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} bind:this={_listingProperties} disabled={isListing} />
-	</div>
+		<div class="mt-4">
+			<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} bind:this={_listingProperties} disabled={isListing} />
+		</div>
 
-	<div class="flex-grow" />
+		<div class="flex-grow" />
 
-	<!-- Fees -->
-	<div class="mt-4 font-semibold">Fees</div>
-	<div class="grid gap-2 mt-2 font-semibold" style:grid-template-columns="auto 6rem">
-		<div>Creator Royalties:</div>
-		<div class="flex justify-end space-x-3">
-			<div class="">
-				{(options.nfts[0].collectionData.royalties?.reduce((acum, value) => acum + Number(value.fees ?? 0), 0) || 0) + ' %'}
+		<!-- Fees -->
+		<div class="mt-4 font-semibold">Fees</div>
+		<div class="grid gap-2 mt-2 font-semibold" style:grid-template-columns="auto 6rem">
+			<div>Creator Royalties:</div>
+			<div class="flex justify-end space-x-3">
+				<div class="">
+					{(options.nfts[0].collectionData.royalties?.reduce((acum, value) => acum + Number(value.fees ?? 0), 0) || 0) + ' %'}
+				</div>
+				<div class="w-6">
+					<Info />
+				</div>
 			</div>
-			<div class="w-6">
-				<Info />
+
+			<div class="gradient-text">Hinata Fees:</div>
+			<div class="flex justify-end space-x-3">
+				<div class="gradient-text">0%</div>
+				<div class="w-6">
+					<Info />
+				</div>
 			</div>
 		</div>
 
-		<div class="text-gradient">Hinata Fees:</div>
-		<div class="flex justify-end space-x-3">
-			<div class="text-gradient">0%</div>
-			<div class="w-6">
-				<Info />
-			</div>
+		<PrimaryButton class="flex-shrink-0 mt-4" disabled={!!formErrors.length || isListing} on:click={completeListing}>
+			Complete Listing
+			{#if isListing}
+				<ButtonSpinner />
+			{/if}
+		</PrimaryButton>
+	{:else}
+		<div class="mt-4">
+			<InfoBox>You can't create listings.</InfoBox>
 		</div>
-	</div>
-
-	<PrimaryButton class="flex-shrink-0 mt-4" disabled={!!formErrors.length || isListing} on:click={completeListing}>
-		Complete Listing
-		{#if isListing}
-			<ButtonSpinner />
-		{/if}
-	</PrimaryButton>
+	{/if}
 </div>

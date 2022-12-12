@@ -10,7 +10,6 @@
 	import EntryGenericText from '$lib/components/management/render-components/EntryGenericText.svelte';
 	import Filter from '$lib/components/management/Filter.svelte';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
-	import { currentUserAddress } from '$stores/wallet';
 	import dayjs from 'dayjs';
 	import UserManage from '$icons/user-manage.svelte';
 	import Filters from '$icons/filters-v2.svelte';
@@ -189,7 +188,7 @@
 	const handleFilter = async (event: CustomEvent) => {
 		if (tab === 'USER') {
 			userFetchingOptions.filter = {
-				createdAfter: event.detail.createdBefore ? event.detail.createdBefore * 1000 : userFetchingOptions.filter.createdAfter,
+				createdAfter: event.detail.createdAfter ? event.detail.createdAfter * 1000 : userFetchingOptions.filter.createdAfter,
 				role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
 			};
 
@@ -200,9 +199,7 @@
 				userFetchingOptions.filter.role = undefined;
 				userFetchingOptions.filter.status = undefined;
 			}
-			if (event.detail.createdBefore === 'all') userFetchingOptions.filter.createdAfter = undefined;
-
-			await getSearchedUsers();
+			if (event.detail.createdAfter === 'all') userFetchingOptions.filter.createdAfter = undefined;
 		} else {
 			collectionFetchingOptions.filter = {
 				status: event.detail.status ? event.detail.status : collectionFetchingOptions.filter.status,
@@ -210,9 +207,9 @@
 			};
 
 			if (event.detail.value === 'all') collectionFetchingOptions.filter.isClaimed = undefined;
-
-			await getSearchedCollections();
 		}
+
+		debouncedSearch();
 	};
 
 	$: if (userFetchingOptions) {
@@ -252,9 +249,9 @@
 
 	let userFilterOptions = [
 		{ label: 'Flagged' },
-		{ label: 'Joined 24 hrs ago', createdBefore: dayjs().subtract(1, 'hour').unix() },
-		{ label: 'Joined 7 days ago', createdBefore: dayjs().subtract(1, 'week').unix() },
-		{ label: 'Joined 1 Mon ago', createdBefore: dayjs().subtract(1, 'month').unix() },
+		{ label: 'Joined 24 hrs ago', createdAfter: dayjs().subtract(1, 'hour').unix() },
+		{ label: 'Joined 7 days ago', createdAfter: dayjs().subtract(1, 'week').unix() },
+		{ label: 'Joined 1 Mon ago', createdAfter: dayjs().subtract(1, 'month').unix() },
 	];
 
 	let statusFilterOptions = [
@@ -268,27 +265,7 @@
 		{ label: 'Unclaimed', value: false },
 	];
 
-	$: if ($currentUserAddress && tab && browser) createTable();
-
-	let createTable = async () => {
-		loaded = false;
-		tab === 'USER' ? await createUserTable() : await createCollectionTable();
-	};
-
 	//COLLECTION section
-
-	let createCollectionTable = async () => {
-		await apiSearchCollections({ status: 'ALL' })
-			.then((res) => {
-				collections = res.collections.filter((c) => c.slug);
-				totalCollectionEntries = res.totalCount;
-			})
-			.catch((err) => console.log(err));
-
-		if (!collections.length) return;
-
-		await createCollectionTableData();
-	};
 
 	let getCollectionsFetchingOptions = (): CollectionSearchOptions => {
 		return {
@@ -406,21 +383,14 @@
 
 	// USER section
 
-	let createUserTable = async () => {
-		await getUsers(getUsersFetchingOptions())
-			.then((res) => {
-				users = res.users;
-				totalUserEntries = res.totalCount;
-			})
-			.catch((err) => console.log(err));
-		if (!users.length) return;
-	};
-
 	let getUsersFetchingOptions = () => {
 		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort, limit: userFetchingOptions.limit, page: userPage };
 	};
 
-	const debouncedSearch = debounce(async () => (tab === 'USER' ? await getSearchedUsers() : await getSearchedCollections()), 300);
+	const debouncedSearch = debounce(async () => {
+		loaded = false;
+		tab === 'USER' ? await getSearchedUsers() : await getSearchedCollections();
+	}, 300);
 
 	const getSearchedUsers = async () => {
 		const res = await getUsers(getUsersFetchingOptions());
@@ -428,8 +398,7 @@
 		totalUserEntries = res.totalCount;
 	};
 
-	$: if (browser && (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0)) {
-		loaded = false;
+	$: if (browser && tab && (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0)) {
 		debouncedSearch();
 	}
 
@@ -537,7 +506,7 @@
 					<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
 				</div> -->
 				<div class="">
-					<Filter v2 on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', createdBefore: 'all' }} />
+					<Filter on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', createdAfter: 'all' }} />
 				</div>
 			</div>
 		{:else}
