@@ -34,6 +34,7 @@
 
 	async function onSignCancel() {
 		state = 'prompt';
+		handler.close();
 	}
 
 	async function onSignConfirm() {
@@ -127,7 +128,7 @@
 				<div class="title">Sign this message</div>
 				<div class="text-sm font-bold">Signing Failed!</div>
 				<div class="w-full flex gap-x-8 2xl:gap-x-10">
-					<GhostButton on:click={dispatchClose}><span class="uppercase">Cancel</span></GhostButton>
+					<GhostButton on:click={handler.close}><span class="uppercase">Cancel</span></GhostButton>
 					<PrimaryButton on:click={onSignIn}><span class="uppercase">Try again</span></PrimaryButton>
 				</div>
 			</div>
