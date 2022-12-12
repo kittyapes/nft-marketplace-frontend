@@ -3,6 +3,7 @@
 	import { inview } from 'svelte-inview';
 	import { createEventDispatcher } from 'svelte';
 	import HinataBadge from '$icons/hinata-badge.svelte';
+	import PlaceholderImageV2 from '$icons/placeholder-image-v2.svelte';
 	import type { Collection } from '$utils/api/collection';
 
 	export let collections: Collection[] = [];
@@ -26,11 +27,10 @@
 		{#each collections as collection, i}
 			<a href="/collections/{collection.slug}" class="flex flex-row items-center gap-x-6 font-bold text-white text-sm leading-7 ">
 				<p>{i + 1}</p>
-				<!-- <div class="relative w-[70px] h-[70px] border-gradient"> -->
-				<!-- <div class="w-full h-full overflow-hidden">
-						<img class="object-center object-cover w-full h-full" src={collection?.logoImageUrl} alt="Collection Logo" />
-					</div> -->
-				<div class="relative w-14 2xl:w-[70px] h-14 2xl:h-[70px] border-gradient thumbnail bg-cover bg-center" style="--url: url({collection?.logoImageUrl ?? ''})">
+				<div class="relative flex items-center justify-center w-14 2xl:w-[70px] h-14 2xl:h-[70px] border-gradient thumbnail bg-cover bg-center" style="--url: url({collection?.logoImageUrl ?? ''})">
+					{#if !collection?.logoImageUrl}
+						<PlaceholderImageV2 class="w-8 2xl:w-10 h-auto" />
+					{/if}
 					<HinataBadge class="absolute -bottom-2.5 -right-2.5 z-50  w-5 h-5 {!collection?.verified ? 'hidden' : ''}" />
 				</div>
 				<div class="flex-grow">
