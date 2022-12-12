@@ -85,7 +85,7 @@
 
 				const res = await searchUsersByName(query, fullResultsLimit, searchResults.users.index).catch((e) => []);
 
-				if (res.verifiedCreators.length === 0) {
+				if (res.users.length === 0) {
 					searchResults.users.reachedEnd = true;
 					searchResults.users.isLoading = false;
 					searchResults = searchResults;
@@ -93,7 +93,7 @@
 				}
 
 				searchResults.users.index++;
-				searchResults.users.data = [...searchResults.users.data, ...res.verifiedCreators];
+				searchResults.users.data = [...searchResults.users.data, ...res.users];
 				searchResults.users.isLoading = false;
 
 				searchResults = searchResults;
@@ -157,7 +157,7 @@
 		{#if searchResults.users?.data.length}
 			<div class="">
 				<div class="font-semibold text-lg">
-					<h1>Verified Creators</h1>
+					<h1>Users</h1>
 				</div>
 				<div class="flex flex-row overflow-x-auto gap-10 p-2 my-5 max-w-[100vw] overflow-y-hidden blue-scrollbar">
 					{#each searchResults.users.data as user}
