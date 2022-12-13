@@ -67,15 +67,19 @@
 />
 <div class="px-[32px] 2xl:px-[172px] pt-32 w-full grid place-items-center text-white">
 	<!-- Hero section -->
-	<div class="mb-16 flex gap-5 items-stretch justify-center w-full">
+	<div class="mb-16 flex gap-5 items-stretch w-full">
 		{#if $loadedExploreListings}
-			<NftCard options={exploreListingsData[0]} />
+			<div class="w-[277px] 2xl:w-[345px]">
+				<NftCard options={exploreListingsData[0]} />
+			</div>
 		{/if}
-		<div class="2xl:min-w-[50%] max-w-[50%] min-h-[500px] flex-grow-0">
+		<div class="min-h-[500px] flex-grow">
 			<HomepageCarousel />
 		</div>
 		{#if $loadedExploreListings}
-			<NftCard options={exploreListingsData[0]} />
+			<div class="w-[277px] 2xl:w-[345px]">
+				<NftCard options={exploreListingsData[0]} />
+			</div>
 		{/if}
 	</div>
 
@@ -85,7 +89,7 @@
 	</div>
 
 	<!-- Hottest creators section -->
-	{#if $loadedHottestCreators}
+	<!-- {#if $loadedHottestCreators}
 		<div class="pt-20 w-full h-full" in:slide>
 			<h2 class="text-2xl leading-7">Hottest creators</h2>
 			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
@@ -108,7 +112,7 @@
 				{/each}
 			</div>
 		</div>
-	{/if}
+	{/if} -->
 
 	<!-- Tending nfts Section -->
 	{#if $loadedExploreListings && exploreListingsData?.length > 0}
