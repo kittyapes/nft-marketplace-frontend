@@ -1,11 +1,10 @@
 <script>
 	import { goto } from '$app/navigation';
-	import Disconnect from '$icons/disconnect.svelte';
+	import DisconnectV2 from '$icons/disconnect-v2.svelte';
 	import { profileData, publicProfileData } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import { disconnectWallet } from '$utils/wallet/connectWallet';
 	import { slide } from 'svelte/transition';
-	import Button from './Button.svelte';
 
 	let showDashboard = false;
 	let showMyCollections = false;
@@ -17,25 +16,26 @@
 	});
 </script>
 
-<div id="profile-popup-container" class="absolute bg-white w-72 top-20 right-4 rounded-2xl z-10 px-4 py-4 overflow-hidden" transition:slide>
-	<div class="grid gap-2">
-		<Button variant="rounded-outline" class="profile-btn-item !w-full !py-2" on:click={() => goto(`/profile/${$currentUserAddress}`)}>My Profile</Button>
+<div id="profile-popup-container" class="absolute bg-dark-gradient w-[273px] 2xl:w-[341px] top-14 right-0 rounded-none border-gradient z-10 px-4 py-4 overflow-hidden" transition:slide>
+	<div class="flex flex-col gap-y-5 2xl:gap-y-6 text-white">
+		<button class=" bg-gradient-a hover:bg-main-gradient border-gradient hover:border-0 profile-btn-item !w-full !py-2" on:click={() => goto(`/profile/${$currentUserAddress}`)}>My Profile</button>
 		{#if showDashboard}
-			<Button variant="rounded-outline" class="profile-btn-item" --width="100%" --py="0.5rem" on:click={() => goto('/management')}>Dashboard</Button>
+			<button class=" bg-gradient-a hover:bg-main-gradient border-gradient hover:border-0 profile-btn-item !w-full !py-2" on:click={() => goto('/management')}>Dashboard</button>
 		{/if}
 		{#if showMyCollections}
-			<Button variant="rounded-outline" class="profile-btn-item" --width="100%" --py="0.5rem" on:click={() => goto(`/profile/${$publicProfileData.address}/collections`)}>My Collections</Button>
+			<button class=" bg-gradient-a hover:bg-main-gradient border-gradient hover:border-0 profile-btn-item !w-full !py-2" on:click={() => goto(`/profile/${$profileData.address}/collections`)}>
+				My Collections
+			</button>
 		{/if}
 
-		<Button variant="rounded-outline" class="profile-btn-item bg-red-200" --width="100%" --py="0.5rem" on:click={() => alert('Not Implemented Yet')}>Buy Hinata</Button>
+		<button class=" bg-gradient-a hover:bg-main-gradient border-gradient hover:border-0 profile-btn-item !w-full !py-2" on:click={() => alert('Not Implemented Yet')}>Buy Hinata</button>
+
+		<div class="h-px border-gradient border-0 border-t-2" />
+		<button class="flex w-full transition-btn profile-btn-item" id="nav-disconnect-btn" on:click={disconnectWallet}>
+			<span class="capitalize text-base 2xl:text-xl leading-4 2xl:leading-5 flex-grow text-left font-semibold">Disconnect</span>
+			<DisconnectV2 class="w-4 2xl:w-5 h-4 2xl:h-5" />
+		</button>
 	</div>
-
-	<div class="h-px bg-color-gray-light my-3" />
-
-	<button class="flex w-full transition-btn profile-btn-item" id="nav-disconnect-btn" on:click={disconnectWallet}>
-		<span class="uppercase flex-grow text-left font-semibold">Disconnect</span>
-		<Disconnect />
-	</button>
 </div>
 
 <style>

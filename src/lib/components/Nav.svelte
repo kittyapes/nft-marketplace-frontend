@@ -28,18 +28,14 @@
 	$: displayedUsername = $publicProfileData?.username;
 	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
 
-	$: useTestnets = $connectionDetails ? $connectionDetails?.chainId !== 1 : import.meta.env.VITE_DEFAULT_NETWORK !== '1';
+	// $: useTestnets = $connectionDetails ? $connectionDetails?.chainId !== 1 : import.meta.env.VITE_DEFAULT_NETWORK !== '1';
 </script>
 
 <div class="fixed z-10 flex w-full ">
-	<div class="fixed z-10 flex items-center w-full h-20 pl-8 pr-2 overflow-x-visible scrollbar-hidden snap-mandatory snap-x navbar text-white">
+	<div class="backdrop-blur-xl fixed z-10 flex items-center w-full h-20 px-28 2xl:px-36 overflow-x-visible scrollbar-hidden snap-mandatory snap-x text-white bg">
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
-			{#if useTestnets}
-				<img src="/svg/logo/logo.testnets.svg" alt="Hinata Testnets logo." />
-			{:else}
-				<img src="/svg/logo/logo.alpha.svg" alt="Hinata logo." />
-			{/if}
+			<img src="/svg/logo/logo.v2.svg" alt="Hinata logo." />
 		</a>
 
 		<Search class="snap-start mx-20 w-full" />
@@ -64,29 +60,36 @@
 		<!-- Profile -->
 		<div class="relative flex items-center h-full ml-8">
 			{#if showProfileButton || $appSigner}
-				<button
-					class="flex items-center h-full font-semibold text-md whitespace-nowrap transition-btn w-32"
-					id="profile-button"
-					class:hidden={!$appSigner}
-					on:click={() => (displayProfilePopup = !displayProfilePopup)}
-					title={profileButtonTitle}
-				>
-					<!-- Profile image or guest user icon -->
-					<div class="w-10 h-10 gradient-border !border-2">
-						{#if $publicProfileData?.thumbnailUrl}
-							<img
-								on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"}
-								src={$publicProfileData.thumbnailUrl}
-								alt="Current account avatar."
-								class="object-cover w-full h-full"
-							/>
-						{:else}
-							<div class="text-color-purple grid place-items-center" in:fade|local>
-								<UserCircle />
-							</div>
+				<div class="relative w-10 ">
+					<button
+						class="flex items-center h-full font-semibold text-md whitespace-nowrap transition-btn w-10"
+						id="profile-button"
+						class:hidden={!$appSigner}
+						on:click={() => (displayProfilePopup = !displayProfilePopup)}
+						title={profileButtonTitle}
+					>
+						<!-- Profile image or guest user icon -->
+						<div class="w-10 h-10 gradient-border !border-2 flex items-center justify-center">
+							{#if $publicProfileData?.thumbnailUrl}
+								<img
+									on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"}
+									src={$publicProfileData.thumbnailUrl}
+									alt="Current account avatar."
+									class="object-cover w-full h-full"
+								/>
+							{:else}
+								<div class="text-color-purple flex items-center justify-center" in:fade|local>
+									<UserCircle />
+								</div>
+							{/if}
+						</div>
+					</button>
+					<div class="" id="profile-popup-parent">
+						{#if displayProfilePopup}
+							<ProfilePopup />
 						{/if}
 					</div>
-				</button>
+				</div>
 			{/if}
 
 			{#if !$appSigner}
@@ -101,12 +104,7 @@
 				</button>
 			{/if}
 		</div>
-		<div class="snap-end" />
-	</div>
-	<div class="" id="profile-popup-parent">
-		{#if displayProfilePopup}
-			<ProfilePopup />
-		{/if}
+		<!-- <div class="snap-end" /> -->
 	</div>
 </div>
 
