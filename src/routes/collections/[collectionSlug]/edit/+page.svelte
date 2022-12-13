@@ -26,7 +26,7 @@
 	import { withPrevious } from 'svelte-previous';
 	import { writable } from 'svelte/store';
 	import GoBack from '$components/v2/GoBack/+page.svelte';
-	import CollectionsPlaceholder from '$icons/collections-placeholder.svelte';
+	import PlaceholderImageV2 from '$icons/placeholder-image-v2.svelte';
 
 	const layoutStuff = getContext('layout-stuff');
 
@@ -325,7 +325,7 @@
 					acceptedFormats={acceptedImages}
 					currentImgUrl={$collectionData.logoImageUrl}
 				>
-					<CollectionsPlaceholder slot="placeholder" class="w-10 2xl:w-12 h-auto" />
+					<PlaceholderImageV2 slot="placeholder" class="w-10 2xl:w-12 h-auto" />
 					<p slot="lower_text" class="section-subtext absolute bottom-3">PNG, GIF, WEBP</p>
 				</DragDropImage>
 			</div>
