@@ -42,13 +42,13 @@ export interface CardOptions {
 		endTime: number;
 		duration: number;
 		shortDisplayPrice: string;
+		nftQuantities: Record<string, number>;
 	};
 
 	/** Data used when adapting a listing of the type Sale. */
 	saleData?: {
 		price: string;
 		formatPrice: string;
-		nftQuantities: Record<string, number>;
 	};
 
 	/** Data used when adapting a listing of the type Auction. */

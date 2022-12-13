@@ -114,13 +114,14 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 			endTime: dayjs(listing.startTime).unix() + listing.duration,
 			duration: listing.duration,
 			shortDisplayPrice: null,
+			nftQuantities: { [nft.nftId]: listing.nfts[0].amount },
 		},
 	};
 
 	function toShortDisplayPrice(floatingPrice: string) {
 		const bigNumber = ethers.utils.parseEther(floatingPrice);
 
-		const thresholdStr = '0.01';
+		const thresholdStr = '0.0001';
 		const threshold = ethers.utils.parseEther(thresholdStr);
 
 		if (bigNumber.lt(threshold)) {
@@ -137,7 +138,6 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 			price: listing.listing.price,
 			formatPrice: fPrice,
 			// Has to be updated for when we support listing bundles
-			nftQuantities: { [nft.nftId]: nft.amount },
 		};
 
 		ret.listingData.shortDisplayPrice = toShortDisplayPrice(fPrice);

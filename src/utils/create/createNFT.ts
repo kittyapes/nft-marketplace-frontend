@@ -33,7 +33,7 @@ export const createNFTOnAPI = async ({ amount, creator, thumbnail, asset, name, 
 	return res.data.data;
 };
 
-export const createNFTOnChain = async (options: { id: string; amount: string; collectionAddress: string }) => {
+export const createNFTOnChain = async (options: { id: string; amount: string; collectionAddress: string; uri: string }) => {
 	try {
 		const storageAddress = getContract('storage')?.address;
 		options.collectionAddress = options.collectionAddress ?? storageAddress;
@@ -42,7 +42,7 @@ export const createNFTOnChain = async (options: { id: string; amount: string; co
 		const contract = new ethers.Contract(options.collectionAddress, contractAbi, get(appSigner));
 
 		if (storageAddress === options.collectionAddress) {
-			await contractCaller(contract, 'mintArtistNFT', 150, 1, options.id, options.amount, []);
+			await contractCaller(contract, 'mintArtistNFT', 150, 1, options.id, options.amount, [], options.uri);
 		} else {
 			// Check what type of contract that is
 			if (contractType === 'ERC721') {

@@ -85,6 +85,7 @@
 		}
 
 		await refreshLikedNfts($currentUserAddress);
+		dispatch('refresh-tabs', { tabs: ['favorites'] });
 	}
 
 	// Hiding
@@ -201,8 +202,8 @@
 		{/await}
 	</div>
 
-	<div class="flex mt-2 text-sm font-medium text-gray-600">
-		<div class="flex-grow truncate">{options.nfts[0].collectionData.name || 'N/A'}</div>
+	<div class="flex justify-between items-center gap-3 mt-2 text-sm font-medium text-gray-600">
+		<div class="truncate">{options.nfts[0].collectionData.name || 'N/A'}</div>
 
 		<!-- Hide price info when not present/listed -->
 		{#if options?.resourceType === 'listing'}
@@ -210,16 +211,18 @@
 		{/if}
 	</div>
 
-	<div class="flex items-center mt-2 font-semibold">
-		<div class="flex-grow truncate whitespace-nowrap" class:text-xs={!options.nfts[0]?.name}>
+	<div class="flex justify-between items-center mt-2 font-semibold gap-2">
+		<div class="truncate whitespace-nowrap" class:text-xs={!options.nfts[0]?.name}>
 			{options.nfts[0].name || options.nfts[0]?.metadata?.name || `#${options.nfts[0]?.onChainId}` || 'No Title'}
 		</div>
 		<!-- Hide price info when not present/listed -->
 		{#if options?.resourceType === 'listing'}
-			<div class="mr-1 whitespace-nowrap">
-				{options.listingData.shortDisplayPrice || 'N/A'}
+			<div class="flex items-center gap-1">
+				<div class="whitespace-nowrap">
+					{options.listingData.shortDisplayPrice || 'N/A'}
+				</div>
+				<Eth />
 			</div>
-			<Eth />
 		{/if}
 	</div>
 

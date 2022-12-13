@@ -40,7 +40,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		paymentTokenTicker: 'ETH', // hotfix options.paymentTokenTicker,
 		description: options.description || 'No Description',
 		listingType: options.listingType,
-		duration: options.durationSeconds.toString()
+		duration: options.durationSeconds.toString(),
 	};
 
 	if (options.startDateTs) {
@@ -81,7 +81,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 
 	const listingType = {
 		sale: LISTING_TYPE.FIXED_PRICE,
-		auction: LISTING_TYPE.TIME_LIMITED_WINER_TAKE_ALL_AUCTION
+		auction: LISTING_TYPE.TIME_LIMITED_WINER_TAKE_ALL_AUCTION,
 	}[options.listingType];
 
 	console.log({ options });
@@ -96,9 +96,9 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		duration: options.durationSeconds,
 		tokenIds,
 		tokenAmounts,
-		quantity: 1,
+		quantity: tokenAmounts[0],
 		collections,
-		nfts: options.nfts
+		nfts: options.nfts,
 	});
 
 	notifySuccess('Successfully created a listing.');
