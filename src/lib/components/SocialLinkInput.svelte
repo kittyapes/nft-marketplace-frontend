@@ -1,14 +1,18 @@
 <script lang="ts">
+	import Input from './v2/Input/Input.svelte';
+
 	export let placeholder: string = '';
 	export let value: string;
-	export let iconUrl: string;
+	export let iconComponent;
 	export let pattern = '^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?';
 	export let valid: boolean = true;
 
 	$: valid = !value || (!!value && !!value.match(pattern));
 </script>
 
-<div class="flex space-x-2">
-	<img class="rounded-full w-10 h-10 p-2  border border-[#1A1A1A]" src={iconUrl} alt="" />
-	<input type="text" class="input input-gray-outline w-full" {placeholder} {pattern} bind:value />
+<div class="flex flex-row gap-x-2">
+	<div class="rounded-none w-8 2xl:w-10 h-8 2xl:h-10">
+		<svelte:component this={iconComponent} class="w-full h-full" />
+	</div>
+	<Input fixedHeight={false} class="border border-white rounded-none h-8 2xl:h-10" {placeholder} {pattern} bind:value />
 </div>

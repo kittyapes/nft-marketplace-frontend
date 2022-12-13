@@ -5,14 +5,16 @@
 	export let value: string = '';
 	export let containerClass = '';
 	export let textAreaClass = '';
+	export let rows = 10;
+	export let focusStyle = true;
 </script>
 
 <div class="relative {containerClass}">
+	<!-- class:!outline-red-500={value.length < minChars} -->
 	<textarea
-		rows="10"
-		class="w-full resize-none border border-white p-4 text-sm bg-transparent outline-none focus:border-color-purple  {textAreaClass}"
+		{rows}
+		class="w-full h-full resize-none border border-white p-4  bg-transparent outline-none {focusStyle ? 'focus:border-color-purple' : ''}  {textAreaClass}"
 		{placeholder}
-		class:!outline-red-500={value.length < minChars}
 		maxlength={maxChars}
 		bind:value
 	/>

@@ -27,6 +27,16 @@
 	import { writable } from 'svelte/store';
 	import GoBack from '$components/v2/GoBack/+page.svelte';
 	import PlaceholderImageV2 from '$icons/placeholder-image-v2.svelte';
+	import Input from '$lib/components/v2/Input/Input.svelte';
+	import Instagram from '$icons/socials/instagram.svelte';
+	import Discord from '$icons/socials/discord.svelte';
+	import Twitter from '$icons/socials/twitter.svelte';
+	import Web from '$icons/socials/web.svelte';
+	import Pixiv from '$icons/socials/pixiv.svelte';
+	import Deviantart from '$icons/socials/deviantart.svelte';
+	import Artstation from '$icons/socials/artstation.svelte';
+	import QuestionMarkIcon from '$icons/question-mark-icon.svelte';
+	import Info from '$icons/info.svelte';
 
 	const layoutStuff = getContext('layout-stuff');
 
@@ -315,6 +325,7 @@
 			{/if}
 		</h1>
 		<div class="space-y-24 2xl:space-y-[120px]">
+			<!-- Logo -->
 			<div class="section mt-2.5">
 				<h3 class="section-title w-1/2">Logo Image *</h3>
 				<DragDropImage
@@ -329,7 +340,7 @@
 					<p slot="lower_text" class="section-subtext absolute bottom-3">PNG, GIF, WEBP</p>
 				</DragDropImage>
 			</div>
-
+			<!-- Featured image -->
 			<div class="section">
 				<div class="w-1/2">
 					<h3 class="section-title">Featured Image</h3>
@@ -348,7 +359,7 @@
 					</DragDropImage>
 				</div>
 			</div>
-
+			<!-- Theme selector -->
 			<div class="section">
 				<div class="w-1/2">
 					<h3 class="section-title">Choose display theme</h3>
@@ -357,6 +368,54 @@
 				<div class="w-1/2">
 					<CollectionDisplayStyleSwitcher bind:displayStyle={$collectionData.displayTheme} />
 				</div>
+			</div>
+			<!-- Name, URL and Descriptions -->
+			<div class="section items-stretch">
+				<div class="w-1/2 pr-6">
+					<h3 class="section-title">Display name</h3>
+					<Input fixedHeight={false} bind:value={$collectionData.name} placeholder="The Kitty Collection" class="border border-white rounded-none mt-3 h-8 2xl:h-10 section-subtext" />
+					<h3 class="section-title mt-11 2xl:mt-14">URL</h3>
+					<Input
+						fixedHeight={false}
+						pattern={collectionUrlPattern}
+						bind:value={$collectionUrl}
+						placeholder="https://hinata.io/collection/treasure-of-the-sea"
+						class="border border-white rounded-none mt-3 section-subtext h-8 2xl:h-10"
+					/>
+				</div>
+				<div class="w-1/2 flex flex-col">
+					<h3 class="section-title">Description</h3>
+					<!-- <div class="border border-white w-full flex-grow mt-3 relative"> -->
+					<!-- <textarea class="h-full w-full bg-transparent" name="" id="" /> -->
+					<TextArea
+						focusStyle={false}
+						containerClass="mt-3 flex-grow section-subtext"
+						rows={3}
+						placeholder="A collection of all the kitties in the world."
+						minChars={1}
+						maxChars={200}
+						bind:value={$collectionData.description}
+					/>
+					<!-- </div> -->
+				</div>
+			</div>
+			<!-- Social Links -->
+			<div class="section">
+				<div class="w-1/2">
+					<h3 class="section-title">Links</h3>
+				</div>
+				<div class="w-1/2 flex flex-col gap-y-3 2xl:gap-y-4">
+					<SocialLinkInput placeholder="Instagram link" bind:value={$collectionData.instagramUrl} iconComponent={Instagram} bind:valid={$formValidity.instagramUrl} />
+					<SocialLinkInput placeholder="Discord link" bind:value={$collectionData.discordUrl} iconComponent={Discord} bind:valid={$formValidity.discordUrl} />
+					<SocialLinkInput placeholder="Twitter link" bind:value={$collectionData.twitterUrl} iconComponent={Twitter} bind:valid={$formValidity.twitterUrl} />
+					<SocialLinkInput placeholder="Personal/Business Email" bind:value={$collectionData.otherUrl} iconComponent={Web} bind:valid={$formValidity.otherUrl} />
+					<SocialLinkInput placeholder="Pixiv link" bind:value={$collectionData.pixivUrl} iconComponent={Pixiv} bind:valid={$formValidity.pixivUrl} />
+					<SocialLinkInput placeholder="Deviantart link" bind:value={$collectionData.deviantartUrl} iconComponent={Deviantart} bind:valid={$formValidity.deviantartUrl} />
+					<SocialLinkInput placeholder="Artstation link" bind:value={$collectionData.artstationUrl} iconComponent={Artstation} bind:valid={$formValidity.artstationUrl} />
+				</div>
+			</div>
+			<div class="w-1/2">
+				<Royalties bind:values={$collectionData.royalties} bind:error={$formValidity.royalties} disabled={!isNewCollection} />
 			</div>
 		</div>
 	</div>

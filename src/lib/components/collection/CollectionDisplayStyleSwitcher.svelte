@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Checkmark from '$icons/checkmark.svelte';
 	import PlaceholderImageV2 from '$icons/placeholder-image-v2.svelte';
 	import Tick from '$icons/tick.svelte';
 
@@ -9,7 +8,7 @@
 <div class=" w-full flex flex-wrap gap-3 2xl:gap-4">
 	<div class="-option {displayStyle === 'CONTAINED' ? '-selected border-gradient' : ''}" on:click={() => (displayStyle = 'CONTAINED')}>
 		<p>Contained</p>
-		<div class="w-1/2 mx-auto bg-gradient-a"><PlaceholderImageV2 /></div>
+		<div class="w-1/2 mx-auto bg-gradient-a"><PlaceholderImageV2 class="w-10 2xl:w-12 h-auto" /></div>
 		<div>
 			Recommended for <br />
 			assets that are not a 1:1 ratio
@@ -21,7 +20,7 @@
 
 	<div class="-option {displayStyle === 'PADDED' ? '-selected border-gradient' : ''}" on:click={() => (displayStyle = 'PADDED')}>
 		<p>Padded</p>
-		<div class="mx-4 bg-gradient-a"><PlaceholderImageV2 /></div>
+		<div class="mx-4 bg-gradient-a"><PlaceholderImageV2 class="w-10 2xl:w-12 h-auto" /></div>
 		<div>
 			Recommended <br />
 			for assets with transparent background
@@ -33,7 +32,7 @@
 
 	<div class="-option {displayStyle === 'COVERED' ? '-selected border-gradient' : ''}" on:click={() => (displayStyle = 'COVERED')}>
 		<p>Covered</p>
-		<div class="bg-gradient-a"><PlaceholderImageV2 /></div>
+		<div class="bg-gradient-a"><PlaceholderImageV2 class="w-10 2xl:w-12 h-auto" /></div>
 		<div>
 			Recommended for <br />
 			assets that can extend to the edge
