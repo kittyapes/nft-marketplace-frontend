@@ -16,6 +16,7 @@
 	let fileInput: HTMLInputElement;
 	let files: any = [];
 	let over = false;
+	let isHovered = false;
 	let fileType: 'image' | 'video' = null;
 
 	$: if (browser && previewSrc) {
@@ -62,16 +63,19 @@
 	}
 </script>
 
-<div class="overflow-hidden flex flex-col items-center">
+<div class="overflow-hidden flex flex-col items-center relative {$$props.class}">
 	<button
 		id="container"
-		class="h-full w-full border border-dashed flex items-center justify-center overflow-hidden
-		select-none {$$props.class}"
+		class="h-full w-full border border-dashed flex items-center justify-center overflow-hidden hover:bg-gradient-a
+		select-none "
 		on:click={() => fileInput.click()}
 		on:drop|preventDefault={onDrop}
 		on:dragover|preventDefault={onDragOver}
 		on:dragleave={onDragLeave}
+		on:mouseenter={() => (isHovered = true)}
+		on:mouseleave={() => (isHovered = false)}
 		class:over
+		class:bg-gradient-a={isHovered}
 	>
 		{#if (fileType === 'image' && previewSrc) || currentImgUrl}
 			<img src={previewSrc || currentImgUrl} alt="" in:fade class="object-contain w-full max-h-full rounded" />
@@ -85,9 +89,9 @@
 		{/if}
 	</button>
 
-	<span class="text-xs mt-3">
-		<slot name="lower_text" />
-	</span>
+	<!-- <span class="text-xs"> -->
+	<slot name="lower_text" />
+	<!-- </span> -->
 
 	<input type="file" accept={acceptedFormats.join(',')} class="hidden" bind:this={fileInput} bind:files />
 </div>
