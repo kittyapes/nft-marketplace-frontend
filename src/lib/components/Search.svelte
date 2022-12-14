@@ -35,7 +35,7 @@
 		searchResults = {
 			collections: res?.collections || [],
 			items: (await Promise.all(res?.nfts.map(nftToCardOptions))) || [],
-			users: res?.verifiedCreators || [],
+			users: res?.users || [],
 		};
 
 		await tick();
