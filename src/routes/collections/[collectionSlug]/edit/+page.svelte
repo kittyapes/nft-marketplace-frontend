@@ -37,6 +37,9 @@
 	import Artstation from '$icons/socials/artstation.svelte';
 	import QuestionMarkIcon from '$icons/question-mark-icon.svelte';
 	import Info from '$icons/info.svelte';
+	import EthV2 from '$icons/eth-v2.svelte';
+	import Eth from '$icons/eth.svelte';
+	import Button from '$lib/components/Button.svelte';
 
 	const layoutStuff = getContext('layout-stuff');
 
@@ -46,7 +49,7 @@
 	// Edit vs. new
 	$: isNewCollection = collectionSlug === 'new';
 
-	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
+	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: EthV2 }];
 
 	// Data collected from the form or fetched from the server
 	let originalCollectionData = null; // Used to check whether data was changed during editing
@@ -417,7 +420,46 @@
 			<div class="w-1/2">
 				<Royalties bind:values={$collectionData.royalties} bind:error={$formValidity.royalties} disabled={!isNewCollection} />
 			</div>
+			{#if isNewCollection}
+				<div class="flex flex-col w-1/2 pr-6">
+					<h3 class="section-title">Blockchain</h3>
+					<p class="my-2.5 2xl:my-3 section-subtext">Your Collection will be created on the following Blockchain:</p>
+					<Dropdown options={blockchainOptions} disabled class="h-8 2xl:h-10" />
+				</div>
+			{/if}
+			{#if isNewCollection}
+				<div class="flex flex-col mt-16">
+					<div class="section-title">Payment tokens</div>
+					<p class="my-2.5 2xl:my-3 section-subtext">These tokens can be used to buy and sell your items.</p>
+					<PaymentTokenCard symbol="WETH" name="Wrapped Ethereum" iconUrl={EthV2} />
+				</div>
+			{/if}
+			<!-- Explicit and sensitive content -->
+			<div class="flex items-center mt-16">
+				<div class="flex flex-col flex-grow">
+					<div class="section-title">Explicit & Sensitive Content</div>
+					<p class="my-2.5 2xl:my-3 section-subtext">Set this collection as explicit and sensitive content.</p>
+				</div>
+				<Toggle style={{ button: 'bg-[#747474]', pill: '!w-14 bg-gradient-a' }} onInsideLabel="" offInsideLabel="" bind:state={$collectionData.isExplicitSenstive} />
+			</div>
+			{#if !formValid}
+				<FormErrorList validity={$formValidity} />
+			{/if}
+			<button
+				class="w-full h-11 2xl:h-14 border-gradient capitalize dullgradient text-white disabled:cursor-not-allowed disabled:opacity-50"
+				disabled={!formValid || savingCollection || !dataChanged}
+				on:click={clickSaveCollection}
+			>
+				{#if isNewCollection}
+					Create Collection
+				{:else}
+					Update collection
+				{/if}
+			</button>
 		</div>
+		{#if savingCollection}
+			<Loader />
+		{/if}
 	</div>
 </main>
 
