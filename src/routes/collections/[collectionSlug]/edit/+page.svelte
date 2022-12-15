@@ -49,7 +49,7 @@
 	// Edit vs. new
 	$: isNewCollection = collectionSlug === 'new';
 
-	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: EthV2 }];
+	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrlOrComponent: EthV2 }];
 
 	// Data collected from the form or fetched from the server
 	let originalCollectionData = null; // Used to check whether data was changed during editing
@@ -431,7 +431,7 @@
 				<div class="flex flex-col mt-16">
 					<div class="section-title">Payment tokens</div>
 					<p class="my-2.5 2xl:my-3 section-subtext">These tokens can be used to buy and sell your items.</p>
-					<PaymentTokenCard symbol="WETH" name="Wrapped Ethereum" iconUrl={EthV2} />
+					<PaymentTokenCard symbol="WETH" name="Wrapped Ethereum" iconUrlOrComponent={EthV2} />
 				</div>
 			{/if}
 			<!-- Explicit and sensitive content -->

@@ -6,7 +6,7 @@
 	interface Option {
 		value?: any;
 		label: string;
-		iconUrl?: any;
+		iconUrlOrComponent?: string | ConstructorOfATypedSvelteComponent;
 		style?: string;
 	}
 
@@ -56,11 +56,11 @@
 		{disabled}
 	>
 		<!-- Icon -->
-		{#if selected?.iconUrl}
-			{#if typeof selected?.iconUrl === 'string'}
-				<img src={selected.iconUrl} alt="" class="object-cover w-6 h-6" />
+		{#if selected?.iconUrlOrComponent}
+			{#if typeof selected?.iconUrlOrComponent === 'string'}
+				<img src={selected.iconUrlOrComponent} alt="" class="object-cover w-6 h-6" />
 			{:else}
-				<svelte:component this={selected?.iconUrl} />
+				<svelte:component this={selected?.iconUrlOrComponent} />
 			{/if}
 		{:else if dropdownIcon}
 			<svelte:component this={dropdownIcon} />
@@ -82,11 +82,11 @@
 		<div class="absolute bottom-0 z-20 w-full overflow-hidden overflow-y-auto translate-y-full bg-color-bg-purple max-h-72 blue-scrollbar">
 			{#each options as option}
 				<button class="flex items-center w-full px-4 h-12 font-semibold text-left hover:bg-gray-900 transition-btn gap-x-2" style={option.style} on:click={() => handleOptionSelect(option)}>
-					{#if option.iconUrl}
-						{#if typeof option?.iconUrl === 'string'}
-							<img src={option.iconUrl} alt="" class="object-cover w-6 h-6" />
+					{#if option.iconUrlOrComponent}
+						{#if typeof option?.iconUrlOrComponent === 'string'}
+							<img src={option.iconUrlOrComponent} alt="" class="object-cover w-6 h-6" />
 						{:else}
-							<svelte:component this={option?.iconUrl} />
+							<svelte:component this={option?.iconUrlOrComponent} />
 						{/if}
 					{/if}
 					{option.label}

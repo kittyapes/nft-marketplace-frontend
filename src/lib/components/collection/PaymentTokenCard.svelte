@@ -1,15 +1,15 @@
 <script lang="ts">
-	export let iconUrl: any;
+	export let iconUrlOrComponent: string | ConstructorOfATypedSvelteComponent;
 	export let symbol: string;
 	export let name: string;
 </script>
 
 <div class="border border-white flex flex-row items-center gap-x-1.5 rounded-none w-40 2xl:w-52  p-2 cursor-not-allowed">
 	<div class="grid place-items-center w-4">
-		{#if typeof iconUrl === 'string'}
-			<img src={iconUrl} alt="{symbol} icon." />
+		{#if typeof iconUrlOrComponent === 'string'}
+			<img src={iconUrlOrComponent} alt="{symbol} icon." />
 		{:else}
-			<svelte:component this={iconUrl} />
+			<svelte:component this={iconUrlOrComponent} />
 		{/if}
 	</div>
 
