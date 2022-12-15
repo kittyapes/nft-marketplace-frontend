@@ -67,7 +67,7 @@
 		{/if}
 
 		<!-- Label -->
-		<div class="flex-grow`">
+		<div class="flex-grow">
 			{selected?.label}
 		</div>
 
