@@ -30,16 +30,20 @@
 			options.resourceType === 'listing' && options.listingData?.onChainId
 				? chainListing?.tokensMap[0]?.tokenQuantityInListing ?? 0
 				: (await getUserNftBalance(options.nfts[0].contractAddress, options.nfts[0].onChainId)).balance;
+
+		console.log(nftBalance, options.resourceType, await getUserNftBalance(options.nfts[0].contractAddress, options.nfts[0].onChainId));
 	}
 
+	// Listings shouldn't just update when it is a listing but also when it is an nft
 	_refreshOnChainListingHelper.subscribe(() => options.listingData && refreshBalance());
+
+	onMount(() => refreshBalance());
 
 	// The back button is controlled by dynamic components
 	export let showBackButton: boolean;
 
 	let tabs: { text: string; icon: string; sectionComponent: any; loading: boolean; disabled?: boolean }[] = [];
 
-	$: staleResource = options.staleResource;
 	$: tabs = [
 		{ text: 'Info', icon: 'info', sectionComponent: InfoSection, loading: false },
 		{
