@@ -94,8 +94,8 @@
 			{/if}
 
 			{#if !$appSigner}
-				<button on:click={async () => await connectToWallet()} class="py-3" out:fade on:outrostart={() => (showProfileButton = false)} on:outroend={() => (showProfileButton = true)}>
-					<Wallet class="w-8 2xl:w-10 h-7 2xl:h-9" />
+				<button on:click={async () => await connectToWallet()} out:fade on:outrostart={() => (showProfileButton = false)} on:outroend={() => (showProfileButton = true)}>
+					<Wallet class="w-8 2xl:w-10 h-10" />
 				</button>
 			{/if}
 		</div>
