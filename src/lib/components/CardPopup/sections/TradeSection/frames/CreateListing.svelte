@@ -27,7 +27,7 @@
 	let maxQuantity = 1;
 
 	let isListing = false;
-	$: canCreateListing = !$userHasRole('inactivated_user');
+	let canCreateListing = true;
 
 	async function completeListing() {
 		isListing = true;
