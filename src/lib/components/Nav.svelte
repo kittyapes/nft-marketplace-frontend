@@ -8,6 +8,7 @@
 	import { fade } from 'svelte/transition';
 	import UserCircle from '$icons/user-circle.svelte';
 	import { goto } from '$app/navigation';
+	import Wallet from '$icons/wallet.svelte';
 
 	let displayProfilePopup = false;
 	let showProfileButton = false;
@@ -93,14 +94,8 @@
 			{/if}
 
 			{#if !$appSigner}
-				<button
-					on:click={async () => await connectToWallet()}
-					class="py-3 ml-8 text-sm font-semibold text-white uppercase bg-black rounded-3xl w-52"
-					out:fade
-					on:outrostart={() => (showProfileButton = false)}
-					on:outroend={() => (showProfileButton = true)}
-				>
-					Connect Wallet
+				<button on:click={async () => await connectToWallet()} class="py-3" out:fade on:outrostart={() => (showProfileButton = false)} on:outroend={() => (showProfileButton = true)}>
+					<Wallet class="w-8 2xl:w-10 h-7 2xl:h-9" />
 				</button>
 			{/if}
 		</div>
