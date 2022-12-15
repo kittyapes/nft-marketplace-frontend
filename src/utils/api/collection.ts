@@ -26,6 +26,7 @@ export interface Collection {
 	websiteUrl?: string;
 	otherUrl?: string;
 	telegramUrl?: string;
+	pixivUrl?: string;
 	blockchain?: string;
 	paymentTokenTicker: 'ETH';
 	status?: 'INACTIVE' | 'ACTIVE';

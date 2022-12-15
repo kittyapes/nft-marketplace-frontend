@@ -1,4 +1,4 @@
-<svg class="w-full h-full" width="23" height="22" viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg class="w-full h-full {$$props.class}" width="23" height="22" viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<path d="M9.09619 9.23361V8.39396V7.49049L10.7755 5.875H12.6059L14.5707 7.49049V9.67496L12.6059 11.8581L11.7327 12.9496V14.2595" stroke="currentColor" stroke-width="1.30986" />
 	<path d="M11.7326 15.0469L12.2459 15.2136L12.5631 15.6503V16.19L12.2459 16.6266L11.7326 16.7934L11.2193 16.6266L10.9021 16.19V15.6503L11.2193 15.2136L11.7326 15.0469Z" fill="currentColor" />
 	<path

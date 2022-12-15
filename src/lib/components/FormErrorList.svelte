@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-
 	export let validity: { [key: string]: boolean | string };
 </script>
 
