@@ -25,6 +25,21 @@
 	import { getContext, tick } from 'svelte';
 	import { withPrevious } from 'svelte-previous';
 	import { writable } from 'svelte/store';
+	import GoBack from '$components/v2/GoBack/+page.svelte';
+	import PlaceholderImageV2 from '$icons/placeholder-image-v2.svelte';
+	import Input from '$lib/components/v2/Input/Input.svelte';
+	import Instagram from '$icons/socials/instagram.svelte';
+	import Discord from '$icons/socials/discord.svelte';
+	import Twitter from '$icons/socials/twitter.svelte';
+	import Web from '$icons/socials/web.svelte';
+	import Pixiv from '$icons/socials/pixiv.svelte';
+	import Deviantart from '$icons/socials/deviantart.svelte';
+	import Artstation from '$icons/socials/artstation.svelte';
+	import QuestionMarkIcon from '$icons/question-mark-icon.svelte';
+	import Info from '$icons/info.svelte';
+	import EthV2 from '$icons/eth-v2.svelte';
+	import Eth from '$icons/eth.svelte';
+	import Button from '$lib/components/Button.svelte';
 
 	const layoutStuff = getContext('layout-stuff');
 
@@ -34,7 +49,7 @@
 	// Edit vs. new
 	$: isNewCollection = collectionSlug === 'new';
 
-	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrl: '/svg/currency/eth.svg' }];
+	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrlOrComponent: EthV2 }];
 
 	// Data collected from the form or fetched from the server
 	let originalCollectionData = null; // Used to check whether data was changed during editing
@@ -302,143 +317,160 @@
 	$: browser && !isNewCollection && $currentUserAddress && fetchRemoteCollectionData();
 </script>
 
-<main class="max-w-screen-xl px-16 mx-auto my-32">
-	<!-- Title -->
-	<h1 class="text-2xl font-semibold uppercase">
-		{#if isNewCollection}
-			Create <span class="text-gradient">New Collection</span>
-		{:else}
-			Edit <span class="text-gradient">Collection</span>
+<main class="py-24 2xl:py-28 px-28 2xl:px-36 text-white">
+	<GoBack />
+	<div class="mt-16 2xl:mt-20">
+		<h1 class="font-medium text-xl 2xl:text-2xl leading-5 2xl:leading-6">
+			{#if isNewCollection}
+				Create new collection
+			{:else}
+				Edit collection
+			{/if}
+		</h1>
+		<div class="space-y-24 2xl:space-y-[120px]">
+			<!-- Logo -->
+			<div class="section mt-2.5">
+				<h3 class="section-title w-1/2">Logo Image *</h3>
+				<DragDropImage
+					max_file_size={10_000_000}
+					class=" w-36 2xl:w-44 h-36 2xl:h-44 border border-dashed flex items-center justify-center"
+					text=""
+					on:new-blob={newLogoBlobHandler}
+					acceptedFormats={acceptedImages}
+					currentImgUrl={$collectionData.logoImageUrl}
+				>
+					<PlaceholderImageV2 slot="placeholder" class="w-10 2xl:w-12 h-auto" />
+					<p slot="lower_text" class="section-subtext absolute bottom-3">PNG, GIF, WEBP</p>
+				</DragDropImage>
+			</div>
+			<!-- Featured image -->
+			<div class="section">
+				<div class="w-1/2">
+					<h3 class="section-title">Featured Image</h3>
+					<p class="section-subtext mt-2.5">Upload image</p>
+				</div>
+				<div class="w-1/2">
+					<DragDropImage max_file_size={10_000_000} class="h-48" on:new-blob={newCoverBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.backgroundImageUrl}>
+						<p slot="placeholder" class="section-subtext font-medium">
+							Drag and drop an image <br />
+							or
+							<span class="text-gradient">click to browse</span>
+						</p>
+						<p slot="lower_text" class="section-subtext mt-2.5">
+							PNG, Jpeg, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
+						</p>
+					</DragDropImage>
+				</div>
+			</div>
+			<!-- Theme selector -->
+			<div class="section">
+				<div class="w-1/2">
+					<h3 class="section-title">Choose display theme</h3>
+					<p class="section-subtext mt-2.5">Change how your items are shown</p>
+				</div>
+				<div class="w-1/2">
+					<CollectionDisplayStyleSwitcher bind:displayStyle={$collectionData.displayTheme} />
+				</div>
+			</div>
+			<!-- Name, URL and Descriptions -->
+			<div class="section items-stretch">
+				<div class="w-1/2 pr-6">
+					<h3 class="section-title">Display name</h3>
+					<Input fixedHeight={false} bind:value={$collectionData.name} placeholder="The Kitty Collection" class="border border-white rounded-none mt-3 h-8 2xl:h-10 section-subtext" />
+					<h3 class="section-title mt-11 2xl:mt-14">URL</h3>
+					<Input
+						fixedHeight={false}
+						pattern={collectionUrlPattern}
+						bind:value={$collectionUrl}
+						placeholder="https://hinata.io/collection/treasure-of-the-sea"
+						class="border border-white rounded-none mt-3 section-subtext h-8 2xl:h-10"
+					/>
+				</div>
+				<div class="w-1/2 flex flex-col">
+					<h3 class="section-title">Description</h3>
+					<!-- <div class="border border-white w-full flex-grow mt-3 relative"> -->
+					<!-- <textarea class="h-full w-full bg-transparent" name="" id="" /> -->
+					<TextArea
+						focusStyle={false}
+						containerClass="mt-3 flex-grow section-subtext"
+						rows={3}
+						placeholder="A collection of all the kitties in the world."
+						minChars={1}
+						maxChars={200}
+						bind:value={$collectionData.description}
+					/>
+					<!-- </div> -->
+				</div>
+			</div>
+			<!-- Social Links -->
+			<div class="section">
+				<div class="w-1/2">
+					<h3 class="section-title">Links</h3>
+				</div>
+				<div class="w-1/2 flex flex-col gap-y-3 2xl:gap-y-4">
+					<SocialLinkInput placeholder="Instagram link" bind:value={$collectionData.instagramUrl} iconComponent={Instagram} bind:valid={$formValidity.instagramUrl} />
+					<SocialLinkInput placeholder="Discord link" bind:value={$collectionData.discordUrl} iconComponent={Discord} bind:valid={$formValidity.discordUrl} />
+					<SocialLinkInput placeholder="Twitter link" bind:value={$collectionData.twitterUrl} iconComponent={Twitter} bind:valid={$formValidity.twitterUrl} />
+					<SocialLinkInput placeholder="Personal/Business Email" bind:value={$collectionData.otherUrl} iconComponent={Web} bind:valid={$formValidity.otherUrl} />
+					<SocialLinkInput placeholder="Pixiv link" bind:value={$collectionData.pixivUrl} iconComponent={Pixiv} bind:valid={$formValidity.pixivUrl} />
+					<SocialLinkInput placeholder="Deviantart link" bind:value={$collectionData.deviantartUrl} iconComponent={Deviantart} bind:valid={$formValidity.deviantartUrl} />
+					<SocialLinkInput placeholder="Artstation link" bind:value={$collectionData.artstationUrl} iconComponent={Artstation} bind:valid={$formValidity.artstationUrl} />
+				</div>
+			</div>
+			<div class="w-1/2">
+				<Royalties bind:values={$collectionData.royalties} bind:error={$formValidity.royalties} disabled={!isNewCollection} />
+			</div>
+			{#if isNewCollection}
+				<div class="flex flex-col w-1/2 pr-6">
+					<h3 class="section-title">Blockchain</h3>
+					<p class="my-2.5 2xl:my-3 section-subtext">Your Collection will be created on the following Blockchain:</p>
+					<Dropdown options={blockchainOptions} disabled class="h-8 2xl:h-10" />
+				</div>
+			{/if}
+			{#if isNewCollection}
+				<div class="flex flex-col mt-16">
+					<div class="section-title">Payment tokens</div>
+					<p class="my-2.5 2xl:my-3 section-subtext">These tokens can be used to buy and sell your items.</p>
+					<PaymentTokenCard symbol="WETH" name="Wrapped Ethereum" iconUrlOrComponent={EthV2} />
+				</div>
+			{/if}
+			<!-- Explicit and sensitive content -->
+			<div class="flex items-center mt-16">
+				<div class="flex flex-col flex-grow">
+					<div class="section-title">Explicit & Sensitive Content</div>
+					<p class="my-2.5 2xl:my-3 section-subtext">Set this collection as explicit and sensitive content.</p>
+				</div>
+				<Toggle style={{ button: 'bg-[#747474]', pill: '!w-14 bg-gradient-a' }} onInsideLabel="" offInsideLabel="" bind:state={$collectionData.isExplicitSenstive} />
+			</div>
+			{#if !formValid}
+				<FormErrorList validity={$formValidity} />
+			{/if}
+			<button
+				class="w-full h-11 2xl:h-14 border-gradient capitalize dullgradient text-white disabled:cursor-not-allowed disabled:opacity-50"
+				disabled={!formValid || savingCollection || !dataChanged}
+				on:click={clickSaveCollection}
+			>
+				{#if isNewCollection}
+					Create Collection
+				{:else}
+					Update collection
+				{/if}
+			</button>
+		</div>
+		{#if savingCollection}
+			<Loader />
 		{/if}
-	</h1>
-
-	<!-- Two column part -->
-	<div class="grid grid-cols-2 mt-16">
-		<!-- Logo image labels -->
-		<div>
-			<div class="-ml-1 text-sm">
-				<span class="text-red-500">*</span>
-				Required fields
-			</div>
-
-			<div class="mt-2 font-semibold uppercase">
-				Logo Image <span class="text-red-500">*</span>
-			</div>
-
-			<!-- File types -->
-			<div class="mt-8 font-semibold">File types:</div>
-			<div class="mt-2 text-sm">PNG, GIF, WEBP</div>
-			<div class="mt-2 text-sm">Max 10MB</div>
-		</div>
-
-		<!-- Logo image drop area -->
-		<div>
-			<DragDropImage max_file_size={10_000_000} class="w-48 h-48 rounded-full" text="" on:new-blob={newLogoBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.logoImageUrl}>
-				<div slot="placeholder"><PlaceholderImage /></div>
-			</DragDropImage>
-		</div>
-
-		<!-- Featured image labels -->
-		<div class="mt-8">
-			<div class="font-semibold uppercase">Featured Image</div>
-			<div class="text-sm uppercase">Upload File</div>
-
-			<!-- File types -->
-			<div class="mt-8 font-semibold">File types:</div>
-			<div class="mt-2 text-sm">PNG, GIF, WEBP</div>
-			<div>Max 10 MB</div>
-		</div>
-
-		<!-- Featured image drop area -->
-		<div class="mt-8">
-			<DragDropImage max_file_size={10_000_000} class="h-48" on:new-blob={newCoverBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.backgroundImageUrl} />
-		</div>
-
-		<!-- Choose display style labels -->
-		<div class="mt-16">
-			<div class="font-semibold uppercase">Choose Display Style</div>
-			<div class="mt-2 text-sm">Change how your items are shown</div>
-		</div>
-
-		<!-- Choose display style switcher -->
-		<div class="mt-16">
-			<CollectionDisplayStyleSwitcher bind:displayStyle={$collectionData.displayTheme} />
-		</div>
-
-		<div class="mt-16 mr-32">
-			<!-- Collection name -->
-			<div>
-				<div class="font-semibold uppercase">Collection Name</div>
-				<input type="text" required class="w-full mt-2 input" placeholder="The Kitty Collection" bind:value={$collectionData.name} />
-			</div>
-
-			<!-- Collection URL -->
-			<div>
-				<div class="mt-8 font-semibold uppercase">URL</div>
-				<input type="text" class="w-full mt-2 lowercase input" pattern={collectionUrlPattern} placeholder="https://hinata.io/collection/treasure-of-the-sea" bind:value={$collectionUrl} />
-			</div>
-		</div>
-
-		<!-- Description -->
-		<div class="mt-16">
-			<div class="mb-2 font-semibold uppercase">Description</div>
-			<TextArea outline placeholder="A collection of all the kitties in the world." minChars={1} maxChars={200} bind:value={$collectionData.description} />
-		</div>
 	</div>
-
-	<!-- Royalties -->
-	<div class="mb-16">
-		<Royalties bind:values={$collectionData.royalties} bind:error={$formValidity.royalties} disabled={!isNewCollection} />
-	</div>
-
-	<!-- Links -->
-	<div class="flex flex-col space-y-2">
-		<div class="font-semibold uppercase">Links</div>
-		<SocialLinkInput placeholder="Instagram link" bind:value={$collectionData.instagramUrl} iconUrl="/svg/socials/instagram.svg" bind:valid={$formValidity.instagramUrl} />
-		<SocialLinkInput placeholder="Discord link" bind:value={$collectionData.discordUrl} iconUrl="/svg/socials/discord.svg" bind:valid={$formValidity.discordUrl} />
-		<SocialLinkInput placeholder="Twitter link" bind:value={$collectionData.twitterUrl} iconUrl="/svg/socials/twitter.svg" bind:valid={$formValidity.twitterUrl} />
-		<SocialLinkInput placeholder="Website link" bind:value={$collectionData.otherUrl} iconUrl="/svg/socials/globe.svg" bind:valid={$formValidity.otherUrl} />
-		<SocialLinkInput placeholder="Telegram link" bind:value={$collectionData.telegramUrl} iconUrl="/svg/socials/telegram.svg" bind:valid={$formValidity.telegramUrl} />
-	</div>
-
-	<!-- Blockchain -->
-	{#if isNewCollection}
-		<div class="flex flex-col mt-16">
-			<div class="font-semibold uppercase">Blockchain</div>
-			<p class="mt-2 mb-2">Your Collection will be created on the following Blockchain:</p>
-			<Dropdown options={blockchainOptions} disabled />
-		</div>
-	{/if}
-
-	<!-- Payment tokens -->
-	{#if isNewCollection}
-		<div class="flex flex-col mt-16">
-			<div class="font-semibold uppercase">Payment tokens</div>
-			<p class="mt-2 mb-2">These tokens can be used to buy and sell your items.</p>
-			<PaymentTokenCard symbol="WETH" name="Wrapped Ethereum" iconUrl="/svg/currency/eth.svg" />
-		</div>
-	{/if}
-
-	<!-- Explicit and sensitive content -->
-	<div class="flex items-center mt-16">
-		<div class="flex flex-col flex-grow">
-			<div class="font-semibold uppercase">Explicit & Sensitive Content</div>
-			<p class="mt-2 mb-2">Set this collection as explicit and sensitive content.</p>
-		</div>
-		<Toggle style={{ button: 'bg-[#747474]', pill: '!w-14 bg-[#EBEBEB]' }} onInsideLabel="" offInsideLabel="" bind:state={$collectionData.isExplicitSenstive} />
-	</div>
-
-	<FormErrorList validity={$formValidity} />
-
-	<button class="w-full h-16 mt-8 uppercase btn btn-gradient rounded-3xl" disabled={!formValid || savingCollection || !dataChanged} on:click={clickSaveCollection}>
-		{#if isNewCollection}
-			Create Collection
-		{:else}
-			Update collection
-		{/if}
-	</button>
-
-	{#if savingCollection}
-		<Loader class="ml-0" />
-	{/if}
 </main>
+
+<style lang="postcss">
+	.section {
+		@apply flex flex-row w-full;
+	}
+	.section-title {
+		@apply font-medium text-base 2xl:text-xl leading-5 2xl:leading-6;
+	}
+	.section-subtext {
+		@apply font-medium text-xs 2xl:text-sm leading-4 2xl:leading-5;
+	}
+</style>

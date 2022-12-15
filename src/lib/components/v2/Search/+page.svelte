@@ -72,7 +72,7 @@
 			}
 		}}
 		bind:value={query}
-		class="rounded-none bg-gradient-a hover:text-white w-full max-h-[2.5rem]"
+		class="rounded-none bg-gradient-a hover:text-white w-full h-10"
 		placeholder="Search"
 	>
 		<Search class="ml-6 w-5 h-6" />

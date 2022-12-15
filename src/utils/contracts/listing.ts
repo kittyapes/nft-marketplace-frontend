@@ -20,7 +20,7 @@ export enum LISTING_TYPE {
 	TIME_LIMITED_1_OF_N_WINNING_TICKETS_RAFFLE,
 }
 
-export const listingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.black') }];
+export const listingTokens = [{ label: 'WETH', iconUrlOrComponent: getIconUrl('eth.black') }];
 export const whiteListingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.light') }];
 
 export interface ContractCreateListingOptions {
