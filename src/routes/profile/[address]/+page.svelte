@@ -44,18 +44,18 @@
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
 	import Pixiv from '$icons/socials/pixiv.svelte';
 	import Discord from '$icons/socials/discord.svelte';
-  	import { fetchIsFollowing, followUnfollowUser } from '$utils/api/following';
+	import { fetchIsFollowing, followUnfollowUser } from '$utils/api/following';
 
 	$: address = $page.params.address;
 	let isFollowing = false;
-	
-	$: if (browser || address || $currentUserAddress) {
+
+	$: if (browser && address && $currentUserAddress) {
 		browser && fetchFollowing();
 	}
 
 	const fetchFollowing = async () => {
 		isFollowing = await fetchIsFollowing(address, $currentUserAddress);
-	}
+	};
 
 	onMount(async () => {
 		if (!isEthAddress(address)) {
@@ -335,7 +335,7 @@
 </script>
 
 <div class="">
-	<div class="pt-24 mx-auto max-w-screen-2xl px-20">
+	<div class="pt-24  px-36">
 		<div class="h-96 gradient-border !border-t-0 !border-x-0 !border-b-4 w-full">
 			{#if $localProfileData?.coverUrl}
 				<div style="background-image: url({$localProfileData?.coverUrl})" class="w-full h-full bg-center bg-no-repeat bg-cover" />
@@ -375,21 +375,25 @@
 							<div class="w-32" transition:fade|local>
 								<PrimaryButton on:click={() => goto('/profile/edit')}>{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}</PrimaryButton>
 							</div>
-						{:else}
-							{#if $currentUserAddress}
-								{#if isFollowing}
-									<PrimaryButton class="w-40" on:click={async() => {
+						{:else if $currentUserAddress}
+							{#if isFollowing}
+								<PrimaryButton
+									class="w-40"
+									on:click={async () => {
 										isFollowing = await followUnfollowUser(address, false);
-									}}>
-										<div class="text-lg">Unfollow</div>
-									</PrimaryButton>
-								{:else}
-									<PrimaryButton class="w-40" on:click={async() => {
+									}}
+								>
+									<div class="text-lg">Unfollow</div>
+								</PrimaryButton>
+							{:else}
+								<PrimaryButton
+									class="w-40"
+									on:click={async () => {
 										isFollowing = await followUnfollowUser(address, true);
-									}}>
-										<div class="text-lg">Follow</div>
-									</PrimaryButton>
-								{/if}
+									}}
+								>
+									<div class="text-lg">Follow</div>
+								</PrimaryButton>
 							{/if}
 						{/if}
 						<div class="relative">
