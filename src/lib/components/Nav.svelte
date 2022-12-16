@@ -7,7 +7,7 @@
 	import { profileData, publicProfileData } from '$stores/user';
 	import { fade } from 'svelte/transition';
 	import UserCircle from '$icons/user-circle.svelte';
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 
 	export let scrollY;
 
@@ -35,6 +35,8 @@
 		displayProfilePopup = false;
 		showProfileButton = false;
 	}
+
+	beforeNavigate(() => (displayProfilePopup = false));
 
 	// $: useTestnets = $connectionDetails ? $connectionDetails?.chainId !== 1 : import.meta.env.VITE_DEFAULT_NETWORK !== '1';
 </script>
