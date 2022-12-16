@@ -15,7 +15,6 @@
 			<h1 class="uppercase font-bold text-7xl">Collections</h1>
 			<p class="font-semibold text-xl">The top NFT collections on Hinata, ranked by floor price, volume and other statistics.</p>
 		</div>
-		<hr class="border-t border-black border-opacity-30" />
 		{#if loaded}
 			<CollectionsContainer {collections} {isLoading} on:end-reached />
 		{:else}
