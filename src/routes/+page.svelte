@@ -65,23 +65,19 @@
 		site_name: 'Hinata',
 	}}
 />
-<div class="px-[32px] 2xl:px-[172px] pt-32 w-full grid place-items-center text-white">
+<div class="px-36 pt-32 w-full grid place-items-center text-white">
 	<!-- Hero section -->
-	<div class="mb-16 flex gap-5 items-stretch w-full">
-		{#if $loadedExploreListings}
-			<div class="w-[277px] 2xl:w-[345px]">
-				<NftCard options={exploreListingsData[0]} />
+	{#if $loadedExploreListings}
+		<div class="mb-16 flex gap-5 items-stretch w-full max-h-[550px]" in:slide|local={{ duration: 1000 }}>
+			<NftCard options={exploreListingsData[0]} />
+
+			<div class="flex-grow">
+				<HomepageCarousel />
 			</div>
-		{/if}
-		<div class="min-h-[500px] flex-grow">
-			<HomepageCarousel />
+
+			<NftCard options={exploreListingsData[0]} />
 		</div>
-		{#if $loadedExploreListings}
-			<div class="w-[277px] 2xl:w-[345px]">
-				<NftCard options={exploreListingsData[0]} />
-			</div>
-		{/if}
-	</div>
+	{/if}
 
 	<!-- Top collections section -->
 	<div class="w-full">
