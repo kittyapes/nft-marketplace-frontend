@@ -13,6 +13,7 @@
 
 	let displayProfilePopup = false;
 	let showProfileButton = false;
+
 	const closeModalIfNotInElement = (e) => {
 		// Click is not on the profile button or popup element
 		if (!e.target.closest('#profile-button') && !e.target.closest('#profile-popup-parent') && !e.target.closest('#profile-popup-container')) {
@@ -29,6 +30,11 @@
 
 	$: displayedUsername = $publicProfileData?.username;
 	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
+
+	function handleDisconnect() {
+		displayProfilePopup = false;
+		showProfileButton = false;
+	}
 
 	// $: useTestnets = $connectionDetails ? $connectionDetails?.chainId !== 1 : import.meta.env.VITE_DEFAULT_NETWORK !== '1';
 </script>
@@ -61,12 +67,11 @@
 
 		<!-- Profile -->
 		<div class="relative flex items-center h-full ml-8">
-			{#if showProfileButton || $appSigner}
+			{#if (showProfileButton || $appSigner) && !showProfileButton}
 				<div class="relative w-10 ">
 					<button
 						class="flex items-center h-full font-semibold text-md whitespace-nowrap transition-btn w-10"
 						id="profile-button"
-						class:hidden={!$appSigner}
 						on:click={() => (displayProfilePopup = !displayProfilePopup)}
 						title={profileButtonTitle}
 					>
@@ -88,25 +93,17 @@
 					</button>
 					<div class="" id="profile-popup-parent">
 						{#if displayProfilePopup}
-							<ProfilePopup />
+							<ProfilePopup on:disconnect={handleDisconnect} />
 						{/if}
 					</div>
 				</div>
 			{/if}
 
 			{#if !$appSigner}
-				<button
-					on:click={async () => await connectToWallet()}
-					class="py-3 ml-8 text-sm font-semibold text-white uppercase bg-black rounded-3xl w-52"
-					out:fade
-					on:outrostart={() => (showProfileButton = false)}
-					on:outroend={() => (showProfileButton = true)}
-				>
-					Connect Wallet
-				</button>
+				<button on:click={async () => await connectToWallet()} class="py-3 ml-8 text-sm font-semibold text-white uppercase bg-black rounded-3xl w-52">Connect Wallet</button>
 			{/if}
 		</div>
-		<!-- <div class="snap-end" /> -->
+		<div class="snap-end" />
 	</div>
 </div>
 
