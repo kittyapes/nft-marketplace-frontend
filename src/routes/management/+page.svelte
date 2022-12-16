@@ -484,7 +484,7 @@
 	// selectedNetworkOption.subscribe(() => validateContractAddress($whitelistingCollectionAddress));
 </script>
 
-<div class="flex flex-col w-full h-full gap-16 p-16 2xl:p-40">
+<div class="flex flex-col w-full h-full gap-16 p-16 2xl:p-40 pt-36">
 	<div class="flex">
 		<div class="{tab === 'COLLECTION' ? 'text-gradient' : 'text-white'} font-medium text-2xl relative btn" on:click={() => (tab = 'COLLECTION')}>
 			<div class="px-6">Collection Management</div>
