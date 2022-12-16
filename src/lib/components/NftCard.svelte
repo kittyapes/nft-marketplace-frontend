@@ -212,11 +212,13 @@
 			{/if}
 		{/await}
 	</div>
-	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient w-full">
-		<h4 class="text-gradient font-bold truncate {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
+	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient min-h-full">
+		<h4 class="text-gradient font-bold truncate  {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
 			{options.nfts[0].collectionData.name || 'N/A'}
 		</h4>
-		<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">{options?.nfts?.[0]?.name}</h3>
+		<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
+			{options?.nfts?.[0]?.name}
+		</h3>
 		<div class="flex flex-row items-center justify-between mt-2.5 ">
 			{#if timerHtml?.includes('Starts in')}
 				{@html timerHtml}
