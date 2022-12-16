@@ -5,6 +5,7 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import { disconnectWallet } from '$utils/wallet/connectWallet';
 	import { slide } from 'svelte/transition';
+	import PrimaryButton from './v2/PrimaryButton/PrimaryButton.svelte';
 
 	let showDashboard = false;
 	let showMyCollections = false;
@@ -18,22 +19,22 @@
 
 <div id="profile-popup-container" class="absolute bg-dark-gradient w-[273px] 2xl:w-[341px] top-14 right-0 rounded-none border-gradient z-10 px-4 py-4 overflow-hidden" transition:slide>
 	<div class="flex flex-col gap-y-5 2xl:gap-y-6 text-white">
-		<button class=" bg-gradient-a hover:bg-main-gradient border-gradient hover:border-0 profile-btn-item !w-full !py-2" on:click={() => goto(`/profile/${$currentUserAddress}`)}>My Profile</button>
+		<PrimaryButton on:click={() => goto(`/profile/${$currentUserAddress}`)}>My Profile</PrimaryButton>
+
 		{#if showDashboard}
-			<button class=" bg-gradient-a hover:bg-main-gradient border-gradient hover:border-0 profile-btn-item !w-full !py-2" on:click={() => goto('/management')}>Dashboard</button>
-		{/if}
-		{#if showMyCollections}
-			<button class=" bg-gradient-a hover:bg-main-gradient border-gradient hover:border-0 profile-btn-item !w-full !py-2" on:click={() => goto(`/profile/${$profileData.address}/collections`)}>
-				My Collections
-			</button>
+			<PrimaryButton on:click={() => goto('/management')}>Dashboard</PrimaryButton>
 		{/if}
 
-		<button class=" bg-gradient-a hover:bg-main-gradient border-gradient hover:border-0 profile-btn-item !w-full !py-2" on:click={() => alert('Not Implemented Yet')}>Buy Hinata</button>
+		{#if showMyCollections}
+			<PrimaryButton on:click={() => goto(`/profile/${$profileData.address}/collections`)}>My Collections</PrimaryButton>
+		{/if}
+
+		<!-- <PrimaryButton on:click={() => alert('Not Implemented Yet')}>Buy Hinata</PrimaryButton> -->
 
 		<div class="h-px border-gradient border-0 border-t-2" />
-		<button class="flex w-full transition-btn profile-btn-item" id="nav-disconnect-btn" on:click={disconnectWallet}>
-			<span class="capitalize text-base 2xl:text-xl leading-4 2xl:leading-5 flex-grow text-left font-semibold">Disconnect</span>
-			<DisconnectV2 class="w-4 2xl:w-5 h-4 2xl:h-5" />
+		<button class="flex w-full transition-btn profile-btn-item items-center" id="nav-disconnect-btn" on:click={disconnectWallet}>
+			<span class="capitalize text-lg leading-5 flex-grow text-left font-semibold">Disconnect</span>
+			<DisconnectV2 class="w-5 h-5" />
 		</button>
 	</div>
 </div>
