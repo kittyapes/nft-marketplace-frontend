@@ -17,6 +17,7 @@
 	import { searchUsersByName } from '$utils/api/search/globalSearch';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
+	import { goto } from '$app/navigation';
 
 	let exploreListings = writable<Listing[]>([]);
 	let loadedExploreListings = writable(false);
@@ -85,30 +86,31 @@
 	</div>
 
 	<!-- Hottest creators section -->
-	<!-- {#if $loadedHottestCreators}
+	{#if $loadedHottestCreators && $loadedExploreListings}
 		<div class="pt-20 w-full h-full" in:slide>
 			<h2 class="text-2xl leading-7">Hottest creators</h2>
 			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
 				{#each get(hottestCreators).users as creator}
-					<div class="p-4 bg-card-gradient flex gap-4 w-full ">
-						<FeaturedArtistCard
-							creatorData={{
-								name: creator.username,
-								address: creator.address,
-								coverImg: creator.coverUrl,
-								profileImg: creator.thumbnailUrl,
-								created: 0,
-							}}
-						/>
-						{#if $loadedExploreListings}
-							<NftCard options={exploreListingsData[0]} />
-							<NftCard options={exploreListingsData[exploreListingsData.length - 1]} />
-						{/if}
+					<div class="p-4 bg-card-gradient flex gap-4 w-full cursor-pointer">
+						<div class="w-1/2">
+							<FeaturedArtistCard
+								on:click={() => goto(`/profile/${creator.address}`)}
+								creatorData={{
+									name: creator.username,
+									address: creator.address,
+									coverImg: creator.coverUrl,
+									profileImg: creator.thumbnailUrl,
+									created: 0,
+								}}
+							/>
+						</div>
+						<NftCard options={exploreListingsData[0]} />
+						<NftCard options={exploreListingsData[exploreListingsData.length - 1]} />
 					</div>
 				{/each}
 			</div>
 		</div>
-	{/if} -->
+	{/if}
 
 	<!-- Tending nfts Section -->
 	{#if $loadedExploreListings && exploreListingsData?.length > 0}

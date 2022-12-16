@@ -13,7 +13,7 @@
 	};
 </script>
 
-<div class="w-full flex flex-col">
+<div class="w-full flex flex-col h-full" on:click>
 	<div class="w-full bg-dark-gradient h-[400px]">
 		<img src={creatorData.coverImg} alt="Featured creator cover." class="h-full object-cover w-full " />
 	</div>
