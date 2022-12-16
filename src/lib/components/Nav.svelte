@@ -9,6 +9,8 @@
 	import UserCircle from '$icons/user-circle.svelte';
 	import { goto } from '$app/navigation';
 
+	export let scrollY;
+
 	let displayProfilePopup = false;
 	let showProfileButton = false;
 	const closeModalIfNotInElement = (e) => {
@@ -32,7 +34,7 @@
 </script>
 
 <div class="fixed z-10 flex w-full ">
-	<div class="backdrop-blur-xl fixed z-10 flex items-center w-full h-20 px-28 2xl:px-36 overflow-x-visible scrollbar-hidden snap-mandatory snap-x text-white bg">
+	<div class="{scrollY ? 'backdrop-blur-xl' : ''} fixed z-10 flex items-center w-full h-20 px-28 2xl:px-36 overflow-x-visible scrollbar-hidden snap-mandatory snap-x text-white bg">
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
 			<img src="/svg/logo/logo.v2.svg" alt="Hinata logo." />

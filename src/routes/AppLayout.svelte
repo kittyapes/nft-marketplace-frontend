@@ -58,6 +58,8 @@
 
 		previousNetworkId = o?.network.chainId || null;
 	});
+
+	let scrollY;
 </script>
 
 <svelte:head>
@@ -68,7 +70,7 @@
 </svelte:head>
 
 {#key appReloadHelper}
-	<Nav />
+	<Nav {scrollY} />
 
 	{#if errorCode}
 		<ErrorPage {errorCode} />
@@ -85,3 +87,5 @@
 	<PopupManager />
 	<NavigationHandlers bind:errorCode={navigationErrorCode} />
 {/key}
+
+<svelte:window bind:scrollY />
