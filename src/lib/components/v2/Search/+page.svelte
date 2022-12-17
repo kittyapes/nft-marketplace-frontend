@@ -72,13 +72,15 @@
 			}
 		}}
 		bind:value={query}
-		class="rounded-none bg-gradient-a hover:text-white w-full h-10"
+		class="rounded-none bg-card-gradient hover:text-white w-full h-10 relative"
 		placeholder="Search"
 	>
-		<Search class="ml-6 w-5 h-6" />
+		<div class="absolute top-2 left-5">
+			<Search class="w-5 h-6 text-transparent" />
+		</div>
 
-		<div class:hidden={!query || !show} class="mr-9 p-2 bg-gradient-a" slot="end-icon">
-			<EnterKeyIcon class="w-4 h-3" />
+		<div class:hidden={!query || !show} class="absolute bg-gradient-a p-2 top-0 right-0" slot="end-icon">
+			<EnterKeyIcon class="w-6 h-6" />
 		</div>
 	</Input>
 	{#if isDropdownShown || query}

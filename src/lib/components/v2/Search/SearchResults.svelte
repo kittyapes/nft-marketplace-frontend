@@ -6,20 +6,20 @@
 	import { setPopup } from '$utils/popup';
 	import { selectedResultTab } from '$stores/search';
 	import { compactNumberFormat } from '$utils/api';
-	import { result } from 'lodash-es';
 	import HinataBadge from '$icons/hinata-badge.svelte';
 
 	export let tabs = ['Collections', 'NFTs', 'Users'];
 	export let query: string;
-	let activeTab = tabs[0];
-	$selectedResultTab = tabs[0].toLowerCase();
 	export let searchResults: {
 		collections?: any[];
 		items?: any[];
 		users?: any[];
 	} = {};
+
+	let activeTab = tabs[0];
+	$selectedResultTab = tabs[0].toLowerCase();
+
 	let hoveredId = '';
-	$: console.log(searchResults.collections[0]);
 </script>
 
 <div>
@@ -65,8 +65,8 @@
 							<div class="flex flex-col">
 								<div class="flex items-center gap-x-2">
 									<p>{result?.name}</p>
-									{#if result?.verified}
-										<HinataBadge class="w-5 2xl:w-6 h-5 2xl:h-6" />
+									{#if result?.mintedFrom?.toLowerCase() === 'hinata'}
+										<HinataBadge class="w-5 h-5 " />
 									{/if}
 								</div>
 								<p class="opacity-70">

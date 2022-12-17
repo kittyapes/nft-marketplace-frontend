@@ -5,13 +5,14 @@
 	import ButtonGroup from './ButtonGroup.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
-  	import { onMount } from 'svelte';
+	import { onMount } from 'svelte';
+	import PrimaryButton from '../PrimaryButton/PrimaryButton.svelte';
 
 	export let collections: Collection[] = [];
 
-	onMount(async() => {
+	onMount(async () => {
 		collections = (await apiGetMostActiveCollections()).collections;
-	})
+	});
 </script>
 
 <div class="">
@@ -26,6 +27,6 @@
 		<DiamondsLoader />
 	{/if}
 	<div class="flex justify-center mt-12">
-		<Button variant="square" dullgradient class="border-gradient w-52 h-14 whitespace-nowrap text-white text-lg leading-7" on:click={() => goto(`/collections`)}>See all collections</Button>
+		<PrimaryButton on:click={() => goto(`/collections`)} class="w-1/5">See all collections</PrimaryButton>
 	</div>
 </div>
