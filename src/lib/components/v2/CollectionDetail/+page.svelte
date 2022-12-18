@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Collection } from '$utils/api/collection';
 	import Button from '$lib/components/Button.svelte';
-	// import NftGrid from '$components/v2/NRTGrid/+';
 	import NftGrid from '$components/v2/NFTGrid/+page.svelte';
 	import CollectionValues from './CollectionValues.svelte';
 	import CollectionIdentity from './CollectionIdentity.svelte';

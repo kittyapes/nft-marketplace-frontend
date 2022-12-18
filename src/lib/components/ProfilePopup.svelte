@@ -44,7 +44,7 @@
 		{/if}
 
 		{#if showMyCollections}
-			<PrimaryButton on:click={() => goto(`/profile/${$profileData.address}/collections`)}>My Collections</PrimaryButton>
+			<PrimaryButton on:click={() => goto(`/profile/${$publicProfileData.address}/collections`)}>My Collections</PrimaryButton>
 		{/if}
 
 		<!-- <PrimaryButton on:click={() => alert('Not Implemented Yet')}>Buy Hinata</PrimaryButton> -->
