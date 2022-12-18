@@ -17,14 +17,13 @@
 	export let loaded = false;
 </script>
 
-<div class="flex justify-center w-full h-full " in:fade>
+<div class="flex justify-center w-full h-full text-white" in:fade>
 	<div class="w-4/5 py-20 ">
 		<button class="flex items-center gap-2 clickable " on:click={() => backFunction()}>
 			<LongLeftArrow />
-			<p class="text-sm font-semibold text-color-black">GO BACK</p>
+			<p class="text-sm font-semibold ">GO BACK</p>
 		</button>
 		<h1 class="mt-12 mb-4 text-5xl font-light">{title}</h1>
-		<div class="border-b border-black border-opacity-30" />
 
 		<div class="py-12 cardGrid" in:fade>
 			{#if showFirstComponent}
