@@ -8,6 +8,7 @@
 	export let searchPhrase: string;
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 	export let nfts: CardOptions[];
+
 	let sortOptions: { title: string; action?: any }[] = [
 		{
 			title: 'Ending soon',
@@ -45,9 +46,11 @@
 </script>
 
 <div class="flex flex-row items-center gap-x-5 mt-8">
-	<Input bind:value={searchPhrase} class="rounded-none border-2 border-gradient h-11 2xl:h-14 hover:text-white" placeholder="Search by name or attribute" height="44px">
+	<Input bind:value={searchPhrase} class="rounded-none border-2 border-gradient h-14 hover:text-white" placeholder="Search by name or attribute" height="44px">
 		<Search class="ml-6 w-5 h-6" />
 	</Input>
-	<SortButton bind:sortOptions class="h-11 2xl:h-14 min-w-[123px]" />
+
+	<SortButton bind:sortOptions class="h-14 min-w-[10rem]" />
+
 	<GridSelector bind:gridStyle />
 </div>

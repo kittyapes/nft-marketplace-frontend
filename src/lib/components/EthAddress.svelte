@@ -2,10 +2,7 @@
 	import Copy from '$icons/copy.svelte';
 	import { notifySuccess } from '$utils/toast';
 	import { hoverHint } from '$actions/hoverHint';
-	import ThemedCheck from '$icons/themed-check.svelte';
 	import { fade } from 'svelte/transition';
-	import SuccessCheckmark from '$icons/success-checkmark.svelte';
-	import VerifiedCheckWhite from '$icons/verified-check-white.svelte';
 	import Checkmark from '$icons/checkmark.svelte';
 
 	export let address = '';

@@ -512,7 +512,7 @@
 				</div>
 				<div class="flex justify-between items-center gap-10">
 					<div class="">Address</div>
-					<EthAddress {address} concat etherScanLink={false} class="!text-white !gap-2" />
+					<EthAddress {address} concat etherScanLink={false} class="!gap-2" />
 				</div>
 			</div>
 		</div>

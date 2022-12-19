@@ -9,6 +9,7 @@
 	import { onMount } from 'svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import CollectionDetail from '$lib/components/v2/CollectionDetail/+page.svelte';
+
 	export let data;
 
 	let collectionData: Collection;
@@ -96,4 +97,5 @@
 		}}
 	/>
 {/if}
+
 <CollectionDetail bind:collectionData bind:nfts on:load-more={fetchMore} bind:isLoading bind:reachedEnd />
