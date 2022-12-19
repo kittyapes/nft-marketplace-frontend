@@ -61,6 +61,6 @@
 	commonRenderComponent={CollectionCard}
 	firstRenderComponent={CreateNewCollectionCard}
 	commonComponentProps={data}
-	showFirstComponent={$currentUserAddress === address}
+	showFirstComponent={$currentUserAddress === address && loaded}
 	{loaded}
 />

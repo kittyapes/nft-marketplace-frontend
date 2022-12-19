@@ -84,8 +84,8 @@
 
 	async function fetchCollectionData() {
 		resetNfts();
-		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => undefined);
-		creatorData = await fetchProfileData(collectionData?.creator).catch((e) => undefined);
+		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => null);
+		creatorData = await fetchProfileData(collectionData?.creator).catch((e) => null);
 		await fetchMore();
 	}
 
@@ -129,12 +129,12 @@
 	</div>
 
 	<div class="w-full flex flex-row flex-wrap overflow-auto gap-y-5 items-center justify-between mt-12">
-		<CollectionIdentity bind:collectionData />
-		<CollectionValues bind:collectionData />
+		<CollectionIdentity {collectionData} {creatorData} />
+		<CollectionValues {collectionData} />
 	</div>
 
 	<!-- Description and share button -->
-	<CollectionDescription bind:collectionData />
+	<CollectionDescription {collectionData} />
 
 	<!-- Filter, search and grid selection-->
 	<FilterAndGrid bind:searchPhrase bind:gridStyle bind:nfts />
@@ -142,11 +142,15 @@
 	<!-- Filter panel and NFT grid -->
 	<div class="w-full flex flex-row items-start gap-x-5 mt-6 ">
 		<div class="w-full">
-			<NftGrid bind:options={displayedNfts} bind:gridStyle bind:isLoading />
+			{#if !isLoading && reachedEnd && displayedNfts.length === 0}
+				<div class="">No results found.</div>
+			{/if}
+
+			<NftGrid options={displayedNfts} bind:gridStyle bind:reachedEnd bind:isLoading createNewNftBtn={'asd'} />
 
 			<div class="mt-16 mb-20">
-				{#if displayedNfts?.length > 0 && !reachedEnd && displayedNfts.length == nfts.length}
-					<PrimaryButton on:click={fetchMore} class="">Load more</PrimaryButton>
+				{#if displayedNfts?.length > 0 && !reachedEnd && displayedNfts.length === nfts.length}
+					<PrimaryButton on:click={fetchMore}>Load more</PrimaryButton>
 				{/if}
 			</div>
 		</div>

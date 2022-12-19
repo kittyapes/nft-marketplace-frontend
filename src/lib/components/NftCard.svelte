@@ -176,7 +176,7 @@
 		class:normal-nft-media={gridStyle === 'normal'}
 		class:dense-nft-media={gridStyle === 'dense'}
 		class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}
-		class="w-full mx-auto  transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} relative"
+		class="w-full h-full mx-auto  transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} relative"
 	>
 		{#if isHovered && !disabled}
 			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60" transition:fade={{ duration: 200 }}>

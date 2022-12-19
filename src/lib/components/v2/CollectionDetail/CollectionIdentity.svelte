@@ -6,12 +6,16 @@
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import EthV2 from '$icons/eth-v2.svelte';
+	import type { UserData } from '$interfaces/userData';
+	import { includes } from 'lodash-es';
+	import VerifiedBadge from '$icons/verified-badge.svelte';
 
 	export let collectionData: Collection;
+	export let creatorData: UserData;
 
 	let showCollectionMenu = false;
 
-	$: address = collectionData?.collectionAddress;
+	$: address = creatorData?.address;
 
 	const reportCollection = async () => {
 		// TODO logic to report a collection
@@ -25,7 +29,7 @@
 	<div class="flex flex-col gap-y-6">
 		<div class="flex flex-row items-center gap-x-4">
 			<h1 class="font-semibold text-4xl leading-6 whitespace-nowrap">{collectionData?.name || ''}</h1>
-			<HinataBadge class="w-8 h-8 {collectionData?.verified ? '' : 'block'}" />
+			<HinataBadge class="w-8 h-8 {collectionData?.mintedFrom.toLowerCase() === 'hinata' ? '' : 'block'}" />
 			<div class="relative w-1 h-5">
 				<button
 					on:click={() => {
@@ -57,9 +61,9 @@
 			</div>
 		</div>
 		<div class="flex flex-row items-center gap-x-4">
-			<h3 class="text-gradient text-xl leading-6 whitespace-nowrap">{collectionData?.name || ''}</h3>
+			<h3 class="text-gradient text-xl leading-6 whitespace-nowrap">{creatorData?.username || ''}</h3>
 
-			<HinataBadge class="w-6 h-6 {collectionData?.verified ? '' : 'block'}" />
+			<VerifiedBadge class="w-6 h-6 {creatorData?.roles?.includes('verified_user') ? '' : 'block'}" />
 
 			<div class="flex flex-row items-center bg-black bg-opacity-25 py-1 px-3 gap-2">
 				<EthV2 />
