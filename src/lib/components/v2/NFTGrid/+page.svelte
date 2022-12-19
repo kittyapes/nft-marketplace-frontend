@@ -5,6 +5,7 @@
 	import AddCircle from '$icons/add-circle.svelte';
 	import { goto } from '$app/navigation';
 	import NftCard from '$lib/components/NftCard.svelte';
+	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -70,7 +71,10 @@
 			{/each}
 		</div>
 	{/if}
-	{#if reachedEnd && options?.length > 0}
+
+	{#if isLoading}
+		<DiamondsLoader />
+	{:else if reachedEnd && options?.length > 0}
 		<div class="text-center placeholder ">You have reached the end of this list.</div>
 	{/if}
 </div>
@@ -80,15 +84,15 @@
 		@apply p-36 font-semibold text-lg opacity-70;
 	}
 	.normal-grid {
-		@apply grid grid-cols-[repeat(auto-fit,261px)] 2xl:grid-cols-[repeat(auto-fit,324px)];
-		@apply justify-between gap-y-10 2xl:gap-y-14;
+		@apply grid grid-cols-[repeat(auto-fit,345px)];
+		@apply justify-between gap-y-14;
 	}
 	.dense-grid {
-		@apply grid grid-cols-[repeat(auto-fit,166px)] 2xl:grid-cols-[repeat(auto-fit,206px)];
-		@apply justify-between gap-y-8 2xl:gap-y-10;
+		@apply grid grid-cols-[repeat(auto-fit,260px)];
+		@apply justify-between gap-y-10;
 	}
 	.masonry-container {
-		@apply columns-[166px] 2xl:columns-[206px];
-		@apply gap-x-5 2xl:gap-x-6;
+		@apply columns-[260px];
+		@apply gap-x-6;
 	}
 </style>
