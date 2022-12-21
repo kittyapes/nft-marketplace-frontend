@@ -52,6 +52,10 @@ body {
 	@apply transition-transform duration-200 transform active:scale-95 cursor-pointer;
 }
 
+.err-box {
+	@apply bg-red-400 text-white px-4 py-2 rounded font-medium;
+}
+
 #WEB3_CONNECT_MODAL_ID {
 	@apply z-[10000] absolute;
 }
