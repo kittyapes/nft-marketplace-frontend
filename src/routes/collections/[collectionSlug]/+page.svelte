@@ -124,7 +124,7 @@
 		{#if collectionData?.backgroundImageUrl}
 			<img class="w-full h-full object-cover object-center" src={collectionData?.backgroundImageUrl} alt="Collection cover." />
 		{:else}
-			<div class="w-full h-full bg-gray-100" />
+			<div class="w-full h-full bg-gradient-a" />
 		{/if}
 	</div>
 

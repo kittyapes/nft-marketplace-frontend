@@ -176,7 +176,7 @@
 		class:normal-nft-media={gridStyle === 'normal'}
 		class:dense-nft-media={gridStyle === 'dense'}
 		class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}
-		class="w-full h-full mx-auto  transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} relative"
+		class="w-full h-full mx-auto transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} relative"
 	>
 		{#if isHovered && !disabled}
 			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60" transition:fade={{ duration: 200 }}>
@@ -189,7 +189,9 @@
 			</div>
 		{/if}
 		{#await preload(options.nfts[0].thumbnailUrl)}
-			<Loader />
+			<div class="min-h-full w-full grid place-items-center">
+				<Loader />
+			</div>
 		{:then}
 			{#if fileType === 'video'}
 				<video crossorigin="anonymous" class="max-w-full max-h-full object-cover object-top w-full h-full transition" autoplay loop class:opacity-0={!imgLoaded}>
