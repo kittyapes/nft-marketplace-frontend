@@ -51,7 +51,7 @@
 						<Checkmark />
 					</div>
 				{:else}
-					<button on:click={copyToClipboard} class="transition-btn grid place-items-center" in:fade>
+					<button on:click|stopPropagation={copyToClipboard} class="transition-btn grid place-items-center" in:fade>
 						<Copy />
 					</button>
 				{/if}
