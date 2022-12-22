@@ -1,5 +1,6 @@
 <script lang="ts">
 	import EthAddress from '$lib/components/EthAddress.svelte';
+	import { toShortDisplayPrice } from '$utils/adapters/cardOptions';
 	import { createEventDispatcher } from 'svelte';
 	import { tick } from 'svelte';
 	import EthIcon from './EthIcon.svelte';
@@ -56,7 +57,7 @@
 				<div class="w-4">
 					<EthIcon />
 				</div>
-				{row.price}
+				{toShortDisplayPrice(`${row.price}`)}
 			</div>
 		{:else}
 			<div />
@@ -89,7 +90,7 @@
 <style type="postcss">
 	#grid-container {
 		grid-template-rows: repeat(var(--list-length), min-content);
-		grid-template-columns: minmax(10rem, auto) minmax(12rem, auto) minmax(8rem, auto) minmax(8rem, auto) minmax(10rem, auto);
+		grid-template-columns: minmax(12rem, auto) minmax(12rem, auto) minmax(8rem, auto) minmax(8rem, auto) minmax(10rem, auto);
 	}
 
 	#grid-container > :nth-child(-n + 5) {

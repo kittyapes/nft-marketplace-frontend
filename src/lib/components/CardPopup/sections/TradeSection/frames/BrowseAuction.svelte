@@ -1,12 +1,11 @@
 <script lang="ts">
-	import Eth from '$icons/eth.svelte';
+	import EthV2 from '$icons/eth-v2.svelte';
 	import type { CardOptions } from '$interfaces/ui';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
 	import type { ChainListing } from '$utils/contracts/listing';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
@@ -103,23 +102,19 @@
 			<div class="font-semibold">
 				<div class="">Starting price</div>
 				<div class="flex items-center justify-end gap-2 {(options?.auctionData?.formatStartingPrice || options?.auctionData?.startingPrice || 'N/A').toString().length > 12 ? 'text-xs' : 'text-base'}">
-					<Eth />
+					<EthV2 />
 					{options?.auctionData?.formatStartingPrice || options?.auctionData?.startingPrice || 'N/A'}
 				</div>
 			</div>
 		</div>
 
 		<div class="flex gap-2">
-			<button class="grid w-12 h-12 p-2 border rounded-lg place-items-center" disabled><Eth /></button>
+			<button class="grid w-12 h-12 p-2 border rounded-lg place-items-center" disabled><EthV2 /></button>
 			<Input class="border border-opacity-20" placeholder="Enter amount" bind:value={bidAmount} validator={bidValidator} bind:valid={bidAmountValid} disabled={listingExpired} />
 		</div>
 
 		<div class="flex gap-2 mt-4">
 			{#if $appSigner}
-				{#if false}
-					<SecondaryButton>Cancel Bid</SecondaryButton>
-				{/if}
-
 				<div class="relative w-full" on:pointerover={() => (hoveringPlaceBid = true)} on:pointerleave={() => (hoveringPlaceBid = false)}>
 					<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid || !!bidError || !chainListing.isValidOnChainListing}>
 						{#if isPlacingBid}

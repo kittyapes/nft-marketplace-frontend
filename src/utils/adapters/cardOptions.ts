@@ -29,6 +29,25 @@ export interface SanitizedNftData {
 	fullId: string;
 }
 
+export function toShortDisplayPrice(floatingPrice: string) {
+	const bigNumber = ethers.utils.parseEther(floatingPrice);
+
+	const maxCharsOnDisplay = 10;
+	const thresholdStr = '0.0001';
+	const threshold = ethers.utils.parseEther(thresholdStr);
+
+	if (bigNumber.lt(threshold)) {
+		return '< ' + thresholdStr;
+	} else {
+		return floatingPrice.length > maxCharsOnDisplay
+			? `~ ${(+floatingPrice)
+					.toFixed(maxCharsOnDisplay)
+					.toString()
+					.replace(/(\.?0+$)/, '')}`
+			: floatingPrice;
+	}
+}
+
 export async function sanitizeNftData(data: ApiNftData) {
 	// temporarily fetch data from our backend if it is there
 	data.uri = makeHttps(data.uri);
@@ -117,25 +136,6 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 			nftQuantities: { [nft.nftId]: listing.nfts[0].amount },
 		},
 	};
-
-	function toShortDisplayPrice(floatingPrice: string) {
-		const bigNumber = ethers.utils.parseEther(floatingPrice);
-
-		const maxCharsOnDisplay = 10;
-		const thresholdStr = '0.0001';
-		const threshold = ethers.utils.parseEther(thresholdStr);
-
-		if (bigNumber.lt(threshold)) {
-			return '< ' + thresholdStr;
-		} else {
-			return floatingPrice.length > maxCharsOnDisplay
-				? `~ ${(+floatingPrice)
-						.toFixed(maxCharsOnDisplay)
-						.toString()
-						.replace(/(\.?0+$)/, '')}`
-				: floatingPrice;
-		}
-	}
 
 	if (listing.listingType === 'sale') {
 		const fPrice = scientificToDecimal(listing.listing?.formatPrice);

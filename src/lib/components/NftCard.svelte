@@ -153,7 +153,7 @@
 
 	onDestroy(() => clearInterval(timerInterval));
 
-	$: console.log(timerHtml);
+	$: console.log(options);
 </script>
 
 <div
@@ -238,7 +238,7 @@
 					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-2' : 'gap-x-1'}">
 						<span><EthV2 class={gridStyle === 'normal' ? 'w-3 h-4' : 'w-2 h-3'} /></span>
 						<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
-							{options?.auctionData?.highestBid || options?.auctionData?.formatStartingPrice || options?.saleData?.formatPrice || 'N/A'}
+							{options?.listingData.shortDisplayPrice || 'N/A'}
 						</h3>
 					</div>
 				</div>
