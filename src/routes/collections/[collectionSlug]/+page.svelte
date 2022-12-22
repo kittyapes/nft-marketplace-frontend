@@ -15,6 +15,7 @@
 	import CollectionDescription from '$lib/components/v2/CollectionDetail/CollectionDescription.svelte';
 	import FilterAndGrid from '$lib/components/v2/CollectionDetail/FilterAndGrid.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import { currentUserAddress } from '$stores/wallet';
 
 	export let data;
 
@@ -146,7 +147,7 @@
 				<div class="">No results found.</div>
 			{/if}
 
-			<NftGrid options={displayedNfts} bind:gridStyle bind:reachedEnd bind:isLoading createNewNftBtn={'asd'} />
+			<NftGrid options={displayedNfts} bind:gridStyle bind:reachedEnd bind:isLoading createNewNftBtn={$currentUserAddress === collectionData?.creator ? `${collectionData?.id}` : ''} />
 
 			<div class="mt-16 mb-20">
 				{#if displayedNfts?.length > 0 && !reachedEnd && displayedNfts.length === nfts.length}
