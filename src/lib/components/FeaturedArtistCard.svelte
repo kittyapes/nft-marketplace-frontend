@@ -13,16 +13,15 @@
 		created: number;
 	};
 
-	export let followed = false;
-
 	// TODO: load followed users
+	export let followed = false;
 
 	async function handleFollow() {
 		followed = await followUnfollowUser(creatorData.address, !followed);
 	}
 </script>
 
-<button class="w-full flex flex-col h-full" on:click>
+<button class="w-full flex flex-col h-full border-2 border-transparent" on:click>
 	<div class="w-full bg-dark-gradient h-[400px]">
 		<img src={creatorData.coverImg} alt="Featured creator cover." class="h-full object-cover w-full " />
 	</div>
