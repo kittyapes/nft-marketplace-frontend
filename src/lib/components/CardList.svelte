@@ -1,7 +1,7 @@
 <script lang="ts">
 	import LongLeftArrow from '$icons/long-left-arrow.svelte';
 	import { createEventDispatcher } from 'svelte';
-	import { fade } from 'svelte/transition';
+	import { fade, slide } from 'svelte/transition';
 	import DiamondsLoader from './DiamondsLoader.svelte';
 
 	const dispatch = createEventDispatcher();
@@ -25,20 +25,21 @@
 		</button>
 		<h1 class="mt-12 mb-4 text-5xl font-light">{title}</h1>
 
-		<div class="py-12 cardGrid" in:fade>
-			{#if showFirstComponent}
-				<svelte:component this={firstRenderComponent} on:click={() => dispatch('first-component-click')} />
-			{/if}
-			{#if commonComponentProps.length}
+		{#if commonComponentProps.length}
+			<div class="py-12 cardGrid" in:slide|local>
+				{#if showFirstComponent}
+					<svelte:component this={firstRenderComponent} on:click={() => dispatch('first-component-click')} />
+				{/if}
 				{#each commonComponentProps as props}
 					<svelte:component this={commonRenderComponent} {...props} on:click={() => dispatch('component-click', props)} />
 				{/each}
-			{:else if !showFirstComponent && loaded && !commonComponentProps.length}
-				<div class="p-20 text-lg font-semibold text-center opacity-60 min-w-max">Nothing to see here, move along.</div>
-			{:else if !loaded}
-				<DiamondsLoader />
-			{/if}
-		</div>
+				{#if !showFirstComponent && loaded && !commonComponentProps.length}
+					<div class="p-20 text-lg font-semibold text-center opacity-60 min-w-max">Nothing to see here, move along.</div>
+				{:else if !loaded}
+					<DiamondsLoader />
+				{/if}
+			</div>
+		{/if}
 	</div>
 </div>
 
