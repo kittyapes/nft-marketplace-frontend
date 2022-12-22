@@ -8,6 +8,7 @@
 	import { fade } from 'svelte/transition';
 	import UserCircle from '$icons/user-circle.svelte';
 	import { beforeNavigate, goto } from '$app/navigation';
+	import Wallet from '$icons/wallet.svelte';
 
 	export let scrollY;
 
@@ -102,7 +103,9 @@
 			{/if}
 
 			{#if !$appSigner}
-				<button on:click={async () => await connectToWallet()} class="py-3 ml-8 text-sm font-semibold text-white uppercase bg-black rounded-3xl w-52">Connect Wallet</button>
+				<button on:click={async () => await connectToWallet()}>
+					<Wallet class="w-10 h-10" />
+				</button>
 			{/if}
 		</div>
 		<div class="snap-end" />
