@@ -86,7 +86,7 @@
 	let hoveringPlaceBid;
 </script>
 
-<div class="flex flex-col justify-center h-[90%] pr-1">
+<div class="flex flex-col justify-center h-[90%] pr-1 text-white">
 	<div class="flex flex-col h-full mt-4">
 		<div class="min-h-[300px] flex-grow">
 			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} on:request-refresh={refreshBids} />

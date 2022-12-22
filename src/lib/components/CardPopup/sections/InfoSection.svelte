@@ -92,7 +92,7 @@
 	<!-- Properties -->
 	<div class="gap-4 flex">
 		{#each properties as prop}
-			<div class="overflow-hidden max-w-[10rem]">
+			<div class="overflow-hidden max-w-[10rem] {prop.onclick ? 'clickable' : ''}" on:click={prop.onclick}>
 				<div class="text-lg text-gradient font-medium whitespace-nowrap overflow-hidden ">{prop.name}</div>
 				<div class="whitespace-nowrap truncate overflow-hidden">{prop.value || 'N/A'}</div>
 			</div>
