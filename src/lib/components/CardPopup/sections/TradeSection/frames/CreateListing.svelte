@@ -87,7 +87,7 @@
 	});
 </script>
 
-<div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto">
+<div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto text-white">
 	{#if canCreateListing}
 		<!-- Listing Type -->
 		<div class="mt-2 font-semibold">Listing Type</div>

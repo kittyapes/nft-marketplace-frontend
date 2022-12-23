@@ -1,4 +1,4 @@
-<button on:click class="w-full bg-gradient border-2 border-white border-opacity-70 text-white text-opacity-70 font-semibold text-lg leading-6 2xl:leading-7 transition-btn {$$props.class}">
+<button on:click class="w-full bg-gradient border-2 border-white border-opacity-70 text-white text-opacity-70 font-semibold text-lg leading-7 transition-btn {$$props.class}">
 	<slot />
 </button>
 
