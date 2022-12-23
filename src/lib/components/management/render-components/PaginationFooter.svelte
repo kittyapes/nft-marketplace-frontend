@@ -7,47 +7,23 @@
 
 	const dispatch = createEventDispatcher();
 
-	$: localPages = [...Array(props?.pages + 1).keys()].slice(1);
-
 	let selected = 1;
-	let itemsPerPage = 10;
+	let itemsPerPage = 20;
 	let perPageDroppedDown = false;
 	let selectDroppedDown = false;
-	let totalPages = 10;
-	let pages = [];
 	let itemsPerPageChoices = [5, 10, 20, 30];
-	let totalNumberOfItems = 100;
-	for (let index = 0; index < totalPages; index++) {
-		pages.push(index + 1);
-	}
 
-	$: showingPages = props?.pages > 6 ? (selected === 1 ? [...localPages.keys()].slice(1, 6) : showingPages) : localPages;
+	$: totalPages = props.pages;
+	$: pages = Array.from(Array(totalPages), (_, i) => i + 1);
+	$: totalNumberOfItems = props.items;
 
 	function selectPage(page: number) {
+		if (props.pages < page || page < 1 || selected === page) return;
 		selectDroppedDown = false;
-		if (props.pages < page || page < 0 || selected === page) return;
-
 		window.scrollTo(0, 0);
 
-		if (page === props.pages) {
-			showingPages = localPages.slice(-5);
-		}
-
-		if (page === localPages[0]) {
-			showingPages = localPages.slice(0, 5);
-		}
-
-		if (page === showingPages[showingPages.length - 1] && page !== props.pages) {
-			showingPages.shift();
-			showingPages.push(showingPages[showingPages.length - 1] + 1);
-			showingPages = showingPages;
-		} else if (page === showingPages[0] && showingPages[0] !== 1) {
-			showingPages.pop();
-			showingPages.unshift(showingPages[0] - 1);
-			showingPages = showingPages;
-		}
-
 		selected = page;
+
 		dispatch('event', { page: selected });
 	}
 
@@ -59,64 +35,70 @@
 		selectPage(selected - 1);
 	}
 
-	function firstPage() {
-		selectPage(localPages?.[0]);
-	}
-
-	function lastPage() {
-		selectPage(props?.pages);
-	}
-
 	function pickPerPage(choice: number) {
-		itemsPerPage = choice;
 		perPageDroppedDown = false;
+		selectPage(1);
+
+		window.scrollTo(0, 0);
+
+		itemsPerPage = choice;
+
+		dispatch('event', { itemsPerPage, page: selected });
 	}
 </script>
 
-<style type="postcss">
-	.gradient {
-		@apply bg-gradient-to-r from-color-purple to-color-blue text-white;
-	}
-</style>
-
 <div class="w-full col-span-full select-none items-center flex border-y border-color-gray-lighter text-lg font-medium text-white">
 	<div class="relative">
-		<div
-			class="flex gap-2 border-r border-r-white items-center p-4 cursor-pointer"
-			on:click={() => {
-				perPageDroppedDown = !perPageDroppedDown;
-			}}>
+		<div class="flex gap-2 border-r border-r-white items-center p-4">
 			<div class="text">Items per page: {itemsPerPage}</div>
-			<ArrowDown />
+			<div
+				class="clickable"
+				on:click={() => {
+					perPageDroppedDown = !perPageDroppedDown;
+				}}
+			>
+				<ArrowDown />
+			</div>
 		</div>
 		{#if perPageDroppedDown}
 			<div class="flex w-full justify-end">
-				<div class="absolute bg-white text-color-black rounded-lg w-1/4">
+				<div class="absolute bg-dark-gradient text-white w-1/4">
 					{#each itemsPerPageChoices as choice}
-						<div class="cursor-pointer text-center hover:bg-[#0000001e]" transition:slide on:click={() => pickPerPage(choice)}>{choice}</div>
+						<div class="cursor-pointer text-center dropdown-item" transition:slide on:click={() => pickPerPage(choice)}>{choice}</div>
 					{/each}
 				</div>
 			</div>
 		{/if}
 	</div>
-	<div class="p-4 flex-grow">{selected * itemsPerPage - (itemsPerPage - 1)} – {selected * itemsPerPage} of {totalNumberOfItems} items</div>
+	<div class="p-4 flex-grow">{selected * itemsPerPage - (itemsPerPage - 1)} - {selected === totalPages ? totalNumberOfItems : selected * itemsPerPage} of {totalNumberOfItems} items</div>
 	<div class="relative">
-		<div class="flex items-center p-4 cursor-pointer">
-			<div
-				class="flex items-center"
-				on:click={() => {
-					selectDroppedDown = !selectDroppedDown;
-				}}>
+		<div class="flex items-center p-4">
+			<div class="flex items-center gap-1">
+				<div
+					class="clickable"
+					on:click={() => {
+						selectDroppedDown = !selectDroppedDown;
+					}}
+				>
+					<ArrowDown />
+				</div>
 				<div class="text">{selected}</div>
-				<ArrowDown />
 			</div>
 			<div class="pl-2">of {totalPages} pages</div>
 		</div>
 		{#if selectDroppedDown}
 			<div class="flex w-full">
-				<div class="absolute bg-white text-color-black rounded-lg w-1/4 max-h-24 overflow-y-auto blue-scrollbar">
+				<div class="absolute bg-dark-gradient text-white w-1/4 max-h-24 overflow-y-auto blue-scrollbar">
 					{#each pages as page}
-						<div class="cursor-pointer text-center hover:bg-[#0000001e]" transition:slide on:click={() => {selectPage(page)}}>{page}</div>
+						<div
+							class="cursor-pointer text-center dropdown-item"
+							transition:slide
+							on:click={() => {
+								selectPage(page);
+							}}
+						>
+							{page}
+						</div>
 					{/each}
 				</div>
 			</div>
@@ -135,3 +117,12 @@
 		</div>
 	</div>
 </div>
+
+<style type="postcss">
+	.dropdown-item:hover {
+		background: radial-gradient(55.65% 55.65% at 51.68% 130.43%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%),
+			radial-gradient(55.22% 148.72% at 98.83% 0%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%),
+			radial-gradient(64.35% 166.74% at 8.56% -7.83%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%),
+			linear-gradient(180deg, rgba(136, 234, 255, 0.1) 0%, rgba(133, 141, 247, 0.056) 100%, rgba(133, 141, 247, 0.1) 100%), rgba(0, 0, 0, 0.1);
+	}
+</style>

@@ -27,7 +27,7 @@
 	class:cursor-pointer={props?.sortBy}
 	on:click|stopPropagation={handleClick}
 >
-	<div>{props.title}</div>
+	<div class="whitespace-nowrap">{props.title}</div>
 	{#if props.active}
 		<div class="transition" class:rotate-180={reverse} transition:fade>
 			<ArrowDown />

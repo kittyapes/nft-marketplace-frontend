@@ -32,7 +32,7 @@
 </script>
 
 <div use:hoverHint={{ text: address, targetId: `hint-target-${address}` }} on:click>
-	<div class="w-full h-full transition-all " id={tooltip ? `hint-target-${address}` : ``} />
+	<div class="w-full h-full" id={tooltip ? `hint-target-${address}` : ``} />
 	<div class="flex items-center gap-2 text-[#27C9FF] font-light duration-200 {$$props.class}">
 		{#if etherScanLink}
 			<a href="https://etherscan.io/address/{address}" target="_blank">
