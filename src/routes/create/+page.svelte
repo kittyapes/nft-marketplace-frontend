@@ -186,7 +186,7 @@
 		nfts: [
 			{
 				name: nftData.name || 'No Title',
-				thumbnailUrl: nftData.thumbnailPreview || nftData.assetPreview,
+				thumbnailUrl: nftData.thumbnailPreview || nftData.assetPreview || '',
 				collectionData: { name: selectedCollectionRow?.label },
 			},
 		],
@@ -267,7 +267,7 @@
 						on:select={handleCollectionSelection}
 						dispatchOnMount={false}
 						options={[...$availableCollections, { label: 'Create new collection', value: 'collections/new/edit?to=create' }]}
-						class="mt-2"
+						class="mt-2 h-12"
 						btnClass="font-semibold"
 					/>
 				{/if}
@@ -283,7 +283,7 @@
 	</div>
 
 	<!-- Right side -->
-	<div class="pl-8 pt-8 border-0 border-l border-white separator w-80">
+	<div class="pl-8 pt-8 border-0 border-l border-white separator w-96">
 		<div class="mb-4 text-xl uppercase">Preview</div>
 		<NftCard options={previewMockOptions} hideLikes />
 	</div>

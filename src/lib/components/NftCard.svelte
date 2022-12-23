@@ -216,7 +216,7 @@
 			{:else if fileType === 'image'}
 				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" />
 			{:else}
-				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" />
+				<div class="bg-card-gradient w-full h-full transition" />
 			{/if}
 		{/await}
 	</div>
