@@ -34,7 +34,7 @@
 	{/if}
 
 	{#if label}
-		<div class="ml-10 text-black whitespace-nowrap">
+		<div class="text-black whitespace-nowrap ml-8">
 			{label}
 		</div>
 	{/if}

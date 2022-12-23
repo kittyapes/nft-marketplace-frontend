@@ -1,8 +1,14 @@
 import type { ApiNftData } from '$interfaces/apiNftData';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
-import axios from 'axios';
+import axios, { AxiosError, type AxiosResponse } from 'axios';
 import { noTryAsync } from 'no-try';
-import { getApiUrl, type ApiCallResult } from '.';
+import { getApiUrl } from '.';
+
+export interface ApiCallResult<T> {
+	err?: AxiosError;
+	res?: AxiosResponse;
+	data?: T;
+}
 
 export async function getNft(id: string, lean = false) {
 	const res = await axios.get(getApiUrl('latest', 'nfts/' + id), {

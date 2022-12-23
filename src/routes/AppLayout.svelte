@@ -18,6 +18,12 @@
 	import { refreshConnection } from '$utils/wallet/connectWallet';
 	import { onMount, setContext } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
+	import { browser } from '$app/environment';
+	import { initTos } from '$utils/tos';
+
+	if (browser) {
+		initTos();
+	}
 
 	onMount(async () => {
 		// Check for whether user has access/has provided password
