@@ -152,8 +152,6 @@
 	});
 
 	onDestroy(() => clearInterval(timerInterval));
-
-	$: console.log(options);
 </script>
 
 <div
