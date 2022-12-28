@@ -3,15 +3,13 @@
 	import DropdownArrow from '$icons/dropdown-arrow.svelte';
 	import { tick } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import type { LegalDocData } from './LegalDocRenderer';
 
-	export let jsonUrl: string;
+	export let loading = false;
+	export let docData: LegalDocData;
 	export let menuTitle: string;
 	export let isContained: boolean = false;
 	export let desktopMenuOffsetTop = 24;
-
-	if (!jsonUrl) {
-		throw new Error('jsonUrl is not defined');
-	}
 
 	if (!menuTitle) {
 		throw new Error('menuTitle is not defined');
@@ -96,16 +94,18 @@
 
 <svelte:window bind:scrollY={windowScrollY} />
 
-{#await fetch(jsonUrl).then((res) => res.json())}
+{#if loading}
 	<div class="font-semibold text-center py-32 text-lg">Loading document...</div>
-{:then doc}
+{:else if !loading && !docData?.length}
+	<div class="font-semibold text-center py-32 text-lg">No data to display.</div>
+{:else}
 	<div on:scroll={handleContainerScroll} bind:this={componentContainer} class="h-full flex mx-auto max-w-screen-2xl" class:overflow-y-auto={isContained} class:overflow-x-auto={isContained}>
 		<!-- Desktop menu section -->
 		<div id="menu-container" class="hidden lg:block" style="top: {desktopMenuOffsetTop / 4}rem" in:fade>
-			<h1>{menuTitle}</h1>
+			<h1 class="uppercase">{menuTitle}</h1>
 
 			<ul id="section-links-container">
-				{#each doc.terms as section}
+				{#each docData as section}
 					<li class="section-link" class:highlight={currentHash === titleToHash(section.title)}>
 						<a href={titleToHash(section.title)} on:click={(ev) => updateHash(ev, titleToHash(section.title))}>
 							{section.title}
@@ -117,27 +117,25 @@
 
 		<!-- Document section -->
 		<div>
-			<!-- Mobile title -->
+			<!-- Mobile doc title -->
 			<h1 class="px-8 mt-8 mb-8 font-semibold text-lg lg:hidden">{menuTitle}</h1>
 
-			<div class="max-w-4xl px-4 lg:px-0 lg:pr-16 lg:mt-40 mb-32" in:fade>
-				{#each doc.terms as section, index}
-					<!-- Desktop title -->
+			<!-- Desktop doc title -->
+			<h1 class="hidden lg:block text-center pr-16 lg:mt-40 font-semibold text-3xl mb-16">
+				{menuTitle}
+			</h1>
+
+			<div class="max-w-4xl px-4 lg:px-0 lg:pr-16 mb-32" in:fade>
+				{#each docData as section, index}
+					<!-- Desktop section title -->
 					<h2 id="{titleToHash(section.title, true)}-section-title" class="section-title hidden lg:block" bind:this={titles[index]}>
-						<div class="" class:text-center={section.center}>
-							{#if section.numbered}
-								{index}.&emsp;
-								<span>{section.title}</span>
-							{:else}
-								{section.title}
-							{/if}
+						<div>
+							{index + 1}.&emsp;
+							<span>{section.title}</span>
 						</div>
-						{#if section.break}
-							<div class=" mt-6 w-full h-[2px] bg-[#0c1011] opacity-80" />
-						{/if}
 					</h2>
 
-					<!-- Mobile title and dropdown -->
+					<!-- Mobile section title and dropdown -->
 					<input type="checkbox" id="{titleToHash(section.title, true)}-section-title-mobile" class="mobile-section" />
 					<label for="{titleToHash(section.title, true)}-section-title-mobile" class="mobile-section lg:!hidden">
 						{section.title}
@@ -157,9 +155,7 @@
 	</div>
 
 	{scrollToSection(currentHash) && ''}
-{:catch}
-	Error loading document.
-{/await}
+{/if}
 
 <style lang="postcss">
 	/* Mobile and Desktop content */
