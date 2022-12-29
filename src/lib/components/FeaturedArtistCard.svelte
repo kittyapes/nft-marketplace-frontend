@@ -1,6 +1,7 @@
 <script lang="ts">
 	import EthV2 from '$icons/eth-v2.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
+	import { followUnfollowUser } from '$utils/api/following';
 	import EthAddress from './EthAddress.svelte';
 	import PrimaryButton from './v2/PrimaryButton/PrimaryButton.svelte';
 
@@ -11,14 +12,21 @@
 		profileImg: string;
 		created: number;
 	};
+
+	// TODO: load followed users
+	export let followed = false;
+
+	async function handleFollow() {
+		followed = await followUnfollowUser(creatorData.address, !followed);
+	}
 </script>
 
-<div class="w-full flex flex-col">
+<button class="w-full flex flex-col h-full border-2 border-transparent" on:click>
 	<div class="w-full bg-dark-gradient h-[400px]">
 		<img src={creatorData.coverImg} alt="Featured creator cover." class="h-full object-cover w-full " />
 	</div>
 
-	<div class="bg-dark-gradient flex flex-col items-center justify-center flex-grow">
+	<div class="bg-dark-gradient flex flex-col items-center justify-center flex-grow w-full">
 		<div class="w-full flex justify-between px-4">
 			<div class="flex gap-4">
 				<div class="w-24 h-24">
@@ -36,9 +44,11 @@
 				</div>
 			</div>
 			<div class="flex flex-col justify-between items-end">
-				<PrimaryButton class="w-40">Follow</PrimaryButton>
+				<button on:click|stopPropagation={handleFollow}>
+					<PrimaryButton class="w-40">{followed ? 'Unfollow' : 'Follow'}</PrimaryButton>
+				</button>
 				<div class="text-xl">Created {creatorData.created}</div>
 			</div>
 		</div>
 	</div>
-</div>
+</button>

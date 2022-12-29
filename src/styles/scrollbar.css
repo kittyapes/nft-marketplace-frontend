@@ -31,7 +31,7 @@
 }
 
 .blue-scrollbar::-webkit-scrollbar-track {
-	@apply bg-transparent;
+	@apply bg-dark-gradient;
 }
 
 .blue-scrollbar::-webkit-scrollbar-thumb {

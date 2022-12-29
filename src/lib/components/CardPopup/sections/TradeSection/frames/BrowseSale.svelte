@@ -1,4 +1,5 @@
 <script lang="ts">
+	import EthV2 from '$icons/eth-v2.svelte';
 	import Eth from '$icons/eth.svelte';
 	import type { CardOptions } from '$interfaces/ui';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
@@ -54,39 +55,29 @@
 		(isFuture(chainListing.startTime) && "This listing isn't for sale yet.") ||
 		!$hasEnoughTokens 				  && `You do not have enough ${options.listingData.paymentTokenTicker} to purchase this item.`;
 
-	$: quantity = options.saleData.nftQuantities[options.nfts[0].onChainId];
+	$: quantity = listedNfts;
 </script>
 
 <div class="flex flex-col text-white aspect-1 pb-px">
 	<div class="text-gradient">Buy the NFT</div>
 	<div class="mt-1">Click BUY NOW button to own this NFT</div>
 
-	<div class="text-gradient mt-4">Price</div>
-	<div class="flex gap-2 items-center">
-		<Eth gradient />
-	</div>
-	<div class="mt-8 font-bold text-center opacity-50">Price:</div>
-	<div class="flex items-center justify-center mt-2">
-		<img src={getIconUrl('eth')} alt="" />
-		<div class="{(options.saleData?.formatPrice || options.saleData?.price || 'N/A').toString().length > 12 ? 'text-3xl' : 'text-5xl'} font-bold">
-			{Number(options.saleData.formatPrice)
-				.toFixed(16)
-				.replace(/(\.?0+$)/, '') ||
-				options.saleData?.price ||
-				'N/A'}
+	<div class="flex justify-start gap-40">
+		<div class="">
+			<div class="text-gradient mt-4">Price</div>
+			<div class="flex gap-2 items-center">
+				<EthV2 />
+				<div class={(options.saleData?.formatPrice || options.saleData?.price || 'N/A').toString().length > 12 ? 'text-xl' : 'text-3xl'}>
+					{options.saleData?.formatPrice || options.saleData?.price || 'N/A'}
+				</div>
+				<span>wETH</span>
+			</div>
 		</div>
-		<div class="grid h-full ml-2 font-bold opacity-70 place-items-end">wETH</div>
-	</div>
-
-	<div class="mt-8 font-bold text-center opacity-50">Quantity:</div>
-	<div class="flex items-center justify-center mt-2">
-		<div class="{listedNfts > 10000000000000 ? 'text-3xl' : 'text-5xl'} font-bold">
-			{listedNfts}
+		<div class="">
+			<div class="text-gradient mt-4">Quantity</div>
+			<div class="mt-1 pl-1 text-2xl">{quantity}</div>
 		</div>
 	</div>
-
-	<div class="text-gradient mt-4">Quantity</div>
-	<div class="mt-1 pl-1 text-2xl">{quantity}</div>
 
 	<div class="flex-grow" />
 

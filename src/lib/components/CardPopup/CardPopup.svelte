@@ -16,8 +16,8 @@
 	import CardCarousel from '../v2/CardCarousel/CardCarousel.svelte';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import { getListings } from '$utils/api/listing';
-  	import { browser } from '$app/environment';
-  	import { notifyError } from '$utils/toast';
+	import { browser } from '$app/environment';
+	import { notifyError } from '$utils/toast';
 
 	export let options: CardOptions;
 	export let handler: PopupHandler;
@@ -31,6 +31,8 @@
 	let chainListing: ChainListing;
 
 	const countdownData = options?.resourceType === 'listing' ? { startTime: options.listingData?.startTime, duration: options.listingData?.duration, expired: false } : null;
+
+	$: listedNfts = options.listingData?.nftQuantities[options.nfts[0].onChainId] || 0;
 
 	// Log data that was used by the adapter to generate the CardPopup
 	$: console.debug('[Resource Data]:', options.rawResourceData);
@@ -109,7 +111,7 @@
 
 		if (res.err) {
 			console.error(res.err);
-			notifyError("Failed to fetch more NFTs from collection.");
+			notifyError('Failed to fetch more NFTs from collection.');
 			return;
 		}
 
@@ -163,6 +165,7 @@
 						this={selectedTab?.sectionComponent}
 						{options}
 						{chainListing}
+						{listedNfts}
 						on:close-popup={handleClosePopup}
 						on:force-expire
 						on:listing-created={refreshBalance}
@@ -175,7 +178,7 @@
 
 		{#if similarCards.length > 0}
 			<div class="pt-24 pb-32 px-16">
-				<CardCarousel cards={similarCards} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd}/>
+				<CardCarousel cards={similarCards} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} />
 			</div>
 		{/if}
 	</div>

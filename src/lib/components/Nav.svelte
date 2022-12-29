@@ -7,11 +7,14 @@
 	import { profileData, publicProfileData } from '$stores/user';
 	import { fade } from 'svelte/transition';
 	import UserCircle from '$icons/user-circle.svelte';
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import Wallet from '$icons/wallet.svelte';
+
+	export let scrollY;
 
 	let displayProfilePopup = false;
 	let showProfileButton = false;
+
 	const closeModalIfNotInElement = (e) => {
 		// Click is not on the profile button or popup element
 		if (!e.target.closest('#profile-button') && !e.target.closest('#profile-popup-parent') && !e.target.closest('#profile-popup-container')) {
@@ -29,11 +32,18 @@
 	$: displayedUsername = $publicProfileData?.username;
 	$: profileButtonTitle = displayedUsername?.length > 15 ? displayedUsername : '';
 
+	function handleDisconnect() {
+		displayProfilePopup = false;
+		showProfileButton = false;
+	}
+
+	beforeNavigate(() => (displayProfilePopup = false));
+
 	// $: useTestnets = $connectionDetails ? $connectionDetails?.chainId !== 1 : import.meta.env.VITE_DEFAULT_NETWORK !== '1';
 </script>
 
 <div class="fixed z-10 flex w-full ">
-	<div class="backdrop-blur-xl fixed z-10 flex items-center w-full h-20 px-28 2xl:px-36 overflow-x-visible scrollbar-hidden snap-mandatory snap-x text-white bg">
+	<div class="{scrollY ? 'backdrop-blur-xl' : ''} fixed z-10 flex items-center w-full h-20 px-36 overflow-x-visible scrollbar-hidden snap-mandatory snap-x text-white bg">
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
 			<img src="/svg/logo/logo.v2.svg" alt="Hinata logo." />
@@ -60,12 +70,11 @@
 
 		<!-- Profile -->
 		<div class="relative flex items-center h-full ml-8">
-			{#if showProfileButton || $appSigner}
+			{#if (showProfileButton || $appSigner) && !showProfileButton}
 				<div class="relative w-10 ">
 					<button
 						class="flex items-center h-full font-semibold text-md whitespace-nowrap transition-btn w-10"
 						id="profile-button"
-						class:hidden={!$appSigner}
 						on:click={() => (displayProfilePopup = !displayProfilePopup)}
 						title={profileButtonTitle}
 					>
@@ -87,19 +96,19 @@
 					</button>
 					<div class="" id="profile-popup-parent">
 						{#if displayProfilePopup}
-							<ProfilePopup />
+							<ProfilePopup on:disconnect={handleDisconnect} />
 						{/if}
 					</div>
 				</div>
 			{/if}
 
 			{#if !$appSigner}
-				<button on:click={async () => await connectToWallet()} out:fade on:outrostart={() => (showProfileButton = false)} on:outroend={() => (showProfileButton = true)}>
-					<Wallet class="w-8 2xl:w-10 h-10" />
+				<button on:click={async () => await connectToWallet()}>
+					<Wallet class="w-10 h-10" />
 				</button>
 			{/if}
 		</div>
-		<!-- <div class="snap-end" /> -->
+		<div class="snap-end" />
 	</div>
 </div>
 

@@ -50,7 +50,7 @@
 	}
 </script>
 
-<div class="flex flex-col aspect-1">
+<div class="flex flex-col aspect-1 text-white">
 	<InfoBox>Offers on sale listings are coming soon!</InfoBox>
 
 	<div class="flex-grow" />

@@ -58,6 +58,8 @@
 
 		previousNetworkId = o?.network.chainId || null;
 	});
+
+	let scrollY;
 </script>
 
 <svelte:head>
@@ -68,20 +70,22 @@
 </svelte:head>
 
 {#key appReloadHelper}
-	<Nav />
+	<Nav {scrollY} />
 
 	{#if errorCode}
 		<ErrorPage {errorCode} />
 	{:else}
 		<!-- <PageTransition {url}>-->
-		<div class="mx-auto">
+		<div class="mx-auto flex flex-col min-h-screen">
 			<slot />
+			<div class="flex-grow" />
+			<Toast />
+			<PopupManager />
+			<NavigationHandlers bind:errorCode={navigationErrorCode} />
+			<Footer />
 		</div>
 		<!--</PageTransition> -->
 	{/if}
-
-	<Footer />
-	<Toast />
-	<PopupManager />
-	<NavigationHandlers bind:errorCode={navigationErrorCode} />
 {/key}
+
+<svelte:window bind:scrollY />

@@ -1,5 +1,5 @@
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
-import { notifyError } from '$utils/toast';
+import { notifyError, notifySuccess } from '$utils/toast';
 import axios from 'axios';
 import { getApiUrl } from '.';
 
@@ -33,9 +33,11 @@ export async function fetchIsFollowing(target: string, currentUser: string) {
 }
 
 /**
- * Fetch profile data from the from the public user data API endpoint.
+ * Follow/unfollow user
  * @param address The address of the profile.
- * @returns Profile data or `null` in case of an error.
+ * @param follow Boolean to set the follow attribute to
+ *
+ * @returns Boolean or `null` in case of an error.
  */
 export async function followUnfollowUser(target: string, follow: boolean) {
 	if (!target) return null;
@@ -64,6 +66,8 @@ export async function followUnfollowUser(target: string, follow: boolean) {
 	if (!res) {
 		return null;
 	}
+
+	notifySuccess(`Successfully ${follow ? 'followed' : 'unfollowed'}`);
 
 	return res.data.data.isFollowing;
 }

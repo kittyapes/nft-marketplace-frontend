@@ -58,6 +58,24 @@ body {
 	@apply max-w-fit;
 }
 
+.text-gradient-green {
+	background: linear-gradient(90deg, #adff00 0%, #4cef00 51.68%, #59ff9c 101.25%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	text-fill-color: transparent;
+	@apply max-w-fit;
+}
+
+.text-gradient-red {
+	background: linear-gradient(90deg, #ff297c 0.46%, #f21e91 49.71%, #fc0363 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	text-fill-color: transparent;
+	@apply max-w-fit;
+}
+
 .text-color-gradient {
 	@apply text-transparent;
 	background: linear-gradient(88.5deg, #7300df -2.19%, #ad55ff 28.34%, #88eaff 126.89%);

@@ -23,6 +23,8 @@
 	import { reject } from 'lodash-es';
 	import Loader from '$icons/loader.svelte';
 	import axios from 'axios';
+	import EthV2 from '$icons/eth-v2.svelte';
+	import { goto } from '$app/navigation';
 
 	const dispatch = createEventDispatcher();
 
@@ -72,7 +74,7 @@
 			return;
 		}
 
-		const [err, res] = await noTryAsync(() => favoriteNft(options.nfts[0].databaseId));
+		const [err, res] = await noTryAsync(() => favoriteNft(options.nfts[0].fullId));
 
 		if (err) {
 			notifyError(err.message);
@@ -92,7 +94,7 @@
 		dotsOpened = false;
 		ev.stopPropagation();
 
-		const res = await apiHideNft(options.nfts[0].databaseId);
+		const res = await apiHideNft(options.nfts[0].fullId);
 
 		if (res.err) {
 			notifyError('Failed to hide NFT. \n' + res.err.message);
@@ -105,7 +107,7 @@
 		dotsOpened = false;
 		ev.stopPropagation();
 
-		const res = await apiRevealNft(options.nfts[0].databaseId);
+		const res = await apiRevealNft(options.nfts[0].fullId);
 
 		if (res.err) {
 			notifyError('Failed to reveal NFT. \n' + res.err.message);
@@ -176,11 +178,13 @@
 		class:normal-nft-media={gridStyle === 'normal'}
 		class:dense-nft-media={gridStyle === 'dense'}
 		class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}
-		class="w-full mx-auto  transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} relative"
+		class="w-full h-full mx-auto transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} relative"
 	>
 		{#if isHovered && !disabled}
 			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60" transition:fade={{ duration: 200 }}>
-				<div class="p-3 clickable h-12" on:click|stopPropagation={() => false}>@Seller</div>
+				{#if options.resourceType === 'listing'}
+					<button class="p-3 clickable h-12 w-40 truncate" on:click|stopPropagation={() => goto('/profile/' + options.listingData?.sellerAddress)}>{options.listingData?.sellerAddress}</button>
+				{/if}
 				{#if !hideLikes}
 					<div class="text-transparent clickable p-3 h-12" class:text-white={isUserLiked} on:click|stopPropagation={favNFT}>
 						<Heart />
@@ -189,7 +193,9 @@
 			</div>
 		{/if}
 		{#await preload(options.nfts[0].thumbnailUrl)}
-			<Loader />
+			<div class="min-h-full w-full grid place-items-center">
+				<Loader />
+			</div>
 		{:then}
 			{#if fileType === 'video'}
 				<video crossorigin="anonymous" class="max-w-full max-h-full object-cover object-top w-full h-full transition" autoplay loop class:opacity-0={!imgLoaded}>
@@ -208,27 +214,29 @@
 			{:else if fileType === 'image'}
 				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" />
 			{:else}
-				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" />
+				<div class="bg-card-gradient w-full h-full transition" />
 			{/if}
 		{/await}
 	</div>
-	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient w-full">
-		<h4 class="text-gradient font-bold truncate {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
+	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient h-full">
+		<h4 class="text-gradient font-bold truncate  {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
 			{options.nfts[0].collectionData.name || 'N/A'}
 		</h4>
-		<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">{options?.nfts?.[0]?.name}</h3>
+		<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
+			{options?.nfts?.[0]?.name}
+		</h3>
 		<div class="flex flex-row items-center justify-between mt-2.5 ">
 			{#if timerHtml?.includes('Starts in')}
 				{@html timerHtml}
 			{:else if timerHtml?.includes('Ends in')}
 				<div class="flex flex-col items-start">
 					<h4 class="text-gradient font-bold whitespace-nowrap {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
-						Highest bid
+						{options.listingData?.listingType === 'auction' ? 'Highest bid' : 'Price'}
 					</h4>
-					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-1' : 'gap-x-0.5'}">
-						<span><Eth class={gridStyle === 'normal' ? 'w-2.5 2xl:w-3 h-3.5 2xl:h-4' : 'w-1.5 2xl:w-2 h-2.5 2xl:h-3'} /></span>
+					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-2' : 'gap-x-1'}">
+						<span><EthV2 class={gridStyle === 'normal' ? 'w-3 h-4' : 'w-2 h-3'} /></span>
 						<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
-							{options?.auctionData?.highestBid || 'N/A'}
+							{options?.listingData.shortDisplayPrice || 'N/A'}
 						</h3>
 					</div>
 				</div>
@@ -238,7 +246,7 @@
 				<div class="flex flex-col items-start">
 					<h4 class="text-gradient font-bold {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">Price</h4>
 					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-1' : 'gap-x-0.5'}">
-						<span><Eth class={gridStyle === 'normal' ? 'w-2.5 2xl:w-3 h-3.5 2xl:h-4' : 'w-1.5 2xl:w-2 h-2.5 2xl:h-3'} /></span>
+						<span><EthV2 class={gridStyle === 'normal' ? 'w-2.5 2xl:w-3 h-3.5 2xl:h-4' : 'w-1.5 2xl:w-2 h-2.5 2xl:h-3'} /></span>
 						<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
 							{options?.listingData?.shortDisplayPrice || 'N/A'}
 						</h3>

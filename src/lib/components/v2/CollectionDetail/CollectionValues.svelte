@@ -1,7 +1,9 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
 	import type { Collection } from '$utils/api/collection';
+
 	export let collectionData: Collection;
+
 	const collectionStats = {
 		highestSale: {
 			stat: 'Highest Sale',
@@ -34,6 +36,7 @@
 			symbol: 'WETH',
 		},
 	};
+
 	$: if (collectionData) {
 		let formatter = Intl.NumberFormat('en', { notation: 'compact' });
 		Object.keys(collectionStats).map((key) => {
@@ -46,13 +49,14 @@
 
 <div class="flex flex-row items-center text-base leading-6 stat-wrapper">
 	{#each Object.keys(collectionStats) as statKey}
-		<div class="hover:bg-main-gradient flex flex-col items-center justify-center border-gradient border-r-0 w-[106px] 2xl:w-[132px] h-[86px] 2xl:h-[106px]">
-			<p class="text-xs 2xl:text-base leading-5 2xl:leading-6">{collectionStats[statKey].stat}</p>
-			<h2 class="flex items-center gap-x-1.5">
+		<div class="hover:bg-main-gradient flex flex-col items-center justify-center border-gradient border-r-0 w-32 h-28">
+			<p class="text-base leading-6">{collectionStats[statKey].stat}</p>
+			<h2 class="flex items-center gap-x-2">
 				{#if collectionStats[statKey].symbol}
-					<Eth class="w-2.5 h-4" />
+					<Eth class="w-4 h-4" />
 				{/if}
-				<span class="text-[14px] 2xl:text-[18px] leading-5 2xl:leading-6">{collectionStats[statKey].value || 0.0}</span>
+
+				<span class="text-lg leading-6">{collectionStats[statKey].value || 0.0}</span>
 			</h2>
 		</div>
 	{/each}

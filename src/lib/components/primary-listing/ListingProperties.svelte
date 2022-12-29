@@ -115,7 +115,7 @@
 	</InputSlot>
 
 	<InputSlot label="Duration">
-		<Dropdown options={durationOptions} on:select={handleDurationOptionsSelect} bind:setSelected={_setDuration} {disabled} />
+		<Dropdown options={durationOptions} on:select={handleDurationOptionsSelect} bind:setSelected={_setDuration} {disabled} class="h-12" />
 	</InputSlot>
 
 	<InputSlot label="Quantity" hidden={hideQuantity}>
@@ -148,12 +148,12 @@
 
 	{#if auction}
 		<InputSlot label="Starting Price">
-			<PriceInput bind:value={props.startingPrice} placeholder="1.0" tokenIconClass={Weth} {disabled} />
+			<PriceInput bind:value={props.startingPrice} placeholder="1.0" tokenIconClass={Weth} tokenLabel="wETH" {disabled} />
 		</InputSlot>
 
 		<InputSlot label="Reserve Price (Optional)">
 			<div class="relative">
-				<PriceInput bind:value={props.reservePrice} placeholder="5.0" tokenIconClass={Weth} validOverride={reservePriceError === null} {disabled} />
+				<PriceInput bind:value={props.reservePrice} placeholder="5.0" tokenIconClass={Weth} tokenLabel="wETH" validOverride={reservePriceError === null} {disabled} />
 
 				{#if reservePriceError}
 					<div class="absolute z-10 top-12">

@@ -1,12 +1,10 @@
 <script lang="ts">
-	import Eth from '$icons/eth.svelte';
 	import AttachToElement from '$lib/components/AttachToElement.svelte';
 	import type { CardOptions } from '$interfaces/ui';
 	import AuctionBidList from '$lib/components/v2/AuctionBidList/AuctionBidList.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
 	import { contractCompleteAuction } from '$utils/contracts/auction';
 	import { contractCancelListing, type ChainListing } from '$utils/contracts/listing';
 	import type { BidRow } from '$utils/flows/getBiddingsFlow';
@@ -16,6 +14,8 @@
 	import { createEventDispatcher } from 'svelte';
 	import Success from './Success.svelte';
 	import dayjs from 'dayjs';
+	import GhostButton from '$lib/components/v2/GhostButton.svelte';
+	import EthV2 from '$icons/eth-v2.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -94,7 +94,7 @@
 	}
 </script>
 
-<div class="flex flex-col flex-grow mt-4">
+<div class="flex flex-col flex-grow mt-4 text-white">
 	<div class="min-h-[300px] flex-grow">
 		<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} />
 	</div>
@@ -103,7 +103,7 @@
 		<div>
 			<div class="">Reserve price</div>
 			<div class="flex items-center gap-2">
-				<Eth />
+				<EthV2 />
 				{options.auctionData.formatReservePrice}
 			</div>
 		</div>
@@ -113,7 +113,7 @@
 		<div>
 			<div class="">Starting price</div>
 			<div class="flex items-center justify-end gap-2">
-				<Eth />
+				<EthV2 />
 				{options.auctionData.formatStartingPrice}
 			</div>
 		</div>
@@ -121,12 +121,12 @@
 
 	<div class="flex gap-2">
 		<div bind:this={cancelButtonContainer} class="w-full" on:pointerenter={cancelHovered.toggle} on:pointerleave={cancelHovered.toggle}>
-			<SecondaryButton class="mt-4" disabled={isCancelling || isAccepting || isRefreshingBids || !canCancel} on:click={cancelListing}>
+			<GhostButton class="mt-4 h-12" disabled={isCancelling || isAccepting || isRefreshingBids || !canCancel} on:click={cancelListing}>
 				{#if isCancelling}
 					<ButtonSpinner secondary />
 				{/if}
 				Cancel Auction
-			</SecondaryButton>
+			</GhostButton>
 		</div>
 
 		<PrimaryButton class="mt-4" disabled={!hasBids || isCancelling || isAccepting || isRefreshingBids || !canAccept} on:click={acceptHighest}>

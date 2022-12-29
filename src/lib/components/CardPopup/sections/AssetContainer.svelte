@@ -31,7 +31,7 @@
 	}
 
 	async function handleLike() {
-		const [err, res] = await noTryAsync(() => favoriteNft(options.nfts[0].databaseId));
+		const [err, res] = await noTryAsync(() => favoriteNft(options.nfts[0].fullId));
 
 		if (err) {
 			notifyError(err.message);

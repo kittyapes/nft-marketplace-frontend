@@ -4,11 +4,12 @@
 	import ArrowLinkGradient from '$icons/arrow-link-gradient.svelte';
 </script>
 
-<div class="border-t border-white text-white">
+<div class="border-t border-white text-white ">
 	<div class="flex justify-between py-12 px-32 gap-10">
 		<div class="flex flex-col px-8 gap-4">
-			<div class="h-12" on:click={() => goto('/')}>
-				<img src="/svg/logo/logo.alpha.svg" class="h-full" alt="Hinata Logo" />
+			<!-- Logo -->
+			<div on:click={() => goto('/')} class="">
+				<img src="/svg/logo/logo.v2.svg" alt="Hinata logo." />
 			</div>
 			<div class="mt-3">The home of anime Web 3.0 content.</div>
 			<a class="clickable" href="https://www.hinata.foundation" target="_blank">www.hinata.foundation</a>
@@ -56,14 +57,15 @@
 			</a>
 		</div>
 
+		<!-- TODO: add links -->
 		<div class="flex flex-col ">
 			<div class="text-lg uppercase pb-4">Coming soon</div>
 			<div class="flex flex-col gap-6">
-				<a href="#" class="flex gap-2 items-center clickable">
+				<a href="/" class="flex gap-2 items-center clickable">
 					<div>Uniswap</div>
 					<ArrowLinkGradient />
 				</a>
-				<a href="#" class="flex gap-2 items-center clickable">
+				<a href="/" class="flex gap-2 items-center clickable">
 					<div>AscendEx</div>
 					<ArrowLinkGradient />
 				</a>

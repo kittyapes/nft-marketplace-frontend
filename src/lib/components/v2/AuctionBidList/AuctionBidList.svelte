@@ -1,4 +1,5 @@
 <script lang="ts">
+	import EthV2 from '$icons/eth-v2.svelte';
 	import Eth from '$icons/eth.svelte';
 	import Refresh from '$icons/refresh.svelte';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
@@ -43,7 +44,7 @@
 
 	<div class="flex flex-col flex-grow gap-4 pr-4 mt-4 overflow-y-scroll blue-scrollbar">
 		{#each biddings as bid}
-			<AuctionBidRow {...bid} tokenIconComponent={Eth} />
+			<AuctionBidRow {...bid} tokenIconComponent={EthV2} />
 		{/each}
 
 		{#if !biddings.length}

@@ -31,18 +31,20 @@
 	import PaginationFooter from '$lib/components/management/render-components/PaginationFooter.svelte';
 	import { onDestroy } from 'svelte';
 	import { userHasRole } from '$utils/auth/userRoles';
-
-	const fetchLimit = 20;
+	import { getGradientColors } from '$utils/api/management/getGradientColors';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 
 	let tab: 'USER' | 'COLLECTION' = 'COLLECTION';
 
 	let users: UserData[] = [];
 	let totalUserEntries = 0;
 	let userPage = 1;
+	let usersPerPage = 20;
 
 	let collections: Collection[] = [];
 	let totalCollectionEntries = 0;
 	let collectionPage = 1;
+	let collectionsPerPage = 20;
 
 	let loaded = false;
 	let eventId;
@@ -131,14 +133,14 @@
 
 	let userFetchingOptions: UserFetchingOptions = {
 		filter: {},
-		limit: fetchLimit,
+		limit: usersPerPage,
 		sort: {},
 		query: '',
 	};
 
 	let collectionFetchingOptions: CollectionFetchingOptions = {
 		filter: {},
-		limit: fetchLimit,
+		limit: collectionsPerPage,
 		sort: {},
 		name: '',
 	};
@@ -149,8 +151,14 @@
 	const handleTableEvent = async (event: CustomEvent) => {
 		if (event.detail.id || event.detail.sortBy || event.detail.sortReversed) {
 			await handleTableSort(event);
-		} else if (event.detail.page) {
+		}
+
+		if (event.detail.page) {
 			await handlePageSelect(event);
+		}
+
+		if (event.detail.itemsPerPage) {
+			await handleItemsPerPageSelect(event);
 		}
 	};
 
@@ -162,6 +170,18 @@
 
 		if (tab === 'COLLECTION') {
 			collectionPage = event.detail.page;
+			await getSearchedCollections();
+		}
+	};
+
+	const handleItemsPerPageSelect = async (event: CustomEvent) => {
+		if (tab === 'USER') {
+			usersPerPage = event.detail.itemsPerPage;
+			await getSearchedUsers();
+		}
+
+		if (tab === 'COLLECTION') {
+			collectionsPerPage = event.detail.itemsPerPage;
 			await getSearchedCollections();
 		}
 	};
@@ -272,7 +292,7 @@
 			...collectionFetchingOptions.filter,
 			name: collectionFetchingOptions.name,
 			...collectionFetchingOptions.sort,
-			limit: collectionFetchingOptions.limit,
+			limit: collectionsPerPage,
 			page: collectionPage,
 			status: collectionFetchingOptions.filter.status,
 		};
@@ -304,7 +324,8 @@
 					mode: tab,
 					disableAllOnSelect: true,
 					role: u.status,
-					color: getRoleColor(u.status === 'INACTIVE' ? 'INACTIVATED' : 'ACTIVE'),
+					color: getRoleColor(u.status),
+					arrowGradient: getGradientColors(u.status),
 					options: [
 						{ label: 'Active', checked: u.status === 'ACTIVE', value: 'ACTIVE' },
 						{ label: 'Inactive', checked: u.status === 'INACTIVE', value: 'INACTIVE' },
@@ -335,7 +356,7 @@
 				renderComponent: EntryGenericText,
 				renderComponentProps: collections.map((c) => {
 					let date = dayjs(c.createdAt);
-					return { text: date.format('MMM D, YYYY') };
+					return { text: date.format('DD - MMM - YYYY') };
 				}),
 			},
 		];
@@ -384,7 +405,7 @@
 	// USER section
 
 	let getUsersFetchingOptions = () => {
-		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort, limit: userFetchingOptions.limit, page: userPage };
+		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort, limit: usersPerPage, page: userPage };
 	};
 
 	const debouncedSearch = debounce(async () => {
@@ -427,8 +448,9 @@
 					id: u.address,
 					dispatchAllOptions: false,
 					mode: tab,
-					role: getHighestRole([...u.roles]),
-					color: getRoleColor(getHighestRole([...u.roles])),
+					role: getHighestRole(u.roles),
+					color: getRoleColor(getHighestRole(u.roles)),
+					arrowGradient: getGradientColors(getHighestRole(u.roles)),
 					options: [
 						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin' },
 						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user' },
@@ -444,7 +466,7 @@
 				renderComponent: EntryGenericText,
 				renderComponentProps: users?.map((u) => {
 					let date = dayjs(u.createdAt);
-					return { text: date.format('MMM D, YYYY') };
+					return { text: date.format('DD - MMM - YYYY') };
 				}),
 			},
 			/*
@@ -484,27 +506,26 @@
 	// selectedNetworkOption.subscribe(() => validateContractAddress($whitelistingCollectionAddress));
 </script>
 
-<div class="flex flex-col w-full h-full gap-16 p-16 2xl:p-40">
+<div class="flex flex-col w-full h-full gap-16 p-40 pt-36">
 	<div class="flex">
-		<div class="{tab === 'COLLECTION' ? 'text-gradient' : 'text-white'} font-medium text-2xl relative btn" on:click={() => (tab = 'COLLECTION')}>
-			<div class="px-6">Collection Management</div>
-			<div class="{tab === 'COLLECTION' ? 'gradient-line delay-300' : 'bg-white bg-opacity-30'} h-1 mt-2 transition-all duration-300" />
+		<div class="font-medium text-2xl relative" on:click={() => (tab = 'COLLECTION')}>
+			<div class="px-6 clickable {tab === 'COLLECTION' ? 'text-gradient' : 'text-white'}">Collection Management</div>
+			<div class="{tab === 'COLLECTION' ? 'gradient-line' : 'bg-card-gradient'} h-1 mt-2 transition-all duration-300" />
 		</div>
-		<div class="w-14 mt-auto">
-			<div class="bg-white bg-opacity-30 h-1 w-full" />
-		</div>
-		<div class="{tab === 'USER' ? 'text-gradient' : 'text-white'} font-medium text-2xl relative btn" on:click={() => (tab = 'USER')}>
-			<div class="px-6">User Management</div>
-			<div class="{tab === 'USER' ? 'gradient-line delay-300' : 'bg-white bg-opacity-30'} h-1 mt-2 transition-all duration-300" />
+		<div class="font-medium text-2xl relative" on:click={() => (tab = 'USER')}>
+			<div class="px-6 clickable {tab === 'USER' ? 'text-gradient' : 'text-white'}">User Management</div>
+			<div class="{tab === 'USER' ? 'gradient-line' : 'bg-card-gradient'} h-1 mt-2 transition-all duration-300" />
 		</div>
 	</div>
+
 	<div class="flex gap-40 2xl:gap-96">
 		{#if tab === 'USER'}
 			<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
 			<div class="flex gap-10">
-				<!-- <div class="">
+				<div class="">
 					<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
-				</div> -->
+				</div>
+
 				<div class="">
 					<Filter on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', createdAfter: 'all' }} />
 				</div>
@@ -512,11 +533,12 @@
 		{:else}
 			<SearchBar bind:query={collectionFetchingOptions.name} placeholder={searchPlaceholder} />
 			<div class="flex gap-10">
-				<!-- <div class="">
-					<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
-				</div> -->
 				<div class="">
-					<Filter v2 on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'all' }} />
+					<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
+				</div>
+
+				<div class="">
+					<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'all' }} />
 				</div>
 			</div>
 		{/if}
@@ -525,23 +547,21 @@
 	{#if tab === 'USER'}
 		<LoadedContent {loaded}>
 			<InteractiveTable
-				v2
 				on:event={handleTableEvent}
 				tableData={userTableData}
 				rows={users.length}
-				tableFooterElement={{ element: PaginationFooter, props: { pages: Math.ceil(totalUserEntries / fetchLimit) } }}
+				tableFooterElement={{ element: PaginationFooter, props: { pages: Math.ceil(totalUserEntries / usersPerPage), items: totalUserEntries } }}
 			/>
 		</LoadedContent>
 	{:else}
 		<LoadedContent {loaded}>
 			<InteractiveTable
-				v2
 				on:event={handleTableEvent}
 				tableData={collectionTableData}
 				rows={collections.length}
 				tableFooterElement={{
 					element: PaginationFooter,
-					props: { pages: Math.ceil(totalCollectionEntries / fetchLimit) },
+					props: { pages: Math.ceil(totalCollectionEntries / collectionsPerPage), items: totalCollectionEntries },
 				}}
 			/>
 		</LoadedContent>
@@ -572,9 +592,7 @@
 
 						<div class="gradient-border-bg p-[2px]">
 							<div class="bg-black">
-								<button class="text-lg text-white font-medium px-32 py-2 button-vertical-gradient" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>
-									Add
-								</button>
+								<PrimaryButton class="w-80" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>Add</PrimaryButton>
 							</div>
 						</div>
 					</div>
@@ -601,11 +619,3 @@
 		</div>
 	{/if}
 </div>
-
-<style lang="postcss">
-	.gradient-underline::after {
-		content: '';
-		@apply absolute w-full -bottom-1 left-0 h-[2px];
-		@apply bg-gradient-to-r from-color-purple to-color-blue;
-	}
-</style>

@@ -9,6 +9,7 @@
 	export let validator: (v: string) => boolean = (): boolean => true;
 	export let disabled = false;
 	export let noLeftPadding = false;
+
 	function validate() {
 		if (regex) {
 			valid = !!value.match(regex);
@@ -16,6 +17,7 @@
 			valid = validator(value);
 		}
 	}
+
 	$: inputHeight = `h-[${height}]`;
 </script>
 
@@ -27,7 +29,7 @@
 		bind:value
 		{placeholder}
 		class:pl-0={noLeftPadding}
-		class="w-full h-full px-4 bg-inherit outline-none focus:border-color-purle"
+		class="w-full h-full px-14 bg-inherit outline-none focus:border-color-purle"
 		on:input={validate}
 		{disabled}
 		on:keyup
