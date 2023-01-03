@@ -499,11 +499,14 @@
 	$: searchPlaceholder = `Search for ${tab.toLowerCase()}`;
 </script>
 
-<div class="flex flex-col w-full h-full max-w-screen-2xl mx-auto p-8">
-	<div class="flex gap-x-14 gap-y-4 flex-wrap">
+<div class="flex flex-col w-full h-full max-w-screen-2xl mx-auto pt-24 p-8">
+	<div class="flex gap-x-14 gap-y-4 flex-wrap relative max-w-max">
 		<div class="tab btn" class:selected-tab={tab === 'USER'} on:click={() => (tab = 'USER')}>User Management</div>
 		<div class="tab btn" class:selected-tab={tab === 'COLLECTION'} on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
 		<div class="tab btn" class:selected-tab={tab === 'TOS'} on:click={() => (tab = 'TOS')}>ToS Management</div>
+
+		<!-- Line under tabs -->
+		<div class="absolute h-[2px] left-0 right-0 bg-white bg-opacity-10 -bottom-2 z-10" />
 	</div>
 
 	{#if ['USER', 'COLLECTION'].includes(tab)}
@@ -616,7 +619,7 @@
 
 <style lang="postcss">
 	.tab {
-		@apply font-bold text-3xl relative text-color-gray-dark select-none;
+		@apply font-medium text-2xl relative text-white select-none z-20;
 	}
 
 	.selected-tab {
@@ -625,7 +628,7 @@
 
 	.selected-tab::after {
 		content: '';
-		@apply absolute w-full -bottom-1 left-0 h-[2px];
+		@apply absolute w-full -bottom-2 left-0 h-[2px];
 		@apply bg-gradient-to-r from-color-purple to-color-blue;
 	}
 </style>

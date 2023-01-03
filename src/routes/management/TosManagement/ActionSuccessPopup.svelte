@@ -7,7 +7,7 @@
 </script>
 
 <Popup>
-	<div class="py-8 px-12 max-w-3xl">
+	<div class="py-8 px-12 max-w-3xl text-white">
 		<div class="text-2xl font-semibold">
 			<slot name="title" />
 		</div>

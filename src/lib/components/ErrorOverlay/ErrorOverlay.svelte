@@ -3,7 +3,7 @@
 	import { removeAuthData } from '$utils/auth/token';
 	import { disconnectWallet } from '$utils/wallet/connectWallet';
 	import Modal from '../Modal.svelte';
-	import SecondaryButton from '../v2/SecondaryButton/SecondaryButton.svelte';
+	import PrimaryButton from '../v2/PrimaryButton/PrimaryButton.svelte';
 
 	function handleLogout() {
 		removeAuthData($currentUserAddress);
@@ -14,7 +14,7 @@
 </script>
 
 <Modal>
-	<div class="bg-white w-full h-full">
+	<div class="bg-gray-900 text-white w-full h-full">
 		<div class="mx-40 my-40  max-w-prose">
 			<div class="font-bold text-4xl">Ooops, something went wrong...</div>
 			<div class="ml-1 text-lg font-medium mt-4">
@@ -22,7 +22,7 @@
 			</div>
 
 			<div class="mt-8">
-				<SecondaryButton on:click={handleLogout}>Log Out</SecondaryButton>
+				<PrimaryButton on:click={handleLogout}>Log Out</PrimaryButton>
 			</div>
 		</div>
 	</div>
