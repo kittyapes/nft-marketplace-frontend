@@ -21,7 +21,7 @@
 	$: inputHeight = `h-[${height}]`;
 </script>
 
-<div class="w-full flex flex-row items-center rounded-lg  outline-color-purple {$$props.class} {fixedHeight ? inputHeight : ''}" class:outline-red-400={!valid}>
+<div class="w-full flex flex-row items-center outline-color-purple {$$props.class} {fixedHeight ? inputHeight : ''}" class:outline-red-400={!valid}>
 	<div><slot /></div>
 	<input
 		type="text"
