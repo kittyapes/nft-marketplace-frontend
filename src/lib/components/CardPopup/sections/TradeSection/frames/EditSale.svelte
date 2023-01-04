@@ -7,8 +7,6 @@
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import SecondaryButton from '$lib/components/v2/SecondaryButton/SecondaryButton.svelte';
-	import { getTokenBalance } from '$stores/user';
 	import { contractCancelListing, contractUpdateListing, type ChainListing } from '$utils/contracts/listing';
 	import { isListingExpired } from '$utils/misc';
 	import { totalColRoyalties } from '$utils/misc/royalties';
@@ -92,7 +90,7 @@
 	let listingProps: Partial<ConfigurableListingProps> = {};
 </script>
 
-<div class="flex flex-col pb-8 overscroll-contain text-white aspect-1 overflow-hidden ">
+<div class="flex flex-col overscroll-contain text-white aspect-1 overflow-hidden ">
 	<div class="mt-2">
 		<!-- TODO maxQuantity needs to be checked on chain -->
 		<ListingProperties

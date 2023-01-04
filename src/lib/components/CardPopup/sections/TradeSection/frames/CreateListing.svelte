@@ -87,7 +87,7 @@
 	});
 </script>
 
-<div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto text-white">
+<div class="flex flex-col pb-8 pr-6 overflow-y-auto text-white aspect-1 blue-scrollbar">
 	{#if canCreateListing}
 		<!-- Listing Type -->
 		<div class="mt-2 font-semibold">Listing Type</div>

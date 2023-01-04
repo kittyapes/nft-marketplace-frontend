@@ -53,6 +53,6 @@
 	</div>
 
 	{#if isRefreshing}
-		<div class="absolute bottom-0 left-0 w-full px-4 pt-3 pb-2 text-xs font-semibold bg-gray-100 rounded-t-sm" transition:slide|local>Refreshing...</div>
+		<div class="absolute bottom-0 left-0 w-full px-4 pt-3 pb-2 text-xs font-semibold rounded-t-sm" transition:slide|local>Refreshing...</div>
 	{/if}
 </div>

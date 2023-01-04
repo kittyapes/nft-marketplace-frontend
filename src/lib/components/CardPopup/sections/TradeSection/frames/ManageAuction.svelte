@@ -94,7 +94,7 @@
 	}
 </script>
 
-<div class="flex flex-col flex-grow mt-4 text-white">
+<div class="flex flex-col flex-grow text-white aspect-1">
 	<div class="min-h-[300px] flex-grow">
 		<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} />
 	</div>

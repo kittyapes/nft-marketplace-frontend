@@ -11,11 +11,11 @@
 	import BrowseSale from './frames/BrowseSale.svelte';
 	import CreateListing from './frames/CreateListing.svelte';
 	import EditSale from './frames/EditSale.svelte';
-	import Error from './frames/Error.svelte';
 	import ManageAuction from './frames/ManageAuction.svelte';
 	import ManageSale from './frames/ManageSale.svelte';
 	import NotTradable from './frames/NotTradable.svelte';
 	import Success from './frames/Success.svelte';
+	import Error from './frames/Error.svelte';
 
 	export let options: CardOptions;
 	export let chainListing: ChainListing;
@@ -89,5 +89,5 @@
 	on:force-expire
 	on:refresh-chain-data
 	on:set-frame={handleSetFrame}
-  {listedNfts}
+	{listedNfts}
 />
