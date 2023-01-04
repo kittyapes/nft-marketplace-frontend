@@ -135,7 +135,7 @@
 <div class="p-4 h-full w-full overflow-hidden">
 	<Popup class="h-full rounded-none transition-all duration-200" closeButton on:close={handler.close}>
 		<div class="bg-gradient overflow-y-auto bg-repeat-y h-full blue-scrollbar overscroll-contain">
-			<div class="bg-black bg-opacity-40 py-8">
+			<div class="bg-black bg-opacity-40 py-8 min-h-full">
 				<!-- Tabs -->
 				<div class="flex px-24 gap-4">
 					<!-- Back button -->
@@ -147,7 +147,10 @@
 				</div>
 
 				<!-- Main content -->
-				<div class="grid grid-cols-2 h-full gap-8 mt-8 px-32">
+				<div
+					class="grid grid-cols-1 lg:grid-cols-2 h-full gap-8 mt-8 px-8  mx-auto
+						max-w-2xl lg:max-w-7xl"
+				>
 					<!-- Left part with image and buttons -->
 					<div class="pb-8">
 						<AssetContainer
@@ -161,7 +164,7 @@
 					</div>
 
 					<!-- Right part with info and actions -->
-					<div class="border-t lg:border-none pb-8">
+					<div class="border-t border-gray-800 lg:border-none pb-8 pt-4 lg:pt-0">
 						<svelte:component
 							this={selectedTab?.sectionComponent}
 							{options}
