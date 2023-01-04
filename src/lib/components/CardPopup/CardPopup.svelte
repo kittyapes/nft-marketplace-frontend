@@ -132,54 +132,56 @@
 	let enableBack = false;
 </script>
 
-<Popup class="w-full h-full rounded-none lg:w-[1400px] lg:max-h-[800px] transition-all duration-200 overscroll-contain" closeButton on:close={handler.close}>
-	<div class="bg-gradient overflow-y-auto bg-repeat-y h-full blue-scrollbar">
-		<div class="bg-black bg-opacity-40 py-8">
-			<!-- Tabs -->
-			<div class="flex px-24 gap-4">
-				<!-- Back button -->
-				<button class="btn disabled:opacity-0 transition duration-200" disabled={!enableBack} on:click={tabComponentInstance.goBack()}>
-					<img class="h-6" src={getIconUrl('back-button')} alt="Arrow pointing left." />
-				</button>
+<div class="p-4 h-full w-full overflow-hidden">
+	<Popup class="h-full rounded-none transition-all duration-200" closeButton on:close={handler.close}>
+		<div class="bg-gradient overflow-y-auto bg-repeat-y h-full blue-scrollbar overscroll-contain">
+			<div class="bg-black bg-opacity-40 py-8">
+				<!-- Tabs -->
+				<div class="flex px-24 gap-4">
+					<!-- Back button -->
+					<button class="btn disabled:opacity-0 transition duration-200" disabled={!enableBack} on:click={tabComponentInstance.goBack()}>
+						<img class="h-6" src={getIconUrl('back-button')} alt="Arrow pointing left." />
+					</button>
 
-				<Tabs bind:selectedTab />
-			</div>
-
-			<!-- Main content -->
-			<div class="grid grid-cols-2 h-full gap-8 mt-8 px-32">
-				<!-- Left part with image and buttons -->
-				<div class="pb-8">
-					<AssetContainer
-						assetUrl={makeHttps(options.nfts[0].assetUrl)}
-						title={options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
-						{options}
-						favorited={$likedNftIds.includes(options.nfts[0].onChainId)}
-						countdown={countdownData}
-						thumbnailUrl={makeHttps(options.nfts[0]?.thumbnailUrl)}
-					/>
+					<Tabs bind:selectedTab />
 				</div>
 
-				<!-- Right part with info and actions -->
-				<div class="border-t lg:border-none pb-8">
-					<svelte:component
-						this={selectedTab?.sectionComponent}
-						{options}
-						{chainListing}
-						{listedNfts}
-						on:close-popup={handleClosePopup}
-						on:force-expire
-						on:listing-created={refreshBalance}
-						bind:this={tabComponentInstance}
-						bind:enableBack
-					/>
+				<!-- Main content -->
+				<div class="grid grid-cols-2 h-full gap-8 mt-8 px-32">
+					<!-- Left part with image and buttons -->
+					<div class="pb-8">
+						<AssetContainer
+							assetUrl={makeHttps(options.nfts[0].assetUrl)}
+							title={options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
+							{options}
+							favorited={$likedNftIds.includes(options.nfts[0].onChainId)}
+							countdown={countdownData}
+							thumbnailUrl={makeHttps(options.nfts[0]?.thumbnailUrl)}
+						/>
+					</div>
+
+					<!-- Right part with info and actions -->
+					<div class="border-t lg:border-none pb-8">
+						<svelte:component
+							this={selectedTab?.sectionComponent}
+							{options}
+							{chainListing}
+							{listedNfts}
+							on:close-popup={handleClosePopup}
+							on:force-expire
+							on:listing-created={refreshBalance}
+							bind:this={tabComponentInstance}
+							bind:enableBack
+						/>
+					</div>
 				</div>
 			</div>
+
+			{#if similarCards.length > 0}
+				<div class="pt-24 pb-32 px-16">
+					<CardCarousel cards={similarCards} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} />
+				</div>
+			{/if}
 		</div>
-
-		{#if similarCards.length > 0}
-			<div class="pt-24 pb-32 px-16">
-				<CardCarousel cards={similarCards} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} />
-			</div>
-		{/if}
-	</div>
-</Popup>
+	</Popup>
+</div>
