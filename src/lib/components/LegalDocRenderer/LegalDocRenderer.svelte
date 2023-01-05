@@ -3,15 +3,13 @@
 	import DropdownArrow from '$icons/dropdown-arrow.svelte';
 	import { tick } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import type { LegalDocData } from './LegalDocRenderer';
 
-	export let jsonUrl: string;
+	export let loading = false;
+	export let docData: LegalDocData;
 	export let menuTitle: string;
 	export let isContained: boolean = false;
 	export let desktopMenuOffsetTop = 24;
-
-	if (!jsonUrl) {
-		throw new Error('jsonUrl is not defined');
-	}
 
 	if (!menuTitle) {
 		throw new Error('menuTitle is not defined');
@@ -26,10 +24,13 @@
 	let currentHash = browser && window.location.hash;
 
 	// Used when the user clicks on a section link
-	function updateHash(event, hash: string) {
+	function handleMenuSectionClick(event, hash: string) {
 		event?.preventDefault();
 		currentHash = hash;
-		window.location.hash = hash;
+
+		if (!isContained) {
+			window.location.hash = hash;
+		}
 	}
 
 	// Scroll handler
@@ -96,18 +97,26 @@
 
 <svelte:window bind:scrollY={windowScrollY} />
 
-{#await fetch(jsonUrl).then((res) => res.json())}
-	<div class="font-semibold text-center py-32 text-lg">Loading document...</div>
-{:then doc}
-	<div on:scroll={handleContainerScroll} bind:this={componentContainer} class="h-full flex mx-auto max-w-screen-2xl" class:overflow-y-auto={isContained} class:overflow-x-auto={isContained}>
+{#if loading}
+	<div class="text-center py-32 text-lg text-white">Loading document...</div>
+{:else if !loading && !docData?.length}
+	<div class="text-center py-32 text-lg text-white">No data to display.</div>
+{:else}
+	<div
+		on:scroll={handleContainerScroll}
+		bind:this={componentContainer}
+		class="h-full flex mx-auto max-w-screen-2xl text-white blue-scrollbar"
+		class:overflow-y-auto={isContained}
+		class:overflow-x-auto={isContained}
+	>
 		<!-- Desktop menu section -->
 		<div id="menu-container" class="hidden lg:block" style="top: {desktopMenuOffsetTop / 4}rem" in:fade>
-			<h1>{menuTitle}</h1>
+			<h1 class="uppercase">{menuTitle}</h1>
 
 			<ul id="section-links-container">
-				{#each doc.terms as section}
+				{#each docData as section}
 					<li class="section-link" class:highlight={currentHash === titleToHash(section.title)}>
-						<a href={titleToHash(section.title)} on:click={(ev) => updateHash(ev, titleToHash(section.title))}>
+						<a href={titleToHash(section.title)} on:click={(ev) => handleMenuSectionClick(ev, titleToHash(section.title))}>
 							{section.title}
 						</a>
 					</li>
@@ -117,27 +126,25 @@
 
 		<!-- Document section -->
 		<div>
-			<!-- Mobile title -->
-			<h1 class="px-8 mt-8 mb-8 font-semibold text-lg lg:hidden">{menuTitle}</h1>
+			<!-- Mobile doc title -->
+			<h1 class="px-8 mt-24 mb-8 font-semibold text-lg lg:hidden">{menuTitle}</h1>
 
-			<div class="max-w-4xl px-4 lg:px-0 lg:pr-16 lg:mt-40 mb-32" in:fade>
-				{#each doc.terms as section, index}
-					<!-- Desktop title -->
+			<!-- Desktop doc title -->
+			<h1 class="hidden lg:block text-center pr-16 lg:mt-40 font-semibold text-3xl mb-16">
+				{menuTitle}
+			</h1>
+
+			<div class="max-w-4xl px-4 lg:px-0 lg:pr-16 mb-32" in:fade>
+				{#each docData as section, index}
+					<!-- Desktop section title -->
 					<h2 id="{titleToHash(section.title, true)}-section-title" class="section-title hidden lg:block" bind:this={titles[index]}>
-						<div class="" class:text-center={section.center}>
-							{#if section.numbered}
-								{index}.&emsp;
-								<span>{section.title}</span>
-							{:else}
-								{section.title}
-							{/if}
+						<div>
+							{index + 1}.&emsp;
+							<span>{section.title}</span>
 						</div>
-						{#if section.break}
-							<div class=" mt-6 w-full h-[2px] bg-[#0c1011] opacity-80" />
-						{/if}
 					</h2>
 
-					<!-- Mobile title and dropdown -->
+					<!-- Mobile section title and dropdown -->
 					<input type="checkbox" id="{titleToHash(section.title, true)}-section-title-mobile" class="mobile-section" />
 					<label for="{titleToHash(section.title, true)}-section-title-mobile" class="mobile-section lg:!hidden">
 						{section.title}
@@ -157,39 +164,24 @@
 	</div>
 
 	{scrollToSection(currentHash) && ''}
-{:catch}
-	Error loading document.
-{/await}
+{/if}
 
 <style lang="postcss">
-	/* Mobile and Desktop content */
-	.section-markup {
-		@apply leading-9;
-	}
-
-	/* Desktop title */
-	.section-title {
-		font-size: 1.5rem;
-		font-weight: bold;
-		margin-bottom: 1rem;
-	}
-
 	/* Desktop Menu Title */
 	#menu-container h1 {
 		@apply text-xl font-bold;
 	}
 
 	#menu-container h1::after {
-		@apply mt-8 w-full block;
+		@apply mt-8 w-full block bg-gray-400;
 		content: '';
 		height: 1px;
-		background-color: #0c1011;
 		opacity: 0.8;
 	}
 
 	/* Desktop section title */
 	.section-title {
-		@apply font-semibold text-3xl mt-24 mb-12 first:mt-0;
+		@apply font-semibold text-3xl mt-12 mb-4 first:mt-0;
 	}
 
 	.section-title::after {
@@ -197,7 +189,7 @@
 
 	/* Desktop menu container */
 	#menu-container {
-		@apply sticky self-start m-16 max-w-xs scrollbar-hide mt-40;
+		@apply sticky self-start m-16 max-w-xs scrollbar-hide;
 	}
 
 	#section-links-container {
@@ -210,13 +202,13 @@
 	}
 
 	.section-link::after {
-		@apply grid place-items-center absolute left-0 top-0 opacity-0;
+		@apply grid place-items-center absolute left-3 top-0 bottom-0 opacity-0;
 		@apply transition duration-300;
 		content: url('/svg/selected-radio-button.svg');
 	}
 
 	.section-link::before {
-		@apply grid place-items-center absolute left-0 top-0;
+		@apply grid place-items-center absolute left-3 top-0 bottom-0;
 		content: url('/svg/radio-button.svg');
 	}
 
@@ -231,20 +223,19 @@
 
 	/* Mobile section label */
 	label.mobile-section {
-		@apply font-bold relative pl-8 text-lg opacity-60 my-4 flex items-center pr-8;
-		color: #0c1011;
+		@apply font-bold relative pl-8 text-lg my-4 flex items-center pr-8 cursor-pointer select-none;
 	}
 
 	input.mobile-section:checked + label.mobile-section {
 	}
 
 	label.mobile-section::before {
-		@apply grid place-items-center absolute left-0 top-0;
+		@apply grid place-items-center absolute left-0 top-0 bottom-0;
 		content: url('/svg/radio-button.svg');
 	}
 
 	label.mobile-section::after {
-		@apply grid place-items-center absolute left-0 top-0 opacity-0;
+		@apply grid place-items-center absolute left-0 top-0 bottom-0 opacity-0;
 		content: url('/svg/selected-radio-button.svg');
 	}
 
