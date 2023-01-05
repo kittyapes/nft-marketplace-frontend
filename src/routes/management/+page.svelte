@@ -31,10 +31,12 @@
 	import PaginationFooter from '$lib/components/management/render-components/PaginationFooter.svelte';
 	import { onDestroy } from 'svelte';
 	import { userHasRole } from '$utils/auth/userRoles';
+	import TosManagement from './TosManagement/TosManagement.svelte';
+	import { includes } from 'lodash-es';
 
 	const fetchLimit = 20;
 
-	let tab: 'USER' | 'COLLECTION' = 'USER';
+	let tab: 'USER' | 'COLLECTION' | 'TOS' = 'USER';
 
 	let users: UserData[] = [];
 	let totalUserEntries = 0;
@@ -472,71 +474,69 @@
 	}
 
 	$: searchPlaceholder = `Search for ${tab.toLowerCase()}`;
-
-	// Network picker
-	// const networkPickerOptions = [
-	// 	{ value: 1, label: 'Mainnet' },
-	// 	{ value: 4, label: 'Rinkeby' },
-	// ];
-
-	// const selectedNetworkOption = writable(networkPickerOptions[0]);
-
-	// selectedNetworkOption.subscribe(() => validateContractAddress($whitelistingCollectionAddress));
 </script>
 
-<div class="flex flex-col w-full h-full gap-12 p-40">
-	<div class="flex gap-14">
-		<div class="{tab === 'USER' ? 'gradient-text gradient-underline' : 'text-color-gray-base'} font-bold text-3xl relative btn" on:click={() => (tab = 'USER')}>User Management</div>
-		<div class="{tab === 'COLLECTION' ? 'gradient-text gradient-underline' : 'text-color-gray-dark'} font-bold text-3xl relative btn" on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
-	</div>
-	<div class="flex gap-4">
-		{#if tab === 'USER'}
-			<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
-			<div class="flex-grow" />
-			<div class="flex gap-10">
-				<div class="">
-					<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
-				</div>
-				<div class="">
-					<Filter on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', createdAfter: 'all' }} />
-				</div>
-			</div>
-		{:else}
-			<SearchBar bind:query={collectionFetchingOptions.name} placeholder={searchPlaceholder} />
-			<div class="flex-grow" />
-			<div class="flex gap-10">
-				<div class="">
-					<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
-				</div>
-				<div class="">
-					<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'ALL' }} />
-				</div>
-			</div>
-		{/if}
+<div class="flex flex-col w-full h-full max-w-screen-2xl mx-auto p-8">
+	<div class="flex gap-x-14 gap-y-4 flex-wrap">
+		<div class="tab btn" class:selected-tab={tab === 'USER'} on:click={() => (tab = 'USER')}>User Management</div>
+		<div class="tab btn" class:selected-tab={tab === 'COLLECTION'} on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
+		<div class="tab btn" class:selected-tab={tab === 'TOS'} on:click={() => (tab = 'TOS')}>ToS Management</div>
 	</div>
 
-	{#if tab === 'USER'}
-		<LoadedContent {loaded}>
-			<InteractiveTable
-				on:event={handleTableEvent}
-				tableData={userTableData}
-				rows={users.length}
-				tableFooterElement={{ element: PaginationFooter, props: { pages: Math.ceil(totalUserEntries / fetchLimit) } }}
-			/>
-		</LoadedContent>
-	{:else}
-		<LoadedContent {loaded}>
-			<InteractiveTable
-				on:event={handleTableEvent}
-				tableData={collectionTableData}
-				rows={collections.length}
-				tableFooterElement={{
-					element: PaginationFooter,
-					props: { pages: Math.ceil(totalCollectionEntries / fetchLimit) },
-				}}
-			/>
-		</LoadedContent>
+	{#if ['USER', 'COLLECTION'].includes(tab)}
+		<div class="flex gap-4 mt-8">
+			{#if tab === 'USER'}
+				<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
+				<div class="flex-grow" />
+				<div class="flex gap-10">
+					<div class="">
+						<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
+					</div>
+					<div class="">
+						<Filter on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', createdAfter: 'all' }} />
+					</div>
+				</div>
+			{:else}
+				<SearchBar bind:query={collectionFetchingOptions.name} placeholder={searchPlaceholder} />
+				<div class="flex-grow" />
+				<div class="flex gap-10">
+					<div class="">
+						<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
+					</div>
+					<div class="">
+						<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'ALL' }} />
+					</div>
+				</div>
+			{/if}
+		</div>
 	{/if}
+
+	<div class="mt-8">
+		{#if tab === 'USER'}
+			<LoadedContent {loaded}>
+				<InteractiveTable
+					on:event={handleTableEvent}
+					tableData={userTableData}
+					rows={users.length}
+					tableFooterElement={{ element: PaginationFooter, props: { pages: Math.ceil(totalUserEntries / fetchLimit) } }}
+				/>
+			</LoadedContent>
+		{:else if tab === 'COLLECTION'}
+			<LoadedContent {loaded}>
+				<InteractiveTable
+					on:event={handleTableEvent}
+					tableData={collectionTableData}
+					rows={collections.length}
+					tableFooterElement={{
+						element: PaginationFooter,
+						props: { pages: Math.ceil(totalCollectionEntries / fetchLimit) },
+					}}
+				/>
+			</LoadedContent>
+		{:else if tab === 'TOS'}
+			<TosManagement />
+		{/if}
+	</div>
 
 	{#if tab === 'COLLECTION'}
 		<div>
@@ -590,7 +590,15 @@
 </div>
 
 <style lang="postcss">
-	.gradient-underline::after {
+	.tab {
+		@apply font-bold text-3xl relative text-color-gray-dark select-none;
+	}
+
+	.selected-tab {
+		@apply bg-gradient-to-r from-color-purple to-color-blue text-transparent bg-clip-text;
+	}
+
+	.selected-tab::after {
 		content: '';
 		@apply absolute w-full -bottom-1 left-0 h-[2px];
 		@apply bg-gradient-to-r from-color-purple to-color-blue;

@@ -1,6 +1,7 @@
 import { connectionDetails, currentUserAddress } from '$stores/wallet';
 import { get } from 'svelte/store';
 import type { AxiosError, AxiosResponse } from 'axios';
+import axios from 'axios';
 
 export type ApiVersion = 'latest' | `sprint-${number}` | 'v2';
 
@@ -38,8 +39,33 @@ export function getApiUrl(apiVersion: ApiVersion, apiPath: string): string {
 	return apiUrl + apiPath;
 }
 
-export interface ApiCallResult<T> {
-	err?: AxiosError;
-	res?: AxiosResponse;
-	data?: T;
+interface ApiErrorResponseData {
+	statusCode: number;
+	error: string;
+	message: string;
 }
+
+export interface ApiCallResult<T> {
+	data?: T;
+	errData?: ApiErrorResponseData;
+	err?: AxiosError;
+}
+
+function responseHandler<T>(response: AxiosResponse<any>) {
+	if (response.status === 200) {
+		const data = response?.data;
+
+		return <ApiCallResult<T>>{ data };
+	}
+
+	return response;
+}
+
+function responseErrorHandler<T>(err: AxiosError) {
+	return <ApiCallResult<T>>{ errData: err.response.data, err };
+}
+
+const axiosDefaults = {};
+export const api = axios.create(axiosDefaults);
+
+api.interceptors.response.use(responseHandler, responseErrorHandler);
