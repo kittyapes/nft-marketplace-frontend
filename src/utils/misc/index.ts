@@ -54,3 +54,7 @@ export function buildListingDurationOptions(isAdmin: boolean, currentDuration?: 
 export function isListingExpired(startTs: number, duration: number) {
 	return dayjs(startTs * 1000 + duration * 1000).isBefore(dayjs());
 }
+
+export function delay(ms: number) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}

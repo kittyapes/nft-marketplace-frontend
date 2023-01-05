@@ -31,10 +31,13 @@
 	import PaginationFooter from '$lib/components/management/render-components/PaginationFooter.svelte';
 	import { onDestroy } from 'svelte';
 	import { userHasRole } from '$utils/auth/userRoles';
+	import TosManagement from './TosManagement/TosManagement.svelte';
 	import { getGradientColors } from '$utils/api/management/getGradientColors';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 
-	let tab: 'USER' | 'COLLECTION' = 'COLLECTION';
+	const fetchLimit = 20;
+
+	let tab: 'USER' | 'COLLECTION' | 'TOS' = 'USER';
 
 	let users: UserData[] = [];
 	let totalUserEntries = 0;
@@ -494,78 +497,72 @@
 	}
 
 	$: searchPlaceholder = `Search for ${tab.toLowerCase()}`;
-
-	// Network picker
-	// const networkPickerOptions = [
-	// 	{ value: 1, label: 'Mainnet' },
-	// 	{ value: 4, label: 'Rinkeby' },
-	// ];
-
-	// const selectedNetworkOption = writable(networkPickerOptions[0]);
-
-	// selectedNetworkOption.subscribe(() => validateContractAddress($whitelistingCollectionAddress));
 </script>
 
-<div class="flex flex-col w-full h-full gap-16 p-40 pt-36">
-	<div class="flex">
-		<div class="font-medium text-2xl relative" on:click={() => (tab = 'COLLECTION')}>
-			<div class="px-6 clickable {tab === 'COLLECTION' ? 'text-gradient' : 'text-white'}">Collection Management</div>
-			<div class="{tab === 'COLLECTION' ? 'gradient-line' : 'bg-card-gradient'} h-1 mt-2 transition-all duration-300" />
-		</div>
-		<div class="font-medium text-2xl relative" on:click={() => (tab = 'USER')}>
-			<div class="px-6 clickable {tab === 'USER' ? 'text-gradient' : 'text-white'}">User Management</div>
-			<div class="{tab === 'USER' ? 'gradient-line' : 'bg-card-gradient'} h-1 mt-2 transition-all duration-300" />
-		</div>
+<div class="flex flex-col w-full h-full max-w-screen-2xl mx-auto pt-24 p-8">
+	<div class="flex gap-x-14 gap-y-4 flex-wrap relative max-w-max">
+		<div class="tab btn" class:selected-tab={tab === 'USER'} on:click={() => (tab = 'USER')}>User Management</div>
+		<div class="tab btn" class:selected-tab={tab === 'COLLECTION'} on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
+		<div class="tab btn" class:selected-tab={tab === 'TOS'} on:click={() => (tab = 'TOS')}>ToS Management</div>
+
+		<!-- Line under tabs -->
+		<div class="absolute h-[2px] left-0 right-0 bg-white bg-opacity-10 -bottom-2 z-10" />
 	</div>
 
-	<div class="flex gap-40 2xl:gap-96">
+	{#if ['USER', 'COLLECTION'].includes(tab)}
+		<div class="flex gap-4 mt-8">
+			{#if tab === 'USER'}
+				<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
+				<div class="flex-grow" />
+				<div class="flex gap-10">
+					<div class="">
+						<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
+					</div>
+					<div class="">
+						<Filter on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', createdAfter: 'all' }} />
+					</div>
+				</div>
+			{:else}
+				<SearchBar bind:query={collectionFetchingOptions.name} placeholder={searchPlaceholder} />
+				<div class="flex-grow" />
+				<div class="flex gap-10">
+					<div class="">
+						<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
+					</div>
+					<div class="">
+						<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'ALL' }} />
+					</div>
+				</div>
+			{/if}
+		</div>
+	{/if}
+
+	<div class="mt-8">
 		{#if tab === 'USER'}
-			<SearchBar bind:query={userFetchingOptions.query} placeholder={searchPlaceholder} />
-			<div class="flex gap-10">
-				<div class="">
-					<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
-				</div>
-
-				<div class="">
-					<Filter on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', createdAfter: 'all' }} />
-				</div>
-			</div>
-		{:else}
-			<SearchBar bind:query={collectionFetchingOptions.name} placeholder={searchPlaceholder} />
-			<div class="flex gap-10">
-				<div class="">
-					<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
-				</div>
-
-				<div class="">
-					<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'all' }} />
-				</div>
-			</div>
+			<LoadedContent {loaded}>
+				<InteractiveTable
+					on:event={handleTableEvent}
+					tableData={userTableData}
+					rows={users.length}
+					tableFooterElement={{ element: PaginationFooter, props: { pages: Math.ceil(totalUserEntries / fetchLimit) } }}
+				/>
+			</LoadedContent>
+		{:else if tab === 'COLLECTION'}
+			<LoadedContent {loaded}>
+				<InteractiveTable
+					on:event={handleTableEvent}
+					tableData={collectionTableData}
+					rows={collections.length}
+					tableFooterElement={{
+						element: PaginationFooter,
+						props: { pages: Math.ceil(totalCollectionEntries / fetchLimit) },
+					}}
+				/>
+			</LoadedContent>
+		{:else if tab === 'TOS'}
+			<TosManagement />
 		{/if}
 	</div>
-
-	{#if tab === 'USER'}
-		<LoadedContent {loaded}>
-			<InteractiveTable
-				on:event={handleTableEvent}
-				tableData={userTableData}
-				rows={users.length}
-				tableFooterElement={{ element: PaginationFooter, props: { pages: Math.ceil(totalUserEntries / usersPerPage), items: totalUserEntries } }}
-			/>
-		</LoadedContent>
-	{:else}
-		<LoadedContent {loaded}>
-			<InteractiveTable
-				on:event={handleTableEvent}
-				tableData={collectionTableData}
-				rows={collections.length}
-				tableFooterElement={{
-					element: PaginationFooter,
-					props: { pages: Math.ceil(totalCollectionEntries / collectionsPerPage), items: totalCollectionEntries },
-				}}
-			/>
-		</LoadedContent>
-	{/if}
 
 	{#if tab === 'COLLECTION'}
 		<div>
@@ -619,3 +616,19 @@
 		</div>
 	{/if}
 </div>
+
+<style lang="postcss">
+	.tab {
+		@apply font-medium text-2xl relative text-white select-none z-20;
+	}
+
+	.selected-tab {
+		@apply bg-gradient-to-r from-color-purple to-color-blue text-transparent bg-clip-text;
+	}
+
+	.selected-tab::after {
+		content: '';
+		@apply absolute w-full -bottom-2 left-0 h-[2px];
+		@apply bg-gradient-to-r from-color-purple to-color-blue;
+	}
+</style>

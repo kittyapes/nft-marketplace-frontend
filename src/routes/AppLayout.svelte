@@ -18,6 +18,19 @@
 	import { refreshConnection } from '$utils/wallet/connectWallet';
 	import { onMount, setContext } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
+	import { browser } from '$app/environment';
+	import { initTos } from '$utils/tos';
+	import { page } from '$app/stores';
+
+	// Disable navigation bar on certain paths
+	const disableNavOnPaths = [new RegExp('/management/preview/.+')];
+
+	$: onDisabledNavPath = disableNavOnPaths.some((v) => $page.url.pathname.match(v));
+
+	// ToS popup initialization
+	if (browser) {
+		initTos();
+	}
 
 	onMount(async () => {
 		// Check for whether user has access/has provided password
@@ -70,7 +83,9 @@
 </svelte:head>
 
 {#key appReloadHelper}
-	<Nav {scrollY} />
+	{#if !onDisabledNavPath}
+		<Nav {scrollY} />
+	{/if}
 
 	{#if errorCode}
 		<ErrorPage {errorCode} />

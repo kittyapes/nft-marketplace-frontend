@@ -23,8 +23,8 @@
 
 <label
 	class="flex items-center gap-4 {$$props.class} w-6 h-6 cursor-pointer
-	border rounded text-color-blue transition relative
-	{checked ? 'border-color-blue' : 'border-[#989898] border-opacity-40'}"
+	border text-color-purple transition relative
+	{checked ? 'border-color-purple' : 'border-[#989898] border-opacity-40'}"
 >
 	<input type="checkbox" class="hidden" {id} {name} {disabled} bind:checked on:change={handleChange} />
 	{#if checked}
@@ -34,7 +34,7 @@
 	{/if}
 
 	{#if label}
-		<div class="ml-10 text-black whitespace-nowrap">
+		<div class="whitespace-nowrap ml-8 text-white">
 			{label}
 		</div>
 	{/if}

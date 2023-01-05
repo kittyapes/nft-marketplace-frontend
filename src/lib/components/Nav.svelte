@@ -111,15 +111,3 @@
 		<div class="snap-end" />
 	</div>
 </div>
-
-<style type="postcss">
-	/* #marketplace-link::after {
-		@apply absolute h-px w-full bg-gradient-to-r from-color-purple to-color-blue;
-		@apply left-0 bottom-0;
-		content: '';
-	} */
-
-	.navbar {
-		background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
-	}
-</style>

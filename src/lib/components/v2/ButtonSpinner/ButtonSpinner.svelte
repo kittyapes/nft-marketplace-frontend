@@ -1,9 +1,5 @@
 <script>
 	import Spinner from '../Spinner/Spinner.svelte';
-
-	export let secondary = false;
-
-	$: stroke = (secondary && '#8391F7') || 'white';
 </script>
 
 <!-- By Sam Herbert (@sherb), for everyone. More @ http://goo.gl/7AJzbL -->
