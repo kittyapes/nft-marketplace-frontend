@@ -81,8 +81,7 @@
 	onMount(refreshTable);
 </script>
 
-<!-- Entire section -->
-<div class="flex-grow h-full pr-4 overflow-y-auto blue-scrollbar">
+<div class="pr-4 blue-scrollbar aspect-1 flex flex-col overflow-hidden">
 	<!-- Filter control -->
 	<div class="flex mt-2 space-x-2">
 		<div class="flex flex-grow space-x-2 overflow-x-scroll scrollbar-hidden">
@@ -98,7 +97,7 @@
 		</div>
 	</div>
 
-	<div class="h-[500px] mt-4">
+	<div class="mt-4 flex-grow overflow-hidden">
 		<NftActivityHistoryTable data={nftActivityHistoryData} skeleton={isLoading} on:end-reached={handleEndReached} displayEndReachedMsg={historyEndReached} />
 	</div>
 </div>

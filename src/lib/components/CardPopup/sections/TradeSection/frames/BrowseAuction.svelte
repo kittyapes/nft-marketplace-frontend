@@ -85,58 +85,56 @@
 	let hoveringPlaceBid;
 </script>
 
-<div class="flex flex-col justify-center h-[90%] pr-1 text-white">
-	<div class="flex flex-col h-full mt-4">
-		<div class="min-h-[300px] flex-grow">
-			<AuctionBidList {biddings} isRefreshing={isRefreshingBids} on:request-refresh={refreshBids} />
-		</div>
+<div class="flex flex-col justify-center pr-1 text-white aspect-1">
+	<div class="flex-grow">
+		<AuctionBidList {biddings} isRefreshing={isRefreshingBids} on:request-refresh={refreshBids} />
+	</div>
 
-		<div class="flex items-center justify-between my-4">
-			<div class="font-semibold">
-				<div class="">Quantity</div>
-				<div class="flex items-center justify-start gap-2">
-					{listedNfts}
-				</div>
-			</div>
-
-			<div class="font-semibold">
-				<div class="">Starting price</div>
-				<div class="flex items-center justify-end gap-2 {(options?.auctionData?.formatStartingPrice || options?.auctionData?.startingPrice || 'N/A').toString().length > 12 ? 'text-xs' : 'text-base'}">
-					<EthV2 />
-					{options?.auctionData?.formatStartingPrice || options?.auctionData?.startingPrice || 'N/A'}
-				</div>
+	<div class="flex items-center justify-between my-4">
+		<div class="font-semibold">
+			<div class="">Quantity</div>
+			<div class="flex items-center justify-start gap-2">
+				{listedNfts}
 			</div>
 		</div>
 
-		<div class="flex gap-2">
-			<button class="grid w-12 h-12 p-2 border rounded-lg place-items-center" disabled><EthV2 /></button>
-			<Input class="border border-opacity-20" placeholder="Enter amount" bind:value={bidAmount} validator={bidValidator} bind:valid={bidAmountValid} disabled={listingExpired} />
+		<div class="font-semibold">
+			<div class="">Starting price</div>
+			<div class="flex items-center justify-end gap-2 {(options?.auctionData?.formatStartingPrice || options?.auctionData?.startingPrice || 'N/A').toString().length > 12 ? 'text-xs' : 'text-base'}">
+				<EthV2 />
+				{options?.auctionData?.formatStartingPrice || options?.auctionData?.startingPrice || 'N/A'}
+			</div>
 		</div>
+	</div>
 
-		<div class="flex gap-2 mt-4">
-			{#if $appSigner}
-				<div class="relative w-full" on:pointerover={() => (hoveringPlaceBid = true)} on:pointerleave={() => (hoveringPlaceBid = false)}>
-					<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid || !!bidError || !chainListing.isValidOnChainListing}>
-						{#if isPlacingBid}
-							<ButtonSpinner />
-						{/if}
-						Place Bid
-					</PrimaryButton>
+	<div class="flex gap-2">
+		<button class="grid w-12 h-12 p-2 border place-items-center" disabled><EthV2 /></button>
+		<Input class="border border-opacity-20" placeholder="Enter amount" bind:value={bidAmount} validator={bidValidator} bind:valid={bidAmountValid} disabled={listingExpired} />
+	</div>
 
-					{#if hoveringPlaceBid && bidError && chainListing.isValidOnChainListing}
-						<div class="absolute top-4">
-							<InfoBubble>{bidError}</InfoBubble>
-						</div>
+	<div class="flex gap-2 mt-4">
+		{#if $appSigner}
+			<div class="relative w-full" on:pointerover={() => (hoveringPlaceBid = true)} on:pointerleave={() => (hoveringPlaceBid = false)}>
+				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid || !!bidError || !chainListing.isValidOnChainListing}>
+					{#if isPlacingBid}
+						<ButtonSpinner />
 					{/if}
-					{#if hoveringPlaceBid && !chainListing.isValidOnChainListing}
-						<div class="absolute top-4">
-							<InfoBubble>Sorry, this listing is no longer valid</InfoBubble>
-						</div>
-					{/if}
-				</div>
-			{:else}
-				<PrimaryButton on:click={connectToWallet}>Connect To Wallet</PrimaryButton>
-			{/if}
-		</div>
+					Place Bid
+				</PrimaryButton>
+
+				{#if hoveringPlaceBid && bidError && chainListing.isValidOnChainListing}
+					<div class="absolute top-4">
+						<InfoBubble>{bidError}</InfoBubble>
+					</div>
+				{/if}
+				{#if hoveringPlaceBid && !chainListing.isValidOnChainListing}
+					<div class="absolute top-4">
+						<InfoBubble>Sorry, this listing is no longer valid</InfoBubble>
+					</div>
+				{/if}
+			</div>
+		{:else}
+			<PrimaryButton on:click={connectToWallet}>Connect To Wallet</PrimaryButton>
+		{/if}
 	</div>
 </div>

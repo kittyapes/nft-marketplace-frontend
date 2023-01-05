@@ -9,8 +9,8 @@
 	export let message = 'Failed to perform action!';
 </script>
 
-<div>
-	<div class="flex flex-col justify-center gradient-border-red aspect-1 gap-8 mb-8">
+<div class="aspect-1 flex flex-col">
+	<div class="flex flex-col justify-center gradient-border-red gap-8 mb-8 flex-grow">
 		<div class="text-center mt-4 text-xl text-white">{message}</div>
 		<div class="flex items-center justify-center gap-3">
 			<div class="w-16">
