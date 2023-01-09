@@ -108,23 +108,18 @@
 </script>
 
 <div class="w-full flex flex-row items-center justify-between gap-x-4 my-6 2xl:my-8">
-	<button
-		on:click={() => {
-			showFilters = !showFilters;
-		}}
-		class="h-12 hover:bg-main-gradient rounded-none border-2 border-gradient flex items-center justify-center gap-x-3 w-60"
-	>
+	<button on:click={() => (showFilters = !showFilters)} class="h-12 hover:bg-main-gradient rounded-none border-2 border-gradient flex items-center justify-center gap-x-3 w-60">
 		{#if showFilters}
-			<ChevronLeft class=" w-4 h-4" />
+			<ChevronLeft class="w-4 h-4" />
 		{:else}
-			<FiltersV2 class=" w-5 h-6" />
+			<FiltersV2 />
 		{/if}
 
 		Filter
 	</button>
 
 	<div class="flex flex-row items-center gap-x-4">
-		<SortButton bind:sortOptions class="h-11 2xl:h-14" />
+		<SortButton bind:sortOptions class="h-12" />
 		<GridSelector bind:gridStyle />
 	</div>
 </div>
