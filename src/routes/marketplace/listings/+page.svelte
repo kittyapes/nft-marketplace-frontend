@@ -107,52 +107,56 @@
 	const inviewOptions = {};
 </script>
 
-<div>
-	<div class="w-full flex flex-row items-center justify-between gap-x-4 my-6 2xl:my-8">
-		<div class="flex flex-row items-center gap-x-4">
-			<button
-				on:click={() => {
-					showFilters = !showFilters;
-				}}
-				class="h-11 2xl:h-14 max-w-[123px] min-w-[123px] hover:bg-main-gradient rounded-none border-2 border-gradient flex items-center justify-center gap-x-3"
-			>
-				{#if showFilters}
-					<ChevronLeft class=" w-4 h-4" />
-				{:else}
-					<FiltersV2 class=" w-5 h-6" />
-				{/if}
-				Filter
-			</button>
-		</div>
-		<div class="flex flex-row items-center gap-x-4">
-			<SortButton bind:sortOptions class="h-11 2xl:h-14 min-w-[123px] max-w-[123px]" />
-			<GridSelector bind:gridStyle />
-		</div>
-	</div>
-	<div class="w-full flex flex-row items-start gap-x-4 2xl:gap-x-5">
+<div class="w-full flex flex-row items-center justify-between gap-x-4 my-6 2xl:my-8">
+	<button
+		on:click={() => {
+			showFilters = !showFilters;
+		}}
+		class="h-12 hover:bg-main-gradient rounded-none border-2 border-gradient flex items-center justify-center gap-x-3 w-60"
+	>
 		{#if showFilters}
-			<div transition:slide|local={{ easing: cubicInOut, duration: 300 }} class="w-[345px]">
-				<Accordion accordionLabel="Status">
-					<StatusFilter on:request-refresh={refreshWithFilters} />
-				</Accordion>
-				<Accordion accordionLabel="Price">
-					<PriceFilter />
-				</Accordion>
-				<Accordion accordionLabel="Type">
-					<TypeFilter />
-				</Accordion>
-				<Accordion accordionLabel="Collections">
-					<CollectionsFilter on:request-refresh={refreshWithFilters} />
-				</Accordion>
-			</div>
+			<ChevronLeft class=" w-4 h-4" />
+		{:else}
+			<FiltersV2 class=" w-5 h-6" />
 		{/if}
-		<div class="w-full">
-			<NftGrid bind:options={data} bind:gridStyle bind:reachedEnd bind:isLoading />
-			{#if isLoading}
-				<DiamondsLoader />
-			{:else}
-				<div use:inview={inviewOptions} on:change={onChange} />
-			{/if}
+
+		Filter
+	</button>
+
+	<div class="flex flex-row items-center gap-x-4">
+		<SortButton bind:sortOptions class="h-11 2xl:h-14" />
+		<GridSelector bind:gridStyle />
+	</div>
+</div>
+
+<div class="w-full flex flex-row items-start gap-x-8 2xl:gap-x-5">
+	{#if showFilters}
+		<div transition:slide|local={{ easing: cubicInOut, duration: 300 }} class="w-72">
+			<Accordion accordionLabel="Status">
+				<StatusFilter on:request-refresh={refreshWithFilters} />
+			</Accordion>
+
+			<Accordion accordionLabel="Price">
+				<PriceFilter />
+			</Accordion>
+
+			<Accordion accordionLabel="Type">
+				<TypeFilter />
+			</Accordion>
+
+			<Accordion accordionLabel="Collections">
+				<CollectionsFilter on:request-refresh={refreshWithFilters} />
+			</Accordion>
 		</div>
+	{/if}
+
+	<div class="w-full">
+		<NftGrid bind:options={data} bind:gridStyle bind:reachedEnd bind:isLoading />
+
+		{#if isLoading}
+			<DiamondsLoader />
+		{:else}
+			<div use:inview={inviewOptions} on:change={onChange} />
+		{/if}
 	</div>
 </div>

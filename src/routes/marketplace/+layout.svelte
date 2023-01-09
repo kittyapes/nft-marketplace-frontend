@@ -12,7 +12,7 @@
 	];
 </script>
 
-<main class="mx-auto text-white pt-28 2xl:pt-32 px-28 2xl:px-36">
+<main class="text-white pt-28 2xl:pt-32 px-28 2xl:px-36">
 	<Tabs bind:tabs />
 	<slot />
 </main>
