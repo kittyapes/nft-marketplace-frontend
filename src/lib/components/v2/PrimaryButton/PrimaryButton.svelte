@@ -41,7 +41,7 @@
 </script>
 
 <button
-	class="text-white h-12 p-[2px] outer-shadow group outline-none relative block whitespace-nowrap {buttonBaseClasses} {extButtonClass}"
+	class="text-white h-12 flex-shrink-0 p-[2px] outer-shadow group outline-none relative block whitespace-nowrap {buttonBaseClasses} {extButtonClass}"
 	style="background: {_options.strokeBackground};"
 	{disabled}
 	on:click
