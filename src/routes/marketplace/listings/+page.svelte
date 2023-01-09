@@ -131,7 +131,7 @@
 	</div>
 	<div class="w-full flex flex-row items-start gap-x-4 2xl:gap-x-5">
 		{#if showFilters}
-			<div transition:slide={{ easing: cubicInOut, duration: 300 }} class="w-[345px]">
+			<div transition:slide|local={{ easing: cubicInOut, duration: 300 }} class="w-[345px]">
 				<Accordion accordionLabel="Status">
 					<StatusFilter on:request-refresh={refreshWithFilters} />
 				</Accordion>
