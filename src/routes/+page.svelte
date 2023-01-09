@@ -68,7 +68,8 @@
 />
 <div class="px-36 pt-32 w-full grid place-items-center text-white">
 	<!-- Hero section -->
-	{#if $loadedExploreListings}
+	<!-- TODO fix this properly -->
+	{#if $loadedExploreListings && exploreListingsData.length >= 2}
 		<div class="mb-16 flex gap-5 items-stretch w-full max-h-[550px]" in:slide|local={{ duration: 1000 }}>
 			<NftCard options={exploreListingsData[0]} />
 
@@ -86,7 +87,8 @@
 	</div>
 
 	<!-- Hottest creators section -->
-	{#if $loadedHottestCreators && $loadedExploreListings}
+	<!-- TODO fix this properly -->
+	{#if $loadedHottestCreators && $loadedExploreListings && exploreListingsData.length >= 2}
 		<div class="pt-20 w-full h-full" in:slide>
 			<h2 class="text-2xl leading-7">Hottest creators</h2>
 			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
