@@ -119,7 +119,7 @@
 	</button>
 
 	<div class="flex flex-row items-center gap-x-4">
-		<SortButton bind:sortOptions class="h-12" />
+		<SortButton bind:sortOptions class="h-12 w-36" />
 		<GridSelector bind:gridStyle />
 	</div>
 </div>

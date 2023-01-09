@@ -1,24 +1,34 @@
 <script lang="ts">
 	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import ArrowDown from '$icons/arrow-down.svelte';
+	import { tick } from 'svelte';
 	import { slide } from 'svelte/transition';
 
 	export let sortOptions: { title: string; action?: any }[] = [];
 
 	let showSort = false;
+	let button: HTMLElement;
+
+	function handleClick() {
+		console.log('Click');
+		showSort = !showSort;
+	}
+
+	async function handleDropdownOutsideClick() {
+		showSort = false;
+	}
 </script>
 
 <div class="flex-grow relative {$$props.class}">
-	<button on:click={() => (showSort = true)} class="w-full h-full border-gradient flex flex-row items-center justify-between px-4 hover:bg-main-gradient">
+	<button on:click={handleClick} class="w-full h-full border-gradient flex flex-row items-center justify-between px-4 hover:bg-main-gradient" bind:this={button}>
 		<h2 class="text-base leading-7 capitalize text-opacity-70 whitespace-nowrap">Sort By</h2>
-		<ArrowDown class="w-4 h-3 transform duration-500 {showSort ? '-rotate-180' : 'rotate-0'}" />
+		<ArrowDown class="w-4 h-4 transform transition {showSort ? '-rotate-180' : 'rotate-0'}" />
 	</button>
+
 	{#if showSort}
 		<div
 			transition:slide={{ duration: 300 }}
-			use:outsideClickCallback={{
-				cb: () => (showSort = false),
-			}}
+			use:outsideClickCallback={{ cb: handleDropdownOutsideClick, ignoredTargets: [button] }}
 			class="relative z-10 mt-1 bg-dark-gradient w-full flex flex-col font-medium text-sm leading-5 whitespace-nowrap truncate sort-list"
 		>
 			{#each sortOptions as sortOption}
