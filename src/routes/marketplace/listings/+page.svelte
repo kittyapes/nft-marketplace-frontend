@@ -127,7 +127,7 @@
 <div class="flex flex-row items-start gap-x-8">
 	{#if showFilters}
 		<div transition:slide|local={{ easing: cubicInOut, duration: 300 }} class="w-60 flex-shrink-0">
-			<Accordion accordionLabel="Status">
+			<Accordion accordionLabel="Display only">
 				<StatusFilter on:request-refresh={refreshWithFilters} />
 			</Accordion>
 
@@ -135,9 +135,9 @@
 				<PriceFilter />
 			</Accordion>
 
-			<Accordion accordionLabel="Type">
+			<!-- <Accordion accordionLabel="Type">
 				<TypeFilter />
-			</Accordion>
+			</Accordion> -->
 
 			<Accordion accordionLabel="Collections">
 				<CollectionsFilter on:request-refresh={refreshWithFilters} />
