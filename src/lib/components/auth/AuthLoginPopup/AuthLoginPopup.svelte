@@ -80,7 +80,7 @@
 	$: prompt = adapter.getPrompt();
 </script>
 
-<Popup closeButton class="w-[500px] h-[220px] flex flex-col items-center text-white bg-dark-gradient" on:close>
+<Popup class="w-[500px] h-[220px] flex flex-col items-center text-white bg-dark-gradient" on:close>
 	{#if state === 'prompt'}
 		<div class=" bg-dark-gradient w-full h-full">
 			<div class="flex flex-col gap-10 p-8 items-center">
