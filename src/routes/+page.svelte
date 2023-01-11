@@ -114,6 +114,24 @@
 		</div>
 	{/if}
 
+	<!-- Latest blog posts -->
+	<div class=" mt-60 mb-16">
+		<div class="flex items-end mb-12">
+			<h2 class="text-4xl leading-none text-white flex-grow">Latest blog post</h2>
+			<a href="/blog" class=" text-white gradient-underline text-lg relative">View latests posts</a>
+		</div>
+
+		{#if $blogPosts.length}
+			<div class="flex flex-col gap-10">
+				{#each $blogPosts.slice(0, 2) as post}
+					<BlogPostPreview data={post} />
+				{/each}
+			</div>
+		{/if}
+	</div>
+
+	<MonthlyAirdropWidget />
+
 	<!-- Tending nfts Section -->
 	{#if $loadedExploreListings && exploreListingsData?.length > 0}
 		<div class="my-24 w-full" in:slide>
@@ -126,21 +144,12 @@
 			<a href="/marketplace" class="w-full"><PrimaryButton class="w-full">Explore Marketplace</PrimaryButton></a>
 		</div>
 	{/if}
-
-	<!-- Latest blog posts 
-	<div class="px-16 2xl:px-52 mt-24 mb-16">
-		<div class="flex items-end">
-			<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">BLOG</h2>
-			<a href="/blog" class="uppercase text-white underline text-sm font-bold">View Latest Posts</a>
-		</div>
-		<hr class="mt-4 border-[#FFFFFF1E]" />
-
-		{#if $blogPosts.length}
-			{#each $blogPosts.slice(0, 2) as post}
-				<BlogPostPreview data={post} />
-			{/each}
-		{/if}
-	</div>-->
-
-	<MonthlyAirdropWidget />
 </div>
+
+<style type="postcss">
+	.gradient-underline::after {
+		content: '';
+		@apply absolute w-full -bottom-1 left-0 h-[2px];
+		@apply bg-gradient-to-r from-color-purple to-color-blue;
+	}
+</style>
