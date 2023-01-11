@@ -75,7 +75,8 @@ async function ensureTosAccepted() {
 	// If we reached the end of the function, something has gone wrong
 	// and the user should not be able to continue using the site
 	console.error('Could not tell if user has agreed to the latest version of ToS. The user should not be able to continue using the site.');
-	displayErrorOverlay();
+	// TODO - Reactivate when the TOS is fixed
+	// displayErrorOverlay();
 }
 
 export async function handleAgreeToTos() {
