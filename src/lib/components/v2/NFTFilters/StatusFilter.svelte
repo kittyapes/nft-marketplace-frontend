@@ -7,8 +7,7 @@
 	let filterOptions: { label: string; queryParam: '' | 'auction' | 'sale' | 'not-for-sale' }[] = [
 		{ label: 'All', queryParam: '' },
 		{ label: 'Buy Now', queryParam: 'sale' },
-		{ label: 'Live Auction', queryParam: 'auction' },
-		{ label: 'Not for sale', queryParam: 'not-for-sale' },
+		{ label: 'Auction', queryParam: 'auction' },
 	];
 	let statusFilter = $page?.url?.searchParams.get('types') || filterOptions[0]?.queryParam;
 	$: {
@@ -19,16 +18,17 @@
 	}
 </script>
 
-<div class="flex flex-row flex-wrap items-center gap-x-5 2xl:gap-x-6 gap-y-4 2xl:gap-y-5">
-	{#each filterOptions as option}
+<div class="grid grid-cols-2 gap-2">
+	{#each filterOptions as option, index}
 		<button
 			type="button"
 			on:click={() => {
 				statusFilter = option?.queryParam;
 			}}
-			class="px-4 2xl:px-6 py-2 2xl:py-2.5 font-medium text-sm 2xl:text-lg leading-6 2xl:leading-7 border-gradient hover:bg-main-gradient transition-btn {option?.queryParam === statusFilter
+			class="py-2 2xl:py-2.5 font-medium leading-6 2xl:leading-7 border-gradient hover:bg-main-gradient transition-btn flex-grow {option?.queryParam === statusFilter
 				? 'bg-main-gradient'
 				: 'bg-gradient-a'}"
+			class:col-span-2={index === 0}
 		>
 			{option.label}
 		</button>

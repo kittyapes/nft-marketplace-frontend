@@ -43,7 +43,7 @@
 	{/if}
 
 	{#if options?.length || options?.length === 0}
-		<div class:normal-grid={gridStyle === 'normal'} class:dense-grid={gridStyle === 'dense'} class:masonry-container={gridStyle === 'masonry'}>
+		<div class="{gridStyle} justify-end">
 			{#if createNewNftBtn && !isLoading}
 				<CreateNewNftBtn collectionId={createNewNftBtn} />
 			{/if}
@@ -68,16 +68,16 @@
 	.placeholder {
 		@apply p-36 font-semibold text-lg opacity-70;
 	}
-	.normal-grid {
-		@apply grid grid-cols-[repeat(auto-fit,345px)];
-		@apply justify-between gap-y-14;
+
+	.normal {
+		@apply grid grid-cols-[repeat(auto-fit,345px)] gap-4;
 	}
-	.dense-grid {
-		@apply grid grid-cols-[repeat(auto-fit,260px)];
-		@apply justify-between gap-y-10;
+
+	.dense {
+		@apply grid grid-cols-[repeat(auto-fit,260px)] gap-4;
 	}
-	.masonry-container {
-		@apply columns-[260px];
-		@apply gap-x-6;
+
+	.masonry {
+		@apply columns-[260px] gap-4;
 	}
 </style>

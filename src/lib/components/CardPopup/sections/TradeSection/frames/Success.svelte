@@ -16,7 +16,7 @@
 
 	function handleContinueShopping() {
 		dispatch('close-popup');
-		goto('/marketplace');
+		goto('/marketplace/listings');
 	}
 </script>
 
@@ -32,7 +32,7 @@
 		</div>
 	</div>
 
-	<div class="flex gap-4">
+	<div class="grid grid-cols-2 gap-4">
 		<PrimaryButton on:click={handleViewProfile}>View Profile</PrimaryButton>
 		<PrimaryButton on:click={handleContinueShopping}>Continue Shopping</PrimaryButton>
 	</div>

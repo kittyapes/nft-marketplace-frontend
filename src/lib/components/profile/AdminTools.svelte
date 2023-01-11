@@ -62,7 +62,7 @@
 	$: inactivateDisabled = !isVerifiedUser || isChangingverifiedStatus || !profileData;
 </script>
 
-<div class="items-center px-32 py-24 gap-x-2 ">
+<div class="items-center py-24 gap-x-2 ">
 	<div class="px-8 py-6 border bg-card-gradient text-white">
 		<div class="text-lg font-semibold uppercase">Admin tools</div>
 

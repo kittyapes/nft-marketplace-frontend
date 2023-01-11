@@ -132,7 +132,7 @@
 			<!-- Buttons -->
 			<div class="flex mt-4 mb-6 gap-x-12">
 				<button class="w-5 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}><img src={getIconUrl('share')} alt="Share." /></button>
-				<button class="w-5 btn disabled:opacity-50" class:text-white={favorited} on:click={handleLike} disabled={!$walletConnected}>
+				<button class="w-5 btn disabled:opacity-50 text-transparent" class:text-white={favorited} on:click={handleLike} disabled={!$walletConnected}>
 					<Heart />
 				</button>
 				<button class="w-5 btn" disabled={!videoAsset && !assetUrl} on:click={handleFullscreen}>

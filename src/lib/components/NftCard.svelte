@@ -181,7 +181,7 @@
 		class="w-full h-full mx-auto transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} relative"
 	>
 		{#if isHovered && !disabled}
-			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60" transition:fade={{ duration: 200 }}>
+			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60 text-white" transition:fade={{ duration: 200 }}>
 				{#if options.resourceType === 'listing'}
 					<button class="p-3 clickable h-12 w-40 truncate" on:click|stopPropagation={() => goto('/profile/' + options.listingData?.sellerAddress)}>{options.listingData?.sellerAddress}</button>
 				{/if}

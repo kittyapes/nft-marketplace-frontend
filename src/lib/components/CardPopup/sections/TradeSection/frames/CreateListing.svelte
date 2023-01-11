@@ -121,12 +121,14 @@
 			</div>
 		</div>
 
-		<PrimaryButton class="flex-shrink-0 mt-4" disabled={!!formErrors.length || isListing} on:click={completeListing}>
-			Complete Listing
-			{#if isListing}
-				<ButtonSpinner />
-			{/if}
-		</PrimaryButton>
+		<div class="mt-4">
+			<PrimaryButton disabled={!!formErrors.length || isListing} on:click={completeListing}>
+				Complete Listing
+				{#if isListing}
+					<ButtonSpinner />
+				{/if}
+			</PrimaryButton>
+		</div>
 	{:else}
 		<div class="mt-4">
 			<InfoBox>You can't create listings.</InfoBox>
