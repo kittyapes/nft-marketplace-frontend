@@ -79,7 +79,7 @@
 						title={profileButtonTitle}
 					>
 						<!-- Profile image or guest user icon -->
-						<div class="w-10 h-10 gradient-border !border-2 flex items-center justify-center">
+						<div class="w-10 h-10 gradient-border !border-2 flex items-center justify-center relative">
 							{#if $publicProfileData?.thumbnailUrl}
 								<img
 									on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"}
@@ -92,6 +92,7 @@
 									<UserCircle />
 								</div>
 							{/if}
+							<div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full" />
 						</div>
 					</button>
 					<div class="" id="profile-popup-parent">
