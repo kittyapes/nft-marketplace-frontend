@@ -37,7 +37,7 @@
 	async function refreshTable() {
 		isLoading = true;
 
-		const historyRes = await apiGetNftActivityHistory(options.nfts[0].databaseId, {
+		const historyRes = await apiGetNftActivityHistory(options.nfts[0].fullId, {
 			sales: filterOptions[0].checked,
 			transfers: filterOptions[1].checked,
 			listings: filterOptions[2].checked,
