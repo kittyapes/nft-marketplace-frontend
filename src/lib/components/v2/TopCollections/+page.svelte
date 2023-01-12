@@ -26,7 +26,7 @@
 	{:else}
 		<DiamondsLoader />
 	{/if}
-	<div class="flex justify-center mt-12">
-		<PrimaryButton on:click={() => goto(`/collections`)} class="w-1/5">See all collections</PrimaryButton>
+	<div class="flex justify-center mt-12 w-full">
+		<PrimaryButton on:click={() => goto(`/collections`)} extButtonClass="w-80">See all collections</PrimaryButton>
 	</div>
 </div>
