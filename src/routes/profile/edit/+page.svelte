@@ -230,11 +230,11 @@
 				<span class="text-gradient">Profile</span>
 			</h1>
 
-			<div class="mt-4 text-sm text-center">
+			<div class="my-4 text-sm text-center">
 				Profile completion progress: <span class="text-gradient">{profileCompletionProgress}%</span>
 			</div>
 
-			<div class="w-4/5 mx-auto mt-5">
+			<div class="w-4/5 mx-auto py-6">
 				<Progressbar class="mt-2" value={progressBarValue} points={progressbarPoints} />
 			</div>
 
