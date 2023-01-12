@@ -81,8 +81,7 @@
 	onMount(refreshTable);
 </script>
 
-<!-- Entire section -->
-<div class="flex-grow h-full pr-4 overflow-y-auto blue-scrollbar">
+<div class="pr-4 blue-scrollbar aspect-1 flex flex-col overflow-hidden">
 	<!-- Filter control -->
 	<div class="flex mt-2 space-x-2">
 		<div class="flex flex-grow space-x-2 overflow-x-scroll scrollbar-hidden">
@@ -93,21 +92,12 @@
 			{/each}
 		</div>
 
-		<!-- Clear All button -->
-		<button
-			class="px-4 py-2 font-semibold rounded-md btn hover:bg-gray-100 disabled:hover:bg-transparent outline-none focus-visible:bg-gray-100"
-			disabled={disableClearAll}
-			on:click={() => checkFilterDropdown.clearAll()}
-		>
-			Clear All
-		</button>
-
-		<div class="w-40">
+		<div class="w-28">
 			<CheckFilterDropdown bind:options={filterOptions} bind:this={checkFilterDropdown} on:update={handleFilterUpdate} />
 		</div>
 	</div>
 
-	<div class="h-[500px] mt-4">
+	<div class="mt-4 flex-grow overflow-hidden">
 		<NftActivityHistoryTable data={nftActivityHistoryData} skeleton={isLoading} on:end-reached={handleEndReached} displayEndReachedMsg={historyEndReached} />
 	</div>
 </div>

@@ -30,11 +30,6 @@
 
 		loaded = false;
 
-		// Clear collections when the user address has changed
-		if (userCollections.length > 0 && userCollections[0]?.creator.toLowerCase() !== address.toLowerCase()) {
-			userCollections = [];
-		}
-
 		let page = 1;
 
 		while (true) {
@@ -50,7 +45,14 @@
 		loaded = true;
 	};
 
-	$: address && getUserCollections(address);
+	$: if (address) {
+		// Clear collections when the user address has changed
+		if (userCollections.length > 0 && userCollections[0]?.creator.toLowerCase() !== address.toLowerCase()) {
+			userCollections = [];
+		}
+
+		getUserCollections(address);
+	}
 </script>
 
 <CardList
@@ -59,6 +61,6 @@
 	commonRenderComponent={CollectionCard}
 	firstRenderComponent={CreateNewCollectionCard}
 	commonComponentProps={data}
-	showFirstComponent={$currentUserAddress === address}
+	showFirstComponent={$currentUserAddress === address && loaded}
 	{loaded}
 />

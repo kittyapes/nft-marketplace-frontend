@@ -17,7 +17,7 @@
 	export let compact = false;
 
 	export let maxPrice: string = null;
-	export let maxQuantity: number;
+	export let maxQuantity: number = null;
 	export let hideQuantity = false;
 	export let disableQuantity = false;
 	export let disableStartDate = false;
@@ -104,17 +104,29 @@
 </script>
 
 <div class="grid gap-x-8 gap-y-4" class:grid-cols-2={compact}>
+	{#if sale}
+		<InputSlot label="Price">
+			<PriceInput bind:value={props.price} placeholder="1.0" tokenIconClass={Weth} tokenLabel="wETH" {disabled} />
+		</InputSlot>
+	{/if}
+
 	<InputSlot label="Start Date">
 		<Datepicker dateOnly on:new-value={(ev) => (props.startDateTs = ev.detail.unix())} bind:setWithTimestamp={_setStartDateTs} disabled={disableStartDate || disabled} />
 	</InputSlot>
 
 	<InputSlot label="Duration">
-		<Dropdown options={durationOptions} on:select={handleDurationOptionsSelect} bind:setSelected={_setDuration} {disabled} />
+		<Dropdown options={durationOptions} on:select={handleDurationOptionsSelect} bind:setSelected={_setDuration} {disabled} class="h-12" />
 	</InputSlot>
 
 	<InputSlot label="Quantity" hidden={hideQuantity}>
-		<div class="relative flex items-center gap-3 pr-4 rounded-md border {(quantityError && 'border-red-500 focus:border-red-500') || ''}" class:bg-gray-100={_disableQuantity}>
-			<input type="number" class="w-full h-12 border-none outline-none input input-hide-controls" bind:value={props.quantity} disabled={_disableQuantity} />
+		<div class="relative flex items-center gap-3 border {(quantityError && 'border-red-500 focus:border-red-500') || ''}" class:opacity-50={disabled} class:pr-4={!disableQuantity}>
+			<input
+				type="number"
+				class="w-full h-12 border-none outline-none input-hide-controls pl-4 bg-transparent"
+				class:bg-[#ffffff22]={_disableQuantity}
+				bind:value={props.quantity}
+				disabled={_disableQuantity}
+			/>
 
 			<!-- Disable quantity is true only on EditSale screen. We do not wanna show it since the edit quantity
 		functionality is not implemented.  -->
@@ -134,20 +146,14 @@
 		<div />
 	{/if}
 
-	{#if sale}
-		<InputSlot label="Price">
-			<PriceInput bind:value={props.price} placeholder="1.0" tokenIconClass={Weth} {disabled} />
-		</InputSlot>
-	{/if}
-
 	{#if auction}
 		<InputSlot label="Starting Price">
-			<PriceInput bind:value={props.startingPrice} placeholder="1.0" tokenIconClass={Weth} {disabled} />
+			<PriceInput bind:value={props.startingPrice} placeholder="1.0" tokenIconClass={Weth} tokenLabel="wETH" {disabled} />
 		</InputSlot>
 
 		<InputSlot label="Reserve Price (Optional)">
 			<div class="relative">
-				<PriceInput bind:value={props.reservePrice} placeholder="5.0" tokenIconClass={Weth} validOverride={reservePriceError === null} {disabled} />
+				<PriceInput bind:value={props.reservePrice} placeholder="5.0" tokenIconClass={Weth} tokenLabel="wETH" validOverride={reservePriceError === null} {disabled} />
 
 				{#if reservePriceError}
 					<div class="absolute z-10 top-12">

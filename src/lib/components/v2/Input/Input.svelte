@@ -2,10 +2,13 @@
 	export let value: string = '';
 	export let placeholder: string = '';
 	export let height: string = '3rem';
+	export let fixedHeight = true;
+	export let pattern = '';
 	export let regex: RegExp = null;
 	export let valid = true;
 	export let validator: (v: string) => boolean = (): boolean => true;
 	export let disabled = false;
+	export let noLeftPadding = false;
 
 	function validate() {
 		if (regex) {
@@ -14,6 +17,26 @@
 			valid = validator(value);
 		}
 	}
+
+	$: inputHeight = `h-[${height}]`;
 </script>
 
-<input type="text" bind:value {placeholder} class="w-full px-4 border rounded-lg outline-color-purple {$$props.class}" class:outline-red-400={!valid} style:height on:input={validate} {disabled} />
+<div class="w-full flex flex-row items-center outline-color-purple {$$props.class} {fixedHeight ? inputHeight : ''}" class:outline-red-400={!valid}>
+	<div><slot /></div>
+	<input
+		type="text"
+		{pattern}
+		bind:value
+		{placeholder}
+		class:pl-0={noLeftPadding}
+		class="w-full h-full px-14 bg-inherit outline-none focus:border-color-purle"
+		on:input={validate}
+		{disabled}
+		on:keyup
+		on:focus
+		on:blur
+	/>
+	<div>
+		<slot name="end-icon" />
+	</div>
+</div>

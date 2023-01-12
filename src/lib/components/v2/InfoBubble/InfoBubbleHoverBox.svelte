@@ -13,7 +13,7 @@
 </script>
 
 <div class="relative" on:pointerenter={handlePointerEnter} on:pointerleave={handlePointerLeave}>
-	<div class="absolute top-[100%] h-full w-full z-10 transition pointer-events-none" class:opacity-0={!hovering} class:delay-500={hovering}>
+	<div class="absolute top-[calc(100%+0.25rem)] h-full w-full z-10 transition pointer-events-none" class:opacity-0={!hovering} class:delay-500={hovering}>
 		<InfoBubble>
 			<slot name="bubble-content" />
 		</InfoBubble>

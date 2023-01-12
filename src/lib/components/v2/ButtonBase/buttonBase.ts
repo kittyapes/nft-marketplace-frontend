@@ -1,2 +1,1 @@
-export const buttonBaseClasses =
-	'relative rounded-full h-12 w-full uppercase font-semibold active:scale-[98%] disabled:active:scale-100 transition cursor-pointer disabled:cursor-auto disabled:opacity-50 whitespace-nowrap';
+export const buttonBaseClasses = 'relative w-full font-semibold enabled:active:scale-[98%] transition duration-100 cursor-pointer disabled:cursor-auto disabled:opacity-50 whitespace-nowrap h-12';

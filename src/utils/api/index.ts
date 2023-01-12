@@ -39,6 +39,11 @@ export function getApiUrl(apiVersion: ApiVersion, apiPath: string): string {
 	return apiUrl + apiPath;
 }
 
+export const compactNumberFormat = (num: number): string => {
+	let formatter = Intl.NumberFormat('en', { notation: 'compact' });
+	return formatter?.format(num);
+};
+
 interface ApiErrorResponseData {
 	statusCode: number;
 	error: string;

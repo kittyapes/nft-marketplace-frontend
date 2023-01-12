@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
 	import Heart from '$icons/heart.svelte';
-	import ThreeDots from '$icons/three-dots.svelte';
 	import type { CardOptions } from '$interfaces/ui';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { likedNftIds, refreshLikedNfts } from '$stores/user';
@@ -12,7 +11,7 @@
 	import { makeHttps } from '$utils/ipfs';
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
-	import { getListingCardTimerHtml } from '$utils/misc/time';
+	import { getListingCardTimerHtml, isFuture } from '$utils/misc/time';
 	import { favoriteNft } from '$utils/nfts/favoriteNft';
 	import { setPopup, updatePopupProps } from '$utils/popup';
 	import { notifyError, notifySuccess } from '$utils/toast';
@@ -24,15 +23,19 @@
 	import { reject } from 'lodash-es';
 	import Loader from '$icons/loader.svelte';
 	import axios from 'axios';
+	import EthV2 from '$icons/eth-v2.svelte';
+	import { goto } from '$app/navigation';
 
 	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions;
 	export let menuItems: ('hide' | 'reveal' | 'transfer')[] = [];
 	export let hideLikes = false;
-
+	export let disabled = false;
+	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 	// Helpers
 	let imgLoaded = false;
+	let isHovered = false;
 
 	// Menu
 	let dotsOpened = false;
@@ -78,10 +81,8 @@
 			console.error(err);
 		} else if (res.data.message) {
 			notifySuccess('Unfavorited NFT.');
-			options.nfts[0].likes--;
 		} else {
 			notifySuccess('Favorited NFT.');
-			options.nfts[0].likes++;
 		}
 
 		await refreshLikedNfts($currentUserAddress);
@@ -153,35 +154,51 @@
 	onDestroy(() => clearInterval(timerInterval));
 </script>
 
-<div class="relative p-4 overflow-hidden border border-color-gray-base border-opacity-50 rounded-2xl max-w-[246px]" in:fade on:click={handleClick} class:cursor-pointer={options.allowPopup}>
-	<div class="flex items-center h-8 gap-x-2">
-		<div class="font-bold text-[10px] uppercase">
-			{@html timerHtml}
-		</div>
-
-		<!-- Owned by user -->
+<div
+	class="relative overflow-hidden group !border-2 border-transparent"
+	class:gradient-border={isHovered && !disabled}
+	class:mb-4={gridStyle === 'masonry'}
+	in:fade
+	on:click={handleClick}
+	class:cursor-pointer={options.allowPopup}
+	on:mouseover={() => (isHovered = true)}
+	on:focus={() => (isHovered = true)}
+	on:mouseout={() => (isHovered = false)}
+	on:blur={() => (isHovered = false)}
+>
+	<!--
+		// Owned by user
 		{#if menuItems?.length}
 			<button on:click={toggleDots} class="w-8 h-8 hover:opacity-50" transition:fade|local={{ duration: 150 }}>
 				<ThreeDots />
 			</button>
-		{/if}
-
-		<div class="flex-grow" />
-
-		{#if !hideLikes}
-			<div class="text-white btn" class:text-color-red={isUserLiked} on:click|stopPropagation={favNFT}>
-				<Heart class="w-6 h-6" />
+		{/if} 
+	-->
+	<div
+		class:normal-nft-media={gridStyle === 'normal'}
+		class:dense-nft-media={gridStyle === 'dense'}
+		class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}
+		class="w-full h-full mx-auto transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} relative"
+	>
+		{#if isHovered && !disabled}
+			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60 text-white" transition:fade={{ duration: 200 }}>
+				{#if options.resourceType === 'listing'}
+					<button class="p-3 clickable h-12 w-40 truncate" on:click|stopPropagation={() => goto('/profile/' + options.listingData?.sellerAddress)}>{options.listingData?.sellerAddress}</button>
+				{/if}
+				{#if !hideLikes}
+					<div class="text-transparent clickable p-3 h-12" class:text-white={isUserLiked} on:click|stopPropagation={favNFT}>
+						<Heart />
+					</div>
+				{/if}
 			</div>
-			<div class="font-medium select-none">{options?.nfts?.[0].likes ?? 'N/A'}</div>
 		{/if}
-	</div>
-
-	<div class="w-full mx-auto mt-2 overflow-hidden transition bg-gray-100 rounded-lg select-none aspect-1" class:animate-pulse={!imgLoaded}>
 		{#await preload(options.nfts[0].thumbnailUrl)}
-			<Loader />
+			<div class="min-h-full w-full grid place-items-center">
+				<Loader />
+			</div>
 		{:then}
 			{#if fileType === 'video'}
-				<video crossorigin="anonymous" class="max-w-full max-h-full shadow-xl object-cover object-top w-full h-full transition" autoplay loop class:opacity-0={!imgLoaded}>
+				<video crossorigin="anonymous" class="max-w-full max-h-full object-cover object-top w-full h-full transition" autoplay loop class:opacity-0={!imgLoaded}>
 					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
@@ -190,46 +207,69 @@
 			{/if}
 		{:catch _err}
 			{#if fileType === 'video'}
-				<video crossorigin="anonymous" class="max-w-full max-h-full shadow-xl object-cover object-top w-full h-full transition" autoplay loop poster={options.nfts[0].thumbnailUrl}>
+				<video crossorigin="anonymous" class="max-w-full max-h-full object-cover object-top w-full h-full transition" autoplay loop poster={options.nfts[0].thumbnailUrl}>
 					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
 			{:else if fileType === 'image'}
 				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" />
 			{:else}
-				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" />
+				<div class="bg-card-gradient w-full h-full transition" />
 			{/if}
 		{/await}
 	</div>
-
-	<div class="flex justify-between items-center gap-3 mt-2 text-sm font-medium text-gray-600">
-		<div class="truncate">{options.nfts[0].collectionData.name || 'N/A'}</div>
-
-		<!-- Hide price info when not present/listed -->
-		{#if options?.resourceType === 'listing'}
-			<div>Price</div>
-		{/if}
-	</div>
-
-	<div class="flex justify-between items-center mt-2 font-semibold gap-2">
-		<div class="truncate whitespace-nowrap" class:text-xs={!options.nfts[0]?.name}>
-			{options.nfts[0].name || options.nfts[0]?.metadata?.name || `#${options.nfts[0]?.onChainId}` || 'No Title'}
-		</div>
-		<!-- Hide price info when not present/listed -->
-		{#if options?.resourceType === 'listing'}
-			<div class="flex items-center gap-1">
-				<div class="whitespace-nowrap">
-					{options.listingData.shortDisplayPrice || 'N/A'}
+	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient h-full">
+		<h4 class="text-gradient font-bold truncate  {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
+			{options.nfts[0].collectionData.name || 'N/A'}
+		</h4>
+		<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
+			{options?.nfts?.[0]?.name}
+		</h3>
+		<div class="flex flex-row items-center justify-between mt-2.5 ">
+			{#if timerHtml?.includes('Starts in')}
+				{@html timerHtml}
+			{:else if timerHtml?.includes('Ends in')}
+				<div class="flex flex-col items-start">
+					<h4 class="text-gradient font-bold whitespace-nowrap {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
+						{options.listingData?.listingType === 'auction' ? 'Highest bid' : 'Price'}
+					</h4>
+					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-2' : 'gap-x-1'}">
+						<span><EthV2 class={gridStyle === 'normal' ? 'w-3 h-4' : 'w-2 h-3'} /></span>
+						<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
+							{options?.listingData.shortDisplayPrice || 'N/A'}
+						</h3>
+					</div>
 				</div>
-				<Eth />
-			</div>
-		{/if}
+
+				{@html timerHtml}
+			{:else}
+				<div class="flex flex-col items-start">
+					<h4 class="text-gradient font-bold {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">Price</h4>
+					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-1' : 'gap-x-0.5'}">
+						<span><EthV2 class={gridStyle === 'normal' ? 'w-2.5 2xl:w-3 h-3.5 2xl:h-4' : 'w-1.5 2xl:w-2 h-2.5 2xl:h-3'} /></span>
+						<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
+							{options?.listingData?.shortDisplayPrice || 'N/A'}
+						</h3>
+					</div>
+				</div>
+				<div class="flex flex-col items-end">
+					<h4 class="text-gradient font-bold whitespace-nowrap {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
+						Highest offer
+					</h4>
+					<!-- TODO clarify highest offer -->
+					<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
+						{options?.auctionData?.highestOffer || 'N/A'}
+					</h3>
+				</div>
+			{/if}
+		</div>
 	</div>
 
+	<!--
 	{#if dotsOpened}
 		<div id="popup" class="absolute flex flex-col w-32 font-bold bg-white rounded-md top-10">
 			{#if menuItems.includes('transfer')}
-				<button class="gradient-text transition-btn disabled:opacity-75" disabled>TRANSFER</button>
+				<button class="text-gradient transition-btn disabled:opacity-75" disabled>TRANSFER</button>
 			{/if}
 
 			{#if menuItems.includes('hide')}
@@ -240,7 +280,7 @@
 				<button class="transition-btn" on:click={revealNft}>REVEAL</button>
 			{/if}
 		</div>
-	{/if}
+	{/if}-->
 </div>
 
 <style type="postcss">
@@ -251,5 +291,22 @@
 
 	#popup > button {
 		@apply text-left font-bold;
+	}
+
+	.letter-spacing {
+		letter-spacing: 0.02em;
+	}
+
+	.normal-nft-details {
+		@apply py-2.5 2xl:py-3 px-4 2xl:px-5;
+	}
+	.dense-nft-details {
+		@apply py-1.5 px-2.5;
+	}
+	.normal-nft-media {
+		@apply h-[400px];
+	}
+	.dense-nft-media {
+		@apply h-44 2xl:h-56;
 	}
 </style>

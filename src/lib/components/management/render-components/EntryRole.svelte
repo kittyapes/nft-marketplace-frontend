@@ -3,6 +3,7 @@
 	import CheckboxDropdown from '$lib/components/CheckboxDropdown.svelte';
 	import { addUserRole } from '$utils/api/addUserRole';
 	import { changeCollectionStatus } from '$utils/api/collection';
+	import { getGradientColors } from '$utils/api/management/getGradientColors';
 	import { getHighestRole } from '$utils/api/management/getHighestRole';
 	import { getRoleColor } from '$utils/api/management/getRoleColor';
 	import { notifyError } from '$utils/toast';
@@ -35,8 +36,10 @@
 				notifyError("Failed to update user's roles");
 				return;
 			}
+
 			localProps.role = getHighestRole([...roles, ...res.roles]);
 			localProps.color = getRoleColor(localProps.role);
+			localProps.arrowGradient = getGradientColors(localProps.role);
 			localProps = localProps;
 		} else if (event.detail?.checked) {
 			const [error, res] = await noTryAsync(() => changeCollectionStatus(props.id, event.detail?.value));
@@ -48,6 +51,7 @@
 
 			localProps.color = getRoleColor(res.status);
 			localProps.role = res.status?.toLowerCase();
+			localProps.arrowGradient = getGradientColors(localProps.role);
 			localProps = localProps;
 		}
 	};
@@ -55,12 +59,12 @@
 
 <ColumnComponentContainer>
 	<CheckboxDropdown
-		class="pl-0 {localProps.color || ''} z-[9] font-semibold"
+		class="pl-0 {localProps.color || ''} z-[9] font-medium"
 		id={localProps.id}
 		on:change={handleSelect}
 		options={localProps.options}
+		arrowGradient={localProps.arrowGradient}
 		dropdownLabel={localProps.role}
-		gradient={localProps.role === 'admin'}
 		disableAllOnSelect={localProps.disableAllOnSelect}
 		dispatchAllOptions={localProps.dispatchAllOptions}
 	/>

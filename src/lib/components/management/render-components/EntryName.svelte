@@ -12,16 +12,20 @@
 </script>
 
 <ColumnComponentContainer on:click={() => goto('/profile/' + props.address)}>
-	{#if props}
-		<div class=" h-full clickable flex gap-3 items-center min-w-max">
-			{#if props.imageUrl}
-				<div class="bg-cover rounded-full w-12 h-12 clickable" style="background-image: url({props.imageUrl})" />
-			{:else}
-				<GuestUserAvatar class="w-12 scale-110" />
-			{/if}
-			<div class="text-color-black font-bold clickable">{props.name || ''}</div>
-		</div>
-	{:else}
-		<DiamondsLoader />
-	{/if}
+	<div class="min-w-full">
+		{#if props}
+			<div class=" h-full clickable flex gap-3 items-center min-w-max">
+				{#if props.imageUrl}
+					<div class="gradient-border-btn-new">
+						<div class="bg-cover w-12 h-12 clickable" style="background-image: url({props.imageUrl})" />
+					</div>
+				{:else}
+					<GuestUserAvatar class="w-12 scale-110" />
+				{/if}
+				<div class="text-white font-medium clickable">{props.name || ''}</div>
+			</div>
+		{:else}
+			<DiamondsLoader />
+		{/if}
+	</div>
 </ColumnComponentContainer>

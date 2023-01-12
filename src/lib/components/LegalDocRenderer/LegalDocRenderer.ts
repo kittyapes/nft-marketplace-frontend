@@ -135,6 +135,8 @@ function parseLegalDocHtml(s: string): LegalDocData {
 
 // Prefix string with https if not already prefixed with http or https
 function ensureHttp(s: string) {
+	s = s.trim();
+
 	if (s.startsWith('http://') || s.startsWith('https://')) {
 		return s;
 	}

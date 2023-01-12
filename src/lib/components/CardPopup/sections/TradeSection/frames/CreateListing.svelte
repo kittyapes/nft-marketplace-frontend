@@ -16,6 +16,7 @@
 	import { notifyError } from '$utils/toast';
 	import { createEventDispatcher } from 'svelte';
 	import { onMount } from 'svelte';
+	import Error from './Error.svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
 	import Success from './Success.svelte';
 
@@ -31,8 +32,6 @@
 
 	async function completeListing() {
 		isListing = true;
-
-		console.log({ options });
 
 		const flowOptions: CreateListingFlowOptions = {
 			title: options.nfts[0].metadata?.name,
@@ -56,11 +55,15 @@
 			dispatch('listing-created');
 			dispatch('set-frame', {
 				component: Success,
-				props: { successDescription: 'Successfully listed.', showMarketplaceButton: false },
+				props: { message: 'Listing created successfully.' },
 			});
 		} catch (err) {
-			console.error(err);
 			notifyError(err.message);
+			dispatch('set-frame', {
+				component: Error,
+				props: { message: 'Failed to create listing!' },
+			});
+			console.error(err);
 		}
 
 		isListing = false;
@@ -84,11 +87,11 @@
 	});
 </script>
 
-<div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto">
+<div class="flex flex-col pb-8 pr-6 overflow-y-auto text-white aspect-1 blue-scrollbar">
 	{#if canCreateListing}
 		<!-- Listing Type -->
 		<div class="mt-2 font-semibold">Listing Type</div>
-		<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} /></div>
+		<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} disabled={isListing} /></div>
 
 		<div class="mt-4">
 			<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} bind:this={_listingProperties} disabled={isListing} />
@@ -118,12 +121,14 @@
 			</div>
 		</div>
 
-		<PrimaryButton class="flex-shrink-0 mt-4" disabled={!!formErrors.length || isListing} on:click={completeListing}>
-			Complete Listing
-			{#if isListing}
-				<ButtonSpinner />
-			{/if}
-		</PrimaryButton>
+		<div class="mt-4">
+			<PrimaryButton disabled={!!formErrors.length || isListing} on:click={completeListing}>
+				Complete Listing
+				{#if isListing}
+					<ButtonSpinner />
+				{/if}
+			</PrimaryButton>
+		</div>
 	{:else}
 		<div class="mt-4">
 			<InfoBox>You can't create listings.</InfoBox>

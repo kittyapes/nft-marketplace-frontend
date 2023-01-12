@@ -5,5 +5,5 @@
 </script>
 
 <ColumnComponentContainer>
-	<div class="text-color-black {props.color}">{props.text}</div>
+	<div class="text-white whitespace-nowrap {props.color}">{props.text}</div>
 </ColumnComponentContainer>

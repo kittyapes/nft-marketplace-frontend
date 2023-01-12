@@ -20,7 +20,14 @@
 	import { afterNavigate } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import { initTos } from '$utils/tos';
+	import { page } from '$app/stores';
 
+	// Disable navigation bar on certain paths
+	const disableNavOnPaths = [new RegExp('/management/preview/.+')];
+
+	$: onDisabledNavPath = disableNavOnPaths.some((v) => $page.url.pathname.match(v));
+
+	// ToS popup initialization
 	if (browser) {
 		initTos();
 	}
@@ -64,6 +71,8 @@
 
 		previousNetworkId = o?.network.chainId || null;
 	});
+
+	let scrollY;
 </script>
 
 <svelte:head>
@@ -74,20 +83,24 @@
 </svelte:head>
 
 {#key appReloadHelper}
-	<Nav />
+	{#if !onDisabledNavPath}
+		<Nav {scrollY} />
+	{/if}
 
 	{#if errorCode}
 		<ErrorPage {errorCode} />
 	{:else}
-		<!-- <PageTransition {url}> -->
-		<div class="pt-16 mx-auto">
+		<!-- <PageTransition {url}>-->
+		<div class="mx-auto flex flex-col min-h-screen">
 			<slot />
+			<div class="flex-grow" />
+			<Toast />
+			<PopupManager />
+			<NavigationHandlers bind:errorCode={navigationErrorCode} />
+			<Footer />
 		</div>
-		<!-- </PageTransition> -->
+		<!--</PageTransition> -->
 	{/if}
-
-	<Footer />
-	<Toast />
-	<PopupManager />
-	<NavigationHandlers bind:errorCode={navigationErrorCode} />
 {/key}
+
+<svelte:window bind:scrollY />

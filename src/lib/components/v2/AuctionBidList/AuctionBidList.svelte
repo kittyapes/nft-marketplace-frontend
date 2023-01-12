@@ -1,4 +1,5 @@
 <script lang="ts">
+	import EthV2 from '$icons/eth-v2.svelte';
 	import Eth from '$icons/eth.svelte';
 	import Refresh from '$icons/refresh.svelte';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
@@ -35,7 +36,7 @@
 	});
 </script>
 
-<div class="relative flex flex-col h-full p-4 overflow-hidden border rounded-lg">
+<div class="relative flex flex-col h-full p-4 overflow-hidden border">
 	<div class="flex">
 		<div class="font-medium opacity-70 flex-grow">Bids</div>
 		<button class="opacity-70 active:opacity-50 transition" on:click={onRefreshClick}><Refresh class="scale-75" /></button>
@@ -43,7 +44,7 @@
 
 	<div class="flex flex-col flex-grow gap-4 pr-4 mt-4 overflow-y-scroll blue-scrollbar">
 		{#each biddings as bid}
-			<AuctionBidRow {...bid} tokenIconComponent={Eth} />
+			<AuctionBidRow {...bid} tokenIconComponent={EthV2} />
 		{/each}
 
 		{#if !biddings.length}
@@ -52,6 +53,6 @@
 	</div>
 
 	{#if isRefreshing}
-		<div class="absolute bottom-0 left-0 w-full px-4 pt-3 pb-2 text-xs font-semibold bg-gray-100 rounded-t-sm" transition:slide|local>Refreshing...</div>
+		<div class="absolute bottom-0 left-0 w-full px-4 pt-3 pb-2 text-xs font-semibold rounded-t-sm" transition:slide|local>Refreshing...</div>
 	{/if}
 </div>

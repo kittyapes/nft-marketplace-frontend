@@ -12,7 +12,7 @@
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import dayjs from 'dayjs';
 	import UserManage from '$icons/user-manage.svelte';
-	import Filters from '$icons/filters.svelte';
+	import Filters from '$icons/filters-v2.svelte';
 	import EntryRole from '$lib/components/management/render-components/EntryRole.svelte';
 	import { debounce } from 'lodash-es';
 	import { apiSearchCollections, type Collection, type CollectionSearchOptions } from '$utils/api/collection';
@@ -32,7 +32,8 @@
 	import { onDestroy } from 'svelte';
 	import { userHasRole } from '$utils/auth/userRoles';
 	import TosManagement from './TosManagement/TosManagement.svelte';
-	import { includes } from 'lodash-es';
+	import { getGradientColors } from '$utils/api/management/getGradientColors';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 
 	const fetchLimit = 20;
 
@@ -41,10 +42,12 @@
 	let users: UserData[] = [];
 	let totalUserEntries = 0;
 	let userPage = 1;
+	let usersPerPage = 20;
 
 	let collections: Collection[] = [];
 	let totalCollectionEntries = 0;
 	let collectionPage = 1;
+	let collectionsPerPage = 20;
 
 	let loaded = false;
 	let eventId;
@@ -133,14 +136,14 @@
 
 	let userFetchingOptions: UserFetchingOptions = {
 		filter: {},
-		limit: fetchLimit,
+		limit: usersPerPage,
 		sort: {},
 		query: '',
 	};
 
 	let collectionFetchingOptions: CollectionFetchingOptions = {
 		filter: {},
-		limit: fetchLimit,
+		limit: collectionsPerPage,
 		sort: {},
 		name: '',
 	};
@@ -151,8 +154,14 @@
 	const handleTableEvent = async (event: CustomEvent) => {
 		if (event.detail.id || event.detail.sortBy || event.detail.sortReversed) {
 			await handleTableSort(event);
-		} else if (event.detail.page) {
+		}
+
+		if (event.detail.page) {
 			await handlePageSelect(event);
+		}
+
+		if (event.detail.itemsPerPage) {
+			await handleItemsPerPageSelect(event);
 		}
 	};
 
@@ -164,6 +173,18 @@
 
 		if (tab === 'COLLECTION') {
 			collectionPage = event.detail.page;
+			await getSearchedCollections();
+		}
+	};
+
+	const handleItemsPerPageSelect = async (event: CustomEvent) => {
+		if (tab === 'USER') {
+			usersPerPage = event.detail.itemsPerPage;
+			await getSearchedUsers();
+		}
+
+		if (tab === 'COLLECTION') {
+			collectionsPerPage = event.detail.itemsPerPage;
 			await getSearchedCollections();
 		}
 	};
@@ -274,7 +295,7 @@
 			...collectionFetchingOptions.filter,
 			name: collectionFetchingOptions.name,
 			...collectionFetchingOptions.sort,
-			limit: collectionFetchingOptions.limit,
+			limit: collectionsPerPage,
 			page: collectionPage,
 			status: collectionFetchingOptions.filter.status,
 		};
@@ -306,7 +327,8 @@
 					mode: tab,
 					disableAllOnSelect: true,
 					role: u.status,
-					color: getRoleColor(u.status === 'INACTIVE' ? 'INACTIVATED' : 'ACTIVE'),
+					color: getRoleColor(u.status),
+					arrowGradient: getGradientColors(u.status),
 					options: [
 						{ label: 'Active', checked: u.status === 'ACTIVE', value: 'ACTIVE' },
 						{ label: 'Inactive', checked: u.status === 'INACTIVE', value: 'INACTIVE' },
@@ -337,7 +359,7 @@
 				renderComponent: EntryGenericText,
 				renderComponentProps: collections.map((c) => {
 					let date = dayjs(c.createdAt);
-					return { text: date.format('MMM D, YYYY') };
+					return { text: date.format('DD - MMM - YYYY') };
 				}),
 			},
 		];
@@ -386,7 +408,7 @@
 	// USER section
 
 	let getUsersFetchingOptions = () => {
-		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort, limit: userFetchingOptions.limit, page: userPage };
+		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort, limit: usersPerPage, page: userPage };
 	};
 
 	const debouncedSearch = debounce(async () => {
@@ -429,8 +451,9 @@
 					id: u.address,
 					dispatchAllOptions: false,
 					mode: tab,
-					role: getHighestRole([...u.roles]),
-					color: getRoleColor(getHighestRole([...u.roles])),
+					role: getHighestRole(u.roles),
+					color: getRoleColor(getHighestRole(u.roles)),
+					arrowGradient: getGradientColors(getHighestRole(u.roles)),
 					options: [
 						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin' },
 						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user' },
@@ -446,7 +469,7 @@
 				renderComponent: EntryGenericText,
 				renderComponentProps: users?.map((u) => {
 					let date = dayjs(u.createdAt);
-					return { text: date.format('MMM D, YYYY') };
+					return { text: date.format('DD - MMM - YYYY') };
 				}),
 			},
 			/*
@@ -476,11 +499,14 @@
 	$: searchPlaceholder = `Search for ${tab.toLowerCase()}`;
 </script>
 
-<div class="flex flex-col w-full h-full max-w-screen-2xl mx-auto p-8">
-	<div class="flex gap-x-14 gap-y-4 flex-wrap">
+<div class="flex flex-col w-full h-full max-w-screen-2xl mx-auto pt-24 p-8">
+	<div class="flex gap-x-14 gap-y-4 flex-wrap relative max-w-max">
 		<div class="tab btn" class:selected-tab={tab === 'USER'} on:click={() => (tab = 'USER')}>User Management</div>
 		<div class="tab btn" class:selected-tab={tab === 'COLLECTION'} on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
 		<div class="tab btn" class:selected-tab={tab === 'TOS'} on:click={() => (tab = 'TOS')}>ToS Management</div>
+
+		<!-- Line under tabs -->
+		<div class="absolute h-[2px] left-0 right-0 bg-white bg-opacity-10 -bottom-2 z-10" />
 	</div>
 
 	{#if ['USER', 'COLLECTION'].includes(tab)}
@@ -540,7 +566,7 @@
 
 	{#if tab === 'COLLECTION'}
 		<div>
-			<h2 class="text-xl font-bold gradient-text">Whitelist a collection</h2>
+			<!-- <h2 class="text-xl font-bold text-gradient">Add address to Whitelisted Collections</h2> -->
 			<div class="flex flex-col w-full gap-10 mt-1">
 				<!-- Network picker -->
 				<!-- <div class="flex flex-col gap-1 w-[36rem]">
@@ -548,36 +574,38 @@
 					<Dropdown options={networkPickerOptions} bind:selected={$selectedNetworkOption} />
 				</div> -->
 
-				<div class="flex flex-col gap-1">
+				<!-- <div class="flex flex-col gap-1">
 					<div class="font-semibold">Opensea collection URL part</div>
 					<div class="flex gap-10">
 						<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input opensea route, e.g. azuki" bind:value={$whitelistingCollectionSlug} />
 
 						<div class="flex-grow" />
 					</div>
-				</div>
-				<div class="flex flex-col gap-1">
-					<div class="font-semibold">Contract address</div>
-					<div class="flex gap-10">
-						<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
+				</div> -->
+				<div class="flex flex-col gap-5">
+					<div class="font-medium text-white text-opacity-80">Add address to Whitelisted Collections</div>
+					<div class="flex justify-between">
+						<input type="text" class="input text-white max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
 
-						<button class="w-40 px-10 py-2 text-lg font-semibold btn btn-gradient btn-rounded" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>
-							Whitelist
-						</button>
+						<div class="gradient-border-bg p-[2px]">
+							<div class="bg-black">
+								<PrimaryButton class="w-80" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>Add</PrimaryButton>
+							</div>
+						</div>
 					</div>
 				</div>
 
 				{#if validating}
 					<div class="flex items-center">
 						<Loader class="w-6 mx-2" />
-						<div class="font-semibold">Validating...</div>
+						<div class="font-medium text-white">Validating...</div>
 					</div>
 				{/if}
 
 				{#if whitelisting}
 					<div class="flex items-center">
 						<Loader class="w-6 mx-2" />
-						<div class="font-semibold">Whitelisting...</div>
+						<div class="font-medium text-white">Whitelisting...</div>
 					</div>
 				{/if}
 
@@ -591,7 +619,7 @@
 
 <style lang="postcss">
 	.tab {
-		@apply font-bold text-3xl relative text-color-gray-dark select-none;
+		@apply font-medium text-2xl relative text-white select-none z-20;
 	}
 
 	.selected-tab {
@@ -600,7 +628,7 @@
 
 	.selected-tab::after {
 		content: '';
-		@apply absolute w-full -bottom-1 left-0 h-[2px];
+		@apply absolute w-full -bottom-2 left-0 h-[2px];
 		@apply bg-gradient-to-r from-color-purple to-color-blue;
 	}
 </style>
