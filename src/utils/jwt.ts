@@ -1,4 +1,5 @@
 import jwtDecode from 'jwt-decode';
+import type { TosAgreeObject } from './api/tos';
 
 /**
  * Check if JWT is expired or invalid.
@@ -20,4 +21,19 @@ export function isJwtExpired(token: string) {
 	}
 
 	return isJwtExpired;
+}
+
+export function decodeJwt(token: string) {
+	if (!isJwtExpired(token)) {
+		const decodedToken = jwtDecode(token) as {
+			tos: TosAgreeObject | null;
+			agent: string;
+			iat: number;
+			_id: string;
+			exp: number;
+		};
+		return decodedToken;
+	}
+
+	return null;
 }
