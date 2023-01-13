@@ -135,7 +135,7 @@
 	<!-- Tending nfts Section -->
 	{#if $loadedExploreListings && exploreListingsData?.length > 0}
 		<div class="my-24 w-full" in:slide>
-			<h2 class="text-2xl leading-7">Trending NFTs</h2>
+			<h2 class="text-4xl leading-7">Explore Market</h2>
 
 			<div class="mb-20">
 				<NftList options={exploreListingsData} />

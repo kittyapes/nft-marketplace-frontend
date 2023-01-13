@@ -14,7 +14,7 @@
 
 <div class="mt-24 mb-16 w-full">
 	<div class="flex items-end mb-12">
-		<h2 class="text-4xl leading-none font-semibold text-white uppercase flex-grow">Monthly Airdrop</h2>
+		<h2 class="text-4xl leading-none text-white  flex-grow">Monthly Airdrop</h2>
 	</div>
 
 	<div
@@ -28,7 +28,7 @@
 		</div>
 
 		<div class="flex flex-col flex-grow text-white pt-8 lg:py-20 h-full ">
-			<div class="text-4xl font-light uppercase line-clamp-2">
+			<div class="text-4xl font-light  line-clamp-2">
 				{airdrop.title}
 			</div>
 
