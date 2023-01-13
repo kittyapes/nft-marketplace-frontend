@@ -71,7 +71,7 @@
 				{/if}
 			</div>
 
-			<div class="flex justify-center gap-x-4 mt-16 w-[500px] mx-auto">
+			<div class="grid grid-cols-2 justify-center gap-x-4 mt-16 w-[500px] mx-auto">
 				<PrimaryButton on:click={clickViewNft} disabled={!mintingComplete}>View NFT</PrimaryButton>
 				<PrimaryButton on:click={clickChooseFormat} disabled={!mintingComplete}>Choose listing format</PrimaryButton>
 			</div>
