@@ -10,7 +10,6 @@
 	import Pixiv from '$icons/socials/pixiv.svelte';
 	import Twitter from '$icons/socials/twitter.svelte';
 	import Web from '$icons/socials/web.svelte';
-	import Button from '$lib/components/Button.svelte';
 	import DragDropImage from '$lib/components/DragDropImage.svelte';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import FreeNftPopup from '$lib/components/profile/FreeNFTPopup.svelte';
@@ -240,15 +239,7 @@
 
 			{#if $freeNftStatus === 'claimable'}
 				<div class="px-16 mt-16" in:slide|local out:slide|local={{ delay: 300 }}>
-					<button
-						class="block w-full py-6 text-lg font-semibold text-white uppercase transition-btn bg-gradient-to-r from-color-purple to-color-blue rounded-3xl disabled:opacity-50"
-						on:click={handleNftClaim}
-						in:fade|local={{ delay: 300 }}
-						out:fade|local
-						disabled={isSaving}
-					>
-						Claim your NFT
-					</button>
+					<PrimaryButton extButtonClass="" on:click={handleNftClaim} disabled={isSaving}>Claim your NFT</PrimaryButton>
 				</div>
 			{/if}
 
