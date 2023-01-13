@@ -357,7 +357,7 @@
 							<span class="text-gradient">click to browse</span>
 						</p>
 						<p slot="lower_text" class="section-subtext mt-2.5">
-							PNG, Jpeg, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
+							PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
 						</p>
 					</DragDropImage>
 				</div>
@@ -404,10 +404,9 @@
 			</div>
 			<!-- Social Links -->
 			<div class="section">
-				<div class="w-1/2">
+				<div class="w-1/2 flex flex-col gap-y-4">
 					<h3 class="section-title">Links</h3>
-				</div>
-				<div class="w-1/2 flex flex-col gap-y-3 2xl:gap-y-4">
+
 					<SocialLinkInput placeholder="Instagram link" bind:value={$collectionData.instagramUrl} iconComponent={Instagram} bind:valid={$formValidity.instagramUrl} />
 					<SocialLinkInput placeholder="Discord link" bind:value={$collectionData.discordUrl} iconComponent={Discord} bind:valid={$formValidity.discordUrl} />
 					<SocialLinkInput placeholder="Twitter link" bind:value={$collectionData.twitterUrl} iconComponent={Twitter} bind:valid={$formValidity.twitterUrl} />
