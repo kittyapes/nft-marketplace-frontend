@@ -1,3 +1,4 @@
+import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import TosAcceptPopup from '$lib/components/popups/TosAcceptPopup.svelte';
 import { appSigner, currentUserAddress } from '$stores/wallet';
@@ -36,6 +37,29 @@ export function initTos() {
 	currentUserAddress.subscribe(checkPathAndAddress);
 }
 
+const onCloseTosPopup = () => {
+	confirmUserHasAgreedToLatestTos()
+		.then((userAgreementObj) => {
+			if ((userAgreementObj as { error: string }).error) {
+				notifyError((userAgreementObj as { error: string }).error);
+				return;
+			}
+
+			if (!(userAgreementObj as TosAgreeObject).hasAgreed) {
+				notifyError('You have not agreed to the most recent version of the ToS as such Your usage of the site will be limited');
+				goto('/');
+				return;
+			}
+		})
+		.catch((error) => {
+			console.log(error);
+			notifyError('Something broke, please try again.');
+			return;
+		});
+
+	return;
+};
+
 async function ensureTosAccepted() {
 	const authToken = await getAuthTokenAsync(get(currentUserAddress));
 	const decodedToken = decodeJwt(authToken);
@@ -50,8 +74,23 @@ async function ensureTosAccepted() {
 			// User can continue using the site
 			return;
 		} else {
-			// Ensure the user has signed the new token
-			setPopup(TosAcceptPopup, { closeByOutsideClick: false, unique: true, id: 'tos-accept-popup' });
+			// Ensure the user does not need to agree constantly - once they agreed the first time
+			const userAgreementObj = await confirmUserHasAgreedToLatestTos();
+
+			if ((userAgreementObj as { error: string }).error) {
+				notifyError((userAgreementObj as { error: string }).error);
+				return { error: (userAgreementObj as { error: string }).error };
+			}
+
+			if (!(userAgreementObj as TosAgreeObject).hasAgreed) {
+				setPopup(TosAcceptPopup, {
+					closeByOutsideClick: true,
+					unique: true,
+					id: 'tos-accept-popup',
+					onClose: onCloseTosPopup,
+				});
+			}
+
 			return;
 		}
 	} else {
@@ -64,7 +103,12 @@ async function ensureTosAccepted() {
 		}
 
 		if (!(userAgreementObj as TosAgreeObject).hasAgreed) {
-			setPopup(TosAcceptPopup, { closeByOutsideClick: false, unique: true, id: 'tos-accept-popup' });
+			setPopup(TosAcceptPopup, {
+				closeByOutsideClick: true,
+				unique: true,
+				id: 'tos-accept-popup',
+				onClose: onCloseTosPopup,
+			});
 			return;
 		}
 

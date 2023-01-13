@@ -67,7 +67,7 @@ export function setPopup(component: any, options: PopupOptions = defaultOptions)
 
 	// A promise which resolves once the popup is closed
 	let resolveClosePremise;
-	let closePromise = {
+	const closePromise = {
 		promise: new Promise((resolve, reject) => {
 			resolveClosePremise = resolve;
 		}),
