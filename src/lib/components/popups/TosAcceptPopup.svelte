@@ -37,8 +37,8 @@
 		<div class="py-8 px-12">
 			<div class="font-bold text-2xl">Welcome to Hinata Marketplace</div>
 			<div class="mt-4">
-				By using Hinata Marketplace, you agree to the <a href="/terms-and-conditions" class="underline">Terms of Service</a>
-				.
+				Please agree to our <a href="/terms-and-conditions" class="underline">Terms of Service</a>
+				in order to further use our site.
 			</div>
 
 			<div class="mt-4 font-semibold select-none">
