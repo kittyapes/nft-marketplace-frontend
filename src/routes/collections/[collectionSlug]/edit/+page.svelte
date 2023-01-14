@@ -49,7 +49,7 @@
 	// Edit vs. new
 	$: isNewCollection = collectionSlug === 'new';
 
-	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconUrlOrComponent: EthV2 }];
+	const blockchainOptions = [{ label: 'Ethereum', value: 'eth', iconComponent: EthV2 }];
 
 	// Data collected from the form or fetched from the server
 	let originalCollectionData = null; // Used to check whether data was changed during editing
@@ -383,25 +383,28 @@
 						pattern={collectionUrlPattern}
 						bind:value={$collectionUrl}
 						placeholder="https://hinata.io/collection/treasure-of-the-sea"
-						class="border border-white rounded-none mt-3 section-subtext h-8 2xl:h-10"
+						class="border border-white rounded-none mt-3 section-subtext h-8 2xl:h-10 "
 					/>
 				</div>
+
 				<div class="w-1/2 flex flex-col">
 					<h3 class="section-title">Description</h3>
-					<!-- <div class="border border-white w-full flex-grow mt-3 relative"> -->
-					<!-- <textarea class="h-full w-full bg-transparent" name="" id="" /> -->
 					<TextArea
 						focusStyle={false}
 						containerClass="mt-3 flex-grow section-subtext"
 						rows={3}
-						placeholder="A collection of all the kitties in the world."
+						placeholder="Tell us about yourself in a few words"
 						minChars={1}
 						maxChars={200}
 						bind:value={$collectionData.description}
 					/>
-					<!-- </div> -->
 				</div>
 			</div>
+
+			<div class="w-1/2">
+				<Royalties bind:values={$collectionData.royalties} bind:error={$formValidity.royalties} disabled={!isNewCollection} />
+			</div>
+
 			<!-- Social Links -->
 			<div class="section">
 				<div class="w-1/2 flex flex-col gap-y-4">
@@ -416,34 +419,36 @@
 					<SocialLinkInput placeholder="Artstation link" bind:value={$collectionData.artstationUrl} iconComponent={Artstation} bind:valid={$formValidity.artstationUrl} />
 				</div>
 			</div>
-			<div class="w-1/2">
-				<Royalties bind:values={$collectionData.royalties} bind:error={$formValidity.royalties} disabled={!isNewCollection} />
-			</div>
+
 			{#if isNewCollection}
 				<div class="flex flex-col w-1/2 pr-6">
 					<h3 class="section-title">Blockchain</h3>
-					<p class="my-2.5 2xl:my-3 section-subtext">Your Collection will be created on the following Blockchain:</p>
-					<Dropdown options={blockchainOptions} disabled class="h-8 2xl:h-10" />
+					<p class="my-3 section-subtext">Your Collection will be created on the following Blockchain:</p>
+					<Dropdown options={blockchainOptions} disabled class="h-10" />
 				</div>
 			{/if}
+
 			{#if isNewCollection}
 				<div class="flex flex-col mt-16">
 					<div class="section-title">Payment tokens</div>
-					<p class="my-2.5 2xl:my-3 section-subtext">These tokens can be used to buy and sell your items.</p>
+					<p class="my-3 section-subtext">These tokens can be used to buy and sell your items.</p>
 					<PaymentTokenCard symbol="WETH" name="Wrapped Ethereum" iconUrlOrComponent={EthV2} />
 				</div>
 			{/if}
+
 			<!-- Explicit and sensitive content -->
 			<div class="flex items-center mt-16">
 				<div class="flex flex-col flex-grow">
 					<div class="section-title">Explicit & Sensitive Content</div>
-					<p class="my-2.5 2xl:my-3 section-subtext">Set this collection as explicit and sensitive content.</p>
+					<p class="my-3 section-subtext">Set this collection as explicit and sensitive content.</p>
 				</div>
 				<Toggle style={{ button: 'bg-[#747474]', pill: '!w-14 bg-gradient-a' }} onInsideLabel="" offInsideLabel="" bind:state={$collectionData.isExplicitSenstive} />
 			</div>
+
 			{#if !formValid}
 				<FormErrorList validity={$formValidity} />
 			{/if}
+
 			<button
 				class="w-full h-11 2xl:h-14 border-gradient capitalize dullgradient text-white disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={!formValid || savingCollection || !dataChanged}
