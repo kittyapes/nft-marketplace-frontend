@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { apiGetMostActiveCollections, type Collection } from '$utils/api/collection';
-	import { fade, slide } from 'svelte/transition';
+	import { slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
@@ -44,10 +43,6 @@
 	onMount(async () => {
 		await getExploreMarketData();
 		await getHottestCreatorsData();
-
-		notifyError('hello');
-		notifyWarning('hello');
-		notifySuccess('hello');
 	});
 </script>
 
