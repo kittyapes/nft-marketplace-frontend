@@ -18,6 +18,7 @@
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
 	import { goto } from '$app/navigation';
+	import { notifyError, notifySuccess, notifyWarning } from '$utils/toast';
 
 	let exploreListings = writable<Listing[]>([]);
 	let loadedExploreListings = writable(false);
@@ -43,6 +44,10 @@
 	onMount(async () => {
 		await getExploreMarketData();
 		await getHottestCreatorsData();
+
+		notifyError('hello');
+		notifyWarning('hello');
+		notifySuccess('hello');
 	});
 </script>
 

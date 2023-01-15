@@ -21,7 +21,6 @@
 		"@types/lodash-es": "^4.17.6",
 		"@typescript-eslint/eslint-plugin": "^5.36.2",
 		"@typescript-eslint/parser": "^5.36.2",
-		"@zerodevx/svelte-toast": "^0.7.2",
 		"autoprefixer": "^10.4.9",
 		"babel-preset-es2015": "^6.24.1",
 		"babelify": "^10.0.0",

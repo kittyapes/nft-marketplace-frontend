@@ -11,7 +11,6 @@ specifiers:
   '@types/lodash-es': ^4.17.6
   '@typescript-eslint/eslint-plugin': ^5.36.2
   '@typescript-eslint/parser': ^5.36.2
-  '@zerodevx/svelte-toast': ^0.7.2
   authereum: ^0.1.14
   autoprefixer: ^10.4.9
   axios: ^0.27.2
@@ -88,7 +87,6 @@ devDependencies:
   '@types/lodash-es': 4.17.6
   '@typescript-eslint/eslint-plugin': 5.36.2_wxqvmnl3i4rbvz4ixyoiufmx3e
   '@typescript-eslint/parser': 5.36.2_irgkl5vooow2ydyo6aokmferha
-  '@zerodevx/svelte-toast': 0.7.2
   autoprefixer: 10.4.9_postcss@8.4.16
   babel-preset-es2015: 6.24.1
   babelify: 10.0.0_@babel+core@7.19.0
@@ -1236,10 +1234,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
-    dev: true
-
-  /@zerodevx/svelte-toast/0.7.2:
-    resolution: { integrity: sha512-vWiY6IqsstcOoQ8PFBuFuxgPkj1JFAGhUF9gC7wLx7c5A9SSfdtxWs/39ekGSIeyJK0yqWhTcmzGrCEWSELzDw== }
     dev: true
 
   /JSONStream/1.3.5:
