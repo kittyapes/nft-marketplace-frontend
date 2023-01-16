@@ -150,9 +150,9 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 	}
 
 	if (listing.listingType === 'auction') {
-		const formatStartingPrice = listing.listing?.formatStartingPrice.toString();
-		const formatReservePrice = listing.listing?.formatReservePrice.toString();
-		const highestBid = listing.highestBid.toString();
+		const formatStartingPrice = listing.listing?.formatStartingPrice.toString() || '0';
+		const formatReservePrice = listing.listing?.formatReservePrice.toString() || '0';
+		const highestBid = listing.highestBid?.toString() || '0';
 		// Highest Bid is Always 0 when there is no highest bid
 		const priceToDisplay = highestBid !== '0' && highestBid ? highestBid : formatStartingPrice;
 
