@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { apiGetMostActiveCollections, type Collection } from '$utils/api/collection';
-	import { fade, slide } from 'svelte/transition';
+	import { slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
@@ -18,6 +17,7 @@
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
 	import { goto } from '$app/navigation';
+	import { notifyError, notifySuccess, notifyWarning } from '$utils/toast';
 
 	let exploreListings = writable<Listing[]>([]);
 	let loadedExploreListings = writable(false);

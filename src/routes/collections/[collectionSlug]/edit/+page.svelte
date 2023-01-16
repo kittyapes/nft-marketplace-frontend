@@ -4,7 +4,6 @@
 	import { page } from '$app/stores';
 	import { acceptedImages } from '$constants';
 	import Loader from '$icons/loader.svelte';
-	import PlaceholderImage from '$icons/placeholder-image.svelte';
 	import CollectionDisplayStyleSwitcher from '$lib/components/collection/CollectionDisplayStyleSwitcher.svelte';
 	import PaymentTokenCard from '$lib/components/collection/PaymentTokenCard.svelte';
 	import Royalties from '$lib/components/create/Royalties.svelte';
@@ -35,11 +34,7 @@
 	import Pixiv from '$icons/socials/pixiv.svelte';
 	import Deviantart from '$icons/socials/deviantart.svelte';
 	import Artstation from '$icons/socials/artstation.svelte';
-	import QuestionMarkIcon from '$icons/question-mark-icon.svelte';
-	import Info from '$icons/info.svelte';
 	import EthV2 from '$icons/eth-v2.svelte';
-	import Eth from '$icons/eth.svelte';
-	import Button from '$lib/components/Button.svelte';
 
 	const layoutStuff = getContext('layout-stuff');
 

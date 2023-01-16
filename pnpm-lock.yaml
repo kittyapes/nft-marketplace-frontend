@@ -11,7 +11,7 @@ specifiers:
   '@types/lodash-es': ^4.17.6
   '@typescript-eslint/eslint-plugin': ^5.36.2
   '@typescript-eslint/parser': ^5.36.2
-  '@zerodevx/svelte-toast': ^0.7.2
+  '@zerodevx/svelte-toast': ^0.8.2
   authereum: ^0.1.14
   autoprefixer: ^10.4.9
   axios: ^0.27.2
@@ -30,9 +30,11 @@ specifiers:
   graphql-request: ^5.0.0
   hash.js: ^1.1.7
   husky: ^8.0.1
+  i: ^0.3.7
   jwt-decode: ^3.1.2
   lodash-es: ^4.17.21
   no-try: ^3.1.0
+  npm: ^9.3.0
   postcss: ^8.4.16
   postcss-load-config: ^4.0.1
   prettier: ^2.7.1
@@ -58,6 +60,7 @@ specifiers:
 dependencies:
   '@tailwindcss/aspect-ratio': 0.4.2_tailwindcss@3.1.8
   '@tailwindcss/line-clamp': 0.4.2_tailwindcss@3.1.8
+  '@zerodevx/svelte-toast': 0.8.2
   authereum: 0.1.14_@babel+core@7.19.0
   axios: 0.27.2
   buffer: 6.0.3
@@ -67,9 +70,11 @@ dependencies:
   graphql: 16.6.0
   graphql-request: 5.0.0_graphql@16.6.0
   hash.js: 1.1.7
+  i: 0.3.7
   jwt-decode: 3.1.2
   lodash-es: 4.17.21
   no-try: 3.1.0
+  npm: 9.3.0
   social-links: 1.4.5
   svelte-inview: 3.0.1_svelte@3.50.1
   svelte-loading-spinners: 0.1.7
@@ -88,7 +93,6 @@ devDependencies:
   '@types/lodash-es': 4.17.6
   '@typescript-eslint/eslint-plugin': 5.36.2_wxqvmnl3i4rbvz4ixyoiufmx3e
   '@typescript-eslint/parser': 5.36.2_irgkl5vooow2ydyo6aokmferha
-  '@zerodevx/svelte-toast': 0.7.2
   autoprefixer: 10.4.9_postcss@8.4.16
   babel-preset-es2015: 6.24.1
   babelify: 10.0.0_@babel+core@7.19.0
@@ -1238,9 +1242,9 @@ packages:
       - supports-color
     dev: true
 
-  /@zerodevx/svelte-toast/0.7.2:
-    resolution: { integrity: sha512-vWiY6IqsstcOoQ8PFBuFuxgPkj1JFAGhUF9gC7wLx7c5A9SSfdtxWs/39ekGSIeyJK0yqWhTcmzGrCEWSELzDw== }
-    dev: true
+  /@zerodevx/svelte-toast/0.8.2:
+    resolution: { integrity: sha512-EDtZ/Hw37T/UWCQ5drhMss0J9vItYUSDivQ3+mET5My6No7YNiNQklj2bkE61UAzut2TjHJfOJNBZsj78ODFtw== }
+    dev: false
 
   /JSONStream/1.3.5:
     resolution: { integrity: sha512-E+iruNOY8VV9s4JEbe1aNEm6MiszPRr/UfcHMz0TQh1BXSxHK+ASV1R6W4HpjBhSeS+54PIsAMCBmwD06LLsqQ== }
@@ -4925,6 +4929,11 @@ packages:
     hasBin: true
     dev: true
 
+  /i/0.3.7:
+    resolution: { integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q== }
+    engines: { node: '>=0.4' }
+    dev: false
+
   /iconv-lite/0.4.24:
     resolution: { integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA== }
     engines: { node: '>=0.10.0' }
@@ -6014,6 +6023,80 @@ packages:
     dependencies:
       path-key: 3.1.1
     dev: true
+
+  /npm/9.3.0:
+    resolution: { integrity: sha512-5Yl4snmvEzFkHPAzr5wq9pdEh0NBupqRmhQzBT5YdCGN0lSnKHd9JPJSbm7jZri81uXFl3YG6wrpWVAyTbZr7g== }
+    engines: { node: ^14.17.0 || ^16.13.0 || >=18.0.0 }
+    hasBin: true
+    dev: false
+    bundledDependencies:
+      - '@isaacs/string-locale-compare'
+      - '@npmcli/arborist'
+      - '@npmcli/config'
+      - '@npmcli/map-workspaces'
+      - '@npmcli/package-json'
+      - '@npmcli/run-script'
+      - abbrev
+      - archy
+      - cacache
+      - chalk
+      - ci-info
+      - cli-columns
+      - cli-table3
+      - columnify
+      - fastest-levenshtein
+      - fs-minipass
+      - glob
+      - graceful-fs
+      - hosted-git-info
+      - ini
+      - init-package-json
+      - is-cidr
+      - json-parse-even-better-errors
+      - libnpmaccess
+      - libnpmdiff
+      - libnpmexec
+      - libnpmfund
+      - libnpmhook
+      - libnpmorg
+      - libnpmpack
+      - libnpmpublish
+      - libnpmsearch
+      - libnpmteam
+      - libnpmversion
+      - make-fetch-happen
+      - minimatch
+      - minipass
+      - minipass-pipeline
+      - mkdirp
+      - ms
+      - node-gyp
+      - nopt
+      - npm-audit-report
+      - npm-install-checks
+      - npm-package-arg
+      - npm-pick-manifest
+      - npm-profile
+      - npm-registry-fetch
+      - npm-user-validate
+      - npmlog
+      - p-map
+      - pacote
+      - parse-conflict-json
+      - proc-log
+      - qrcode-terminal
+      - read
+      - read-package-json
+      - read-package-json-fast
+      - semver
+      - ssri
+      - tar
+      - text-table
+      - tiny-relative-date
+      - treeverse
+      - validate-npm-package-name
+      - which
+      - write-file-atomic
 
   /npmlog/5.0.1:
     resolution: { integrity: sha512-AqZtDUWOMKs1G/8lwylVjrdYgqA4d9nu8hc+0gzRxlDb1I10+FHBGMXs6aiQHFdCUUlqH99MUMuLfzWDNDtfxw== }
