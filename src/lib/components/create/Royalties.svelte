@@ -72,7 +72,7 @@
 				{#each values as value}
 					<input
 						type="text"
-						class="mt-4 input first:mt-2 w-8 h-8 2xl:w-10 2xl:h-10 text-center text-white"
+						class="mt-4 input p-0 first:mt-2 w-10 h-10 text-center text-white"
 						placeholder="%"
 						required={!!value.address}
 						bind:value={value.fees}
