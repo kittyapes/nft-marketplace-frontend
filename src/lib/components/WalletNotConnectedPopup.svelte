@@ -5,6 +5,7 @@
 	import { WalletState, walletState } from '$utils/wallet';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import Popup from './Popup.svelte';
+	import PrimaryButton from './v2/PrimaryButton/PrimaryButton.svelte';
 
 	export let handler: PopupHandler;
 	export let onConnectSuccess: () => void;
@@ -26,8 +27,10 @@
 	}
 </script>
 
-<Popup class="px-24 h-72">
-	<div class="uppercase font-semibold text-2xl text-center mt-8">Wallet not connected</div>
-	<div class="text-center mt-4">Please connect your wallet before accessing this page.</div>
-	<button class="btn btn-gradient btn-rounded mx-auto block uppercase mt-16" on:click={connectWallet}>Connect Wallet</button>
+<Popup class="text-white">
+	<div class="px-20 py-10 flex flex-col gap-10">
+		<div class="uppercase font-semibold text-2xl text-center">Wallet not connected</div>
+		<div class="text-center">Please connect your wallet before accessing this page.</div>
+		<PrimaryButton on:click={connectWallet}>Connect Wallet</PrimaryButton>
+	</div>
 </Popup>
