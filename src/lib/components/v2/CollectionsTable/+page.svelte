@@ -30,6 +30,7 @@
 			</th>
 		</tr>
 	</thead>
+
 	<tbody>
 		{#if collections?.length > 0}
 			{#each collections as collection}
@@ -39,14 +40,17 @@
 							{collection?.name}
 						</a>
 					</td>
+
 					<td class=" gap-x-1.5">
 						{compactNumberFormat(collection?.totalVol || 0)}
 						<span class="text-[10px] 2xl:text-xs text-opacity-70">ETH</span>
 					</td>
+
 					<td class=" gap-x-1.5">
 						{compactNumberFormat(collection?.floorPrice || 0)}
 						<span class="text-[10px] 2xl:text-xs text-opacity-70">ETH</span>
 					</td>
+
 					<td class="w-[413px] 2xl:w-[515px]">
 						<!-- <div class="h-16 w-[413px] bg-gray-50" /> -->
 						<CollectionNfTsPreview collectionSlug={collection?.slug} />
@@ -58,6 +62,7 @@
 		{/if}
 	</tbody>
 </table>
+
 {#if isLoading}
 	<DiamondsLoader />
 {:else}
