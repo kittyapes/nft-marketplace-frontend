@@ -36,7 +36,7 @@
 </script>
 
 <!-- Back button -->
-<button class="flex items-center mb-8 space-x-2 text-sm font-semibold btn" on:click={goBack}>
+<button class="flex items-center my-8 space-x-2 text-sm font-semibold btn" on:click={goBack}>
 	<Back />
 	<div>Go Back</div>
 </button>
