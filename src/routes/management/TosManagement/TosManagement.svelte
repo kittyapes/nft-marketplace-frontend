@@ -22,9 +22,7 @@
 	import PublishTosDraftSuccessPopup from './PublishTosDraftSuccessPopup.svelte';
 	import { nextVersionLabel } from './TosManagement';
 
-	type UI_VersionObject = TosVersionObject & { showCheck: boolean };
-
-	let versions: UI_VersionObject[] = [];
+	let versions: TosVersionObject[] = [];
 	let versionListFetchError: string = null;
 	let isFetchingVersionList = true;
 	let selectedVersionId: string = null;
@@ -49,21 +47,10 @@
 			return;
 		}
 
-		const parsedVersions: UI_VersionObject[] = [];
-
-		let nPublished = 0;
-
-		// Show check only on the last published version
-		for (const v of res.data.data) {
-			if (v.status === 'PUBLISHED') {
-				nPublished++;
-			}
-
-			parsedVersions.push({ ...v, showCheck: nPublished === 1 });
-		}
-
-		versions = parsedVersions;
+		versions = res.data.data;
 		selectedVersionId = versions[0]?._id;
+
+		console.log(versions);
 
 		isFetchingVersionList = false;
 	}
@@ -206,7 +193,7 @@
 								{version.version}
 							</div>
 
-							{#if version.showCheck}
+							{#if version.status === 'PUBLISHED'}
 								<div class="absolute right-4">
 									<VerifiedCreator />
 								</div>

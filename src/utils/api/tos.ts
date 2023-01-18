@@ -2,7 +2,7 @@ import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { api, getApiUrl, type ApiCallResult } from '.';
 
 export interface TosVersionObject {
-	status: 'DRAFT' | 'PUBLISHED';
+	status: 'DRAFT' | 'PUBLISHED' | 'DEPRECATED';
 	_id: string;
 	version: string;
 	pdf_link: string;
