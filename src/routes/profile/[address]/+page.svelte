@@ -330,8 +330,6 @@
 			cardPropsMapper = (v) => ({ options: v });
 		}
 	}
-
-	$: console.log(shareButtonOpen);
 </script>
 
 <div class="">
