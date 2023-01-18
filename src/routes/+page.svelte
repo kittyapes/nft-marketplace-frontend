@@ -4,7 +4,7 @@
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
 	import { get, writable } from 'svelte/store';
-	import { getRandomListings, type Listing } from '$utils/api/listing';
+	import { getRandomListings, getTrendingListings, type Listing } from '$utils/api/listing';
 	import NftList from '$lib/components/NftList.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
@@ -17,21 +17,20 @@
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
 	import { goto } from '$app/navigation';
-	import { notifyError, notifySuccess, notifyWarning } from '$utils/toast';
 
-	let exploreListings = writable<Listing[]>([]);
-	let loadedExploreListings = writable(false);
-	let exploreListingsData = [];
+	let trendingListings = writable<Listing[]>([]);
+	let loadedTrendingListings = writable(false);
+	let trendingListingsData = [];
 
 	let hottestCreators = writable<{ users: PublicProfileData[]; totalCount: number }>(null);
 	let loadedHottestCreators = writable(false);
 	const hottestCreatorsCount = 3;
 
-	const getExploreMarketData = async () => {
-		loadedExploreListings.set(false);
-		exploreListings.set(await getRandomListings(10));
-		exploreListingsData = (await Promise.all($exploreListings.map(listingToCardOptions))).filter((e) => e);
-		loadedExploreListings.set(true);
+	const getTrendingListingsData = async () => {
+		loadedTrendingListings.set(false);
+		trendingListings.set(await getTrendingListings(12));
+		trendingListingsData = (await Promise.all($trendingListings.map(listingToCardOptions))).filter((e) => e);
+		loadedTrendingListings.set(true);
 	};
 
 	const getHottestCreatorsData = async () => {
@@ -41,7 +40,7 @@
 	};
 
 	onMount(async () => {
-		await getExploreMarketData();
+		await getTrendingListingsData();
 		await getHottestCreatorsData();
 	});
 </script>
@@ -69,15 +68,15 @@
 <div class="px-36 pt-32 w-full grid place-items-center text-white">
 	<!-- Hero section -->
 	<!-- TODO fix this properly -->
-	{#if $loadedExploreListings && exploreListingsData.length >= 2}
+	{#if $loadedTrendingListings && trendingListingsData.length >= 2}
 		<div class="mb-16 flex gap-5 items-stretch w-full max-h-[550px]" in:slide|local={{ duration: 1000 }}>
-			<NftCard options={exploreListingsData[0]} />
+			<NftCard options={trendingListingsData[0]} />
 
 			<div class="flex-grow">
 				<HomepageCarousel />
 			</div>
 
-			<NftCard options={exploreListingsData[exploreListingsData.length - 1]} />
+			<NftCard options={trendingListingsData[trendingListingsData.length - 1]} />
 		</div>
 	{/if}
 
@@ -88,7 +87,7 @@
 
 	<!-- Hottest creators section -->
 	<!-- TODO fix this properly -->
-	{#if $loadedHottestCreators && $loadedExploreListings && exploreListingsData.length >= 2}
+	{#if $loadedHottestCreators && $loadedTrendingListings && trendingListingsData.length >= 2}
 		<div class="pt-20 w-full h-full" in:slide>
 			<h2 class="text-2xl leading-7">Hottest creators</h2>
 			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
@@ -106,8 +105,8 @@
 								}}
 							/>
 						</div>
-						<NftCard options={exploreListingsData[0]} />
-						<NftCard options={exploreListingsData[exploreListingsData.length - 1]} />
+						<NftCard options={trendingListingsData[0]} />
+						<NftCard options={trendingListingsData[trendingListingsData.length - 1]} />
 					</div>
 				{/each}
 			</div>
@@ -133,12 +132,12 @@
 	<MonthlyAirdropWidget />
 
 	<!-- Tending nfts Section -->
-	{#if $loadedExploreListings && exploreListingsData?.length > 0}
+	{#if $loadedTrendingListings && trendingListingsData?.length > 0}
 		<div class="my-24 w-full" in:slide>
 			<h2 class="text-4xl leading-7">Explore Market</h2>
 
 			<div class="mb-20">
-				<NftList options={exploreListingsData} />
+				<NftList options={trendingListingsData} />
 			</div>
 
 			<a href="/marketplace" class="w-full"><PrimaryButton class="w-full">Explore Marketplace</PrimaryButton></a>
