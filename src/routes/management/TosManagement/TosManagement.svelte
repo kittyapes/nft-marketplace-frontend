@@ -239,14 +239,14 @@
 
 				<!-- Publish button -->
 				<div class="w-[12rem] flex-shrink-0">
-					<PrimaryButton variant="green" disabled={selectedIsPublished || !selectedVersionId || isDiscarding || isPublishing} on:click={handlePublishButton}>
+					<PrimaryButton variant="green" disabled={selectedIsPublished || !selectedIsDraft || isDiscarding || isPublishing} on:click={handlePublishButton}>
 						{selectedIsPublished ? 'Published' : 'Publish'}
 					</PrimaryButton>
 				</div>
 
 				<!-- Discard button -->
 				<div class="w-[12rem] flex-shrink-0">
-					<PrimaryButton variant="red" disabled={selectedIsPublished || !selectedVersionId || isDiscarding || isPublishing} on:click={handleDiscardButton}>Discard</PrimaryButton>
+					<PrimaryButton variant="red" disabled={selectedIsPublished || !selectedIsDraft || isDiscarding || isPublishing} on:click={handleDiscardButton}>Discard</PrimaryButton>
 				</div>
 
 				<!-- Full Preview button -->
