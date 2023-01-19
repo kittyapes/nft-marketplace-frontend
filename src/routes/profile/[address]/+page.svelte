@@ -340,7 +340,7 @@
 			{/if}
 		</div>
 
-		<div class="flex mt-8 text-white justify-between w-full overflow-x-auto gap-20 blue-scrollbar pb-10">
+		<div class="flex mt-8 text-white justify-between w-full flex-wrap gap-20">
 			<div class="flex gap-4 ">
 				<!-- Profile image -->
 				<div class="grid w-28 h-28 overflow-hidden place-items-center">
