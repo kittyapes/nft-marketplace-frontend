@@ -330,8 +330,6 @@
 			cardPropsMapper = (v) => ({ options: v });
 		}
 	}
-
-	$: console.log(shareButtonOpen);
 </script>
 
 <div class="">
@@ -342,7 +340,7 @@
 			{/if}
 		</div>
 
-		<div class="flex mt-8 text-white justify-between w-full">
+		<div class="flex mt-8 text-white justify-between w-full overflow-x-auto gap-20 blue-scrollbar pb-10">
 			<div class="flex gap-4 ">
 				<!-- Profile image -->
 				<div class="grid w-28 h-28 overflow-hidden place-items-center">
@@ -472,7 +470,7 @@
 			<!-- Bio -->
 			<div class="max-w-[600px] ">
 				<div class="font-semibold text-4xl">BIO</div>
-				<p class="mt-4 overflow-y-auto break-words">
+				<p class="mt-4 overflow-y-auto break-words max-w-xs">
 					{#if $localProfileData?.bio}
 						{@html $localProfileData?.bio}
 					{:else}
