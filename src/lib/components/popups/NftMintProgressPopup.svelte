@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import Loader from '$icons/loader.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { newBundleData } from '$utils/create';
 	import type { PopupHandler } from '$utils/popup';
@@ -13,6 +12,12 @@
 	import PrimaryButton from '../v2/PrimaryButton/PrimaryButton.svelte';
 	import Spinner from '../v2/Spinner/Spinner.svelte';
 
+	const MINTING_TITLE = 'Minting in Progress';
+	const MINTING_MESSAGE = 'Complete the required steps to successfully mint your NFT.';
+
+	const MINTED_TITLE = 'Proceed to List your NFT?';
+	const MINTED_MESSAGE = 'Listing an NFT will reqiure a small network fee. Once you choose the listing format you will be prompted to send an WETHereum transaction.';
+
 	const points = [
 		{ at: 0, label: 'Upload', top_value: null },
 		{ at: 50, label: 'NFT TX', top_value: null },
@@ -22,6 +27,18 @@
 	export let handler: PopupHandler;
 	export let progress: Readable<number> = readable(0);
 	export let id: string;
+
+	let title, message;
+
+	progress.subscribe((progress_v) => {
+		if (progress_v === 100) {
+			title = MINTED_TITLE;
+			message = MINTED_MESSAGE;
+		} else {
+			title = MINTING_TITLE;
+			message = MINTING_MESSAGE;
+		}
+	});
 
 	function clickChooseFormat() {
 		goto('/create/choose-listing-format/' + $newBundleData.id);
@@ -39,9 +56,8 @@
 <div class="w-[800px] h-[400px] grid items-stretch text-white">
 	<Popup>
 		<div class="p-16">
-			<div class="text-center text-4xl">Proceed to List your NFT?</div>
-
-			<div class="text-center mt-4">Listing an NFT will reqiure a small network fee. Once you choose the listing format you will be prompted to send an WETHereum transaction.</div>
+			<div class="text-center text-4xl">{title}</div>
+			<div class="text-center mt-4">{message}</div>
 
 			<div class="w-3/4 mx-auto mt-12 flex items-center gap-2">
 				<div class="flex-grow w-full flex-shrink-0">
