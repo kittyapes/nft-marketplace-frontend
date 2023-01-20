@@ -16,7 +16,6 @@
 	let localProps;
 
 	$: if (props) {
-		console.log(props);
 		// deep copy
 		localProps = JSON.parse(JSON.stringify(props));
 		localProps.role = localProps.role?.toLowerCase();
@@ -26,6 +25,7 @@
 			localProps.options = localProps.options.slice(1);
 		}
 
+		// change label of displayed role
 		if (props.role === 'superadmin') localProps.role = 'sadmin';
 		else if (props.role === 'inactivated_user' || props.role === 'inactivated') localProps.role = 'inactive';
 		else if (props.role === 'verified_user') localProps.role = 'verified';
@@ -39,14 +39,10 @@
 				if (o.checked) roles.push(o.value);
 			});
 
-			console.log(roles);
-
 			localProps.options.forEach((o) => {
 				if (o.checked && !roles.includes(o.value)) roles.push(o.value);
 				else if (!o.checked && roles.includes(o.value)) roles.splice(roles.indexOf(o.value), 1);
 			});
-
-			console.log(roles);
 
 			const [error, res] = await noTryAsync(() => addUserRole(props.id, roles, event.detail.value));
 
