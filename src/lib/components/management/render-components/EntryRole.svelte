@@ -13,12 +13,12 @@
 
 	export let props;
 
-	console.log(props);
-
 	let localProps;
 
 	$: if (props) {
-		localProps = props;
+		console.log(props);
+		// deep copy
+		localProps = JSON.parse(JSON.stringify(props));
 		localProps.role = localProps.role?.toLowerCase();
 
 		// remove the ability to edit the admin roles if current user isn't superadmin
