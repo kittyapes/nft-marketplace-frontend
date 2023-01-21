@@ -132,8 +132,8 @@
 
 			profileData.subscribe((profile) => {
 				console.log(accessingProfileData);
-				console.log(accessingProfileData && accessingProfileData.roles?.includes('inactivated_user') && (!profile || !profile.roles?.includes('admin') || !profile.roles?.includes('superadmin')));
-				if (accessingProfileData && accessingProfileData.roles?.includes('inactivated_user') && (!profile || !profile.roles?.includes('admin') || !profile.roles?.includes('superadmin'))) {
+				console.log(accessingProfileData && accessingProfileData.roles?.includes('inactivated_user') && (!profile || (!profile.roles?.includes('admin') && !profile.roles?.includes('superadmin'))));
+				if (accessingProfileData && accessingProfileData.roles?.includes('inactivated_user') && (!profile || (!profile.roles?.includes('admin') && !profile.roles?.includes('superadmin')))) {
 					errorCode = 403;
 				} else if (profile && (profile.roles?.includes('admin') || profile.roles?.includes('superadmin'))) {
 					// reset the error to ensure displayed error is updated on UI
