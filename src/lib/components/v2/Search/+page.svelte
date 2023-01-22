@@ -74,15 +74,23 @@
 			}
 		}}
 		bind:value={query}
-		class="rounded-none bg-card-gradient hover:text-white w-full h-10 relative px-14"
+		class="rounded-none bg-card-gradient hover:text-white w-full h-10 relative border-2 border-transparent hover:box-border hover:border-solid hover:animate-gradient-border-spin"
 		placeholder="Search"
+		gradientCaret
 	>
-		<div class="absolute top-2 left-5">
-			<Search class="w-5 h-6 text-transparent" />
-		</div>
+		<Search class="w-7 h-7 text-transparent min-w-full ml-4" />
 
-		<div class:hidden={!query || !show} class="absolute bg-gradient-a p-2 top-0 right-0" slot="end-icon">
-			<EnterKeyIcon class="w-6 h-6" />
+		<div
+			class:hidden={!query || !show}
+			class="min-w-full mr-6 cursor-pointer"
+			slot="end-icon"
+			on:click={() => {
+				if (show) {
+					navigateToSearchResults(query.trim());
+				}
+			}}
+		>
+			<EnterKeyIcon class="w-6 h-6 bg-card-gradient p-1" />
 		</div>
 	</Input>
 	{#if isDropdownShown || query}

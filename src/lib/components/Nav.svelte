@@ -49,7 +49,7 @@
 			<img src="/svg/logo/logo.v2.svg" alt="Hinata logo." />
 		</a>
 
-		<Search class="snap-start mx-20 w-[45%]" />
+		<Search class="snap-start ml-20 w-[45%] h-1/2" />
 
 		<!-- Flex filler -->
 		<div class="flex-grow" />
@@ -115,7 +115,7 @@
 
 <style type="postcss">
 	.nav-button {
-		@apply relative font-semibold h-1/2 grid place-items-center px-4 snap-center w-32 border border-transparent box-border;
+		@apply relative font-semibold h-1/2 grid place-items-center px-4 snap-center w-32 border-2 border-transparent box-border;
 	}
 
 	.nav-button:hover {

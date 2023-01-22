@@ -9,6 +9,7 @@
 	export let validator: (v: string) => boolean = (): boolean => true;
 	export let disabled = false;
 	export let noLeftPadding = false;
+	export let gradientCaret = false;
 
 	function validate() {
 		if (regex) {
@@ -22,13 +23,14 @@
 </script>
 
 <div class="w-full flex flex-row items-center outline-color-purple {$$props.class} {fixedHeight ? inputHeight : ''}" class:outline-red-400={!valid}>
-	<div><slot /></div>
+	<div class="bg-inherit  h-full grid place-items-center"><slot /></div>
 	<input
 		type="text"
 		{pattern}
 		bind:value
 		{placeholder}
 		class:pl-0={noLeftPadding}
+		class:caret-color-purple={gradientCaret}
 		class="w-full h-full px-4 bg-inherit outline-none focus:border-color-purle"
 		on:input={validate}
 		{disabled}
@@ -36,7 +38,7 @@
 		on:focus
 		on:blur
 	/>
-	<div>
+	<div class="bg-inherit h-full grid place-items-center">
 		<slot name="end-icon" />
 	</div>
 </div>
