@@ -6,6 +6,7 @@
 	import { getGradientColors } from '$utils/api/management/getGradientColors';
 	import { getHighestRole } from '$utils/api/management/getHighestRole';
 	import { getRoleColor } from '$utils/api/management/getRoleColor';
+	import { userHasRole } from '$utils/auth/userRoles';
 	import { notifyError } from '$utils/toast';
 	import { noTryAsync } from 'no-try';
 	import ColumnComponentContainer from '../ColumnComponentContainer.svelte';
@@ -15,8 +16,16 @@
 	let localProps;
 
 	$: if (props) {
-		localProps = props;
+		// deep copy
+		localProps = JSON.parse(JSON.stringify(props));
 		localProps.role = localProps.role?.toLowerCase();
+
+		// remove the ability to edit the admin roles if current user isn't superadmin
+		if (!$userHasRole('superadmin')) {
+			localProps.options = localProps.options.slice(1);
+		}
+
+		// change label of displayed role
 		if (props.role === 'superadmin') localProps.role = 'sadmin';
 		else if (props.role === 'inactivated_user' || props.role === 'inactivated') localProps.role = 'inactive';
 		else if (props.role === 'verified_user') localProps.role = 'verified';
@@ -26,8 +35,13 @@
 		if (props.mode === 'USER') {
 			let roles: UserRole[] = [];
 
-			localProps.options.forEach((o) => {
+			props.options.forEach((o) => {
 				if (o.checked) roles.push(o.value);
+			});
+
+			localProps.options.forEach((o) => {
+				if (o.checked && !roles.includes(o.value)) roles.push(o.value);
+				else if (!o.checked && roles.includes(o.value)) roles.splice(roles.indexOf(o.value), 1);
 			});
 
 			const [error, res] = await noTryAsync(() => addUserRole(props.id, roles, event.detail.value));

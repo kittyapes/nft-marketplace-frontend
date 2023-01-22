@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Eth from '$icons/eth.svelte';
 	import Heart from '$icons/heart.svelte';
 	import type { CardOptions } from '$interfaces/ui';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
@@ -11,7 +10,7 @@
 	import { makeHttps } from '$utils/ipfs';
 	import { addUrlParam } from '$utils/misc/addUrlParam';
 	import { removeUrlParam } from '$utils/misc/removeUrlParam';
-	import { getListingCardTimerHtml, isFuture } from '$utils/misc/time';
+	import { getListingCardTimerHtml } from '$utils/misc/time';
 	import { favoriteNft } from '$utils/nfts/favoriteNft';
 	import { setPopup, updatePopupProps } from '$utils/popup';
 	import { notifyError, notifySuccess } from '$utils/toast';
@@ -22,9 +21,9 @@
 	import CardPopup from './CardPopup/CardPopup.svelte';
 	import { reject } from 'lodash-es';
 	import Loader from '$icons/loader.svelte';
-	import axios from 'axios';
 	import EthV2 from '$icons/eth-v2.svelte';
 	import { goto } from '$app/navigation';
+	import { openCardPopupFromOptions } from './CardPopup/CardPopup';
 
 	const dispatch = createEventDispatcher();
 
@@ -33,6 +32,7 @@
 	export let hideLikes = false;
 	export let disabled = false;
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
+
 	// Helpers
 	let imgLoaded = false;
 	let isHovered = false;
@@ -47,22 +47,11 @@
 
 	// Universal Popup
 	async function handleClick(ev) {
-		if (!options.allowPopup) return;
-
-		const id = options.resourceType === 'nft' ? options.nfts[0].fullId : options.listingData.onChainId;
-
-		addUrlParam('id', id);
-
-		const popupHandler = setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id') });
-
-		// Load complete collection data after opening the popup
-		if (options.nfts[0].collectionData.slug) {
-			const collectionData = await apiGetCollectionBySlug(options.nfts[0].collectionData.slug);
-
-			// Replace partial collection data with complete collection data fetched from API
-			if (collectionData) options.nfts[0].collectionData = collectionData;
-			updatePopupProps(popupHandler?.id, { options });
+		if (!options.allowPopup) {
+			return;
 		}
+
+		openCardPopupFromOptions(options);
 	}
 
 	// Favoriting
@@ -193,6 +182,7 @@
 				{/if}
 			</div>
 		{/if}
+
 		{#await preload(options.nfts[0].thumbnailUrl)}
 			<div class="min-h-full w-full grid place-items-center">
 				<Loader />
@@ -219,13 +209,16 @@
 			{/if}
 		{/await}
 	</div>
+
 	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient h-full">
 		<h4 class="text-gradient font-bold truncate  {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
 			{options.nfts[0].collectionData.name || 'N/A'}
 		</h4>
+
 		<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
 			{options?.nfts?.[0]?.name}
 		</h3>
+
 		<div class="flex flex-row items-center justify-between mt-2.5 ">
 			{#if timerHtml?.includes('Starts in')}
 				{@html timerHtml}
@@ -246,6 +239,7 @@
 			{:else}
 				<div class="flex flex-col items-start">
 					<h4 class="text-gradient font-bold {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">Price</h4>
+
 					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-1' : 'gap-x-0.5'}">
 						<span><EthV2 class={gridStyle === 'normal' ? 'w-2.5 2xl:w-3 h-3.5 2xl:h-4' : 'w-1.5 2xl:w-2 h-2.5 2xl:h-3'} /></span>
 						<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
@@ -253,10 +247,12 @@
 						</h3>
 					</div>
 				</div>
+
 				<div class="flex flex-col items-end">
 					<h4 class="text-gradient font-bold whitespace-nowrap {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
 						Highest offer
 					</h4>
+
 					<!-- TODO clarify highest offer -->
 					<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
 						{options?.auctionData?.highestOffer || 'N/A'}

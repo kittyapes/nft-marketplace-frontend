@@ -126,7 +126,8 @@
 	<div>Go Back</div>
 </button>
 
-<div class="mt-8 font-semibold gap-4 flex mb-1">
+<!-- This might be readded if we add gasless switch to this page in the future -->
+<!-- <div class="mt-8 font-semibold gap-4 flex mb-1">
 	{#each ['sale', 'auction'] as t}
 		{@const isSelected = t === listingType}
 		<button class="uppercase relative" class:text-gradient={isSelected} on:click={() => setListingType(t)}>
@@ -137,9 +138,9 @@
 			{/if}
 		</button>
 	{/each}
-</div>
+</div> -->
 
-<div class="flex mb-32 border-t pt-2">
+<div class="flex mb-32 border-t pt-2 mt-8">
 	<div class="flex-grow">
 		<h1 class="mt-8 text-2xl">
 			Setting Details |

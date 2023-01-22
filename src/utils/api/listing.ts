@@ -145,7 +145,20 @@ export async function getRandomListings(limit = 10) {
 }
 
 export async function getListing(id: string) {
-	const res = await axios.get(getApiUrl('latest', 'listings/' + id)).catch((e) => e.response);
+	const res = await axios.get(getApiUrl('latest', 'listings/' + id)).catch((e) => console.log(e.response));
 	if (!res) return null;
 	return res.data.data as Listing;
+}
+
+export async function getTrendingListings(count?: number) {
+	const params = {
+		count,
+	};
+
+	const res = await axios.get(getApiUrl('latest', 'listings/trending'), { params }).catch((e) => console.log(e.response));
+	if (!res) return [];
+
+	console.log(res);
+
+	return res.data.data as Listing[];
 }

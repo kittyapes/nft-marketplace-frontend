@@ -12,7 +12,7 @@ function getData(address: string): any {
 		device_info: 'desktop',
 		upload_time: timestamp,
 		checksum: null,
-		signature: null
+		signature: null,
 	};
 
 	data.checksum = sha256()
@@ -25,7 +25,7 @@ function getData(address: string): any {
 
 function getPrompt() {
 	return {
-		title: 'You need to be signed in to <br/> perform this action.'
+		title: 'You need to be signed in to <br/> perform this action.',
 	};
 }
 
@@ -50,6 +50,8 @@ async function getAuthToken(address: string, signature: string) {
 	const responseData = await axios.post(getApiUrl('latest', 'users/login'), data).catch(() => null);
 	const token = responseData?.data.data.token.token;
 
+	console.debug('Info: Retrieved new auth token:\n' + token);
+
 	return token;
 }
 
@@ -57,5 +59,5 @@ export const userAuthLoginPopupAdapter: AuthLoginPopupAdapter = {
 	getPrompt,
 	getMessageToSign,
 	getAuthToken,
-	useToken: setAuthToken
+	useToken: setAuthToken,
 };
