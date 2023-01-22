@@ -11,6 +11,7 @@
 	import EnterKeyIcon from '$icons/enter-key-icon.svelte';
 	import SearchWrapper from './SearchWrapper.svelte';
 	import { selectedResultTab } from '$stores/search';
+	import { goto } from '$app/navigation';
 
 	let query: string;
 	let searching = false;
@@ -54,8 +55,9 @@
 	const navigateToSearchResults = (query: string) => {
 		show = false;
 		searching = false;
-		$page.url.searchParams.set('query', query);
-		window?.location?.replace(`/search/${$selectedResultTab}?${$page.url.searchParams}`);
+
+		query = query.trim();
+		goto('/search?query=' + query.replace('#', '%23'));
 	};
 </script>
 
