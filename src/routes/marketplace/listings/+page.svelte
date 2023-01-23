@@ -148,9 +148,7 @@
 	<div class="w-full">
 		<NftGrid bind:options={data} bind:gridStyle bind:reachedEnd bind:isLoading />
 
-		{#if isLoading}
-			<DiamondsLoader />
-		{:else}
+		{#if !isLoading}
 			<div use:inview={inviewOptions} on:change={onChange} />
 		{/if}
 	</div>
