@@ -141,6 +141,8 @@
 	});
 
 	onDestroy(() => clearInterval(timerInterval));
+
+	$: console.log(options);
 </script>
 
 <div
@@ -224,7 +226,15 @@
 			{:else if timerHtml?.includes('Ends in')}
 				<div class="flex flex-col items-start">
 					<h4 class="text-gradient font-bold whitespace-nowrap {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
-						{options.listingData?.listingType === 'auction' ? 'Highest bid' : 'Price'}
+						{#if options.listingData?.listingType === 'auction'}
+							{#if options.auctionData.highestBid !== '0'}
+								Highest bid
+							{:else}
+								Starting Price
+							{/if}
+						{:else}
+							Price
+						{/if}
 					</h4>
 					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-2' : 'gap-x-1'}">
 						<span><EthV2 class={gridStyle === 'normal' ? 'w-3 h-4' : 'w-2 h-3'} /></span>
