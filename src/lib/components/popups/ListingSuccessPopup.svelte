@@ -21,8 +21,8 @@
 			<div class="mt-6 text-4xl font-bold">NFT Listed Successfully</div>
 			<p class="max-w-lg mt-4 text-center">Congratulations! You have created and listed and NFT successfully, click View NFT to be re-directed to your listing on your profile!</p>
 
-			<div class="w-48 grid">
-				<PrimaryButton class="mt-16" on:click={click}>View NFT</PrimaryButton>
+			<div class="w-48 grid mt-16">
+				<PrimaryButton on:click={click}>View NFT</PrimaryButton>
 			</div>
 		</div>
 	</ResponsovePopupContainer>

@@ -91,7 +91,7 @@ export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: 
 	return token;
 }
 
-export function parseToken(amount: string, tokenAddress: string, fallback?: any) {
+export function parseToken(amount: string, tokenAddress: string, fallback?: any): ethers.BigNumber {
 	const tokenDetails = getKnownTokenDetails({ tokenAddress: tokenAddress });
 
 	try {

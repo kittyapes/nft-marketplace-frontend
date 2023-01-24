@@ -1,6 +1,6 @@
 import type { TokenStandard } from '$interfaces';
 import type { Collection } from '$utils/api/collection';
-import type { ListingType } from '$utils/api/listing';
+import type { Listing, ListingType } from '$utils/api/listing';
 import type { Writable } from 'svelte/store';
 
 export interface CardOptions {
@@ -34,6 +34,7 @@ export interface CardOptions {
 	listingData?: {
 		databaseId: string;
 		onChainId: string;
+		transactionType: Listing['transactionType'];
 		sellerAddress: string;
 		listingType: ListingType;
 		paymentTokenTicker: string;

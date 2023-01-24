@@ -25,7 +25,7 @@
 
 	// URL params
 	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
-	const isGasless = $page.url.searchParams.get('gasless') as string;
+	const isGasless = $page.url.searchParams.get('gasless') === '1';
 
 	let listingType = $page.url.searchParams.get('type') as ListingType;
 
@@ -71,6 +71,7 @@
 		isListing = true;
 
 		const flowOptions: CreateListingFlowOptions = {
+			gasless: isGasless,
 			title: $fetchedNftData.name,
 			description: $fetchedNftData.metadata?.description,
 			// TODO, add support for addresses from external collections
@@ -81,12 +82,34 @@
 			...listingProps,
 		};
 
+		let listSuccess: boolean;
+
 		try {
-			await createListingFlow(flowOptions);
-			setPopup(ListingSuccessPopup, { props: { viewCallback: goViewNft }, closeByOutsideClick: false });
+			const res = await createListingFlow(flowOptions);
+
+			// For handled errors, don't show the default message
+			if (res?.error && res.handled) {
+				listSuccess = false;
+			}
+
+			// For unhandled errors, show the default error message
+			else if (res?.error) {
+				throw res.error;
+			}
+
+			// Successful listing
+			else {
+				listSuccess = true;
+			}
 		} catch (err) {
+			listSuccess = false;
+
 			console.error(err);
-			notifyError('Failed to list NFT!');
+			notifyError('Sorry, an unexpected error has occured. Your NFT could not be listed.');
+		}
+
+		if (listSuccess) {
+			setPopup(ListingSuccessPopup, { props: { viewCallback: goViewNft }, closeByOutsideClick: false });
 		}
 
 		isListing = false;
