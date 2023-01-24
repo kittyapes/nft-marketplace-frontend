@@ -10,10 +10,9 @@
 </script>
 
 <div class="relative {containerClass}">
-	<!-- class:!outline-red-500={value.length < minChars} -->
 	<textarea
 		{rows}
-		class="w-full h-full resize-none border border-white p-4  bg-transparent outline-none {focusStyle ? 'focus:border-color-purple' : ''}  {textAreaClass}"
+		class="w-full h-full resize-none border border-white p-4 bg-transparent outline-none {focusStyle ? 'focus:border-color-purple' : ''}  {textAreaClass}"
 		{placeholder}
 		maxlength={maxChars}
 		bind:value
@@ -26,7 +25,7 @@
 
 <style lang="postcss">
 	textarea::placeholder {
-		@apply opacity-40;
+		@apply opacity-70;
 		@apply transition-all duration-200;
 	}
 </style>
