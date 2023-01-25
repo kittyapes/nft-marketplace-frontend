@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import Copy from '$icons/copy.svelte';
-	import ShareV2 from '$icons/share-v2.svelte';
+	import { socials } from '$constants/socials';
+	import Discord from '$icons/socials/discord.svelte';
 	import Facebook from '$icons/socials/facebook.svelte';
 	import Instagram from '$icons/socials/instagram.svelte';
 	import ShareSocial from '$icons/socials/ShareSocial.svelte';
-	import SocialCopy from '$icons/socials/social-copy.svelte';
 	import Twitter from '$icons/socials/twitter.svelte';
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import { blogPosts } from '$stores/blog';
@@ -31,10 +30,10 @@
 			</div>
 
 			<div class="flex gap-4 mt-8 mx-auto justify-center">
-				<button><Twitter /></button>
-				<button><Facebook /></button>
-				<button><Instagram /></button>
-				<button><ShareSocial /></button>
+				<a class="clickable" href={socials.twitter}><Twitter /></a>
+				<a class="clickable" href={socials.discord}><Discord /></a>
+				<!--<a class="clickable"><Instagram /></a>
+				<button class="clickable"><ShareSocial /></button>-->
 			</div>
 
 			<div id="article-container" class="relative mt-8">
@@ -44,7 +43,7 @@
 	</main>
 </LoadedContent>
 
-<style>
+<style type="postcss">
 	#article-container :global(img) {
 		@apply my-8;
 	}
