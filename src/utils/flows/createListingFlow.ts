@@ -195,6 +195,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		// Append signature to form-data
 		formData.append('signature', signature);
 		formData.append('nonce', nonceBigNumber.toString());
+		formData.append('expireTime', expireTime.toString());
 
 		await axios.post(getApiUrl('latest', 'gasless-listings'), formData, await getAxiosConfig());
 	}
