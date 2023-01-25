@@ -83,20 +83,23 @@ export interface CreateListingFlowOptions extends Partial<ConfigurableListingPro
 }
 
 export async function createListingFlow(options: CreateListingFlowOptions) {
-	const token = options.paymentTokenAddress;
-
-	const weiPrice = parseToken(options.price, token, 0).toString();
-	const weiStartingPrice = parseToken(options.startingPrice, token, 0);
-	const weiReservePrice = parseToken(options.reservePrice || options.startingPrice, token, 0);
+	// Parse some stuff
+	const seller = get(currentUserAddress);
+	const payTokenAddress = options.paymentTokenAddress;
+	const price = parseToken(options.price || options.startingPrice || '0', payTokenAddress);
+	const reservePrice = parseToken(options.reservePrice || options.startingPrice || options.price || '0', payTokenAddress);
+	const startTime = ethers.BigNumber.from(options.startDateTs || dayjs().unix());
+	const duration = ethers.BigNumber.from(options.durationSeconds);
+	const tokenIds = options.nfts.map((nft) => ethers.BigNumber.from(nft.nftId));
+	const tokenAmounts = options.nfts.map((nft) => ethers.BigNumber.from(nft.amount));
+	const collectionAddresses = options.nfts.map((nft) => nft.collectionAddress);
+	const quantity = ethers.BigNumber.from(tokenAmounts[0]);
 
 	// Create listing on the server
 	const formData = new FormData();
 
-	// Is this needed?
-	const nfts = options.nfts.map(({ nftId, amount, _id }) => ({ nftId, amount: amount.toString(), _id }));
-
 	const fields = {
-		nfts: JSON.stringify(nfts),
+		nfts: JSON.stringify(options.nfts),
 		title: options.title || 'No Title',
 		paymentTokenAddress: options.paymentTokenAddress,
 		paymentTokenTicker: 'ETH', // hotfix options.paymentTokenTicker,
@@ -106,58 +109,47 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	};
 
 	if (options.startDateTs) {
-		fields['startTime'] = dayjs(options.startDateTs * 1000).isAfter(dayjs()) ? options.startDateTs : null;
+		fields['startTime'] = options.startDateTs;
 	}
 
 	const listing = {};
 
 	// Sale specific
 	if (options.listingType === 'sale') {
-		listing['price'] = weiPrice;
-		listing['quantity'] = options.quantity.toString();
+		listing['price'] = price.toString();
+		listing['quantity'] = quantity.toString();
 	}
 
 	// Auction specific
 	if (options.listingType === 'auction') {
-		listing['startingPrice'] = weiStartingPrice.toString();
-		listing['reservePrice'] = weiReservePrice.toString();
+		listing['startingPrice'] = price.toString();
+		listing['reservePrice'] = reservePrice.toString();
 	}
 
 	// Append listing to formData
 	fields['listing'] = JSON.stringify(listing);
 
+	// Build formData
 	for (const [key, value] of Object.entries(fields)) {
 		formData.append(key, value);
 	}
 
-	// Create listing on chain
-	const tokenIds = options.nfts.map((nft) => ethers.BigNumber.from(nft.nftId));
-	const tokenAmounts = options.nfts.map((nft) => ethers.BigNumber.from(nft.amount));
-	const collectionAddresses = options.nfts.map((nft) => nft.collectionAddress);
-
+	// Listing type on chain is represented with a number
 	const listingTypeEnumValue = {
 		sale: LISTING_TYPE.FIXED_PRICE,
 		auction: LISTING_TYPE.TIME_LIMITED_WINER_TAKE_ALL_AUCTION,
 	}[options.listingType];
 
-	// Make sure NFTs are approved for transaction for both, normal and gasless listings
-	const marketplaceContract = getContract('marketplace');
+	// Approve v1 or v2 marketplace contract to manipulate NFTs from collection
 	const collectionContract = await getCollectionContract(options.nfts[0].collectionAddress);
 
+	const marketplaceContract = options.gasless ? getContract('marketplace-v2') : getContract('marketplace');
 	const isApproved = await collectionContract.isApprovedForAll(get(currentUserAddress), marketplaceContract.address);
 
 	if (!isApproved) {
 		const approval: ethers.ContractTransaction = await collectionContract.setApprovalForAll(marketplaceContract.address, true);
 		await approval.wait(1);
 	}
-
-	// Common args
-	const seller = get(currentUserAddress);
-	const payTokenAddress = options.paymentTokenAddress;
-	const price = parseToken(options.price || options.startingPrice || '0', options.paymentTokenAddress);
-	const startTime = ethers.BigNumber.from(options.startDateTs || dayjs().unix());
-	const duration = ethers.BigNumber.from(options.durationSeconds);
-	const quantity = ethers.BigNumber.from(tokenAmounts[0]);
 
 	// Gasless listing
 	if (options.gasless) {
@@ -176,7 +168,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 				signer,
 				payTokenAddress,
 				price,
-				weiReservePrice,
+				reservePrice,
 				startTime,
 				duration,
 				quantity,
@@ -214,7 +206,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 			seller,
 			payToken: payTokenAddress,
 			price,
-			reservePrice: parseToken(options.reservePrice || options.startingPrice || options.price, options.paymentTokenAddress),
+			reservePrice,
 			startTime,
 			duration,
 			quantity,
