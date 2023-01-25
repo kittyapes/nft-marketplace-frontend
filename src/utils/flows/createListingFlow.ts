@@ -41,6 +41,7 @@ async function getGaslessListingSignature(
 	reservePrice: BigNumber,
 	startTime: BigNumber,
 	duration: BigNumber,
+	expireTime: number,
 	quantity: BigNumber,
 	listingType: LISTING_TYPE,
 	collections: string[],
@@ -49,8 +50,8 @@ async function getGaslessListingSignature(
 	nonce: BigNumber,
 ) {
 	const message = ethers.utils.solidityKeccak256(
-		['address', 'address', 'uint128', 'uint128', 'uint64', 'uint64', 'uint64', 'uint8', 'address[]', 'uint256[]', 'uint256[]', 'uint256'],
-		[await seller.getAddress(), payTokenAddress, price, reservePrice, startTime, duration, quantity, listingType, collections, tokenIds, tokenAmounts, nonce],
+		['address', 'address', 'uint128', 'uint128', 'uint64', 'uint64', 'uint64', 'uint64', 'uint8', 'address[]', 'uint256[]', 'uint256[]', 'uint256'],
+		[await seller.getAddress(), payTokenAddress, price, reservePrice, startTime, duration, expireTime, quantity, listingType, collections, tokenIds, tokenAmounts, nonce],
 	);
 
 	console.debug('Using followin parameters for gasless listing signature generation.');
@@ -61,6 +62,7 @@ async function getGaslessListingSignature(
 		reservePrice.toString(),
 		startTime.toString(),
 		duration.toString(),
+		expireTime.toString(),
 		quantity.toString(),
 		listingType.toString(),
 		collections.map((v) => v.toString()),
@@ -94,6 +96,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	const tokenAmounts = options.nfts.map((nft) => ethers.BigNumber.from(nft.amount));
 	const collectionAddresses = options.nfts.map((nft) => nft.collectionAddress);
 	const quantity = ethers.BigNumber.from(tokenAmounts[0]);
+	const expireTime = dayjs().unix() + 180 * 24 * 60 * 60; // 180 days from now
 
 	// Create listing on the server
 	const formData = new FormData();
@@ -171,6 +174,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 				reservePrice,
 				startTime,
 				duration,
+				expireTime,
 				quantity,
 				listingTypeEnumValue,
 				collectionAddresses,
