@@ -17,6 +17,9 @@
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
 	import { goto } from '$app/navigation';
+	import NotificationBar from '$lib/components/NotificationBar.svelte';
+	import { getNotifications, updateNotificationAsUser, type UserNotification } from '$utils/api/notifications';
+	import dayjs from 'dayjs';
 
 	let trendingListings = writable<Listing[]>([]);
 	let loadedTrendingListings = writable(false);
@@ -25,6 +28,10 @@
 	let hottestCreators = writable<{ users: PublicProfileData[]; totalCount: number }>(null);
 	let loadedHottestCreators = writable(false);
 	const hottestCreatorsCount = 3;
+
+	let userNotification = writable<UserNotification>(null);
+	let loadedUserNotification = writable(false);
+	let userNotificationCleared = writable(false);
 
 	const getTrendingListingsData = async () => {
 		loadedTrendingListings.set(false);
@@ -39,9 +46,29 @@
 		loadedHottestCreators.set(true);
 	};
 
+	const getUserNotification = async () => {
+		loadedUserNotification.set(false);
+		const res = (await getNotifications()).data.data;
+		const notification = res.find((n) => !n.hasCleared);
+
+		if (!notification) {
+			return;
+		}
+
+		userNotification.set(notification);
+		loadedUserNotification.set(true);
+		await updateNotificationAsUser({ id: $userNotification._id, readAt: dayjs().format('YYYY-MM-DD') });
+	};
+
+	const clearNotification = async () => {
+		await updateNotificationAsUser({ id: $userNotification._id, hasCleared: true });
+		userNotificationCleared.set(true);
+	};
+
 	onMount(async () => {
-		await getTrendingListingsData();
-		await getHottestCreatorsData();
+		getUserNotification();
+		getHottestCreatorsData();
+		getTrendingListingsData();
 	});
 </script>
 
@@ -65,6 +92,14 @@
 		site_name: 'Hinata',
 	}}
 />
+
+<!-- Notifications -->
+{#if $loadedUserNotification && $userNotification && !$userNotificationCleared}
+	<div class="w-full text-white mt-20" transition:slide|local>
+		<NotificationBar notification={$userNotification} wrapperClass={'h-16'} on:click={() => clearNotification()} />
+	</div>
+{/if}
+
 <div class="px-36 pt-32 w-full grid place-items-center text-white">
 	<!-- Hero section -->
 	<!-- TODO fix this properly -->
