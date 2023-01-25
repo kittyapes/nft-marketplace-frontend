@@ -322,16 +322,16 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Status' },
 				renderComponent: EntryRole,
-				renderComponentProps: collections.map((u) => ({
-					id: u.slug,
+				renderComponentProps: collections.map((c) => ({
+					id: c.slug,
 					mode: tab,
 					disableAllOnSelect: true,
-					role: u.status,
-					color: getRoleColor(u.status),
-					arrowGradient: getGradientColors(u.status),
+					role: c.status,
+					color: getRoleColor(c.status),
+					arrowGradient: getGradientColors(c.status),
 					options: [
-						{ label: 'Active', checked: u.status === 'ACTIVE', value: 'ACTIVE' },
-						{ label: 'Inactive', checked: u.status === 'INACTIVE', value: 'INACTIVE' },
+						{ label: 'Listed', checked: c.status === 'ACTIVE', value: 'ACTIVE' },
+						{ label: 'Inactive', checked: c.status === 'INACTIVE', value: 'INACTIVE' },
 					],
 				})),
 			},

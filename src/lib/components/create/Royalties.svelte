@@ -5,7 +5,6 @@
 	import { ethAddressRegex, isEthAddress } from '$utils/validator/isEthAddress';
 	import Info from '$icons/info.v2.svelte';
 	import { regexFilter } from '$actions/regexFilter';
-	import Input from '../v2/Input/Input.svelte';
 
 	const feeInputRegex = /^([0-9]|[0-9]{2})(\.[0-9]{0,2})?$/;
 
@@ -85,7 +84,7 @@
 				{#each values as value}
 					<input
 						type="text"
-						class="mt-4 input rounded-none first:mt-2 h-8 2xl:h-10 "
+						class="mt-4 input rounded-none first:mt-2 h-10 "
 						placeholder="Enter wallet address"
 						autocomplete="nope"
 						pattern={ethAddressRegex}

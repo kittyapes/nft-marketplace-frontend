@@ -175,7 +175,7 @@
 				<NftList options={trendingListingsData} />
 			</div>
 
-			<a href="/marketplace" class="w-full"><PrimaryButton class="w-full">Explore Marketplace</PrimaryButton></a>
+			<a href="/marketplace/listings" class="w-full"><PrimaryButton extButtonClass="w-full">Explore Marketplace</PrimaryButton></a>
 		</div>
 	{/if}
 </div>

@@ -15,6 +15,7 @@
 	export let dropdownLabel: string = options?.[0].label;
 	export let opened: boolean = false;
 	export let disabled = false;
+	export let disabledOpacity = true;
 	export let id = '';
 	export let disableAllOnSelect = false;
 	export let dispatchAllOptions = false;
@@ -35,13 +36,15 @@
 		{id}
 		class="group min-w-fit relative text-left text-white h-full min-h-[3rem] rounded-md pl-4 pr-2 w-full outline-none flex items-center transition {$$props.class} "
 		{disabled}
-		class:opacity-50={disabled}
+		class:opacity-50={disabled && disabledOpacity}
 		bind:this={elemOpenButton}
 		on:click|stopPropagation={() => {
 			opened = !opened;
 		}}
 	>
-		<ArrowDown gradientColors={arrowGradient} {id} />
+		{#if !disabled}
+			<ArrowDown gradientColors={arrowGradient} {id} />
+		{/if}
 
 		<div class="min-w-max first-letter:uppercase">{dropdownLabel}</div>
 	</button>

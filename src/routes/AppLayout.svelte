@@ -87,6 +87,8 @@
 		<Nav {scrollY} />
 	{/if}
 
+	<NavigationHandlers bind:errorCode={navigationErrorCode} />
+
 	{#if errorCode}
 		<ErrorPage {errorCode} />
 	{:else}
@@ -96,7 +98,6 @@
 			<div class="flex-grow" />
 			<Toast />
 			<PopupManager />
-			<NavigationHandlers bind:errorCode={navigationErrorCode} />
 			<Footer />
 		</div>
 		<!--</PageTransition> -->
