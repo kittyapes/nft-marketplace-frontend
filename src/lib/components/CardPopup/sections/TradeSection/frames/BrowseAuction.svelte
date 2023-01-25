@@ -31,11 +31,25 @@
 	async function placeBid() {
 		isPlacingBid = true;
 
-		const [err, res] = await noTryAsync(async () => await placeBidFlow(options.rawResourceData.listingId, bidAmount));
+		let bidSuccess: boolean;
 
-		if (err) {
-			notifyError('Failed to place your bid!');
-		} else {
+		try {
+			// await placeBidFlow(options.listingData.onChainId, bidAmount, options.listingData.transactionType);
+			const res = await placeBidFlow(options.listingData.onChainId, bidAmount, 'GASLESS');
+
+			if (res && res.error) {
+				bidSuccess = false;
+			} else {
+				bidSuccess = true;
+			}
+		} catch (err) {
+			bidSuccess = false;
+
+			console.error(err);
+			notifyError('An unexpected error has occured. Failed to place your bid.');
+		}
+
+		if (bidSuccess) {
 			setTimeout(async () => await refreshBids(), 10000);
 			bidAmount = '';
 		}
