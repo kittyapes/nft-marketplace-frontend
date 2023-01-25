@@ -34,7 +34,6 @@ export interface CardOptions {
 	listingData?: {
 		databaseId: string;
 		onChainId: string;
-		transactionType: Listing['transactionType'];
 		sellerAddress: string;
 		listingType: ListingType;
 		paymentTokenTicker: string;

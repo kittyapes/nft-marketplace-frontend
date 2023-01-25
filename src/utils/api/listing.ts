@@ -47,8 +47,8 @@ interface RaffleParticipants {
 export interface Listing {
 	_id: string;
 	listingId: string;
-	transactionType: 'ONCHAIN' | 'GASLESS';
 	listingStatus: 'ACTIVE';
+	chainStatus: 'ON_CHAIN' | 'NOT_ON_CHAIN' | 'GASLESS';
 	listingType: ListingType;
 	listing: {
 		price?: string;

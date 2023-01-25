@@ -125,7 +125,6 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 		listingData: {
 			databaseId: listing._id,
 			onChainId: listing.listingId,
-			transactionType: listing.transactionType,
 			sellerAddress: listing.seller,
 			listingType: listing.listingType,
 			paymentTokenTicker: listing.paymentTokenTicker,
