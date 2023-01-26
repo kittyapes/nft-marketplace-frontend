@@ -17,6 +17,22 @@
 			dispatch('end-reached');
 		}
 	}
+
+	let parsedStats = [];
+
+	$: collections.map((collection, i) => {
+		const dailyVol = collection.stats.external24Vol + collection.stats.local24Vol;
+		const prevDailyVol = collection.stats.previousExternal24Vol + collection.stats.previousLocal24Vol;
+
+		parsedStats[i] = {
+			totalVol: collection.stats.externalTotalVol + collection.stats.localTotalVol,
+			floorPrice: collection.stats.localFloorPrice,
+			vol24Hr: dailyVol,
+			percent24Hr: dailyVol / prevDailyVol || 0,
+		};
+
+		return collection;
+	});
 </script>
 
 <table class="min-w-full text-xs 2xl:text-base leading-5 2xl:leading-6 font-medium">
@@ -33,7 +49,7 @@
 
 	<tbody>
 		{#if collections?.length > 0}
-			{#each collections as collection}
+			{#each collections as collection, i}
 				<tr class="">
 					<td class="whitespace-nowrap">
 						<a class="w-full" href="/collections/{collection?.slug}">
@@ -42,12 +58,12 @@
 					</td>
 
 					<td class=" gap-x-1.5">
-						{compactNumberFormat(collection?.totalVol || 0)}
+						{compactNumberFormat(parsedStats[i].totalVol || 0)}
 						<span class="text-[10px] 2xl:text-xs text-opacity-70">ETH</span>
 					</td>
 
 					<td class=" gap-x-1.5">
-						{compactNumberFormat(collection?.floorPrice || 0)}
+						{compactNumberFormat(parsedStats[i].floorPrice || 0)}
 						<span class="text-[10px] 2xl:text-xs text-opacity-70">ETH</span>
 					</td>
 
