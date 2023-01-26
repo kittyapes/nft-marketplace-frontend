@@ -97,12 +97,13 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	const collectionAddresses = options.nfts.map((nft) => nft.collectionAddress);
 	const quantity = ethers.BigNumber.from(tokenAmounts[0]);
 	const expireTime = dayjs().unix() + 180 * 24 * 60 * 60; // 180 days from now
+	const nfts = options.nfts.map((nft) => ({ nftId: nft.nftId, amount: nft.amount, contractAddress: nft.collectionAddress }));
 
 	// Create listing on the server
 	const formData = new FormData();
 
 	const fields = {
-		nfts: JSON.stringify(options.nfts),
+		nfts: JSON.stringify(nfts),
 		title: options.title || 'No Title',
 		paymentTokenAddress: options.paymentTokenAddress,
 		paymentTokenTicker: 'ETH', // hotfix options.paymentTokenTicker,
