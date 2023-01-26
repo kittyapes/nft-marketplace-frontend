@@ -61,7 +61,7 @@
 						<h3 class="">Floor: {parsedStats[i]?.floorPrice} ETH</h3>
 						<h3 class="">
 							${parsedStats[i]?.percent24Hr}
-							{#if collection?.['24hourPercent'] >= 0}
+							{#if parsedStats[i]?.percent24Hr >= 0}
 								<span class="text-[#6FCF97]">{parsedStats[i]?.percent24Hr}%</span>
 							{:else if parsedStats[i]?.percent24Hr < 0}
 								<span class="text-[#EB5757]">{parsedStats[i]?.percent24Hr}%</span>
