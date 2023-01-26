@@ -44,27 +44,27 @@
 	<div class="flex justify-between items-center">
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Highest Sale</div>
-			<div class="text-lg font-semibold">{collection.highestSale || 0} WETH</div>
+			<div class="text-lg font-semibold">{collection.stats.localHighestSale || 0} WETH</div>
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Floor Price</div>
-			<div class="text-lg font-semibold">{collection.floorPrice || 0} WETH</div>
+			<div class="text-lg font-semibold">{collection.stats.localFloorPrice || 0} WETH</div>
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Total Volume</div>
-			<div class="text-lg font-semibold">{collection.totalVol || 0} WETH</div>
+			<div class="text-lg font-semibold">{collection.stats.externalTotalVol + collection.stats.localTotalVol || 0} WETH</div>
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Items</div>
-			<div class="text-lg font-semibold">{collection.items || 0}</div>
+			<div class="text-lg font-semibold">{collection.stats.numOfItems || 0}</div>
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">Owners</div>
-			<div class="text-lg font-semibold">{collection.owners || 0}</div>
+			<div class="text-lg font-semibold">{collection.stats.numOfOwners || 0}</div>
 		</div>
 		<div class="flex flex-col text-center">
 			<div class="text-xs">24hr Volume</div>
-			<div class="text-lg font-semibold">{collection.total24hours || 0} WETH</div>
+			<div class="text-lg font-semibold">{collection.stats.local24Vol || 0} WETH</div>
 		</div>
 	</div>
 	<div class="flex items-center justify-center gap-4">
