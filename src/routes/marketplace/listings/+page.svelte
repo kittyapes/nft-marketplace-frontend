@@ -21,6 +21,9 @@
 	import { slide } from 'svelte/transition';
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import { cubicInOut } from 'svelte/easing';
+	import { onMount } from 'svelte';
+
+	console.log('SSR');
 
 	let showFilters = true;
 	let sortOptions: { title: string; action?: any }[] = [
@@ -87,7 +90,7 @@
 		}
 	}, 1000);
 
-	export function refreshWithFilters() {
+	function refreshWithFilters() {
 		const params = $page.url.searchParams;
 		fetchOptions.type = params.get('types')?.split('+') as ListingType[];
 		fetchOptions.sortBy = params.get('sortBy') as any;
@@ -98,13 +101,17 @@
 		debouncedFetchMore();
 	}
 
-	refreshWithFilters();
 	function onChange(event) {
 		if (event.detail.inView) {
 			fetchMore();
 		}
 	}
+
 	const inviewOptions = {};
+
+	onMount(() => {
+		refreshWithFilters();
+	});
 </script>
 
 <div class="w-full flex flex-row items-center justify-between gap-x-4 my-6 2xl:my-8">

@@ -96,7 +96,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	const tokenAmounts = options.nfts.map((nft) => ethers.BigNumber.from(nft.amount));
 	const collectionAddresses = options.nfts.map((nft) => nft.collectionAddress);
 	const quantity = ethers.BigNumber.from(tokenAmounts[0]);
-	const expireTime = dayjs().unix() + 180 * 24 * 60 * 60; // 180 days from now
+	const signatureExpiryTimestamp = dayjs().unix() + 180 * 24 * 60 * 60; // 180 days from now
 	const nfts = options.nfts.map((nft) => ({ nftId: nft.nftId, amount: nft.amount, contractAddress: nft.collectionAddress }));
 
 	// Create listing on the server
@@ -175,7 +175,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 				reservePrice,
 				startTime,
 				duration,
-				expireTime,
+				signatureExpiryTimestamp,
 				quantity,
 				listingTypeEnumValue,
 				collectionAddresses,
@@ -196,7 +196,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		// Append signature to form-data
 		formData.append('signature', signature);
 		formData.append('nonce', nonceBigNumber.toString());
-		formData.append('expireTime', expireTime.toString());
+		formData.append('signatureExpiryTimestamp', signatureExpiryTimestamp.toString());
 
 		await axios.post(getApiUrl('latest', 'gasless-listings'), formData, await getAxiosConfig());
 	}
