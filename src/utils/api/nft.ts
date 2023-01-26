@@ -58,16 +58,35 @@ export async function apiRevealNft(id: string): Promise<ApiCallResult<{ success:
 	}
 }
 
+export enum PaymentTickersEnum {
+	ETH = 'ETH',
+}
+
+export enum NftEventTypeEnum {
+	LISTING_CREATED = 'LISTING_CREATED',
+	LISTING_CANCELLED = 'LISTING_CANCELLED',
+	LISTING_PURCHASED = 'LISTING_PURCHASED',
+	BID_RECEIVED = 'BID_RECEIVED',
+	MINTED = 'MINTED',
+	BURNED = 'BURNED',
+	TRANSFER = 'TRANSFER',
+}
+
 export interface ApiNftActivityHistoryEntry {
-	_id: string;
-	event: string;
-	from: string;
-	to?: string;
-	nftId: string;
-	createdAt: string;
-	updatedAt: string;
+	nftIds: string[];
+	contractAddresses: string[];
+	tokenQuantities: number[];
+	event: NftEventTypeEnum;
 	price: string;
-	detail: any;
+	tokenTicker: PaymentTickersEnum;
+	tokenDecimals: number;
+	from: string;
+	to: string | null;
+	detail: {
+		listingId: string;
+		listingType: NftEventTypeEnum;
+	} | null;
+	txHash: string | null;
 }
 
 export async function apiGetNftActivityHistory(
