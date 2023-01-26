@@ -12,12 +12,12 @@
 	import Popup from '../Popup.svelte';
 	import AssetContainer from './sections/AssetContainer.svelte';
 	import Tabs from './Tabs.svelte';
-	import { getOnChainListing, type ChainListing } from '$utils/contracts/listing';
 	import CardCarousel from '../v2/CardCarousel/CardCarousel.svelte';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import { getListings } from '$utils/api/listing';
 	import { browser } from '$app/environment';
 	import { notifyError } from '$utils/toast';
+	import { getListingUpdatedWithChainData } from '$utils/listings';
 
 	export let options: CardOptions;
 	export let handler: PopupHandler;
@@ -28,11 +28,7 @@
 
 	let similarCards: CardOptions[] = [];
 
-	let chainListing: ChainListing;
-
 	const countdownData = options?.resourceType === 'listing' ? { startTime: options.listingData?.startTime, duration: options.listingData?.duration, expired: false } : null;
-
-	$: listedNfts = options.listingData?.nftQuantities[options.nfts[0].onChainId] || 0;
 
 	// Log data that was used by the adapter to generate the CardPopup
 	$: console.debug('[Resource Data]:', options.rawResourceData);
@@ -51,7 +47,7 @@
 	}
 
 	// Check NFT balance to enable/disable trading functionality
-	let nftBalance = null;
+	let nftBalance: number;
 
 	async function refreshBalance() {
 		if ($currentUserAddress) {
@@ -61,19 +57,23 @@
 		}
 	}
 
-	async function refreshOnChainListing() {
-		chainListing = await getOnChainListing(options.listingData.onChainId);
-		console.debug('[On chain listing data]:', chainListing);
-	}
-
-	onMount(() => {
+	onMount(async () => {
 		// We wanna refresh the NFT data from the NFT detail endpoint when the use opens
 		// the popup. That will allow us to display more data than what's available from
 		// the /nfts/search endpoint.
 		fetchNftDetail();
 
-		if (options.listingData?.onChainId) {
-			refreshOnChainListing();
+		// If the listing is on-chain listing, update datapoints which are available
+		// on the chain with values from the chain
+		if (options.listingData?.onChainId && !options.listingData.isGasless) {
+			const updatedListingData = await getListingUpdatedWithChainData(options.rawListingData);
+
+			if (updatedListingData) {
+				options.rawListingData = updatedListingData;
+				console.debug('Refreshed API listing data with data from chain.');
+			} else {
+				notifyError('Failed to load listing from chain. Listing may be invalid.');
+			}
 		}
 
 		refreshBalance();
@@ -130,6 +130,16 @@
 	}
 
 	let enableBack = false;
+
+	let disabledTabs: any[];
+
+	$: {
+		disabledTabs = [];
+
+		if (options.resourceType === 'nft' && nftBalance < 1) {
+			disabledTabs.push('trade');
+		}
+	}
 </script>
 
 <div class="p-4 h-full w-full overflow-hidden">
@@ -143,7 +153,7 @@
 						<img class="h-6" src={getIconUrl('back-button')} alt="Arrow pointing left." />
 					</button>
 
-					<Tabs bind:selectedTab />
+					<Tabs bind:selectedTab {disabledTabs} />
 				</div>
 
 				<!-- Main content -->
@@ -168,8 +178,6 @@
 						<svelte:component
 							this={selectedTab?.sectionComponent}
 							{options}
-							{chainListing}
-							{listedNfts}
 							on:close-popup={handleClosePopup}
 							on:force-expire
 							on:listing-created={refreshBalance}

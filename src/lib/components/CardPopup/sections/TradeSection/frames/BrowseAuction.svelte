@@ -7,18 +7,16 @@
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
-	import type { ChainListing } from '$utils/contracts/listing';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
+	import { dateToTimestamp, listingExistsOnChain } from '$utils/listings';
 	import { parseToken } from '$utils/misc/priceUtils';
 	import { isFuture } from '$utils/misc/time';
 	import { notifyError } from '$utils/toast';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
-	import { noTryAsync } from 'no-try';
 	import { onMount } from 'svelte';
 
 	export let options: CardOptions;
-	export let chainListing: ChainListing;
 	export let listedNfts: number;
 
 	$: listingExpired = !isFuture(options.listingData.endTime);
@@ -60,9 +58,11 @@
 	let biddings: BidRow[] = [];
 
 	function bidValidator(v: string): boolean {
-		const parsedValue = parseToken(v, chainListing.payToken, null);
-		const parsedPrice = parseToken(chainListing.price, chainListing.payToken, null);
-		const parsedHighestBid = parseToken(biddings?.[0]?.tokenAmount || '0', chainListing.payToken, null);
+		const payTokenAddress = options.rawListingData.paymentTokenAddress;
+
+		const parsedValue = parseToken(v, payTokenAddress, null);
+		const parsedPrice = parseToken(options.rawListingData.listing.price, payTokenAddress, null);
+		const parsedHighestBid = parseToken(biddings?.[0]?.tokenAmount || '0', payTokenAddress, null);
 
 		if ([parsedValue, parsedPrice, parsedHighestBid].some((v) => !v)) {
 			return false;
@@ -94,7 +94,7 @@
 
 	onMount(refreshBids);
 
-	$: bidError = isFuture(chainListing.startTime) && "Auction hasn't started yet.";
+	$: bidError = isFuture(dateToTimestamp(options.rawListingData.startTime)) && "Auction hasn't started yet.";
 
 	let hoveringPlaceBid;
 </script>
@@ -129,19 +129,20 @@
 	<div class="flex gap-2 mt-4">
 		{#if $appSigner}
 			<div class="relative w-full" on:pointerover={() => (hoveringPlaceBid = true)} on:pointerleave={() => (hoveringPlaceBid = false)}>
-				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid || !!bidError || !chainListing.isValidOnChainListing}>
+				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid || !!bidError || !listingExistsOnChain(options.rawListingData.listingId)}>
 					{#if isPlacingBid}
 						<ButtonSpinner />
 					{/if}
 					Place Bid
 				</PrimaryButton>
 
-				{#if hoveringPlaceBid && bidError && chainListing.isValidOnChainListing}
+				{#if hoveringPlaceBid && bidError && listingExistsOnChain(options.rawListingData.listingId)}
 					<div class="absolute top-4">
 						<InfoBubble>{bidError}</InfoBubble>
 					</div>
 				{/if}
-				{#if hoveringPlaceBid && !chainListing.isValidOnChainListing}
+
+				{#if hoveringPlaceBid && !listingExistsOnChain(options.rawListingData.listingId)}
 					<div class="absolute top-4">
 						<InfoBubble>Sorry, this listing is no longer valid</InfoBubble>
 					</div>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { CardOptions } from '$interfaces/ui';
-	import { getMarketFee, type ChainListing } from '$utils/contracts/listing';
+	import { getMarketFee } from '$utils/contracts/listing';
 	import { getContractData } from '$utils/misc/getContract';
 	import { totalColRoyalties } from '$utils/misc/royalties';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
@@ -10,14 +10,12 @@
 	import { fade } from 'svelte/transition';
 
 	export let options: CardOptions;
-	export let chainListing: ChainListing;
-	export let listedNfts: number;
 
 	let marketFee = 0;
 	let balance = null;
 	let supply = null;
 
-	$: ownedOrListedNfts = options.resourceType === 'listing' ? listedNfts : balance;
+	$: ownedOrListedNfts = options.resourceType === 'listing' ? options.rawListingData.nfts[0].amount : balance;
 
 	// The Hinata General collection should always have a 1.5 % royalties,
 	// you know we cannot rely on the backend :)
@@ -72,7 +70,7 @@
 		const res = await getUserNftBalance(singleNft.contractAddress, singleNft.onChainId);
 
 		supply = res.supply;
-		balance = options.resourceType === 'listing' ? chainListing?.tokensMap[0]?.tokenQuantityInListing ?? 0 : res.balance;
+		balance = options.resourceType === 'listing' ? options.rawListingData.nfts[0].amount ?? 0 : res.balance;
 	});
 
 	function parseAttributes(attributes) {

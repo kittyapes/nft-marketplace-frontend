@@ -121,7 +121,9 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 		...buildCommonObject(),
 		resourceType: 'listing',
 		rawResourceData: listing,
+		rawListingData: listing,
 		nfts: [await sanitizeNftData(nft)],
+		// TODO I suggest replacing this custom object with an extended version of the API data
 		listingData: {
 			databaseId: listing._id,
 			onChainId: listing.listingId,
@@ -134,6 +136,8 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 			duration: listing.duration,
 			shortDisplayPrice: null,
 			nftQuantities: { [nft.nftId]: listing.nfts[0].amount },
+			chainStatus: listing.chainStatus,
+			isGasless: listing.chainStatus === 'GASLESS',
 		},
 	};
 
