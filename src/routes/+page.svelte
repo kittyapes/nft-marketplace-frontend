@@ -57,7 +57,8 @@
 
 		userNotification.set(notification);
 		loadedUserNotification.set(true);
-		await updateNotificationAsUser({ id: $userNotification._id, readAt: dayjs().format('YYYY-MM-DD') });
+
+		if (!notification.readAt) await updateNotificationAsUser({ id: $userNotification._id, readAt: dayjs() });
 	};
 
 	const clearNotification = async () => {

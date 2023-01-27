@@ -1,19 +1,24 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import Datepicker from '$lib/components/Datepicker.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { getNotifications, publishNotification } from '$utils/api/notifications';
 	import { notifyError, notifySuccess } from '$utils/toast';
-	import dayjs from 'dayjs';
+	import dayjs, { Dayjs } from 'dayjs';
+	import utc from 'dayjs/plugin/utc.js';
+
+	dayjs.extend(utc);
 
 	let notificationMessage = '';
-	let notificationTitle = 'random title';
+	let notificationTitle = 'placeholder title';
+	let publishDate: Dayjs;
+
 	let publishedNotifications = [];
 
-	$: browser && fetchNotification();
-	$: console.log(publishedNotifications);
+	$: browser && fetchNotifications();
 
-	async function fetchNotification() {
+	async function fetchNotifications() {
 		const res = await getNotifications();
 
 		if (res.err) {
@@ -25,7 +30,7 @@
 	}
 
 	async function handlePublish() {
-		const res = await publishNotification({ title: notificationTitle, content: notificationMessage, targets: ['GLOBAL'], publishAt: dayjs().format('YYYY-MM-DD') });
+		const res = await publishNotification({ title: notificationTitle, content: notificationMessage, targets: ['GLOBAL'], publishAt: publishDate.format('YYYY-MM-DDTHH:mm:ss.SSS') });
 
 		if (res.err) {
 			notifyError('Failed to publish notification ' + res.err.message);
@@ -41,7 +46,9 @@
 		<div class="flex flex-col justify-between -translate-y-[7px]">
 			<h1 class="text-2xl">Create a Notification</h1>
 
-			<PrimaryButton disabled={!notificationMessage} on:click={handlePublish} extButtonClass="w-80">Publish</PrimaryButton>
+			<Datepicker bind:value={publishDate} placeholder="Pick publish date & time" />
+
+			<PrimaryButton disabled={!notificationMessage || !publishDate} on:click={handlePublish} extButtonClass="w-80">Publish</PrimaryButton>
 		</div>
 		<div class="flex-col flex-grow">
 			<TextArea bind:value={notificationMessage} maxChars={250} containerClass={'text-white'} textAreaClass={'placeholder:text-white'} placeholder={'Enter your message for a notification'} />
