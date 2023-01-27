@@ -52,7 +52,7 @@ export function buildListingDurationOptions(isAdmin: boolean, currentDuration?: 
  * @returns `true` or `false` depending on whether the listing is expired or not.
  */
 export function isListingExpired(startTs: number, duration: number) {
-	return dayjs(startTs * 1000 + duration * 1000).isBefore(dayjs());
+	return dayjs.unix(startTs + duration).isBefore(dayjs());
 }
 
 export function delay(ms: number) {

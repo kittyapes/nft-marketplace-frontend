@@ -5,6 +5,7 @@ import { get } from 'svelte/store';
 import erc20Abi from '$constants/contracts/abis/Erc20Mock.json';
 import factoryAbi from '$constants/contracts/abis/HinataCollectionFactory.json';
 import marketplaceAbi from '$constants/contracts/abis/HinataMarketplace.json';
+import marketplaceV2Abi from '$constants/contracts/abis/HinataMarketplaceV2.json';
 import storageAbi from '$constants/contracts/abis/HinataMarketplaceStorage.json';
 import tokenAbi from '$constants/contracts/abis/hinataToken.json';
 import defaultProvider from '$utils/contracts/defaultProvider';
@@ -21,7 +22,7 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goe
 
 	// Goerli Testing Environment
 	{ name: 'marketplace', network: 'testing-goerli', address: '0x48441F157Eb382C8FEC1f9b40f34aa9a04209028', abi: marketplaceAbi },
-	{ name: 'marketplace-v2', network: 'testing-goerli', address: '0xAd1cCB7135aEA4F41f588631fD6E2F1e578C9D17', abi: marketplaceAbi },
+	{ name: 'marketplace-v2', network: 'testing-goerli', address: '0xAd1cCB7135aEA4F41f588631fD6E2F1e578C9D17', abi: marketplaceV2Abi },
 	{ name: 'storage', network: 'testing-goerli', address: '0x5c7db52089565A5c3F701135d9015Bc4Df339B1b', abi: storageAbi },
 	{ name: 'factory', network: 'testing-goerli', address: '0xa0B39FCC5FdeB3D839288c3Ec7210AAaf6fB972D', abi: factoryAbi },
 	{ name: 'token', network: 'testing-goerli', address: '0x15733Ab0E019B8Ff529EceB3FA2F33BcdCc4c3a7', abi: tokenAbi },

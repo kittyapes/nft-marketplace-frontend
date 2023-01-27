@@ -6,7 +6,8 @@ import type { ListingType } from '$utils/api/listing';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { getCollectionContract } from '$utils/contracts/collection';
 import contractCaller from '$utils/contracts/contractCaller';
-import { LISTING_TYPE } from '$utils/contracts/listing';
+import type { LISTING_TYPE } from '$utils/contracts/listing';
+import { stringListingTypeToEnum } from '$utils/listings';
 import { getContract } from '$utils/misc/getContract';
 import { parseToken } from '$utils/misc/priceUtils';
 import { notifyError, notifySuccess } from '$utils/toast';
@@ -21,7 +22,7 @@ interface CreateNormalArgs {
 	payToken: string;
 	price: ethers.BigNumber;
 	reservePrice: ethers.BigNumber;
-	startTime: BigNumber;
+	startTime: number;
 	duration: BigNumber;
 	quantity: BigNumber;
 	listingType: LISTING_TYPE;
@@ -39,7 +40,7 @@ async function getGaslessListingSignature(
 	payTokenAddress: string,
 	price: BigNumber,
 	reservePrice: BigNumber,
-	startTime: BigNumber,
+	startTime: number,
 	duration: BigNumber,
 	expireTime: number,
 	quantity: BigNumber,
@@ -90,7 +91,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	const payTokenAddress = options.paymentTokenAddress;
 	const price = parseToken(options.price || options.startingPrice || '0', payTokenAddress);
 	const reservePrice = parseToken(options.reservePrice || options.startingPrice || options.price || '0', payTokenAddress);
-	const startTime = ethers.BigNumber.from(options.startDateTs || dayjs().unix());
+	const startTime = options.startDateTs || dayjs().unix();
 	const duration = ethers.BigNumber.from(options.durationSeconds);
 	const tokenIds = options.nfts.map((nft) => ethers.BigNumber.from(nft.nftId));
 	const tokenAmounts = options.nfts.map((nft) => ethers.BigNumber.from(nft.amount));
@@ -112,9 +113,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 		duration: options.durationSeconds.toString(),
 	};
 
-	if (options.startDateTs) {
-		fields['startTime'] = options.startDateTs;
-	}
+	fields['startTime'] = startTime;
 
 	const listing = {};
 
@@ -139,10 +138,7 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	}
 
 	// Listing type on chain is represented with a number
-	const listingTypeEnumValue = {
-		sale: LISTING_TYPE.FIXED_PRICE,
-		auction: LISTING_TYPE.TIME_LIMITED_WINER_TAKE_ALL_AUCTION,
-	}[options.listingType];
+	const listingTypeEnumValue = stringListingTypeToEnum(options.listingType);
 
 	// Approve v1 or v2 marketplace contract to manipulate NFTs from collection
 	const collectionContract = await getCollectionContract(options.nfts[0].collectionAddress);
