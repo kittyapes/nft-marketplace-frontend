@@ -14,6 +14,9 @@
 	export let props;
 
 	let localProps;
+	let changingRoles = false;
+
+	$: allRoles = props.options.map((opt) => opt.value);
 
 	function convertRoleToLabel(role: String) {
 		let res = role;
@@ -32,7 +35,7 @@
 		localProps = JSON.parse(JSON.stringify(props));
 		localProps.role = localProps.role?.toLowerCase();
 
-		// remove the ability to edit the admin roles if current user isn't superadmin
+		// remove the ability to edit the admin role if current user isn't superadmin
 		if (!$userHasRole('superadmin')) {
 			localProps.options = props.options.slice(1);
 		}
@@ -45,8 +48,18 @@
 		propsToLocalProps(props);
 	}
 
+	$: {
+		localProps.options.forEach((o) => {
+			o.disabled = changingRoles;
+		});
+
+		localProps = localProps;
+	}
+
 	let handleSelect = async (event: CustomEvent) => {
 		if (props.mode === 'USER') {
+			changingRoles = true;
+
 			let roles: UserRole[] = [];
 
 			props.options.forEach((o) => {
@@ -70,8 +83,27 @@
 			localProps.color = getRoleColor(highestRole);
 			localProps.arrowGradient = getGradientColors(highestRole);
 
+			// update checked boxes
+			res.roles.forEach((role) =>
+				localProps.options.forEach((option) => {
+					if (option.value === role && !option.checked) {
+						option.checked = true;
+					}
+				}),
+			);
+
+			allRoles.forEach((role) => {
+				if (!res.roles.includes(role)) {
+					localProps.options.find((opt) => opt.value === role).checked = false;
+				}
+			});
+
 			localProps = localProps;
+
+			changingRoles = false;
 		} else if (event.detail?.checked) {
+			changingRoles = true;
+
 			const [error, res] = await noTryAsync(() => changeCollectionStatus(props.id, event.detail?.value));
 
 			if (error) {
@@ -83,6 +115,8 @@
 			localProps.role = res.status?.toLowerCase();
 			localProps.arrowGradient = getGradientColors(localProps.role);
 			localProps = localProps;
+
+			changingRoles = false;
 		}
 	};
 </script>
@@ -95,7 +129,7 @@
 		options={localProps.options}
 		arrowGradient={localProps.arrowGradient}
 		dropdownLabel={localProps.role}
-		disableAllOnSelect={localProps.disableAllOnSelect}
+		uncheckAllOnSelect={localProps.uncheckAllOnSelect}
 		dispatchAllOptions={localProps.dispatchAllOptions}
 		disabled={props.role === 'superadmin'}
 		disabledOpacity={false}
