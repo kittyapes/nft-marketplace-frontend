@@ -20,6 +20,22 @@
 	}
 
 	const gridTemplateRows = collections?.length >= 4 ? 'grid-rows-4' : `grid-rows-${collections?.length}`;
+
+	let parsedStats = [];
+
+	$: collections.map((collection, i) => {
+		const dailyVol = collection.stats.external24Vol + collection.stats.local24Vol;
+		const prevDailyVol = collection.stats.previousExternal24Vol + collection.stats.previousLocal24Vol;
+
+		parsedStats[i] = {
+			totalVol: collection.stats.externalTotalVol + collection.stats.localTotalVol,
+			floorPrice: collection.stats.localFloorPrice,
+			vol24Hr: dailyVol,
+			percent24Hr: dailyVol / prevDailyVol || 0,
+		};
+
+		return collection;
+	});
 </script>
 
 {#if collections?.length > 0}
@@ -39,16 +55,16 @@
 				<div class="flex-grow">
 					<div class="flex flex-row items-center justify-between">
 						<h2>{collection?.name}</h2>
-						<h2>{collection?.totalVol} ETH</h2>
+						<h2>{parsedStats[i]?.totalVol} ETH</h2>
 					</div>
 					<div class="flex flex-row items-center justify-between font-semibold text-sm leading-9 text-[#CECECE]">
-						<h3 class="">Floor: {collection.floorPrice} ETH</h3>
+						<h3 class="">Floor: {parsedStats[i]?.floorPrice} ETH</h3>
 						<h3 class="">
-							${collection.total24hours}
-							{#if collection?.['24hourPercent'] > 0}
-								<span class="text-[#6FCF97]">{collection?.['24hourPercent']}%</span>
-							{:else if collection?.['24hourPercent'] < 0}
-								<span class="text-[#EB5757]">{collection?.['24hourPercent']}%</span>
+							${parsedStats[i]?.percent24Hr}
+							{#if parsedStats[i]?.percent24Hr >= 0}
+								<span class="text-[#6FCF97]">{parsedStats[i]?.percent24Hr}%</span>
+							{:else if parsedStats[i]?.percent24Hr < 0}
+								<span class="text-[#EB5757]">{parsedStats[i]?.percent24Hr}%</span>
 							{/if}
 						</h3>
 					</div>

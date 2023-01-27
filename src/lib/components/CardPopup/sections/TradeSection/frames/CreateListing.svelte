@@ -4,12 +4,12 @@
 	import type { CardOptions } from '$interfaces/ui';
 	import InfoBox from '$lib/components/InfoBox.svelte';
 	import ListingProperties from '$lib/components/primary-listing/ListingProperties.svelte';
+	import Toggle from '$lib/components/Toggle.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { userCreatedListing } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
-	import { userHasRole } from '$utils/auth/userRoles';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { getContractData } from '$utils/misc/getContract';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
@@ -26,6 +26,7 @@
 
 	let listingType: ListingType = 'auction';
 	let maxQuantity = 1;
+	let isGasless: boolean;
 
 	let isListing = false;
 	let canCreateListing = true;
@@ -34,6 +35,7 @@
 		isListing = true;
 
 		const flowOptions: CreateListingFlowOptions = {
+			gasless: isGasless,
 			title: options.nfts[0].metadata?.name,
 			description: options.nfts[0].metadata?.description,
 			nfts: [
@@ -50,13 +52,25 @@
 			...listingProps,
 		};
 
+		let listSuccess: boolean;
+
 		try {
-			await createListingFlow(flowOptions);
-			dispatch('listing-created');
-			dispatch('set-frame', {
-				component: Success,
-				props: { message: 'Listing created successfully.' },
-			});
+			const res = await createListingFlow(flowOptions);
+
+			// For handled errors, don't show the default message
+			if (res?.error && res.handled) {
+				listSuccess = false;
+			}
+
+			// For unhandled errors, show the default error message
+			else if (res?.error) {
+				throw res.error;
+			}
+
+			// Successful listing
+			else {
+				listSuccess = true;
+			}
 		} catch (err) {
 			notifyError(err.message);
 			dispatch('set-frame', {
@@ -64,6 +78,14 @@
 				props: { message: 'Failed to create listing!' },
 			});
 			console.error(err);
+		}
+
+		if (listSuccess) {
+			dispatch('listing-created');
+			dispatch('set-frame', {
+				component: Success,
+				props: { message: 'Listing created successfully.' },
+			});
 		}
 
 		isListing = false;
@@ -93,7 +115,13 @@
 		<div class="mt-2 font-semibold">Listing Type</div>
 		<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} disabled={isListing} /></div>
 
-		<div class="mt-4">
+		<!-- Gasless switch -->
+		<div class="flex mt-8">
+			<div class="flex-grow text-lg">Gasless Listing</div>
+			<Toggle bind:state={isGasless} />
+		</div>
+
+		<div class="mt-6">
 			<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} bind:this={_listingProperties} disabled={isListing} />
 		</div>
 

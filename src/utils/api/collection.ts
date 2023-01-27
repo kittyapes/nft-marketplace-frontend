@@ -38,14 +38,38 @@ export interface Collection {
 	createdAt?: string;
 	origin: 'EXTERNAL' | 'HINATA';
 	verified: boolean;
-	floorPrice: number;
-	totalVol: number;
-	total24hours: number;
-	'24hourPercent': number;
-	items: number;
-	owners: number;
-	highestSale: number;
 	collectionAddress: string;
+	stats: {
+		collectionAddress: string;
+		numOfItems: number;
+		numOfOwners: number;
+		localTotalVol: number;
+		externalTotalVol: number;
+		local24Vol: number;
+		external24Vol: number;
+		local7DayVol: number;
+		external7DayVol: number;
+		local30DayVol: number;
+		external30DayVol: number;
+		localHighestSale: number;
+		externalHighestSale: number;
+		localFloorPrice: number;
+		externalFloorPrice: number;
+		previousLocalTotalVol: number;
+		previousExternalTotalVol: number;
+		previousLocal24Vol: number;
+		previousExternal24Vol: number;
+		previousLocal7DayVol: number;
+		previousExternal7DayVol: number;
+		previousLocal30DayVol: number;
+		previousExternal30DayVol: number;
+		lastPreviousExternal30DayCount: Date;
+		lastPreviousExternal7DayCount: Date;
+		lastPreviousLocal30DayCount: Date;
+		lastPreviousLocal7DayCount: Date;
+		lastPreviousLocal24HourCount: Date;
+		lastExternalStatsUpdatedAtBlock: number;
+	} | null;
 }
 
 export function getInitialCollectionData(): Partial<Collection> {

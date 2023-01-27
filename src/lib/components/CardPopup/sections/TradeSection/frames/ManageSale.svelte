@@ -55,7 +55,7 @@
 
 	<div class="flex-grow" />
 
-	<div class="flex gap-4 mt-4">
+	<div class="grid gap-4 mt-4" class:grid-cols-2={allowEdit}>
 		{#if allowEdit}
 			<PrimaryButton on:click={() => dispatch('set-frame', { component: EditSale })}>Edit Listing</PrimaryButton>
 		{/if}

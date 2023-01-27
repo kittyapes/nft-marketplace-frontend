@@ -2,8 +2,6 @@
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import { apiGetMostActiveCollections, type Collection } from '$utils/api/collection';
 	import CollectionsGrid from './CollectionsGrid.svelte';
-	import ButtonGroup from './ButtonGroup.svelte';
-	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import PrimaryButton from '../PrimaryButton/PrimaryButton.svelte';
