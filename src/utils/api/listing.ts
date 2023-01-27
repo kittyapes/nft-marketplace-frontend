@@ -109,6 +109,16 @@ export interface Listing {
 
 	// Only On Auctions
 	highestBid?: number;
+
+	// Nonce exists only in case of gasless listings
+	nonce?: string;
+
+	// A signature provided by the seller which can be used by buyers
+	// to execute on-chain actions
+	signature?: string;
+
+	// The timestamp that
+	signatureExpiryTimestamp?: boolean;
 }
 
 export interface ListingFetchOptions {

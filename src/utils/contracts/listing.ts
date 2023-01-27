@@ -75,6 +75,24 @@ export interface ChainListing {
 		tokenQuantityInListing: number;
 	};
 }
+export interface ChainListing {
+	id: string;
+	seller: string;
+	payToken: string;
+	price: string;
+	rawPrice: BigNumber;
+	reservePrice: string;
+	startTime: number;
+	duration: number;
+	quantity: number;
+	listingType: LISTING_TYPE;
+	isValidOnChainListing: boolean;
+	tokensMap: {
+		tokenId: string;
+		collectionAddress: string;
+		tokenQuantityInListing: number;
+	};
+}
 
 export async function getOnChainListing(listingId: string): Promise<ChainListing> {
 	const contract = getContract('marketplace', true);

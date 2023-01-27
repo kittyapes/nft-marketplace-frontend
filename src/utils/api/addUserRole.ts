@@ -1,5 +1,5 @@
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
-import { httpErrorHandler } from '$utils/toast';
+import { httpErrorHandler, notifyError } from '$utils/toast';
 import axios from 'axios';
 import type { UserRole } from 'src/interfaces/userData';
 import { getApiUrl } from '.';
@@ -11,7 +11,7 @@ export async function addUserRole(address: string, roles: UserRole[], roleToAdd:
 		const res = await postInactivationQueueAdd(address).catch(httpErrorHandler);
 
 		if (res?.status !== 200) {
-			throw new Error(res?.data.message);
+			notifyError(res.data.message);
 		}
 
 		await forceBatchProcess().catch(httpErrorHandler);
@@ -19,7 +19,7 @@ export async function addUserRole(address: string, roles: UserRole[], roleToAdd:
 		const res = await postVerificationQueueAdd(address).catch(httpErrorHandler);
 
 		if (res?.status !== 200) {
-			throw new Error(res?.data.message);
+			notifyError(res.data.message);
 		}
 
 		await forceBatchProcess().catch(httpErrorHandler);

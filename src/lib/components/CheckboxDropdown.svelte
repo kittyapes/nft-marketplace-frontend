@@ -6,7 +6,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let options: { label: string; checked: boolean; cb?: CallableFunction }[];
+	export let options: { label: string; checked: boolean; cb?: CallableFunction; disabled?: boolean }[];
 
 	$: if (!options?.length) {
 		throw new Error('No options provided');
@@ -17,14 +17,14 @@
 	export let disabled = false;
 	export let disabledOpacity = true;
 	export let id = '';
-	export let disableAllOnSelect = false;
+	export let uncheckAllOnSelect = false;
 	export let dispatchAllOptions = false;
 	export let arrowGradient = {};
 
 	let elemOpenButton: HTMLButtonElement;
 
 	function handleOptionSelect(option) {
-		if (disableAllOnSelect) options.filter((o) => o !== option).forEach((o) => (o.checked = false));
+		if (uncheckAllOnSelect) options.filter((o) => o !== option).forEach((o) => (o.checked = false));
 		options = options;
 		if (dispatchAllOptions) dispatch('change', options);
 		else dispatch('change', option);
@@ -59,8 +59,8 @@
 		{#if opened}
 			<div id="list-container" class="absolute -bottom-1 left-0 w-full overflow-hidden translate-y-full bg-dark-gradient text-white flex flex-col min-w-max">
 				{#each options as option}
-					<button class="px-2 py-2 font-semibold text-left dropdown-item transition-btn active:rounded flex gap-4 w-full min-w-max">
-						<Checkbox on:change={() => handleOptionSelect(option)} bind:checked={option.checked} />
+					<button class="px-2 py-2 font-semibold text-left dropdown-item cursor-default flex gap-4 w-full min-w-max">
+						<Checkbox on:change={() => handleOptionSelect(option)} bind:checked={option.checked} disabled={option.disabled} />
 						<div class="first-letter:uppercase">{option.label}</div>
 					</button>
 				{/each}
