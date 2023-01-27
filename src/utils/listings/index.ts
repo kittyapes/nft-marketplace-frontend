@@ -24,14 +24,21 @@ export function dateToTimestamp(date: string): number {
 	return dayjs(date).unix();
 }
 
-function enumListingTypeToString(enumValue: LISTING_TYPE): ListingType {
+export function enumListingTypeToString(enumValue: LISTING_TYPE): ListingType {
 	return {
 		[LISTING_TYPE.FIXED_PRICE]: 'sale',
 		[LISTING_TYPE.TIME_LIMITED_WINER_TAKE_ALL_AUCTION]: 'auction',
 	}[enumValue];
 }
 
-async function getChainListingData(id: string): Promise<ChainListingData> {
+export function stringListingTypeToEnum(s: ListingType) {
+	return {
+		sale: LISTING_TYPE.FIXED_PRICE,
+		auction: LISTING_TYPE.TIME_LIMITED_WINER_TAKE_ALL_AUCTION,
+	}[s];
+}
+
+export async function getChainListingData(id: string): Promise<ChainListingData> {
 	const contract = getContract('marketplace', true);
 	return await contract.getListingInfo(id);
 }

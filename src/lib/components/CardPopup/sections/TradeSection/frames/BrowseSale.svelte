@@ -19,17 +19,17 @@
 	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions;
-	export let listedNfts: number;
 
 	let hoveringPurchase = false;
 	let purchasing = false;
 	let foundOnChain: boolean;
 
+	const isGasless = options.rawListingData.chainStatus === 'GASLESS';
+
 	async function handlePurchase() {
 		purchasing = true;
 
-		const price = options.saleData.price.toString();
-		const success = await salePurchase(options.listingData.onChainId, price);
+		const success = await salePurchase(options.rawListingData);
 
 		if (success) {
 			dispatch('set-frame', { component: Success, props: { message: 'Successfully purchased listing!' } });
@@ -53,13 +53,13 @@
 		(isFuture(dateToTimestamp(options.rawListingData.startTime)) && "This listing isn't for sale yet.") ||
 		(!$hasEnoughTokens && `You do not have enough ${options.listingData.paymentTokenTicker} to purchase this item.`);
 
-	$: quantity = listedNfts;
-
 	onMount(async () => {
-		foundOnChain = await listingExistsOnChain(options.rawListingData.listingId);
+		if (!isGasless) {
+			foundOnChain = await listingExistsOnChain(options.rawListingData.listingId);
 
-		if (!foundOnChain) {
-			notifyError('Listing was not found on chain.');
+			if (!foundOnChain) {
+				notifyError('Listing was not found on chain.');
+			}
 		}
 	});
 </script>
@@ -81,7 +81,7 @@
 		</div>
 		<div class="">
 			<div class="text-gradient mt-4">Quantity</div>
-			<div class="mt-1 pl-1 text-2xl">{quantity}</div>
+			<div class="mt-1 pl-1 text-2xl">{options.rawListingData.nfts[0].amount}</div>
 		</div>
 	</div>
 
@@ -94,7 +94,7 @@
 					on:pointerenter={() => (hoveringPurchase = true)}
 					on:pointerleave={() => (hoveringPurchase = false)}
 					on:click={handlePurchase}
-					disabled={purchasing || !!purchaseError || !foundOnChain}
+					disabled={purchasing || !!purchaseError || (!foundOnChain && !isGasless)}
 				>
 					{#if purchasing || $hasEnoughTokens === null}
 						<ButtonSpinner />
@@ -102,13 +102,13 @@
 					Buy Now
 				</PrimaryButton>
 
-				{#if hoveringPurchase && purchaseError && foundOnChain}
+				{#if hoveringPurchase && purchaseError && (foundOnChain || isGasless)}
 					<div class="absolute top-12">
 						<InfoBubble>{purchaseError}</InfoBubble>
 					</div>
 				{/if}
 
-				{#if hoveringPurchase && !foundOnChain}
+				{#if hoveringPurchase && (!foundOnChain || isGasless)}
 					<div class="absolute top-12">
 						<InfoBubble>Sorry, this listing is no longer valid</InfoBubble>
 					</div>
