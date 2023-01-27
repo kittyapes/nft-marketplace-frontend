@@ -1,7 +1,7 @@
 import type { EthAddress } from '$interfaces';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
-import type { Dayjs } from 'dayjs';
 import { api, getApiUrl, type ApiCallResult } from '.';
+import dayjs from 'dayjs';
 
 export type Notification = {
 	_id: string;
@@ -13,11 +13,13 @@ export type Notification = {
 // PUBLISH NOTIFICATION
 
 export type PublishNotificationOptions = {
-	title: string;
+	title?: string;
 	content: string;
 	location?: string;
 	targets: string[];
+	// MUST be local time
 	publishAt: string;
+	// MUST be local time
 	expireAt?: string;
 };
 
@@ -26,7 +28,7 @@ export type PublishNotificationResObject = Notification & {
 	createdBy: EthAddress;
 	publishAt: string;
 	content: string;
-	title: string;
+	title?: string;
 };
 
 export type PublishNotificationRes = {
@@ -35,6 +37,9 @@ export type PublishNotificationRes = {
 };
 
 export async function publishNotification(options: PublishNotificationOptions): Promise<ApiCallResult<PublishNotificationRes>> {
+	options.publishAt = dayjs(options.publishAt).format('YYYY-MM-DDTHH:mm:ss.SSS');
+	options.expireAt = dayjs(options.expireAt).format('YYYY-MM-DDTHH:mm:ss.SSS');
+
 	const res = await api.post(getApiUrl(null, '/notifications'), options, await getAxiosConfig());
 
 	return res;
@@ -49,10 +54,12 @@ export type GetNotificationOptions = {
 
 export type UserNotification = Notification & {
 	content: string;
-	title: string;
+	title?: string;
 	hasCleared: string;
 	userAddress: EthAddress;
 	readAt: null | string;
+	publishAt: string;
+	expireAt: string;
 };
 
 export type GetNotificationsRes = {
@@ -70,7 +77,8 @@ export async function getNotifications(options?: GetNotificationOptions): Promis
 
 export type UpdateNotificationAsUserOptions = {
 	id: string;
-	readAt?: Dayjs;
+	// MUST be local time
+	readAt?: string;
 	hasCleared?: boolean;
 };
 
@@ -85,9 +93,10 @@ export type UpdateNotificationAsUserRes = {
 };
 
 export async function updateNotificationAsUser(options: UpdateNotificationAsUserOptions): Promise<ApiCallResult<UpdateNotificationAsUserRes>> {
-	let params: UpdateNotificationAsUserReqParams = {
-		readAt: options.readAt?.format('YYYY-MM-DDTHH:mm:ss.SSS') || null,
-		hasCleared: options.hasCleared,
+	const params: UpdateNotificationAsUserReqParams = {
+		// conditionally adding properties to params object
+		...(options.hasCleared ? { hasCleared: options.hasCleared } : {}),
+		...(options.readAt ? { readAt: dayjs(options.readAt).format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
 	};
 
 	const res = await api.put(getApiUrl(null, '/notifications/user/' + options.id), params, await getAxiosConfig());

@@ -5,14 +5,13 @@
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { getNotifications, publishNotification } from '$utils/api/notifications';
 	import { notifyError, notifySuccess } from '$utils/toast';
-	import dayjs, { Dayjs } from 'dayjs';
-	import utc from 'dayjs/plugin/utc.js';
-
-	dayjs.extend(utc);
+	import type { Dayjs } from 'dayjs';
+	import dayjs from 'dayjs';
 
 	let notificationMessage = '';
-	let notificationTitle = 'placeholder title';
+	let notificationTitle = '';
 	let publishDate: Dayjs;
+	let expireDate: Dayjs;
 
 	let publishedNotifications = [];
 
@@ -30,7 +29,13 @@
 	}
 
 	async function handlePublish() {
-		const res = await publishNotification({ title: notificationTitle, content: notificationMessage, targets: ['GLOBAL'], publishAt: publishDate.format('YYYY-MM-DDTHH:mm:ss.SSS') });
+		const res = await publishNotification({
+			title: notificationTitle,
+			content: notificationMessage,
+			targets: ['GLOBAL'],
+			publishAt: publishDate ? publishDate.format() : dayjs().format(),
+			expireAt: expireDate.format(),
+		});
 
 		if (res.err) {
 			notifyError('Failed to publish notification ' + res.err.message);
@@ -43,12 +48,20 @@
 
 <main class="text-white">
 	<section class="flex gap-60 mt-20">
-		<div class="flex flex-col justify-between -translate-y-[7px]">
+		<div class="flex flex-col justify-evenly gap-8">
 			<h1 class="text-2xl">Create a Notification</h1>
 
-			<Datepicker bind:value={publishDate} placeholder="Pick publish date & time" />
+			<div class="flex flex-col gap-2">
+				<h2 class="text-lg">Publish Date</h2>
+				<Datepicker bind:value={publishDate} placeholder="Pick publish date & time" />
+			</div>
 
-			<PrimaryButton disabled={!notificationMessage || !publishDate} on:click={handlePublish} extButtonClass="w-80">Publish</PrimaryButton>
+			<div class="flex flex-col gap-2">
+				<h2 class="text-lg">Expire Date</h2>
+				<Datepicker bind:value={expireDate} placeholder="Pick expire date & time" />
+			</div>
+
+			<PrimaryButton disabled={!notificationMessage} on:click={handlePublish} extButtonClass="w-80 mt-8">Publish</PrimaryButton>
 		</div>
 		<div class="flex-col flex-grow">
 			<TextArea bind:value={notificationMessage} maxChars={250} containerClass={'text-white'} textAreaClass={'placeholder:text-white'} placeholder={'Enter your message for a notification'} />

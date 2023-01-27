@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
 	import { get, writable } from 'svelte/store';
-	import { getRandomListings, getTrendingListings, type Listing } from '$utils/api/listing';
+	import { getTrendingListings, type Listing } from '$utils/api/listing';
 	import NftList from '$lib/components/NftList.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
@@ -32,6 +32,8 @@
 	let userNotification = writable<UserNotification>(null);
 	let loadedUserNotification = writable(false);
 	let userNotificationCleared = writable(false);
+	// in miliseconds
+	const notificationFetchingTime = 30_000;
 
 	const getTrendingListingsData = async () => {
 		loadedTrendingListings.set(false);
@@ -49,22 +51,37 @@
 	const getUserNotification = async () => {
 		loadedUserNotification.set(false);
 		const res = (await getNotifications()).data.data;
-		const notification = res.find((n) => !n.hasCleared);
+
+		console.log('UPDATED');
+
+		const notification = res.find((n) => !n.hasCleared && dayjs().isAfter(dayjs(n.publishAt)) && dayjs().isBefore(dayjs(n.expireAt)));
+
+		console.log(res.find((n) => !n.hasCleared && dayjs().isAfter(dayjs(n.publishAt)) && dayjs().isBefore(dayjs(n.expireAt))));
+		console.log(notification);
 
 		if (!notification) {
+			userNotification.set(null);
+			loadedUserNotification.set(true);
 			return;
 		}
 
 		userNotification.set(notification);
+
 		loadedUserNotification.set(true);
 
-		if (!notification.readAt) await updateNotificationAsUser({ id: $userNotification._id, readAt: dayjs() });
+		if (!notification.readAt) await updateNotificationAsUser({ id: $userNotification._id, readAt: dayjs().format(), hasCleared: false });
 	};
 
 	const clearNotification = async () => {
 		await updateNotificationAsUser({ id: $userNotification._id, hasCleared: true });
 		userNotificationCleared.set(true);
 	};
+
+	let notificationFetchingInterval = setInterval(() => {
+		if ($userNotification) getUserNotification();
+	}, notificationFetchingTime);
+
+	onDestroy(() => clearInterval(notificationFetchingInterval));
 
 	onMount(async () => {
 		getUserNotification();

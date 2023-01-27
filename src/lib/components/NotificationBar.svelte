@@ -8,29 +8,29 @@
 
 <section class="w-full flex items-center overflow-x-hidden px-20 relative wrapper {wrapperClass}">
 	<div class="w-[200%] h-full absolute moving-bar-primary flex items-center overflow-x-hidden">
-		<div class="w-[50%] flex items-center">
-			<div class="flex items-center gap-4">
-				<h1 class="text-xl whitespace-nowrap">{notification?.content}</h1>
-			</div>
+		<div class="w-[25%] flex items-center justify-center min-w-[25%]">
+			<h1 class="text-xl whitespace-nowrap">{notification?.content}</h1>
 		</div>
 
-		<div class="w-[50%] flex items-center">
-			<div class="flex items-center gap-4">
-				<h1 class="text-xl whitespace-nowrap">{notification?.content}</h1>
-			</div>
+		<div class="w-[25%] min-w-[25%] h-full" />
+
+		<div class="w-[25%] flex items-center justify-center min-w-[25%]">
+			<h1 class="text-xl whitespace-nowrap">{notification?.content}</h1>
 		</div>
 
-		<div class="w-[50%] flex items-center">
-			<div class="flex items-center gap-4">
-				<h1 class="text-xl whitespace-nowrap">{notification?.content}</h1>
-			</div>
+		<div class="w-[25%] min-w-[25%] h-full" />
+
+		<div class="w-[25%] flex items-center justify-center min-w-[25%]">
+			<h1 class="text-xl whitespace-nowrap">{notification?.content}</h1>
 		</div>
 
-		<div class="w-[50%] flex items-center">
-			<div class="flex items-center gap-4">
-				<h1 class="text-xl whitespace-nowrap">{notification?.content}</h1>
-			</div>
+		<div class="w-[25%] min-w-[25%] h-full" />
+
+		<div class="w-[25%] flex items-center justify-center min-w-[25%]">
+			<h1 class="text-xl whitespace-nowrap">{notification?.content}</h1>
 		</div>
+
+		<div class="w-[25%] min-w-[25%] h-full" />
 	</div>
 
 	<div class="clickable absolute right-4 bg-dark-gradient" on:click>
