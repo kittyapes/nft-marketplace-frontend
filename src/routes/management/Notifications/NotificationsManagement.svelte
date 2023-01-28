@@ -3,17 +3,24 @@
 	import Datepicker from '$lib/components/Datepicker.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { getNotifications, publishNotification } from '$utils/api/notifications';
+	import { deleteNotification, getNotifications, publishNotification, updateNotificationAsAdmin, type UpdateNotificationAsAdminOptions, type UserNotification } from '$utils/api/notifications';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import type { Dayjs } from 'dayjs';
 	import dayjs from 'dayjs';
+	import { slide } from 'svelte/transition';
 
 	let notificationMessage = '';
 	let notificationTitle = '';
 	let publishDate: Dayjs;
 	let expireDate: Dayjs;
 
-	let publishedNotifications = [];
+	type LocalUserNotification = UserNotification & {
+		editMode?: boolean;
+		editExpireDate?: Dayjs;
+		editPublishDate?: Dayjs;
+	};
+
+	let createdNotifications: LocalUserNotification[];
 
 	$: browser && fetchNotifications();
 
@@ -25,7 +32,8 @@
 			return;
 		}
 
-		publishedNotifications = res.data.data;
+		createdNotifications = res.data.data;
+		createdNotifications.forEach((n) => (n.editMode = false));
 	}
 
 	async function handlePublish() {
@@ -34,7 +42,7 @@
 			content: notificationMessage,
 			targets: ['GLOBAL'],
 			publishAt: publishDate ? publishDate.format() : dayjs().format(),
-			expireAt: expireDate.format(),
+			expireAt: expireDate?.format() || undefined,
 		});
 
 		if (res.err) {
@@ -43,36 +51,156 @@
 		} else {
 			notifySuccess('Sucessfully published notification');
 		}
+
+		fetchNotifications();
+	}
+
+	async function handleDelete(notificationId: string) {
+		const res = await deleteNotification(notificationId);
+
+		if (!res.data.data.deletedNotification || !res.data.data.deletedUserNotification) {
+			notifyError('Something went wrong when deleting the notification');
+			return;
+		}
+
+		const removedNotification = createdNotifications.find((n) => n.notificationId === notificationId);
+
+		createdNotifications.splice(createdNotifications.indexOf(removedNotification), 1);
+
+		fetchNotifications();
+	}
+
+	async function handleEdit(notification: LocalUserNotification) {
+		const options: UpdateNotificationAsAdminOptions = {
+			id: notification.notificationId,
+			content: notification.content || undefined,
+			...(notification.editPublishDate ? { publishAt: dayjs(notification.editPublishDate).format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
+			...(notification.editExpireDate ? { expireAt: dayjs(notification.editExpireDate).format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
+		};
+
+		const res = await updateNotificationAsAdmin(options);
+
+		if (res.err) {
+			notifyError('Failed to edited notification ' + res.err.message);
+			return;
+		} else {
+			notifySuccess('Sucessfully edited notification');
+		}
+
+		fetchNotifications();
 	}
 </script>
 
 <main class="text-white">
-	<section class="flex gap-60 mt-20">
-		<div class="flex flex-col justify-evenly gap-8">
+	<section class="flex gap-x-40 gap-y-12 mt-20 flex-wrap ">
+		<div class="flex flex-col justify-evenly gap-8 w-1/3">
 			<h1 class="text-2xl">Create a Notification</h1>
 
 			<div class="flex flex-col gap-2">
-				<h2 class="text-lg">Publish Date</h2>
+				<h2 class="text-lg">Publish date</h2>
 				<Datepicker bind:value={publishDate} placeholder="Pick publish date & time" />
 			</div>
 
 			<div class="flex flex-col gap-2">
-				<h2 class="text-lg">Expire Date</h2>
+				<h2 class="text-lg">Expire date</h2>
 				<Datepicker bind:value={expireDate} placeholder="Pick expire date & time" />
 			</div>
+		</div>
+		<div class="flex-col flex-grow w-1/3">
+			<TextArea bind:value={notificationMessage} maxChars={100} containerClass={'text-white'} textAreaClass={'placeholder:text-white'} placeholder={'Enter your message for a notification'} />
+		</div>
 
-			<PrimaryButton disabled={!notificationMessage} on:click={handlePublish} extButtonClass="w-80 mt-8">Publish</PrimaryButton>
-		</div>
-		<div class="flex-col flex-grow">
-			<TextArea bind:value={notificationMessage} maxChars={250} containerClass={'text-white'} textAreaClass={'placeholder:text-white'} placeholder={'Enter your message for a notification'} />
-		</div>
+		<PrimaryButton disabled={!notificationMessage} on:click={handlePublish} extButtonClass="w-80 mt-8 max-w-full">Publish</PrimaryButton>
 	</section>
 
-	{#if publishedNotifications?.length > 0}
-		<hr class="border-b border-white mt-20" />
+	{#if createdNotifications?.length > 0}
+		<div class="" transition:slide>
+			<hr class="border-b border-white mt-20" />
 
-		<section class="mt-20">
-			<h1 class="text-2xl">Notifications currently active</h1>
-		</section>
+			<section class="my-10 blue-scrollbar">
+				<h1 class="text-3xl mb-20">Notifications currently active</h1>
+
+				<div class="flex flex-col gap-y-24">
+					{#each createdNotifications as notification}
+						<div class="flex gap-10 justify-between w-full" transition:slide|local>
+							<div class="w-[50%] flex flex-col justify-between flex-wrap">
+								<div class="flex gap-8 flex-wrap">
+									<PrimaryButton
+										variant={notification.editMode ? 'green' : 'default'}
+										disabled={!notification.content}
+										on:click={() => {
+											if (notification.editMode) handleEdit(notification);
+											else notification.editMode = true;
+										}}
+									>
+										{notification.editMode ? 'Confirm' : 'Edit'}
+									</PrimaryButton>
+
+									<PrimaryButton
+										variant="red"
+										on:click={() => {
+											if (notification.editMode) {
+												notification.editExpireDate = null;
+												notification.editPublishDate = null;
+												notification.editMode = false;
+											} else handleDelete(notification.notificationId);
+										}}
+									>
+										{notification.editMode ? 'Cancel' : 'Delete'}
+									</PrimaryButton>
+								</div>
+
+								{#if notification.editMode}
+									<div class="flex justify-between flex-wrap gap-2">
+										<div class="flex flex-col">
+											<span class="text-lg">Publish date:</span>
+											<Datepicker bind:value={notification.editPublishDate} placeholder="Edit publish date & time" />
+										</div>
+										<div class="flex flex-col">
+											<span class="text-lg">Expire date:</span>
+											<Datepicker bind:value={notification.editExpireDate} placeholder="Edit expire date & time" />
+										</div>
+									</div>
+								{:else}
+									<div class="flex justify-between">
+										<div class="flex flex-col">
+											<span>Created on:</span>
+											<span>{dayjs(notification.createdAt).format('DD-MM-YYYY HH:mm')}</span>
+										</div>
+										<div class="flex flex-col">
+											<span>Published on:</span>
+											<span>{dayjs(notification.publishAt).format('DD-MM-YYYY HH:mm')}</span>
+										</div>
+									</div>
+									<div class="flex justify-between">
+										<div class="flex flex-col">
+											<span>Edited on:</span>
+											<span>{dayjs(notification.updatedAt).format('DD-MM-YYYY HH:mm')}</span>
+										</div>
+
+										{#if notification.expireAt}
+											<div class="flex flex-col">
+												<span>Expires on:</span>
+												<span>{dayjs(notification.expireAt).format('DD-MM-YYYY HH:mm')}</span>
+											</div>
+										{/if}
+									</div>
+								{/if}
+							</div>
+							<div class="w-[50%]">
+								<TextArea
+									bind:value={notification.content}
+									disabled={!notification.editMode}
+									maxChars={100}
+									containerClass={'text-white'}
+									textAreaClass={'placeholder:text-white'}
+									placeholder={'No content'}
+								/>
+							</div>
+						</div>
+					{/each}
+				</div>
+			</section>
+		</div>
 	{/if}
 </main>

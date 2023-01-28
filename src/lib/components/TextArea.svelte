@@ -7,10 +7,12 @@
 	export let textAreaClass = '';
 	export let rows = 10;
 	export let focusStyle = true;
+	export let disabled = false;
 </script>
 
 <div class="relative {containerClass}">
 	<textarea
+		{disabled}
 		{rows}
 		class="w-full h-full resize-none border border-white p-4 bg-transparent outline-none {focusStyle ? 'focus:border-color-purple' : ''}  {textAreaClass}"
 		{placeholder}

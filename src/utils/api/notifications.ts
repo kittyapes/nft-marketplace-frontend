@@ -38,7 +38,7 @@ export type PublishNotificationRes = {
 
 export async function publishNotification(options: PublishNotificationOptions): Promise<ApiCallResult<PublishNotificationRes>> {
 	options.publishAt = dayjs(options.publishAt).format('YYYY-MM-DDTHH:mm:ss.SSS');
-	options.expireAt = dayjs(options.expireAt).format('YYYY-MM-DDTHH:mm:ss.SSS');
+	options.expireAt = options.expireAt ? dayjs(options.expireAt).format('YYYY-MM-DDTHH:mm:ss.SSS') : undefined;
 
 	const res = await api.post(getApiUrl(null, '/notifications'), options, await getAxiosConfig());
 
@@ -104,9 +104,62 @@ export async function updateNotificationAsUser(options: UpdateNotificationAsUser
 	return res;
 }
 
+// UPDATE NOTIFICATION AS A USER
+
+export type UpdateNotificationAsAdminOptions = {
+	id: string;
+	content?: string;
+	title?: string;
+	location?: string;
+	targets?: string[];
+	// MUST be local time
+	publishAt?: string;
+	expireAt?: string;
+};
+
+export type UpdateNotificationAsAdminReqParams = {
+	content?: string;
+	title?: string;
+	location?: string;
+	targets?: string[];
+	// MUST be local time
+	publishAt?: string;
+	expireAt?: string;
+};
+
+export type UpdateNotificationAsAdminRes = {
+	error: boolean;
+	data: null;
+};
+
+export async function updateNotificationAsAdmin(options: UpdateNotificationAsAdminOptions): Promise<ApiCallResult<UpdateNotificationAsAdminRes>> {
+	const params: UpdateNotificationAsAdminReqParams = {
+		content: options.content || undefined,
+		title: options.title || undefined,
+		location: options.location || undefined,
+		targets: options.targets || undefined,
+		...(options.publishAt ? { publishAt: dayjs(options.publishAt).format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
+		...(options.expireAt ? { expireAt: dayjs(options.expireAt).format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
+	};
+
+	console.log(params);
+
+	const res = await api.put(getApiUrl(null, '/notifications/' + options.id), params, await getAxiosConfig());
+
+	return res;
+}
+
 // DELETE NOTIFICATION
 
-export async function deleteNotification(id: string): Promise<ApiCallResult<any>> {
+export type DeleteNotificationRes = {
+	error: false;
+	data: {
+		deletedNotification: boolean;
+		deletedUserNotification: boolean;
+	};
+};
+
+export async function deleteNotification(id: string): Promise<ApiCallResult<DeleteNotificationRes>> {
 	const res = await api.delete(getApiUrl(null, '/notifications/' + id), await getAxiosConfig());
 
 	return res;

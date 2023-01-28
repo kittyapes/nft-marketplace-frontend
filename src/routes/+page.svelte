@@ -49,15 +49,10 @@
 	};
 
 	const getUserNotification = async () => {
-		loadedUserNotification.set(false);
+		if (!$userNotification) loadedUserNotification.set(false);
 		const res = (await getNotifications()).data.data;
 
-		console.log('UPDATED');
-
-		const notification = res.find((n) => !n.hasCleared && dayjs().isAfter(dayjs(n.publishAt)) && dayjs().isBefore(dayjs(n.expireAt)));
-
-		console.log(res.find((n) => !n.hasCleared && dayjs().isAfter(dayjs(n.publishAt)) && dayjs().isBefore(dayjs(n.expireAt))));
-		console.log(notification);
+		const notification = res.find((n) => !n.hasCleared && dayjs().isAfter(dayjs(n.publishAt)) && (!n.expireAt || dayjs().isBefore(dayjs(n.expireAt))));
 
 		if (!notification) {
 			userNotification.set(null);
@@ -78,7 +73,7 @@
 	};
 
 	let notificationFetchingInterval = setInterval(() => {
-		if ($userNotification) getUserNotification();
+		getUserNotification();
 	}, notificationFetchingTime);
 
 	onDestroy(() => clearInterval(notificationFetchingInterval));

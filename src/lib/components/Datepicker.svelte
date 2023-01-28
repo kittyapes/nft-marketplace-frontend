@@ -143,8 +143,8 @@
 	}
 </script>
 
-<div class="relative" class:opacity-50={disabled}>
-	<input {id} type="text" class="input w-full h-12" {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
+<div class="relative min-w-[18rem]" class:opacity-50={disabled}>
+	<input {id} type="text" class="input w-full h-12 " {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
 
 	<button class="w-24 absolute top-0 right-0 h-full border-l bg-gradient-a" on:click={() => (open = !open)} {disabled}>
 		<div class="flex items-center justify-center gap-3">
