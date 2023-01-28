@@ -124,33 +124,21 @@
 					{#each createdNotifications as notification}
 						<div class="flex gap-10 justify-between w-full" transition:slide|local>
 							<div class="w-[50%] flex flex-col justify-between flex-wrap">
-								<div class="flex gap-8 flex-wrap">
-									<PrimaryButton
-										variant={notification.editMode ? 'green' : 'default'}
-										disabled={!notification.content}
-										on:click={() => {
-											if (notification.editMode) handleEdit(notification);
-											else notification.editMode = true;
-										}}
-									>
-										{notification.editMode ? 'Confirm' : 'Edit'}
-									</PrimaryButton>
+								{#if notification.editMode}
+									<div class="flex gap-8 flex-wrap">
+										<PrimaryButton variant="green" disabled={!notification.content} on:click={() => handleEdit(notification)}>Confirm</PrimaryButton>
 
-									<PrimaryButton
-										variant="red"
-										on:click={() => {
-											if (notification.editMode) {
+										<PrimaryButton
+											variant="red"
+											on:click={() => {
 												notification.editExpireDate = null;
 												notification.editPublishDate = null;
 												notification.editMode = false;
-											} else handleDelete(notification.notificationId);
-										}}
-									>
-										{notification.editMode ? 'Cancel' : 'Delete'}
-									</PrimaryButton>
-								</div>
-
-								{#if notification.editMode}
+											}}
+										>
+											Cancel
+										</PrimaryButton>
+									</div>
 									<div class="flex justify-between flex-wrap gap-2">
 										<div class="flex flex-col">
 											<span class="text-lg">Publish date:</span>
@@ -162,6 +150,17 @@
 										</div>
 									</div>
 								{:else}
+									<div class="flex gap-8 flex-wrap">
+										<PrimaryButton
+											on:click={() => {
+												notification.editMode = true;
+											}}
+										>
+											Edit
+										</PrimaryButton>
+
+										<PrimaryButton variant="red" on:click={() => handleDelete(notification.notificationId)}>Delete</PrimaryButton>
+									</div>
 									<div class="flex justify-between">
 										<div class="flex flex-col">
 											<span>Created on:</span>
