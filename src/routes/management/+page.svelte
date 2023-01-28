@@ -457,7 +457,6 @@
 					options: [
 						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin', disabled: false },
 						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user', disabled: false },
-						{ label: 'blogger', checked: u.roles?.includes('blogger'), cb: (e) => e.roles?.includes('blogger'), value: 'blogger', disabled: false },
 						{ label: 'inactive', checked: u.roles?.includes('inactivated_user'), cb: (e) => e.roles?.includes('inactivated_user'), value: 'inactivated_user', disabled: false },
 					],
 				})),

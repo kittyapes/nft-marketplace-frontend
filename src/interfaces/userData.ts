@@ -1,4 +1,4 @@
-export type UserRole = 'superadmin' | 'admin' | 'user' | 'inactivated_user' | 'verified_user' | 'blogger';
+export type UserRole = 'superadmin' | 'admin' | 'user' | 'inactivated_user' | 'verified_user';
 
 export interface LoginHistoryEntry {
 	address: string;
