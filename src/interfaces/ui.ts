@@ -1,6 +1,6 @@
 import type { TokenStandard } from '$interfaces';
 import type { Collection } from '$utils/api/collection';
-import type { ListingType } from '$utils/api/listing';
+import type { Listing, ListingType } from '$utils/api/listing';
 import type { Writable } from 'svelte/store';
 
 export interface CardOptions {
@@ -43,6 +43,8 @@ export interface CardOptions {
 		duration: number;
 		shortDisplayPrice: string;
 		nftQuantities: Record<string, number>;
+		chainStatus: Listing['chainStatus'];
+		isGasless: boolean;
 	};
 
 	/** Data used when adapting a listing of the type Sale. */
@@ -63,6 +65,7 @@ export interface CardOptions {
 
 	/** The raw data that was used by an adapter to generate this data object. */
 	rawResourceData: any;
+	rawListingData?: Listing;
 
 	/** Resource is no longer valid. For example due to cancelling or purchasing a listing. Indicates that
 	 * the resource should be reloaded and no further actions should performed on the resource.

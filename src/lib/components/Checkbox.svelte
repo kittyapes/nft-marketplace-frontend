@@ -24,7 +24,8 @@
 <label
 	class="flex items-center gap-4 {$$props.class} w-6 h-6 cursor-pointer
 	border text-color-purple transition relative
-	{checked ? 'border-color-purple' : 'border-[#989898] border-opacity-40'}"
+	{checked ? 'border-color-purple' : 'border-[#989898] border-opacity-40'}
+	{disabled ? 'opacity-50 cursor-default' : ''}"
 >
 	<input type="checkbox" class="hidden" {id} {name} {disabled} bind:checked on:change={handleChange} />
 	{#if checked}

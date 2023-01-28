@@ -6,10 +6,11 @@
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { profileData, refreshProfileData } from '$stores/user';
 	import { connectionDetails, currentUserAddress } from '$stores/wallet';
-	import { fetchCurrentUserData } from '$utils/api/profile';
+	import { fetchCurrentUserData, fetchProfileData } from '$utils/api/profile';
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
+	import { findEthAddress } from '$utils/validator/isEthAddress';
 	import { walletConnected, walletDisconnected } from '$utils/wallet';
 
 	export let errorCode = null;
@@ -97,7 +98,7 @@
 	});
 
 	// Handler for when the app is first loaded on a auth protected route
-	afterNavigate(({ from, to }) => {
+	afterNavigate(async ({ from, to }) => {
 		// Restrict routes to verified creators
 		if (to.url.pathname.match(/create*/) || to.url.pathname === '/collections/new/edit' || to.url.pathname.match(/management*/)) {
 			if (to.url.pathname.match(/create*/) || to.url.pathname === '/collections/new/edit') {
@@ -126,6 +127,17 @@
 					}
 				});
 			}
+		} else if (to.url.pathname.match(/profile*/)) {
+			let accessingProfileData = await fetchProfileData(findEthAddress(to.url.pathname));
+
+			profileData.subscribe((profile) => {
+				if (accessingProfileData && accessingProfileData.roles?.includes('inactivated_user') && (!profile || (!profile.roles?.includes('admin') && !profile.roles?.includes('superadmin')))) {
+					errorCode = 403;
+				} else if (profile && (profile.roles?.includes('admin') || profile.roles?.includes('superadmin'))) {
+					// reset the error to ensure displayed error is updated on UI
+					errorCode = null;
+				}
+			});
 		} else {
 			// first set error to null, and then figure things out from there
 			// prevents bug related to the ui seeming unresponsive once error has been thrown

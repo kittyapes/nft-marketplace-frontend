@@ -5,7 +5,7 @@
 	import { slide } from 'svelte/transition';
 	import type { Collection } from '$utils/api/collection';
 	import { inview } from 'svelte-inview';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import DiamondsLoader from '../DiamondsLoader.svelte';
 	import HinataBadge from '$icons/hinata-badge.svelte';
 
@@ -21,6 +21,22 @@
 			dispatch('end-reached');
 		}
 	}
+
+	let parsedStats = [];
+
+	$: collections.map((collection, i) => {
+		const dailyVol = collection.stats.external24Vol + collection.stats.local24Vol;
+		const prevDailyVol = collection.stats.previousExternal24Vol + collection.stats.previousLocal24Vol;
+
+		parsedStats[i] = {
+			totalVol: collection.stats.externalTotalVol + collection.stats.localTotalVol,
+			floorPrice: collection.stats.localFloorPrice,
+			vol24Hr: dailyVol,
+			percent24Hr: dailyVol / prevDailyVol || 0,
+		};
+
+		return collection;
+	});
 </script>
 
 <div class="w-full flex flex-col gap-10 bg-dark-gradient">
@@ -47,19 +63,19 @@
 					</a>
 					<div class="flex place-items-center gap-2 text-sm">
 						<Eth />
-						{seperateNumberWithCommas(Math.round((collection.floorPrice ?? 0 + Number.EPSILON) * 100) / 100)}
+						{seperateNumberWithCommas(parsedStats[i]?.floorPrice)}
 					</div>
 					<div class="flex place-items-center gap-2 text-sm">
 						<Eth />
-						{seperateNumberWithCommas(Math.round((collection.totalVol ?? 0 + Number.EPSILON) * 100) / 100)}
+						{seperateNumberWithCommas(parsedStats[i]?.totalVol)}
 					</div>
 					<div class="flex place-items-center gap-2 text-sm">
 						<Eth />
-						{seperateNumberWithCommas(Math.round((collection.total24hours ?? 0 + Number.EPSILON) * 100) / 100)}
+						{seperateNumberWithCommas(parsedStats[i]?.vol24Hr)}
 					</div>
-					<div class="flex place-items-center text-sm text-color-green" class:text-color-red={collection['24hourPercent'] < 0}>
-						{(Math.round((collection['24hourPercent'] ?? 0 + Number.EPSILON) * 100) / 100).toLocaleString()}%
-						<div class:rotate-180={collection['24hourPercent'] >= 0}>
+					<div class="flex place-items-center text-sm text-color-green" class:text-color-red={parsedStats[i]?.percent24Hr < 0}>
+						{parsedStats[i]?.percent24Hr}%
+						<div class:rotate-180={parsedStats[i]?.percent24Hr >= 0}>
 							<ArrowDown />
 						</div>
 					</div>

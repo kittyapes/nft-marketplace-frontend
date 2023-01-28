@@ -90,7 +90,7 @@ export async function contractApproveToken(spender: string, amount: BigNumber, t
 	await approveTx.wait(1);
 }
 
-export async function ensureAmountApproved(spender: string, amount: string, tokenAddress: string) {
+export async function ensureAmountApproved(spender: string, amount: string, tokenAddress: string): Promise<boolean> {
 	if (isEther(tokenAddress)) {
 		return true;
 	}

@@ -6,7 +6,7 @@
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { contractCompleteAuction } from '$utils/contracts/auction';
-	import { contractCancelListing, type ChainListing } from '$utils/contracts/listing';
+	import { contractCancelListing } from '$utils/contracts/listing';
 	import type { BidRow } from '$utils/flows/getBiddingsFlow';
 	import { parseToken } from '$utils/misc/priceUtils';
 	import { createToggle } from '$utils/misc/toggle';
@@ -16,11 +16,11 @@
 	import dayjs from 'dayjs';
 	import GhostButton from '$lib/components/v2/GhostButton.svelte';
 	import EthV2 from '$icons/eth-v2.svelte';
+	import { listingExistsOnChain } from '$utils/listings';
 
 	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions;
-	export let chainListing: ChainListing;
 
 	$: listingExpired = dayjs(options.listingData.startTime * 1000)
 		.add(options.listingData.duration, 'seconds')
@@ -29,7 +29,7 @@
 	let biddings: BidRow[] = [];
 
 	async function acceptHighest() {
-		if (!chainListing?.isValidOnChainListing) {
+		if (!listingExistsOnChain(options.rawListingData.listingId)) {
 			notifyError('Failed to Accept Highest Bid: Listing is no longer valid (not on chain)');
 			return;
 		}
@@ -54,7 +54,7 @@
 	let cancelButtonContainer: HTMLElement;
 
 	async function cancelListing() {
-		if (!chainListing?.isValidOnChainListing) {
+		if (!listingExistsOnChain(options.rawListingData.listingId)) {
 			notifyError('Failed to Cancel Listing: Listing is no longer valid (not on chain)');
 			return;
 		}
@@ -81,16 +81,20 @@
 	let isAccepting = false;
 	let isCancelling = false;
 
-	$: highestAmount = biddings[0] && parseToken(biddings[0].tokenAmount, chainListing.payToken);
+	$: payTokenAddress = options.rawListingData.paymentTokenAddress;
+	$: price = options.rawListingData.listing.reservePrice;
+	$: reservePrice = options.rawListingData.listing.reservePrice;
 
-	$: canCancel = biddings.length < 1 || (highestAmount && highestAmount.lt(parseToken(chainListing.reservePrice, chainListing.payToken)));
+	$: highestAmount = biddings[0] && parseToken(biddings[0].tokenAmount, payTokenAddress);
+
+	$: canCancel = biddings.length < 1 || (highestAmount && highestAmount.lt(parseToken(reservePrice, payTokenAddress)));
 	let canAccept = false;
 	$: hasBids = biddings.length > 0;
 
-	$: if (chainListing.reservePrice === chainListing.price) {
+	$: if (reservePrice === price) {
 		canAccept = [biddings.length > 0].some((v) => v);
 	} else {
-		canAccept = listingExpired || (biddings.length && parseFloat(biddings[0].tokenAmount) >= parseFloat(chainListing.reservePrice));
+		canAccept = listingExpired || (biddings.length && parseFloat(biddings[0].tokenAmount) >= parseFloat(reservePrice));
 	}
 </script>
 

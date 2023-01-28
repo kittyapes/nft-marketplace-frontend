@@ -1,31 +1,75 @@
 <script lang="ts">
-	import type { CollectionTableRow } from '$utils/api/collection';
+	import type { Collection, CollectionTableRow } from '$utils/api/collection';
 	import CollectionsTable from './CollectionsTable.svelte';
 
-	export let collections: CollectionTableRow[];
+	export let collections: Collection[];
 	export let isLoading: boolean;
 
 	$: displayCollections = collections;
 
 	let handleSelect = (event?: CustomEvent) => {
 		if (!event) {
-			collections.sort((a, b) => b.totalVol - a.totalVol);
-			displayCollections.sort((a, b) => b.totalVol - a.totalVol);
+			collections.sort((a, b) => {
+				const aTotal = a.stats.externalTotalVol + a.stats.localTotalVol;
+				const bTotal = b.stats.externalTotalVol + b.stats.localTotalVol;
+
+				return bTotal - aTotal;
+			});
+			displayCollections.sort((a, b) => {
+				const aTotal = a.stats.externalTotalVol + a.stats.localTotalVol;
+				const bTotal = b.stats.externalTotalVol + b.stats.localTotalVol;
+
+				return bTotal - aTotal;
+			});
 			displayCollections = displayCollections;
 			return;
 		}
 		if (event.detail.label === 'HIGHEST 24H VOL %') {
-			collections.sort((a, b) => b['24hourPercent'] - a['24hourPercent']);
-			displayCollections.sort((a, b) => b['24hourPercent'] - a['24hourPercent']);
+			collections.sort((a, b) => {
+				const aTotal = a.stats.external24Vol + a.stats.local24Vol;
+				const bTotal = b.stats.external24Vol + b.stats.local24Vol;
+				const aPreviousTotal = a.stats.previousExternal24Vol + a.stats.previousLocal24Vol;
+				const bPreviousTotal = b.stats.previousExternal24Vol + b.stats.previousLocal24Vol;
+
+				return (bTotal - aTotal) / (bPreviousTotal - aPreviousTotal);
+			});
+			displayCollections.sort((a, b) => {
+				const aTotal = a.stats.external24Vol + a.stats.local24Vol;
+				const bTotal = b.stats.external24Vol + b.stats.local24Vol;
+				const aPreviousTotal = a.stats.previousExternal24Vol + a.stats.previousLocal24Vol;
+				const bPreviousTotal = b.stats.previousExternal24Vol + b.stats.previousLocal24Vol;
+
+				return (bTotal - aTotal) / (bPreviousTotal - aPreviousTotal);
+			});
 		} else if (event.detail.label === 'HIGHEST 24H VOL') {
-			collections.sort((a, b) => b.total24hours - a.total24hours);
-			displayCollections.sort((a, b) => b.total24hours - a.total24hours);
+			collections.sort((a, b) => {
+				const aTotal = a.stats.external24Vol + a.stats.local24Vol;
+				const bTotal = b.stats.external24Vol + b.stats.local24Vol;
+
+				return aTotal - bTotal;
+			});
+			displayCollections.sort((a, b) => {
+				const aTotal = a.stats.external24Vol + a.stats.local24Vol;
+				const bTotal = b.stats.external24Vol + b.stats.local24Vol;
+
+				return bTotal - aTotal;
+			});
 		} else if (event.detail.label === 'HIGHEST TOTAL VOL') {
-			collections.sort((a, b) => b.totalVol - a.totalVol);
-			displayCollections.sort((a, b) => b.totalVol - a.totalVol);
+			collections.sort((a, b) => {
+				const aTotal = a.stats.externalTotalVol + a.stats.localTotalVol;
+				const bTotal = b.stats.externalTotalVol + b.stats.localTotalVol;
+
+				return bTotal - aTotal;
+			});
+			displayCollections.sort((a, b) => {
+				const aTotal = a.stats.externalTotalVol + a.stats.localTotalVol;
+				const bTotal = b.stats.externalTotalVol + b.stats.localTotalVol;
+
+				return bTotal - aTotal;
+			});
 		} else if (event.detail.label === 'HIGHEST FLOOR') {
-			collections.sort((a, b) => b.floorPrice - a.floorPrice);
-			displayCollections.sort((a, b) => b.floorPrice - a.floorPrice);
+			collections.sort((a, b) => b.stats.localFloorPrice - a.stats.localFloorPrice);
+			displayCollections.sort((a, b) => b.stats.localFloorPrice - a.stats.localFloorPrice);
 		}
 		displayCollections = displayCollections;
 	};

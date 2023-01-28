@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { CollectionTableRow } from '$utils/api/collection';
+	import type { Collection, CollectionTableRow } from '$utils/api/collection';
 	import DiamondsLoader from '../DiamondsLoader.svelte';
 	import CollectionsContainer from './CollectionsContainer.svelte';
 
-	export let collections: CollectionTableRow[];
+	export let collections: Collection[];
 	export let loaded: boolean;
 	export let isLoading: boolean;
 	export let reachedEnd: boolean;

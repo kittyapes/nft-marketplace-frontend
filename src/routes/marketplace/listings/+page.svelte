@@ -11,16 +11,15 @@
 	import { notifyError } from '$utils/toast';
 	import { debounce } from 'lodash-es';
 	import NftGrid from '$components/v2/NFTGrid/+page.svelte';
-	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import { inview } from 'svelte-inview';
 	import StatusFilter from '$components/v2/NFTFilters/StatusFilter.svelte';
 	import PriceFilter from '$components/v2/NFTFilters/PriceFilter.svelte';
-	import TypeFilter from '$components/v2/NFTFilters/TypeFilter.svelte';
 	import CollectionsFilter from '$components/v2/NFTFilters/CollectionsFilter.svelte';
 	import Accordion from '$lib/components/Accordion.svelte';
 	import { slide } from 'svelte/transition';
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import { cubicInOut } from 'svelte/easing';
+	import { onMount } from 'svelte';
 
 	let showFilters = true;
 	let sortOptions: { title: string; action?: any }[] = [
@@ -87,7 +86,7 @@
 		}
 	}, 1000);
 
-	export function refreshWithFilters() {
+	function refreshWithFilters() {
 		const params = $page.url.searchParams;
 		fetchOptions.type = params.get('types')?.split('+') as ListingType[];
 		fetchOptions.sortBy = params.get('sortBy') as any;
@@ -98,13 +97,17 @@
 		debouncedFetchMore();
 	}
 
-	refreshWithFilters();
 	function onChange(event) {
 		if (event.detail.inView) {
 			fetchMore();
 		}
 	}
+
 	const inviewOptions = {};
+
+	onMount(() => {
+		refreshWithFilters();
+	});
 </script>
 
 <div class="w-full flex flex-row items-center justify-between gap-x-4 my-6 2xl:my-8">
@@ -148,9 +151,7 @@
 	<div class="w-full">
 		<NftGrid bind:options={data} bind:gridStyle bind:reachedEnd bind:isLoading />
 
-		{#if isLoading}
-			<DiamondsLoader />
-		{:else}
+		{#if !isLoading}
 			<div use:inview={inviewOptions} on:change={onChange} />
 		{/if}
 	</div>
