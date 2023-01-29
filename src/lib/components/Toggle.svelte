@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+
 	export let state = false;
+	export let changeOpacity = true;
 </script>
 
 <label class="btn relative block w-[var(--width,3rem)] h-6 border border-white scale-[99%] select-none">
@@ -13,7 +15,7 @@
 	<div
 		class="outer-dot-square absolute w-6 h-6 top-0 bottom-0 my-auto transition-all duration-300
         {state ? 'left-[calc(100%-1.5rem+1px)]' : '-left-px'} scale-75"
-		class:opacity-50={!state}
+		class:opacity-50={!state && changeOpacity}
 	>
 		<div class="inner-dot-square" />
 	</div>
