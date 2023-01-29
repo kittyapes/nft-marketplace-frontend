@@ -30,14 +30,14 @@
 	import { browser } from '$app/environment';
 	import PaginationFooter from '$lib/components/management/render-components/PaginationFooter.svelte';
 	import { onDestroy } from 'svelte';
-	import { userHasRole } from '$utils/auth/userRoles';
 	import TosManagement from './TosManagement/TosManagement.svelte';
 	import { getGradientColors } from '$utils/api/management/getGradientColors';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import NotificationsManagement from './Notifications/NotificationsManagement.svelte';
 
 	const fetchLimit = 20;
 
-	let tab: 'USER' | 'COLLECTION' | 'TOS' = 'USER';
+	let tab: 'USER' | 'COLLECTION' | 'NOTIFICATIONS' | 'TOS' = 'USER';
 
 	let users: UserData[] = [];
 	let totalUserEntries = 0;
@@ -457,7 +457,6 @@
 					options: [
 						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin', disabled: false },
 						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user', disabled: false },
-						{ label: 'blogger', checked: u.roles?.includes('blogger'), cb: (e) => e.roles?.includes('blogger'), value: 'blogger', disabled: false },
 						{ label: 'inactive', checked: u.roles?.includes('inactivated_user'), cb: (e) => e.roles?.includes('inactivated_user'), value: 'inactivated_user', disabled: false },
 					],
 				})),
@@ -498,7 +497,8 @@
 	<div class="flex gap-x-14 gap-y-4 flex-wrap relative max-w-max">
 		<div class="tab btn" class:selected-tab={tab === 'USER'} on:click={() => (tab = 'USER')}>User Management</div>
 		<div class="tab btn" class:selected-tab={tab === 'COLLECTION'} on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
-		<div class="tab btn" class:selected-tab={tab === 'TOS'} on:click={() => (tab = 'TOS')}>ToS Management</div>
+		<div class="tab btn" class:selected-tab={tab === 'NOTIFICATIONS'} on:click={() => (tab = 'NOTIFICATIONS')}>Notifications</div>
+		<div class="tab btn" class:selected-tab={tab === 'TOS'} on:click={() => (tab = 'TOS')}>Terms of service</div>
 
 		<!-- Line under tabs -->
 		<div class="absolute h-[2px] left-0 right-0 bg-white bg-opacity-10 -bottom-2 z-10" />
@@ -554,6 +554,8 @@
 					}}
 				/>
 			</LoadedContent>
+		{:else if tab === 'NOTIFICATIONS'}
+			<NotificationsManagement />
 		{:else if tab === 'TOS'}
 			<TosManagement />
 		{/if}

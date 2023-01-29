@@ -1,4 +1,4 @@
-<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" class={$$props.class}>
 	<!-- <circle cx="14" cy="14" r="14" fill="#67D4F8" /> -->
 	<!-- <circle cx="14" cy="14" r="14" fill="url(#paint0_linear_6_27344)" /> -->
 	<path

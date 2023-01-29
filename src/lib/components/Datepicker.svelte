@@ -7,6 +7,7 @@
 	import dayjs, { Dayjs } from 'dayjs';
 	import isoWeek from 'dayjs/plugin/isoWeek.js';
 	import { createEventDispatcher, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 	import Toggle from './Toggle.svelte';
 	import PrimaryButton from './v2/PrimaryButton/PrimaryButton.svelte';
 
@@ -16,7 +17,7 @@
 
 	export let id = '';
 	export let placeholder = 'Select date & time';
-	export let value = dayjs();
+	export let value: Dayjs;
 	export let dateOnly = false;
 	export let allowPastSelection = false;
 	export let disabled = false;
@@ -31,7 +32,12 @@
 	let section: 'date' | 'time' = 'date';
 
 	const days = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
-	let viewedDate: dayjs.Dayjs = dayjs();
+
+	let viewedDate: Dayjs = dayjs();
+	let hours = writable(6);
+	let minutes = writable(30);
+	let monthDays = [];
+	let isPm = writable(false);
 
 	function resetToday() {
 		viewedDate = dayjs();
@@ -54,22 +60,35 @@
 		if (dateOnly) {
 			value = date.startOf('day');
 		} else {
-			value = date.hour(hours).minute(minutes);
-
-			if (isPm) {
-				value = viewedDate.add(12, 'hour');
-			}
+			value = date.hour($hours).minute($minutes);
 		}
 
 		dispatch('new-value', value);
 	}
 
-	onMount(resetToday);
+	hours.subscribe((hrs) => {
+		if (!value) return;
 
-	let hours = 6;
-	let minutes = 30;
-	let monthDays = [];
-	let isPm = false;
+		if ($isPm) value = value.hour(hrs + 12);
+		else value = value.hour(hrs);
+	});
+
+	minutes.subscribe((mins) => {
+		if (!value) return;
+		value = value.minute(mins);
+	});
+
+	isPm.subscribe((isPm) => {
+		if (!value) return;
+
+		if (isPm) {
+			value = value.add(12, 'hour');
+		} else {
+			value = value.subtract(12, 'hour');
+		}
+	});
+
+	onMount(resetToday);
 
 	$: inputText = formatDatetimeFromISO(value);
 
@@ -80,7 +99,7 @@
 		isSelected: boolean;
 		isToday: boolean;
 		isDisabled: boolean;
-		dayjs: dayjs.Dayjs;
+		dayjs: Dayjs;
 	}
 
 	$: {
@@ -124,8 +143,8 @@
 	}
 </script>
 
-<div class="relative" class:opacity-50={disabled}>
-	<input {id} type="text" class="input w-full h-12" {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
+<div class="relative min-w-[18rem]" class:opacity-50={disabled}>
+	<input {id} type="text" class="input w-full h-12 " {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
 
 	<button class="w-24 absolute top-0 right-0 h-full border-l bg-gradient-a" on:click={() => (open = !open)} {disabled}>
 		<div class="flex items-center justify-center gap-3">
@@ -138,34 +157,38 @@
 	</button>
 
 	{#if open}
-		<div class="absolute top-0 right-0 w-full max-w-xs gradient-border-bg flex flex-col translate-y-14 p-[2px] z-10" style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);">
+		<div class="absolute top-0 right-0 w-full max-w-xs gradient-border-bg flex flex-col translate-y-14 p-[2px] z-30" style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);">
 			<div class="bg-dark-gradient p-4">
-				<!-- use:outsideClickCallback={{ cb: () => (open = false) }} -->
 				<!-- Date/Time switch -->
 				{#if !dateOnly}
-					<div class="border-color-black border rounded-xl h-12 grid grid-cols-2 overflow-hidden flex-shrink-0">
+					<div class="border-color-white border rounded-xl grid grid-cols-2 overflow-hidden flex-shrink-0">
 						<button
-							class="uppercase font-semibold transition flex items-center justify-center
-                    {section === 'date' ? 'bg-black text-white' : ''}"
+							class="uppercase font-semibold transition flex items-center justify-center py-2
+                    {section === 'date' ? 'bg-card-gradient' : ''}"
 							on:click={() => (section = 'date')}
 						>
-							<Calendar />
+							<div class="w-6 h-6 grid place-items-center">
+								<Calendar />
+							</div>
 							<span class="ml-2">Date</span>
 						</button>
 
 						<button
-							class="uppercase font-semibold transition flex items-center justify-center
-                    {section === 'time' ? 'bg-black text-white' : ''}"
+							class="uppercase font-semibold transition flex items-center justify-center py-2
+                    {section === 'time' ? 'bg-card-gradient' : ''}"
 							on:click={() => (section = 'time')}
+							disabled={!value}
 						>
-							<Time />
+							<div class="w-6 h-6 grid place-items-center">
+								<Time />
+							</div>
 							<span class="ml-2">Time</span>
 						</button>
 					</div>
 				{/if}
 
 				{#if section === 'date'}
-					<div class="flex mt-4">
+					<div class="flex mt-4 items-center">
 						<div class="flex-grow font-bold text-gradient text-lg">
 							{viewedDate.format('MMM')}
 							{viewedDate.year()}
@@ -185,7 +208,7 @@
 
 					<div class="grid grid-cols-7 gap-px bg-white border mt-3">
 						{#each monthDays as day}
-							{@const isSelected = day.dayjs.toISOString() === value.toISOString()}
+							{@const isSelected = value && day.dayjs.isSame(value, 'day')}
 							<button class="flex-grow text-center aspect-1 text-sm font-medium bg-dark-gradient" class:font-bold={day.isToday} on:click={() => selectDate(day.dayjs)} disabled={day.isDisabled}>
 								<div class="w-full h-full grid place-items-center" class:bg-dark-gradient={day.isDisabled} class:bg-gradient-a={!day.isDisabled && !isSelected} class:gradient-border-bg={isSelected}>
 									{day.day}
@@ -199,42 +222,44 @@
 							<PrimaryButton on:click={handleDone}>Confirm</PrimaryButton>
 						</div>
 					{:else}
-						<button class="btn btn-outline btn-rounded mt-4" on:click={() => (section = 'time')}>Select Time</button>
+						<PrimaryButton disabled={!value} extButtonClass={'mt-4'} on:click={() => (section = 'time')}>Select Time</PrimaryButton>
 					{/if}
 				{/if}
 
 				{#if section === 'time'}
-					<div class="flex justify-center mt-8">
-						<Toggle bind:state={isPm} />
+					<div class="flex justify-center mt-8 gap-2">
+						AM
+						<Toggle changeOpacity={false} bind:state={$isPm} />
+						PM
 					</div>
 
 					<div class="flex items-center justify-center space-x-2 mt-4">
 						<div class="grid place-items-center border w-24 h-24 text-3xl">
-							{hours}
+							{$hours}
 						</div>
 
 						<div class="text-6xl opacity-40 font-semibold">:</div>
 
 						<div class="grid place-items-center border w-24 h-24 text-3xl">
-							{minutes}
+							{$minutes}
 						</div>
 					</div>
 
 					<div class="mt-8">
 						<label class="font-semibold">
 							<div>Hours:</div>
-							<input type="range" bind:value={hours} max="12" class="mt-2" />
+							<input type="range" bind:value={$hours} max="12" class="mt-2 text-white" />
 						</label>
 
 						<label class="font-semibold">
 							<div>Minutes:</div>
-							<input type="range" bind:value={minutes} max="60" class="mt-2" />
+							<input type="range" bind:value={$minutes} max="60" class="mt-2" />
 						</label>
 					</div>
 
 					<div class="flex-grow" />
 
-					<button class="btn btn-rounded mt-4 btn-black uppercase" on:click={handleDone}>Done</button>
+					<PrimaryButton extButtonClass={'mt-8'} on:click={handleDone}>Done</PrimaryButton>
 				{/if}
 			</div>
 		</div>
@@ -245,7 +270,6 @@
 	input[type='range'] {
 		-webkit-appearance: none; /* Hides the slider so that custom slider can be made */
 		width: 100%; /* Specific width is required for Firefox. */
-		background: transparent; /* Otherwise white in Chrome */
 	}
 
 	input[type='range']::-webkit-slider-thumb {

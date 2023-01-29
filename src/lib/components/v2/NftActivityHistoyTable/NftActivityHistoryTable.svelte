@@ -83,7 +83,7 @@
 	{/if}
 
 	{#if !data.length && !skeleton}
-		<div class="self-stretch justify-center col-span-5 !bg-white opacity-50">No NFT activity history.</div>
+		<div class="self-stretch justify-center col-span-5 opacity-50">No NFT activity history.</div>
 	{/if}
 </div>
 
