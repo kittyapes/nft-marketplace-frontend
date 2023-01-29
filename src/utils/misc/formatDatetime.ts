@@ -6,9 +6,11 @@ import dayjs from 'dayjs';
  * @returns A datetime string in a format that can be used in the UI.
  */
 export function formatDatetimeFromISO(isoString: string | dayjs.Dayjs) {
+	if (!isoString) return '';
+
 	try {
 		return dayjs(isoString).format('MMM DD, YYYY hh:mm A');
 	} catch {
-		return 'N/A';
+		return '';
 	}
 }

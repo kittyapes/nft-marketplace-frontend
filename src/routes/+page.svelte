@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
 	import { get, writable } from 'svelte/store';
-	import { getRandomListings, getTrendingListings, type Listing } from '$utils/api/listing';
+	import { getTrendingListings, type Listing } from '$utils/api/listing';
 	import NftList from '$lib/components/NftList.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
@@ -17,6 +17,9 @@
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
 	import { goto } from '$app/navigation';
+	import NotificationBar from '$lib/components/NotificationBar.svelte';
+	import { getNotifications, updateNotificationAsUser, type UserNotification } from '$utils/api/notifications';
+	import dayjs from 'dayjs';
 
 	let trendingListings = writable<Listing[]>([]);
 	let loadedTrendingListings = writable(false);
@@ -25,6 +28,12 @@
 	let hottestCreators = writable<{ users: PublicProfileData[]; totalCount: number }>(null);
 	let loadedHottestCreators = writable(false);
 	const hottestCreatorsCount = 3;
+
+	let userNotification = writable<UserNotification>(null);
+	let loadedUserNotification = writable(false);
+	let userNotificationCleared = writable(false);
+	// in miliseconds
+	const notificationFetchingTime = 30_000;
 
 	const getTrendingListingsData = async () => {
 		loadedTrendingListings.set(false);
@@ -39,9 +48,40 @@
 		loadedHottestCreators.set(true);
 	};
 
+	const getUserNotification = async () => {
+		if (!$userNotification) loadedUserNotification.set(false);
+		const res = (await getNotifications()).data.data;
+
+		const notification = res.find((n) => !n.hasCleared && dayjs().isAfter(dayjs(n.publishAt)) && (!n.expireAt || dayjs().isBefore(dayjs(n.expireAt))));
+
+		if (!notification) {
+			userNotification.set(null);
+			loadedUserNotification.set(true);
+			return;
+		}
+
+		userNotification.set(notification);
+
+		loadedUserNotification.set(true);
+
+		if (!notification.readAt) await updateNotificationAsUser({ id: $userNotification._id, readAt: dayjs().format(), hasCleared: false });
+	};
+
+	const clearNotification = async () => {
+		await updateNotificationAsUser({ id: $userNotification._id, hasCleared: true });
+		userNotificationCleared.set(true);
+	};
+
+	let notificationFetchingInterval = setInterval(() => {
+		getUserNotification();
+	}, notificationFetchingTime);
+
+	onDestroy(() => clearInterval(notificationFetchingInterval));
+
 	onMount(async () => {
-		await getTrendingListingsData();
-		await getHottestCreatorsData();
+		getUserNotification();
+		getHottestCreatorsData();
+		getTrendingListingsData();
 	});
 </script>
 
@@ -65,6 +105,14 @@
 		site_name: 'Hinata',
 	}}
 />
+
+<!-- Notifications -->
+{#if $loadedUserNotification && $userNotification && !$userNotificationCleared}
+	<div class="w-full text-white mt-20" transition:slide|local>
+		<NotificationBar notification={$userNotification} wrapperClass={'h-16'} on:click={() => clearNotification()} />
+	</div>
+{/if}
+
 <div class="px-36 pt-32 w-full grid place-items-center text-white">
 	<!-- Hero section -->
 	<!-- TODO fix this properly -->

@@ -4,7 +4,7 @@
 	import ArrowLinkGradient from '$icons/arrow-link-gradient.svelte';
 </script>
 
-<div class="border-t border-white text-white ">
+<div class="border-t border-white text-white -z-10 ">
 	<div class="flex justify-between py-12 px-32 gap-10">
 		<div class="flex flex-col px-8 gap-4">
 			<!-- Logo -->
