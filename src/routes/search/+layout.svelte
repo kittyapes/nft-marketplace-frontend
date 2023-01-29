@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import Tabs from '$lib/components/v2/Tabs/+page.svelte';
+
 	let tabs: { title: string; route: string }[] = [
 		{
 			title: 'Collections',
@@ -17,7 +18,7 @@
 	];
 </script>
 
-<main class="mx-auto text-white pt-28 2xl:pt-32 px-28 2xl:px-36">
-	<Tabs bind:tabs />
+<main class="mx-auto w-full text-white pt-32 px-40">
+	<Tabs bind:tabs extWrapperClass={'w-full text-left'} />
 	<slot />
 </main>

@@ -45,7 +45,7 @@
 			</div>
 			<div class="flex flex-col justify-between items-end">
 				<button on:click|stopPropagation={handleFollow}>
-					<PrimaryButton class="w-40">{followed ? 'Unfollow' : 'Follow'}</PrimaryButton>
+					<PrimaryButton extButtonClass="w-40">{followed ? 'Unfollow' : 'Follow'}</PrimaryButton>
 				</button>
 				<div class="text-xl">Created {creatorData.created}</div>
 			</div>

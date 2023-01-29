@@ -11,7 +11,7 @@
 	import EnterKeyIcon from '$icons/enter-key-icon.svelte';
 	import SearchWrapper from './SearchWrapper.svelte';
 	import { selectedResultTab } from '$stores/search';
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 
 	let query: string;
 	let searching = false;
@@ -31,10 +31,11 @@
 
 	const searchGlobally = async (query: string) => {
 		const res = await globalSearch(query, resultCategoryLimit).catch((err) => console.error(err));
+
 		searchResults = {
 			collections: res?.collections || [],
 			items: (await Promise.all(res?.nfts.map(nftToCardOptions))) || [],
-			users: res?.verifiedCreators || [],
+			users: res?.users || [],
 		};
 
 		await tick();
@@ -53,28 +54,35 @@
 	}
 
 	const navigateToSearchResults = (query: string) => {
+		query = query.trim();
+		$page.url.searchParams.set('query', query.replace('#', '%23'));
+		query = '';
+
+		goto('/search/' + $selectedResultTab + '?' + $page.url.searchParams);
+	};
+
+	beforeNavigate(({ to }) => {
 		show = false;
 		searching = false;
-
-		query = query.trim();
-		goto('/search?query=' + query.replace('#', '%23'));
-	};
+	});
 </script>
 
 <div
 	use:outsideClickCallback={{
 		cb: () => (isDropdownShown = false),
 	}}
-	class="relative {$$props.class}"
+	class="relative wrapper {$$props.class}"
 >
+	<div class="absolute inset-0 gradient-border animate-gradient-border-spin border-div" />
+
 	<Input
 		on:keyup={(e) => {
 			if (e.code === 'Enter' && show) {
-				navigateToSearchResults(query.trim());
+				navigateToSearchResults(query);
 			}
 		}}
 		bind:value={query}
-		class="rounded-none bg-card-gradient hover:text-white w-full h-10 relative border-2 border-transparent hover:box-border hover:border-solid hover:animate-gradient-border-spin"
+		class="rounded-none bg-card-gradient hover:text-white w-full h-10 relative "
 		placeholder="Search"
 		gradientCaret
 	>
@@ -86,7 +94,7 @@
 			slot="end-icon"
 			on:click={() => {
 				if (show) {
-					navigateToSearchResults(query.trim());
+					navigateToSearchResults(query);
 				}
 			}}
 		>
@@ -97,3 +105,9 @@
 		<SearchWrapper bind:query bind:isDropdownShown bind:searchResults bind:show />
 	{/if}
 </div>
+
+<style type="postcss">
+	.wrapper:not(:hover) > .border-div {
+		display: none;
+	}
+</style>

@@ -13,12 +13,15 @@
 	let reachedEnd = false;
 	let isLoading = true;
 	let pageNumber = 1;
+
 	const limit = 10;
+
+	const inviewOptions = {};
 
 	const fetchFunction = async () => {
 		const res = await globalUsersSearch($page?.url?.searchParams?.get('query'), limit, pageNumber);
-		console.log(res);
-		return res.verifiedCreators;
+
+		return res.users;
 	};
 
 	async function fetchMore() {
@@ -40,12 +43,13 @@
 		}
 		isLoading = false;
 	}
+
 	function onChange(event) {
 		if (event.detail.inView) {
 			fetchMore();
 		}
 	}
-	const inviewOptions = {};
+
 	onMount(async () => {
 		await fetchMore();
 	});
@@ -53,6 +57,7 @@
 
 <div class="my-6 2xl:my-8 w-full">
 	<UserGrid bind:users bind:isLoading />
+
 	{#if isLoading}
 		<DiamondsLoader />
 	{:else}

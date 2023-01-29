@@ -55,17 +55,26 @@
 		<div class="flex-grow" />
 
 		<!-- Marketplace -->
-		<a id="marketplace-link" href="/marketplace/collections" class="nav-button bg-card-gradient">Marketplace</a>
+		<a id="marketplace-link" href="/marketplace/collections" class="nav-button bg-card-gradient">
+			Marketplace
+			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
+		</a>
 
 		<!-- Staking - HIDDEN FOR V1 -->
-		<a href="/staking" class="nav-button bg-card-gradient">Staking</a>
+		<a href="/staking" class="nav-button bg-card-gradient">
+			Staking
+			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
+		</a>
 
 		<!-- Airdrop HIDDEN FOR NOW -->
 		<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
 
 		<!-- Create -->
 		{#if $publicProfileData?.roles.includes('verified_user') || $profileData?.roles.includes('superadmin')}
-			<button on:click={() => goto('/create')} class="nav-button bg-card-gradient">Create</button>
+			<button on:click={() => goto('/create')} class="nav-button bg-card-gradient">
+				Create
+				<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
+			</button>
 		{/if}
 
 		<!-- Profile -->
@@ -115,11 +124,15 @@
 
 <style type="postcss">
 	.nav-button {
-		@apply relative font-semibold h-1/2 grid place-items-center px-4 snap-center w-32 border-2 border-transparent box-border;
+		@apply relative font-semibold h-1/2 grid place-items-center px-4 snap-center w-32;
 	}
 
-	.nav-button:hover {
-		@apply border-solid border-2 animate-gradient-border-spin;
+	.nav-button:not(:hover) > div {
+		display: none;
+	}
+
+	.nav-button:active > div {
+		display: none;
 	}
 
 	.nav-button:active {
