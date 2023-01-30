@@ -15,34 +15,14 @@ async function cancelNormal(listing: Listing): Promise<boolean> {
 	console.debug('[Listing] Cancelling listing with ID: ' + listing.listingId);
 
 	const contract = getContract('marketplace');
-
-	try {
-		await contractCaller(contract, 'cancelListing', 150, 1, listing.listingId);
-	} catch (err) {
-		if (err.code === 'ACTION_REJECTED') {
-			notifyError('You have rejected the transaction. Could not cancel your listing.');
-			return false;
-		}
-
-		throw err;
-	}
+	await contractCaller(contract, 'cancelListing', 150, 1, listing.listingId);
 
 	return true;
 }
 
 async function cancelGasless(listing: Listing): Promise<boolean> {
 	const contract = getContract('marketplace-v2');
-
-	try {
-		await contractCaller(contract, 'cancelSignature', 150, 1, listing.signature);
-	} catch (err) {
-		if (err.code === 'ACTION_REJECTED') {
-			notifyError('You have rejected the transaction. Could not cancel your listing.');
-			return false;
-		}
-
-		throw err;
-	}
+	await contractCaller(contract, 'cancelSignature', 150, 1, listing.signature);
 
 	return true;
 }
@@ -60,6 +40,11 @@ export async function cancelListingFlow(listing: Listing): Promise<boolean> {
 	try {
 		cancelSuccess = await fn(listing);
 	} catch (err) {
+		if (err.code === 'ACTION_REJECTED') {
+			notifyError('You have rejected the transaction. Could not cancel your listing.');
+			return false;
+		}
+
 		console.error('Caught an error while cancelling a listing:', err);
 		notifyError('Sorry, failed to cancel your listing. An unexpected error has occured.');
 
