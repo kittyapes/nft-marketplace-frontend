@@ -8,6 +8,11 @@ import { notifyError, notifySuccess } from '$utils/toast';
 import dayjs from 'dayjs';
 import { noTryAsync } from 'no-try';
 
+/**
+ * Purchase a gas based listing.
+ * @param listing Listing data gathered from API.
+ * @returns A boolean indicating if the purchase was successful.
+ */
 async function purchaseNormal(listing: Listing) {
 	const onChainListingData = await getChainListingData(listing.listingId);
 
@@ -40,7 +45,7 @@ async function purchaseNormal(listing: Listing) {
 }
 
 /**
- *
+ * Purchase a gasless listing.
  * @param listing Listing data gathered from API.
  * @returns A boolean indicating if the purchase was successful.
  */
@@ -81,6 +86,11 @@ async function purchaseGasless(listing: Listing) {
 	return true;
 }
 
+/**
+ * Purchase a gasless or gas based listing.
+ * @param listing Listing data gathered from API.
+ * @returns A boolean indicating if the purchase was successful.
+ */
 export async function salePurchase(listing: Listing): Promise<boolean> {
 	const fn = listing.chainStatus === 'GASLESS' ? purchaseGasless : purchaseNormal;
 
