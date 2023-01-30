@@ -155,7 +155,7 @@
 			fetchFunction: async (tab, page, limit) => {
 				const res = {} as FetchFunctionResult;
 				res.res = await apiGetUserNfts(address, 'MINTED', page, limit);
-				res.adapted = await Promise.all(res.res.res.map((nft) => nftToCardOptions(nft)));
+				res.adapted = await Promise.all(res.res.res.nfts.map((nft) => nftToCardOptions(nft)));
 				return res;
 			},
 			label: 'Created NFTs',

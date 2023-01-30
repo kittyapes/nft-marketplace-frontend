@@ -3,7 +3,7 @@ import { getApiUrl } from '..';
 
 export const getNftsByTitle = async (query: string, limit?: number, page?: number) => {
 	try {
-		let params = {
+		const params = {
 			query: query ? query : undefined,
 			page: page ? page : 1,
 			limit: limit ? limit : undefined,
@@ -19,7 +19,7 @@ export const getNftsByTitle = async (query: string, limit?: number, page?: numbe
 
 export const searchUsersByName = async (query: string, limit?: number, page?: number) => {
 	try {
-		let params = {
+		const params = {
 			query: query ? query : undefined,
 			limit: limit ? limit : undefined,
 			page: page ? page : 1,
@@ -38,7 +38,7 @@ export const searchUsersByName = async (query: string, limit?: number, page?: nu
 
 export const getCollectionsByTitle = async (query: string, limit?: number, page?: number) => {
 	try {
-		let params = {
+		const params = {
 			query: query ? query : undefined,
 			limit: limit ? limit : undefined,
 			page: page ? page : 1,
@@ -54,7 +54,7 @@ export const getCollectionsByTitle = async (query: string, limit?: number, page?
 
 export const globalSearch = async (query: string, limit?: number) => {
 	try {
-		let params = {
+		const params = {
 			query: query ? query : undefined,
 			limit: limit ? limit : undefined,
 		};
@@ -68,7 +68,7 @@ export const globalSearch = async (query: string, limit?: number) => {
 
 export const globalCollectionsSearch = async (query: string, limit?: number, page?: number) => {
 	try {
-		let params = {
+		const params = {
 			query: query ? query : undefined,
 			limit: limit ? limit : undefined,
 			page: page ? page : undefined,
@@ -83,7 +83,7 @@ export const globalCollectionsSearch = async (query: string, limit?: number, pag
 
 export const globalUsersSearch = async (query: string, limit?: number, page?: number) => {
 	try {
-		let params = {
+		const params = {
 			query: query ? query : undefined,
 			limit: limit ? limit : undefined,
 			page: page ? page : undefined,
@@ -98,7 +98,7 @@ export const globalUsersSearch = async (query: string, limit?: number, page?: nu
 
 export const globalNFTSearch = async (query: string, limit?: number, page?: number) => {
 	try {
-		let params = {
+		const params = {
 			query: query ? query : undefined,
 			limit: limit ? limit : undefined,
 			page: page ? page : undefined,
