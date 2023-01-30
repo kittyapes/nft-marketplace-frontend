@@ -357,7 +357,7 @@
 								{$localProfileData?.username}
 							</div>
 						{:else}
-							<span class="font-bold opacity-50 whitespace-nowrap">No username</span>
+							<span class="whitespace-nowrap">No username</span>
 						{/if}
 
 						{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED' || $localProfileData?.roles?.includes('verified_user') || $localProfileData?.roles?.includes('inactivated_user')}
@@ -376,7 +376,7 @@
 						{:else if $currentUserAddress}
 							{#if isFollowing}
 								<PrimaryButton
-									class="w-40"
+									extButtonClass="w-40"
 									on:click={async () => {
 										isFollowing = await followUnfollowUser(address, false);
 									}}
@@ -385,7 +385,7 @@
 								</PrimaryButton>
 							{:else}
 								<PrimaryButton
-									class="w-40"
+									extButtonClass="w-40"
 									on:click={async () => {
 										isFollowing = await followUnfollowUser(address, true);
 									}}
@@ -396,7 +396,7 @@
 						{/if}
 						<div class="relative">
 							<div class="" on:click|stopPropagation={() => (shareButtonOpen = !shareButtonOpen)} bind:this={elemOpenBtn}>
-								<PrimaryButton class="w-20">
+								<PrimaryButton extButtonClass="w-20">
 									<ShareV2 />
 								</PrimaryButton>
 							</div>
@@ -468,9 +468,9 @@
 			</div>
 
 			<!-- Bio -->
-			<div class="max-w-[600px] ">
+			<div class="max-w-[600px] h-full">
 				<div class="font-semibold text-4xl">BIO</div>
-				<p class="mt-4 overflow-y-auto break-words max-w-xs">
+				<p class="mt-4 overflow-y-auto blue-scrollbar break-words max-w-sm max-h-24">
 					{#if $localProfileData?.bio}
 						{@html $localProfileData?.bio}
 					{:else}
