@@ -7,24 +7,30 @@
 	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { notifyError } from '$utils/toast';
 	import NftGrid from '$components/v2/NFTGrid/+page.svelte';
-	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import { inview } from 'svelte-inview';
 
+	const inviewOptions = {};
 	let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
+
 	let limit = 10;
 	let pageNumber = 1;
+
 	let nfts = [];
 	let isLoading = false;
 	let reachedEnd = false;
+
 	const fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
+
 		res.res = await globalNFTSearch($page?.url?.searchParams.get('query'), limit, pageNumber);
 		res.adapted = await Promise.all(res.res.nfts?.map(nftToCardOptions)).catch((err) => {
 			console.error(err);
 			return [];
 		});
+
 		return res;
 	};
+
 	const fetchMore = async () => {
 		if (reachedEnd || isLoading) return;
 		isLoading = true;
@@ -46,12 +52,13 @@
 
 		isLoading = false;
 	};
+
 	function onChange(event) {
 		if (event.detail.inView) {
 			fetchMore();
 		}
 	}
-	const inviewOptions = {};
+
 	onMount(async () => {
 		await fetchMore();
 	});
@@ -61,10 +68,10 @@
 	<div class="my-6 2xl:my-8 w-full flex items-center justify-end">
 		<GridSelector bind:gridStyle />
 	</div>
-	<NftGrid bind:options={nfts} bind:gridStyle bind:reachedEnd bind:isLoading />
-	{#if isLoading}
-		<DiamondsLoader />
-	{:else}
+
+	<NftGrid options={nfts} bind:gridStyle bind:reachedEnd bind:isLoading />
+
+	{#if !isLoading && nfts.length > 0}
 		<div use:inview={inviewOptions} on:change={onChange} />
 	{/if}
 </div>
