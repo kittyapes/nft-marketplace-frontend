@@ -47,10 +47,10 @@
 		</tr>
 	</thead>
 
-	<tbody>
+	<tbody class="h-full">
 		{#if collections?.length > 0}
 			{#each collections as collection, i}
-				<tr class="">
+				<tr class="h-full">
 					<td class="whitespace-nowrap">
 						<a class="w-full" href="/collections/{collection?.slug}">
 							{collection?.name}

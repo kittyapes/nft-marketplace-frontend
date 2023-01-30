@@ -12,12 +12,18 @@
 	const inviewOptions = {};
 	let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 
-	let limit = 10;
+	let limit = 12;
 	let pageNumber = 1;
 
 	let nfts = [];
-	let isLoading = false;
+	let isLoading = true;
 	let reachedEnd = false;
+
+	$: {
+		if (gridStyle === 'normal') limit = 12;
+		if (gridStyle === 'dense') limit = 15;
+		if (gridStyle === 'masonry') limit = 15;
+	}
 
 	const fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
@@ -32,7 +38,7 @@
 	};
 
 	const fetchMore = async () => {
-		if (reachedEnd || isLoading) return;
+		if (reachedEnd) return;
 		isLoading = true;
 
 		const res = await fetchFunction();
