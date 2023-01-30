@@ -63,10 +63,10 @@
 	];
 </script>
 
-<div>
-	<div class="w-full flex flex-row items-center justify-end gap-x-4 my-6 2xl:my-8">
+<!-- <div class="w-full flex flex-row items-center justify-end gap-x-4 my-6 2xl:my-8">
 		<SortButton bind:sortOptions class="h-11 2xl:h-14 max-w-[123px]" />
-	</div>
+	</div> -->
 
+<div class="mt-16">
 	<CollectionsTable bind:collections bind:isLoading on:end-reached={fetchMore} />
 </div>
