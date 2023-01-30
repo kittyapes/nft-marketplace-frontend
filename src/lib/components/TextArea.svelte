@@ -14,7 +14,7 @@
 	<textarea
 		{disabled}
 		{rows}
-		class="w-full h-full resize-none border border-white p-4 bg-transparent outline-none {focusStyle ? 'focus:border-color-purple' : ''}  {textAreaClass}"
+		class="w-full h-full resize-none border border-white p-4 blue-scrollbar bg-transparent outline-none {focusStyle ? 'focus:border-color-purple' : ''}  {textAreaClass}"
 		{placeholder}
 		maxlength={maxChars}
 		bind:value
