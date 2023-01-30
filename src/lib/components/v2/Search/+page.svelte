@@ -53,7 +53,7 @@
 		debouncedSearch(query.trim());
 	}
 
-	const navigateToSearchResults = (query: string) => {
+	const navigateToSearchResults = () => {
 		query = query.trim();
 		$page.url.searchParams.set('query', query.replace('#', '%23'));
 		query = '';
@@ -72,20 +72,15 @@
 		cb: () => (isDropdownShown = false),
 	}}
 	class="relative wrapper {$$props.class}"
+	on:keyup={(e) => {
+		if (e.code === 'Enter' && show) {
+			navigateToSearchResults();
+		}
+	}}
 >
 	<div class="absolute inset-0 gradient-border animate-gradient-border-spin border-div" />
 
-	<Input
-		on:keyup={(e) => {
-			if (e.code === 'Enter' && show) {
-				navigateToSearchResults(query);
-			}
-		}}
-		bind:value={query}
-		class="rounded-none bg-card-gradient hover:text-white w-full h-10 relative "
-		placeholder="Search"
-		gradientCaret
-	>
+	<Input bind:value={query} class="rounded-none bg-card-gradient hover:text-white w-full h-10 relative " placeholder="Search" gradientCaret>
 		<Search class="w-7 h-7 text-transparent min-w-full ml-4" />
 
 		<div
@@ -94,7 +89,7 @@
 			slot="end-icon"
 			on:click={() => {
 				if (show) {
-					navigateToSearchResults(query);
+					navigateToSearchResults();
 				}
 			}}
 		>

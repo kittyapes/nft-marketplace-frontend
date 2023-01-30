@@ -13,7 +13,6 @@
 		created: number;
 	};
 
-	// TODO: load followed users
 	export let followed = false;
 
 	async function handleFollow() {
@@ -21,12 +20,14 @@
 	}
 </script>
 
-<button class="w-full flex flex-col h-full border-2 border-transparent" on:click>
+<button class="w-full flex flex-col h-full border-2 border-transparent relative wrapper" on:click>
+	<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
+
 	<div class="w-full bg-dark-gradient h-[400px]">
 		<img src={creatorData.coverImg} alt="Featured creator cover." class="h-full object-cover w-full " />
 	</div>
 
-	<div class="bg-dark-gradient flex flex-col items-center justify-center flex-grow w-full">
+	<div class="bg-dark-gradient flex flex-col items-center justify-center flex-grow w-full min-h-[120px]">
 		<div class="w-full flex justify-between px-4">
 			<div class="flex gap-4">
 				<div class="w-24 h-24">
@@ -52,3 +53,9 @@
 		</div>
 	</div>
 </button>
+
+<style type="postcss">
+	.wrapper:not(:hover) > .gradient-border {
+		display: none;
+	}
+</style>

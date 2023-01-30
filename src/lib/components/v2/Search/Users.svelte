@@ -3,10 +3,11 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { globalUsersSearch } from '$utils/api/search/globalSearch';
-	import UserGrid from '$components/v2/UserGrid/+page.svelte';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import { inview } from 'svelte-inview';
 	import type { UserData } from '$interfaces/userData';
+	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
+	import { goto } from '$app/navigation';
 
 	let users: Partial<UserData>[] = [];
 	let query: string;
@@ -55,11 +56,24 @@
 	});
 </script>
 
-<div class="my-6 2xl:my-8 w-full">
-	<UserGrid bind:users bind:isLoading />
+<div class="my-6 2xl:my-8 w-full grid grid-cols-2 gap-8">
+	{#each users as user}
+		<FeaturedArtistCard
+			on:click={() => goto(`/profile/${user.address}`)}
+			creatorData={{
+				name: user.username,
+				address: user.address,
+				coverImg: user.coverUrl,
+				profileImg: user.thumbnailUrl,
+				created: 0,
+			}}
+		/>
+	{/each}
 
 	{#if isLoading}
 		<DiamondsLoader />
+	{:else if users?.length === 0 && !isLoading}
+		<p class="p-36 whitespace-nowrap font-semibold text-lg opacity-70">Nothing to see here, move along.</p>
 	{:else}
 		<div use:inview={inviewOptions} on:change={onChange} />
 	{/if}

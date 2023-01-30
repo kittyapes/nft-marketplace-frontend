@@ -7,6 +7,7 @@
 	import { selectedResultTab } from '$stores/search';
 	import { compactNumberFormat } from '$utils/api';
 	import HinataBadge from '$icons/hinata-badge.svelte';
+	import VerifiedBadge from '$icons/verified-badge.svelte';
 
 	export let tabs = ['Collections', 'NFTs', 'Users'];
 	export let query: string;
@@ -167,7 +168,7 @@
 								<div class="flex items-center gap-x-2">
 									<p>{result?.username}</p>
 									{#if result?.status === 'VERIFIED'}
-										<HinataBadge class="w-5 2xl:w-6 h-5 2xl:h-6" />
+										<VerifiedBadge class="w-5 2xl:w-6 h-5 2xl:h-6" />
 									{/if}
 								</div>
 								<p class="opacity-70">
