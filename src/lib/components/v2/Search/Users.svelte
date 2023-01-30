@@ -31,6 +31,8 @@
 
 		const res = await fetchFunction();
 
+		console.log(res);
+
 		if (res.err) {
 			notifyError('Failed to fetch more users.');
 			return;
@@ -42,6 +44,7 @@
 			users = [...users, ...res];
 			pageNumber++;
 		}
+
 		isLoading = false;
 	}
 
@@ -56,7 +59,15 @@
 	});
 </script>
 
-<div class="my-6 2xl:my-8 w-full grid grid-cols-2 gap-8">
+{#if isLoading}
+	<div class="w-full">
+		<DiamondsLoader />
+	</div>
+{:else if users?.length === 0 && !isLoading}
+	<p class="p-36 whitespace-nowrap font-semibold text-lg opacity-70">Nothing to see here, move along.</p>
+{/if}
+
+<div class="my-6 2xl:my-8 w-full grid 2xl:grid-cols-2 justify-evenly gap-8">
 	{#each users as user}
 		<FeaturedArtistCard
 			on:click={() => goto(`/profile/${user.address}`)}
@@ -70,11 +81,7 @@
 		/>
 	{/each}
 
-	{#if isLoading}
-		<DiamondsLoader />
-	{:else if users?.length === 0 && !isLoading}
-		<p class="p-36 whitespace-nowrap font-semibold text-lg opacity-70">Nothing to see here, move along.</p>
-	{:else}
+	{#if users?.length > 0 && !isLoading}
 		<div use:inview={inviewOptions} on:change={onChange} />
 	{/if}
 </div>
