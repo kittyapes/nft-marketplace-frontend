@@ -43,7 +43,7 @@
 	{/if}
 
 	{#if options?.length || options?.length === 0}
-		<div class="{gridStyle} justify-end">
+		<div class={gridStyle}>
 			{#if createNewNftBtn && !isLoading}
 				<CreateNewNftBtn collectionId={createNewNftBtn} />
 			{/if}
