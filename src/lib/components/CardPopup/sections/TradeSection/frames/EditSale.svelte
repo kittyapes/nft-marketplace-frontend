@@ -7,7 +7,8 @@
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { contractCancelListing, contractUpdateListing } from '$utils/contracts/listing';
+	import { contractUpdateListing } from '$utils/contracts/listing';
+	import { cancelListingFlow } from '$utils/flows/cancelListingFlow';
 	import { dateToTimestamp } from '$utils/listings';
 	import { isListingExpired } from '$utils/misc';
 	import { formatToken } from '$utils/misc/priceUtils';
@@ -67,12 +68,10 @@
 	async function cancelListing() {
 		cancellingListing = true;
 
-		try {
-			await contractCancelListing(options.listingData.onChainId);
+		const cancelSuccess = await cancelListingFlow(options.rawListingData);
+
+		if (cancelSuccess) {
 			options.staleResource.set({ reason: 'cancelled' });
-		} catch (err) {
-			console.error(err);
-			notifyError('Failed to cancel listing!');
 		}
 
 		cancellingListing = false;

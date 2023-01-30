@@ -6,7 +6,6 @@
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { contractCompleteAuction } from '$utils/contracts/auction';
-	import { contractCancelListing } from '$utils/contracts/listing';
 	import type { BidRow } from '$utils/flows/getBiddingsFlow';
 	import { parseToken } from '$utils/misc/priceUtils';
 	import { createToggle } from '$utils/misc/toggle';
@@ -17,6 +16,7 @@
 	import GhostButton from '$lib/components/v2/GhostButton.svelte';
 	import EthV2 from '$icons/eth-v2.svelte';
 	import { listingExistsOnChain } from '$utils/listings';
+	import { cancelListingFlow } from '$utils/flows/cancelListingFlow';
 
 	const dispatch = createEventDispatcher();
 
@@ -61,14 +61,12 @@
 
 		isCancelling = true;
 
-		try {
-			await contractCancelListing(options.listingData.onChainId);
+		const cancelSuccess = await cancelListingFlow(options.rawListingData);
+
+		if (cancelSuccess) {
 			dispatch('set-frame', { component: Success });
 			options.staleResource.set({ reason: 'cancelled' });
 			dispatch('force-expire');
-		} catch (err) {
-			console.error(err);
-			notifyError('Failed to cancel listing!');
 		}
 
 		isCancelling = false;

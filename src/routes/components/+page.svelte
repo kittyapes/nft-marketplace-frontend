@@ -1,7 +1,8 @@
 <script lang="ts">
 	import Countdown from '$lib/components/v2/Countdown/Countdown.svelte';
+	import type { Listing } from '$utils/api/listing';
 	import { contractCompleteAuction } from '$utils/contracts/auction';
-	import { contractCancelListing } from '$utils/contracts/listing';
+	import { cancelListingFlow } from '$utils/flows/cancelListingFlow';
 	import { refreshConnection } from '$utils/wallet/connectWallet';
 	import { onMount } from 'svelte';
 	import CheckFilterDropdownDemo from './CheckFilterDropdownDemo.svelte';
@@ -19,11 +20,7 @@
 	}
 
 	async function cancelListing() {
-		try {
-			await contractCancelListing(listingId);
-		} catch (err) {
-			auctionErr = err;
-		}
+		await cancelListingFlow({ listingId, chainStatus: 'ON_CHAIN' } as Listing);
 	}
 
 	onMount(refreshConnection);

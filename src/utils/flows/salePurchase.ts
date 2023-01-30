@@ -89,5 +89,7 @@ export async function salePurchase(listing: Listing): Promise<boolean> {
 	} catch (err) {
 		console.error(err);
 		notifyError('Sorry, failed to make your purchase. An unexpected error has occured.');
+
+		return false;
 	}
 }
