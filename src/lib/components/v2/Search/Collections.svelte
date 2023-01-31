@@ -19,7 +19,7 @@
 	};
 
 	async function fetchMore() {
-		if (reachedEnd || query) return;
+		if (reachedEnd) return;
 		isLoading = true;
 
 		const res = await fetchFunction();

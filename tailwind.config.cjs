@@ -36,6 +36,19 @@ const config = {
 				'secondary-gradient':
 					'radial-gradient(55.65% 55.65% at 51.68% 130.43%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%), radial-gradient(55.22% 148.72% at 98.83% 0%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%), radial-gradient(64.35% 166.74% at 8.56% -7.83%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%), linear-gradient(180deg, rgba(136, 234, 255, 0.1) 0%, rgba(133, 141, 247, 0.056) 100%, rgba(133, 141, 247, 0.1) 100%), rgba(0, 0, 0, 0.1)',
 			},
+			keyframes: {
+				'gradient-spin': {
+					'0%, 100%': {
+						'border-image': 'linear-gradient(0deg, #868bf7, #6cc7f8) 1;',
+					},
+					'50%': {
+						'border-image': 'linear-gradient(180deg, #868bf7, #6cc7f8) 1;',
+					},
+				},
+			},
+			animation: {
+				'gradient-border-spin': 'gradient-spin 3s ease-out infinite',
+			},
 		},
 	},
 

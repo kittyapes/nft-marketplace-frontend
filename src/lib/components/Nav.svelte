@@ -42,30 +42,39 @@
 	// $: useTestnets = $connectionDetails ? $connectionDetails?.chainId !== 1 : import.meta.env.VITE_DEFAULT_NETWORK !== '1';
 </script>
 
-<div class="fixed z-10 flex w-full ">
+<div class="fixed z-10 flex w-full">
 	<div class="{scrollY ? 'backdrop-blur-xl' : ''} fixed z-10 flex items-center w-full h-20 px-36 overflow-x-visible scrollbar-hidden snap-mandatory snap-x text-white bg">
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
 			<img src="/svg/logo/logo.v2.svg" alt="Hinata logo." />
 		</a>
 
-		<Search class="snap-start mx-20 w-full" />
+		<Search class="snap-start ml-20 w-[45%] h-1/2" />
 
 		<!-- Flex filler -->
 		<div class="flex-grow" />
 
 		<!-- Marketplace -->
-		<a id="marketplace-link" href="/marketplace/collections" class="relative font-semibold snap-center bg-card-gradient h-1/2 grid place-items-center px-4 btn">Marketplace</a>
+		<a id="marketplace-link" href="/marketplace/collections" class="nav-button bg-card-gradient">
+			Marketplace
+			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
+		</a>
 
 		<!-- Staking - HIDDEN FOR V1 -->
-		<a href="/staking" class="relative font-semibold text-md snap-center min-w-fit bg-card-gradient h-1/2 px-4 grid place-items-center">Staking</a>
+		<a href="/staking" class="nav-button bg-card-gradient">
+			Staking
+			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
+		</a>
 
 		<!-- Airdrop HIDDEN FOR NOW -->
 		<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
 
 		<!-- Create -->
 		{#if $publicProfileData?.roles.includes('verified_user') || $profileData?.roles.includes('superadmin')}
-			<button on:click={() => goto('/create')} class="relative font-semibold bg-card-gradient h-1/2 grid place-items-center px-4 snap-center">Create</button>
+			<button on:click={() => goto('/create')} class="nav-button bg-card-gradient">
+				Create
+				<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
+			</button>
 		{/if}
 
 		<!-- Profile -->
@@ -112,3 +121,31 @@
 		<div class="snap-end" />
 	</div>
 </div>
+
+<style type="postcss">
+	.nav-button {
+		@apply relative font-semibold h-1/2 grid place-items-center px-4 snap-center w-32;
+	}
+
+	.nav-button:not(:hover) > div {
+		display: none;
+	}
+
+	.nav-button:active > div {
+		display: none;
+	}
+
+	.nav-button:active {
+		@apply border-none animate-none;
+
+		background-image: linear-gradient(
+				10deg,
+				rgba(167, 148, 255, 0) 11.15%,
+				rgba(167, 148, 255, 0.93) 57.47%,
+				rgba(142, 119, 247, 0) 127.41%,
+				rgba(142, 119, 247, 0) 127.41%,
+				rgba(167, 148, 255, 0) 127.41%
+			),
+			linear-gradient(0deg, #67d4f8, #67d4f8) !important;
+	}
+</style>

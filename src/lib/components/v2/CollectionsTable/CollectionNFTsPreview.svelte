@@ -78,7 +78,7 @@
 	on:scroll={(e) => {
 		handleScroll(e);
 	}}
-	class="w-[413px] 2xl:w-[515px] flex flex-row items-center gap-x-3 2xl:gap-x-4  overflow-x-auto overflow-y-hidden mb-5 2xl:mb-6"
+	class="w-[413px] 2xl:w-[515px] flex flex-row items-center gap-x-3 2xl:gap-x-4 overflow-x-auto overflow-y-hidden blue-scrollbar mb-5 2xl:mb-6 min-h-[64px]"
 >
 	{#if nfts?.length > 0}
 		{#each nfts as nft}

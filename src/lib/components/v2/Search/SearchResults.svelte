@@ -7,6 +7,7 @@
 	import { selectedResultTab } from '$stores/search';
 	import { compactNumberFormat } from '$utils/api';
 	import HinataBadge from '$icons/hinata-badge.svelte';
+	import VerifiedBadge from '$icons/verified-badge.svelte';
 
 	export let tabs = ['Collections', 'NFTs', 'Users'];
 	export let query: string;
@@ -81,16 +82,20 @@
 				{/each}
 				<button
 					on:click={() => {
-						$page.url.searchParams.set('query', query);
+						$page.url.searchParams.set('query', query.replace('#', '%23'));
 						query = '';
 						goto(`/search/collections?${$page.url.searchParams}`);
 					}}
 					class="flex items-center gap-4"
 				>
-					<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] border border-white bg-gradient-a flex items-center justify-center">
-						<Search class="w-5 h-6" />
+					<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] bg-gradient-a flex items-center justify-center relative see-all">
+						<Search class="w-6 h-6 icon" />
+						<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 					</div>
-					<p class="font-medium text-xs 2xl:text-base leading-5 2xl:leading-6">See all collections</p>
+
+					<div class="font-medium text-xs 2xl:text-base leading-5 2xl:leading-6 ">
+						<span>See all collections</span>
+					</div>
 				</button>
 			{:else}
 				<div class="w-full flex justify-center py-12 text-lg font-semibold">No collections found.</div>
@@ -123,14 +128,15 @@
 				{/each}
 				<button
 					on:click={() => {
-						$page.url.searchParams.set('query', query);
+						$page.url.searchParams.set('query', query.replace('#', '%23'));
 						query = '';
 						goto(`/search/nfts?${$page.url.searchParams}`);
 					}}
 					class="flex items-center gap-4"
 				>
-					<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] border border-white bg-gradient-a flex items-center justify-center">
-						<Search class="w-5 h-6" />
+					<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] bg-gradient-a flex items-center justify-center relative see-all">
+						<Search class="w-6 h-6 icon" />
+						<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 					</div>
 					<p class="font-medium text-xs 2xl:text-base leading-5 2xl:leading-6">See all NFTs</p>
 				</button>
@@ -162,7 +168,7 @@
 								<div class="flex items-center gap-x-2">
 									<p>{result?.username}</p>
 									{#if result?.status === 'VERIFIED'}
-										<HinataBadge class="w-5 2xl:w-6 h-5 2xl:h-6" />
+										<VerifiedBadge class="w-5 2xl:w-6 h-5 2xl:h-6" />
 									{/if}
 								</div>
 								<p class="opacity-70">
@@ -174,14 +180,15 @@
 				{/each}
 				<button
 					on:click={() => {
-						$page.url.searchParams.set('query', query);
+						$page.url.searchParams.set('query', query.replace('#', '%23'));
 						query = '';
 						goto(`/search/users?${$page.url.searchParams}`);
 					}}
 					class="flex items-center gap-4"
 				>
-					<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] border border-white bg-gradient-a flex items-center justify-center">
-						<Search class="w-5 h-6" />
+					<div class="w-11 h-11 2xl:w-12 2xl:h-12 min-w-[40px] bg-gradient-a flex items-center justify-center relative see-all">
+						<Search class="w-6 h-6 icon" />
+						<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 					</div>
 					<p class="font-medium text-xs 2xl:text-base leading-5 2xl:leading-6">See all users</p>
 				</button>
@@ -191,3 +198,27 @@
 		{/if}
 	</div>
 </div>
+
+<style type="postcss">
+	.see-all:not(:hover) > div {
+		display: none;
+	}
+
+	.see-all:active > div {
+		display: none;
+	}
+
+	.see-all:active {
+		@apply border-none animate-none;
+
+		background-image: linear-gradient(
+				10deg,
+				rgba(167, 148, 255, 0) 11.15%,
+				rgba(167, 148, 255, 0.93) 57.47%,
+				rgba(142, 119, 247, 0) 127.41%,
+				rgba(142, 119, 247, 0) 127.41%,
+				rgba(167, 148, 255, 0) 127.41%
+			),
+			linear-gradient(0deg, #67d4f8, #67d4f8) !important;
+	}
+</style>

@@ -68,13 +68,13 @@ export const globalSearch = async (query: string, limit?: number) => {
 
 export const globalCollectionsSearch = async (query: string, limit?: number, page?: number) => {
 	try {
-		const params = {
-			query: query ? query : undefined,
+		let params = {
+			name: query ? query : undefined,
 			limit: limit ? limit : undefined,
 			page: page ? page : undefined,
 		};
 
-		const res = await axios.get(getApiUrl('latest', 'search/collections'), { params });
+		const res = await axios.get(getApiUrl('latest', 'collections/search'), { params });
 		return res.data.data;
 	} catch {
 		throw new Error('Failed to search for collections');

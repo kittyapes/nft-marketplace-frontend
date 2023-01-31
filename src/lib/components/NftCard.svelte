@@ -144,8 +144,9 @@
 </script>
 
 <div
-	class="relative overflow-hidden group !border-2 border-transparent"
+	class="relative overflow-hidden group !border-2 border-transparent "
 	class:gradient-border={isHovered && !disabled}
+	class:animate-gradient-border-spin={isHovered && !disabled}
 	class:mb-4={gridStyle === 'masonry'}
 	in:fade
 	on:click={handleClick}
