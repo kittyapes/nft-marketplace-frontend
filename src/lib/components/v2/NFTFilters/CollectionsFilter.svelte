@@ -64,19 +64,23 @@
 				<div class="flex-grow whitespace-nowrap truncate">
 					<div class="flex flex-row items-center justify-between">
 						<h2>{collection?.name}</h2>
-						<h2>{collection?.totalVol} ETH</h2>
+						<h2>{collection?.stats?.localTotalVol + collection?.stats?.externalTotalVol} ETH</h2>
 					</div>
 
 					<div class="flex flex-row items-center justify-between font-semibold leading-7 2xl:leading-9 text-[#CECECE]">
-						<h3 class="">Floor: {collection.floorPrice} ETH</h3>
+						<h3 class="">Floor: {collection?.stats?.localFloorPrice ?? 0} ETH</h3>
 
 						<h3>
-							${collection.total24hours}K
+							${collection?.stats?.total24Vol / 1000 ?? 0}K
 
-							{#if collection?.['24hourPercent'] > 0}
-								<span class="text-[#6FCF97]">{collection?.['24hourPercent']}%</span>
-							{:else if collection?.['24hourPercent'] < 0}
-								<span class="text-[#EB5757]">{collection?.['24hourPercent']}%</span>
+							{#if collection?.stats?.vol24HrChange ?? 0 > 0}
+								<span class="text-[#6FCF97]">
+									{collection?.stats?.vol24HrChange * 100 ?? 0}%
+								</span>
+							{:else if collection?.stats?.vol24HrChange ?? 0 < 0}
+								<span class="text-[#EB5757]">
+									{collection?.stats?.vol24HrChange * 100 ?? 0}%
+								</span>
 							{/if}
 						</h3>
 					</div>
