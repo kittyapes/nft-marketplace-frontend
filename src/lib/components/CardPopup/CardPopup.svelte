@@ -4,6 +4,7 @@
 	import type { CardOptions } from '$interfaces/ui';
 	import { likedNftIds } from '$stores/user';
 	import { listingToCardOptions, sanitizeNftData } from '$utils/adapters/cardOptions';
+	import { apiGetCollectionBySlug } from '$utils/api/collection';
 	import { getNft } from '$utils/api/nft';
 	import { makeHttps } from '$utils/ipfs';
 	import { getIconUrl } from '$utils/misc/getIconUrl';
@@ -101,7 +102,13 @@
 
 		isFetchingNfts = true;
 		const res = {} as FetchFunctionResult;
-		res.res = await getListings({ collectionId: options.nfts[0].collectionData.id }, page, 10);
+
+		let collectionId = options.nfts[0].collectionData.id;
+		if (!collectionId) {
+			const collectionData = await apiGetCollectionBySlug(options.nfts[0].collectionData.slug);
+			collectionId = collectionData.id;
+		}
+		res.res = await getListings({ collectionId }, page, 10);
 
 		const currentIndex = res.res.findIndex((nft) => nft.nfts[0].nftId === options.nfts[0].onChainId);
 		if (currentIndex > -1) {
