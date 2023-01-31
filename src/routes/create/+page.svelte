@@ -26,7 +26,7 @@
 	import { writable } from 'svelte/store';
 
 	const dragDropText = 'Drag and drop an image <br> or <span class="text-gradient">click to browse</span>';
-	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string; collectionId: string }>(null);
+	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }>(null);
 
 	let dumpDraft = false;
 
@@ -36,7 +36,7 @@
 	let nftData: Partial<NftDraft> = {
 		name: '' || $nftDraft?.name,
 		quantity: 1 || $nftDraft?.quantity,
-		collectionId: $nftDraft?.collectionId,
+		collectionAddress: $nftDraft?.collectionAddress,
 		description: $nftDraft?.description,
 		assetPreview: $nftDraft?.assetPreview,
 		thumbnailPreview: $nftDraft?.thumbnailPreview,
@@ -91,9 +91,9 @@
 		// Make sure to visually select the selected collection
 		let collectionToSelect = null;
 
-		if ($nftDraft?.collectionId) {
+		if ($nftDraft?.collectionAddress) {
 			// User could have previously selected a collection which is now saved in a draft
-			collectionToSelect = available.find((i) => i.collectionId === $nftDraft.collectionId);
+			collectionToSelect = available.find((i) => i.collectionAddress === $nftDraft.collectionAddress);
 		} else if (available.length) {
 			// If no collection is saved in draft, select the first available collection
 			collectionToSelect = available[0];
@@ -121,7 +121,7 @@
 			creator: $currentUserAddress,
 			thumbnail: nftData.thumbnailBlob,
 			asset: nftData.assetBlob,
-			collectionId: selectedCollectionRow.collectionId,
+			collectionAddress: selectedCollectionRow.collectionAddress,
 		});
 
 		if (!createNftRes) {
@@ -163,7 +163,7 @@
 			return;
 		} else {
 			selectedCollectionRow = event.detail;
-			nftData.collectionId = selectedCollectionRow.collectionId;
+			nftData.collectionAddress = selectedCollectionRow.collectionAddress;
 		}
 	};
 
