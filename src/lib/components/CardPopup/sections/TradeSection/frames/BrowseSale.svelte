@@ -6,7 +6,7 @@
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
 	import { hasEnoughBalance } from '$utils/contracts/token';
-	import { salePurchase } from '$utils/flows/salePurchase';
+	import { salePurchase } from '$utils/flows/salePurchaseFlow';
 	import { dateToTimestamp, listingExistsOnChain } from '$utils/listings';
 	import { isFuture } from '$utils/misc/time';
 	import { notifyError } from '$utils/toast';

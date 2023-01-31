@@ -8,6 +8,11 @@ import { notifyError, notifySuccess } from '$utils/toast';
 import dayjs from 'dayjs';
 import { noTryAsync } from 'no-try';
 
+/**
+ * Purchase a gas based listing.
+ * @param listing Listing data gathered from API.
+ * @returns A boolean indicating if the purchase was successful.
+ */
 async function purchaseNormal(listing: Listing) {
 	const onChainListingData = await getChainListingData(listing.listingId);
 
@@ -23,24 +28,16 @@ async function purchaseNormal(listing: Listing) {
 		notifyError('Insufficient Allowance to Execute Transaction.');
 
 		// No need to proceed if there's no allowance
-		return;
-	}
-
-	const [err, res] = await noTryAsync(() => contractPurchaseListing(listing.listingId));
-
-	if (err) {
-		console.error(err);
-		notifyError('Failed to purchase listing on chain!');
 		return false;
 	}
 
-	notifySuccess('Purchased listing on chain!');
+	await contractPurchaseListing(listing.listingId);
 
 	return true;
 }
 
 /**
- *
+ * Purchase a gasless listing.
  * @param listing Listing data gathered from API.
  * @returns A boolean indicating if the purchase was successful.
  */
@@ -76,18 +73,56 @@ async function purchaseGasless(listing: Listing) {
 		listing.signature,
 	];
 
-	await contractCaller(marketplaceContract, 'purchaseListing', 150, 1, ...args);
+	try {
+		await contractCaller(marketplaceContract, 'purchaseListing', 150, 1, ...args);
+	} catch (err) {
+		if (err.message.includes('INVALID_SIGNATURE')) {
+			console.error('Gasless listing purchase error: Invalid signature submitted to contract.');
+			notifyError('Sorry, the listing does not contain a valid signature.');
+
+			return false;
+		}
+
+		if (err.message.includes('USED_SIGNATURE')) {
+			console.error('Gasless listing purchase error: Signature already used.');
+			notifyError('Sorry, this listing has already been purchased.');
+
+			return false;
+		}
+
+		throw err;
+	}
 
 	return true;
 }
 
+/**
+ * Purchase a gasless or gas based listing.
+ * @param listing Listing data gathered from API.
+ * @returns A boolean indicating if the purchase was successful.
+ */
 export async function salePurchase(listing: Listing): Promise<boolean> {
 	const fn = listing.chainStatus === 'GASLESS' ? purchaseGasless : purchaseNormal;
 
+	let purchaseSuccess: boolean;
+
 	try {
-		return await fn(listing);
+		purchaseSuccess = await fn(listing);
 	} catch (err) {
+		if (err.code === 'ACTION_REJECTED') {
+			notifyError('You have rejected the transaction. Could not purchase the listing.');
+			return false;
+		}
+
 		console.error(err);
 		notifyError('Sorry, failed to make your purchase. An unexpected error has occured.');
+
+		return false;
 	}
+
+	if (purchaseSuccess) {
+		notifySuccess('Successfully purchased listing.');
+	}
+
+	return purchaseSuccess;
 }

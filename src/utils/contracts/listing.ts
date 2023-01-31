@@ -127,13 +127,6 @@ export async function getOnChainListing(listingId: string): Promise<ChainListing
 	return onChainObj;
 }
 
-export async function contractCancelListing(listingId: string) {
-	console.debug('[Listing] Cancelling listing with ID: ' + listingId);
-
-	const contract = getContract('marketplace');
-	await contractCaller(contract, 'cancelListing', 150, 1, listingId);
-}
-
 export async function contractUpdateListing(listingId: string, payTokenAddress: string, props: Partial<ConfigurableListingProps>) {
 	console.debug(`[Info] Will update listing with ID ${listingId} with the following props:`, props);
 

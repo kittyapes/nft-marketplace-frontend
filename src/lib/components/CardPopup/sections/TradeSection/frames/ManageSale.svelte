@@ -3,15 +3,14 @@
 	import InfoBox from '$lib/components/InfoBox.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { contractCancelListing } from '$utils/contracts/listing';
 	import { isListingExpired } from '$utils/misc';
 	import { getInterval } from '$utils/scheduler';
-	import { notifyError } from '$utils/toast';
 	import { createEventDispatcher, onDestroy } from 'svelte';
 	import EditSale from './EditSale.svelte';
 	import Success from './Success.svelte';
 	import { userHasRole } from '$utils/auth/userRoles';
-	import { dateToTimestamp, listingExistsOnChain } from '$utils/listings';
+	import { dateToTimestamp } from '$utils/listings';
+	import { cancelListingFlow } from '$utils/flows/cancelListingFlow';
 
 	const dispatch = createEventDispatcher();
 
@@ -30,21 +29,14 @@
 	let cancellingListing = false;
 
 	async function cancelListing() {
-		if (!listingExistsOnChain(options.rawListingData.listingId)) {
-			notifyError('Failed to Cancel Listing: Listing is no longer valid (not on chain)');
-			return;
-		}
-
 		cancellingListing = true;
 
-		try {
-			await contractCancelListing(options.listingData.onChainId);
+		const cancelSuccess = await cancelListingFlow(options.rawListingData);
+
+		if (cancelSuccess) {
 			dispatch('set-frame', { component: Success });
 			options.staleResource.set({ reason: 'cancelled' });
 			dispatch('force-expire');
-		} catch (err) {
-			console.error(err);
-			notifyError('Failed to cancel listing!');
 		}
 
 		cancellingListing = false;
