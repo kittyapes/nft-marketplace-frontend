@@ -125,7 +125,7 @@
 				<HomepageCarousel />
 			</div>
 
-			<NftCard options={trendingListingsData[trendingListingsData.length - 1]} />
+			<NftCard options={trendingListingsData[1] || trendingListingsData[0]} />
 		</div>
 	{/if}
 

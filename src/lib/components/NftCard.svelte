@@ -108,7 +108,7 @@
 	let fileType;
 
 	function updateTimerHtml() {
-		timerHtml = sanitizeHtmlInternal(getListingCardTimerHtml(options.listingData?.startTime, options.listingData?.duration, gridStyle));
+		timerHtml = sanitizeHtmlInternal(getListingCardTimerHtml(options.listingData?.startTime, options.listingData?.duration, options.listingData?.endTime, gridStyle));
 	}
 
 	const preload = async (src: string) => {
@@ -225,7 +225,7 @@
 		<div class="flex flex-row items-center justify-between mt-2.5 ">
 			{#if timerHtml?.includes('Starts in')}
 				{@html timerHtml}
-			{:else if timerHtml?.includes('Ends in')}
+			{:else if timerHtml?.includes('Ends in') || timerHtml?.includes('Expired')}
 				<div class="flex flex-col items-start">
 					<h4 class="text-gradient font-bold whitespace-nowrap {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
 						{#if options.listingData?.listingType === 'auction'}
