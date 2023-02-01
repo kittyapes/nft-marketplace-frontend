@@ -3,8 +3,8 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
-	import { get, writable } from 'svelte/store';
-	import { getTrendingListings, type Listing } from '$utils/api/listing';
+	import { writable } from 'svelte/store';
+	import { getListingCreators, getTrendingListings, type Listing, type ListingCreatorsData } from '$utils/api/listing';
 	import NftList from '$lib/components/NftList.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
@@ -12,21 +12,16 @@
 	import TopCollections from '$components/v2/TopCollections/+page.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
-	import type { PublicProfileData } from '$interfaces/userData';
-	import { searchUsersByName } from '$utils/api/search/globalSearch';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import { goto } from '$app/navigation';
 	import NotificationBar from '$lib/components/NotificationBar.svelte';
 	import { getNotifications, updateNotificationAsUser, type UserNotification } from '$utils/api/notifications';
 	import dayjs from 'dayjs';
+	import { notifyError } from '$utils/toast';
 
 	let trendingListings = writable<Listing[]>([]);
 	let loadedTrendingListings = writable(false);
 	let trendingListingsData = [];
-
-	let hottestCreators = writable<{ users: PublicProfileData[]; totalCount: number }>(null);
-	let loadedHottestCreators = writable(false);
-	const hottestCreatorsCount = 3;
 
 	let userNotification = writable<UserNotification>(null);
 	let loadedUserNotification = writable(false);
@@ -41,10 +36,17 @@
 		loadedTrendingListings.set(true);
 	};
 
+	let hottestCreators: ListingCreatorsData;
+
 	const getHottestCreatorsData = async () => {
-		loadedHottestCreators.set(false);
-		hottestCreators.set(await searchUsersByName('ste', hottestCreatorsCount));
-		loadedHottestCreators.set(true);
+		const listingCreatorsRes = await getListingCreators();
+
+		if (listingCreatorsRes.err) {
+			notifyError('Failed to load hottest creators.');
+			return;
+		}
+
+		hottestCreators = listingCreatorsRes.data.data;
 	};
 
 	const getUserNotification = async () => {
@@ -134,31 +136,40 @@
 
 	<!-- Hottest creators section -->
 	<!-- TODO fix this properly -->
-	{#if $loadedHottestCreators && $loadedTrendingListings && trendingListingsData.length >= 2}
-		<div class="pt-20 w-full h-full" in:slide>
-			<h2 class="text-2xl leading-7">Hottest creators</h2>
-			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
-				{#each get(hottestCreators).users as creator}
-					<div class="p-4 bg-card-gradient flex gap-4 w-full cursor-pointer">
-						<div class="w-1/2">
-							<FeaturedArtistCard
-								on:click={() => goto(`/profile/${creator.address}`)}
-								creatorData={{
-									name: creator.username,
-									address: creator.address,
-									coverImg: creator.coverUrl,
-									profileImg: creator.thumbnailUrl,
-									created: 0,
-								}}
-							/>
-						</div>
-						<NftCard options={trendingListingsData[0]} />
-						<NftCard options={trendingListingsData[trendingListingsData.length - 1]} />
+	<div class="pt-20 w-full h-full" in:slide>
+		<h2 class="text-2xl leading-7">Hottest creators</h2>
+		<div class="flex flex-col gap-4 mt-10 justify-center h-full">
+			{#each hottestCreators?.users || [] as user}
+				<div class="p-4 bg-card-gradient flex gap-4 w-full cursor-pointer">
+					<div class="w-1/2">
+						<FeaturedArtistCard
+							on:click={() => goto(`/profile/${user.address}`)}
+							creatorData={{
+								name: user.username,
+								address: user.address,
+								coverImg: user.coverUrl,
+								profileImg: user.thumbnailUrl,
+								created: null,
+							}}
+						/>
 					</div>
-				{/each}
-			</div>
+
+					<!-- Obviously refactor later -->
+					{#if user.createdListings[0]}
+						{#await listingToCardOptions(user.createdListings[0]) then options}
+							<NftCard {options} />
+						{/await}
+					{/if}
+
+					{#if user.createdListings[1]}
+						{#await listingToCardOptions(user.createdListings[1]) then options}
+							<NftCard {options} />
+						{/await}
+					{/if}
+				</div>
+			{/each}
 		</div>
-	{/if}
+	</div>
 
 	<!-- Latest blog posts -->
 	<div class=" mt-60 mb-16">

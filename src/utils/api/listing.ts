@@ -1,7 +1,8 @@
 import type { EthAddress, IsoTime, TokenStandard } from '$interfaces';
 import type { ApiNftData } from '$interfaces/apiNftData';
 import axios from 'axios';
-import { getApiUrl } from '.';
+import { getApiUrl, type ApiCallResult, api } from '.';
+import type { UserData } from '$interfaces/userData';
 
 export type ListingType = 'sale' | 'auction' | 'raffle';
 
@@ -172,4 +173,19 @@ export async function getTrendingListings(count?: number) {
 	console.log(res);
 
 	return res.data.data as Listing[];
+}
+
+export interface ListingCreatorsData {
+	users: (UserData & { createdListings: Listing })[];
+}
+
+interface ListingCreatorsRes {
+	error: boolean;
+	data: ListingCreatorsData;
+}
+
+export async function getListingCreators(): Promise<ApiCallResult<ListingCreatorsRes>> {
+	const res = await api.get(getApiUrl(null, 'users/listingCreators'));
+
+	return res;
 }
