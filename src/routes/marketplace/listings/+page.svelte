@@ -21,6 +21,8 @@
 	import { cubicInOut } from 'svelte/easing';
 	import { onMount } from 'svelte';
 
+	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
+
 	let showFilters = true;
 	let sortOptions: { title: string; action?: any }[] = [
 		{
@@ -40,13 +42,14 @@
 			action: () => {},
 		},
 	];
+
 	let data = [];
 	let reachedEnd = false;
 	let isLoading = true;
 	let index = 1;
 	let fetchOptions: ListingFetchOptions = {};
 	let lastFetchOptions = '';
-	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
+
 	const fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await getListings({ ...fetchOptions, listingStatus: ['UNLISTED', 'ACTIVE'] }, index, 20);

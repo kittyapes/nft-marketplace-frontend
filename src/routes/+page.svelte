@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { slide } from 'svelte/transition';
+	import { fly, slide } from 'svelte/transition';
 	import { onDestroy, onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
@@ -18,6 +18,7 @@
 	import { getNotifications, updateNotificationAsUser, type UserNotification } from '$utils/api/notifications';
 	import dayjs from 'dayjs';
 	import { notifyError } from '$utils/toast';
+	import { currentUserAddress } from '$stores/wallet';
 
 	let trendingListings = writable<Listing[]>([]);
 	let loadedTrendingListings = writable(false);
@@ -80,10 +81,13 @@
 	onDestroy(() => clearInterval(notificationFetchingInterval));
 
 	onMount(async () => {
-		getUserNotification();
 		getHottestCreatorsData();
 		getTrendingListingsData();
 	});
+
+	$: if ($currentUserAddress) {
+		getUserNotification();
+	}
 </script>
 
 <MetaTags
@@ -109,7 +113,7 @@
 
 <!-- Notifications -->
 {#if $loadedUserNotification && $userNotification && !$userNotificationCleared}
-	<div class="w-full text-white mt-20" transition:slide|local>
+	<div class="w-full text-white mt-20" in:fly={{ x: -2000, duration: 1000 }}>
 		<NotificationBar notification={$userNotification} wrapperClass={'h-16'} on:click={() => clearNotification()} />
 	</div>
 {/if}
@@ -125,7 +129,7 @@
 				<HomepageCarousel />
 			</div>
 
-			<NftCard options={trendingListingsData[trendingListingsData.length - 1]} />
+			<NftCard options={trendingListingsData[1] || trendingListingsData[0]} />
 		</div>
 	{/if}
 

@@ -7,7 +7,7 @@ export function isFuture(timestamp: number) {
 	return dayjs(timestamp * 1000).isAfter(dayjs());
 }
 
-export function getListingCardTimerHtml(startDate: number, duration: number, gridStyle: 'normal' | 'dense' | 'masonry' = 'normal') {
+export function getListingCardTimerHtml(startDate: number, duration: number, endDate: number, gridStyle: 'normal' | 'dense' | 'masonry' = 'normal') {
 	// removed since it seems it is causing issues
 	// const cleanup = (s) => s.replace(/0./g, '');
 
@@ -31,8 +31,7 @@ export function getListingCardTimerHtml(startDate: number, duration: number, gri
 	}
 
 	if (isFuture(startDate + duration)) {
-		const endDate = dayjs.unix(startDate + duration);
-		const endingIn = dayjs.duration(endDate.unix() - dayjs().unix(), 'seconds');
+		const endingIn = dayjs.duration(endDate - dayjs().unix(), 'seconds');
 
 		const in_ = endingIn.format('D[d] H[h] m[m]');
 

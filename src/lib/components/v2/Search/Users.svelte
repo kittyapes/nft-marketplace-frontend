@@ -78,6 +78,7 @@
 				profileImg: user.thumbnailUrl,
 				created: 0,
 			}}
+			includeCreatedNumber={false}
 		/>
 	{/each}
 
