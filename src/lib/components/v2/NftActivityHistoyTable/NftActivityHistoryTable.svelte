@@ -83,16 +83,16 @@
 				{/each}
 			{/if}
 
-			{#if displayEndReachedMsg}
+			{#if displayEndReachedMsg && data.length}
 				<!-- I don't know why * 3, but it works :) -->
 				<div class="flex items-center justify-center font-semibold col-span-5 opacity-50" style="height: {skeletonLength * 3}rem !important;">You have reached the end of this NFT's history.</div>
 			{/if}
-
-			{#if !data.length && !skeleton}
-				<div class="self-stretch justify-center col-span-5 opacity-50">No NFT activity history.</div>
-			{/if}
 		</div>
 	</div>
+
+	{#if !data.length && !skeleton}
+		<div class="font-semibold opacity-50 h-full grid place-items-center">No NFT activity history.</div>
+	{/if}
 </div>
 
 <style type="postcss">
