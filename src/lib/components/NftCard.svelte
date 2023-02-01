@@ -4,21 +4,17 @@
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { likedNftIds, refreshLikedNfts } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
-	import { apiGetCollectionBySlug } from '$utils/api/collection';
 	import { apiHideNft, apiRevealNft } from '$utils/api/nft';
 	import { sanitizeHtmlInternal } from '$utils/html';
 	import { makeHttps } from '$utils/ipfs';
-	import { addUrlParam } from '$utils/misc/addUrlParam';
-	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { getListingCardTimerHtml } from '$utils/misc/time';
 	import { favoriteNft } from '$utils/nfts/favoriteNft';
-	import { setPopup, updatePopupProps } from '$utils/popup';
+	import { setPopup } from '$utils/popup';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { walletConnected } from '$utils/wallet';
 	import { noTryAsync } from 'no-try';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import CardPopup from './CardPopup/CardPopup.svelte';
 	import { reject } from 'lodash-es';
 	import Loader from '$icons/loader.svelte';
 	import EthV2 from '$icons/eth-v2.svelte';
@@ -212,7 +208,7 @@
 
 	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient h-full">
 		<h4 class="text-gradient font-bold truncate  {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
-			{options.nfts[0].collectionData.name || 'N/A'}
+			{options.nfts[0].collectionData?.name || 'N/A'}
 		</h4>
 
 		<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">

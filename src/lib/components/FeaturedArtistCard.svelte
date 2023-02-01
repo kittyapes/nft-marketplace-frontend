@@ -44,11 +44,12 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="flex flex-col justify-between items-end">
 				<button on:click|stopPropagation={handleFollow}>
 					<PrimaryButton extButtonClass="w-40">{followed ? 'Unfollow' : 'Follow'}</PrimaryButton>
 				</button>
-				<div class="text-xl">Created {creatorData.created}</div>
+				<div class="pr-2 font-medium">Created {creatorData.created || 'N/A'}</div>
 			</div>
 		</div>
 	</div>
