@@ -99,7 +99,6 @@
 	</div>
 
 	<div class="mt-4 flex-grow overflow-hidden">
-		<!-- <NftActivityHistoryTable data={nftActivityHistoryData} skeleton={isLoading} on:end-reached={handleEndReached} displayEndReachedMsg={historyEndReached} /> -->
-		<NftActivityHistoryTable data={getMockData()} skeleton={isLoading} on:end-reached={handleEndReached} displayEndReachedMsg={historyEndReached} />
+		<NftActivityHistoryTable data={nftActivityHistoryData} skeleton={isLoading} on:end-reached={handleEndReached} displayEndReachedMsg={historyEndReached} />
 	</div>
 </div>
