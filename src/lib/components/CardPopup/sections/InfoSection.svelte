@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import type { CardOptions } from '$interfaces/ui';
 	import { getMarketFee } from '$utils/contracts/listing';
 	import { getContractData } from '$utils/misc/getContract';
@@ -28,27 +27,6 @@
 	// the bundle section
 	$: singleNft = options.nfts?.[0];
 
-	$: properties = [
-		{
-			name: 'Creator',
-			value: singleNft.creator || options.rawResourceData.metadata?.creator?.address,
-			onclick: () => {
-				closePopup();
-				if (properties[0].value) goto('/profile/' + properties[0].value);
-			},
-		},
-		{ name: 'Owner', value: 'Unknown' },
-		{
-			name: 'Collection Name',
-			value: singleNft.collectionData?.name,
-			onclick: () => {
-				closePopup();
-				goto('/collections/' + singleNft.collectionData.slug);
-			},
-		},
-		{ name: 'Edition', value: singleNft.metadata?.edition },
-	];
-
 	$: technicalProperties = [
 		{ name: 'Contract Address', value: singleNft.contractAddress },
 		{ name: 'Token Standard', value: singleNft.contractType },
@@ -63,6 +41,8 @@
 			value: balance !== null ? `${ownedOrListedNfts} of ${supply}` : null,
 		},
 	];
+
+	$: creatorAddress = singleNft.creator || options.rawResourceData.metadata?.creator?.address;
 
 	onMount(async () => {
 		// When its not a listing
@@ -88,13 +68,25 @@
 
 <div class="flex-grow h-full pr-4 overflow-y-auto blue-scrollbar text-white">
 	<!-- Properties -->
-	<div class="gap-4 flex">
-		{#each properties as prop}
-			<div class="overflow-hidden max-w-[10rem] {prop.onclick ? 'clickable' : ''}" on:click={prop.onclick}>
-				<div class="text-lg text-gradient font-medium whitespace-nowrap overflow-hidden ">{prop.name}</div>
-				<div class="whitespace-nowrap truncate overflow-hidden">{prop.value || 'N/A'}</div>
+	<div class="gap-16 grid grid-cols-4">
+		<div class="overflow-hidden">
+			<div class="--property-name text-gradient">Creator</div>
+			<div class="--property-value"><a href={'/profile/' + creatorAddress} on:click={() => closePopup()}>{creatorAddress || 'N/A'}</a></div>
+		</div>
+
+		<div class="overflow-hidden">
+			<div class="--property-name text-gradient">Owner</div>
+			<div class="--property-value">Unknown</div>
+		</div>
+
+		<div class="overflow-hidden col-span-2">
+			<div class="--property-name text-gradient">Collection Name</div>
+			<div class="--property-value">
+				<a href={'/collections/' + singleNft.collectionData.slug} on:click={() => closePopup()}>
+					{singleNft.collectionData?.name}
+				</a>
 			</div>
-		{/each}
+		</div>
 	</div>
 
 	<div class="text-gradient text-lg font-medium mt-16">Description</div>
@@ -130,6 +122,14 @@
 </div>
 
 <style>
+	.--property-name {
+		@apply text-lg font-medium whitespace-nowrap overflow-hidden;
+	}
+
+	.--property-value {
+		@apply whitespace-nowrap truncate overflow-hidden;
+	}
+
 	.attr-block-bg {
 		background: linear-gradient(226.41deg, rgba(103, 212, 248, 0.05) 40.04%, rgba(142, 119, 247, 0.05) 92.94%),
 			linear-gradient(190.19deg, rgba(103, 212, 248, 0.05) 2.45%, rgba(142, 119, 247, 0.05) 102.25%), linear-gradient(188.04deg, rgba(103, 212, 248, 0.05) 5.57%, rgba(142, 119, 247, 0.05) 92.06%),

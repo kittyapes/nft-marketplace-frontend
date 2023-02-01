@@ -15,7 +15,6 @@
 	import type { PublicProfileData } from '$interfaces/userData';
 	import { searchUsersByName } from '$utils/api/search/globalSearch';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
-	import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
 	import { goto } from '$app/navigation';
 	import NotificationBar from '$lib/components/NotificationBar.svelte';
 	import { getNotifications, updateNotificationAsUser, type UserNotification } from '$utils/api/notifications';
@@ -177,7 +176,7 @@
 		{/if}
 	</div>
 
-	<MonthlyAirdropWidget />
+	<!-- <MonthlyAirdropWidget /> -->
 
 	<!-- Tending nfts Section -->
 	{#if $loadedTrendingListings && trendingListingsData?.length > 0}
