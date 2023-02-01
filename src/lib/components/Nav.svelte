@@ -55,7 +55,7 @@
 		<div class="flex-grow" />
 
 		<!-- Marketplace -->
-		<a id="marketplace-link" href="/marketplace/collections" class="nav-button bg-card-gradient">
+		<a id="marketplace-link" href="/marketplace/listings" class="nav-button bg-card-gradient">
 			Marketplace
 			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 		</a>
