@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { slide } from 'svelte/transition';
+	import { fly, slide } from 'svelte/transition';
 	import { onDestroy, onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
@@ -113,7 +113,7 @@
 
 <!-- Notifications -->
 {#if $loadedUserNotification && $userNotification && !$userNotificationCleared}
-	<div class="w-full text-white mt-20" transition:slide|local>
+	<div class="w-full text-white mt-20" in:fly={{ x: -2000, duration: 1000 }}>
 		<NotificationBar notification={$userNotification} wrapperClass={'h-16'} on:click={() => clearNotification()} />
 	</div>
 {/if}
