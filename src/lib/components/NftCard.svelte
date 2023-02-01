@@ -169,7 +169,7 @@
 					<button class="p-3 clickable h-12 w-40 truncate" on:click|stopPropagation={() => goto('/profile/' + options.listingData?.sellerAddress)}>{options.listingData?.sellerAddress}</button>
 				{/if}
 				{#if !hideLikes}
-					<div class="text-transparent clickable p-3 h-12" class:text-white={isUserLiked} on:click|stopPropagation={favNFT}>
+					<div class="text-transparent clickable p-3 h-12 z-20" class:text-white={isUserLiked} on:click|stopPropagation|preventDefault={favNFT}>
 						<Heart />
 					</div>
 				{/if}
