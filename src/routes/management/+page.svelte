@@ -127,7 +127,7 @@
 			isClaimed: boolean;
 		}>;
 		sort: Partial<{
-			sortBy: 'ALPHABETICAL' | 'CREATED_AT';
+			sortBy: 'ALPHABETICAL' | 'CREATED_AT' | 'ONE_DAY_VOLUME' | 'SEVEN_DAYS_VOLUME' | 'THIRTY_DAYS_VOLUME' | 'TOTAL_VOLUME';
 			sortReversed: boolean;
 		}>;
 		name: string;

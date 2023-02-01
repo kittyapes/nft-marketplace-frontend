@@ -93,7 +93,7 @@
 		<ErrorPage {errorCode} />
 	{:else}
 		<!-- <PageTransition {url}>-->
-		<div class="mx-auto flex flex-col min-h-screen">
+		<div class="mx-auto flex flex-col min-h-screen max-w-screen-fhd">
 			<slot />
 			<div class="flex-grow" />
 			<Toast />
