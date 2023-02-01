@@ -1,8 +1,8 @@
-<script>
-	import ActionMenu from '$lib/components/ActionMenu.svelte';
+<script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	export let periods = ['24h', '7d', '30d', 'All'];
-	export let selectedPeriod = periods[0];
+	export let periods: ('24h' | '7d' | '30d' | 'All')[] = ['24h', '7d', '30d', 'All'];
+	export let selectedPeriod: '24h' | '7d' | '30d' | 'All' = periods[0];
+
 	const dispatch = createEventDispatcher();
 </script>
 
