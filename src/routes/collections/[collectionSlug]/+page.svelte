@@ -120,7 +120,7 @@
 	/>
 {/if}
 
-<main class="px-36 pt-24 mx-auto text-white">
+<main class="pt-24 text-white px-20">
 	<div class="w-full overflow-hidden h-96">
 		{#if collectionData?.backgroundImageUrl}
 			<img class="w-full h-full object-cover object-center" src={collectionData?.backgroundImageUrl} alt="Collection cover." />

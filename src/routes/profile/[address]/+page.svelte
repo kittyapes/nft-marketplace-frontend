@@ -395,7 +395,7 @@
 							{/if}
 						{/if}
 						<div class="relative">
-							<div class="" on:click|stopPropagation={() => (shareButtonOpen = !shareButtonOpen)} bind:this={elemOpenBtn}>
+							<div class="bg-transparent" on:click|stopPropagation={() => (shareButtonOpen = !shareButtonOpen)} bind:this={elemOpenBtn}>
 								<PrimaryButton extButtonClass="w-20">
 									<ShareV2 />
 								</PrimaryButton>
