@@ -9,7 +9,7 @@
 
 <div class="relative">
 	{#if !skeleton}
-		<a class="flex flex-col h-full overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-[#FFFFFF1E] lg:gap-32 bg-card-gradient" href={'/blog/' + data.segment} in:fade>
+		<a class="flex flex-col h-full overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-[#FFFFFF1E] lg:gap-20 bg-card-gradient" href={'/blog/' + data.segment} in:fade>
 			<div class="flex-shrink-0 h-full max-w-2xl">
 				<img src={data.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" use:fadeImageOnLoad />
 			</div>
