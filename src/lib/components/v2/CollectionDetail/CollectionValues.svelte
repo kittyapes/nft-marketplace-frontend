@@ -49,7 +49,7 @@
 
 <div class="flex flex-row items-center text-base leading-6 stat-wrapper">
 	{#each Object.keys(collectionStats) as statKey}
-		<div class="hover:bg-main-gradient flex flex-col items-center justify-center border-gradient border-r-0 w-32 h-28">
+		<div class="hover:bg-main-gradient flex flex-col items-center justify-center border-gradient border-r-0 w-28 h-20">
 			<p class="text-base leading-6">{collectionStats[statKey].stat}</p>
 			<h2 class="flex items-center gap-x-2">
 				{#if collectionStats[statKey].symbol}

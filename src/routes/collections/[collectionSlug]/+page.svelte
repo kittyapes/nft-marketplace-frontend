@@ -129,7 +129,7 @@
 		{/if}
 	</div>
 
-	<div class="w-full flex flex-row flex-wrap overflow-auto gap-y-5 items-center justify-between mt-12">
+	<div class="w-full flex flex-row flex-wrap overflow-auto gap-y-5 items-center justify-between mt-12 space-x-10">
 		<CollectionIdentity {collectionData} {creatorData} />
 		<CollectionValues {collectionData} />
 	</div>
