@@ -18,6 +18,7 @@
 	import { getNotifications, updateNotificationAsUser, type UserNotification } from '$utils/api/notifications';
 	import dayjs from 'dayjs';
 	import { notifyError } from '$utils/toast';
+	import { currentUserAddress } from '$stores/wallet';
 
 	let trendingListings = writable<Listing[]>([]);
 	let loadedTrendingListings = writable(false);
@@ -80,10 +81,13 @@
 	onDestroy(() => clearInterval(notificationFetchingInterval));
 
 	onMount(async () => {
-		getUserNotification();
 		getHottestCreatorsData();
 		getTrendingListingsData();
 	});
+
+	$: if ($currentUserAddress) {
+		getUserNotification();
+	}
 </script>
 
 <MetaTags

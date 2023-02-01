@@ -2,6 +2,9 @@ import type { EthAddress } from '$interfaces';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { api, getApiUrl, type ApiCallResult } from '.';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 export type Notification = {
 	_id: string;
@@ -17,7 +20,7 @@ export type PublishNotificationOptions = {
 	content: string;
 	location?: string;
 	targets: string[];
-	// MUST be local time
+	// MUST be UTC time
 	publishAt: string;
 	// MUST be local time
 	expireAt?: string;
@@ -37,7 +40,7 @@ export type PublishNotificationRes = {
 };
 
 export async function publishNotification(options: PublishNotificationOptions): Promise<ApiCallResult<PublishNotificationRes>> {
-	options.publishAt = dayjs(options.publishAt).format('YYYY-MM-DDTHH:mm:ss.SSS');
+	options.publishAt = dayjs(options.publishAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS');
 	options.expireAt = options.expireAt ? dayjs(options.expireAt).format('YYYY-MM-DDTHH:mm:ss.SSS') : undefined;
 
 	const res = await api.post(getApiUrl(null, '/notifications'), options, await getAxiosConfig());
