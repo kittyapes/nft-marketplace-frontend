@@ -40,7 +40,7 @@
 	let hottestCreators: ListingCreatorsData;
 
 	const getHottestCreatorsData = async () => {
-		const listingCreatorsRes = await getListingCreators();
+		const listingCreatorsRes = await getListingCreators({ limit: 3 });
 
 		if (listingCreatorsRes.err) {
 			notifyError('Failed to load hottest creators.');

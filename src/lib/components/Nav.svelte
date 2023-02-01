@@ -55,16 +55,16 @@
 		<div class="flex-grow" />
 
 		<!-- Marketplace -->
-		<a id="marketplace-link" href="/marketplace/collections" class="nav-button bg-card-gradient">
+		<a id="marketplace-link" href="/marketplace/listings" class="nav-button bg-card-gradient">
 			Marketplace
 			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 		</a>
 
 		<!-- Staking - HIDDEN FOR V1 -->
-		<a href="/staking" class="nav-button bg-card-gradient">
+		<!-- <a href="/staking" class="nav-button bg-card-gradient">
 			Staking
 			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
-		</a>
+		</a> -->
 
 		<!-- Airdrop HIDDEN FOR NOW -->
 		<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->

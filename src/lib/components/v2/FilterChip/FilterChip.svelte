@@ -11,7 +11,7 @@
 </script>
 
 <!-- The padding in this file is so retarted so that the button is easily clickable. -->
-<div class="border pl-4 items-center inline-flex max-w-max gradient-border">
+<div class="border pl-4 items-center inline-flex max-w-max gradient-border h-full">
 	<div class="select-none text-white">
 		{text}
 	</div>

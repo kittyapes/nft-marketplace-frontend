@@ -184,8 +184,8 @@ interface ListingCreatorsRes {
 	data: ListingCreatorsData;
 }
 
-export async function getListingCreators(): Promise<ApiCallResult<ListingCreatorsRes>> {
-	const res = await api.get(getApiUrl(null, 'users/listingCreators'));
+export async function getListingCreators({ limit = 10, page = 1 }: { limit?: number; page?: number }): Promise<ApiCallResult<ListingCreatorsRes>> {
+	const res = await api.get(getApiUrl(null, 'users/listingCreators'), { params: { limit, page } });
 
 	return res;
 }
