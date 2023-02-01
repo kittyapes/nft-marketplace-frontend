@@ -3,8 +3,9 @@
 
 	import CheckFilterDropdown from '$lib/components/v2/CheckFilterDropdown/CheckFilterDropdown.svelte';
 	import FilterChip from '$lib/components/v2/FilterChip/FilterChip.svelte';
+	import { getMockData } from '$lib/components/v2/NftActivityHistoyTable/NftActivityHistoryTable';
 	import NftActivityHistoryTable from '$lib/components/v2/NftActivityHistoyTable/NftActivityHistoryTable.svelte';
-	import type { NftActivityHistoryTableRowData } from '$lib/components/v2/NftActivityHistoyTable/types';
+	import type { NftActivityHistoryTableRowData } from '$lib/components/v2/NftActivityHistoyTable/NftActivityHistoryTable';
 	import { toNftActivityHistoryTableRowData } from '$utils/adapters';
 	import { apiGetNftActivityHistory } from '$utils/api/nft';
 	import { onMount } from 'svelte';
@@ -98,6 +99,7 @@
 	</div>
 
 	<div class="mt-4 flex-grow overflow-hidden">
-		<NftActivityHistoryTable data={nftActivityHistoryData} skeleton={isLoading} on:end-reached={handleEndReached} displayEndReachedMsg={historyEndReached} />
+		<!-- <NftActivityHistoryTable data={nftActivityHistoryData} skeleton={isLoading} on:end-reached={handleEndReached} displayEndReachedMsg={historyEndReached} /> -->
+		<NftActivityHistoryTable data={getMockData()} skeleton={isLoading} on:end-reached={handleEndReached} displayEndReachedMsg={historyEndReached} />
 	</div>
 </div>

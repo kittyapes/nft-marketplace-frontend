@@ -64,6 +64,8 @@
 		"lodash-es": "^4.17.21",
 		"no-try": "^3.1.0",
 		"npm": "^9.3.0",
+		"resize-observer-polyfill": "^1.5.1",
+		"simplebar": "^6.2.0",
 		"social-links": "^1.4.5",
 		"svelte-inview": "^3.0.1",
 		"svelte-loading-spinners": "^0.1.7",
