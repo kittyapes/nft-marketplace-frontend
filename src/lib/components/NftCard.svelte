@@ -24,6 +24,7 @@
 	import EthV2 from '$icons/eth-v2.svelte';
 	import { goto } from '$app/navigation';
 	import { openCardPopupFromOptions } from './CardPopup/CardPopup';
+	import ThreeDots from '$icons/three-dots.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -158,15 +159,8 @@
 	on:mouseout={() => (isHovered = false)}
 	on:blur={() => (isHovered = false)}
 >
-	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-50" />
-	<!--
-		// Owned by user
-		{#if menuItems?.length}
-			<button on:click={toggleDots} class="w-8 h-8 hover:opacity-50" transition:fade|local={{ duration: 150 }}>
-				<ThreeDots />
-			</button>
-		{/if} 
-	-->
+	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-10" />
+
 	<div
 		class:normal-nft-media={gridStyle === 'normal'}
 		class:dense-nft-media={gridStyle === 'dense'}
@@ -213,14 +207,24 @@
 		{/await}
 	</div>
 
-	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient h-full">
-		<h4 class="text-gradient font-bold truncate  {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
-			{options.nfts[0].collectionData.name || 'N/A'}
-		</h4>
+	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient min-h-full">
+		<div class="flex justify-between items-center">
+			<div class="">
+				<h4 class="text-gradient font-bold truncate  {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
+					{options.nfts[0].collectionData.name || 'N/A'}
+				</h4>
 
-		<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
-			{options?.nfts?.[0]?.name}
-		</h3>
+				<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7 h-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4 h-4'}">
+					{options?.nfts?.[0]?.name}
+				</h3>
+			</div>
+			<!--
+			{#if options.resourceType === 'nft' && options.rawResourceData.owner.toLowerCase() === $currentUserAddress.toLowerCase() && menuItems?.length}
+				<button on:click|preventDefault={toggleDots} class="w-8 h-8 hover:opacity-50" transition:fade|local={{ duration: 150 }}>
+					<ThreeDots />
+				</button>
+			{/if}-->
+		</div>
 
 		<div class="flex flex-row items-center justify-between mt-2.5 ">
 			{#if timerHtml?.includes('Starts in')}
