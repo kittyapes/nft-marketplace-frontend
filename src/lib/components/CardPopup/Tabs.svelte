@@ -25,10 +25,10 @@
 	export let disabledTabs: Tab['id'][] = [];
 </script>
 
-<div class="flex flex-grow-0 space-x-6">
+<div class="grid grid-cols-4 h-20">
 	{#each tabs as tab}
 		<button
-			class="flex items-center space-x-3 btn outline-none focus-visible:bg-color-purple focus-visible:bg-opacity-30 px-3 py-2 rounded"
+			class="flex items-center space-x-3 btn outline-none focus-visible:bg-color-purple focus-visible:bg-opacity-30 py-2 rounded"
 			on:click={() => (selectedTab = tab)}
 			disabled={disabledTabs.includes(tab.id)}
 		>
