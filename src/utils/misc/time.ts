@@ -11,9 +11,10 @@ export function getListingCardTimerHtml(startDate: number, duration: number, gri
 	// removed since it seems it is causing issues
 	// const cleanup = (s) => s.replace(/0./g, '');
 
-	// Starting in...
 	const labelStyles = gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4';
 	const valueStyles = gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4';
+
+	// Starting in...
 	if (isFuture(startDate)) {
 		const inSeconds = startDate - dayjs().unix();
 		const in_ = dayjs.duration(inSeconds, 's').format('D[d] H[h] m[m]');

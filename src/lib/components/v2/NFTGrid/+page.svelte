@@ -70,14 +70,14 @@
 	}
 
 	.normal {
-		@apply grid grid-cols-[repeat(auto-fit,345px)] gap-4;
+		@apply grid grid-cols-[repeat(auto-fill,minmax(345px,1fr))] gap-4;
 	}
 
 	.dense {
-		@apply grid grid-cols-[repeat(auto-fit,260px)] gap-4;
+		@apply grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4;
 	}
 
 	.masonry {
-		@apply columns-[260px] gap-4;
+		@apply columns-[260px];
 	}
 </style>

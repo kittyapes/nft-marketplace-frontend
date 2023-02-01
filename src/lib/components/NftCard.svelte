@@ -111,7 +111,7 @@
 	let fileType;
 
 	function updateTimerHtml() {
-		timerHtml = sanitizeHtmlInternal(getListingCardTimerHtml(options.listingData.startTime, options.listingData.duration));
+		timerHtml = sanitizeHtmlInternal(getListingCardTimerHtml(options.listingData?.startTime, options.listingData?.duration, gridStyle));
 	}
 
 	const preload = async (src: string) => {
@@ -136,17 +136,19 @@
 	onMount(() => {
 		if (options.resourceType !== 'listing') return;
 
-		timerInterval = setInterval(updateTimerHtml, 15_000);
 		updateTimerHtml();
+		timerInterval = setInterval(updateTimerHtml, 15_000);
 	});
+
+	$: if (gridStyle) {
+		updateTimerHtml();
+	}
 
 	onDestroy(() => clearInterval(timerInterval));
 </script>
 
 <div
-	class="relative overflow-hidden group !border-2 border-transparent "
-	class:gradient-border={isHovered && !disabled}
-	class:animate-gradient-border-spin={isHovered && !disabled}
+	class="relative overflow-hidden group wrapper"
 	class:mb-4={gridStyle === 'masonry'}
 	in:fade
 	on:click={handleClick}
@@ -156,6 +158,7 @@
 	on:mouseout={() => (isHovered = false)}
 	on:blur={() => (isHovered = false)}
 >
+	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-50" />
 	<!--
 		// Owned by user
 		{#if menuItems?.length}
@@ -168,7 +171,7 @@
 		class:normal-nft-media={gridStyle === 'normal'}
 		class:dense-nft-media={gridStyle === 'dense'}
 		class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}
-		class="w-full h-full mx-auto transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} relative"
+		class="w-full h-full mx-auto transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} "
 	>
 		{#if isHovered && !disabled}
 			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60 text-white" transition:fade={{ duration: 200 }}>
@@ -305,13 +308,20 @@
 	.normal-nft-details {
 		@apply py-2.5 2xl:py-3 px-4 2xl:px-5;
 	}
+
 	.dense-nft-details {
 		@apply py-1.5 px-2.5;
 	}
+
 	.normal-nft-media {
 		@apply h-[400px];
 	}
+
 	.dense-nft-media {
 		@apply h-44 2xl:h-56;
+	}
+
+	.group:not(:hover) > .gradient-border {
+		display: none;
 	}
 </style>

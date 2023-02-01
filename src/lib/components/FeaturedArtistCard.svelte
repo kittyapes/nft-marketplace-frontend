@@ -20,7 +20,7 @@
 	}
 </script>
 
-<button class="w-full flex flex-col h-full border-2 border-transparent relative wrapper min-w-min" on:click>
+<button class="w-full flex flex-col h-full relative wrapper min-w-min" on:click>
 	<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 
 	<div class="w-full bg-dark-gradient h-[400px]">
