@@ -24,7 +24,7 @@
 
 <div class="flex flex-row gap-x-5 items-end">
 	<div class="w-28 h-28 flex items-center justify-center overflow-hidden ">
-		<img src={collectionData?.logoImageUrl || '/svg/icons/guest-avatar.svg'} class="objeect-center object-cover" alt="Collection creator avatar." />
+		<img src={collectionData?.logoImageUrl || '/svg/icons/guest-avatar.svg'} class="object-center object-cover" alt="Collection creator avatar." />
 	</div>
 	<div class="flex flex-col gap-y-6">
 		<div class="flex flex-row items-center gap-x-4">
