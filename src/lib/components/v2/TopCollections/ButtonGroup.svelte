@@ -10,7 +10,7 @@
 	{#if periods?.length}
 		{#each periods as period}
 			<button
-				class="w-[5.8vw] h-[2.9vw] font-medium text-[1.16vw] leading-[1.7vw] hover:active"
+				class="w-16 h-12 font-medium text-2xl leading-7 hover:active"
 				class:active={period === selectedPeriod}
 				on:click={() => {
 					selectedPeriod = period;
