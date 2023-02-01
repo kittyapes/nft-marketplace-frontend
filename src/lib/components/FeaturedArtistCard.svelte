@@ -10,8 +10,10 @@
 		address: string;
 		coverImg: string;
 		profileImg: string;
-		created: number;
+		created?: number;
 	};
+
+	export let includeCreatedNumber = true;
 
 	export let followed = false;
 
@@ -49,7 +51,9 @@
 				<button on:click|stopPropagation={handleFollow}>
 					<PrimaryButton extButtonClass="w-40">{followed ? 'Unfollow' : 'Follow'}</PrimaryButton>
 				</button>
-				<div class="pr-2 font-medium">Created {creatorData.created || 'N/A'}</div>
+				{#if includeCreatedNumber}
+					<div class="pr-2 font-medium">Created {creatorData.created || 'N/A'}</div>
+				{/if}
 			</div>
 		</div>
 	</div>
