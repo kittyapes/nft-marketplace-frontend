@@ -33,6 +33,7 @@
 	// Helpers
 	let imgLoaded = false;
 	let isHovered = false;
+	let isFavoriting = false;
 
 	// Menu
 	let dotsOpened = false;
@@ -59,20 +60,28 @@
 			setPopup(WalletNotConnectedPopup, { unique: true });
 			return;
 		}
+		isFavoriting = true;
+
+		isUserLiked = !isUserLiked;
 
 		const [err, res] = await noTryAsync(() => favoriteNft(options.nfts[0].fullId));
 
 		if (err) {
 			notifyError(err.message);
 			console.error(err);
+			isUserLiked = !isUserLiked;
 		} else if (res.data.message) {
 			notifySuccess('Unfavorited NFT.');
+			isUserLiked = false;
 		} else {
 			notifySuccess('Favorited NFT.');
+			isUserLiked = true;
 		}
 
 		await refreshLikedNfts($currentUserAddress);
 		dispatch('refresh-tabs', { tabs: ['favorites'] });
+
+		isFavoriting = false;
 	}
 
 	// Hiding
@@ -145,7 +154,7 @@
 </script>
 
 <div
-	class="relative overflow-hidden group wrapper"
+	class="relative overflow-hidden group wrapper z-0"
 	class:mb-4={gridStyle === 'masonry'}
 	in:fade
 	on:click={handleClick}
@@ -155,7 +164,7 @@
 	on:mouseout={() => (isHovered = false)}
 	on:blur={() => (isHovered = false)}
 >
-	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-10" />
+	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-[7]" />
 
 	<div
 		class:normal-nft-media={gridStyle === 'normal'}
@@ -164,14 +173,17 @@
 		class="w-full h-full mx-auto transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} "
 	>
 		{#if isHovered && !disabled}
-			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60 text-white" transition:fade={{ duration: 200 }}>
+			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60 text-white z-[6]" />
+			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60 text-white z-[8]" transition:fade={{ duration: 200 }}>
 				{#if options.resourceType === 'listing'}
-					<button class="p-3 clickable h-12 w-40 truncate" on:click|stopPropagation={() => goto('/profile/' + options.listingData?.sellerAddress)}>{options.listingData?.sellerAddress}</button>
+					<button class="p-3 clickable h-12 w-40 truncate z-[8]" on:click|stopPropagation|preventDefault={() => goto('/profile/' + options.listingData?.sellerAddress)}>
+						{options.listingData?.sellerAddress}
+					</button>
 				{/if}
 				{#if !hideLikes}
-					<div class="text-transparent clickable p-3 h-12 z-20" class:text-white={isUserLiked} on:click|stopPropagation|preventDefault={favNFT}>
+					<button class="text-transparent clickable p-3 h-12 z-[8] disabled:opacity-50" class:text-white={isUserLiked} disabled={isFavoriting} on:click|stopPropagation|preventDefault={favNFT}>
 						<Heart />
-					</div>
+					</button>
 				{/if}
 			</div>
 		{/if}
@@ -321,7 +333,7 @@
 		@apply h-44 2xl:h-56;
 	}
 
-	.group:not(:hover) > .gradient-border {
+	.wrapper:not(:hover) > .gradient-border {
 		display: none;
 	}
 </style>
