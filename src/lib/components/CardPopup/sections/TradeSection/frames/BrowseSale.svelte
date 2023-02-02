@@ -62,6 +62,8 @@
 			}
 		}
 	});
+
+	$: console.log('rawListingDat', options.rawListingData);
 </script>
 
 <div class="flex flex-col text-white aspect-1 pb-px">

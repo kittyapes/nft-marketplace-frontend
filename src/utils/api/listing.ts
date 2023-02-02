@@ -120,6 +120,9 @@ export interface Listing {
 
 	// The timestamp that
 	signatureExpiryTimestamp?: boolean;
+
+	// Whether the listing has been found on chain by the FE
+	foundOnChain?: boolean;
 }
 
 export interface ListingFetchOptions {

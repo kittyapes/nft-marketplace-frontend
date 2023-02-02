@@ -5,7 +5,7 @@ import { getHinataMetadata, getMetadataFromUri, getOnChainUri, makeHttps } from 
 import { scientificToDecimal } from '$utils/misc/scientificToDecimal';
 import dayjs from 'dayjs';
 import { writable } from 'svelte/store';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { random } from 'lodash-es';
 
 export interface SanitizedNftData {
@@ -29,8 +29,14 @@ export interface SanitizedNftData {
 	fullId: string;
 }
 
-export function toShortDisplayPrice(floatingPrice: string) {
-	const bigNumber = ethers.utils.parseEther(floatingPrice);
+export function toShortDisplayPrice(floatingPrice: string): string | null {
+	let bigNumber: BigNumber;
+
+	try {
+		bigNumber = ethers.utils.parseEther(floatingPrice);
+	} catch {
+		return null;
+	}
 
 	const maxCharsOnDisplay = 10;
 	const thresholdStr = '0.0001';

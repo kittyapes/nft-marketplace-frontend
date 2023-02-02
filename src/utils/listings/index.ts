@@ -54,17 +54,16 @@ export async function listingExistsOnChain(id: string): Promise<boolean> {
  * @param apiListingData Listing data retrieved from API.
  * @returns A copy of the original object with updated values.
  */
-export async function getListingUpdatedWithChainData(apiListingData: Listing): Promise<Listing | void> {
+export async function getListingUpdatedWithChainData(apiListingData: Listing): Promise<Listing> {
 	const listing = cloneDeep(apiListingData);
 
 	const onChainListing: ChainListingData = await getChainListingData(listing.listingId);
 
 	// If the listing is not found on chain, do nothing
 	if (onChainListing.id.eq(ethers.constants.Zero)) {
-		return;
+		listing.foundOnChain = false;
+		return listing;
 	}
-
-	console.log({ newOnChain: onChainListing });
 
 	const updatedListing: Listing = {
 		...listing,
@@ -81,6 +80,7 @@ export async function getListingUpdatedWithChainData(apiListingData: Listing): P
 			quantity: parseInt(onChainListing.quantity.toString()),
 		},
 		nfts: [],
+		foundOnChain: true,
 	};
 
 	for (const [index, tokenId] of onChainListing.tokenIds.entries()) {
@@ -99,4 +99,31 @@ export async function getListingUpdatedWithChainData(apiListingData: Listing): P
 	}
 
 	return updatedListing;
+}
+
+/**
+ * Determines whether a listing is still valid depending on its expiry and whether
+ * it has been found on chain.
+ * @param listing A listing object gathered from the API.
+ * @param options Can be used to ignore certain properties.
+ * @returns Boolean indicating if the listing is valid.
+ */
+export function isListingValid(listing: Listing, options?: { ignoreExpiry: boolean; ignoreFoundOnChain: boolean }): boolean {
+	options = {
+		ignoreExpiry: false,
+		ignoreFoundOnChain: false,
+		...options,
+	};
+
+	const endDatetime = dayjs(listing.startTime).add(listing.duration, 'seconds');
+
+	if (dayjs() > endDatetime && !options.ignoreExpiry) {
+		return false;
+	}
+
+	if (listing.chainStatus !== 'GASLESS' && !listing.foundOnChain && !options.ignoreFoundOnChain) {
+		return false;
+	}
+
+	return true;
 }

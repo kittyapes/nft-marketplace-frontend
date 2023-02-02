@@ -66,10 +66,9 @@
 		// If the listing is on-chain listing, update datapoints which are available
 		// on the chain with values from the chain
 		if (options.listingData?.onChainId && !options.listingData.isGasless) {
-			const updatedListingData = await getListingUpdatedWithChainData(options.rawListingData);
+			options.rawListingData = await getListingUpdatedWithChainData(options.rawListingData);
 
-			if (updatedListingData) {
-				options.rawListingData = updatedListingData;
+			if (options.rawListingData.foundOnChain) {
 				console.debug('Refreshed API listing data with data from chain.');
 			} else {
 				notifyError('Failed to load listing from chain. Listing may be invalid.');
