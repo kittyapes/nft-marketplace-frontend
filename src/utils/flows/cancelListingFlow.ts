@@ -5,7 +5,7 @@ import { getContract } from '$utils/misc/getContract';
 import { notifyError, notifySuccess } from '$utils/toast';
 
 async function cancelNormal(listing: Listing): Promise<boolean> {
-	const listingFoundOnChain = listingExistsOnChain(listing.listingId);
+	const listingFoundOnChain = await listingExistsOnChain(listing.listingId);
 
 	if (!listingFoundOnChain) {
 		notifyError('Failed to Cancel Listing: Listing is no longer valid (not on chain).');
