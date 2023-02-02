@@ -63,7 +63,7 @@
 			<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="absolute h-full object-cover object-top w-full animated-image" />
 		</div>
 
-		<div class="flex gap-3 absolute bottom-0 left-0 px-3 w-full items-center">
+		<div class="flex gap-3 absolute bottom-0 left-0 px-3 w-full items-center z-[15]">
 			{#each data as _, index}
 				<div class="flex-grow flex items-end group cursor-pointer h-6 pb-2">
 					<div class="bg-white bg-opacity-50 h-[3px] group-hover:h-4 flex-grow transition-all" style="transition: height 0.1s;" on:click={() => handleButtonClick(index)}>
