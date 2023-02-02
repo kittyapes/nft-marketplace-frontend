@@ -119,7 +119,7 @@
 	</div>
 {/if}
 
-<div class="px-36 pt-32 w-full grid place-items-center text-white">
+<div class="px-36 pt-32 w-full grid place-items-center text-white" class:pt-0={$loadedUserNotification && $userNotification && !$userNotificationCleared}>
 	<!-- Hero section -->
 	<!-- TODO fix this properly -->
 	{#if $loadedTrendingListings && trendingListingsData.length >= 2}
