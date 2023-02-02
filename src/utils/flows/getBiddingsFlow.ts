@@ -35,12 +35,8 @@ export async function getBiddingsFlow(listingId: string): Promise<BidRow[]> {
 		bidderName: bid.user?.username,
 		bidderAddress: bid.bidder,
 		imageUrl: bid.user?.thumbnailUrl,
-		tokenAmount: scientificToDecimal(bid.formatBid),
-		timeAgo: dayjs
-			.duration(dayjs(bid.bidAt * 1000).diff(dayjs(), 's'), 's')
-			.humanize(true)
-			.replace('a few seconds ago', 'now')
-			.replace('minutes', 'm'),
+		tokenAmount: scientificToDecimal(bid.formatBidPrice),
+		timeAgo: dayjs.duration(dayjs(bid.bidAt).diff(dayjs(), 's'), 's').humanize(true).replace('a few seconds ago', 'now').replace('minutes', 'm'),
 	}));
 
 	return adaptedBids;

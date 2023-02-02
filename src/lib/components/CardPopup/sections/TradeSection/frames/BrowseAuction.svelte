@@ -9,17 +9,15 @@
 	import { appSigner, currentUserAddress } from '$stores/wallet';
 	import { getBiddingsFlow, type BidRow } from '$utils/flows/getBiddingsFlow';
 	import { placeBidFlow } from '$utils/flows/placeBidFlow';
-	import { dateToTimestamp, listingExistsOnChain } from '$utils/listings';
+	import { dateToTimestamp, isListingValid } from '$utils/listings';
 	import { parseToken } from '$utils/misc/priceUtils';
 	import { isFuture } from '$utils/misc/time';
 	import { notifyError } from '$utils/toast';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
+	import { BigNumber } from 'ethers';
 	import { onMount } from 'svelte';
 
 	export let options: CardOptions;
-	export let listedNfts: number;
-
-	$: listingExpired = !isFuture(options.listingData.endTime);
 
 	let bidAmount: string;
 	let bidAmountValid: boolean;
@@ -32,8 +30,7 @@
 		let bidSuccess: boolean;
 
 		try {
-			// await placeBidFlow(options.listingData.onChainId, bidAmount, options.listingData.transactionType);
-			const res = await placeBidFlow(options.listingData.onChainId, bidAmount, 'GASLESS');
+			const res = await placeBidFlow(options.listingData.onChainId, bidAmount, null);
 
 			if (res && res.error) {
 				bidSuccess = false;
@@ -61,21 +58,26 @@
 		const payTokenAddress = options.rawListingData.paymentTokenAddress;
 
 		const parsedValue = parseToken(v, payTokenAddress, null);
-		const parsedPrice = parseToken(options.rawListingData.listing.price, payTokenAddress, null);
+		const parsedPrice = BigNumber.from(options.rawListingData.listing.price);
 		const parsedHighestBid = parseToken(biddings?.[0]?.tokenAmount || '0', payTokenAddress, null);
 
+		console.log(parsedValue, parsedPrice, parsedHighestBid);
+		console.log(1);
 		if ([parsedValue, parsedPrice, parsedHighestBid].some((v) => !v)) {
 			return false;
 		}
 
+		console.log(1);
 		if (parsedValue.lt(parsedPrice)) {
 			return false;
 		}
 
+		console.log(1);
 		if (parsedHighestBid && parsedValue.lte(parsedHighestBid)) {
 			return false;
 		}
 
+		console.log(1);
 		if ($currentUserAddress && $currentUserAddress.toLowerCase() === biddings[0]?.bidderAddress) {
 			bidError = 'You are already the top bidder.';
 			return false;
@@ -108,7 +110,7 @@
 		<div class="font-semibold">
 			<div class="">Quantity</div>
 			<div class="flex items-center justify-start gap-2">
-				{listedNfts}
+				{options.rawListingData.nfts[0].amount}
 			</div>
 		</div>
 
@@ -123,26 +125,26 @@
 
 	<div class="flex gap-2">
 		<button class="grid w-12 h-12 p-2 border place-items-center" disabled><EthV2 /></button>
-		<Input class="border border-opacity-20" placeholder="Enter amount" bind:value={bidAmount} validator={bidValidator} bind:valid={bidAmountValid} disabled={listingExpired} />
+		<Input class="border border-opacity-20" placeholder="Enter amount" bind:value={bidAmount} validator={bidValidator} bind:valid={bidAmountValid} disabled={!isListingValid(options.rawListingData)} />
 	</div>
 
 	<div class="flex gap-2 mt-4">
 		{#if $appSigner}
 			<div class="relative w-full" on:pointerover={() => (hoveringPlaceBid = true)} on:pointerleave={() => (hoveringPlaceBid = false)}>
-				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || listingExpired || isPlacingBid || !!bidError || !listingExistsOnChain(options.rawListingData.listingId)}>
+				<PrimaryButton on:click={placeBid} disabled={!bidAmountValid || !bidAmount || isPlacingBid || !!bidError || !isListingValid(options.rawListingData)}>
 					{#if isPlacingBid}
 						<ButtonSpinner />
 					{/if}
 					Place Bid
 				</PrimaryButton>
 
-				{#if hoveringPlaceBid && bidError && listingExistsOnChain(options.rawListingData.listingId)}
+				{#if hoveringPlaceBid && bidError && isListingValid(options.rawListingData)}
 					<div class="absolute top-4">
 						<InfoBubble>{bidError}</InfoBubble>
 					</div>
 				{/if}
 
-				{#if hoveringPlaceBid && !listingExistsOnChain(options.rawListingData.listingId)}
+				{#if hoveringPlaceBid && !isListingValid(options.rawListingData)}
 					<div class="absolute top-4">
 						<InfoBubble>Sorry, this listing is no longer valid</InfoBubble>
 					</div>
