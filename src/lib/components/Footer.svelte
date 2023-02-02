@@ -65,10 +65,10 @@
 					<div>Uniswap</div>
 					<ArrowLinkGradient />
 				</a>
-				<a href="/" class="flex gap-2 items-center clickable">
+				<!-- <a href="/" class="flex gap-2 items-center clickable">
 					<div>AscendEx</div>
 					<ArrowLinkGradient />
-				</a>
+				</a> -->
 			</div>
 		</div>
 	</div>
