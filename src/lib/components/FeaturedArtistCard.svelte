@@ -13,7 +13,7 @@
 		created?: number;
 	};
 
-	export let includeCreatedNumber = true;
+	export let includeCreatedNumber = false;
 
 	export let followed = false;
 

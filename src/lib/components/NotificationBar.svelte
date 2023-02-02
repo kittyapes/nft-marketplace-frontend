@@ -55,10 +55,10 @@
 
 	@keyframes primary {
 		0% {
-			right: 0%;
+			left: 0%;
 		}
 		100% {
-			right: -100%;
+			left: -100%;
 		}
 	}
 </style>

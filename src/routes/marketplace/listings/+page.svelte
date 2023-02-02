@@ -23,7 +23,7 @@
 
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 
-	let showFilters = true;
+	let showFilters = false;
 	let sortOptions: { title: string; action?: any }[] = [
 		{
 			title: 'Ending soon',

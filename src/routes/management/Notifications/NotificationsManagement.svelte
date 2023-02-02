@@ -50,6 +50,10 @@
 			return;
 		} else {
 			notifySuccess('Sucessfully published notification');
+			notificationMessage = '';
+			notificationTitle = '';
+			publishDate = null;
+			expireDate = null;
 		}
 
 		fetchNotifications();

@@ -55,6 +55,7 @@
 		const res = (await getNotifications()).data.data;
 
 		const notification = res.find((n) => !n.hasCleared && dayjs().isAfter(dayjs(n.publishAt)) && (!n.expireAt || dayjs().isBefore(dayjs(n.expireAt))));
+		userNotificationCleared.set(false);
 
 		if (!notification) {
 			userNotification.set(null);
@@ -118,7 +119,7 @@
 	</div>
 {/if}
 
-<div class="px-36 pt-32 w-full text-white">
+<div class="px-36 pt-32 w-full text-white" class:pt-0={$loadedUserNotification && $userNotification && !$userNotificationCleared}>
 	<div class="overflow-hidden">
 		<!-- Hero section -->
 		<!-- TODO fix this properly -->
