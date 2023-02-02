@@ -145,7 +145,7 @@
 </script>
 
 <div
-	class="relative overflow-hidden group wrapper"
+	class="relative overflow-hidden group"
 	class:mb-4={gridStyle === 'masonry'}
 	in:fade
 	on:click={handleClick}
@@ -161,7 +161,7 @@
 		class:normal-nft-media={gridStyle === 'normal'}
 		class:dense-nft-media={gridStyle === 'dense'}
 		class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}
-		class="w-full h-full mx-auto transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} "
+		class="w-full mx-auto transition bg-card-gradient select-none flex-shrink overflow-hidden {gridStyle !== 'masonry' ? 'aspect-1' : ''} "
 	>
 		{#if isHovered && !disabled}
 			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60 text-white" transition:fade={{ duration: 200 }}>
@@ -203,7 +203,7 @@
 		{/await}
 	</div>
 
-	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient min-h-full">
+	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient min-h-full flex-shrink-0">
 		<div class="flex justify-between items-center">
 			<div class="">
 				<h4 class="text-gradient font-bold truncate  {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
@@ -314,7 +314,7 @@
 	}
 
 	.normal-nft-media {
-		@apply h-[400px];
+		/* @apply h-[400px]; */
 	}
 
 	.dense-nft-media {

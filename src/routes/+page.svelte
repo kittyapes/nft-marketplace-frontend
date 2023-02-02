@@ -118,93 +118,96 @@
 	</div>
 {/if}
 
-<div class="px-36 pt-32 w-full grid place-items-center text-white">
-	<!-- Hero section -->
-	<!-- TODO fix this properly -->
-	{#if $loadedTrendingListings && trendingListingsData.length >= 2}
-		<div class="mb-16 flex gap-5 items-stretch w-full max-h-[550px]" in:slide|local={{ duration: 1000 }}>
-			<NftCard options={trendingListingsData[0]} />
+<div class="px-36 pt-32 w-full text-white">
+	<div class="overflow-hidden">
+		<!-- Hero section -->
+		<!-- TODO fix this properly -->
+		{#if $loadedTrendingListings && trendingListingsData.length >= 2}
+			<div class="mb-16 flex gap-5 items-stretch w-full max-h-[550px]" in:slide|local={{ duration: 1000 }}>
+				<NftCard options={trendingListingsData[0]} />
 
-			<div class="flex-grow">
-				<HomepageCarousel />
+				<div class="flex-grow">
+					<HomepageCarousel />
+				</div>
+
+				<NftCard options={trendingListingsData[1] || trendingListingsData[0]} />
+			</div>
+		{/if}
+
+		<!-- Top collections section -->
+		<div class="w-full">
+			<TopCollections />
+		</div>
+
+		<!-- Hottest creators section -->
+		<!-- TODO fix this properly -->
+		<div class="pt-20 w-full" in:slide>
+			<h2 class="text-2xl leading-7">Hottest creators</h2>
+
+			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
+				{#each hottestCreators?.users || [] as user}
+					<div class="p-4 bg-card-gradient grid grid-cols-4 gap-4 w-full cursor-pointer flex-wrap">
+						<div class="col-span-2">
+							<FeaturedArtistCard
+								on:click={() => goto(`/profile/${user.address}`)}
+								creatorData={{
+									name: user.username,
+									address: user.address,
+									coverImg: user.coverUrl,
+									profileImg: user.thumbnailUrl,
+									created: null,
+								}}
+							/>
+						</div>
+
+						<!-- Obviously refactor later -->
+						{#if user.createdListings[0]}
+							{#await listingToCardOptions(user.createdListings[0]) then options}
+								<NftCard {options} />
+							{/await}
+						{/if}
+
+						{#if user.createdListings[1]}
+							{#await listingToCardOptions(user.createdListings[1]) then options}
+								<NftCard {options} />
+							{/await}
+						{/if}
+					</div>
+				{/each}
+			</div>
+		</div>
+
+		<!-- Latest blog posts -->
+		<div class=" mt-60 mb-16">
+			<div class="flex items-end mb-12">
+				<h2 class="text-4xl leading-none text-white flex-grow">Latest blog post</h2>
+				<a href="/blog" class=" text-white gradient-underline text-lg relative">View latests posts</a>
 			</div>
 
-			<NftCard options={trendingListingsData[1] || trendingListingsData[0]} />
-		</div>
-	{/if}
-
-	<!-- Top collections section -->
-	<div class="w-full">
-		<TopCollections />
-	</div>
-
-	<!-- Hottest creators section -->
-	<!-- TODO fix this properly -->
-	<div class="pt-20 w-full h-full" in:slide>
-		<h2 class="text-2xl leading-7">Hottest creators</h2>
-		<div class="flex flex-col gap-4 mt-10 justify-center h-full">
-			{#each hottestCreators?.users || [] as user}
-				<div class="p-4 bg-card-gradient flex gap-4 w-full cursor-pointer">
-					<div class="w-1/2">
-						<FeaturedArtistCard
-							on:click={() => goto(`/profile/${user.address}`)}
-							creatorData={{
-								name: user.username,
-								address: user.address,
-								coverImg: user.coverUrl,
-								profileImg: user.thumbnailUrl,
-								created: null,
-							}}
-						/>
-					</div>
-
-					<!-- Obviously refactor later -->
-					{#if user.createdListings[0]}
-						{#await listingToCardOptions(user.createdListings[0]) then options}
-							<NftCard {options} />
-						{/await}
-					{/if}
-
-					{#if user.createdListings[1]}
-						{#await listingToCardOptions(user.createdListings[1]) then options}
-							<NftCard {options} />
-						{/await}
-					{/if}
+			{#if $blogPosts.length}
+				<div class="flex flex-col gap-10">
+					{#each $blogPosts.slice(0, 2) as post}
+						<BlogPostPreview data={post} />
+					{/each}
 				</div>
-			{/each}
-		</div>
-	</div>
-
-	<!-- Latest blog posts -->
-	<div class=" mt-60 mb-16">
-		<div class="flex items-end mb-12">
-			<h2 class="text-4xl leading-none text-white flex-grow">Latest blog post</h2>
-			<a href="/blog" class=" text-white gradient-underline text-lg relative">View latests posts</a>
+			{/if}
 		</div>
 
-		{#if $blogPosts.length}
-			<div class="flex flex-col gap-10">
-				{#each $blogPosts.slice(0, 2) as post}
-					<BlogPostPreview data={post} />
-				{/each}
+		<!-- <MonthlyAirdropWidget /> -->
+
+		<!-- Tending nfts Section -->
+		{#if $loadedTrendingListings && trendingListingsData?.length > 0}
+			<div class="my-24 w-full" in:slide>
+				<h2 class="text-4xl leading-7">Explore Market</h2>
+
+				<div class="mb-20">
+					<NftList options={trendingListingsData} />
+				</div>
+
+				<a href="/marketplace/listings" class="w-full"><PrimaryButton extButtonClass="w-full">Explore Marketplace</PrimaryButton></a>
 			</div>
 		{/if}
 	</div>
-
-	<!-- <MonthlyAirdropWidget /> -->
-
-	<!-- Tending nfts Section -->
-	{#if $loadedTrendingListings && trendingListingsData?.length > 0}
-		<div class="my-24 w-full" in:slide>
-			<h2 class="text-4xl leading-7">Explore Market</h2>
-
-			<div class="mb-20">
-				<NftList options={trendingListingsData} />
-			</div>
-
-			<a href="/marketplace/listings" class="w-full"><PrimaryButton extButtonClass="w-full">Explore Marketplace</PrimaryButton></a>
-		</div>
-	{/if}
 </div>
 
 <style type="postcss">
