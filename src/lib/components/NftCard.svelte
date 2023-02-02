@@ -154,7 +154,7 @@
 </script>
 
 <div
-	class="relative overflow-hidden group wrapper z-0"
+	class="relative overflow-hidden group h-full flex flex-col wrapper z-0"
 	class:mb-4={gridStyle === 'masonry'}
 	in:fade
 	on:click={handleClick}
@@ -167,10 +167,9 @@
 	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-[7]" />
 
 	<div
-		class:normal-nft-media={gridStyle === 'normal'}
 		class:dense-nft-media={gridStyle === 'dense'}
 		class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}
-		class="w-full h-full mx-auto transition bg-card-gradient select-none {gridStyle !== 'masonry' ? 'aspect-1' : ''} "
+		class="w-full mx-auto transition bg-card-gradient select-none flex-shrink flex-grow overflow-hidden {gridStyle !== 'masonry' ? 'aspect-1' : ''} "
 	>
 		{#if isHovered && !disabled}
 			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60 text-white z-[6]" />
@@ -215,7 +214,7 @@
 		{/await}
 	</div>
 
-	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient min-h-full">
+	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient flex-shrink-0">
 		<div class="flex justify-between items-center">
 			<div class="">
 				<h4 class="text-gradient font-bold truncate  {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
@@ -323,10 +322,6 @@
 
 	.dense-nft-details {
 		@apply py-1.5 px-2.5;
-	}
-
-	.normal-nft-media {
-		@apply h-[400px];
 	}
 
 	.dense-nft-media {
