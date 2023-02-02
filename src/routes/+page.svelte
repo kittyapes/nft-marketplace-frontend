@@ -123,7 +123,7 @@
 		<!-- Hero section -->
 		<!-- TODO fix this properly -->
 		{#if $loadedTrendingListings && trendingListingsData.length >= 2}
-			<div class="mb-16 flex gap-5 items-stretch w-full max-h-[550px]" in:slide|local={{ duration: 1000 }}>
+			<div class="mb-16 flex gap-5 items-stretch w-full max-h-[550px]">
 				<NftCard options={trendingListingsData[0]} />
 
 				<div class="flex-grow">
