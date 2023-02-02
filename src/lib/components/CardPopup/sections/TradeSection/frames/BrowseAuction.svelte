@@ -18,7 +18,6 @@
 	import { onMount } from 'svelte';
 
 	export let options: CardOptions;
-	export let listedNfts: number;
 
 	let bidAmount: string;
 	let bidAmountValid: boolean;
@@ -62,18 +61,23 @@
 		const parsedPrice = BigNumber.from(options.rawListingData.listing.price);
 		const parsedHighestBid = parseToken(biddings?.[0]?.tokenAmount || '0', payTokenAddress, null);
 
+		console.log(parsedValue, parsedPrice, parsedHighestBid);
+		console.log(1);
 		if ([parsedValue, parsedPrice, parsedHighestBid].some((v) => !v)) {
 			return false;
 		}
 
+		console.log(1);
 		if (parsedValue.lt(parsedPrice)) {
 			return false;
 		}
 
+		console.log(1);
 		if (parsedHighestBid && parsedValue.lte(parsedHighestBid)) {
 			return false;
 		}
 
+		console.log(1);
 		if ($currentUserAddress && $currentUserAddress.toLowerCase() === biddings[0]?.bidderAddress) {
 			bidError = 'You are already the top bidder.';
 			return false;
@@ -106,7 +110,7 @@
 		<div class="font-semibold">
 			<div class="">Quantity</div>
 			<div class="flex items-center justify-start gap-2">
-				{listedNfts}
+				{options.rawListingData.nfts[0].amount}
 			</div>
 		</div>
 
