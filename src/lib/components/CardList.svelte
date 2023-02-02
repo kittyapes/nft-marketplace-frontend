@@ -1,5 +1,5 @@
 <script lang="ts">
-	import LongLeftArrow from '$icons/long-left-arrow.svelte';
+	import ChevronLeft from '$icons/chevron-left.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { fade, slide } from 'svelte/transition';
 	import DiamondsLoader from './DiamondsLoader.svelte';
@@ -20,7 +20,7 @@
 <div class="flex justify-center w-full h-full text-white" in:fade>
 	<div class="w-4/5 py-20 ">
 		<button class="flex items-center gap-2 clickable " on:click={() => backFunction()}>
-			<LongLeftArrow />
+			<ChevronLeft />
 			<p class="text-sm font-semibold ">GO BACK</p>
 		</button>
 		<h1 class="mt-12 mb-4 text-5xl font-light">{title}</h1>
