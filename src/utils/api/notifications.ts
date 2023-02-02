@@ -20,9 +20,7 @@ export type PublishNotificationOptions = {
 	content: string;
 	location?: string;
 	targets: string[];
-	// MUST be UTC time
 	publishAt: string;
-	// MUST be local time
 	expireAt?: string;
 };
 
@@ -41,7 +39,7 @@ export type PublishNotificationRes = {
 
 export async function publishNotification(options: PublishNotificationOptions): Promise<ApiCallResult<PublishNotificationRes>> {
 	options.publishAt = dayjs(options.publishAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS');
-	options.expireAt = options.expireAt ? dayjs(options.expireAt).format('YYYY-MM-DDTHH:mm:ss.SSS') : undefined;
+	options.expireAt = options.expireAt ? dayjs(options.expireAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') : undefined;
 
 	const res = await api.post(getApiUrl(null, '/notifications'), options, await getAxiosConfig());
 
@@ -80,7 +78,6 @@ export async function getNotifications(options?: GetNotificationOptions): Promis
 
 export type UpdateNotificationAsUserOptions = {
 	id: string;
-	// MUST be local time
 	readAt?: string;
 	hasCleared?: boolean;
 };
@@ -99,7 +96,7 @@ export async function updateNotificationAsUser(options: UpdateNotificationAsUser
 	const params: UpdateNotificationAsUserReqParams = {
 		// conditionally adding properties to params object
 		...(options.hasCleared ? { hasCleared: options.hasCleared } : {}),
-		...(options.readAt ? { readAt: dayjs(options.readAt).format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
+		...(options.readAt ? { readAt: dayjs(options.readAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
 	};
 
 	const res = await api.put(getApiUrl(null, '/notifications/user/' + options.id), params, await getAxiosConfig());
@@ -115,7 +112,6 @@ export type UpdateNotificationAsAdminOptions = {
 	title?: string;
 	location?: string;
 	targets?: string[];
-	// MUST be local time
 	publishAt?: string;
 	expireAt?: string;
 };
@@ -125,7 +121,6 @@ export type UpdateNotificationAsAdminReqParams = {
 	title?: string;
 	location?: string;
 	targets?: string[];
-	// MUST be local time
 	publishAt?: string;
 	expireAt?: string;
 };
@@ -141,8 +136,8 @@ export async function updateNotificationAsAdmin(options: UpdateNotificationAsAdm
 		title: options.title || undefined,
 		location: options.location || undefined,
 		targets: options.targets || undefined,
-		...(options.publishAt ? { publishAt: dayjs(options.publishAt).format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
-		...(options.expireAt ? { expireAt: dayjs(options.expireAt).format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
+		...(options.publishAt ? { publishAt: dayjs(options.publishAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
+		...(options.expireAt ? { expireAt: dayjs(options.expireAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
 	};
 
 	console.log(params);
