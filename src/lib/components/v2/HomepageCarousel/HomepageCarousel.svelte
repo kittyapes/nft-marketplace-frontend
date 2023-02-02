@@ -57,6 +57,7 @@
 </script>
 
 <div class="relative overflow-hidden w-full wrapper h-full flex flex-col">
+	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-10" />
 	<div class="overflow-hidden h-full w-full bg-dark-gradient relative">
 		<div class="w-full h-full flex items-start justify-center overflow-hidden relative">
 			<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="absolute h-full object-cover object-top w-full animated-image" />
@@ -120,13 +121,8 @@
 		animation-play-state: paused;
 	}
 
-	.wrapper {
-		@apply border-transparent border-2;
-	}
-
-	.wrapper:hover {
-		border-image: linear-gradient(45deg, #868bf7, #6cc7f8) 1;
-		@apply border-solid;
+	.wrapper:not(:hover) > .gradient-border {
+		display: none;
 	}
 
 	@keyframes fill-bar {
