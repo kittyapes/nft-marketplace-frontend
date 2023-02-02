@@ -123,10 +123,10 @@
 		<!-- Hero section -->
 		<!-- TODO fix this properly -->
 		{#if $loadedTrendingListings && trendingListingsData.length >= 2}
-			<div class="mb-16 flex gap-5 items-stretch w-full max-h-[550px]">
+			<div class="mb-16 grid grid-cols-4 gap-5 items-stretch w-full">
 				<NftCard options={trendingListingsData[0]} />
 
-				<div class="flex-grow">
+				<div class="flex-grow col-span-2">
 					<HomepageCarousel />
 				</div>
 
