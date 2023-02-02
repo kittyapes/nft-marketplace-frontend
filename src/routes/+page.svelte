@@ -156,6 +156,7 @@
 								profileImg: user.thumbnailUrl,
 								created: null,
 							}}
+							includeCreatedNumber={false}
 						/>
 					</div>
 
