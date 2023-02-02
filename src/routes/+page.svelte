@@ -55,6 +55,7 @@
 		const res = (await getNotifications()).data.data;
 
 		const notification = res.find((n) => !n.hasCleared && dayjs().isAfter(dayjs(n.publishAt)) && (!n.expireAt || dayjs().isBefore(dayjs(n.expireAt))));
+		userNotificationCleared.set(false);
 
 		if (!notification) {
 			userNotification.set(null);
