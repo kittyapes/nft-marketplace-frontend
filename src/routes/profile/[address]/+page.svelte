@@ -323,7 +323,7 @@
 
 	$: {
 		if (selectedTab.name === 'created' || selectedTab.name === 'collected') {
-			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: address === $currentUserAddress ? ['hide'] : [] });
+			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: address === $currentUserAddress ? ['hide', 'copy'] : [] });
 		} else if (selectedTab.name === 'hidden') {
 			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: address === $currentUserAddress ? ['reveal'] : [] });
 		} else {
