@@ -28,6 +28,10 @@
 	let maxQuantity = 1;
 	let isGasless: boolean;
 
+	$: if (listingType === 'auction') {
+		isGasless = false;
+	}
+
 	let isListing = false;
 	let canCreateListing = true;
 
