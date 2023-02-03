@@ -12,13 +12,17 @@
 	const listingTypes = [
 		{
 			listingType: 'auction',
+			title: 'Auction',
 			hoverText: 'Allow other users to make bids on your NFT.',
 			confirmDetail: 'Listing an NFT for Auction allows any user to bid with WETH. Select the duration and reserve price for your item. ',
+			iconComponent: AuctionListingTypeOption,
 		},
 		{
 			listingType: 'sale',
+			title: 'Sale',
 			hoverText: 'Allows users to sell an NFT for a Fixed Cost and Time-Frame.',
 			confirmDetail: 'Sell your NFT for a Fixed price of your choosing!',
+			iconComponent: SaleListingTypeOption,
 		},
 	];
 
@@ -54,7 +58,7 @@
 
 <div class="flex flex-wrap justify-center gap-4 mt-24 mb-64">
 	<ListingTypeButton
-		on:click={() => handleClick('auction')}
+		on:click={() => handleClick(listingTypes[0])}
 		on:pointerenter={() => (hoveredListingType = 'auction')}
 		on:pointerleave={() => {
 			if (hoveredListingType === 'auction') hoveredListingType = null;
@@ -65,7 +69,7 @@
 	/>
 
 	<ListingTypeButton
-		on:click={() => handleClick('sale')}
+		on:click={() => handleClick(listingTypes[1])}
 		on:pointerenter={() => (hoveredListingType = 'sale')}
 		on:pointerleave={() => {
 			if (hoveredListingType === 'sale') hoveredListingType = null;
