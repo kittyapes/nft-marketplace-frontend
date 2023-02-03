@@ -155,8 +155,6 @@
 	}
 
 	onDestroy(() => clearInterval(timerInterval));
-
-	$: console.log(options);
 </script>
 
 <div
@@ -248,30 +246,36 @@
 						<div class="absolute w-32 font-bold bg-dark-gradient left-10 top-0">
 							<div class="relative z-10 flex flex-col">
 								{#if menuItems.includes('sell')}
-									<button class="transition-all py-2 text-left" disabled on:click|stopPropagation={() => {}}>Sell</button>
+									<button class="transition-all p-2 text-left menu-item relative" disabled on:click|stopPropagation={() => {}}>Sell</button>
 								{/if}
 
 								{#if menuItems.includes('copy')}
-									<button class="transition-all py-2 text-left flex items-center gap-2" on:click|stopPropagation={copyUrlToClipboard}>
+									<button class="transition-all p-2 text-left flex items-center gap-2 menu-item relative" on:click|stopPropagation={copyUrlToClipboard}>
 										<Copy />
+										<div class="absolute inset-0 gradient-border animate-gradient-border-spin -z-[1]" />
+
 										<span>Copy Link</span>
 									</button>
 								{/if}
 
 								{#if menuItems.includes('transfer')}
-									<button class="transition-all py-2 text-left" disabled>Transfer</button>
+									<button class="transition-all p-2 text-left menu-item relative" disabled>Transfer</button>
 								{/if}
 
 								{#if menuItems.includes('hide')}
-									<button class="transition-all py-2 text-left flex items-center gap-2" on:click|stopPropagation={hideNft}>
+									<button class="transition-all p-2 text-left flex items-center gap-2 menu-item relative" on:click|stopPropagation={hideNft}>
 										<Hide />
+										<div class="absolute inset-0 gradient-border animate-gradient-border-spin -z-[1]" />
+
 										<span>Hide</span>
 									</button>
 								{/if}
 
 								{#if menuItems.includes('reveal')}
-									<button class="transition-all py-2 text-left flex items-center gap-2" on:click|stopPropagation={revealNft}>
+									<button class="transition-all p-2 text-left flex items-center gap-2 menu-item relative" on:click|stopPropagation={revealNft}>
 										<Hide />
+										<div class="absolute inset-0 gradient-border animate-gradient-border-spin -z-[1]" />
+
 										<span>Reveal</span>
 									</button>
 								{/if}
@@ -357,5 +361,23 @@
 
 	.wrapper:not(:hover) > .gradient-border {
 		display: none;
+	}
+
+	.menu-item:not(:hover) > .gradient-border {
+		display: none;
+	}
+
+	.menu-item:active > .gradient-border {
+		@apply border-none animate-none;
+
+		background-image: linear-gradient(
+				10deg,
+				rgba(167, 148, 255, 0) 11.15%,
+				rgba(167, 148, 255, 0.93) 57.47%,
+				rgba(142, 119, 247, 0) 127.41%,
+				rgba(142, 119, 247, 0) 127.41%,
+				rgba(167, 148, 255, 0) 127.41%
+			),
+			linear-gradient(0deg, #67d4f8, #67d4f8) !important;
 	}
 </style>
