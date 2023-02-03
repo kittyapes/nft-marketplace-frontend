@@ -22,6 +22,9 @@
 	import { openCardPopupFromOptions } from './CardPopup/CardPopup';
 	import ThreeDots from '$icons/three-dots.svelte';
 	import { copyUrlToClipboard } from '$utils/misc/clipboard';
+	import SocialCopy from '$icons/socials/social-copy.svelte';
+	import Copy from '$icons/copy.svelte';
+	import Hide from '$icons/hide.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -178,14 +181,14 @@
 			<div class="absolute w-full h-12 bg-black bg-opacity-60 text-white top-0 left-0 right-0" transition:fade={{ duration: 200 }} />
 
 			{#if options.resourceType === 'listing'}
-				<button class="p-3 clickable h-12 w-40 truncate z-[3] absolute left-0" on:click|stopPropagation|preventDefault={() => goto('/profile/' + options.listingData?.sellerAddress)}>
+				<button class="p-3 clickable h-12 w-40 truncate z-[9] absolute left-0" on:click|stopPropagation|preventDefault={() => goto('/profile/' + options.listingData?.sellerAddress)}>
 					{options.listingData?.sellerAddress}
 				</button>
 			{/if}
 
 			{#if !hideLikes}
 				<button
-					class="text-transparent clickable p-3 h-12 z-[3] disabled:opacity-50 absolute right-0"
+					class="text-transparent clickable p-3 h-12 z-[9] disabled:opacity-50 absolute right-0"
 					class:text-white={isUserLiked}
 					disabled={isFavoriting}
 					on:click|stopPropagation|preventDefault={favNFT}
@@ -245,11 +248,14 @@
 						<div class="absolute w-32 font-bold bg-dark-gradient left-10 top-0">
 							<div class="relative z-10 flex flex-col">
 								{#if menuItems.includes('sell')}
-									<button class="transition-all py-2 text-left" disabled>Sell</button>
+									<button class="transition-all py-2 text-left" disabled on:click|stopPropagation={() => {}}>Sell</button>
 								{/if}
 
 								{#if menuItems.includes('copy')}
-									<button class="transition-all py-2 text-left" on:click={copyUrlToClipboard}>Copy Link</button>
+									<button class="transition-all py-2 text-left flex items-center gap-2" on:click|stopPropagation={copyUrlToClipboard}>
+										<Copy />
+										<span>Copy Link</span>
+									</button>
 								{/if}
 
 								{#if menuItems.includes('transfer')}
@@ -257,11 +263,17 @@
 								{/if}
 
 								{#if menuItems.includes('hide')}
-									<button class="transition-all py-2 text-left" on:click={hideNft}>Hide</button>
+									<button class="transition-all py-2 text-left flex items-center gap-2" on:click|stopPropagation={hideNft}>
+										<Hide />
+										<span>Hide</span>
+									</button>
 								{/if}
 
 								{#if menuItems.includes('reveal')}
-									<button class="transition-all py-2 text-left" on:click={revealNft}>Reveal</button>
+									<button class="transition-all py-2 text-left flex items-center gap-2" on:click|stopPropagation={revealNft}>
+										<Hide />
+										<span>Reveal</span>
+									</button>
 								{/if}
 							</div>
 						</div>
