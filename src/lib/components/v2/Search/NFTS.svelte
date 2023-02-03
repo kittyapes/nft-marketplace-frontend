@@ -3,11 +3,11 @@
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import { globalNFTSearch } from '$utils/api/search/globalSearch';
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
 	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { notifyError } from '$utils/toast';
 	import NftGrid from '$components/v2/NFTGrid/+page.svelte';
 	import { inview } from 'svelte-inview';
+	import { searchQuery } from '$stores/search';
 
 	const inviewOptions = {};
 	let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
@@ -19,16 +19,27 @@
 	let isLoading = true;
 	let reachedEnd = false;
 
+	$: query = $searchQuery;
+
 	$: {
 		if (gridStyle === 'normal') limit = 12;
 		if (gridStyle === 'dense') limit = 15;
 		if (gridStyle === 'masonry') limit = 15;
 	}
 
+	$: if (query) {
+		reachedEnd = false;
+		isLoading = true;
+		pageNumber = 1;
+		nfts = [];
+
+		fetchMore();
+	}
+
 	const fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 
-		res.res = await globalNFTSearch($page?.url?.searchParams.get('query'), limit, pageNumber);
+		res.res = await globalNFTSearch(query, limit, pageNumber);
 		res.adapted = await Promise.all(res.res.nfts?.map(nftToCardOptions)).catch((err) => {
 			console.error(err);
 			return [];
@@ -38,7 +49,6 @@
 	};
 
 	const fetchMore = async () => {
-		if (reachedEnd) return;
 		isLoading = true;
 
 		const res = await fetchFunction();
@@ -64,10 +74,6 @@
 			fetchMore();
 		}
 	}
-
-	onMount(async () => {
-		await fetchMore();
-	});
 </script>
 
 <div class="w-full pb-8">
@@ -77,7 +83,7 @@
 
 	<NftGrid options={nfts} bind:gridStyle bind:reachedEnd bind:isLoading />
 
-	{#if !isLoading && nfts.length > 0}
+	{#if !isLoading && nfts.length > 0 && !reachedEnd}
 		<div use:inview={inviewOptions} on:change={onChange} />
 	{/if}
 </div>

@@ -7,10 +7,9 @@
 	import Input from '$components/v2/Input/Input.svelte';
 	import { page } from '$app/stores';
 	import { nftToCardOptions } from '$utils/adapters/cardOptions';
-	import { browser } from '$app/environment';
 	import EnterKeyIcon from '$icons/enter-key-icon.svelte';
 	import SearchWrapper from './SearchWrapper.svelte';
-	import { selectedResultTab } from '$stores/search';
+	import { searchQuery, selectedResultTab } from '$stores/search';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import { writable } from 'svelte/store';
 
@@ -19,6 +18,7 @@
 	let isDropdownShown = false;
 	let show = false;
 	const resultCategoryLimit = 3;
+	$: isOnSearchPage = $page.url.pathname.match(/search*/);
 
 	let searchResults: {
 		collections?: any[];
@@ -45,11 +45,17 @@
 	};
 
 	query.subscribe((val) => {
+		$searchQuery = val;
+
+		if (isOnSearchPage) {
+			$page.url.searchParams.set('query', $query.trim().replace('#', '%23'));
+		}
+
 		if (!val) {
 			searching = false;
 			show = false;
 			debouncedSearch.cancel();
-		} else {
+		} else if (!isOnSearchPage) {
 			searching = true;
 			show = false;
 			debouncedSearch();
@@ -57,17 +63,16 @@
 	});
 
 	const navigateToSearchResults = () => {
-		$page.url.searchParams.set('query', $query.trim().replace('#', '%23'));
-		$query = '';
+		$searchQuery = $query;
 
-		goto('/search/' + $selectedResultTab + '?' + $page.url.searchParams);
+		goto('/search/' + $selectedResultTab);
 	};
 
 	beforeNavigate(({ to }) => {
-		$query = '';
+		if (!to?.url.pathname.match(/search*/)) $query = '';
+		searching = false;
+		show = false;
 	});
-
-	$: console.log('SHOW:', show);
 </script>
 
 <div
@@ -99,8 +104,8 @@
 			<EnterKeyIcon class="w-6 h-6 bg-card-gradient p-1" />
 		</div>
 	</Input>
-	{#if isDropdownShown || $query}
-		<SearchWrapper bind:query={$query} bind:isDropdownShown bind:searchResults bind:show />
+	{#if (show || searching) && $query}
+		<SearchWrapper bind:query={$query} bind:searchResults bind:show {searching} />
 	{/if}
 </div>
 

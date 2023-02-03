@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { notifyError } from '$utils/toast';
-	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { globalUsersSearch } from '$utils/api/search/globalSearch';
 	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
@@ -8,9 +7,10 @@
 	import type { UserData } from '$interfaces/userData';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import { goto } from '$app/navigation';
+	import { searchQuery } from '$stores/search';
 
 	let users: Partial<UserData>[] = [];
-	let query: string;
+	$: query = $searchQuery;
 	let reachedEnd = false;
 	let isLoading = true;
 	let pageNumber = 1;
@@ -19,19 +19,25 @@
 
 	const inviewOptions = {};
 
+	$: if (query) {
+		reachedEnd = false;
+		isLoading = true;
+		pageNumber = 1;
+		users = [];
+
+		fetchMore();
+	}
+
 	const fetchFunction = async () => {
-		const res = await globalUsersSearch($page?.url?.searchParams?.get('query'), limit, pageNumber);
+		const res = await globalUsersSearch(query, limit, pageNumber);
 
 		return res.users;
 	};
 
 	async function fetchMore() {
-		if (reachedEnd || query) return;
 		isLoading = true;
 
 		const res = await fetchFunction();
-
-		console.log(res);
 
 		if (res.err) {
 			notifyError('Failed to fetch more users.');
@@ -53,10 +59,6 @@
 			fetchMore();
 		}
 	}
-
-	onMount(async () => {
-		await fetchMore();
-	});
 </script>
 
 {#if isLoading}
@@ -82,7 +84,7 @@
 		/>
 	{/each}
 
-	{#if users?.length > 0 && !isLoading}
+	{#if users?.length > 0 && !isLoading && !reachedEnd}
 		<div use:inview={inviewOptions} on:change={onChange} />
 	{/if}
 </div>
