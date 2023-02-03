@@ -157,7 +157,7 @@
 </script>
 
 <div
-	class="relative group h-full flex flex-col wrapper z-[3]"
+	class="relative group h-full flex flex-col wrapper"
 	class:mb-4={gridStyle === 'masonry'}
 	in:fade
 	on:click={handleClick}
@@ -167,7 +167,7 @@
 	on:mouseout={() => (isHovered = false)}
 	on:blur={() => (isHovered = false)}
 >
-	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-[2]" />
+	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-[8]" />
 
 	<div
 		class:dense-nft-media={gridStyle === 'dense'}
@@ -237,31 +237,33 @@
 			<!-- && options.rawResourceData.owner?.toLowerCase() === $currentUserAddress.toLowerCase() -->
 			{#if options.resourceType === 'nft' && menuItems?.length}
 				<div class="relative z-[8]">
-					<button on:click|stopPropagation={toggleDots} class="w-8 h-8 self-start z-[8] p-1 clickable" transition:fade|local={{ duration: 150 }}>
+					<button on:click|stopPropagation={toggleDots} class="w-8 h-8 self-start p-1 clickable" transition:fade|local={{ duration: 150 }}>
 						<ThreeDots gradient={dotsOpened} />
 					</button>
 
 					{#if dotsOpened}
-						<div class="absolute flex flex-col w-32 font-bold bg-dark-gradient left-10 top-0">
-							{#if menuItems.includes('sell')}
-								<button class="transition-all py-2 text-left" disabled>Sell</button>
-							{/if}
+						<div class="absolute w-32 font-bold bg-dark-gradient left-10 top-0">
+							<div class="relative z-10 flex flex-col">
+								{#if menuItems.includes('sell')}
+									<button class="transition-all py-2 text-left" disabled>Sell</button>
+								{/if}
 
-							{#if menuItems.includes('copy')}
-								<button class="transition-all py-2 text-left" on:click={copyUrlToClipboard}>Copy Link</button>
-							{/if}
+								{#if menuItems.includes('copy')}
+									<button class="transition-all py-2 text-left" on:click={copyUrlToClipboard}>Copy Link</button>
+								{/if}
 
-							{#if menuItems.includes('transfer')}
-								<button class="transition-all py-2 text-left" disabled>Transfer</button>
-							{/if}
+								{#if menuItems.includes('transfer')}
+									<button class="transition-all py-2 text-left" disabled>Transfer</button>
+								{/if}
 
-							{#if menuItems.includes('hide')}
-								<button class="transition-all py-2 text-left" on:click={hideNft}>Hide</button>
-							{/if}
+								{#if menuItems.includes('hide')}
+									<button class="transition-all py-2 text-left" on:click={hideNft}>Hide</button>
+								{/if}
 
-							{#if menuItems.includes('reveal')}
-								<button class="transition-all py-2 text-left" on:click={revealNft}>Reveal</button>
-							{/if}
+								{#if menuItems.includes('reveal')}
+									<button class="transition-all py-2 text-left" on:click={revealNft}>Reveal</button>
+								{/if}
+							</div>
 						</div>
 					{/if}
 				</div>
