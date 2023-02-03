@@ -12,8 +12,9 @@
 	import SearchWrapper from './SearchWrapper.svelte';
 	import { selectedResultTab } from '$stores/search';
 	import { beforeNavigate, goto } from '$app/navigation';
+	import { writable } from 'svelte/store';
 
-	let query: string;
+	let query = writable('');
 	let searching = false;
 	let isDropdownShown = false;
 	let show = false;
@@ -25,12 +26,12 @@
 		users?: any[];
 	} = {};
 
-	const debouncedSearch = debounce(async (query: string) => {
-		await searchGlobally(query);
+	const debouncedSearch = debounce(async () => {
+		await searchGlobally();
 	}, 500);
 
-	const searchGlobally = async (query: string) => {
-		const res = await globalSearch(query, resultCategoryLimit).catch((err) => console.error(err));
+	const searchGlobally = async () => {
+		const res = await globalSearch($query.trim(), resultCategoryLimit).catch((err) => console.error(err));
 
 		searchResults = {
 			collections: res?.collections || [],
@@ -40,31 +41,33 @@
 
 		await tick();
 		show = true;
+		searching = false;
 	};
 
-	$: if (browser && !query) {
-		searching = false;
-		debouncedSearch.cancel();
-	}
-
-	$: if (browser && query) {
-		searching = true;
-		show = false;
-		debouncedSearch(query.trim());
-	}
+	query.subscribe((val) => {
+		if (!val) {
+			searching = false;
+			show = false;
+			debouncedSearch.cancel();
+		} else {
+			searching = true;
+			show = false;
+			debouncedSearch();
+		}
+	});
 
 	const navigateToSearchResults = () => {
-		query = query.trim();
-		$page.url.searchParams.set('query', query.replace('#', '%23'));
-		query = '';
+		$page.url.searchParams.set('query', $query.trim().replace('#', '%23'));
+		$query = '';
 
 		goto('/search/' + $selectedResultTab + '?' + $page.url.searchParams);
 	};
 
 	beforeNavigate(({ to }) => {
-		show = false;
-		searching = false;
+		$query = '';
 	});
+
+	$: console.log('SHOW:', show);
 </script>
 
 <div
@@ -80,11 +83,11 @@
 >
 	<div class="absolute inset-0 gradient-border animate-gradient-border-spin border-div" />
 
-	<Input bind:value={query} class="rounded-none bg-card-gradient hover:text-white w-full h-10 relative " placeholder="Search" gradientCaret>
+	<Input bind:value={$query} class="rounded-none bg-card-gradient hover:text-white w-full h-10 relative " placeholder="Search" gradientCaret>
 		<Search class="w-7 h-7 text-transparent min-w-full ml-4" />
 
 		<div
-			class:hidden={!query || !show}
+			class:hidden={!$query || !show}
 			class="min-w-full mr-6 cursor-pointer"
 			slot="end-icon"
 			on:click={() => {
@@ -96,8 +99,8 @@
 			<EnterKeyIcon class="w-6 h-6 bg-card-gradient p-1" />
 		</div>
 	</Input>
-	{#if isDropdownShown || query}
-		<SearchWrapper bind:query bind:isDropdownShown bind:searchResults bind:show />
+	{#if isDropdownShown || $query}
+		<SearchWrapper bind:query={$query} bind:isDropdownShown bind:searchResults bind:show />
 	{/if}
 </div>
 
