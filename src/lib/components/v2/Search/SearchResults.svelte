@@ -4,7 +4,7 @@
 	import Search from '$icons/search.svelte';
 	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import { setPopup } from '$utils/popup';
-	import { selectedResultTab } from '$stores/search';
+	import { searchQuery, selectedResultTab } from '$stores/search';
 	import { compactNumberFormat } from '$utils/api';
 	import HinataBadge from '$icons/hinata-badge.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
@@ -82,9 +82,9 @@
 				{/each}
 				<button
 					on:click={() => {
-						$page.url.searchParams.set('query', query.replace('#', '%23'));
-						query = '';
-						goto(`/search/collections?${$page.url.searchParams}`);
+						$searchQuery = query;
+
+						goto('/search/' + $selectedResultTab);
 					}}
 					class="flex items-center gap-4"
 				>
@@ -128,9 +128,9 @@
 				{/each}
 				<button
 					on:click={() => {
-						$page.url.searchParams.set('query', query.replace('#', '%23'));
-						query = '';
-						goto(`/search/nfts?${$page.url.searchParams}`);
+						$searchQuery = query;
+
+						goto('/search/' + $selectedResultTab);
 					}}
 					class="flex items-center gap-4"
 				>
@@ -180,9 +180,9 @@
 				{/each}
 				<button
 					on:click={() => {
-						$page.url.searchParams.set('query', query.replace('#', '%23'));
-						query = '';
-						goto(`/search/users?${$page.url.searchParams}`);
+						$searchQuery = query;
+
+						goto('/search/' + $selectedResultTab);
 					}}
 					class="flex items-center gap-4"
 				>
