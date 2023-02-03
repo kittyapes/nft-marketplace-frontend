@@ -244,23 +244,23 @@
 					{#if dotsOpened}
 						<div class="absolute flex flex-col w-32 font-bold bg-dark-gradient left-10 top-0">
 							{#if menuItems.includes('sell')}
-								<button class="transition-all py-2 text-left" disabled>Sell</button>
+								<button class="transition-all py-2 px-2 text-left" disabled>Sell</button>
 							{/if}
 
 							{#if menuItems.includes('copy')}
-								<button class="transition-all py-2 text-left" on:click={copyUrlToClipboard}>Copy Link</button>
+								<button class="transition-all py-2 px-2 text-left" on:click={copyUrlToClipboard}>Copy Link</button>
 							{/if}
 
 							{#if menuItems.includes('transfer')}
-								<button class="transition-all py-2 text-left" disabled>Transfer</button>
+								<button class="transition-all py-2 px-2 text-left" disabled>Transfer</button>
 							{/if}
 
 							{#if menuItems.includes('hide')}
-								<button class="transition-all py-2 text-left" on:click={hideNft}>Hide</button>
+								<button class="transition-all py-2 px-2 text-left" on:click={hideNft}>Hide</button>
 							{/if}
 
 							{#if menuItems.includes('reveal')}
-								<button class="transition-all py-2 text-left" on:click={revealNft}>Reveal</button>
+								<button class="transition-all py-2 px-2 text-left" on:click={revealNft}>Reveal</button>
 							{/if}
 						</div>
 					{/if}
