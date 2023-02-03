@@ -3,10 +3,11 @@
 
 	export let state = false;
 	export let changeOpacity = true;
+	export let disabled = false;
 </script>
 
-<label class="btn relative block w-[var(--width,3rem)] h-6 border border-white scale-[99%] select-none">
-	<input type="checkbox" bind:checked={state} class="hidden" />
+<label class="relative block w-[var(--width,3rem)] h-6 border border-white scale-[99%] select-none" class:btn={!disabled} class:brightness-50={disabled}>
+	<input type="checkbox" bind:checked={state} class="hidden" {disabled} />
 
 	{#key state}
 		<div class="absolute w-full h-full font-semibold grid place-items-center text-xs" transition:fade|local />

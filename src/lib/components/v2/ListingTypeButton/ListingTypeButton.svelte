@@ -1,13 +1,15 @@
-<script>
-	export let iconComponent;
-	export let title;
+<script lang="ts">
+	export let iconComponent: any;
+	export let title: string;
+	export let disabled: boolean = false;
 </script>
 
 <button
 	on:click
 	on:pointerenter
 	on:pointerleave
-	class="w-96 h-52 p-1 cursor-pointer border border-white from-color-purple to-color-blue aspect-w-6 aspect-h-5 flex items-center px-12 gradient-bg hover:brightness-125 transition duration-100 active:brightness-50"
+	class="w-96 h-52 p-1 enabled:cursor-pointer border border-white from-color-purple to-color-blue aspect-w-6 aspect-h-5 flex items-center px-12 gradient-bg enabled:hover:brightness-125 transition duration-100 enabled:active:brightness-50 disabled:brightness-50"
+	{disabled}
 >
 	<div class="flex items-center px-12">
 		<div class="font-bold flex-grow text-2xl text-left">{title}</div>
