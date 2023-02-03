@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { CardOptions } from '$interfaces/ui';
-	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { matches } from '$utils/misc';
 	import { onMount } from 'svelte';
