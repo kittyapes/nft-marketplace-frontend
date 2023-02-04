@@ -9,7 +9,7 @@
 	import HinataBadge from '$icons/hinata-badge.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 
-	export let tabs = ['Collections', 'NFTs', 'Users'];
+	export let tabs = ['Collections', 'NFTs', 'Creators'];
 	export let query: string;
 	export let searchResults: {
 		collections?: any[];
@@ -144,8 +144,8 @@
 				<div class="w-full flex justify-center py-12 text-lg font-semibold">No NFTs found.</div>
 			{/if}
 		{:else if activeTab === tabs[2]}
-			{#if searchResults['users']?.length > 0}
-				{#each searchResults['users'] as result}
+			{#if searchResults['creators']?.length > 0}
+				{#each searchResults['creators'] as result}
 					<div
 						class="flex gap-4 items-center pt-1.5 pb-3 px-5 -mx-5 btn"
 						on:click={() => {
@@ -190,18 +190,23 @@
 						<Search class="w-6 h-6 icon" />
 						<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 					</div>
-					<p class="font-medium text-xs 2xl:text-base leading-5 2xl:leading-6">See all users</p>
+					<p class="font-medium text-xs 2xl:text-base leading-5 2xl:leading-6">See all creators</p>
 				</button>
 			{:else}
-				<div class="w-full flex justify-center py-12 text-lg font-semibold">No users found.</div>
+				<div class="w-full flex justify-center py-12 text-lg font-semibold">No creators found.</div>
 			{/if}
 		{/if}
 	</div>
 </div>
 
 <style type="postcss">
+	.see-all {
+		@apply transition-all;
+	}
+
 	.see-all:not(:hover) > div {
-		display: none;
+		@apply animate-none;
+		border-image: none;
 	}
 
 	.see-all:active > div {

@@ -12,8 +12,8 @@
 			route: `/search/nfts?${$page.url?.searchParams}`,
 		},
 		{
-			title: 'Users',
-			route: `/search/users?${$page.url?.searchParams}`,
+			title: 'Verified Creators',
+			route: `/search/creators?${$page.url?.searchParams}`,
 		},
 	];
 </script>

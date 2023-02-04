@@ -8,6 +8,10 @@
 	import NftGrid from '$components/v2/NFTGrid/+page.svelte';
 	import { inview } from 'svelte-inview';
 	import { searchQuery } from '$stores/search';
+	import { browser } from '$app/environment';
+	import { writable } from 'svelte/store';
+	import { goto } from '$app/navigation';
+	import { onDestroy } from 'svelte';
 
 	const inviewOptions = {};
 	let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
@@ -16,10 +20,11 @@
 	let pageNumber = 1;
 
 	let nfts = [];
-	let isLoading = true;
+	let isLoading = false;
 	let reachedEnd = false;
+	let showLoader = true;
 
-	$: query = $searchQuery;
+	let query = writable('');
 
 	$: {
 		if (gridStyle === 'normal') limit = 12;
@@ -27,19 +32,14 @@
 		if (gridStyle === 'masonry') limit = 15;
 	}
 
-	$: if (query) {
-		reachedEnd = false;
-		isLoading = true;
-		pageNumber = 1;
-		nfts = [];
-
-		fetchMore();
+	if ($page.url.searchParams.get('query')) {
+		$searchQuery = $page.url.searchParams.get('query');
 	}
 
 	const fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 
-		res.res = await globalNFTSearch(query, limit, pageNumber);
+		res.res = await globalNFTSearch($query, limit, pageNumber);
 		res.adapted = await Promise.all(res.res.nfts?.map(nftToCardOptions)).catch((err) => {
 			console.error(err);
 			return [];
@@ -49,7 +49,9 @@
 	};
 
 	const fetchMore = async () => {
+		if (isLoading) return;
 		isLoading = true;
+		showLoader = true;
 
 		const res = await fetchFunction();
 
@@ -67,6 +69,7 @@
 		}
 
 		isLoading = false;
+		showLoader = true;
 	};
 
 	function onChange(event) {
@@ -74,6 +77,24 @@
 			fetchMore();
 		}
 	}
+
+	const unsubscribeQuery = searchQuery.subscribe((val) => ($query = val));
+
+	query.subscribe((val) => {
+		if (!browser) return;
+
+		reachedEnd = false;
+		isLoading = false;
+		showLoader = true;
+		pageNumber = 1;
+		nfts = [];
+
+		fetchMore();
+		$page.url.searchParams.set('query', val);
+		goto('?' + $page.url.searchParams, { replaceState: true, keepfocus: true, noscroll: true });
+	});
+
+	onDestroy(unsubscribeQuery);
 </script>
 
 <div class="w-full pb-8">
@@ -83,7 +104,7 @@
 
 	<NftGrid options={nfts} bind:gridStyle bind:reachedEnd bind:isLoading />
 
-	{#if !isLoading && nfts.length > 0 && !reachedEnd}
+	{#if showLoader && nfts.length > 0 && !reachedEnd}
 		<div use:inview={inviewOptions} on:change={onChange} />
 	{/if}
 </div>

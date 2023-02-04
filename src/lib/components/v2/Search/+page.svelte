@@ -12,6 +12,7 @@
 	import { searchQuery, selectedResultTab } from '$stores/search';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import { writable } from 'svelte/store';
+	import { browser } from '$app/environment';
 
 	let query = writable('');
 	let searching = false;
@@ -23,7 +24,7 @@
 	let searchResults: {
 		collections?: any[];
 		items?: any[];
-		users?: any[];
+		creators?: any[];
 	} = {};
 
 	const debouncedSearch = debounce(async () => {
@@ -36,7 +37,7 @@
 		searchResults = {
 			collections: res?.collections || [],
 			items: (await Promise.all(res?.nfts.map(nftToCardOptions))) || [],
-			users: res?.users || [],
+			creators: res?.users || [],
 		};
 
 		await tick();
@@ -44,7 +45,10 @@
 		searching = false;
 	};
 
+	searchQuery.subscribe((val) => ($query = val));
+
 	query.subscribe((val) => {
+		if (!browser) return;
 		$searchQuery = val;
 
 		if (isOnSearchPage) {
@@ -65,7 +69,7 @@
 	const navigateToSearchResults = () => {
 		$searchQuery = $query;
 
-		goto('/search/' + $selectedResultTab);
+		goto('/search/' + $selectedResultTab + '?query=' + $query);
 	};
 
 	beforeNavigate(({ to }) => {
@@ -104,7 +108,7 @@
 			<EnterKeyIcon class="w-6 h-6 bg-card-gradient p-1" />
 		</div>
 	</Input>
-	{#if (show || searching) && $query}
+	{#if (show || searching) && $query && !isOnSearchPage}
 		<SearchWrapper bind:query={$query} bind:searchResults bind:show {searching} />
 	{/if}
 </div>
