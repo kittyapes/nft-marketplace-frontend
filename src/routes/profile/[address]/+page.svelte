@@ -63,22 +63,6 @@
 			setTimeout(() => goto('/404'), 1500);
 			return;
 		}
-
-		if ($page.url.searchParams.has('id')) {
-			const id = $page.url.searchParams.get('id');
-			const listing = await getListing(id);
-
-			let options: CardOptions;
-
-			if (listing) {
-				options = await listingToCardOptions(listing);
-			} else {
-				const nft = await getNft(id);
-				options = await nftToCardOptions(nft);
-			}
-
-			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
-		}
 	});
 
 	const fetchLimit = 10;
