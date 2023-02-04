@@ -7,7 +7,7 @@ import InfoV2 from '$icons/info-v2.svelte';
 
 export const notifySuccess = (message: string, subMessage?: string) =>
 	toast.push(message, {
-		dismissable: false,
+		dismissable: true,
 		theme: {
 			'--toastBackground': 'linear-gradient(90deg, rgba(100, 180, 0, 1), rgba(50, 200, 0, 1), rgba(50, 180, 100, 1))',
 			'--toastColor': 'white',
@@ -31,7 +31,7 @@ export const notifySuccess = (message: string, subMessage?: string) =>
 
 export const notifyWarning = (message: string, subMessage?: string) =>
 	toast.push(message, {
-		dismissable: false,
+		dismissable: true,
 		theme: {
 			'--toastBackground': 'linear-gradient(90deg, #A794FF, #67D4F8)',
 			'--toastColor': 'white',
@@ -55,7 +55,7 @@ export const notifyWarning = (message: string, subMessage?: string) =>
 
 export const notifyError = (message: string, subMessage?: string) =>
 	toast.push(message, {
-		dismissable: false,
+		dismissable: true,
 		theme: {
 			'--toastBackground': 'linear-gradient(90deg, #FF297C 0%, #F21E91 50%, #FC0363 100%)',
 			'--toastColor': 'white',
