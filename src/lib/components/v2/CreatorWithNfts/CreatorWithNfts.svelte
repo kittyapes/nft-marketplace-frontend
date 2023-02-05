@@ -10,7 +10,7 @@
 	export let listings: Listing[];
 </script>
 
-<div class="p-4 bg-card-gradient grid grid-cols-4 gap-4 w-full cursor-pointer flex-wrap">
+<div class="p-4 bg-dark-gradient grid grid-cols-4 gap-4 w-full cursor-pointer flex-wrap">
 	<div class="col-span-2">
 		<FeaturedArtistCard
 			on:click={() => goto(`/profile/${creator.address}`)}
@@ -26,7 +26,7 @@
 
 	{#each listings as listing}
 		{#await listingToCardOptions(listing) then options}
-			<NftCard {options} />
+			<NftCard {options} useLighterBackground />
 		{/await}
 	{/each}
 </div>
