@@ -31,7 +31,7 @@
 		{/if}
 	</div>
 
-	<div class="bg-card-gradient flex flex-col items-center justify-center flex-shrink-0 w-full p-4">
+	<div class="bg-card-gradient flex flex-col items-center justify-center flex-shrink-0 w-full p-4 h-36">
 		<div class="max-w-full w-full flex justify-between">
 			<div class="flex gap-4 flex-shrink overflow-hidden">
 				<div class="w-24 h-24 flex-shrink-0">
