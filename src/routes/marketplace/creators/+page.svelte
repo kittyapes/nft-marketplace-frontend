@@ -44,7 +44,7 @@
 	});
 </script>
 
-<div class="mt-8 flex flex-col gap-8 mb-24">
+<div class="mt-8 flex flex-col gap-4 mb-24">
 	{#each creators as creator}
 		<CreatorWithNfts {creator} listings={creator.createdListings.slice(0, 2)} />
 	{/each}

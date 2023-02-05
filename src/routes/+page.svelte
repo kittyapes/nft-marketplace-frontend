@@ -12,13 +12,12 @@
 	import TopCollections from '$components/v2/TopCollections/+page.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
-	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
-	import { goto } from '$app/navigation';
 	import NotificationBar from '$lib/components/NotificationBar.svelte';
 	import { getNotifications, updateNotificationAsUser, type UserNotification } from '$utils/api/notifications';
 	import dayjs from 'dayjs';
 	import { notifyError } from '$utils/toast';
 	import { currentUserAddress } from '$stores/wallet';
+	import CreatorWithNfts from '$lib/components/v2/CreatorWithNfts/CreatorWithNfts.svelte';
 
 	let trendingListings = writable<Listing[]>([]);
 	let loadedTrendingListings = writable(false);
@@ -150,33 +149,7 @@
 
 			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
 				{#each hottestCreators?.users || [] as user}
-					<div class="p-4 bg-card-gradient grid grid-cols-4 gap-4 w-full cursor-pointer flex-wrap">
-						<div class="col-span-2">
-							<FeaturedArtistCard
-								on:click={() => goto(`/profile/${user.address}`)}
-								creatorData={{
-									name: user.username,
-									address: user.address,
-									coverImg: user.coverUrl,
-									profileImg: user.thumbnailUrl,
-									created: null,
-								}}
-							/>
-						</div>
-
-						<!-- Obviously refactor later -->
-						{#if user.createdListings[0]}
-							{#await listingToCardOptions(user.createdListings[0]) then options}
-								<NftCard {options} />
-							{/await}
-						{/if}
-
-						{#if user.createdListings[1]}
-							{#await listingToCardOptions(user.createdListings[1]) then options}
-								<NftCard {options} />
-							{/await}
-						{/if}
-					</div>
+					<CreatorWithNfts creator={user} listings={user.createdListings.slice(0, 2)} />
 				{/each}
 			</div>
 		</div>
