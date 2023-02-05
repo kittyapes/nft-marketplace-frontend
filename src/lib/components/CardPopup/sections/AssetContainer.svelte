@@ -32,25 +32,6 @@
 	}
 
 	async function handleLike() {
-		/*isUserLiked = !isUserLiked;
-
-		const [err, res] = await noTryAsync(() => favoriteNft(options.nfts[0].fullId));
-
-		if (err) {
-			notifyError(err.message);
-			console.error(err);
-			isUserLiked = !isUserLiked;
-		} else if (res.data.message) {
-			notifySuccess('Unfavorited NFT.');
-			isUserLiked = false;
-		} else {
-			notifySuccess('Favorited NFT.');
-			isUserLiked = true;
-		}
-
-		await refreshLikedNfts($currentUserAddress);
-		dispatch('refresh-tabs', { tabs: ['favorites'] });*/
-
 		isFavoriting = true;
 
 		favorited = !favorited;
@@ -63,11 +44,9 @@
 		} else if (res.data.message) {
 			favorited = false;
 			notifySuccess('Unfavorited NFT.');
-			// $likedNfts = [options.likeIds, -1];
 		} else {
 			favorited = true;
 			notifySuccess('Favorited NFT.');
-			// $likedNfts = [options.likeIds, 1];
 		}
 
 		await refreshLikedNfts($currentUserAddress);
