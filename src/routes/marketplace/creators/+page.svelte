@@ -1,12 +1,12 @@
 <script lang="ts">
 	import CreatorWithNfts from '$lib/components/v2/CreatorWithNfts/CreatorWithNfts.svelte';
 	import ErrorBox from '$lib/components/v2/ErrorBox/ErrorBox.svelte';
-	import { getListingCreators, type ListingCreatorsData, type ListingCreatorsRes } from '$utils/api/listing';
+	import { getListingCreators, type ListingCreatorsData } from '$utils/api/listing';
 	import { notifyError } from '$utils/toast';
 	import { onMount, tick } from 'svelte';
 	import { inview } from 'svelte-inview';
 
-	const limit = 1;
+	const limit = 10;
 
 	let page = 1;
 	let isFetching = true;
