@@ -21,11 +21,15 @@
 	import { goto } from '$app/navigation';
 	import { openCardPopupFromOptions } from './CardPopup/CardPopup';
 	import ThreeDots from '$icons/three-dots.svelte';
+	import { copyUrlToClipboard } from '$utils/misc/clipboard';
+	import SocialCopy from '$icons/socials/social-copy.svelte';
+	import Copy from '$icons/copy.svelte';
+	import Hide from '$icons/hide.svelte';
 
 	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions;
-	export let menuItems: ('hide' | 'reveal' | 'transfer')[] = [];
+	export let menuItems: ('hide' | 'reveal' | 'transfer' | 'sell' | 'copy')[] = [];
 	export let hideLikes = false;
 	export let disabled = false;
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
@@ -154,7 +158,7 @@
 </script>
 
 <div
-	class="relative overflow-hidden group h-full flex flex-col wrapper z-[9]"
+	class="relative group h-full flex flex-col wrapper"
 	class:mb-4={gridStyle === 'masonry'}
 	in:fade
 	on:click={handleClick}
@@ -164,7 +168,7 @@
 	on:mouseout={() => (isHovered = false)}
 	on:blur={() => (isHovered = false)}
 >
-	<div on:click|preventDefault|stopPropagation={() => {}} class="absolute inset-0 gradient-border animate-gradient-border-spin z-[8]" />
+	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-[8]" />
 
 	<div
 		class:dense-nft-media={gridStyle === 'dense'}
@@ -172,13 +176,14 @@
 		class="w-full mx-auto transition bg-card-gradient select-none flex-shrink flex-grow overflow-hidden {gridStyle !== 'masonry' ? 'aspect-1' : ''} "
 	>
 		{#if isHovered && !disabled}
-			<div class="absolute w-full h-12 bg-black bg-opacity-60 text-white z-[] top-0 left-0 right-0" transition:fade={{ duration: 200 }} />
+			<div class="absolute w-full h-12 bg-black bg-opacity-60 text-white top-0 left-0 right-0" transition:fade={{ duration: 200 }} />
 
 			{#if options.resourceType === 'listing'}
 				<button class="p-3 clickable h-12 w-40 truncate z-[9] absolute left-0" on:click|stopPropagation|preventDefault={() => goto('/profile/' + options.listingData?.sellerAddress)}>
 					{options.listingData?.sellerAddress}
 				</button>
 			{/if}
+
 			{#if !hideLikes}
 				<button
 					class="text-transparent clickable p-3 h-12 z-[9] disabled:opacity-50 absolute right-0"
@@ -229,12 +234,56 @@
 					{options?.nfts?.[0]?.name}
 				</h3>
 			</div>
-			<!--
-			{#if options.resourceType === 'nft' && options.rawResourceData.owner.toLowerCase() === $currentUserAddress.toLowerCase() && menuItems?.length}
-				<button on:click|preventDefault={toggleDots} class="w-8 h-8 hover:opacity-50" transition:fade|local={{ duration: 150 }}>
-					<ThreeDots />
-				</button>
-			{/if}-->
+
+			<!-- && options.rawResourceData.owner?.toLowerCase() === $currentUserAddress.toLowerCase() -->
+			{#if options.resourceType === 'nft' && menuItems?.length}
+				<div class="relative z-[8]">
+					<button on:click|stopPropagation={toggleDots} class="w-8 h-8 self-start p-1 clickable" transition:fade|local={{ duration: 150 }}>
+						<ThreeDots gradient={dotsOpened} />
+					</button>
+
+					{#if dotsOpened}
+						<div class="absolute w-32 font-bold bg-dark-gradient left-10 top-0">
+							<div class="relative z-10 flex flex-col">
+								{#if menuItems.includes('sell')}
+									<button class="transition-all p-2 text-left menu-item relative" disabled on:click|stopPropagation={() => {}}>Sell</button>
+								{/if}
+
+								{#if menuItems.includes('copy')}
+									<button class="transition-all p-2 text-left flex items-center gap-2 menu-item relative" on:click|stopPropagation={copyUrlToClipboard}>
+										<Copy />
+										<div class="absolute inset-0 gradient-border animate-gradient-border-spin -z-[1]" />
+
+										<span>Copy Link</span>
+									</button>
+								{/if}
+
+								{#if menuItems.includes('transfer')}
+									<button class="transition-all p-2 text-left menu-item relative" disabled>Transfer</button>
+								{/if}
+
+								{#if menuItems.includes('hide')}
+									<button class="transition-all p-2 text-left flex items-center gap-2 menu-item relative" on:click|stopPropagation={hideNft}>
+										<Hide />
+										<div class="absolute inset-0 gradient-border animate-gradient-border-spin -z-[1]" />
+
+										<span>Hide</span>
+									</button>
+								{/if}
+
+								{#if menuItems.includes('reveal')}
+									<button class="transition-all p-2 text-left flex items-center gap-2 menu-item relative" on:click|stopPropagation={revealNft}>
+										<Hide />
+										<div class="absolute inset-0 gradient-border animate-gradient-border-spin -z-[1]" />
+
+										<span>Reveal</span>
+									</button>
+								{/if}
+							</div>
+						</div>
+					{/if}
+				</div>
+			{/if}
 		</div>
 
 		<div class="flex flex-row items-center justify-between mt-2.5 ">
@@ -287,31 +336,9 @@
 			{/if}
 		</div>
 	</div>
-
-	<!--
-	{#if dotsOpened}
-		<div id="popup" class="absolute flex flex-col w-32 font-bold bg-white rounded-md top-10">
-			{#if menuItems.includes('transfer')}
-				<button class="text-gradient transition-btn disabled:opacity-75" disabled>TRANSFER</button>
-			{/if}
-
-			{#if menuItems.includes('hide')}
-				<button class="transition-btn" on:click={hideNft}>HIDE</button>
-			{/if}
-
-			{#if menuItems.includes('reveal')}
-				<button class="transition-btn" on:click={revealNft}>REVEAL</button>
-			{/if}
-		</div>
-	{/if}-->
 </div>
 
 <style type="postcss">
-	#popup {
-		@apply px-3 py-3 space-y-2;
-		filter: drop-shadow(0px 4px 20px rgba(136, 136, 136, 0.25));
-	}
-
 	#popup > button {
 		@apply text-left font-bold;
 	}
@@ -334,5 +361,23 @@
 
 	.wrapper:not(:hover) > .gradient-border {
 		display: none;
+	}
+
+	.menu-item:not(:hover) > .gradient-border {
+		display: none;
+	}
+
+	.menu-item:active > .gradient-border {
+		@apply border-none animate-none;
+
+		background-image: linear-gradient(
+				10deg,
+				rgba(167, 148, 255, 0) 11.15%,
+				rgba(167, 148, 255, 0.93) 57.47%,
+				rgba(142, 119, 247, 0) 127.41%,
+				rgba(142, 119, 247, 0) 127.41%,
+				rgba(167, 148, 255, 0) 127.41%
+			),
+			linear-gradient(0deg, #67d4f8, #67d4f8) !important;
 	}
 </style>

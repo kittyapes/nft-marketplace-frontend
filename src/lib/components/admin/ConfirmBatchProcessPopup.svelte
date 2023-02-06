@@ -4,6 +4,7 @@
 	import { httpErrorHandler, makeSuccessHandler } from '$utils/toast';
 
 	import Popup from '../Popup.svelte';
+	import PrimaryButton from '../v2/PrimaryButton/PrimaryButton.svelte';
 
 	export let handler: PopupHandler;
 
@@ -20,19 +21,19 @@
 	}
 </script>
 
-<Popup class="py-8 px-16">
-	<div class="text-xl uppercase font-semibold text-center">
+<Popup class="py-8 px-16 text-white">
+	<div class="text-xl uppercase font-semibold text-center pt-2">
 		Immediate <span class="text-gradient">batch process</span>
 		required
 	</div>
 
-	<div class="max-w-prose mt-4 text-center">
+	<div class="max-w-prose mt-4 text-center p-2 px-10">
 		Your action has been added to the batch process queue. It will not be processed until a batch process is executed. You can either execute the batch process now or wait for it to be executed on
 		schedule.
 	</div>
 
-	<div class="flex mt-8 justify-center gap-x-4">
-		<button class="btn btn-secondary w-44" on:click={handler.close} disabled={isProcessing}>Wait</button>
-		<button class="btn-primary w-44" on:click={processNow} disabled={isProcessing}>Process now</button>
+	<div class="flex py-4 justify-center gap-x-4">
+		<PrimaryButton extButtonClass="w-44" on:click={handler.close} disabled={isProcessing}>Wait</PrimaryButton>
+		<PrimaryButton extButtonClass="w-44" variant="green" on:click={processNow} disabled={isProcessing}>Process now</PrimaryButton>
 	</div>
 </Popup>
