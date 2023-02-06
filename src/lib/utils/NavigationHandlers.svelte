@@ -1,11 +1,16 @@
 <script lang="ts">
 	import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import type { CardOptions } from '$interfaces/ui';
 	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
+	import { openCardPopupFromOptions } from '$lib/components/CardPopup/CardPopup';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { profileData, refreshProfileData } from '$stores/user';
 	import { connectionDetails, currentUserAddress } from '$stores/wallet';
+	import { listingToCardOptions, nftToCardOptions } from '$utils/adapters/cardOptions';
+	import { getListing } from '$utils/api/listing';
+	import { getNft } from '$utils/api/nft';
 	import { fetchCurrentUserData, fetchProfileData } from '$utils/api/profile';
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
@@ -143,6 +148,21 @@
 			// prevents bug related to the ui seeming unresponsive once error has been thrown
 			// basically keeps showing 403
 			errorCode = null;
+		}
+
+		// open unipop if url has nft or listing id param
+		if ($page.url.searchParams.has('nftId')) {
+			const id = $page.url.searchParams.get('nftId');
+			const nft = await getNft(id);
+			const options = await nftToCardOptions(nft);
+
+			openCardPopupFromOptions(options);
+		} else if ($page.url.searchParams.has('listingId')) {
+			const id = $page.url.searchParams.get('listingId');
+			const listing = await getListing(id);
+			const options = await listingToCardOptions(listing);
+
+			openCardPopupFromOptions(options);
 		}
 	});
 
