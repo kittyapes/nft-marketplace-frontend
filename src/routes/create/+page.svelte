@@ -285,6 +285,8 @@
 	<!-- Right side -->
 	<div class="pl-8 pt-8 border-0 border-l border-white separator w-96">
 		<div class="mb-4 text-xl uppercase">Preview</div>
-		<NftCard options={previewMockOptions} hideLikes />
+		<div>
+			<NftCard options={previewMockOptions} hideLikes />
+		</div>
 	</div>
 </div>

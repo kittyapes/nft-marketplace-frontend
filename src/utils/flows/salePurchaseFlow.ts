@@ -1,3 +1,4 @@
+import type { SaleDataModel } from '$interfaces';
 import type { Listing } from '$utils/api/listing';
 import contractCaller from '$utils/contracts/contractCaller';
 import { contractPurchaseListing } from '$utils/contracts/listing';
@@ -6,7 +7,6 @@ import { getChainListingData, stringListingTypeToEnum } from '$utils/listings';
 import { getContract, getContractData } from '$utils/misc/getContract';
 import { notifyError, notifySuccess } from '$utils/toast';
 import dayjs from 'dayjs';
-import { noTryAsync } from 'no-try';
 
 /**
  * Purchase a gas based listing.
@@ -42,12 +42,14 @@ async function purchaseNormal(listing: Listing) {
  * @returns A boolean indicating if the purchase was successful.
  */
 async function purchaseGasless(listing: Listing) {
+	const saleData = listing.listing as SaleDataModel;
+
 	// Get marketplace contract
 	const marketplaceContract = getContract('marketplace-v2');
 
 	// Make sure amount of tokens equal or greater than the price of the sale listing
 	// is approved to be used by the marketpace contract
-	const approvalSuccessful = await ensureAmountApproved(marketplaceContract.address, listing.listing.price, listing.paymentTokenAddress);
+	const approvalSuccessful = await ensureAmountApproved(marketplaceContract.address, saleData.price, listing.paymentTokenAddress);
 
 	if (!approvalSuccessful) {
 		notifyError("Failed to purchase a gasless listing. Could't approve amount of tokens required for the purchase.");
@@ -58,8 +60,8 @@ async function purchaseGasless(listing: Listing) {
 		{
 			seller: listing.seller,
 			payToken: listing.paymentTokenAddress,
-			price: listing.listing.price,
-			reservePrice: listing.listing.reservePrice || listing.listing.price,
+			price: saleData.price,
+			reservePrice: saleData.price,
 			startTime: dayjs(listing.startTime).unix(),
 			duration: listing.duration,
 			expireTime: listing.signatureExpiryTimestamp,

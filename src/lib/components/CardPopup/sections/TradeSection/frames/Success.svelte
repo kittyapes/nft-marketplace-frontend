@@ -13,11 +13,6 @@
 		dispatch('close-popup');
 		goto('/profile/' + $currentUserAddress);
 	}
-
-	function handleContinueShopping() {
-		dispatch('close-popup');
-		goto('/marketplace/listings');
-	}
 </script>
 
 <div class="aspect-1 flex flex-col">
@@ -34,7 +29,7 @@
 
 	<div class="grid grid-cols-2 gap-4">
 		<PrimaryButton on:click={handleViewProfile}>View Profile</PrimaryButton>
-		<PrimaryButton on:click={handleContinueShopping}>Continue Shopping</PrimaryButton>
+		<PrimaryButton on:click={() => dispatch('close-popup')}>Continue Shopping</PrimaryButton>
 	</div>
 </div>
 

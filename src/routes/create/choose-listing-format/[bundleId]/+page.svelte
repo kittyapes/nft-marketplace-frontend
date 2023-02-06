@@ -57,15 +57,24 @@
 </div>
 
 <div class="flex flex-wrap justify-center gap-4 mt-24 mb-64">
-	{#each listingTypes as listingType}
-		<ListingTypeButton
-			on:click={() => handleClick(listingType)}
-			on:pointerenter={() => (hoveredListingType = listingType.listingType)}
-			on:pointerleave={() => {
-				if (hoveredListingType === listingType.listingType) hoveredListingType = null;
-			}}
-			iconComponent={listingType.iconComponent}
-			title={listingType.title}
-		/>
-	{/each}
+	<ListingTypeButton
+		on:click={() => handleClick(listingTypes[0])}
+		on:pointerenter={() => (hoveredListingType = 'auction')}
+		on:pointerleave={() => {
+			if (hoveredListingType === 'auction') hoveredListingType = null;
+		}}
+		iconComponent={AuctionListingTypeOption}
+		title="Auction"
+		disabled={gasless}
+	/>
+
+	<ListingTypeButton
+		on:click={() => handleClick(listingTypes[1])}
+		on:pointerenter={() => (hoveredListingType = 'sale')}
+		on:pointerleave={() => {
+			if (hoveredListingType === 'sale') hoveredListingType = null;
+		}}
+		iconComponent={SaleListingTypeOption}
+		title={'Sale'}
+	/>
 </div>

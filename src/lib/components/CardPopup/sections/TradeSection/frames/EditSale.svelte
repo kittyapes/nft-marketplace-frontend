@@ -17,10 +17,10 @@
 	import { createToggle } from '$utils/misc/toggle';
 	import { getInterval } from '$utils/scheduler';
 	import { notifyError } from '$utils/toast';
-	import { ethers } from 'ethers';
 	import { onDestroy, onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 	import Success from './Success.svelte';
+	import type { SaleDataModel } from '$interfaces/index';
 
 	const dispatch = createEventDispatcher();
 
@@ -79,7 +79,8 @@
 
 	let listingProps: Partial<ConfigurableListingProps> = {};
 
-	$: priceString = formatToken(options.rawListingData.listing.price, options.rawListingData.paymentTokenAddress);
+	$: saleData = options.rawListingData.listing as SaleDataModel;
+	$: priceString = formatToken(saleData.price, options.rawListingData.paymentTokenAddress);
 
 	onMount(() => {
 		// Update input values from existing data
@@ -92,7 +93,7 @@
 	});
 </script>
 
-<div class="flex flex-col overscroll-contain text-white aspect-1 overflow-hidden ">
+<div class="flex flex-col overscroll-contain text-white aspect-1 overflow-hidden">
 	<div class="mt-2">
 		<!-- TODO maxQuantity needs to be checked on chain -->
 		<ListingProperties
