@@ -16,7 +16,7 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { profileCompletionProgress, profileData, userCreatedListing } from '$stores/user';
+	import { profileCompletionProgress, profileData, userCreatedListing, userLikedNfts } from '$stores/user';
 	import { listingToCardOptions, nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { getListing, getListings } from '$utils/api/listing';
 	import { apiGetUserNfts, apiGetUserOwnedNftsAlchemy, getNft } from '$utils/api/nft';
@@ -63,22 +63,6 @@
 			setTimeout(() => goto('/404'), 1500);
 			return;
 		}
-
-		if ($page.url.searchParams.has('id')) {
-			const id = $page.url.searchParams.get('id');
-			const listing = await getListing(id);
-
-			let options: CardOptions;
-
-			if (listing) {
-				options = await listingToCardOptions(listing);
-			} else {
-				const nft = await getNft(id);
-				options = await nftToCardOptions(nft);
-			}
-
-			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
-		}
 	});
 
 	const fetchLimit = 10;
@@ -92,19 +76,12 @@
 	$: browser && fetchData(address);
 
 	$: if (browser && address && $currentUserAddress) {
-		refreshAllTabs();
+		resetTabs();
 	}
 
 	$: if (browser && $currentUserAddress && address && $profileData) {
 		selectTab($tabParam);
 	}
-
-	userCreatedListing.subscribe((value) => {
-		if (value) {
-			refreshAllTabs();
-			userCreatedListing.set(false);
-		}
-	});
 
 	$: socialLinks = $localProfileData?.social || { instagram: '', discord: '', twitter: '', website: '', pixiv: '', deviantart: '', artstation: '' };
 
@@ -241,12 +218,6 @@
 		});
 	};
 
-	const refreshAllTabs = () => {
-		tabs.forEach((t) => {
-			refreshTab(t.name);
-		});
-	};
-
 	let selectedTab: typeof tabs[0] = tabs[0];
 
 	function selectTab(name: string) {
@@ -330,6 +301,17 @@
 			cardPropsMapper = (v) => ({ options: v });
 		}
 	}
+
+	userCreatedListing.subscribe((value) => {
+		if (value) {
+			resetTabs();
+			userCreatedListing.set(false);
+		}
+	});
+
+	userLikedNfts.subscribe(() => {
+		refreshTab('favorites');
+	});
 </script>
 
 <div class="">

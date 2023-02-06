@@ -24,6 +24,7 @@
 
 	let videoAsset: HTMLVideoElement;
 	let fileType;
+	let isFavoriting = false;
 
 	function handleShare() {
 		navigator.clipboard.writeText(assetUrl);
@@ -31,6 +32,10 @@
 	}
 
 	async function handleLike() {
+		isFavoriting = true;
+
+		favorited = !favorited;
+
 		const [err, res] = await noTryAsync(() => favoriteNft(options.nfts[0].fullId));
 
 		if (err) {
@@ -39,14 +44,13 @@
 		} else if (res.data.message) {
 			favorited = false;
 			notifySuccess('Unfavorited NFT.');
-			// $likedNfts = [options.likeIds, -1];
 		} else {
 			favorited = true;
 			notifySuccess('Favorited NFT.');
-			// $likedNfts = [options.likeIds, 1];
 		}
 
 		await refreshLikedNfts($currentUserAddress);
+		isFavoriting = false;
 	}
 
 	function handleFullscreen() {
@@ -132,7 +136,7 @@
 			<!-- Buttons -->
 			<div class="flex mt-4 mb-6 gap-x-12">
 				<button class="w-5 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}><img src={getIconUrl('share')} alt="Share." /></button>
-				<button class="w-5 btn disabled:opacity-50 text-transparent" class:text-white={favorited} on:click={handleLike} disabled={!$walletConnected}>
+				<button class="w-5 btn disabled:opacity-50 text-transparent" class:text-white={favorited} on:click={handleLike} disabled={!$walletConnected || isFavoriting}>
 					<Heart />
 				</button>
 				<button class="w-5 btn" disabled={!videoAsset && !assetUrl} on:click={handleFullscreen}>

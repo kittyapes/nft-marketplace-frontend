@@ -11,13 +11,17 @@ import CardPopup from './CardPopup.svelte';
  * collection data will be fetched and will replace partial collection data. This fetch is asynchronous.
  */
 export async function openCardPopupFromOptions(options: CardOptions) {
-	const id = options.resourceType === 'nft' ? options.nfts[0].fullId : options.listingData.onChainId;
+	let popupHandler;
 
-	addUrlParam('id', id);
+	if (options.resourceType === 'nft') {
+		popupHandler = setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('nftId') });
+		addUrlParam('nftId', options.nfts[0].fullId);
+	} else if (options.listingData.onChainId) {
+		popupHandler = setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('listingId') });
+		addUrlParam('listingId', options.listingData.onChainId);
+	}
 
-	const popupHandler = setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id') });
-
-	// Load complete collection data after opening the popup
+	// Load complete collection data after  opening the popup
 	if (options.nfts[0].collectionData.slug) {
 		const collectionData = await apiGetCollectionBySlug(options.nfts[0].collectionData.slug);
 

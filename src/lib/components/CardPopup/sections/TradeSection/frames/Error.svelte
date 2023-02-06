@@ -2,7 +2,6 @@
 	import ErrorCross from '$icons/error-cross.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { createEventDispatcher } from 'svelte';
-	import CreateListing from './CreateListing.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -21,7 +20,7 @@
 		</div>
 	</div>
 
-	<PrimaryButton on:click={() => dispatch('set-frame', { component: CreateListing })}>Continue shopping</PrimaryButton>
+	<PrimaryButton on:click={() => dispatch('close-popup')}>Continue shopping</PrimaryButton>
 </div>
 
 <style>

@@ -143,7 +143,10 @@
 		<!-- Hottest creators section -->
 		<!-- TODO fix this properly -->
 		<div class="pt-20 w-full" in:slide>
-			<h2 class="text-2xl leading-7">Hottest creators</h2>
+			<div class="w-full flex justify-between">
+				<h2 class="text-2xl leading-7">Hottest creators</h2>
+				<button class="gradient-underline text-xl clickable" on:click={() => goto('/marketplace/creators')}>View all</button>
+			</div>
 
 			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
 				{#each hottestCreators?.users || [] as user}

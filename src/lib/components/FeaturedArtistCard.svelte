@@ -25,8 +25,8 @@
 <button class="flex flex-col relative wrapper overflow-hidden aspect-[1.5] w-full h-full" on:click>
 	<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 
-	<div class="w-full bg-dark-gradient flex-shrink overflow-hidden">
-		<img src={creatorData.coverImg} alt="Featured creator cover." class="w-full object-contain" />
+	<div class="w-full h-full bg-dark-gradient flex-shrink overflow-hidden">
+		<img src={creatorData.coverImg} alt="Featured creator cover." class="h-full w-full object-cover" />
 	</div>
 
 	<div class="bg-dark-gradient flex flex-col items-center justify-center flex-shrink-0 w-full p-4">

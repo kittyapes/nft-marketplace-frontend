@@ -8,6 +8,7 @@
 
 	export let collections: Collection[];
 	export let isLoading = false;
+	export let reachedEnd = false;
 	const dispatch = createEventDispatcher();
 
 	const inviewOptions = {};
@@ -81,6 +82,6 @@
 
 {#if isLoading}
 	<DiamondsLoader />
-{:else}
+{:else if !reachedEnd && !isLoading}
 	<div use:inview={inviewOptions} on:change={onChange} />
 {/if}
