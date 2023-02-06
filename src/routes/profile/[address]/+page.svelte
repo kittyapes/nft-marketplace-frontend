@@ -231,7 +231,7 @@
 	}
 
 	function fetch() {
-		if (browser && !selectedTab.data.length && !selectedTab.isFetching && !selectedTab.reachedEnd) {
+		if (browser && address && !selectedTab.data.length && !selectedTab.isFetching && !selectedTab.reachedEnd) {
 			fetchMore();
 		}
 	}
