@@ -28,10 +28,9 @@
 </script>
 
 <Popup>
-	<div class="text-white">
+	<div class="text-white max-w-xl">
 		<div class="relative">
 			<img src="/img/graphics/tos-popup-bg.png" alt="" class="w-full" />
-			<div class="absolute top-0 h-full w-full grid place-items-center text-white text-5xl">Hinata</div>
 		</div>
 
 		<div class="py-8 px-12">
