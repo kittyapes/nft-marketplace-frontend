@@ -62,7 +62,7 @@ export const globalSearch = async (query: string, limit?: number) => {
 		const res = await axios.get(getApiUrl('latest', 'search'), { params });
 		return res.data.data;
 	} catch {
-		throw new Error('Failed to search for collections');
+		throw new Error('Failed to perform global search');
 	}
 };
 
@@ -89,10 +89,10 @@ export const globalUsersSearch = async (query: string, limit?: number, page?: nu
 			page: page ? page : undefined,
 		};
 
-		const res = await axios.get(getApiUrl('latest', 'search/users'), { params });
+		const res = await axios.get(getApiUrl('latest', 'search/verified-creators'), { params });
 		return res.data.data;
 	} catch {
-		throw new Error('Failed to search for collections');
+		throw new Error('Failed to search for users');
 	}
 };
 
@@ -107,6 +107,6 @@ export const globalNFTSearch = async (query: string, limit?: number, page?: numb
 		const res = await axios.get(getApiUrl('latest', 'search/nfts'), { params });
 		return res.data.data;
 	} catch {
-		throw new Error('Failed to search for collections');
+		throw new Error('Failed to search for nfts');
 	}
 };
