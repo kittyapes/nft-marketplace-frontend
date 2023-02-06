@@ -1,24 +1,23 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import AddCircle from '$icons/add-circle.svelte';
 	import { nftDraft } from '$stores/create';
 
 	export let collectionId: string;
 </script>
 
 <div
-	class="grid place-items-center custom-dashed-border clickable hover:scale-105  transition-all"
+	class="custom-dashed-border clickable hover:scale-105 transition-all min-h-[15rem] min-w-[260px] inline-block"
 	on:click={() => {
 		$nftDraft = {};
 		$nftDraft.collectionId = collectionId;
 		goto('/create');
 	}}
 >
-	<button class="btn relative square bg-card-gradient w-20 h-20 grid place-items-center">
+	<button class="btn absolute m-auto inset-0 square bg-card-gradient w-20 h-20">
 		<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 		<div class="text-5xl font-thin z-10 bg-transparent">+</div>
 	</button>
-	<div class="absolute bottom-24 text-lg">Create a new NFT</div>
+	<div class="absolute bottom-[20%] inset-x-0 text-center text-lg">Create a new NFT</div>
 </div>
 
 <style type="postcss">

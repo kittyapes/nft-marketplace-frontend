@@ -228,7 +228,7 @@
 		class:normal-nft-details={gridStyle === 'normal'}
 		class:dense-nft-details={gridStyle === 'dense'}
 		class:hidden={gridStyle === 'masonry'}
-		class="flex-shrink-0 h-36"
+		class="flex-shrink-0"
 		class:bg-dark-gradient={!useLighterBackground}
 		class:bg-card-gradient={useLighterBackground}
 	>
@@ -357,6 +357,7 @@
 
 	.normal-nft-details {
 		@apply py-2.5 2xl:py-3 px-4 2xl:px-5;
+		@apply h-36;
 	}
 
 	.dense-nft-details {
