@@ -154,7 +154,7 @@
 </script>
 
 <div
-	class="relative overflow-hidden group h-full flex flex-col wrapper z-0"
+	class="relative overflow-hidden group h-full flex flex-col wrapper z-[9]"
 	class:mb-4={gridStyle === 'masonry'}
 	in:fade
 	on:click={handleClick}
@@ -164,7 +164,7 @@
 	on:mouseout={() => (isHovered = false)}
 	on:blur={() => (isHovered = false)}
 >
-	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-[7]" />
+	<div on:click|preventDefault|stopPropagation={() => {}} class="absolute inset-0 gradient-border animate-gradient-border-spin z-[8]" />
 
 	<div
 		class:dense-nft-media={gridStyle === 'dense'}
@@ -172,19 +172,23 @@
 		class="w-full mx-auto transition bg-card-gradient select-none flex-shrink flex-grow overflow-hidden {gridStyle !== 'masonry' ? 'aspect-1' : ''} "
 	>
 		{#if isHovered && !disabled}
-			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60 text-white z-[6]" />
-			<div class="absolute flex justify-between w-full px-2 bg-black bg-opacity-60 text-white z-[8]" transition:fade={{ duration: 200 }}>
-				{#if options.resourceType === 'listing'}
-					<button class="p-3 clickable h-12 w-40 truncate z-[8]" on:click|stopPropagation|preventDefault={() => goto('/profile/' + options.listingData?.sellerAddress)}>
-						{options.listingData?.sellerAddress}
-					</button>
-				{/if}
-				{#if !hideLikes}
-					<button class="text-transparent clickable p-3 h-12 z-[8] disabled:opacity-50" class:text-white={isUserLiked} disabled={isFavoriting} on:click|stopPropagation|preventDefault={favNFT}>
-						<Heart />
-					</button>
-				{/if}
-			</div>
+			<div class="absolute w-full h-12 bg-black bg-opacity-60 text-white z-[] top-0 left-0 right-0" transition:fade={{ duration: 200 }} />
+
+			{#if options.resourceType === 'listing'}
+				<button class="p-3 clickable h-12 w-40 truncate z-[9] absolute left-0" on:click|stopPropagation|preventDefault={() => goto('/profile/' + options.listingData?.sellerAddress)}>
+					{options.listingData?.sellerAddress}
+				</button>
+			{/if}
+			{#if !hideLikes}
+				<button
+					class="text-transparent clickable p-3 h-12 z-[9] disabled:opacity-50 absolute right-0"
+					class:text-white={isUserLiked}
+					disabled={isFavoriting}
+					on:click|stopPropagation|preventDefault={favNFT}
+				>
+					<Heart />
+				</button>
+			{/if}
 		{/if}
 
 		{#await preload(options.nfts[0].thumbnailUrl)}
