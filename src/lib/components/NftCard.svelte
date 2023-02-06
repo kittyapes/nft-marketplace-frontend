@@ -33,6 +33,7 @@
 	export let hideLikes = false;
 	export let disabled = false;
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
+	export let useLighterBackground = false;
 
 	// Helpers
 	let imgLoaded = false;
@@ -223,7 +224,14 @@
 		{/await}
 	</div>
 
-	<div class:normal-nft-details={gridStyle === 'normal'} class:dense-nft-details={gridStyle === 'dense'} class:hidden={gridStyle === 'masonry'} class="bg-dark-gradient flex-shrink-0">
+	<div
+		class:normal-nft-details={gridStyle === 'normal'}
+		class:dense-nft-details={gridStyle === 'dense'}
+		class:hidden={gridStyle === 'masonry'}
+		class="flex-shrink-0 h-36"
+		class:bg-dark-gradient={!useLighterBackground}
+		class:bg-card-gradient={useLighterBackground}
+	>
 		<div class="flex justify-between items-center">
 			<div class="">
 				<h4 class="text-gradient font-bold truncate  {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">

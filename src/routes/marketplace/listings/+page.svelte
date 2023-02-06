@@ -100,14 +100,6 @@
 		debouncedFetchMore();
 	}
 
-	function onChange(event) {
-		if (event.detail.inView) {
-			fetchMore();
-		}
-	}
-
-	const inviewOptions = {};
-
 	onMount(() => {
 		refreshWithFilters();
 	});
@@ -155,7 +147,7 @@
 		<NftGrid bind:options={data} bind:gridStyle bind:reachedEnd bind:isLoading />
 
 		{#if !isLoading}
-			<div use:inview={inviewOptions} on:change={onChange} />
+			<div use:inview on:enter={fetchMore} />
 		{/if}
 	</div>
 </div>

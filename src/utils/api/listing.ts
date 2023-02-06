@@ -136,16 +136,24 @@ export async function getTrendingListings(count?: number) {
 }
 
 export interface ListingCreatorsData {
-	users: (UserData & { createdListings: Listing })[];
+	users: (UserData & { createdListings: Listing[] })[];
 }
 
-interface ListingCreatorsRes {
+export interface ListingCreatorsRes {
 	error: boolean;
 	data: ListingCreatorsData;
 }
 
-export async function getListingCreators({ limit = 10, page = 1 }: { limit?: number; page?: number }): Promise<ApiCallResult<ListingCreatorsRes>> {
-	const res = await api.get(getApiUrl(null, 'users/listingCreators'), { params: { limit, page } });
+export async function getListingCreators(options: { limit?: number; page?: number }): Promise<ApiCallResult<ListingCreatorsRes>> {
+	options = {
+		limit: 10,
+		page: 1,
+		...options,
+	};
+
+	const res = await api.get(getApiUrl(null, 'users/listingCreators'), {
+		params: { limit: options.limit, page: options.page },
+	});
 
 	return res;
 }

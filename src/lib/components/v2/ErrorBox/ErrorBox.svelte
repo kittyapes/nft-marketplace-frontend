@@ -4,7 +4,7 @@
 
 <div class="text-white p-px --outer-bg">
 	<div class="--inner-bg flex items-center gap-4 px-4 py-3">
-		<div class="w-8 h-8">
+		<div class="w-8 h-8 flex-shrink-0 hidden sm:block">
 			<InfoV2 />
 		</div>
 
