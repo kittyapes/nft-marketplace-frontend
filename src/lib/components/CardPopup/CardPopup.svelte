@@ -6,7 +6,6 @@
 	import { listingToCardOptions, sanitizeNftData } from '$utils/adapters/cardOptions';
 	import { getNft } from '$utils/api/nft';
 	import { makeHttps } from '$utils/ipfs';
-	import { getIconUrl } from '$utils/misc/getIconUrl';
 	import type { PopupHandler } from '$utils/popup';
 	import { onMount, SvelteComponent } from 'svelte';
 	import Popup from '../Popup.svelte';
@@ -21,6 +20,7 @@
 
 	export let options: CardOptions;
 	export let handler: PopupHandler;
+	export let showInvalidListingMessage = false;
 
 	let isFetchingNfts = false;
 	let reachedEnd = false;
@@ -139,47 +139,53 @@
 			disabledTabs.push('trade');
 		}
 	}
+
+	$: console.log({ showInvalidListingMessage });
 </script>
 
 <div class="p-4 h-full w-full overflow-hidden">
 	<Popup class="h-full rounded-none transition-all duration-200" closeButton on:close={handler.close}>
 		<div class="bg-gradient overflow-y-auto bg-repeat-y h-full blue-scrollbar overscroll-contain">
-			<div class="bg-black bg-opacity-40 min-h-full">
-				<div class="max-w-2xl lg:max-w-7xl mx-auto">
-					<div class="grid grid-cols-1 lg:grid-cols-2 h-full gap-8 px-8">
-						<!-- Left part with image and buttons -->
-						<div class="pb-8">
-							<Tabs bind:selectedTab {disabledTabs} />
+			<div class="bg-black bg-opacity-40 min-h-full" class:h-full={showInvalidListingMessage}>
+				{#if showInvalidListingMessage}
+					<div class="text-white font-medium opacity-50 grid place-items-center h-full">This listing is not available.</div>
+				{:else}
+					<div class="max-w-2xl lg:max-w-7xl mx-auto">
+						<div class="grid grid-cols-1 lg:grid-cols-2 h-full gap-8 px-8">
+							<!-- Left part with image and buttons -->
+							<div class="pb-8">
+								<Tabs bind:selectedTab {disabledTabs} />
 
-							<AssetContainer
-								assetUrl={makeHttps(options.nfts[0].assetUrl)}
-								title={options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
-								{options}
-								favorited={$likedNftIds.includes(options.nfts[0].onChainId)}
-								countdown={countdownData}
-								thumbnailUrl={makeHttps(options.nfts[0]?.thumbnailUrl)}
-							/>
-						</div>
+								<AssetContainer
+									assetUrl={makeHttps(options.nfts[0].assetUrl)}
+									title={options.nfts[0].name ?? `#${options.nfts[0]?.onChainId}` ?? 'No Title'}
+									{options}
+									favorited={$likedNftIds.includes(options.nfts[0].onChainId)}
+									countdown={countdownData}
+									thumbnailUrl={makeHttps(options.nfts[0]?.thumbnailUrl)}
+								/>
+							</div>
 
-						<!-- Right part with info and actions -->
-						<div class="border-t border-gray-800 lg:border-none pb-8 pt-4 lg:pt-0">
-							<div class="h-20" />
+							<!-- Right part with info and actions -->
+							<div class="border-t border-gray-800 lg:border-none pb-8 pt-4 lg:pt-0">
+								<div class="h-20" />
 
-							<svelte:component
-								this={selectedTab?.sectionComponent}
-								{options}
-								on:close-popup={handleClosePopup}
-								on:force-expire
-								on:listing-created={refreshBalance}
-								bind:this={tabComponentInstance}
-								bind:enableBack
-							/>
+								<svelte:component
+									this={selectedTab?.sectionComponent}
+									{options}
+									on:close-popup={handleClosePopup}
+									on:force-expire
+									on:listing-created={refreshBalance}
+									bind:this={tabComponentInstance}
+									bind:enableBack
+								/>
+							</div>
 						</div>
 					</div>
-				</div>
+				{/if}
 			</div>
 
-			{#if similarCards.length > 0}
+			{#if similarCards.length > 0 && !showInvalidListingMessage}
 				<div class="pt-24 pb-32 grid place-items-center">
 					<div class="max-w-2xl lg:max-w-7xl w-full px-8">
 						<CardCarousel cards={similarCards} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} />
