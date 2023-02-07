@@ -177,10 +177,10 @@
 		class="w-full mx-auto transition bg-card-gradient select-none flex-shrink flex-grow overflow-hidden {gridStyle !== 'masonry' ? 'aspect-1' : ''} "
 	>
 		{#if isHovered && !disabled}
-			<div class="absolute w-full h-12 bg-black bg-opacity-60 text-white top-0 left-0 right-0" transition:fade={{ duration: 200 }} />
+			<div class="absolute w-full h-12 bg-black bg-opacity-60 top-0 left-0 right-0" transition:fade={{ duration: 200 }} />
 
 			{#if options.resourceType === 'listing'}
-				<button class="p-3 clickable h-12 w-40 truncate z-[9] absolute left-0" on:click|stopPropagation|preventDefault={() => goto('/profile/' + options.listingData?.sellerAddress)}>
+				<button class="p-3 clickable h-12 w-40 truncate z-[9] absolute left-0 text-white" on:click|stopPropagation|preventDefault={() => goto('/profile/' + options.listingData?.sellerAddress)}>
 					{options.listingData?.sellerAddress}
 				</button>
 			{/if}
