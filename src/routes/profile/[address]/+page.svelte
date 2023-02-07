@@ -79,7 +79,7 @@
 		resetTabs();
 	}
 
-	$: if (browser && address && $profileData) {
+	$: if (browser && address) {
 		selectTab($tabParam);
 	}
 
