@@ -18,6 +18,7 @@
 	import { notifyError } from '$utils/toast';
 	import { currentUserAddress } from '$stores/wallet';
 	import CreatorWithNfts from '$lib/components/v2/CreatorWithNfts/CreatorWithNfts.svelte';
+	import { goto } from '$app/navigation';
 
 	let trendingListings = writable<Listing[]>([]);
 	let loadedTrendingListings = writable(false);
