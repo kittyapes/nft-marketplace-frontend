@@ -37,18 +37,18 @@
 		loadedTrendingListings.set(true);
 	};
 
-	let hottestCreators: ListingCreatorsData;
+	// let hottestCreators: ListingCreatorsData;
 
-	const getHottestCreatorsData = async () => {
-		const listingCreatorsRes = await getListingCreators({ limit: 3 });
+	// const getHottestCreatorsData = async () => {
+	// 	const listingCreatorsRes = await getListingCreators({ limit: 3 });
 
-		if (listingCreatorsRes.err) {
-			notifyError('Failed to load hottest creators.');
-			return;
-		}
+	// 	if (listingCreatorsRes.err) {
+	// 		notifyError('Failed to load hottest creators.');
+	// 		return;
+	// 	}
 
-		hottestCreators = listingCreatorsRes.data.data;
-	};
+	// 	hottestCreators = listingCreatorsRes.data.data;
+	// };
 
 	const getUserNotification = async () => {
 		if (!$userNotification) loadedUserNotification.set(false);
@@ -82,7 +82,7 @@
 	onDestroy(() => clearInterval(notificationFetchingInterval));
 
 	onMount(async () => {
-		getHottestCreatorsData();
+		// getHottestCreatorsData();
 		getTrendingListingsData();
 	});
 
@@ -141,11 +141,10 @@
 		</div>
 
 		<!-- Hottest creators section -->
-		<!-- TODO fix this properly -->
-		<div class="pt-20 w-full" in:slide>
+		<!-- <div class="pt-20 w-full" in:slide>
 			<div class="w-full flex justify-between">
-				<h2 class="text-2xl leading-7">Hottest creators</h2>
-				<button class="gradient-underline text-xl clickable" on:click={() => goto('/marketplace/creators')}>View all</button>
+				<h2 class="text-2xl leading-7">Hottest Creators</h2>
+				<button class="gradient-underline text-lg clickable" on:click={() => goto('/marketplace/creators')}>View all</button>
 			</div>
 
 			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
@@ -153,13 +152,13 @@
 					<CreatorWithNfts creator={user} listings={user.createdListings.slice(0, 2)} />
 				{/each}
 			</div>
-		</div>
+		</div> -->
 
 		<!-- Latest blog posts -->
 		<div class=" mt-60 mb-16">
 			<div class="flex items-end mb-12">
-				<h2 class="text-4xl leading-none text-white flex-grow">Latest blog post</h2>
-				<a href="/blog" class=" text-white gradient-underline text-lg relative">View latests posts</a>
+				<h2 class="text-2xl leading-none text-white flex-grow">Latest Blog Posts</h2>
+				<a href="/blog" class=" text-white gradient-underline text-lg relative">View latest posts</a>
 			</div>
 
 			{#if $blogPosts.length}
@@ -176,9 +175,9 @@
 		<!-- Tending nfts Section -->
 		{#if $loadedTrendingListings && trendingListingsData?.length > 0}
 			<div class="my-24 w-full" in:slide>
-				<h2 class="text-4xl leading-7">Explore Market</h2>
+				<h2 class="text-2xl leading-7">Explore Market</h2>
 
-				<div class="mb-20">
+				<div class="mb-20 mt-12">
 					<NftList options={trendingListingsData} />
 				</div>
 
