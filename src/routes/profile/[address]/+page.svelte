@@ -75,11 +75,11 @@
 
 	$: browser && fetchData(address);
 
-	$: if (browser && address && $currentUserAddress) {
+	$: if (browser && address) {
 		resetTabs();
 	}
 
-	$: if (browser && $currentUserAddress && address && $profileData) {
+	$: if (browser && address && $profileData) {
 		selectTab($tabParam);
 	}
 
