@@ -155,7 +155,7 @@
 		</div> -->
 
 		<!-- Latest blog posts -->
-		<div class=" mt-60 mb-16">
+		<div class="mt-12 mb-16">
 			<div class="flex items-end mb-12">
 				<h2 class="text-2xl leading-none text-white flex-grow">Latest Blog Posts</h2>
 				<a href="/blog" class=" text-white gradient-underline text-lg relative">View latest posts</a>
