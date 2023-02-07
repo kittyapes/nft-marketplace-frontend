@@ -578,7 +578,7 @@
 					</div>
 				</div>
 				<div class="flex flex-col gap-5">
-					<div class="font-medium text-white text-opacity-80">Add address to Whitelisted Collections</div>
+					<div class="font-medium text-white">Add address to Whitelisted Collections</div>
 					<div class="flex justify-between">
 						<input type="text" class="input text-white max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
 
