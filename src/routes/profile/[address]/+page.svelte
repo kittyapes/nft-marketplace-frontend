@@ -33,7 +33,7 @@
 	import { onMount } from 'svelte';
 	import { derived, writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
-	import { currentUserAddress } from '$stores/wallet';
+	import { appProvider, currentUserAddress } from '$stores/wallet';
 	import Twitter from '$icons/socials/twitter.svelte';
 	import Instagram from '$icons/socials/instagram.svelte';
 	import Web from '$icons/socials/web.svelte';
@@ -343,7 +343,7 @@
 						{/if}
 
 						{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED' || $localProfileData?.roles?.includes('verified_user') || $localProfileData?.roles?.includes('inactivated_user')}
-							<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || !storage.hasRole('minter', address)}>
+							<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || ($appProvider && !storage.hasRole('minter', address))}>
 								<VerifiedBadge class="w-6 h-6" />
 							</div>
 						{/if}
