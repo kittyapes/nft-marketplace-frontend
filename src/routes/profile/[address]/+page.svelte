@@ -323,7 +323,7 @@
 		</div>
 
 		<div class="flex mt-8 text-white justify-between w-full flex-wrap gap-20">
-			<div class="flex gap-4 ">
+			<div class="flex gap-4 w-full xl:w-auto ">
 				<!-- Profile image -->
 				<div class="grid w-28 h-28 overflow-hidden place-items-center">
 					{#if $localProfileData?.thumbnailUrl}
@@ -460,25 +460,6 @@
 					{/if}
 				</p>
 			</div>
-
-			<!-- Social links 
-			<div class="overflow-hidden">
-				<div class="font-bold whitespace-nowrap">SOCIAL LINKS</div>
-
-				<div class="flex flex-wrap mt-4">
-					{#if areSocialLinks}
-						{#each Object.entries(socialLinks) as [key, link]}
-							{#if link}
-								<div class="mb-2 mr-2">
-									<SocialButton social={key} href={link} />
-								</div>
-							{/if}
-						{/each}
-					{:else}
-						<div class="font-bold opacity-50 whitespace-nowrap">No social links.</div>
-					{/if}
-				</div>
-			</div>-->
 
 			<!-- Followers and address -->
 			<div class="flex flex-col gap-4">
