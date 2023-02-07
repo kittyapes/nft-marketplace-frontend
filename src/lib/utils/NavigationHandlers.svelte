@@ -9,7 +9,7 @@
 	import { profileData, refreshProfileData } from '$stores/user';
 	import { connectionDetails, currentUserAddress } from '$stores/wallet';
 	import { listingToCardOptions, nftToCardOptions } from '$utils/adapters/cardOptions';
-	import { getListing } from '$utils/api/listing';
+	import { getListing, type ListingChainStatus, type ListingStatus } from '$utils/api/listing';
 	import { getNft } from '$utils/api/nft';
 	import { fetchCurrentUserData, fetchProfileData } from '$utils/api/profile';
 	import { isAuthTokenExpired } from '$utils/auth/token';
@@ -162,7 +162,12 @@
 			const listing = await getListing(id);
 			const options = await listingToCardOptions(listing);
 
-			openCardPopupFromOptions(options);
+			const invalidStatuses: ListingStatus[] = ['SIGNATURE_EXPIRED', 'SIGNATURE_OR_DATA_INVALID', 'SIGNATURE_USED'];
+
+			if (invalidStatuses.includes(options.rawListingData.listingStatus)) {
+			}
+
+			openCardPopupFromOptions(options, { showInvalidListingMessage: true });
 		}
 	});
 
