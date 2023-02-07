@@ -181,7 +181,7 @@
 
 			{#if similarCards.length > 0}
 				<div class="pt-24 pb-32 grid place-items-center">
-					<div class="max-w-2xl lg:max-w-7xl w-full px-8">
+					<div class="max-w-2xl lg:max-w-7xl w-full px-8 overflow-hidden">
 						<CardCarousel cards={similarCards} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} />
 					</div>
 				</div>
