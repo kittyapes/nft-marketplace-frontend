@@ -45,11 +45,14 @@ interface RaffleParticipants {
 	tickets: number[];
 }
 
+export type ListingStatus = 'ACTIVE' | 'SIGNATURE_EXPIRED' | 'SIGNATURE_OR_DATA_INVALID' | 'SIGNATURE_USED';
+export type ListingChainStatus = 'ON_CHAIN' | 'NOT_ON_CHAIN' | 'GASLESS';
+
 export interface Listing {
 	_id: string;
 	listingId: string;
-	listingStatus: 'ACTIVE';
-	chainStatus: 'ON_CHAIN' | 'NOT_ON_CHAIN' | 'GASLESS';
+	listingStatus: ListingStatus;
+	chainStatus: ListingChainStatus;
 	listingType: ListingType;
 	listing: SaleDataModel | AuctionDataModel;
 	nfts: NftInListingModel[];
