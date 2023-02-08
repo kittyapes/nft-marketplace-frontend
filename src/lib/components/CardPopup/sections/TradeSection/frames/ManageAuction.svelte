@@ -17,6 +17,7 @@
 	import EthV2 from '$icons/eth-v2.svelte';
 	import { listingExistsOnChain } from '$utils/listings';
 	import { cancelListingFlow } from '$utils/flows/cancelListingFlow';
+	import type { AuctionDataModel } from '$interfaces/index';
 
 	const dispatch = createEventDispatcher();
 
@@ -79,9 +80,11 @@
 	let isAccepting = false;
 	let isCancelling = false;
 
+	$: auctionData = options.rawListingData.listing as AuctionDataModel;
+
 	$: payTokenAddress = options.rawListingData.paymentTokenAddress;
-	$: price = options.rawListingData.listing.reservePrice;
-	$: reservePrice = options.rawListingData.listing.reservePrice;
+	$: price = auctionData.reservePrice;
+	$: reservePrice = auctionData.reservePrice;
 
 	$: highestAmount = biddings[0] && parseToken(biddings[0].tokenAmount, payTokenAddress);
 
