@@ -15,7 +15,7 @@
 	import dayjs from 'dayjs';
 	import GhostButton from '$lib/components/v2/GhostButton.svelte';
 	import EthV2 from '$icons/eth-v2.svelte';
-	import { listingExistsOnChain } from '$utils/listings';
+	import { isListingValid, listingExistsOnChain } from '$utils/listings';
 	import { cancelListingFlow } from '$utils/flows/cancelListingFlow';
 	import type { AuctionDataModel } from '$interfaces/index';
 
@@ -55,8 +55,8 @@
 	let cancelButtonContainer: HTMLElement;
 
 	async function cancelListing() {
-		if (!(await listingExistsOnChain(options.rawListingData.listingId))) {
-			notifyError('Failed to Cancel Listing: Listing is no longer valid (not on chain)');
+		if (!isListingValid(options.rawListingData)) {
+			notifyError('Failed to Cancel Listing: Listing is no longer valid.');
 			return;
 		}
 
