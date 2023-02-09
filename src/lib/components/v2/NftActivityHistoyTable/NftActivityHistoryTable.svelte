@@ -1,9 +1,12 @@
 <script lang="ts">
 	import EthAddress from '$lib/components/EthAddress.svelte';
+	import { toShortDisplayPrice } from '$utils/adapters/cardOptions';
 	import { createEventDispatcher } from 'svelte';
 	import { tick } from 'svelte';
 	import EthIcon from './EthIcon.svelte';
-	import type { NftActivityHistoryTableRowData } from './types';
+	import type { NftActivityHistoryTableRowData } from './NftActivityHistoryTable';
+	import 'simplebar';
+	import 'simplebar/dist/simplebar.css';
 
 	const dispatch = createEventDispatcher();
 
@@ -34,77 +37,70 @@
 	}
 
 	$: data, dispatchReachedEndIfNotFull();
+
+	const headers = ['Event', 'Price', 'From', 'To', 'Date'];
 </script>
 
-<div
-	id="grid-container"
-	class="grid h-full py-2 overflow-auto font-semibold bg-white border border-gray-300 rounded-xl blue-scrollbar overscroll-contain"
-	style:--list-length={skeleton ? data.length + skeletonLength : data.length}
-	on:scroll={handleScroll}
-	bind:this={gridContainer}
->
-	<div>Event</div>
-	<div>Price</div>
-	<div>From</div>
-	<div>To</div>
-	<div>Date</div>
-
-	{#each data as row}
-		<div>{row.event}</div>
-		{#if row.price}
-			<div class="gap-x-2">
-				<div class="w-4">
-					<EthIcon />
-				</div>
-				{row.price}
-			</div>
-		{:else}
-			<div />
-		{/if}
-		<!--<div><a href="/profile/{row.from}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.from}</a></div>
-		<div><a href="/profile/{row.to}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.to}</a></div>-->
-		<div><a href="/profile/{row.from}" target="_blank"><EthAddress address={row.from} etherScanLink={false} copyIcon={false} concat class="!text-black !font-semibold hover:!text-blue-500" /></a></div>
-		<div><a href="/profile/{row.to}" target="_blank"><EthAddress address={row.to} etherScanLink={false} copyIcon={false} concat class="!text-black !font-semibold hover:!text-blue-500" /></a></div>
-		<div>{row.date}</div>
-	{/each}
-
-	{#if skeleton}
-		{#each Array(skeletonLength * 5).fill(0) as i, index}
-			<div>
-				<div class="bg-gray-100 h-6 w-full rounded-md" />
-			</div>
+<div class="text-white border border-white h-full flex flex-col">
+	<div class="grid grid-cols-5 px-4 border-b border-white py-4 gap-2">
+		{#each headers as header}
+			<div class="px-2">{header}</div>
 		{/each}
-	{/if}
+	</div>
 
-	{#if displayEndReachedMsg}
-		<!-- I don't know why * 3, but it works :) -->
-		<div class="flex items-center justify-center font-semibold col-span-5 opacity-50" style="height: {skeletonLength * 3}rem !important;">You have reached the end of this NFT's history.</div>
-	{/if}
+	<div data-simplebar data-simplebar-auto-hide="false" class="overflow-y-scroll scrollbar-hide">
+		<div
+			id="grid-container"
+			class="grid h-full py-2 px-4 blue-scrollbar grid-cols-5 scrollbar-hide gap-2"
+			style:--list-length={skeleton ? data.length + skeletonLength : data.length}
+			on:scroll={handleScroll}
+			bind:this={gridContainer}
+		>
+			{#each data as row}
+				<div>{row.event}</div>
+				{#if row.price}
+					<div class="gap-x-2">
+						<div class="w-4">
+							<EthIcon />
+						</div>
+						{toShortDisplayPrice(`${row.price}`)}
+					</div>
+				{:else}
+					<div />
+				{/if}
+				<!--<div><a href="/profile/{row.from}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.from}</a></div>
+		<div><a href="/profile/{row.to}" target="_blank" class="flex items-center h-full hover:text-blue-500 outline-none">{row.to}</a></div>-->
+				<div><a href="/profile/{row.from}" target="_blank"><EthAddress address={row.from} etherScanLink={false} copyIcon={false} concat class="!text-white hover:!text-blue-500" /></a></div>
+				<div><a href="/profile/{row.to}" target="_blank"><EthAddress address={row.to} etherScanLink={false} copyIcon={false} concat class="!text-white hover:!text-blue-500" /></a></div>
+				<div>{row.date}</div>
+			{/each}
+
+			{#if skeleton}
+				{#each Array(skeletonLength * 5).fill(0) as i, index}
+					<div>
+						<div class="bg-gray-800 opacity-50 h-6 w-full" />
+					</div>
+				{/each}
+			{/if}
+
+			{#if displayEndReachedMsg && data.length}
+				<!-- I don't know why * 3, but it works :) -->
+				<div class="flex items-center justify-center font-semibold col-span-5 opacity-50" style="height: {skeletonLength * 3}rem !important;">You have reached the end of this NFT's history.</div>
+			{/if}
+		</div>
+	</div>
 
 	{#if !data.length && !skeleton}
-		<div class="self-stretch justify-center col-span-5 !bg-white opacity-50">No NFT activity history.</div>
+		<div class="font-semibold opacity-50 h-full grid place-items-center">No NFT activity history.</div>
 	{/if}
 </div>
 
 <style type="postcss">
-	#grid-container {
-		grid-template-rows: repeat(var(--list-length), min-content);
-		grid-template-columns: minmax(10rem, auto) minmax(12rem, auto) minmax(8rem, auto) minmax(8rem, auto) minmax(10rem, auto);
-	}
-
-	#grid-container > :nth-child(-n + 5) {
-		@apply border-b border-inherit;
+	#grid-container > :nth-child(5n + 1) {
+		/* @apply px-6; */
 	}
 
 	#grid-container > div {
-		@apply px-4 h-12 flex items-center truncate;
-	}
-
-	#grid-container > :nth-child(10n + 6),
-	#grid-container > :nth-child(10n + 7),
-	#grid-container > :nth-child(10n + 8),
-	#grid-container > :nth-child(10n + 9),
-	#grid-container > :nth-child(10n + 10) {
-		@apply bg-gray-50;
+		@apply px-2 h-16 flex items-center truncate;
 	}
 </style>

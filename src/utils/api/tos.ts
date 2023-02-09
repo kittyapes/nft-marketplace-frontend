@@ -2,7 +2,7 @@ import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { api, getApiUrl, type ApiCallResult } from '.';
 
 export interface TosVersionObject {
-	status: 'DRAFT' | 'PUBLISHED';
+	status: 'DRAFT' | 'PUBLISHED' | 'DEPRECATED';
 	_id: string;
 	version: string;
 	pdf_link: string;
@@ -10,6 +10,12 @@ export interface TosVersionObject {
 	version_hash: string;
 	createdAt: string;
 	updatedAt: string;
+}
+
+export interface TosAgreeObject {
+	hasAgreed: boolean;
+	version_hash: string;
+	version: string;
 }
 
 export interface LatestVersionRes {
@@ -23,7 +29,9 @@ export async function apiGetLatestTosVersion(): Promise<ApiCallResult<LatestVers
 
 export interface AgreeToTosResponse {
 	error: false;
-	data: {};
+	data: {
+		version: string;
+	};
 }
 
 export async function apiAgreeToTos(versionLabel: string, signature: string): Promise<ApiCallResult<AgreeToTosResponse>> {
@@ -32,11 +40,11 @@ export async function apiAgreeToTos(versionLabel: string, signature: string): Pr
 
 export interface IsAgreedResponse {
 	error: boolean;
-	data: string;
+	data: TosAgreeObject;
 }
 
-export async function apiIsAgreedToTosVersion(versionLabel: string): Promise<ApiCallResult<IsAgreedResponse>> {
-	return await api.get(getApiUrl(null, '/tos/is-agreed/' + versionLabel), await getAxiosConfig());
+export async function apiIsAgreedToLatestTos(): Promise<ApiCallResult<IsAgreedResponse>> {
+	return await api.get(getApiUrl(null, '/tos/is-agreed-to-latest'), await getAxiosConfig());
 }
 
 // Create ToS version

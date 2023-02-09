@@ -1,4 +1,4 @@
-import type { NftActivityHistoryTableRowData } from '$lib/components/v2/NftActivityHistoyTable/types';
+import type { NftActivityHistoryTableRowData } from '$lib/components/v2/NftActivityHistoyTable/NftActivityHistoryTable';
 import type { ApiNftActivityHistoryEntry } from '$utils/api/nft';
 import dayjs from 'dayjs';
 import { capitalize } from 'lodash-es';

@@ -1,15 +1,21 @@
 <script lang="ts">
 	import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import type { CardOptions } from '$interfaces/ui';
 	import { userAuthLoginPopupAdapter } from '$lib/components/auth/AuthLoginPopup/adapters/userAuthLoginPopupAdapter';
 	import AuthLoginPopup from '$lib/components/auth/AuthLoginPopup/AuthLoginPopup.svelte';
+	import { openCardPopupFromOptions } from '$lib/components/CardPopup/CardPopup';
 	import WalletNotConnectedPopup from '$lib/components/WalletNotConnectedPopup.svelte';
 	import { profileData, refreshProfileData } from '$stores/user';
 	import { connectionDetails, currentUserAddress } from '$stores/wallet';
-	import { fetchCurrentUserData } from '$utils/api/profile';
+	import { listingToCardOptions, nftToCardOptions } from '$utils/adapters/cardOptions';
+	import { getListing, type ListingChainStatus, type ListingStatus } from '$utils/api/listing';
+	import { getNft } from '$utils/api/nft';
+	import { fetchCurrentUserData, fetchProfileData } from '$utils/api/profile';
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
 	import { setPopup } from '$utils/popup';
+	import { findEthAddress } from '$utils/validator/isEthAddress';
 	import { walletConnected, walletDisconnected } from '$utils/wallet';
 
 	export let errorCode = null;
@@ -97,12 +103,12 @@
 	});
 
 	// Handler for when the app is first loaded on a auth protected route
-	afterNavigate(({ from, to }) => {
+	afterNavigate(async ({ from, to }) => {
 		// Restrict routes to verified creators
 		if (to.url.pathname.match(/create*/) || to.url.pathname === '/collections/new/edit' || to.url.pathname.match(/management*/)) {
 			if (to.url.pathname.match(/create*/) || to.url.pathname === '/collections/new/edit') {
 				profileData.subscribe((profile) => {
-					if ((profile && !profile.roles.includes('verified_user')) || profile.roles.includes('inactivated_user')) {
+					if (profile && (profile.roles.includes('inactivated_user') || !profile.roles.includes('verified_user'))) {
 						if (!profile.roles.includes('superadmin')) {
 							// This check occurs only if the user is not the above.
 							// when placed above it causes 403 for other users, so if user does not have all three, they get the 403
@@ -126,11 +132,40 @@
 					}
 				});
 			}
+		} else if (to.url.pathname.match(/profile*/)) {
+			let accessingProfileData = await fetchProfileData(findEthAddress(to.url.pathname));
+
+			profileData.subscribe((profile) => {
+				if (accessingProfileData && accessingProfileData.roles?.includes('inactivated_user') && (!profile || (!profile.roles?.includes('admin') && !profile.roles?.includes('superadmin')))) {
+					errorCode = 403;
+				} else if (profile && (profile.roles?.includes('admin') || profile.roles?.includes('superadmin'))) {
+					// reset the error to ensure displayed error is updated on UI
+					errorCode = null;
+				}
+			});
 		} else {
 			// first set error to null, and then figure things out from there
 			// prevents bug related to the ui seeming unresponsive once error has been thrown
 			// basically keeps showing 403
 			errorCode = null;
+		}
+
+		// open unipop if url has nft or listing id param
+		if ($page.url.searchParams.has('nftId')) {
+			const id = $page.url.searchParams.get('nftId');
+			const nft = await getNft(id);
+			const options = await nftToCardOptions(nft);
+
+			openCardPopupFromOptions(options);
+		} else if ($page.url.searchParams.has('listingId')) {
+			const id = $page.url.searchParams.get('listingId');
+			const listing = await getListing(id);
+			const options = await listingToCardOptions(listing);
+
+			const invalidStatuses: ListingStatus[] = ['SIGNATURE_EXPIRED', 'SIGNATURE_OR_DATA_INVALID', 'SIGNATURE_USED'];
+			const showInvalidListingMessage = invalidStatuses.includes(options.rawListingData.listingStatus);
+
+			openCardPopupFromOptions(options, { showInvalidListingMessage });
 		}
 	});
 

@@ -5,7 +5,7 @@ import { getHinataMetadata, getMetadataFromUri, getOnChainUri, makeHttps } from 
 import { scientificToDecimal } from '$utils/misc/scientificToDecimal';
 import dayjs from 'dayjs';
 import { writable } from 'svelte/store';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { random } from 'lodash-es';
 
 export interface SanitizedNftData {
@@ -29,6 +29,31 @@ export interface SanitizedNftData {
 	fullId: string;
 }
 
+export function toShortDisplayPrice(floatingPrice: string): string | null {
+	let bigNumber: BigNumber;
+
+	try {
+		bigNumber = ethers.utils.parseEther(floatingPrice);
+	} catch {
+		return null;
+	}
+
+	const maxCharsOnDisplay = 10;
+	const thresholdStr = '0.0001';
+	const threshold = ethers.utils.parseEther(thresholdStr);
+
+	if (bigNumber.lt(threshold)) {
+		return '< ' + thresholdStr;
+	} else {
+		return floatingPrice.length > maxCharsOnDisplay
+			? `~ ${(+floatingPrice)
+					.toFixed(maxCharsOnDisplay)
+					.toString()
+					.replace(/(\.?0+$)/, '')}`
+			: floatingPrice;
+	}
+}
+
 export async function sanitizeNftData(data: ApiNftData) {
 	// temporarily fetch data from our backend if it is there
 	data.uri = makeHttps(data.uri);
@@ -50,7 +75,7 @@ export async function sanitizeNftData(data: ApiNftData) {
 
 	if (!data.metadata || !data.thumbnailUrl) {
 		const nftMetadata = data.uri ? await getMetadataFromUri(data.uri) : null;
-		data.metadata = nftMetadata ?? data.metadata;
+		data.metadata = nftMetadata ?? (data.metadata || {});
 		// TODO: Add temporary image for nfts that did not load here
 		data.thumbnailUrl = nftMetadata?.image ?? data.thumbnailUrl ?? '';
 		data.assetUrl = nftMetadata?.animation_url ?? data.assetUrl ?? data.thumbnailUrl ?? nftMetadata?.image ?? '';
@@ -102,7 +127,9 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 		...buildCommonObject(),
 		resourceType: 'listing',
 		rawResourceData: listing,
+		rawListingData: listing,
 		nfts: [await sanitizeNftData(nft)],
+		// TODO I suggest replacing this custom object with an extended version of the API data
 		listingData: {
 			databaseId: listing._id,
 			onChainId: listing.listingId,
@@ -115,21 +142,10 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 			duration: listing.duration,
 			shortDisplayPrice: null,
 			nftQuantities: { [nft.nftId]: listing.nfts[0].amount },
+			chainStatus: listing.chainStatus,
+			isGasless: listing.chainStatus === 'GASLESS',
 		},
 	};
-
-	function toShortDisplayPrice(floatingPrice: string) {
-		const bigNumber = ethers.utils.parseEther(floatingPrice);
-
-		const thresholdStr = '0.0001';
-		const threshold = ethers.utils.parseEther(thresholdStr);
-
-		if (bigNumber.lt(threshold)) {
-			return '< ' + thresholdStr;
-		} else {
-			return floatingPrice;
-		}
-	}
 
 	if (listing.listingType === 'sale') {
 		const fPrice = scientificToDecimal(listing.listing?.formatPrice);
@@ -144,9 +160,9 @@ export async function listingToCardOptions(listing: Listing): Promise<CardOption
 	}
 
 	if (listing.listingType === 'auction') {
-		const formatStartingPrice = listing.listing?.formatStartingPrice.toString();
-		const formatReservePrice = listing.listing?.formatReservePrice.toString();
-		const highestBid = listing.highestBid.toString();
+		const formatStartingPrice = listing.listing?.formatStartingPrice.toString() || '0';
+		const formatReservePrice = listing.listing?.formatReservePrice.toString() || '0';
+		const highestBid = listing.highestBid?.toString() || '0';
 		// Highest Bid is Always 0 when there is no highest bid
 		const priceToDisplay = highestBid !== '0' && highestBid ? highestBid : formatStartingPrice;
 

@@ -1,7 +1,8 @@
-import type { EthAddress, IsoTime, TokenStandard } from '$interfaces';
+import type { AuctionDataModel, EthAddress, IsoTime, NftInListingModel, SaleDataModel, TokenStandard } from '$interfaces';
 import type { ApiNftData } from '$interfaces/apiNftData';
 import axios from 'axios';
-import { getApiUrl } from '.';
+import { getApiUrl, type ApiCallResult, api } from '.';
+import type { UserData } from '$interfaces/userData';
 
 export type ListingType = 'sale' | 'auction' | 'raffle';
 
@@ -44,56 +45,17 @@ interface RaffleParticipants {
 	tickets: number[];
 }
 
+export type ListingStatus = 'ACTIVE' | 'SIGNATURE_EXPIRED' | 'SIGNATURE_OR_DATA_INVALID' | 'SIGNATURE_USED';
+export type ListingChainStatus = 'ON_CHAIN' | 'NOT_ON_CHAIN' | 'GASLESS';
+
 export interface Listing {
 	_id: string;
 	listingId: string;
-	listingStatus: 'ACTIVE';
+	listingStatus: ListingStatus;
+	chainStatus: ListingChainStatus;
 	listingType: ListingType;
-	listing: {
-		price?: string;
-		formatPrice?: number;
-		quantity: number;
-		startingPrice: string;
-		formatStartingPrice: number;
-		reservePrice: string;
-		formatReservePrice: number;
-	};
-	nfts: {
-		amount: number;
-		assetUrl: string;
-		chain: 'ETHEREUM';
-		chainStatus: 'NOT_ON_CHAIN' | 'ON_CHAIN';
-		collectionId: string;
-		contractAddress: EthAddress;
-		createdAt: IsoTime;
-		creator: EthAddress;
-		favoriteCount: number;
-		isExternal: boolean;
-		metadata: {
-			external_url: string;
-			image: string;
-			name: string;
-			description: string;
-			animation_url?: string;
-		};
-		name: string;
-		nftId: string;
-		offers: [];
-		owner: EthAddress;
-		price: number;
-		royalties: [];
-		sales: [];
-		thumbnailUrl: string;
-		tokenStandard: TokenStandard;
-		updatedAt: IsoTime;
-		uri: string;
-		collectionName: string;
-		collectionSlug: string;
-		_id: string;
-		nft: ApiNftData;
-		fullId: string;
-	}[];
-
+	listing: SaleDataModel | AuctionDataModel;
+	nfts: NftInListingModel[];
 	paymentTokenTicker: string;
 	paymentTokenAddress: string;
 	startTime: string;
@@ -108,9 +70,23 @@ export interface Listing {
 
 	// Only On Auctions
 	highestBid?: number;
+
+	// Nonce exists only in case of gasless listings
+	nonce?: string;
+
+	// A signature provided by the seller which can be used by buyers
+	// to execute on-chain actions
+	signature?: string;
+
+	// The timestamp that
+	signatureExpiryTimestamp?: boolean;
+
+	// Whether the listing has been found on chain by the FE
+	foundOnChain?: boolean;
 }
 
 export interface ListingFetchOptions {
+	collectionAddress?: string;
 	collectionId?: string;
 	type?: ListingType[];
 	priceMin?: string;
@@ -145,7 +121,43 @@ export async function getRandomListings(limit = 10) {
 }
 
 export async function getListing(id: string) {
-	const res = await axios.get(getApiUrl('latest', 'listings/' + id)).catch((e) => e.response);
+	const res = await axios.get(getApiUrl('latest', 'listings/' + id)).catch((e) => console.log(e.response));
 	if (!res) return null;
 	return res.data.data as Listing;
+}
+
+export async function getTrendingListings(count?: number) {
+	const params = {
+		count,
+	};
+
+	const res = await axios.get(getApiUrl('latest', 'listings/trending'), { params }).catch((e) => console.log(e.response));
+	if (!res) return [];
+
+	console.log(res);
+
+	return res.data.data as Listing[];
+}
+
+export interface ListingCreatorsData {
+	users: (UserData & { createdListings: Listing[] })[];
+}
+
+export interface ListingCreatorsRes {
+	error: boolean;
+	data: ListingCreatorsData;
+}
+
+export async function getListingCreators(options: { limit?: number; page?: number }): Promise<ApiCallResult<ListingCreatorsRes>> {
+	options = {
+		limit: 10,
+		page: 1,
+		...options,
+	};
+
+	const res = await api.get(getApiUrl(null, 'users/listingCreators'), {
+		params: { limit: options.limit, page: options.page },
+	});
+
+	return res;
 }

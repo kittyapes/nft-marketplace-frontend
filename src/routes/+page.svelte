@@ -1,44 +1,94 @@
 <script lang="ts">
-	import { links } from '$constants/links';
-	import { socials } from '$constants/socials';
-	import CollectionsTable from '$lib/components/collections/CollectionsTable.svelte';
-	import { apiGetMostActiveCollections, type Collection } from '$utils/api/collection';
-	import { fade, slide } from 'svelte/transition';
-	import { onMount } from 'svelte';
+	import { fly, slide } from 'svelte/transition';
+	import { onDestroy, onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
 	import { writable } from 'svelte/store';
-	import { getRandomListings, type Listing } from '$utils/api/listing';
+	import { getListingCreators, getTrendingListings, type Listing, type ListingCreatorsData } from '$utils/api/listing';
 	import NftList from '$lib/components/NftList.svelte';
-	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
+	import HomepageCarousel from '$lib/components/v2/HomepageCarousel/HomepageCarousel.svelte';
+	import TopCollections from '$components/v2/TopCollections/+page.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import NftCard from '$lib/components/NftCard.svelte';
+	import NotificationBar from '$lib/components/NotificationBar.svelte';
+	import { getNotifications, updateNotificationAsUser, type UserNotification } from '$utils/api/notifications';
+	import dayjs from 'dayjs';
+	import { notifyError } from '$utils/toast';
+	import { currentUserAddress } from '$stores/wallet';
+	import CreatorWithNfts from '$lib/components/v2/CreatorWithNfts/CreatorWithNfts.svelte';
+	import { goto } from '$app/navigation';
 
-	let collections: Collection[] = [];
-	let exploreListings = writable<Listing[]>([]);
-	let loadedExploreListings = writable(false);
-	let exploreListingsData = [];
+	let trendingListings = writable<Listing[]>([]);
+	let loadedTrendingListings = writable(false);
+	let trendingListingsData = [];
 
-	const aidrop = {
-		title: 'Claim your monthly airdrop',
-		textPreview:
-			'The Hinata marketplace will be doing an airdrop for active users in the coming months. Buyers, sellers and minters will all be eligible to claim tokens after the token generation event later this year.',
-		thumbnail: '/img/png/airdrop-banner.png',
+	let userNotification = writable<UserNotification>(null);
+	let loadedUserNotification = writable(false);
+	let userNotificationCleared = writable(false);
+	// in miliseconds
+	const notificationFetchingTime = 30_000;
+
+	const getTrendingListingsData = async () => {
+		loadedTrendingListings.set(false);
+		trendingListings.set(await getTrendingListings(12));
+		trendingListingsData = (await Promise.all($trendingListings.map(listingToCardOptions))).filter((e) => e);
+		loadedTrendingListings.set(true);
 	};
 
-	const getExploreMarketData = async () => {
-		loadedExploreListings.set(false);
-		exploreListings.set(await getRandomListings(10));
-		exploreListingsData = (await Promise.all($exploreListings.map(listingToCardOptions))).filter((e) => e);
-		loadedExploreListings.set(true);
+	// let hottestCreators: ListingCreatorsData;
+
+	// const getHottestCreatorsData = async () => {
+	// 	const listingCreatorsRes = await getListingCreators({ limit: 3 });
+
+	// 	if (listingCreatorsRes.err) {
+	// 		notifyError('Failed to load hottest creators.');
+	// 		return;
+	// 	}
+
+	// 	hottestCreators = listingCreatorsRes.data.data;
+	// };
+
+	const getUserNotification = async () => {
+		if (!$userNotification) loadedUserNotification.set(false);
+		const res = (await getNotifications()).data.data;
+
+		const notification = res.find((n) => !n.hasCleared && dayjs().isAfter(dayjs(n.publishAt)) && (!n.expireAt || dayjs().isBefore(dayjs(n.expireAt))));
+		userNotificationCleared.set(false);
+
+		if (!notification) {
+			userNotification.set(null);
+			loadedUserNotification.set(true);
+			return;
+		}
+
+		userNotification.set(notification);
+
+		loadedUserNotification.set(true);
+
+		if (!notification.readAt) await updateNotificationAsUser({ id: $userNotification._id, readAt: dayjs().format(), hasCleared: false });
 	};
 
-	// Please don't ask me why we need an auth token for this...
-	// We don't anymore 🙂 🔪
+	const clearNotification = async () => {
+		await updateNotificationAsUser({ id: $userNotification._id, hasCleared: true });
+		userNotificationCleared.set(true);
+	};
+
+	let notificationFetchingInterval = setInterval(() => {
+		getUserNotification();
+	}, notificationFetchingTime);
+
+	onDestroy(() => clearInterval(notificationFetchingInterval));
+
 	onMount(async () => {
-		getExploreMarketData();
-		collections = (await apiGetMostActiveCollections()).collections;
+		// getHottestCreatorsData();
+		getTrendingListingsData();
 	});
+
+	$: if ($currentUserAddress) {
+		getUserNotification();
+	}
 </script>
 
 <MetaTags
@@ -62,106 +112,85 @@
 	}}
 />
 
-<div
-	class="
-		relative
-		max-w-[100vw]
-		overflow-hidden bg-cover bg-no-repeat bg-[#194665]
-		bg-[url('/img/graphics/home-bg.640.png')] h-[500px] bg-[center_top_-400px]
-		sm:bg-[url('/img/graphics/home-bg.768.png')] sm:bg-[length:1280px] sm:h-[760px]
-		md:bg-[url('/img/graphics/home-bg.1024.png')]
-		lg:bg-[url('/img/graphics/home-bg.1280.png')] lg:bg-[length:1280px] lg:bg-[center_top_-150px]
-		xl:bg-[url('/img/graphics/home-bg.1920.png')] xl:bg-[length:1536px] xl:bg-[center_top_-400px]
-		2xl:bg-[url('/img/graphics/home-bg.4k.png')] 2xl:bg-cover 2xl:bg-[center_calc(50%+600px)]
-		2k:h-[1300px]
-		4k:h-[1500px] 4k:bg-[length:calc(max(100vw,4000px))] 4k:bg-[center_calc(50%+1000px)]
-	"
->
-	<div class="absolute top-1/4 -translate-y-1/4 left-0 w-full grid place-items-center">
-		<div class="px-8">
-			<h1 class="uppercase text-white font-bold text-7xl">
-				Hinata
-				<br />
-				Marketplace
-			</h1>
-
-			<div class="text-white py-6 px-1 text-lg w-1/2 font-semibold">Welcome to the anime NFT marketplace featuring top collections on Ethereum curated by users and artists.</div>
-
-			<div class="flex gap-x-4 mt-6 h-16 uppercase font-semibold">
-				<a class="flex flex-col justify-center items-center bg-white w-48 transition-btn" href={socials.twitter} target="_blank">Follow Us</a>
-
-				<a class="flex flex-col justify-center items-center bg-white w-48 transition-btn" href={links.snapshot} target="_blank">Our Dao</a>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- Top collections section -->
-<div class="px-16 mt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Most Active Collections</h2>
-		<a href="/collections" class="uppercase underline text-sm font-bold">View all</a>
-	</div>
-	<hr class="mt-4 border-[#0000004D]" />
-	{#if collections.length > 0}
-		<CollectionsTable {collections} />
-	{:else}
-		<DiamondsLoader />
-	{/if}
-</div>
-
-<!-- Explore Market Section -->
-{#if $loadedExploreListings && exploreListingsData?.length > 0}
-	<div class="px-16 mt-24 mb-16" in:slide>
-		<div class="flex items-end">
-			<h2 class="text-4xl font-light uppercase flex-grow">Explore Market</h2>
-			<a href="/marketplace" class="uppercase underline text-sm font-bold">View All</a>
-		</div>
-		<hr class="mt-4 border-[#0000004D]" />
-
-		<NftList options={exploreListingsData} />
+<!-- Notifications -->
+{#if $loadedUserNotification && $userNotification && !$userNotificationCleared}
+	<div class="w-full text-white mt-20" in:fly={{ x: -2000, duration: 1000 }}>
+		<NotificationBar notification={$userNotification} wrapperClass={'h-16'} on:click={() => clearNotification()} />
 	</div>
 {/if}
 
-<!-- Latest blog posts -->
-<div class="px-16 mt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Latest Blog Posts</h2>
-		<a href="/blog" class="uppercase underline text-sm font-bold">View Latest Posts</a>
-	</div>
-	<hr class="mt-4 border-[#0000004D]" />
+<div class="px-36 pt-32 w-full text-white" class:pt-0={$loadedUserNotification && $userNotification && !$userNotificationCleared}>
+	<div class="overflow-hidden">
+		<!-- Hero section -->
+		<!-- TODO fix this properly -->
+		{#if $loadedTrendingListings && trendingListingsData.length >= 2}
+			<div class="mb-16 grid grid-cols-4 gap-5 items-stretch w-full">
+				<NftCard options={trendingListingsData[0]} />
 
-	{#if $blogPosts.length}
-		{#each $blogPosts.slice(0, 2) as post}
-			<BlogPostPreview data={post} />
-		{/each}
-	{/if}
-</div>
+				<div class="flex-grow col-span-2">
+					<HomepageCarousel />
+				</div>
 
-<!-- Monthly airdrop -->
-<div class="px-16 mt-24 mb-16">
-	<div class="flex items-end">
-		<h2 class="text-4xl font-light uppercase flex-grow">Monthly Airdrop</h2>
-	</div>
-	<hr class="mt-4 border-[#0000004D]" />
+				<NftCard options={trendingListingsData[1] || trendingListingsData[0]} />
+			</div>
+		{/if}
 
-	<div class="flex flex-col h-full overflow-hidden transition duration-100 cursor-pointer lg:flex-row hover:bg-gray-100" in:fade>
-		<div class="flex-shrink-0 h-full py-8 lg:h-72">
-			<img src={aidrop.thumbnail} alt="" class="object-cover h-full" style="aspect-ratio: 420/250;" />
+		<!-- Top collections section -->
+		<div class="w-full">
+			<TopCollections />
 		</div>
 
-		<div class="flex flex-col flex-grow py-8 lg:ml-16">
-			<div class="text-3xl font-light uppercase text-color-black line-clamp-2">
-				{aidrop.title}
+		<!-- Hottest creators section -->
+		<!-- <div class="pt-20 w-full" in:slide>
+			<div class="w-full flex justify-between">
+				<h2 class="text-2xl leading-7">Hottest Creators</h2>
+				<button class="gradient-underline text-lg clickable" on:click={() => goto('/marketplace/creators')}>View all</button>
 			</div>
 
-			<p class="flex-grow mt-4">
-				{aidrop.textPreview}
-			</p>
+			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
+				{#each hottestCreators?.users || [] as user}
+					<CreatorWithNfts creator={user} listings={user.createdListings.slice(0, 2)} />
+				{/each}
+			</div>
+		</div> -->
 
-			<!-- Read more
-			<div class="mt-4 text-lg font-light gradient-text">Read more</div>
-			 -->
+		<!-- Latest blog posts -->
+		<div class="mt-12 mb-16">
+			<div class="flex items-end mb-12">
+				<h2 class="text-2xl leading-none text-white flex-grow">Latest Blog Posts</h2>
+				<a href="/blog" class=" text-white gradient-underline text-lg relative">View latest posts</a>
+			</div>
+
+			{#if $blogPosts.length}
+				<div class="flex flex-col gap-10">
+					{#each $blogPosts.slice(0, 2) as post}
+						<BlogPostPreview data={post} />
+					{/each}
+				</div>
+			{/if}
 		</div>
+
+		<!-- <MonthlyAirdropWidget /> -->
+
+		<!-- Tending nfts Section -->
+		{#if $loadedTrendingListings && trendingListingsData?.length > 0}
+			<div class="my-24 w-full" in:slide>
+				<h2 class="text-2xl leading-7">Explore Market</h2>
+
+				<div class="mb-20 mt-12">
+					<NftList options={trendingListingsData} />
+				</div>
+
+				<a href="/marketplace/listings" class="w-full"><PrimaryButton extButtonClass="w-full">Explore Marketplace</PrimaryButton></a>
+			</div>
+		{/if}
 	</div>
 </div>
+
+<style type="postcss">
+	.gradient-underline::after {
+		content: '';
+		@apply absolute w-full -bottom-1 left-0 h-[2px];
+		@apply bg-gradient-to-r from-color-purple to-color-blue;
+	}
+</style>

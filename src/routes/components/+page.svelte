@@ -1,12 +1,14 @@
 <script lang="ts">
 	import Countdown from '$lib/components/v2/Countdown/Countdown.svelte';
+	import type { Listing } from '$utils/api/listing';
 	import { contractCompleteAuction } from '$utils/contracts/auction';
-	import { contractCancelListing } from '$utils/contracts/listing';
+	import { cancelListingFlow } from '$utils/flows/cancelListingFlow';
 	import { refreshConnection } from '$utils/wallet/connectWallet';
 	import { onMount } from 'svelte';
 	import CheckFilterDropdownDemo from './CheckFilterDropdownDemo.svelte';
 	import DemoContainer from './DemoContainer.svelte';
 	import FilterChipDemo from './FilterChipDemo.svelte';
+	import HomepageCarouselDemo from './HomepageCarouselDemo.svelte';
 	import NftActivityHistoryTableDemo from './NftActivityHistoryTableDemo.svelte';
 
 	let listingId: string;
@@ -18,11 +20,7 @@
 	}
 
 	async function cancelListing() {
-		try {
-			await contractCancelListing(listingId);
-		} catch (err) {
-			auctionErr = err;
-		}
+		await cancelListingFlow({ listingId, chainStatus: 'ON_CHAIN' } as Listing);
 	}
 
 	onMount(refreshConnection);
@@ -49,19 +47,20 @@
 		<button on:click={cancelListing}>Cancel Auction</button>
 	</div>
 
-	<!-- FilterChip -->
 	<DemoContainer title="FilterChip">
 		<FilterChipDemo />
 	</DemoContainer>
 
-	<!-- CheckFilterDropdown -->
 	<DemoContainer title="CheckFilterDropdown">
 		<CheckFilterDropdownDemo />
 	</DemoContainer>
 
-	<!-- NftActivityHistoryTable -->
 	<DemoContainer title="NftActivityHistoryTable">
 		<NftActivityHistoryTableDemo />
+	</DemoContainer>
+
+	<DemoContainer title="HomepageCarousel">
+		<HomepageCarouselDemo />
 	</DemoContainer>
 </main>
 

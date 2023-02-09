@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import Loader from '$icons/loader.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import { newBundleData } from '$utils/create';
 	import type { PopupHandler } from '$utils/popup';
@@ -10,16 +9,36 @@
 
 	import Popup from '../Popup.svelte';
 	import Progressbar from '../Progressbar.svelte';
+	import PrimaryButton from '../v2/PrimaryButton/PrimaryButton.svelte';
+	import Spinner from '../v2/Spinner/Spinner.svelte';
+
+	const MINTING_TITLE = 'Minting in Progress';
+	const MINTING_MESSAGE = 'Complete the required steps to successfully mint your NFT.';
+
+	const MINTED_TITLE = 'Proceed to List your NFT?';
+	const MINTED_MESSAGE = 'Listing an NFT will reqiure a small network fee. Once you choose the listing format you will be prompted to send an WETHereum transaction.';
 
 	const points = [
 		{ at: 0, label: 'Upload', top_value: null },
 		{ at: 50, label: 'NFT TX', top_value: null },
-		{ at: 100, label: 'Finished', top_value: null }
+		{ at: 100, label: 'Finished', top_value: null },
 	];
 
 	export let handler: PopupHandler;
 	export let progress: Readable<number> = readable(0);
 	export let id: string;
+
+	let title, message;
+
+	progress.subscribe((progress_v) => {
+		if (progress_v === 100) {
+			title = MINTED_TITLE;
+			message = MINTED_MESSAGE;
+		} else {
+			title = MINTING_TITLE;
+			message = MINTING_MESSAGE;
+		}
+	});
 
 	function clickChooseFormat() {
 		goto('/create/choose-listing-format/' + $newBundleData.id);
@@ -30,30 +49,35 @@
 		goto(`/profile/${$currentUserAddress}?tab=created&id=${id}`);
 		handler.close();
 	}
+
+	$: mintingComplete = $progress === 100;
 </script>
 
-<Popup class={`min-w-[800px] ${$progress === 100 && 'min-h-[500px]'}`}>
-	<div class="font-semibold text-center mt-16 text-lg">Minting progress</div>
+<div class="w-[800px] h-[400px] grid items-stretch text-white">
+	<Popup>
+		<div class="p-16">
+			<div class="text-center text-4xl">{title}</div>
+			<div class="text-center mt-4">{message}</div>
 
-	<div class="w-3/4 mx-auto mt-8">
-		<Progressbar value={$progress} {points} />
-	</div>
+			<div class="w-3/4 mx-auto mt-12 flex items-center gap-2">
+				<div class="flex-grow w-full flex-shrink-0">
+					<Progressbar value={$progress} {points} />
+				</div>
 
-	{#if $progress === 100}
-		<div class="text-2xl font-semibold text-center mt-16">Proceed to List your Drop?</div>
+				{#if !mintingComplete}
+					<div class="w-8 h-8 flex-shrink-0">
+						<Spinner />
+					</div>
+				{/if}
+			</div>
 
-		<p class="max-w-prose text-center mx-auto mt-2">Listing an NFT will reqiure a small network fee. Once you choose the listing format you will be prompted to send an Ethereum transaction.</p>
-
-		<div class="flex justify-center gap-x-8 mt-8">
-			<button class="btn btn-rounded btn-gradient h-14 w-64 uppercase" on:click={clickViewNft}>View NFT</button>
-			<button class="btn btn-rounded btn-gradient h-14 w-64 uppercase" on:click={clickChooseFormat}>Choose listing format</button>
+			<div class="grid grid-cols-2 justify-center gap-x-4 mt-16 w-[500px] mx-auto">
+				<PrimaryButton on:click={clickViewNft} disabled={!mintingComplete}>View NFT</PrimaryButton>
+				<PrimaryButton on:click={clickChooseFormat} disabled={!mintingComplete}>Choose listing format</PrimaryButton>
+			</div>
 		</div>
-	{:else}
-		<div class="loading-animation">
-			<Loader />
-		</div>
-	{/if}
-</Popup>
+	</Popup>
+</div>
 
 <style lang="postcss">
 	.loading-animation {

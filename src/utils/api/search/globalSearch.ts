@@ -3,7 +3,7 @@ import { getApiUrl } from '..';
 
 export const getNftsByTitle = async (query: string, limit?: number, page?: number) => {
 	try {
-		let params = {
+		const params = {
 			query: query ? query : undefined,
 			page: page ? page : 1,
 			limit: limit ? limit : undefined,
@@ -19,7 +19,7 @@ export const getNftsByTitle = async (query: string, limit?: number, page?: numbe
 
 export const searchUsersByName = async (query: string, limit?: number, page?: number) => {
 	try {
-		let params = {
+		const params = {
 			query: query ? query : undefined,
 			limit: limit ? limit : undefined,
 			page: page ? page : 1,
@@ -29,7 +29,7 @@ export const searchUsersByName = async (query: string, limit?: number, page?: nu
 			const res = await axios.get(getApiUrl('latest', 'search/users'), { params });
 			return res.data.data;
 		} else {
-			return { totalCount: 0, verifiedCreators: [] };
+			return { totalCount: 0, users: [] };
 		}
 	} catch {
 		throw new Error('Failed to search for users');
@@ -38,7 +38,7 @@ export const searchUsersByName = async (query: string, limit?: number, page?: nu
 
 export const getCollectionsByTitle = async (query: string, limit?: number, page?: number) => {
 	try {
-		let params = {
+		const params = {
 			query: query ? query : undefined,
 			limit: limit ? limit : undefined,
 			page: page ? page : 1,
@@ -54,7 +54,7 @@ export const getCollectionsByTitle = async (query: string, limit?: number, page?
 
 export const globalSearch = async (query: string, limit?: number) => {
 	try {
-		let params = {
+		const params = {
 			query: query ? query : undefined,
 			limit: limit ? limit : undefined,
 		};
@@ -62,6 +62,51 @@ export const globalSearch = async (query: string, limit?: number) => {
 		const res = await axios.get(getApiUrl('latest', 'search'), { params });
 		return res.data.data;
 	} catch {
+		throw new Error('Failed to perform global search');
+	}
+};
+
+export const globalCollectionsSearch = async (query: string, limit?: number, page?: number) => {
+	try {
+		let params = {
+			name: query ? query : undefined,
+			limit: limit ? limit : undefined,
+			page: page ? page : undefined,
+		};
+
+		const res = await axios.get(getApiUrl('latest', 'collections/search'), { params });
+		return res.data.data;
+	} catch {
 		throw new Error('Failed to search for collections');
+	}
+};
+
+export const globalUsersSearch = async (query: string, limit?: number, page?: number) => {
+	try {
+		const params = {
+			query: query ? query : undefined,
+			limit: limit ? limit : undefined,
+			page: page ? page : undefined,
+		};
+
+		const res = await axios.get(getApiUrl('latest', 'search/verified-creators'), { params });
+		return res.data.data;
+	} catch {
+		throw new Error('Failed to search for users');
+	}
+};
+
+export const globalNFTSearch = async (query: string, limit?: number, page?: number) => {
+	try {
+		const params = {
+			query: query ? query : undefined,
+			limit: limit ? limit : undefined,
+			page: page ? page : undefined,
+		};
+
+		const res = await axios.get(getApiUrl('latest', 'search/nfts'), { params });
+		return res.data.data;
+	} catch {
+		throw new Error('Failed to search for nfts');
 	}
 };

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { PopupHandler } from '$utils/popup';
-	import { notifyError } from '$utils/toast';
 	import { handleAgreeToTos } from '$utils/tos';
 	import Checkbox from '../Checkbox.svelte';
 	import Popup from '../Popup.svelte';
@@ -29,17 +28,16 @@
 </script>
 
 <Popup>
-	<div>
+	<div class="text-white max-w-xl">
 		<div class="relative">
-			<img src="/img/graphics/tos-popup-bg.png" alt="" class="rounded-t-2xl -mt-1 w-full" />
-			<div class="absolute top-0 h-full w-full grid place-items-center text-white text-5xl">Hinata</div>
+			<img src="/img/graphics/tos-popup-bg.png" alt="" class="w-full" />
 		</div>
 
 		<div class="py-8 px-12">
 			<div class="font-bold text-2xl">Welcome to Hinata Marketplace</div>
 			<div class="mt-4">
-				By using Hinata Marketplace, you agree to the <a href="/terms-and-conditions" class="underline">Terms of Service</a>
-				.
+				Please agree to our <a href="/terms-and-conditions" class="underline">Terms of Service</a>
+				in order to further use our site.
 			</div>
 
 			<div class="mt-4 font-semibold select-none">

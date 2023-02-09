@@ -4,18 +4,19 @@
 	import type { CardOptions } from '$interfaces/ui';
 	import InfoBox from '$lib/components/InfoBox.svelte';
 	import ListingProperties from '$lib/components/primary-listing/ListingProperties.svelte';
+	import Toggle from '$lib/components/Toggle.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { userCreatedListing } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
-	import { userHasRole } from '$utils/auth/userRoles';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
 	import { getContractData } from '$utils/misc/getContract';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { notifyError } from '$utils/toast';
 	import { createEventDispatcher } from 'svelte';
 	import { onMount } from 'svelte';
+	import Error from './Error.svelte';
 	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
 	import Success from './Success.svelte';
 
@@ -25,6 +26,11 @@
 
 	let listingType: ListingType = 'auction';
 	let maxQuantity = 1;
+	let isGasless: boolean;
+
+	$: if (listingType === 'auction') {
+		isGasless = false;
+	}
 
 	let isListing = false;
 	let canCreateListing = true;
@@ -32,9 +38,8 @@
 	async function completeListing() {
 		isListing = true;
 
-		console.log({ options });
-
 		const flowOptions: CreateListingFlowOptions = {
+			gasless: isGasless,
 			title: options.nfts[0].metadata?.name,
 			description: options.nfts[0].metadata?.description,
 			nfts: [
@@ -51,16 +56,40 @@
 			...listingProps,
 		};
 
+		let listSuccess: boolean;
+
 		try {
-			await createListingFlow(flowOptions);
+			const res = await createListingFlow(flowOptions);
+
+			// For handled errors, don't show the default message
+			if (res?.error && res.handled) {
+				listSuccess = false;
+			}
+
+			// For unhandled errors, show the default error message
+			else if (res?.error) {
+				throw res.error;
+			}
+
+			// Successful listing
+			else {
+				listSuccess = true;
+			}
+		} catch (err) {
+			notifyError(err.message);
+			dispatch('set-frame', {
+				component: Error,
+				props: { message: 'Failed to create listing!' },
+			});
+			console.error(err);
+		}
+
+		if (listSuccess) {
 			dispatch('listing-created');
 			dispatch('set-frame', {
 				component: Success,
-				props: { successDescription: 'Successfully listed.', showMarketplaceButton: false },
+				props: { message: 'Listing created successfully.' },
 			});
-		} catch (err) {
-			console.error(err);
-			notifyError(err.message);
 		}
 
 		isListing = false;
@@ -84,13 +113,19 @@
 	});
 </script>
 
-<div class="flex flex-col h-full pb-8 pr-6 overflow-y-auto">
+<div class="flex flex-col pb-8 pr-6 overflow-y-auto text-white aspect-1 blue-scrollbar">
 	{#if canCreateListing}
 		<!-- Listing Type -->
 		<div class="mt-2 font-semibold">Listing Type</div>
-		<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} /></div>
+		<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} disabled={isListing} /></div>
 
-		<div class="mt-4">
+		<!-- Gasless switch -->
+		<div class="flex mt-8">
+			<div class="flex-grow text-lg">Gasless Listing</div>
+			<Toggle bind:state={isGasless} disabled={listingType === 'auction'} />
+		</div>
+
+		<div class="mt-6">
 			<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} bind:this={_listingProperties} disabled={isListing} />
 		</div>
 
@@ -118,12 +153,14 @@
 			</div>
 		</div>
 
-		<PrimaryButton class="flex-shrink-0 mt-4" disabled={!!formErrors.length || isListing} on:click={completeListing}>
-			Complete Listing
-			{#if isListing}
-				<ButtonSpinner />
-			{/if}
-		</PrimaryButton>
+		<div class="mt-4">
+			<PrimaryButton disabled={!!formErrors.length || isListing} on:click={completeListing}>
+				Complete Listing
+				{#if isListing}
+					<ButtonSpinner />
+				{/if}
+			</PrimaryButton>
+		</div>
 	{:else}
 		<div class="mt-4">
 			<InfoBox>You can't create listings.</InfoBox>

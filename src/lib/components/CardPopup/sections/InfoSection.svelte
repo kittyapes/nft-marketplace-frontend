@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import type { CardOptions } from '$interfaces/ui';
-	import { getMarketFee, type ChainListing } from '$utils/contracts/listing';
+	import { getMarketFee } from '$utils/contracts/listing';
 	import { getContractData } from '$utils/misc/getContract';
 	import { totalColRoyalties } from '$utils/misc/royalties';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
@@ -10,17 +9,12 @@
 	import { fade } from 'svelte/transition';
 
 	export let options: CardOptions;
-	export let chainListing: ChainListing;
-	export let listedNfts: number;
 
 	let marketFee = 0;
 	let balance = null;
 	let supply = null;
 
-	$: ownedOrListedNfts = options.resourceType === 'listing' ? listedNfts : balance;
-
-	// Never show the back button on this tab
-	export const showBackButton = false;
+	$: ownedOrListedNfts = options.resourceType === 'listing' ? options.rawListingData.nfts[0].amount : balance;
 
 	// The Hinata General collection should always have a 1.5 % royalties,
 	// you know we cannot rely on the backend :)
@@ -32,13 +26,6 @@
 	// It is possible to pass data of multiple NFTs into the popup to support
 	// the bundle section
 	$: singleNft = options.nfts?.[0];
-	$: console.log(singleNft);
-	$: properties = [
-		{ name: 'Creator', value: singleNft.creator || options.rawResourceData.metadata?.creator?.address },
-		{ name: 'Collection name', value: singleNft.collectionData?.name },
-		{ name: 'Edition', value: singleNft.metadata?.edition },
-		{ name: 'Description', value: singleNft.metadata?.description },
-	];
 
 	$: technicalProperties = [
 		{ name: 'Contract Address', value: singleNft.contractAddress },
@@ -55,13 +42,15 @@
 		},
 	];
 
+	$: creatorAddress = singleNft.creator || options.rawResourceData.metadata?.creator?.address;
+
 	onMount(async () => {
 		// When its not a listing
 		marketFee = await getMarketFee();
 		const res = await getUserNftBalance(singleNft.contractAddress, singleNft.onChainId);
 
 		supply = res.supply;
-		balance = options.resourceType === 'listing' ? chainListing?.tokensMap[0]?.tokenQuantityInListing ?? 0 : res.balance;
+		balance = options.resourceType === 'listing' ? options.rawListingData.nfts[0].amount ?? 0 : res.balance;
 	});
 
 	function parseAttributes(attributes) {
@@ -77,61 +66,54 @@
 	}
 </script>
 
-<div class="flex-grow h-full pr-4 overflow-y-auto blue-scrollbar">
+<div class="flex-grow h-full pr-4 overflow-y-auto blue-scrollbar text-white">
 	<!-- Properties -->
-	<div class="mt-2">
-		{#each properties as prop}
-			{#if prop.name === 'Collection name' && prop.value}
-				<div
-					on:click={() => {
-						closePopup();
-						goto('/collections/' + singleNft.collectionData.slug);
-					}}
-					class="overflow-hidden clickable"
-				>
-					<div class="property-name">{prop.name}</div>
-					<div class="property-value">{prop.value || 'N/A'}</div>
-				</div>
-			{:else if prop.name === 'Creator' && prop.value}
-				<div
-					on:click={() => {
-						closePopup();
-						if (properties[0].value) goto('/profile/' + properties[0].value);
-					}}
-					class="overflow-hidden clickable"
-				>
-					<div class="property-name">{prop.name}</div>
-					<div class="property-value">{prop.value || 'N/A'}</div>
-				</div>
-			{:else}
-				<div class="property-name">{prop.name}</div>
-				<div class="property-value">{prop.value || 'N/A'}</div>
-			{/if}
-		{/each}
+	<div class="gap-16 grid grid-cols-4">
+		<div class="overflow-hidden">
+			<div class="--property-name text-gradient">Creator</div>
+			<div class="--property-value"><a href={'/profile/' + creatorAddress} on:click={() => closePopup()}>{creatorAddress || 'N/A'}</a></div>
+		</div>
+
+		<div class="overflow-hidden">
+			<div class="--property-name text-gradient">Owner</div>
+			<div class="--property-value">Unknown</div>
+		</div>
+
+		<div class="overflow-hidden col-span-2">
+			<div class="--property-name text-gradient">Collection Name</div>
+			<div class="--property-value">
+				<a href={'/collections/' + singleNft.collectionData.slug} on:click={() => closePopup()}>
+					{singleNft.collectionData?.name}
+				</a>
+			</div>
+		</div>
 	</div>
+
+	<div class="text-gradient text-lg font-medium mt-16">Description</div>
+	<div>{singleNft.metadata.description}</div>
 
 	<!-- NFT attributes -->
 	{#if singleNft.metadata?.attributes}
-		<div class="grid grid-cols-3 gap-4">
+		<div class="grid grid-cols-2 gap-4 mt-16">
 			{#each parseAttributes(singleNft.metadata.attributes) as attr}
 				<div>
-					<div class="text-xs font-semibold text-center uppercase">{attr.trait_type}</div>
-					<div class="py-2 mt-1 text-xs text-center text-white uppercase bg-black rounded-full">{attr.value || 'N/A'}</div>
+					<div class="text-lg">{attr.trait_type}</div>
+					<div class="py-2 mt-2 text-center text-white uppercase bg-black attr-block-bg">{attr.value || 'N/A'}</div>
 				</div>
 			{/each}
 		</div>
 	{/if}
 
 	<!-- Technical properties -->
-	<div class="grid gap-4 mt-6">
+	<div class="grid gap-16 mt-16 grid-cols-2">
 		{#each technicalProperties as prop}
 			<div class="overflow-hidden">
-				<div class="property-name">{prop.name}</div>
+				<div class="text-lg text-gradient font-medium">{prop.name}</div>
 
 				<div class="relative property-value">
 					{prop.value || 'N/A'}
 					{#if prop.value === null}
-						<div class="absolute top-0 w-24 h-6 mt-1 bg-gray-100 rounded" out:fade|local />
+						<div class="absolute top-0 w-24 h-6 mt-1 bg-gray-700 rounded" out:fade|local />
 					{/if}
 				</div>
 			</div>
@@ -139,14 +121,19 @@
 	</div>
 </div>
 
-<style type="postcss">
-	.property-name {
-		@apply text-transparent font-semibold text-lg;
-		background: linear-gradient(90deg, #8e77f7 -32.32%, rgba(142, 119, 247, 0.05) 113.47%), #67d4f8;
-		background-clip: text;
+<style>
+	.--property-name {
+		@apply text-lg font-medium whitespace-nowrap overflow-hidden;
 	}
 
-	.property-value {
-		@apply mb-4 font-medium;
+	.--property-value {
+		@apply whitespace-nowrap truncate overflow-hidden;
+	}
+
+	.attr-block-bg {
+		background: linear-gradient(226.41deg, rgba(103, 212, 248, 0.05) 40.04%, rgba(142, 119, 247, 0.05) 92.94%),
+			linear-gradient(190.19deg, rgba(103, 212, 248, 0.05) 2.45%, rgba(142, 119, 247, 0.05) 102.25%), linear-gradient(188.04deg, rgba(103, 212, 248, 0.05) 5.57%, rgba(142, 119, 247, 0.05) 92.06%),
+			linear-gradient(180deg, rgba(136, 234, 255, 0.1) 0%, rgba(133, 141, 247, 0.056) 100%, rgba(133, 141, 247, 0.1) 100%);
+		box-shadow: inset -2px 2px 4px #88eaff, inset 2px -1px 5px #a794ff;
 	}
 </style>

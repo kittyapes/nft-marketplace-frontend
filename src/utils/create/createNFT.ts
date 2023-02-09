@@ -13,7 +13,8 @@ import { getContract } from '$utils/misc/getContract';
 import storageAbi from '$constants/contracts/abis/HinataMarketplaceStorage.json';
 import { getContractInterface } from '$utils/contracts/collection';
 
-export const createNFTOnAPI = async ({ amount, creator, thumbnail, asset, name, description, collectionId }: NFTCreationObject) => {
+export const createNFTOnAPI = async ({ amount, creator, thumbnail, asset, name, description, collectionAddress }: NFTCreationObject) => {
+	console.log(collectionAddress);
 	const formData = new FormData();
 	formData.append('thumbnail', thumbnail);
 	formData.append('asset', asset || null);
@@ -21,7 +22,7 @@ export const createNFTOnAPI = async ({ amount, creator, thumbnail, asset, name, 
 	formData.append('name', name);
 	formData.append('creator', creator);
 	formData.append('description', description || 'No description');
-	formData.append('collectionId', collectionId);
+	formData.append('collectionAddress', collectionAddress);
 
 	const res = await axios.post(getApiUrl('latest', 'nfts'), formData, await getAxiosConfig()).catch((e) => {
 		httpErrorHandler(e);

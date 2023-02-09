@@ -1,13 +1,14 @@
+import { goto } from '$app/navigation';
 import { page } from '$app/stores';
-import { displayErrorOverlay } from '$lib/components/ErrorOverlay/ErrorOverlay';
 import TosAcceptPopup from '$lib/components/popups/TosAcceptPopup.svelte';
 import { appSigner, currentUserAddress } from '$stores/wallet';
-import { apiAgreeToTos, apiGetLatestTosVersion, apiIsAgreedToTosVersion, type LatestVersionRes } from '$utils/api/tos';
+import { apiAgreeToTos, apiIsAgreedToLatestTos, type TosAgreeObject } from '$utils/api/tos';
+import { getAuthTokenAsync } from '$utils/auth/token';
+import { decodeJwt } from '$utils/jwt';
 import { closePopup, setPopup } from '$utils/popup';
 import { notifyError } from '$utils/toast';
-import { get, writable } from 'svelte/store';
-
-const latestVersionResStore = writable<LatestVersionRes>();
+// import { displayErrorOverlay } from '$lib/components/ErrorOverlay/ErrorOverlay';
+import { get } from 'svelte/store';
 
 const whitelistedPaths = ['/terms-and-conditions'];
 
@@ -36,62 +37,117 @@ export function initTos() {
 	currentUserAddress.subscribe(checkPathAndAddress);
 }
 
+const onCloseTosPopup = () => {
+	confirmUserHasAgreedToLatestTos()
+		.then((userAgreementObj) => {
+			if ((userAgreementObj as { error: string }).error) {
+				notifyError((userAgreementObj as { error: string }).error);
+				return;
+			}
+
+			if (!(userAgreementObj as TosAgreeObject).hasAgreed) {
+				notifyError('You have not agreed to the most recent version of the ToS as such Your usage of the site will be limited');
+				goto('/');
+				return;
+			}
+		})
+		.catch((error) => {
+			console.log(error);
+			notifyError('Something broke, please try again.');
+			return;
+		});
+
+	return;
+};
+
 async function ensureTosAccepted() {
-	const latestVersionRes = await apiGetLatestTosVersion();
+	const authToken = await getAuthTokenAsync(get(currentUserAddress));
+	const decodedToken = decodeJwt(authToken);
 
-	const error = () => {
-		console.error('Getting the latest ToS version label resulted in an error. The user should not be allowed to continue using the site.');
-		notifyError('Failed to get latest ToS version info: ' + (latestVersionRes as any).message || 'N/A');
-	};
+	if (decodedToken.tos) {
+		// ToS Results are available so we need to check them
+		/* The tos version here should always be the most recent version, however, when the token has expired,
+		 * this might not be the case. As such, there's the chance that we might need to add another check for
+		 * whether the version numbers match
+		 */
+		if (decodedToken.tos.hasAgreed) {
+			// User can continue using the site
+			return;
+		} else {
+			// Ensure the user does not need to agree constantly - once they agreed the first time
+			const userAgreementObj = await confirmUserHasAgreedToLatestTos();
 
-	if (latestVersionRes.err || !latestVersionRes.data) {
-		error();
+			if ((userAgreementObj as { error: string }).error) {
+				notifyError((userAgreementObj as { error: string }).error);
+				return { error: (userAgreementObj as { error: string }).error };
+			}
+
+			if (!(userAgreementObj as TosAgreeObject).hasAgreed) {
+				setPopup(TosAcceptPopup, {
+					closeByOutsideClick: true,
+					unique: true,
+					id: 'tos-accept-popup',
+					onClose: onCloseTosPopup,
+				});
+			}
+
+			return;
+		}
+	} else {
+		// No ToS is available
+		const userAgreementObj = await confirmUserHasAgreedToLatestTos();
+
+		if ((userAgreementObj as { error: string }).error) {
+			console.log('No T available', (userAgreementObj as { error: string }).error);
+			return;
+		}
+
+		if (!(userAgreementObj as TosAgreeObject).hasAgreed) {
+			setPopup(TosAcceptPopup, {
+				closeByOutsideClick: true,
+				unique: true,
+				id: 'tos-accept-popup',
+				onClose: onCloseTosPopup,
+			});
+			return;
+		}
+
 		return;
 	}
-
-	latestVersionResStore.set(latestVersionRes.data as LatestVersionRes);
-
-	const latestVersionLabel = latestVersionRes.data.data.version;
-
-	// If we do not get the latest version label, we need to error out
-	if (!latestVersionLabel) {
-		error();
-		return;
-	}
-
-	const isAgreedRes = await apiIsAgreedToTosVersion(latestVersionLabel);
-
-	// The user has already agreed to the latest version
-	if (isAgreedRes?.data?.data === latestVersionLabel) {
-		return;
-	}
-
-	// The API throws a 404 if the user didn't agree to the ToS yet. Dunno why, but we have to handle it.
-	if (isAgreedRes.errData?.message.includes('Has not agreed to TOS')) {
-		setPopup(TosAcceptPopup, { closeByOutsideClick: false, unique: true, id: 'tos-accept-popup' });
-		return;
-	}
-
-	// If we reached the end of the function, something has gone wrong
-	// and the user should not be able to continue using the site
-	console.error('Could not tell if user has agreed to the latest version of ToS. The user should not be able to continue using the site.');
-	displayErrorOverlay();
 }
 
-export async function handleAgreeToTos() {
-	const latestVersionRes = get(latestVersionResStore);
+export async function confirmUserHasAgreedToLatestTos() {
+	const userHasAgreedToLatest = await apiIsAgreedToLatestTos();
+	console.log(userHasAgreedToLatest);
 
-	if (!latestVersionRes) {
-		console.error('Latest TOS version data not available.');
+	if (userHasAgreedToLatest.errData) {
+		if (userHasAgreedToLatest.errData.statusCode === 404) {
+			// No ToS Version Present
+			console.error('Latest TOS version data not available.');
+			const error = 'Something broke, please try again.';
+
+			return { error };
+		}
 
 		const error = 'Something broke, please try again.';
-		notifyError(error);
 
 		return { error };
 	}
 
-	const versionHash = latestVersionRes.data.version_hash;
-	const versionLabel = latestVersionRes.data.version;
+	return userHasAgreedToLatest.data.data;
+}
+
+export async function handleAgreeToTos() {
+	// Check if user has agreed to latest
+	const userAgreementObj = await confirmUserHasAgreedToLatestTos();
+
+	if ((userAgreementObj as { error: string }).error) {
+		notifyError((userAgreementObj as { error: string }).error);
+		return { error: (userAgreementObj as { error: string }).error };
+	}
+
+	const versionHash = (userAgreementObj as TosAgreeObject).version_hash;
+	const versionLabel = (userAgreementObj as TosAgreeObject).version;
 
 	let signature: string;
 

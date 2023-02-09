@@ -5,35 +5,29 @@
 	export let value: string = '';
 	export let containerClass = '';
 	export let textAreaClass = '';
-
-	export let outline: boolean = false;
+	export let rows = 10;
+	export let focusStyle = true;
+	export let disabled = false;
 </script>
 
-<div class={containerClass}>
-	<textarea id="" rows="10" class="w-full resize-none {textAreaClass}" {placeholder} class:!outline-red-500={value.length < minChars} maxlength={maxChars} class:outline bind:value />
+<div class="relative {containerClass}">
+	<textarea
+		{disabled}
+		{rows}
+		class="w-full h-full resize-none border border-white p-4 blue-scrollbar bg-transparent outline-none {focusStyle ? 'focus:border-color-purple' : ''}  {textAreaClass}"
+		{placeholder}
+		maxlength={maxChars}
+		bind:value
+	/>
 
 	{#if maxChars}
-		<div class="text-right text-xs font-semibold">{value?.length || 0}/{maxChars}</div>
+		<div class="text-right text-xs absolute bottom-0 right-0 mb-4 mr-3">{value?.length || 0}/{maxChars}</div>
 	{/if}
 </div>
 
 <style lang="postcss">
-	textarea {
-		@apply rounded-md py-2 px-4 text-sm;
-		@apply duration-200;
-		transition-property: outline-color;
-	}
-
 	textarea::placeholder {
-		@apply text-black opacity-40;
+		@apply opacity-70;
 		@apply transition-all duration-200;
-	}
-
-	.outline {
-		outline: 1px solid #1d1d1d4d;
-	}
-
-	.outline:focus {
-		outline: 1px solid #1d1d1d;
 	}
 </style>

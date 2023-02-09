@@ -37,7 +37,7 @@ export async function apiGetUserNfts(address: string, type: 'MINTED', page: numb
 		}),
 	);
 
-	return { err, res: res.data.data as ApiNftData[] };
+	return { err, res: res.data.data as { nfts: ApiNftData[]; page: number; limit: number } };
 }
 
 export async function apiHideNft(id: string): Promise<ApiCallResult<{ success: boolean }>> {
@@ -58,20 +58,39 @@ export async function apiRevealNft(id: string): Promise<ApiCallResult<{ success:
 	}
 }
 
+export enum PaymentTickersEnum {
+	ETH = 'ETH',
+}
+
+export enum NftEventTypeEnum {
+	LISTING_CREATED = 'LISTING_CREATED',
+	LISTING_CANCELLED = 'LISTING_CANCELLED',
+	LISTING_PURCHASED = 'LISTING_PURCHASED',
+	BID_RECEIVED = 'BID_RECEIVED',
+	MINTED = 'MINTED',
+	BURNED = 'BURNED',
+	TRANSFER = 'TRANSFER',
+}
+
 export interface ApiNftActivityHistoryEntry {
-	_id: string;
-	event: string;
-	from: string;
-	to?: string;
-	nftId: string;
-	createdAt: string;
-	updatedAt: string;
+	nftIds: string[];
+	contractAddresses: string[];
+	tokenQuantities: number[];
+	event: NftEventTypeEnum;
 	price: string;
-	detail: any;
+	tokenTicker: PaymentTickersEnum;
+	tokenDecimals: number;
+	from: string;
+	to: string | null;
+	detail: {
+		listingId: string;
+		listingType: NftEventTypeEnum;
+	} | null;
+	txHash: string | null;
 }
 
 export async function apiGetNftActivityHistory(
-	id: string,
+	fullId: string,
 	options: { sales?: boolean; transfers?: boolean; listings?: boolean; bids?: boolean; limit?: number; page?: number },
 ): Promise<ApiNftActivityHistoryEntry[]> {
 	const o = options;
@@ -91,7 +110,7 @@ export async function apiGetNftActivityHistory(
 	}
 
 	try {
-		const res = await axios.get(getApiUrl(null, '/nft-activities/' + id + '?' + eventsParam), { params });
+		const res = await axios.get(getApiUrl(null, '/nft-activities/' + fullId + '?' + eventsParam), { params });
 		return res.data.data;
 	} catch {
 		return [];

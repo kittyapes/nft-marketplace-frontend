@@ -8,7 +8,6 @@
 	import NftCard from '$lib/components/NftCard.svelte';
 	import ListingSuccessPopup from '$lib/components/popups/ListingSuccessPopup.svelte';
 	import ListingProperties from '$lib/components/primary-listing/ListingProperties.svelte';
-	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
@@ -19,12 +18,18 @@
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
+	import { capitalize } from 'lodash-es';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import Spinner from '$lib/components/v2/Spinner/Spinner.svelte';
 
 	// URL params
 	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
-	const listingType = $page.url.searchParams.get('type') as ListingType;
+	const isGasless = $page.url.searchParams.get('gasless') === '1';
+
+	let listingType = $page.url.searchParams.get('type') as ListingType;
+
+	console.info('Listing as gasless:', isGasless);
 
 	const fetchedNftData = writable<ApiNftData>(null);
 
@@ -66,6 +71,7 @@
 		isListing = true;
 
 		const flowOptions: CreateListingFlowOptions = {
+			gasless: isGasless,
 			title: $fetchedNftData.name,
 			description: $fetchedNftData.metadata?.description,
 			// TODO, add support for addresses from external collections
@@ -73,15 +79,37 @@
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: 'WETH',
 			listingType: listingType,
-			...listingProps
+			...listingProps,
 		};
 
+		let listSuccess: boolean;
+
 		try {
-			await createListingFlow(flowOptions);
-			setPopup(ListingSuccessPopup, { props: { viewCallback: goViewNft }, closeByOutsideClick: false });
+			const res = await createListingFlow(flowOptions);
+
+			// For handled errors, don't show the default message
+			if (res?.error && res.handled) {
+				listSuccess = false;
+			}
+
+			// For unhandled errors, show the default error message
+			else if (res?.error) {
+				throw res.error;
+			}
+
+			// Successful listing
+			else {
+				listSuccess = true;
+			}
 		} catch (err) {
+			listSuccess = false;
+
 			console.error(err);
-			notifyError('Failed to list NFT!');
+			notifyError('Sorry, an unexpected error has occured. Your NFT could not be listed.');
+		}
+
+		if (listSuccess) {
+			setPopup(ListingSuccessPopup, { props: { viewCallback: goViewNft }, closeByOutsideClick: false });
 		}
 
 		isListing = false;
@@ -102,29 +130,45 @@
 			{
 				name: $fetchedNftData?.name || 'No Title',
 				thumbnailUrl: $fetchedNftData?.thumbnailUrl || $fetchedNftData?.assetUrl,
-				collectionData: { name: $fetchedNftData?.collectionName }
-			}
-		]
+				collectionData: { name: $fetchedNftData?.collectionName },
+			},
+		],
 	} as CardOptions;
+
+	function setListingType(listingType_: string) {
+		$page.url.searchParams.set('type', listingType_);
+		goto($page.url);
+
+		listingType = listingType_ as ListingType;
+	}
 </script>
 
 <!-- Back button -->
-<button class="flex items-center mt-16 mb-8 space-x-2 text-sm font-semibold uppercase btn" on:click={goBack}>
+<button class="flex items-center mt-8 space-x-2 text-sm btn" on:click={goBack}>
 	<Back />
 	<div>Go Back</div>
 </button>
 
-<hr class="separator" />
+<!-- This might be readded if we add gasless switch to this page in the future -->
+<!-- <div class="mt-8 font-semibold gap-4 flex mb-1">
+	{#each ['sale', 'auction'] as t}
+		{@const isSelected = t === listingType}
+		<button class="uppercase relative" class:text-gradient={isSelected} on:click={() => setListingType(t)}>
+			{capitalize(t)}
 
-<div class="flex mb-32">
+			{#if isSelected}
+				<div class="gradient-border-bg h-[2px] absolute w-full bottom-[-5px]" />
+			{/if}
+		</button>
+	{/each}
+</div> -->
+
+<div class="flex mb-32 border-t pt-2 mt-8">
 	<div class="flex-grow">
-		<h1 class="mt-8 text-xl uppercase">
-			<span class="font-light">Step 3: Setting details</span>
-			|
-			<span class="pr-1 font-bold gradient-text">{listingType}</span>
+		<h1 class="mt-8 text-2xl">
+			Setting Details |
+			{capitalize(listingType)}
 		</h1>
-
-		<hr class="mt-4 separator" />
 
 		<div class="pr-8 mt-8">
 			<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} compact />
@@ -132,16 +176,19 @@
 
 		<div class="pr-8 mt-8">
 			<PrimaryButton on:click={list} disabled={!!formErrors.length || isListing}>
-				List for {listingType || 'N/A'}
 				{#if isListing}
-					<ButtonSpinner />
+					<div class="w-8 absolute left-2">
+						<Spinner />
+					</div>
 				{/if}
+
+				List for {listingType || 'N/A'}
 			</PrimaryButton>
 		</div>
 	</div>
 
-	<div class="p-8 border-0 border-l separator w-80">
+	<div class="p-8 border-0 border-l border-white separator w-96">
 		<div class="mb-4 text-xl uppercase">Preview</div>
-		<NftCard options={previewMockOptions} hideLikes />
+		<NftCard options={previewMockOptions} hideLikes disabled />
 	</div>
 </div>

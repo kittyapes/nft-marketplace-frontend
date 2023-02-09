@@ -40,8 +40,6 @@ async function refreshPublicProfileData(address?: string) {
 		isVerified && data.roles.push('verified_user');
 	}
 
-	console.log(data);
-
 	publicProfileData.set(data);
 }
 

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import NftActivityHistoryTable from '$lib/components/v2/NftActivityHistoyTable/NftActivityHistoryTable.svelte';
-	import type { NftActivityHistoryTableRowData } from '$lib/components/v2/NftActivityHistoyTable/types';
-	import { notifySuccess } from '$utils/toast';
+	import type { NftActivityHistoryTableRowData } from '$lib/components/v2/NftActivityHistoyTable/NftActivityHistoryTable';
 
 	const data: NftActivityHistoryTableRowData[] = new Array(20).fill(0).map((i, index) => ({
 		event: 'Event ' + index,
