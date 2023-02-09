@@ -57,12 +57,13 @@
 </script>
 
 <div class="relative overflow-hidden w-full wrapper h-full flex flex-col">
+	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-[5]" />
 	<div class="overflow-hidden h-full w-full bg-dark-gradient relative">
 		<div class="w-full h-full flex items-start justify-center overflow-hidden relative">
 			<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="absolute h-full object-cover object-top w-full animated-image" />
 		</div>
 
-		<div class="flex gap-3 absolute bottom-0 left-0 px-3 w-full items-center">
+		<div class="flex gap-3 absolute bottom-0 left-0 px-3 w-full items-center z-[6]">
 			{#each data as _, index}
 				<div class="flex-grow flex items-end group cursor-pointer h-6 pb-2">
 					<div class="bg-white bg-opacity-50 h-[3px] group-hover:h-4 flex-grow transition-all" style="transition: height 0.1s;" on:click={() => handleButtonClick(index)}>
@@ -77,9 +78,9 @@
 		</div>
 	</div>
 
-	<div class="bg-dark-gradient text-white flex flex-col items-center justify-center gap-1 flex-grow h-[200px]">
-		<div class="text-5xl uppercase text-center text-gradient">{currentBlob.title}</div>
-		<div class="text-center mt-2 text-2xl">{currentBlob.subtitle}</div>
+	<div class="bg-dark-gradient text-white flex flex-col items-center justify-center gap-1 flex-grow h-[200px] px-4">
+		<div class="text-2xl xl:text-4xl 2xl:text-5xl uppercase text-center text-gradient">{currentBlob.title}</div>
+		<div class="text-center 2xl:mt-2 text-base xl:text-xl 2xl:text-2xl">{currentBlob.subtitle}</div>
 	</div>
 </div>
 
@@ -120,13 +121,8 @@
 		animation-play-state: paused;
 	}
 
-	.wrapper {
-		@apply border-transparent border-2;
-	}
-
-	.wrapper:hover {
-		border-image: linear-gradient(45deg, #868bf7, #6cc7f8) 1;
-		@apply border-solid;
+	.wrapper:not(:hover) > .gradient-border {
+		display: none;
 	}
 
 	@keyframes fill-bar {

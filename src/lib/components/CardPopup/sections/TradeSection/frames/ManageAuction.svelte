@@ -29,7 +29,7 @@
 	let biddings: BidRow[] = [];
 
 	async function acceptHighest() {
-		if (!listingExistsOnChain(options.rawListingData.listingId)) {
+		if (!(await listingExistsOnChain(options.rawListingData.listingId))) {
 			notifyError('Failed to Accept Highest Bid: Listing is no longer valid (not on chain)');
 			return;
 		}
@@ -54,7 +54,7 @@
 	let cancelButtonContainer: HTMLElement;
 
 	async function cancelListing() {
-		if (!listingExistsOnChain(options.rawListingData.listingId)) {
+		if (!(await listingExistsOnChain(options.rawListingData.listingId))) {
 			notifyError('Failed to Cancel Listing: Listing is no longer valid (not on chain)');
 			return;
 		}

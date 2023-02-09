@@ -83,7 +83,6 @@
 	}
 
 	.nftGrid {
-		@apply grid min-w-full gap-3 my-5 mx-auto;
-		grid-template-columns: repeat(auto-fit, 365px);
+		@apply min-w-full my-5 mx-auto grid grid-cols-[repeat(auto-fill,minmax(345px,1fr))] gap-4;
 	}
 </style>

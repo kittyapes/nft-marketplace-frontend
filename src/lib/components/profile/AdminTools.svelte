@@ -6,6 +6,7 @@
 	import type { UserData } from 'src/interfaces/userData';
 	import { createEventDispatcher } from 'svelte';
 	import ConfirmBatchProcessPopup from '../admin/ConfirmBatchProcessPopup.svelte';
+	import PrimaryButton from '../v2/PrimaryButton/PrimaryButton.svelte';
 
 	export let profileData: UserData;
 
@@ -63,7 +64,7 @@
 </script>
 
 <div class="items-center py-24 gap-x-2 ">
-	<div class="px-8 py-6 border bg-card-gradient text-white">
+	<div class="px-8 py-6 border bg-dark-gradient text-white">
 		<div class="text-lg font-semibold uppercase">Admin tools</div>
 
 		<hr class="mt-4 border-px" />
@@ -81,10 +82,10 @@
 			</span>
 		</div>
 
-		<div class="flex items-center gap-4 mt-4">
-			<button on:click={onProfilePromote} class="btn-primary" disabled={promoteDisabled}>Promote</button>
+		<div class="flex items-center gap-4 mt-4 justify-evenly w-1/2">
+			<PrimaryButton on:click={onProfilePromote} extButtonClass="w-1/2" disabled={promoteDisabled}>Promote</PrimaryButton>
 
-			<button on:click={onProfileInactivate} class="btn-secondary" disabled={inactivateDisabled}>Inactivate</button>
+			<PrimaryButton on:click={onProfileInactivate} variant="red" extButtonClass="w-1/2" disabled={inactivateDisabled}>Inactivate</PrimaryButton>
 		</div>
 	</div>
 </div>

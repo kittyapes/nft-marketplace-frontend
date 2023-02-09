@@ -1,8 +1,8 @@
-<script>
-	import ActionMenu from '$lib/components/ActionMenu.svelte';
+<script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	export let periods = ['24h', '7d', '30d', 'All'];
-	export let selectedPeriod = periods[0];
+	export let periods: ('24h' | '7d' | '30d' | 'All')[] = ['24h', '7d', '30d', 'All'];
+	export let selectedPeriod: '24h' | '7d' | '30d' | 'All' = periods[0];
+
 	const dispatch = createEventDispatcher();
 </script>
 
@@ -10,7 +10,7 @@
 	{#if periods?.length}
 		{#each periods as period}
 			<button
-				class="w-[5.8vw] h-[2.9vw] font-medium text-[1.16vw] leading-[1.7vw] hover:active"
+				class="w-16 h-12 font-medium text-2xl leading-7 hover:active"
 				class:active={period === selectedPeriod}
 				on:click={() => {
 					selectedPeriod = period;

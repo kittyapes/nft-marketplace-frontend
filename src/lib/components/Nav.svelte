@@ -43,7 +43,7 @@
 </script>
 
 <div class="fixed z-10 flex w-full">
-	<div class="{scrollY ? 'backdrop-blur-xl' : ''} fixed z-10 flex items-center w-full h-20 px-36 overflow-x-visible scrollbar-hidden snap-mandatory snap-x text-white bg">
+	<div class="{scrollY ? 'backdrop-blur-xl' : ''} fixed z-10 flex items-center w-full h-20 px-36 text-white bg max-w-screen-fhd left-1/2 -translate-x-1/2 ">
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
 			<img src="/svg/logo/logo.v2.svg" alt="Hinata logo." />
@@ -55,16 +55,16 @@
 		<div class="flex-grow" />
 
 		<!-- Marketplace -->
-		<a id="marketplace-link" href="/marketplace/collections" class="nav-button bg-card-gradient">
+		<a id="marketplace-link" href="/marketplace/listings" class="nav-button bg-card-gradient">
 			Marketplace
 			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 		</a>
 
 		<!-- Staking - HIDDEN FOR V1 -->
-		<a href="/staking" class="nav-button bg-card-gradient">
+		<!-- <a href="/staking" class="nav-button bg-card-gradient">
 			Staking
 			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
-		</a>
+		</a> -->
 
 		<!-- Airdrop HIDDEN FOR NOW -->
 		<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { slide } from 'svelte/transition';
+	import { fly, slide } from 'svelte/transition';
 	import { onDestroy, onMount } from 'svelte';
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
-	import { get, writable } from 'svelte/store';
-	import { getTrendingListings, type Listing } from '$utils/api/listing';
+	import { writable } from 'svelte/store';
+	import { getListingCreators, getTrendingListings, type Listing, type ListingCreatorsData } from '$utils/api/listing';
 	import NftList from '$lib/components/NftList.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
@@ -12,22 +12,17 @@
 	import TopCollections from '$components/v2/TopCollections/+page.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
-	import type { PublicProfileData } from '$interfaces/userData';
-	import { searchUsersByName } from '$utils/api/search/globalSearch';
-	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
-	import MonthlyAirdropWidget from '$lib/components/v2/MonthlyAirdropWidget.svelte';
-	import { goto } from '$app/navigation';
 	import NotificationBar from '$lib/components/NotificationBar.svelte';
 	import { getNotifications, updateNotificationAsUser, type UserNotification } from '$utils/api/notifications';
 	import dayjs from 'dayjs';
+	import { notifyError } from '$utils/toast';
+	import { currentUserAddress } from '$stores/wallet';
+	import CreatorWithNfts from '$lib/components/v2/CreatorWithNfts/CreatorWithNfts.svelte';
+	import { goto } from '$app/navigation';
 
 	let trendingListings = writable<Listing[]>([]);
 	let loadedTrendingListings = writable(false);
 	let trendingListingsData = [];
-
-	let hottestCreators = writable<{ users: PublicProfileData[]; totalCount: number }>(null);
-	let loadedHottestCreators = writable(false);
-	const hottestCreatorsCount = 3;
 
 	let userNotification = writable<UserNotification>(null);
 	let loadedUserNotification = writable(false);
@@ -42,17 +37,25 @@
 		loadedTrendingListings.set(true);
 	};
 
-	const getHottestCreatorsData = async () => {
-		loadedHottestCreators.set(false);
-		hottestCreators.set(await searchUsersByName('ste', hottestCreatorsCount));
-		loadedHottestCreators.set(true);
-	};
+	// let hottestCreators: ListingCreatorsData;
+
+	// const getHottestCreatorsData = async () => {
+	// 	const listingCreatorsRes = await getListingCreators({ limit: 3 });
+
+	// 	if (listingCreatorsRes.err) {
+	// 		notifyError('Failed to load hottest creators.');
+	// 		return;
+	// 	}
+
+	// 	hottestCreators = listingCreatorsRes.data.data;
+	// };
 
 	const getUserNotification = async () => {
 		if (!$userNotification) loadedUserNotification.set(false);
 		const res = (await getNotifications()).data.data;
 
 		const notification = res.find((n) => !n.hasCleared && dayjs().isAfter(dayjs(n.publishAt)) && (!n.expireAt || dayjs().isBefore(dayjs(n.expireAt))));
+		userNotificationCleared.set(false);
 
 		if (!notification) {
 			userNotification.set(null);
@@ -79,10 +82,13 @@
 	onDestroy(() => clearInterval(notificationFetchingInterval));
 
 	onMount(async () => {
-		getUserNotification();
-		getHottestCreatorsData();
+		// getHottestCreatorsData();
 		getTrendingListingsData();
 	});
+
+	$: if ($currentUserAddress) {
+		getUserNotification();
+	}
 </script>
 
 <MetaTags
@@ -108,89 +114,77 @@
 
 <!-- Notifications -->
 {#if $loadedUserNotification && $userNotification && !$userNotificationCleared}
-	<div class="w-full text-white mt-20" transition:slide|local>
+	<div class="w-full text-white mt-20" in:fly={{ x: -2000, duration: 1000 }}>
 		<NotificationBar notification={$userNotification} wrapperClass={'h-16'} on:click={() => clearNotification()} />
 	</div>
 {/if}
 
-<div class="px-36 pt-32 w-full grid place-items-center text-white">
-	<!-- Hero section -->
-	<!-- TODO fix this properly -->
-	{#if $loadedTrendingListings && trendingListingsData.length >= 2}
-		<div class="mb-16 flex gap-5 items-stretch w-full max-h-[550px]" in:slide|local={{ duration: 1000 }}>
-			<NftCard options={trendingListingsData[0]} />
+<div class="px-36 pt-32 w-full text-white" class:pt-0={$loadedUserNotification && $userNotification && !$userNotificationCleared}>
+	<div class="overflow-hidden">
+		<!-- Hero section -->
+		<!-- TODO fix this properly -->
+		{#if $loadedTrendingListings && trendingListingsData.length >= 2}
+			<div class="mb-16 grid grid-cols-4 gap-5 items-stretch w-full">
+				<NftCard options={trendingListingsData[0]} />
 
-			<div class="flex-grow">
-				<HomepageCarousel />
+				<div class="flex-grow col-span-2">
+					<HomepageCarousel />
+				</div>
+
+				<NftCard options={trendingListingsData[1] || trendingListingsData[0]} />
+			</div>
+		{/if}
+
+		<!-- Top collections section -->
+		<div class="w-full">
+			<TopCollections />
+		</div>
+
+		<!-- Hottest creators section -->
+		<!-- <div class="pt-20 w-full" in:slide>
+			<div class="w-full flex justify-between">
+				<h2 class="text-2xl leading-7">Hottest Creators</h2>
+				<button class="gradient-underline text-lg clickable" on:click={() => goto('/marketplace/creators')}>View all</button>
 			</div>
 
-			<NftCard options={trendingListingsData[trendingListingsData.length - 1]} />
-		</div>
-	{/if}
-
-	<!-- Top collections section -->
-	<div class="w-full">
-		<TopCollections />
-	</div>
-
-	<!-- Hottest creators section -->
-	<!-- TODO fix this properly -->
-	{#if $loadedHottestCreators && $loadedTrendingListings && trendingListingsData.length >= 2}
-		<div class="pt-20 w-full h-full" in:slide>
-			<h2 class="text-2xl leading-7">Hottest creators</h2>
 			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
-				{#each get(hottestCreators).users as creator}
-					<div class="p-4 bg-card-gradient flex gap-4 w-full cursor-pointer">
-						<div class="w-1/2">
-							<FeaturedArtistCard
-								on:click={() => goto(`/profile/${creator.address}`)}
-								creatorData={{
-									name: creator.username,
-									address: creator.address,
-									coverImg: creator.coverUrl,
-									profileImg: creator.thumbnailUrl,
-									created: 0,
-								}}
-							/>
-						</div>
-						<NftCard options={trendingListingsData[0]} />
-						<NftCard options={trendingListingsData[trendingListingsData.length - 1]} />
-					</div>
+				{#each hottestCreators?.users || [] as user}
+					<CreatorWithNfts creator={user} listings={user.createdListings.slice(0, 2)} />
 				{/each}
 			</div>
-		</div>
-	{/if}
+		</div> -->
 
-	<!-- Latest blog posts -->
-	<div class=" mt-60 mb-16">
-		<div class="flex items-end mb-12">
-			<h2 class="text-4xl leading-none text-white flex-grow">Latest blog post</h2>
-			<a href="/blog" class=" text-white gradient-underline text-lg relative">View latests posts</a>
+		<!-- Latest blog posts -->
+		<div class="mt-12 mb-16">
+			<div class="flex items-end mb-12">
+				<h2 class="text-2xl leading-none text-white flex-grow">Latest Blog Posts</h2>
+				<a href="/blog" class=" text-white gradient-underline text-lg relative">View latest posts</a>
+			</div>
+
+			{#if $blogPosts.length}
+				<div class="flex flex-col gap-10">
+					{#each $blogPosts.slice(0, 2) as post}
+						<BlogPostPreview data={post} />
+					{/each}
+				</div>
+			{/if}
 		</div>
 
-		{#if $blogPosts.length}
-			<div class="flex flex-col gap-10">
-				{#each $blogPosts.slice(0, 2) as post}
-					<BlogPostPreview data={post} />
-				{/each}
+		<!-- <MonthlyAirdropWidget /> -->
+
+		<!-- Tending nfts Section -->
+		{#if $loadedTrendingListings && trendingListingsData?.length > 0}
+			<div class="my-24 w-full" in:slide>
+				<h2 class="text-2xl leading-7">Explore Market</h2>
+
+				<div class="mb-20 mt-12">
+					<NftList options={trendingListingsData} />
+				</div>
+
+				<a href="/marketplace/listings" class="w-full"><PrimaryButton extButtonClass="w-full">Explore Marketplace</PrimaryButton></a>
 			</div>
 		{/if}
 	</div>
-
-	<MonthlyAirdropWidget />
-
-	<!-- Tending nfts Section -->
-	{#if $loadedTrendingListings && trendingListingsData?.length > 0}
-		<div class="my-24 w-full" in:slide>
-			<h2 class="text-4xl leading-7">Explore Market</h2>
-
-			<div class="mb-20">
-				<NftList options={trendingListingsData} />
-			</div>
-
-			<a href="/marketplace/listings" class="w-full"><PrimaryButton extButtonClass="w-full">Explore Marketplace</PrimaryButton></a>
-		</div>
-	{/if}
 </div>
 
 <style type="postcss">

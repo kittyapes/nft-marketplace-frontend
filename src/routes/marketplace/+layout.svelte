@@ -2,13 +2,17 @@
 	import Tabs from '$lib/components/v2/Tabs/+page.svelte';
 	let tabs: { title: string; route: string }[] = [
 		{
+			title: 'Listings',
+			route: '/marketplace/listings',
+		},
+		{
 			title: 'Collections',
 			route: '/marketplace/collections',
 		},
-		{
-			title: 'Active Listings',
-			route: '/marketplace/listings',
-		},
+		// {
+		// 	title: 'Creators',
+		// 	route: '/marketplace/creators',
+		// },
 	];
 </script>
 

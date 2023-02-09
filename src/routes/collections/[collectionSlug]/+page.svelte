@@ -33,6 +33,8 @@
 	let index = 1;
 	const limit = 12;
 
+	$: createNewNftBtn = $currentUserAddress === collectionData?.creator ? `${collectionData?.id}` : '';
+
 	$: if (nfts.length > 0) {
 		displayedNfts = nfts;
 	}
@@ -120,7 +122,7 @@
 	/>
 {/if}
 
-<main class="px-36 pt-24 mx-auto text-white">
+<main class="pt-24 text-white px-20">
 	<div class="w-full overflow-hidden h-96">
 		{#if collectionData?.backgroundImageUrl}
 			<img class="w-full h-full object-cover object-center" src={collectionData?.backgroundImageUrl} alt="Collection cover." />
@@ -129,7 +131,7 @@
 		{/if}
 	</div>
 
-	<div class="w-full flex flex-row flex-wrap overflow-auto gap-y-5 items-center justify-between mt-12">
+	<div class="w-full flex flex-row flex-wrap overflow-auto gap-y-5 items-center justify-between mt-12 space-x-10">
 		<CollectionIdentity {collectionData} {creatorData} />
 		<CollectionValues {collectionData} />
 	</div>
@@ -143,11 +145,11 @@
 	<!-- Filter panel and NFT grid -->
 	<div class="w-full flex flex-row items-start gap-x-5 mt-6 ">
 		<div class="w-full">
-			{#if !isLoading && reachedEnd && displayedNfts.length === 0}
+			{#if !isLoading && reachedEnd && displayedNfts.length === 0 && !createNewNftBtn}
 				<div class="">No results found.</div>
 			{/if}
 
-			<NftGrid options={displayedNfts} bind:gridStyle bind:reachedEnd bind:isLoading createNewNftBtn={$currentUserAddress === collectionData?.creator ? `${collectionData?.id}` : ''} />
+			<NftGrid options={displayedNfts} bind:gridStyle bind:reachedEnd bind:isLoading {createNewNftBtn} />
 
 			<div class="mt-16 mb-20">
 				{#if displayedNfts?.length > 0 && !reachedEnd && displayedNfts.length === nfts.length}

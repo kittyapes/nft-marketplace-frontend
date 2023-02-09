@@ -178,9 +178,11 @@ export interface CollectionTableRow {
 	'24hourPercent': number;
 }
 
-export async function apiGetMostActiveCollections(): Promise<{ collections: Collection[]; totalCount: number }> {
+export async function apiGetMostActiveCollections(
+	sort: 'ALPHABETICAL' | 'CREATED_AT' | 'ONE_DAY_VOLUME' | 'SEVEN_DAYS_VOLUME' | 'THIRTY_DAYS_VOLUME' | 'TOTAL_VOLUME' = 'TOTAL_VOLUME',
+): Promise<{ collections: Collection[]; totalCount: number }> {
 	const limit = 12;
-	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: { limit, status: 'ACTIVE' } });
+	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: { limit, status: 'ACTIVE', sortBy: sort } });
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);

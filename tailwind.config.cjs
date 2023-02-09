@@ -24,6 +24,7 @@ const config = {
 				},
 			},
 			screens: {
+				fhd: '1920px',
 				'2k': '2048px',
 				'4k': '3840px',
 			},

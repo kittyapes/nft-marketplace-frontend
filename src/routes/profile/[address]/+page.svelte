@@ -16,7 +16,7 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { profileCompletionProgress, profileData, userCreatedListing } from '$stores/user';
+	import { profileCompletionProgress, profileData, userCreatedListing, userLikedNfts } from '$stores/user';
 	import { listingToCardOptions, nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { getListing, getListings } from '$utils/api/listing';
 	import { apiGetUserNfts, apiGetUserOwnedNftsAlchemy, getNft } from '$utils/api/nft';
@@ -33,7 +33,7 @@
 	import { onMount } from 'svelte';
 	import { derived, writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
-	import { currentUserAddress } from '$stores/wallet';
+	import { appProvider, currentUserAddress } from '$stores/wallet';
 	import Twitter from '$icons/socials/twitter.svelte';
 	import Instagram from '$icons/socials/instagram.svelte';
 	import Web from '$icons/socials/web.svelte';
@@ -63,22 +63,6 @@
 			setTimeout(() => goto('/404'), 1500);
 			return;
 		}
-
-		if ($page.url.searchParams.has('id')) {
-			const id = $page.url.searchParams.get('id');
-			const listing = await getListing(id);
-
-			let options: CardOptions;
-
-			if (listing) {
-				options = await listingToCardOptions(listing);
-			} else {
-				const nft = await getNft(id);
-				options = await nftToCardOptions(nft);
-			}
-
-			setPopup(CardPopup, { props: { options }, onClose: () => removeUrlParam('id'), unique: true });
-		}
 	});
 
 	const fetchLimit = 10;
@@ -91,20 +75,13 @@
 
 	$: browser && fetchData(address);
 
-	$: if (browser && address && $currentUserAddress) {
-		refreshAllTabs();
+	$: if (browser && address) {
+		resetTabs();
 	}
 
-	$: if (browser && $currentUserAddress && address && $profileData) {
+	$: if (browser && address) {
 		selectTab($tabParam);
 	}
-
-	userCreatedListing.subscribe((value) => {
-		if (value) {
-			refreshAllTabs();
-			userCreatedListing.set(false);
-		}
-	});
 
 	$: socialLinks = $localProfileData?.social || { instagram: '', discord: '', twitter: '', website: '', pixiv: '', deviantart: '', artstation: '' };
 
@@ -241,12 +218,6 @@
 		});
 	};
 
-	const refreshAllTabs = () => {
-		tabs.forEach((t) => {
-			refreshTab(t.name);
-		});
-	};
-
 	let selectedTab: typeof tabs[0] = tabs[0];
 
 	function selectTab(name: string) {
@@ -260,7 +231,7 @@
 	}
 
 	function fetch() {
-		if (browser && !selectedTab.data.length && !selectedTab.isFetching && !selectedTab.reachedEnd) {
+		if (browser && address && !selectedTab.data.length && !selectedTab.isFetching && !selectedTab.reachedEnd) {
 			fetchMore();
 		}
 	}
@@ -323,13 +294,24 @@
 
 	$: {
 		if (selectedTab.name === 'created' || selectedTab.name === 'collected') {
-			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: address === $currentUserAddress ? ['hide'] : [] });
+			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: address === $currentUserAddress ? ['hide', 'copy'] : [] });
 		} else if (selectedTab.name === 'hidden') {
-			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: address === $currentUserAddress ? ['reveal'] : [] });
+			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: address === $currentUserAddress ? ['reveal', 'copy'] : [] });
 		} else {
 			cardPropsMapper = (v) => ({ options: v });
 		}
 	}
+
+	userCreatedListing.subscribe((value) => {
+		if (value) {
+			resetTabs();
+			userCreatedListing.set(false);
+		}
+	});
+
+	userLikedNfts.subscribe(() => {
+		refreshTab('favorites');
+	});
 </script>
 
 <div class="">
@@ -341,7 +323,7 @@
 		</div>
 
 		<div class="flex mt-8 text-white justify-between w-full flex-wrap gap-20">
-			<div class="flex gap-4 ">
+			<div class="flex gap-4 w-full xl:w-auto ">
 				<!-- Profile image -->
 				<div class="grid w-28 h-28 overflow-hidden place-items-center">
 					{#if $localProfileData?.thumbnailUrl}
@@ -361,7 +343,7 @@
 						{/if}
 
 						{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED' || $localProfileData?.roles?.includes('verified_user') || $localProfileData?.roles?.includes('inactivated_user')}
-							<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || !storage.hasRole('minter', address)}>
+							<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || ($appProvider && !storage.hasRole('minter', address))}>
 								<VerifiedBadge class="w-6 h-6" />
 							</div>
 						{/if}
@@ -395,7 +377,7 @@
 							{/if}
 						{/if}
 						<div class="relative">
-							<div class="" on:click|stopPropagation={() => (shareButtonOpen = !shareButtonOpen)} bind:this={elemOpenBtn}>
+							<div class="bg-transparent" on:click|stopPropagation={() => (shareButtonOpen = !shareButtonOpen)} bind:this={elemOpenBtn}>
 								<PrimaryButton extButtonClass="w-20">
 									<ShareV2 />
 								</PrimaryButton>
@@ -478,25 +460,6 @@
 					{/if}
 				</p>
 			</div>
-
-			<!-- Social links 
-			<div class="overflow-hidden">
-				<div class="font-bold whitespace-nowrap">SOCIAL LINKS</div>
-
-				<div class="flex flex-wrap mt-4">
-					{#if areSocialLinks}
-						{#each Object.entries(socialLinks) as [key, link]}
-							{#if link}
-								<div class="mb-2 mr-2">
-									<SocialButton social={key} href={link} />
-								</div>
-							{/if}
-						{/each}
-					{:else}
-						<div class="font-bold opacity-50 whitespace-nowrap">No social links.</div>
-					{/if}
-				</div>
-			</div>-->
 
 			<!-- Followers and address -->
 			<div class="flex flex-col gap-4">

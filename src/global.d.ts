@@ -13,15 +13,6 @@ interface ClaimsObject {
 	nextClaimDuration: number; // In Milliseconds
 }
 
-interface NftData {
-	name: string;
-	img: string;
-	collectionName: string;
-	priceEth: number;
-	likes: number;
-	ownedByUser: boolean;
-}
-
 interface MarkeplaceNftListing {
 	amount: string;
 	animation_url: string;

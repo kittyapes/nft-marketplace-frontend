@@ -127,7 +127,7 @@
 			isClaimed: boolean;
 		}>;
 		sort: Partial<{
-			sortBy: 'ALPHABETICAL' | 'CREATED_AT';
+			sortBy: 'ALPHABETICAL' | 'CREATED_AT' | 'ONE_DAY_VOLUME' | 'SEVEN_DAYS_VOLUME' | 'THIRTY_DAYS_VOLUME' | 'TOTAL_VOLUME';
 			sortReversed: boolean;
 		}>;
 		name: string;
@@ -564,30 +564,26 @@
 	{#if tab === 'COLLECTION'}
 		<div>
 			<!-- <h2 class="text-xl font-bold text-gradient">Add address to Whitelisted Collections</h2> -->
-			<div class="flex flex-col w-full gap-10 mt-1">
+			<div class="flex flex-col w-full gap-10 mt-20">
 				<!-- Network picker -->
 				<!-- <div class="flex flex-col gap-1 w-[36rem]">
 					<div class="font-semibold">Network to check address against</div>
 					<Dropdown options={networkPickerOptions} bind:selected={$selectedNetworkOption} />
 				</div> -->
 
-				<!-- <div class="flex flex-col gap-1">
+				<div class="flex flex-col gap-5 text-white">
 					<div class="font-semibold">Opensea collection URL part</div>
 					<div class="flex gap-10">
-						<input type="text" class="input max-w-xl w-[36rem]" placeholder="Please input opensea route, e.g. azuki" bind:value={$whitelistingCollectionSlug} />
-
-						<div class="flex-grow" />
+						<input type="text" class="input max-w-xl w-[36rem] py-4" placeholder="Please input opensea route, e.g. azuki" bind:value={$whitelistingCollectionSlug} />
 					</div>
-				</div> -->
+				</div>
 				<div class="flex flex-col gap-5">
-					<div class="font-medium text-white text-opacity-80">Add address to Whitelisted Collections</div>
+					<div class="font-medium text-white">Add address to Whitelisted Collections</div>
 					<div class="flex justify-between">
 						<input type="text" class="input text-white max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
 
-						<div class="gradient-border-bg p-[2px]">
-							<div class="bg-black">
-								<PrimaryButton class="w-80" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>Add</PrimaryButton>
-							</div>
+						<div class="p-[2px]">
+							<PrimaryButton extButtonClass="w-80" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>Add</PrimaryButton>
 						</div>
 					</div>
 				</div>

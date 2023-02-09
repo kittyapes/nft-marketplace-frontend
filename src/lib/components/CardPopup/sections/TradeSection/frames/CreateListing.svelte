@@ -28,6 +28,10 @@
 	let maxQuantity = 1;
 	let isGasless: boolean;
 
+	$: if (listingType === 'auction') {
+		isGasless = false;
+	}
+
 	let isListing = false;
 	let canCreateListing = true;
 
@@ -118,7 +122,7 @@
 		<!-- Gasless switch -->
 		<div class="flex mt-8">
 			<div class="flex-grow text-lg">Gasless Listing</div>
-			<Toggle bind:state={isGasless} />
+			<Toggle bind:state={isGasless} disabled={listingType === 'auction'} />
 		</div>
 
 		<div class="mt-6">

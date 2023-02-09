@@ -21,7 +21,9 @@
 	import { cubicInOut } from 'svelte/easing';
 	import { onMount } from 'svelte';
 
-	let showFilters = true;
+	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
+
+	let showFilters = false;
 	let sortOptions: { title: string; action?: any }[] = [
 		{
 			title: 'Ending soon',
@@ -40,13 +42,14 @@
 			action: () => {},
 		},
 	];
+
 	let data = [];
 	let reachedEnd = false;
 	let isLoading = true;
 	let index = 1;
 	let fetchOptions: ListingFetchOptions = {};
 	let lastFetchOptions = '';
-	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
+
 	const fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
 		res.res = await getListings({ ...fetchOptions, listingStatus: ['UNLISTED', 'ACTIVE'] }, index, 20);
@@ -97,14 +100,6 @@
 		debouncedFetchMore();
 	}
 
-	function onChange(event) {
-		if (event.detail.inView) {
-			fetchMore();
-		}
-	}
-
-	const inviewOptions = {};
-
 	onMount(() => {
 		refreshWithFilters();
 	});
@@ -122,7 +117,7 @@
 	</button>
 
 	<div class="flex flex-row items-center gap-x-4">
-		<SortButton bind:sortOptions class="h-12 w-36" />
+		<!-- <SortButton bind:sortOptions class="h-12 w-36" /> -->
 		<GridSelector bind:gridStyle />
 	</div>
 </div>
@@ -152,7 +147,7 @@
 		<NftGrid bind:options={data} bind:gridStyle bind:reachedEnd bind:isLoading />
 
 		{#if !isLoading}
-			<div use:inview={inviewOptions} on:change={onChange} />
+			<div use:inview on:enter={fetchMore} />
 		{/if}
 	</div>
 </div>

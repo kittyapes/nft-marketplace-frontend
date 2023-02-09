@@ -4,7 +4,7 @@
 	import ArrowLinkGradient from '$icons/arrow-link-gradient.svelte';
 </script>
 
-<div class="border-t border-white text-white -z-10 ">
+<div class="border-t border-white text-white z-10">
 	<div class="flex justify-between py-12 px-32 gap-10">
 		<div class="flex flex-col px-8 gap-4">
 			<!-- Logo -->
@@ -65,10 +65,10 @@
 					<div>Uniswap</div>
 					<ArrowLinkGradient />
 				</a>
-				<a href="/" class="flex gap-2 items-center clickable">
+				<!-- <a href="/" class="flex gap-2 items-center clickable">
 					<div>AscendEx</div>
 					<ArrowLinkGradient />
-				</a>
+				</a> -->
 			</div>
 		</div>
 	</div>

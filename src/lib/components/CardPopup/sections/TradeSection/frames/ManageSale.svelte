@@ -18,7 +18,7 @@
 
 	let listingExpired: boolean;
 
-	$: allowEdit = !$userHasRole('inactivated_user') && !listingExpired;
+	$: allowEdit = !$userHasRole('inactivated_user') && !listingExpired && options.rawListingData.chainStatus !== 'GASLESS';
 
 	const allowEditUnsubscribe = getInterval(1000).subscribe(() => {
 		listingExpired = isListingExpired(dateToTimestamp(options.rawListingData.startTime), options.rawListingData.duration);
