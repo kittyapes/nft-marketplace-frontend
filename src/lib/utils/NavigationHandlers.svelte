@@ -163,11 +163,9 @@
 			const options = await listingToCardOptions(listing);
 
 			const invalidStatuses: ListingStatus[] = ['SIGNATURE_EXPIRED', 'SIGNATURE_OR_DATA_INVALID', 'SIGNATURE_USED'];
+			const showInvalidListingMessage = invalidStatuses.includes(options.rawListingData.listingStatus);
 
-			if (invalidStatuses.includes(options.rawListingData.listingStatus)) {
-			}
-
-			openCardPopupFromOptions(options, { showInvalidListingMessage: true });
+			openCardPopupFromOptions(options, { showInvalidListingMessage });
 		}
 	});
 
