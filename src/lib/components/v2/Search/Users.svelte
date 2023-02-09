@@ -11,6 +11,7 @@
 	import { browser } from '$app/environment';
 	import { writable } from 'svelte/store';
 	import { onDestroy } from 'svelte';
+	import debounce from 'lodash-es/debounce';
 
 	let users: Partial<UserData>[] = [];
 	let query = writable('');
@@ -34,7 +35,7 @@
 	};
 
 	async function fetchMore() {
-		if (isLoading) return;
+		if (isLoading || reachedEnd) return;
 		isLoading = true;
 		showLoader = true;
 
@@ -56,6 +57,10 @@
 		isLoading = false;
 	}
 
+	const debouncedFetch = debounce(async () => {
+		await fetchMore();
+	}, 300);
+
 	const unsubscribeQuery = searchQuery.subscribe((val) => ($query = val));
 
 	query.subscribe((val) => {
@@ -67,7 +72,7 @@
 		pageNumber = 1;
 		users = [];
 
-		fetchMore();
+		debouncedFetch();
 		$page.url.searchParams.set('query', val);
 		goto('?' + $page.url.searchParams, { replaceState: true, keepfocus: true, noscroll: true });
 	});

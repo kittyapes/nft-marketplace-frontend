@@ -12,6 +12,7 @@
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import { onDestroy } from 'svelte';
+	import debounce from 'lodash-es/debounce';
 
 	const inviewOptions = {};
 	let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
@@ -49,7 +50,7 @@
 	};
 
 	const fetchMore = async () => {
-		if (isLoading) return;
+		if (isLoading || reachedEnd) return;
 		isLoading = true;
 		showLoader = true;
 
@@ -72,11 +73,9 @@
 		showLoader = true;
 	};
 
-	function onChange(event) {
-		if (event.detail.inView) {
-			fetchMore();
-		}
-	}
+	const debouncedFetch = debounce(async () => {
+		await fetchMore();
+	}, 300);
 
 	const unsubscribeQuery = searchQuery.subscribe((val) => ($query = val));
 
@@ -89,10 +88,16 @@
 		pageNumber = 1;
 		nfts = [];
 
-		fetchMore();
+		debouncedFetch();
 		$page.url.searchParams.set('query', val);
 		goto('?' + $page.url.searchParams, { replaceState: true, keepfocus: true, noscroll: true });
 	});
+
+	function onChange(event) {
+		if (event.detail.inView) {
+			fetchMore();
+		}
+	}
 
 	onDestroy(unsubscribeQuery);
 </script>

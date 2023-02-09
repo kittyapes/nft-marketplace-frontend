@@ -9,6 +9,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { onDestroy } from 'svelte';
+	import debounce from 'lodash-es/debounce';
 
 	let collections: Collection[] = [];
 	let query = writable('');
@@ -29,7 +30,7 @@
 	};
 
 	async function fetchMore() {
-		if (isLoading) return;
+		if (isLoading || reachedEnd) return;
 		isLoading = true;
 		showLoader = true;
 
@@ -54,6 +55,10 @@
 
 	const unsubscribeQuery = searchQuery.subscribe((val) => ($query = val));
 
+	const debouncedFetch = debounce(async () => {
+		await fetchMore();
+	}, 300);
+
 	query.subscribe((val) => {
 		if (!browser) return;
 
@@ -63,7 +68,7 @@
 		pageNumber = 1;
 		collections = [];
 
-		fetchMore();
+		debouncedFetch();
 		$page.url.searchParams.set('query', val);
 		goto('?' + $page.url.searchParams, { replaceState: true, keepfocus: true, noscroll: true });
 	});
@@ -71,4 +76,4 @@
 	onDestroy(unsubscribeQuery);
 </script>
 
-<div class="my-6 2xl:my-8 w-full"><CollectionsTable bind:collections isLoading={showLoader} {reachedEnd} on:end-reached={fetchMore} /></div>
+<div class="my-6 2xl:my-8 w-full"><CollectionsTable {collections} isLoading={showLoader} {reachedEnd} on:end-reached={fetchMore} /></div>
