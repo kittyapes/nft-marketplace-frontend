@@ -86,6 +86,7 @@ export interface Listing {
 }
 
 export interface ListingFetchOptions {
+	collectionAddress?: string;
 	collectionId?: string;
 	type?: ListingType[];
 	priceMin?: string;
