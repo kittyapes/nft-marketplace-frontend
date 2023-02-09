@@ -6,8 +6,6 @@
 
 	const dispatch = createEventDispatcher();
 
-	// TODO refactor to completely remove this and use the placeholder named slot instead
-	export let text = 'Drag and drop an image here, or click to browse';
 	export let dimensions: string = '';
 	export let blob: Blob | null = null;
 	export let currentImgUrl: string = null;
@@ -18,6 +16,7 @@
 	let fileInput: HTMLInputElement;
 	let files: any = [];
 	let over = false;
+	let isHovered = false;
 	let fileType: 'image' | 'video' = null;
 
 	$: if (browser && previewSrc) {
@@ -64,16 +63,19 @@
 	}
 </script>
 
-<div class="overflow-hidden">
+<div class="overflow-hidden flex flex-col items-center relative {$$props.class}">
 	<button
 		id="container"
-		class="h-full w-full border-2 rounded-2xl border-dashed flex items-center justify-center overflow-hidden
-		select-none {$$props.class}"
+		class="h-full w-full border border-dashed flex items-center justify-center overflow-hidden hover:bg-gradient-a
+		select-none "
 		on:click={() => fileInput.click()}
 		on:drop|preventDefault={onDrop}
 		on:dragover|preventDefault={onDragOver}
 		on:dragleave={onDragLeave}
+		on:mouseenter={() => (isHovered = true)}
+		on:mouseleave={() => (isHovered = false)}
 		class:over
+		class:bg-gradient-a={isHovered}
 	>
 		{#if (fileType === 'image' && previewSrc) || currentImgUrl}
 			<img src={previewSrc || currentImgUrl} alt="" in:fade class="object-contain w-full max-h-full rounded" />
@@ -83,19 +85,13 @@
 				<track kind="captions" />
 			</video>
 		{:else if !fileType}
-			{#if text}
-				<div class="px-12 text-sm text-center opacity-50 text-color-black">
-					{@html text}
-				</div>
-			{:else}
-				<slot name="placeholder" />
-			{/if}
+			<slot name="placeholder" />
 		{/if}
 	</button>
 
-	<div class="mt-2 text-xs font-semibold text-center text-color-gray-accent">
-		{dimensions}
-	</div>
+	<!-- <span class="text-xs"> -->
+	<slot name="lower_text" />
+	<!-- </span> -->
 
 	<input type="file" accept={acceptedFormats.join(',')} class="hidden" bind:this={fileInput} bind:files />
 </div>

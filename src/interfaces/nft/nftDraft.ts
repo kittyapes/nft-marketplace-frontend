@@ -5,6 +5,6 @@ export interface NftDraft {
 	thumbnailPreview: string;
 	description: string;
 	name: string;
-	collectionId: string;
+	collectionAddress: string;
 	quantity: number;
 }

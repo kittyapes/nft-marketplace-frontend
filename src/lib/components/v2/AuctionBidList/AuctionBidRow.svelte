@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { toShortDisplayPrice } from '$utils/adapters/cardOptions';
+
 	export let imageUrl: string;
 	export let tokenIconComponent: any;
 	export let tokenAmount: string;
@@ -11,7 +13,7 @@
 	<div class="flex-grow">{bidderName || 'Guest'}</div>
 	<div class="flex items-center flex-grow gap-2">
 		<svelte:component this={tokenIconComponent} />
-		<div>{tokenAmount}</div>
+		<div>{toShortDisplayPrice(tokenAmount) || 'N/A'}</div>
 	</div>
 	<div class="opacity-50 text-sm">{timeAgo}</div>
 </div>

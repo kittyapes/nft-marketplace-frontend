@@ -1,13 +1,10 @@
 import type { EthAddress, OnChainId, UnixTime } from '$interfaces';
 import type { ConfigurableListingProps } from '$interfaces/listing';
-import { currentUserAddress } from '$stores/wallet';
 import { getContract } from '$utils/misc/getContract';
 import { getIconUrl } from '$utils/misc/getIconUrl';
 import { parseToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
 import { BigNumber, ethers } from 'ethers';
-import { get } from 'svelte/store';
-import { getCollectionContract } from './collection';
 import contractCaller from './contractCaller';
 import { ensureAmountApproved, getTokenDetails } from './token';
 
@@ -20,7 +17,7 @@ export enum LISTING_TYPE {
 	TIME_LIMITED_1_OF_N_WINNING_TICKETS_RAFFLE,
 }
 
-export const listingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.black') }];
+export const listingTokens = [{ label: 'WETH', iconUrlOrComponent: getIconUrl('eth.black') }];
 export const whiteListingTokens = [{ label: 'WETH', iconUrl: getIconUrl('eth.light') }];
 
 export interface ContractCreateListingOptions {
@@ -36,40 +33,6 @@ export interface ContractCreateListingOptions {
 	tokenAmounts: number[];
 	collections: EthAddress[];
 	nfts: { nftId: string; amount: number; collectionAddress: EthAddress }[];
-}
-
-export async function contractCreateListing(options: ContractCreateListingOptions) {
-	const marketplaceContract = getContract('marketplace');
-	const collectionContract = await getCollectionContract(options.nfts[0].collectionAddress);
-
-	// TODO: Check Approval for All NFTS being listed - loop
-	const isApproved = await collectionContract.isApprovedForAll(get(currentUserAddress), marketplaceContract.address);
-
-	if (!isApproved) {
-		const approval: ethers.ContractTransaction = await collectionContract.setApprovalForAll(marketplaceContract.address, true);
-		await approval.wait(1);
-	}
-
-	console.log({ options });
-
-	const callOptions = {
-		id: ethers.BigNumber.from(options.listingId),
-		seller: get(currentUserAddress),
-		payToken: options.payToken,
-		price: parseToken(options.price, options.payToken),
-		reservePrice: parseToken(options.reservePrice, options.payToken),
-		startTime: options.startTime,
-		duration: options.duration,
-		quantity: options.quantity,
-		listingType: options.listingType,
-		collections: options.collections,
-		tokenIds: options.tokenIds,
-		tokenAmounts: options.tokenAmounts,
-	};
-
-	console.debug('[Info] Will call createListing on contract with the following parameters.', callOptions);
-
-	await contractCaller(marketplaceContract, 'createListing', 150, 1, callOptions);
 }
 
 export async function contractPurchaseListing(listingId: string) {
@@ -94,6 +57,24 @@ export async function contractPurchaseListing(listingId: string) {
 	await contractCaller(contract, 'purchaseListing', 150, 1, listingId);
 }
 
+export interface ChainListing {
+	id: string;
+	seller: string;
+	payToken: string;
+	price: string;
+	rawPrice: BigNumber;
+	reservePrice: string;
+	startTime: number;
+	duration: number;
+	quantity: number;
+	listingType: LISTING_TYPE;
+	isValidOnChainListing: boolean;
+	tokensMap: {
+		tokenId: string;
+		collectionAddress: string;
+		tokenQuantityInListing: number;
+	};
+}
 export interface ChainListing {
 	id: string;
 	seller: string;
@@ -144,13 +125,6 @@ export async function getOnChainListing(listingId: string): Promise<ChainListing
 	};
 
 	return onChainObj;
-}
-
-export async function contractCancelListing(listingId: string) {
-	console.debug('[Listing] Cancelling listing with ID: ' + listingId);
-
-	const contract = getContract('marketplace');
-	await contractCaller(contract, 'cancelListing', 150, 1, listingId);
 }
 
 export async function contractUpdateListing(listingId: string, payTokenAddress: string, props: Partial<ConfigurableListingProps>) {

@@ -11,6 +11,7 @@
 	import NftMintProgressPopup from '$lib/components/popups/NftMintProgressPopup.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { nftDraft } from '$stores/create';
 	import { refreshProfileData } from '$stores/user';
 	import { connectionDetails, currentUserAddress } from '$stores/wallet';
@@ -24,8 +25,8 @@
 	import { notifyError } from '$utils/toast';
 	import { writable } from 'svelte/store';
 
-	const dragDropText = 'Drag and drop an image <br> here, or click to browse';
-	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string; collectionId: string }>(null);
+	const dragDropText = 'Drag and drop an image <br> or <span class="text-gradient">click to browse</span>';
+	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }>(null);
 
 	let dumpDraft = false;
 
@@ -35,7 +36,7 @@
 	let nftData: Partial<NftDraft> = {
 		name: '' || $nftDraft?.name,
 		quantity: 1 || $nftDraft?.quantity,
-		collectionId: $nftDraft?.collectionId,
+		collectionAddress: $nftDraft?.collectionAddress,
 		description: $nftDraft?.description,
 		assetPreview: $nftDraft?.assetPreview,
 		thumbnailPreview: $nftDraft?.thumbnailPreview,
@@ -90,9 +91,9 @@
 		// Make sure to visually select the selected collection
 		let collectionToSelect = null;
 
-		if ($nftDraft?.collectionId) {
+		if ($nftDraft?.collectionAddress) {
 			// User could have previously selected a collection which is now saved in a draft
-			collectionToSelect = available.find((i) => i.collectionId === $nftDraft.collectionId);
+			collectionToSelect = available.find((i) => i.collectionAddress === $nftDraft.collectionAddress);
 		} else if (available.length) {
 			// If no collection is saved in draft, select the first available collection
 			collectionToSelect = available[0];
@@ -120,7 +121,7 @@
 			creator: $currentUserAddress,
 			thumbnail: nftData.thumbnailBlob,
 			asset: nftData.assetBlob,
-			collectionId: selectedCollectionRow.collectionId,
+			collectionAddress: selectedCollectionRow.collectionAddress,
 		});
 
 		if (!createNftRes) {
@@ -162,7 +163,7 @@
 			return;
 		} else {
 			selectedCollectionRow = event.detail;
-			nftData.collectionId = selectedCollectionRow.collectionId;
+			nftData.collectionAddress = selectedCollectionRow.collectionAddress;
 		}
 	};
 
@@ -185,7 +186,7 @@
 		nfts: [
 			{
 				name: nftData.name || 'No Title',
-				thumbnailUrl: nftData.thumbnailPreview || nftData.assetPreview,
+				thumbnailUrl: nftData.thumbnailPreview || nftData.assetPreview || '',
 				collectionData: { name: selectedCollectionRow?.label },
 			},
 		],
@@ -193,70 +194,68 @@
 </script>
 
 <!-- Back button -->
-<button class="flex items-center mt-16 mb-8 space-x-2 text-sm font-semibold uppercase btn" on:click={goBack}>
+<button class="flex items-center my-8 space-x-2 text-sm font-semibold btn text-white" on:click={goBack}>
 	<Back />
 	<div>Go Back</div>
 </button>
 
-<hr class="separator" />
-
-<div class="flex mb-32">
+<div class="flex mb-32 text-white border-t border-white">
 	<!-- Left side -->
 	<div class="flex-grow">
 		<!-- Title -->
 		<h1 class="mt-8 text-xl font-light uppercase">Step 1: Creating your drop</h1>
 
-		<hr class="mt-8 separator" />
+		<div class="grid grid-cols-2 mt-8 gap-16 pr-16">
+			<!-- File upload -->
+			<div>Upload file*</div>
+			<div>
+				<DragDropImage class="h-56" max_file_size={50_000_000} bind:blob={nftData.assetBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos}>
+					<div slot="lower_text">
+						MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
+					</div>
 
-		<!-- File upload -->
-		<div class="flex h-56 mt-8 mr-8">
-			<div class="w-80">
-				<div class="text-xs font-light uppercase text-color-black">Upload file</div>
-
-				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
-				<div class="mt-1 text-sm font-semibold text-color-black w-max">
-					PNG, JPG, JPEG, GIF, WEBP, MP4, MP3 <br />
-					Max 50 MB
-				</div>
+					<div slot="placeholder">
+						Drag and drop an image <br />
+						or
+						<span class="text-gradient">click to browse</span>
+					</div>
+				</DragDropImage>
 			</div>
 
-			<div class="grid flex-grow place-items-stretch">
-				<DragDropImage max_file_size={50_000_000} bind:blob={nftData.assetBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos} />
-			</div>
-		</div>
+			<div>Upload Thumbnail (Optional)</div>
+			<!-- Thumbnail upload -->
+			<div>
+				<DragDropImage class="h-56" max_file_size={3_000_000} bind:blob={nftData.thumbnailBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages}>
+					<div slot="lower_text">
+						MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
+					</div>
 
-		<!-- Thumbnail upload -->
-		<div class="flex h-56 mt-8 mr-8">
-			<div class="w-80">
-				<div class="text-xs font-light uppercase text-color-black">Upload thumbnail</div>
-
-				<div class="text-[#1D1D1DB2] mt-4 text-sm">For other marketplaces:</div>
-				<div class="text-[#1D1D1DB2] mt-4 text-sm">File types:</div>
-				<div class="mt-1 text-sm font-semibold text-color-black w-max">
-					PNG, JPG, JPEG, GIF, WEBP <br />
-					Max 3MB
-				</div>
-			</div>
-
-			<div class="grid flex-grow place-items-stretch">
-				<DragDropImage max_file_size={3_000_000} bind:blob={nftData.thumbnailBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages} />
+					<div slot="placeholder">
+						Drag and drop an image <br />
+						or
+						<span class="text-gradient">click to browse</span>
+					</div>
+				</DragDropImage>
 			</div>
 		</div>
-
-		<hr class="mt-12 separator" />
 
 		<!-- NFT details -->
-		<div class="flex mt-8 space-x-32">
-			<div class="w-1/2">
-				<div class="uppercase text-[#1D1D1DB2]">Create name</div>
-				<input type="text" class="w-full mt-2 font-semibold input" bind:value={nftData.name} />
+		<div class="grid  grid-cols-2 mt-8 border-b border-white pb-12">
+			<div class="mr-32">
+				<div>Create name</div>
+				<input type="text" placeholder="Your NFT name" class="w-full mt-2 font-semibold input" bind:value={nftData.name} />
 
-				<div class="uppercase text-[#1D1D1DB2] mt-8">NFT Quantity</div>
+				<div class="mt-8">NFT Quantity</div>
 				<input type="number" class="w-full mt-2 font-semibold input input-hide-controls" step={1} bind:value={nftData.quantity} min={1} />
+			</div>
 
-				<div class="uppercase text-[#1D1D1DB2] mt-8">Collection</div>
+			<div class="mr-8">
+				<div>Description</div>
+				<TextArea containerClass="mt-2" maxChars={200} placeholder="Enter description..." bind:value={nftData.description} />
+
+				<!-- Collection dropdown -->
 				{#if isLoadingCollections}
-					<div class="flex items-center h-12 mt-2 border rounded-lg">
+					<div class="flex items-center h-12 mt-2 border">
 						<div class="relative w-12 h-full">
 							<ButtonSpinner secondary class="w-4 h-4 ml-4" />
 						</div>
@@ -268,31 +267,26 @@
 						on:select={handleCollectionSelection}
 						dispatchOnMount={false}
 						options={[...$availableCollections, { label: 'Create new collection', value: 'collections/new/edit?to=create' }]}
-						class="mt-2"
+						class="mt-2 h-12"
 						btnClass="font-semibold"
 					/>
 				{/if}
 			</div>
-
-			<div class="w-1/2">
-				<div class="uppercase text-[#1D1D1DB2]">Description</div>
-				<TextArea outline containerClass="mt-2 mr-8" maxChars={200} placeholder="Enter description..." bind:value={nftData.description} />
-			</div>
 		</div>
-
-		<hr class="mt-12 separator" />
 
 		<FormErrorList validity={$formValidity} />
 
 		<!-- Mint button -->
-		<div class="w-full pr-8">
-			<button class="w-full mt-8 font-semibold uppercase btn btn-gradient btn-rounded w- h-14" on:click={mintAndContinue} disabled={!inputValid}>Mint</button>
+		<div class="w-full pr-8 mt-8">
+			<PrimaryButton on:click={mintAndContinue} disabled={!inputValid}>MINT</PrimaryButton>
 		</div>
 	</div>
 
 	<!-- Right side -->
-	<div class="p-8 border-0 border-l separator w-80">
+	<div class="pl-8 pt-8 border-0 border-l border-white separator w-96">
 		<div class="mb-4 text-xl uppercase">Preview</div>
-		<NftCard options={previewMockOptions} hideLikes />
+		<div>
+			<NftCard options={previewMockOptions} hideLikes />
+		</div>
 	</div>
 </div>

@@ -57,8 +57,6 @@ export async function getTokenBalance(tokenAddress: string, userAddress: string,
 }
 
 export async function hasEnoughBalance(tokenAddress: string, userAddress: string, requiredBalance: string) {
-	console.log('Has enough balance: ', tokenAddress, userAddress, requiredBalance, typeof requiredBalance);
-
 	const tokenDetails = await getTokenDetails(tokenAddress);
 	const balance = await getTokenBalance(tokenAddress, userAddress, tokenDetails.decimals);
 
@@ -90,7 +88,7 @@ export async function contractApproveToken(spender: string, amount: BigNumber, t
 	await approveTx.wait(1);
 }
 
-export async function ensureAmountApproved(spender: string, amount: string, tokenAddress: string) {
+export async function ensureAmountApproved(spender: string, amount: string, tokenAddress: string): Promise<boolean> {
 	if (isEther(tokenAddress)) {
 		return true;
 	}

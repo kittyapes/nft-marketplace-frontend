@@ -31,7 +31,7 @@
 		<div slot="header" class="max-w-3xl mb-5">
 			<h1 class="font-bold uppercase text-7xl">
 				<p>Share your</p>
-				<p class="gradient-text">avatar</p>
+				<p class="text-gradient">avatar</p>
 			</h1>
 		</div>
 		<div slot="content" class="flex flex-col max-w-xl gap-8 mb-16">

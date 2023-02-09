@@ -15,18 +15,18 @@
 </script>
 
 <button
-	class="rounded-2xl w-[17rem] h-60 relative hover:scale-105 transition-all border border-color-gray-light"
+	class=" w-[17rem] h-60 relative hover:scale-105 transition-all border border-color-gray-light"
 	on:click={() => goto('/collections/' + slug)}
 	on:mouseover={() => (hover = true)}
 	on:focus={() => (hover = true)}
 	on:mouseout={() => (hover = false)}
 	on:blur={() => (hover = false)}
 >
-	<div class="h-4/5 rounded-t-2xl">
-		<img src={bannerUrl} alt="Collection banner." class="w-full h-full object-cover rounded-t-2xl border-b border-color-gray-lightest" />
+	<div class="h-4/5 ">
+		<img src={bannerUrl} alt="Collection banner." class="w-full h-full object-cover border-b border-color-gray-lightest" />
 		{#if showEdit}
 			<button
-				class="absolute top-4 right-3 rounded-3xl flex gap-2 items-center text-white backdrop-blur-2xl p-1 px-3 clickable"
+				class="absolute top-4 right-3  flex gap-2 items-center text-white backdrop-blur-2xl p-1 px-3 clickable"
 				class:hidden={!hover}
 				on:click|stopPropagation={() => goto('/collections/' + slug + '/edit')}
 			>
@@ -35,8 +35,8 @@
 			</button>
 		{/if}
 	</div>
-	<div class="w-7 h-7 rounded-full absolute mx-auto left-0 right-0 bottom-[15%] grid place-items-center bg-color-gray-light">
+	<div class="w-7 h-7 rounded-full absolute mx-auto left-0 right-0 bottom-[15%] grid place-items-center bg-color-gray-lightest">
 		<img src={logoUrl} alt="Collection Logo." class="w-6 h-6 rounded-full object-cover absolute" />
 	</div>
-	<div class="font-semibold grid place-items-center w-full rounded-b-2xl h-1/5">{title.substring(0, 15)}{title.length > 15 ? '...' : ''}</div>
+	<div class="font-semibold grid place-items-center w-full  h-1/5">{title.substring(0, 15)}{title.length > 15 ? '...' : ''}</div>
 </button>

@@ -1,34 +1,49 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import type { UserData } from '$interfaces/userData';
-	import ActionMenu from '$lib/components/ActionMenu.svelte';
-	import AttachToElement from '$lib/components/AttachToElement.svelte';
-	import NftList from '$lib/components/NftList.svelte';
-	import { currentUserAddress } from '$stores/wallet';
 	import { nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { apiGetCollectionBySlug, type Collection } from '$utils/api/collection';
 	import { fetchProfileData } from '$utils/api/profile';
-	import copyTextToClipboard from '$utils/copyTextToClipboard';
-	import { copyUrlToClipboard } from '$utils/misc/clipboard';
-	import { shortenAddress } from '$utils/misc/shortenAddress';
 	import { notifyError } from '$utils/toast';
 	import { onMount } from 'svelte';
 	import { MetaTags } from 'svelte-meta-tags';
-	import HinataBadge from '$icons/hinata-badge.svelte';
+	import NftGrid from '$components/v2/NFTGrid/+page.svelte';
+	import { filterNfts } from '$utils/nfts/search';
+	import CollectionIdentity from '$lib/components/v2/CollectionDetail/CollectionIdentity.svelte';
+	import CollectionValues from '$lib/components/v2/CollectionDetail/CollectionValues.svelte';
+	import CollectionDescription from '$lib/components/v2/CollectionDetail/CollectionDescription.svelte';
+	import FilterAndGrid from '$lib/components/v2/CollectionDetail/FilterAndGrid.svelte';
+	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import { currentUserAddress } from '$stores/wallet';
 
 	export let data;
+
+	let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
+
+	let searchPhrase: string;
 
 	let collectionData: Collection;
 	let nfts = [];
 	let creatorData: UserData;
-
 	let reachedEnd = false;
 	let isLoading = false;
+	let displayedNfts = [];
 
 	let index = 1;
-	const limit = 15;
+	const limit = 12;
+
+	$: createNewNftBtn = $currentUserAddress === collectionData?.creator ? `${collectionData?.id}` : '';
+
+	$: if (nfts.length > 0) {
+		displayedNfts = nfts;
+	}
+
+	$: if (searchPhrase) {
+		displayedNfts = filterNfts(nfts, searchPhrase.toLocaleUpperCase());
+	} else {
+		displayedNfts = nfts;
+	}
 
 	const resetNfts = () => {
 		nfts = [];
@@ -70,80 +85,18 @@
 		isLoading = false;
 	}
 
-	onMount(async () => {
-		await fetchMore();
-	});
-
-	const collectionStats = {
-		highestSale: {
-			stat: 'Highest Sale',
-			value: 0,
-			symbol: 'WETH',
-		},
-		floorPrice: {
-			stat: 'Floor Price',
-			value: 0,
-			symbol: 'WETH',
-		},
-		totalVol: {
-			stat: 'Total Volume',
-			value: 0,
-			symbol: 'WETH',
-		},
-		items: {
-			stat: 'Items',
-			value: 0,
-			symbol: '',
-		},
-		owners: {
-			stat: 'Owners',
-			value: 0,
-			symbol: '',
-		},
-		total24hours: {
-			stat: '24Hr Volume',
-			value: 0,
-			symbol: 'WETH',
-		},
-	};
-
 	async function fetchCollectionData() {
 		resetNfts();
-		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => undefined);
-
-		// Populate collection stats
-		let formatter = Intl.NumberFormat('en', { notation: 'compact' });
-		Object.keys(collectionStats).map((key) => {
-			if (collectionData?.[key]) {
-				collectionStats[key].value = formatter.format(collectionData[key]);
-			}
-		});
-
-		creatorData = await fetchProfileData(collectionData?.creator).catch((e) => undefined);
+		collectionData = await apiGetCollectionBySlug($page.params.collectionSlug).catch((e) => null);
+		creatorData = await fetchProfileData(collectionData?.creator).catch((e) => null);
 		await fetchMore();
 	}
 
 	$: $page.params.collectionSlug && fetchCollectionData();
 
-	let collectionMenuButtonOptions = [
-		// REMEMBER TO SET THESE TO TRUE
-		/*{ label: 'Claim Ownership', action: () => {}, disabled: true },*/
-		{ label: 'Report', action: () => {}, disabled: true },
-	];
-
-	$: if ($currentUserAddress && creatorData && $currentUserAddress.toLowerCase() === creatorData.address.toLowerCase()) {
-		collectionMenuButtonOptions = [
-			/*{ label: 'Claim Ownership', action: () => {}, disabled: true },*/
-			{ label: 'Report', action: () => {}, disabled: true },
-			{ label: 'Edit', action: () => goto(`/collections/${collectionData.slug}/edit`), disabled: $currentUserAddress.toLowerCase() !== creatorData.address.toLowerCase() },
-		];
-	}
-
-	let menuButton: HTMLButtonElement;
-	let showCollectionMenu = false;
-
-	let menuAttachElement: AttachToElement;
-	onMount(() => document.addEventListener('scroll', () => menuAttachElement?.recalc()));
+	onMount(async () => {
+		await fetchMore();
+	});
 </script>
 
 {#if data.collection}
@@ -169,91 +122,40 @@
 	/>
 {/if}
 
-<main class="px-16 mx-auto">
-	<div class="relative mt-8">
-		<!-- Cover image -->
+<main class="pt-24 text-white px-20">
+	<div class="w-full overflow-hidden h-96">
 		{#if collectionData?.backgroundImageUrl}
-			<img class="object-cover w-full h-64 rounded-md" src={collectionData?.backgroundImageUrl} alt="" />
+			<img class="w-full h-full object-cover object-center" src={collectionData?.backgroundImageUrl} alt="Collection cover." />
 		{:else}
-			<div class="w-full h-64 rounded-md bg-gray-100" />
+			<div class="w-full h-full bg-gradient-a" />
 		{/if}
-
-		<!-- Creator profile image - TODO ADD LOGIC FOR VERIFIED CREATOR BADGE -->
-		<div class="absolute bottom-0 left-0 right-0 w-24 h-24 mx-auto translate-y-12 grid place-items-center">
-			<img class="object-cover w-20 h-20 bg-white border-4 border-white rounded-full " src={collectionData?.logoImageUrl || '/svg/icons/guest-avatar.svg'} alt="Collection creator avatar." />
-
-			<!-- Verified creator badge -->
-			{#if collectionData?.mintedFrom?.toLowerCase() === 'hinata'}
-				<HinataBadge class="w-6 h-6 absolute right-2 translate-y-6" />
-			{/if}
-		</div>
 	</div>
 
-	<!-- Collection title -->
-	<h1 class="mx-auto mt-12 text-2xl font-semibold max-w-max">
-		{#if collectionData}
-			{collectionData?.name || 'N/A'}
-		{:else}
-			<div class="w-32 h-8 bg-gray-100 rounded-lg" />
-		{/if}
-	</h1>
+	<div class="w-full flex flex-row flex-wrap overflow-auto gap-y-5 items-center justify-between mt-12 space-x-10">
+		<CollectionIdentity {collectionData} {creatorData} />
+		<CollectionValues {collectionData} />
+	</div>
 
-	<!-- Creator username and collection address -->
-	<div class="flex items-center justify-center mt-2 space-x-3">
-		{#if creatorData?.username}
-			<div class="text-xl font-medium text-color-gradient max-w-max font-poppins">
-				@{creatorData?.username}
+	<!-- Description and share button -->
+	<CollectionDescription {collectionData} />
+
+	<!-- Filter, search and grid selection-->
+	<FilterAndGrid bind:searchPhrase bind:gridStyle bind:nfts />
+
+	<!-- Filter panel and NFT grid -->
+	<div class="w-full flex flex-row items-start gap-x-5 mt-6 ">
+		<div class="w-full">
+			{#if !isLoading && reachedEnd && displayedNfts.length === 0 && !createNewNftBtn}
+				<div class="">No results found.</div>
+			{/if}
+
+			<NftGrid options={displayedNfts} bind:gridStyle bind:reachedEnd bind:isLoading {createNewNftBtn} />
+
+			<div class="mt-16 mb-20">
+				{#if displayedNfts?.length > 0 && !reachedEnd && displayedNfts.length === nfts.length}
+					<PrimaryButton on:click={fetchMore}>Load more</PrimaryButton>
+				{/if}
 			</div>
-		{:else}
-			<div class="bg-gray-100 rounded-lg w-24 h-6" />
-		{/if}
-
-		<button class="btn bg-[#F5F5F5] flex rounded-full px-4 py-2 space-x-2 w-36" on:click={() => copyTextToClipboard(collectionData?.collectionAddress)}>
-			<img class="w-5" src="/svg/icons/collection-gradient-eth.svg" alt="Ethereum." />
-			{#if collectionData}
-				<div class="font-mono text-[#6E6E6E] text-sm">{shortenAddress(collectionData?.collectionAddress)}</div>
-			{:else}
-				<div class="w-24 h-5 bg-gray-200 rounded-lg" />
-			{/if}
-		</button>
-	</div>
-
-	<!-- Stats table -->
-	{#if collectionData}
-		<div class="flex h-24 max-w-3xl mx-auto mt-8 border border-black rounded-lg justify-evenly">
-			{#each Object.keys(collectionStats) as statKey}
-				<div class="flex flex-col items-center justify-center w-full border-r border-black last:border-0">
-					<div class="text-sm">{collectionStats[statKey].stat}</div>
-					<div class="mt-1 text-xl font-semibold">{collectionStats[statKey].value} {collectionStats[statKey].symbol}</div>
-				</div>
-			{/each}
 		</div>
-	{:else}
-		<div class="h-24 max-w-3xl mx-auto mt-8 bg-gray-100 rounded-lg" />
-	{/if}
-
-	<!-- Share and menu buttons -->
-	<div class="flex justify-center mt-6 space-x-4">
-		<!-- Share button -->
-		<button class="grid border border-black rounded-full btn w-14 h-14 place-items-center" on:click={copyUrlToClipboard}>
-			<img src="/svg/icons/collection-upload.svg" alt="Share." />
-		</button>
-
-		<!-- Menu button -->
-		<button class="grid border border-black rounded-full btn w-14 h-14 place-items-center" bind:this={menuButton} on:click={() => (showCollectionMenu = !showCollectionMenu)}>
-			<img src="/svg/icons/collection-menu.svg" alt="Upload." />
-		</button>
-	</div>
-
-	<div class="mt-16 border-t border-[#0000004D]">
-		{#if collectionData}
-			<NftList options={nfts} {isLoading} {reachedEnd} createNewNftBtn={{ include: $currentUserAddress === collectionData.creator, collectionId: collectionData.id }} on:end-reached={fetchMore} />
-		{/if}
 	</div>
 </main>
-
-{#if showCollectionMenu}
-	<AttachToElement to={menuButton} bottom right bind:this={menuAttachElement}>
-		<ActionMenu options={collectionMenuButtonOptions} on:optionClick={() => (showCollectionMenu = false)} />
-	</AttachToElement>
-{/if}

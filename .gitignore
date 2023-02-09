@@ -21,3 +21,4 @@ package-lock.json
 src/routes/test/*
 
 .todo
+.vscode/settings.json

@@ -8,7 +8,7 @@
 	$: underlineTranslate = 0.5 * (underlineWidth - 100);
 </script>
 
-<button on:click class:selected class:gradient-text={selected} style="--underline-width: {underlineWidth}%; --underline-translate: {underlineTranslate}%" class:uppercase transition:fade|local>
+<button on:click class:selected class:text-gradient={selected} style="--underline-width: {underlineWidth}%; --underline-translate: {underlineTranslate}%" class:uppercase transition:fade|local>
 	<slot />
 </button>
 
@@ -18,7 +18,7 @@
 	}
 
 	button::after {
-		@apply absolute bottom-0 left-0 h-[3px] bg-gradient-to-r from-color-purple to-color-blue opacity-100;
+		@apply absolute -bottom-0.5 left-0 h-[3px] bg-gradient-to-r from-color-purple to-color-blue opacity-100;
 		@apply transition-opacity duration-200;
 		content: '';
 		opacity: 0;

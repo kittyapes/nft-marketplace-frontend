@@ -1,10 +1,10 @@
 <script lang="ts">
 	import HomepageCollections from '$lib/components/collections/HomepageCollections.svelte';
-	import { apiSearchCollections, type CollectionTableRow } from '$utils/api/collection';
+	import { apiSearchCollections, type Collection, type CollectionTableRow } from '$utils/api/collection';
 	import { notifyError } from '$utils/toast';
 	import { onMount } from 'svelte';
 
-	let collections: CollectionTableRow[] = [];
+	let collections: Collection[] = [];
 
 	let reachedEnd = false;
 	let isLoading = true;

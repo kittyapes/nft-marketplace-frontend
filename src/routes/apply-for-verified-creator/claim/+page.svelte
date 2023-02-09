@@ -38,7 +38,7 @@
 		<div slot="header" class="flex flex-col max-w-3xl gap-5">
 			<h1 class="font-bold uppercase text-7xl">
 				<p>Claim your</p>
-				<p class="gradient-text">artist profile</p>
+				<p class="text-gradient">artist profile</p>
 			</h1>
 		</div>
 		<div slot="content" id="form-container" class="flex flex-col max-w-xl gap-8">
@@ -53,7 +53,7 @@
 			</p>
 			<div class="grid grid-cols-[1fr_1.5fr]">
 				<div>
-					<div class="text-lg uppercase gradient-text brightness-0" class:brightness-100={username}>Username</div>
+					<div class="text-lg uppercase text-gradient brightness-0" class:brightness-100={username}>Username</div>
 					<div class="text-xs font-medium">mandatory</div>
 				</div>
 				<div>
@@ -65,7 +65,7 @@
 			</div>
 			<div class="grid grid-cols-[1fr_1.5fr]">
 				<div class="transition max-w-[12rem]">
-					<div class="uppercase gradient-text brightness-0" class:brightness-100={isValidBio(bio)}>Bio</div>
+					<div class="uppercase text-gradient brightness-0" class:brightness-100={isValidBio(bio)}>Bio</div>
 					<div class="text-xs font-medium text-[#A9A8A8]">optional</div>
 				</div>
 
@@ -78,7 +78,7 @@
 			</div>
 			<div class="grid grid-cols-[1fr_1.5fr]">
 				<div>
-					<div class="uppercase text-lg gradient-text brightness-0 max-w-[5rem]" class:brightness-100={profileImage}>profile picture</div>
+					<div class="uppercase text-lg text-gradient brightness-0 max-w-[5rem]" class:brightness-100={profileImage}>profile picture</div>
 					<div class="text-xs font-medium text-[#A9A8A8]">gif, png, jpeg</div>
 				</div>
 				<div class="flex flex-col w-full">
@@ -87,7 +87,7 @@
 			</div>
 			<div class="grid grid-cols-[1fr_1.5fr]">
 				<div>
-					<div class="uppercase text-lg gradient-text brightness-0 max-w-[5rem]" class:brightness-100={profileBanner}>banner</div>
+					<div class="uppercase text-lg text-gradient brightness-0 max-w-[5rem]" class:brightness-100={profileBanner}>banner</div>
 					<div class="text-xs font-medium text-[#A9A8A8]">png, jpeg</div>
 				</div>
 				<div class="flex flex-col w-full">

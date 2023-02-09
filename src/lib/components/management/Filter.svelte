@@ -1,6 +1,6 @@
 <script lang="ts">
-	import IconDropdown from '../IconDropdown.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import V2Filter from './v2Filter.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -13,8 +13,8 @@
 	};
 </script>
 
-<div class="w-44">
-	<IconDropdown on:select={handleFilter} {options} selected={defaultOption}>
+<div class="w-30">
+	<V2Filter on:select={handleFilter} {options} selected={defaultOption}>
 		<svelte:component this={icon} slot="icon" />
-	</IconDropdown>
+	</V2Filter>
 </div>

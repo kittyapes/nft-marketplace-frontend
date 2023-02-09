@@ -1,35 +1,71 @@
 <script lang="ts">
-	import VerifiedCreator from '$icons/verified-creator.svelte';
+	import EthV2 from '$icons/eth-v2.svelte';
+	import VerifiedBadge from '$icons/verified-badge.svelte';
+	import { followUnfollowUser } from '$utils/api/following';
+	import EthAddress from './EthAddress.svelte';
+	import PrimaryButton from './v2/PrimaryButton/PrimaryButton.svelte';
 
-	export let title: string;
-	export let description: string;
-	export let coverImg: string;
-	export let profileImg: string;
+	export let creatorData: {
+		name: string;
+		address: string;
+		coverImg: string;
+		profileImg: string;
+		created?: number;
+	};
+
+	export let includeCreatedNumber = false;
+
+	export let followed = false;
+
+	async function handleFollow() {
+		followed = await followUnfollowUser(creatorData.address, !followed);
+	}
 </script>
 
-<div class="rounded-2xl overflow-hidden border w-full clickable min-w-[275px] max-w-min min-h-[280px]">
-	<img src={coverImg} alt="" class="h-32 w-full object-cover" />
+<button class="flex flex-col relative wrapper overflow-hidden aspect-[1.5] w-full h-full" on:click>
+	<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 
-	<div class="relative px-4">
-		<div class="bg-white w-[3.25rem] h-[3.25rem] rounded-full grid place-items-center absolute -top-8">
-			<img
-				src={profileImg ||
-					'https://media.istockphoto.com/photos/abstract-geometric-network-polygon-globe-graphic-background-picture-id1208738316?b=1&k=20&m=1208738316&s=170667a&w=0&h=f4KWULKjL770nceDM6xi32EbfIgMtBwSp5fPxIx08wc='}
-				alt="Artist profile."
-				class="w-12 h-12 rounded-full object-cover"
-			/>
-		</div>
+	<div class="w-full h-full flex-shrink flex-grow overflow-hidden bg-color-purple">
+		{#if creatorData.coverImg}
+			<img src={creatorData.coverImg} alt="Featured creator cover." class="w-full h-full object-cover" />
+		{/if}
+	</div>
 
-		<div class="h-6" />
+	<div class="bg-card-gradient flex flex-col items-center justify-center flex-shrink-0 w-full p-4 h-36">
+		<div class="max-w-full w-full flex justify-between">
+			<div class="flex gap-4 flex-shrink overflow-hidden">
+				<div class="w-24 h-24 flex-shrink-0">
+					<img src={creatorData.profileImg} alt="Featured crator profile." class="h-full object-cover object-top w-full" />
+				</div>
 
-		<div class="flex gap-x-2 items-center">
-			<div class="font-semibold h-8 bg-gradient-to-r bg-clip-text text-transparent from-color-purple to-color-blue grid place-items-center">
-				@{title}
+				<div class="flex flex-col justify-between flex-shrink overflow-hidden">
+					<div class="flex gap-2 items-center ">
+						<div class="text-2xl 2xl:text-3xl text-white whitespace-nowrap truncate">{creatorData.name}</div>
+						<VerifiedBadge />
+					</div>
+
+					<div class="bg-card-gradient p-1 flex items-center gap-2 w-fit">
+						<EthV2 />
+						<EthAddress address={creatorData.address} concat class="!text-white" />
+					</div>
+				</div>
 			</div>
 
-			<VerifiedCreator />
-		</div>
+			<div class="flex flex-col justify-between items-end flex-shrink-0">
+				<button on:click|stopPropagation={handleFollow} class="ml-2">
+					<PrimaryButton extButtonClass="w-40">{followed ? 'Unfollow' : 'Follow'}</PrimaryButton>
+				</button>
 
-		<div class="mb-4">{description}</div>
+				{#if includeCreatedNumber}
+					<div class="pr-2 font-medium">Created {creatorData.created || 'N/A'}</div>
+				{/if}
+			</div>
+		</div>
 	</div>
-</div>
+</button>
+
+<style type="postcss">
+	.wrapper:not(:hover) > .gradient-border {
+		display: none;
+	}
+</style>

@@ -16,7 +16,7 @@
 		<div slot="header" class="flex flex-col max-w-3xl gap-5">
 			<h1 class="font-bold uppercase text-7xl">
 				<p>Boost your</p>
-				<p class="gradient-text">wallet</p>
+				<p class="text-gradient">wallet</p>
 			</h1>
 			<button class="self-end text-sm uppercase text-color-black">
 				<p class="flex gap-3">

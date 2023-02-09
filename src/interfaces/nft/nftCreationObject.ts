@@ -5,5 +5,5 @@ export interface NFTCreationObject {
 	thumbnail: Blob;
 	asset: Blob;
 	description?: string;
-	collectionId: string;
+	collectionAddress: string;
 }

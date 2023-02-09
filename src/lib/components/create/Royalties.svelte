@@ -4,7 +4,6 @@
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import { ethAddressRegex, isEthAddress } from '$utils/validator/isEthAddress';
 	import Info from '$icons/info.v2.svelte';
-	import ExternalLink from '$icons/external-link.svelte';
 	import { regexFilter } from '$actions/regexFilter';
 
 	const feeInputRegex = /^([0-9]|[0-9]{2})(\.[0-9]{0,2})?$/;
@@ -53,36 +52,48 @@
 	});
 </script>
 
-<div class="pr-12">
-	<h1 class="{$$props.class} uppercase font-semibold mt-8 flex items-center gap-x-1">
+<div class="pr-6">
+	<h1 class="{$$props.class} flex items-center gap-x-2.5 font-medium text-base 2xl:text-xl leading-5 2xl:leading-6;">
 		<span>Royalties</span>
 		<span class="w-4 h-4 cursor-pointer" bind:this={titleElementTooltip} on:pointerenter={titleHovered.toggle} on:pointerleave={titleHovered.toggle}>
 			<Info />
 		</span>
 	</h1>
 
-	<div class="flex mt-4 gap-x-4">
-		<div id="percent-container" class="grid w-24">
-			<div class="text-sm font-light uppercase text-color-black">Percentage</div>
-			{#each values as value}
-				<input type="text" class="mt-4 input input-hide-controls first:mt-2" placeholder="%" required={!!value.address} bind:value={value.fees} {disabled} use:regexFilter={{ regex: feeInputRegex }} />
-			{/each}
+	<div class="flex flex-col mt-4 2xl:mt-6">
+		<div class="flex w-full gap-x-4 ">
+			<div class="font-medium text-xs 2xl:text-sm leading-4 2xl:leading-5">Percentage</div>
+			<div class="font-medium text-xs 2xl:text-sm leading-4 2xl:leading-5">Wallet address</div>
 		</div>
 
-		<div class="grid flex-grow">
-			<div class="text-sm font-light uppercase text-color-black">Wallet address</div>
-			{#each values as value}
-				<input
-					type="text"
-					class="mt-4 input first:mt-2"
-					placeholder="Enter wallet address"
-					autocomplete="nope"
-					pattern={ethAddressRegex}
-					required={!!value.fees}
-					bind:value={value.address}
-					{disabled}
-				/>
-			{/each}
+		<div class="flex gap-x-4 w-full">
+			<div class="flex flex-col">
+				{#each values as value}
+					<input
+						type="text"
+						class="mt-4 input p-0 first:mt-2 w-10 h-10 text-center text-white"
+						placeholder="%"
+						required={!!value.address}
+						bind:value={value.fees}
+						{disabled}
+						use:regexFilter={{ regex: feeInputRegex }}
+					/>
+				{/each}
+			</div>
+			<div class="flex flex-col flex-grow">
+				{#each values as value}
+					<input
+						type="text"
+						class="mt-4 input rounded-none first:mt-2 h-10 "
+						placeholder="Enter wallet address"
+						autocomplete="nope"
+						pattern={ethAddressRegex}
+						required={!!value.fees}
+						bind:value={value.address}
+						{disabled}
+					/>
+				{/each}
+			</div>
 		</div>
 	</div>
 </div>
@@ -90,26 +101,15 @@
 {#if $titleHovered || $tooltipHovered}
 	<AttachToElement to={titleElementTooltip} bottom offsetX={-20} offsetY={18}>
 		<InfoBubble gradientText={false} on:pointerenter={tooltipHovered.toggle} on:pointerleave={tooltipHovered.toggle}>
-			<div class="flex flex-col gap-4 p-4">
-				<div class="">
+			<div class="flex flex-col gap-4 p-4 font-medium text-xs 2xl:text-sm leading-6">
+				<p class="">
 					All sales are subject to both platform and creator fees. The Hinata platform fee for selling NFTs is a sliding scale up to 1.5% depending on membership level, and Verified Creators are able
 					to set an additional royalty structure between up to 3 addresses. If over 20% in total setting royalties this high may discourage a healthy market!
-				</div>
-				<a class="flex items-center self-end gap-1 text-black clickable" href="https://docs.hinata.io/trading-on-hinata/creator-royalties-and-platform-fees">
-					<div class="">Read More</div>
-					<ExternalLink />
+				</p>
+				<a class="flex items-center self-end gap-1 border-gradient bg-gradient-a clickable px-4 py-1.5" href="https://docs.hinata.io/trading-on-hinata/creator-royalties-and-platform-fees">
+					<div class="">Learn More</div>
 				</a>
 			</div>
 		</InfoBubble>
 	</AttachToElement>
 {/if}
-
-<style>
-	input {
-		@apply w-full h-12 disabled:text-gray-400;
-	}
-
-	#percent-container input {
-		@apply text-center;
-	}
-</style>

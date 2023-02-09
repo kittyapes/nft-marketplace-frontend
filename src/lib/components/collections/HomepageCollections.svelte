@@ -1,21 +1,20 @@
 <script lang="ts">
-	import type { CollectionTableRow } from '$utils/api/collection';
+	import type { Collection, CollectionTableRow } from '$utils/api/collection';
 	import DiamondsLoader from '../DiamondsLoader.svelte';
 	import CollectionsContainer from './CollectionsContainer.svelte';
 
-	export let collections: CollectionTableRow[];
+	export let collections: Collection[];
 	export let loaded: boolean;
 	export let isLoading: boolean;
 	export let reachedEnd: boolean;
 </script>
 
-<div class="grid place-items-center w-full my-20">
+<div class="grid place-items-center w-full py-20 text-white">
 	<div class="w-5/6 flex flex-col">
 		<div class="flex flex-col max-w-min gap-4 mt-20 mb-16">
 			<h1 class="uppercase font-bold text-7xl">Collections</h1>
 			<p class="font-semibold text-xl">The top NFT collections on Hinata, ranked by floor price, volume and other statistics.</p>
 		</div>
-		<hr class="border-t border-black border-opacity-30" />
 		{#if loaded}
 			<CollectionsContainer {collections} {isLoading} on:end-reached />
 		{:else}
