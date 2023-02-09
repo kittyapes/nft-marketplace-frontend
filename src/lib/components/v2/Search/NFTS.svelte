@@ -17,7 +17,7 @@
 	const inviewOptions = {};
 	let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 
-	let limit = 12;
+	let limit = 15;
 	let pageNumber = 1;
 
 	let nfts = [];
@@ -26,12 +26,6 @@
 	let showLoader = true;
 
 	let query = writable('');
-
-	$: {
-		if (gridStyle === 'normal') limit = 12;
-		if (gridStyle === 'dense') limit = 15;
-		if (gridStyle === 'masonry') limit = 15;
-	}
 
 	if ($page.url.searchParams.get('query')) {
 		$searchQuery = $page.url.searchParams.get('query');
