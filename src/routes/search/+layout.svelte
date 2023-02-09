@@ -5,15 +5,15 @@
 	let tabs: { title: string; route: string }[] = [
 		{
 			title: 'Collections',
-			route: `/search/collections?${$page.url?.searchParams}`,
+			route: `/search/collections`,
 		},
 		{
 			title: 'NFTs',
-			route: `/search/nfts?${$page.url?.searchParams}`,
+			route: `/search/nfts`,
 		},
 		{
-			title: 'Verified Creators',
-			route: `/search/creators?${$page.url?.searchParams}`,
+			title: 'Creators',
+			route: `/search/creators`,
 		},
 	];
 </script>
