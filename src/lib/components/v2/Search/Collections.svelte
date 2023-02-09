@@ -19,10 +19,7 @@
 	let pageNumber = 1;
 	const limit = 10;
 
-	$: console.log('QUERY PARAM:', $page.url.searchParams.get('query'));
-
 	if ($page.url.searchParams.get('query')) {
-		console.log('QUERY UPDATE');
 		$searchQuery = $page.url.searchParams.get('query');
 	}
 
@@ -56,11 +53,7 @@
 		isLoading = false;
 	}
 
-	const unsubscribeQuery = searchQuery.subscribe((val) => {
-		console.log($query);
-		console.log(val);
-		$query = val;
-	});
+	const unsubscribeQuery = searchQuery.subscribe((val) => ($query = val));
 
 	const debouncedFetch = debounce(async () => {
 		await fetchMore();
@@ -80,10 +73,7 @@
 		goto('?' + $page.url.searchParams, { replaceState: true, keepfocus: true, noscroll: true });
 	});
 
-	onDestroy(() => {
-		console.log('unsubed destroy');
-		unsubscribeQuery();
-	});
+	onDestroy(unsubscribeQuery);
 </script>
 
 <div class="my-6 2xl:my-8 w-full"><CollectionsTable {collections} isLoading={showLoader} {reachedEnd} on:end-reached={fetchMore} /></div>
