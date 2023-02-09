@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import Tabs from '$lib/components/v2/Tabs/+page.svelte';
 
 	let tabs: { title: string; route: string }[] = [
