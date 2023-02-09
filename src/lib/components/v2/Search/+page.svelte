@@ -96,7 +96,7 @@
 		<Search class="w-7 h-7 text-transparent min-w-full ml-4" />
 
 		<div
-			class:hidden={!$query || !show}
+			class:hidden={(!$query || !show) && isOnSearchPage}
 			class="min-w-full mr-6 cursor-pointer"
 			slot="end-icon"
 			on:click={() => {
