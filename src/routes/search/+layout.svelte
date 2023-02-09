@@ -18,7 +18,7 @@
 	];
 </script>
 
-<main class="mx-auto w-full text-white pt-32 px-40">
+<main class="mx-auto w-full text-white pt-32 px-40 z-[5]">
 	<Tabs bind:tabs extWrapperClass={'w-full text-left'} />
 	<slot />
 </main>
