@@ -118,7 +118,6 @@ async function ensureTosAccepted() {
 
 export async function confirmUserHasAgreedToLatestTos() {
 	const userHasAgreedToLatest = await apiIsAgreedToLatestTos();
-	console.log(userHasAgreedToLatest);
 
 	if (userHasAgreedToLatest.errData) {
 		if (userHasAgreedToLatest.errData.statusCode === 404) {
