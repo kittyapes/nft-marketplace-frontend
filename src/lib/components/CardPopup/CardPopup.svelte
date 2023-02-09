@@ -102,11 +102,13 @@
 		isFetchingNfts = true;
 		const res = {} as FetchFunctionResult;
 
-		let collectionAddress = options.nfts[0].collectionData.collectionAddress;
+		let collectionAddress = options.nfts[0].contractAddress;
+		
 		if (!collectionAddress) {
 			const collectionData = await apiGetCollectionBySlug(options.nfts[0].collectionData.slug);
 			collectionAddress = collectionData.collectionAddress;
 		}
+		
 		res.res = await getListings({ collectionAddress }, page, 10);
 
 		const currentIndex = res.res.findIndex((nft) => nft.nfts[0].nftId === options.nfts[0].onChainId);
