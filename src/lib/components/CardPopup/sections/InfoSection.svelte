@@ -71,7 +71,13 @@
 	<div class="gap-16 grid grid-cols-4">
 		<div class="overflow-hidden">
 			<div class="--property-name text-gradient">Creator</div>
-			<div class="--property-value"><a href={'/profile/' + creatorAddress} on:click={() => closePopup()}>{creatorAddress || 'N/A'}</a></div>
+			<div class="--property-value">
+				{#if creatorAddress}
+					<a href={'/profile/' + creatorAddress} on:click={() => closePopup()}>{creatorAddress || 'N/A'}</a>
+				{:else}
+					{'N/A'}
+				{/if}
+			</div>
 		</div>
 
 		<div class="overflow-hidden">
