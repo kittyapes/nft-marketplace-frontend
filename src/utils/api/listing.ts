@@ -3,6 +3,7 @@ import type { ApiNftData } from '$interfaces/apiNftData';
 import axios from 'axios';
 import { getApiUrl, type ApiCallResult, api } from '.';
 import type { UserData } from '$interfaces/userData';
+import { getAxiosConfig } from '$utils/auth/axiosConfig';
 
 export type ListingType = 'sale' | 'auction' | 'raffle';
 
@@ -158,6 +159,12 @@ export async function getListingCreators(options: { limit?: number; page?: numbe
 	const res = await api.get(getApiUrl(null, 'users/listingCreators'), {
 		params: { limit: options.limit, page: options.page },
 	});
+
+	return res;
+}
+
+export async function viewedListing(listingId: string): Promise<ApiCallResult<any>> {
+	const res = await axios.post(getApiUrl(null, 'listings/view'), { listingId }, await getAxiosConfig());
 
 	return res;
 }
