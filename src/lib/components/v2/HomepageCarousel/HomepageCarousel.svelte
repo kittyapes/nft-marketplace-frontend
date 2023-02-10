@@ -2,9 +2,9 @@
 	import { onDestroy, onMount } from 'svelte';
 
 	export let data: { imageUrl: string; imageAlt?: string; title: string; subtitle: string }[] = [
-		{ imageUrl: 'img/placeholder/carousel_image.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
-		{ imageUrl: 'img/png/airdrop-banner.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
-		{ imageUrl: 'img/placeholder/latest-drop.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
+		{ imageUrl: 'img/graphics/carousel-image-1.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
+		{ imageUrl: 'img/graphics/carousel-image-2.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
+		{ imageUrl: 'img/graphics/carousel-image-3.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
 	];
 
 	let currentBlob = data[0];
@@ -35,8 +35,10 @@
 		reset_animation();
 	}
 
-	$: if (animatedImage) animatedImage.style.animationPlayState = 'running';
-	$: if (animatedBar) animatedBar.style.animationPlayState = 'running';
+	$: if (animatedImage && animatedBar) {
+		animatedBar.style.animationPlayState = 'running';
+		animatedImage.style.animationPlayState = 'running';
+	}
 
 	async function timerPing() {
 		if (currentIndex === data.length - 1) {
