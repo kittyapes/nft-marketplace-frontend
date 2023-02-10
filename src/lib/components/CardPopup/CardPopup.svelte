@@ -14,7 +14,7 @@
 	import Tabs from './Tabs.svelte';
 	import CardCarousel from '../v2/CardCarousel/CardCarousel.svelte';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
-	import { getListings } from '$utils/api/listing';
+	import { getListings, viewedListing } from '$utils/api/listing';
 	import { browser } from '$app/environment';
 	import { notifyError } from '$utils/toast';
 	import { getListingUpdatedWithChainData } from '$utils/listings';
@@ -76,6 +76,10 @@
 			}
 		}
 
+		if (options?.resourceType === 'listing') {
+			const res = viewedListing(options.rawResourceData.listingId);
+		}
+
 		refreshBalance();
 	});
 
@@ -103,12 +107,12 @@
 		const res = {} as FetchFunctionResult;
 
 		let collectionAddress = options.nfts[0].contractAddress;
-		
+
 		if (!collectionAddress) {
 			const collectionData = await apiGetCollectionBySlug(options.nfts[0].collectionData.slug);
 			collectionAddress = collectionData.collectionAddress;
 		}
-		
+
 		res.res = await getListings({ collectionAddress }, page, 10);
 
 		const currentIndex = res.res.findIndex((nft) => nft.nfts[0].nftId === options.nfts[0].onChainId);
