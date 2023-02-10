@@ -2,6 +2,9 @@
 	import EthV2 from '$icons/eth-v2.svelte';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import { followUnfollowUser } from '$utils/api/following';
+	import { apiGetUserNfts } from '$utils/api/nft';
+	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import EthAddress from './EthAddress.svelte';
 	import PrimaryButton from './v2/PrimaryButton/PrimaryButton.svelte';
 
@@ -13,13 +16,32 @@
 		created?: number;
 	};
 
-	export let includeCreatedNumber = false;
-
+	export let includeCreatedNumber = true;
 	export let followed = false;
+
+	let isLoading = true;
+
+	const pageNumber = 1;
+	const mintedNftLimit = 1;
 
 	async function handleFollow() {
 		followed = await followUnfollowUser(creatorData.address, !followed);
 	}
+
+	async function fetchCreatedData() {
+		isLoading = true;
+
+		const res = await apiGetUserNfts(creatorData.address, 'MINTED', pageNumber, mintedNftLimit);
+		creatorData.created = res.res.totalCount;
+
+		isLoading = false;
+	}
+
+	onMount(() => {
+		if (!creatorData.created) {
+			fetchCreatedData();
+		}
+	});
 </script>
 
 <button class="flex flex-col relative wrapper overflow-hidden aspect-[1.5] w-full h-full" on:click>
@@ -57,7 +79,11 @@
 				</button>
 
 				{#if includeCreatedNumber}
-					<div class="pr-2 font-medium">Created {creatorData.created || 'N/A'}</div>
+					{#if isLoading}
+						<div class="h-10 flex-shrink-0 bg-white bg-opacity-5 w-40" out:fade={{ duration: 200 }} />
+					{:else}
+						<div class="pr-2 font-medium">Created {creatorData.created}</div>
+					{/if}
 				{/if}
 			</div>
 		</div>
