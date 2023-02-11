@@ -35,7 +35,7 @@
 		let bidBigNumber: BigNumber;
 
 		try {
-			bidBigNumber = BigNumber.from(bidAmount);
+			bidBigNumber = parseToken(bidAmount, options.rawListingData.paymentTokenAddress);
 		} catch {
 			notifyError('Failed to convert bid amount.');
 
