@@ -16,9 +16,13 @@
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { BigNumber } from 'ethers';
 	import { onMount } from 'svelte';
+	import type { AuctionDataModel } from '$interfaces/index';
 
 	export let options: CardOptions;
 
+	$: auctionData = options.rawListingData.listing as AuctionDataModel;
+
+	// User input in ETH
 	let bidAmount: string;
 	let bidAmountValid: boolean;
 
@@ -27,10 +31,21 @@
 	async function placeBid() {
 		isPlacingBid = true;
 
+		// Parse bid amount
+		let bidBigNumber: BigNumber;
+
+		try {
+			bidBigNumber = BigNumber.from(bidAmount);
+		} catch {
+			notifyError('Failed to convert bid amount.');
+
+			isPlacingBid = false;
+		}
+
 		let bidSuccess: boolean;
 
 		try {
-			const res = await placeBidFlow(options.listingData.onChainId, bidAmount, null);
+			const res = await placeBidFlow(options.rawListingData, bidBigNumber);
 
 			if (res && res.error) {
 				bidSuccess = false;
@@ -58,7 +73,7 @@
 		const payTokenAddress = options.rawListingData.paymentTokenAddress;
 
 		const parsedValue = parseToken(v, payTokenAddress, null);
-		const parsedPrice = BigNumber.from(options.rawListingData.listing.price);
+		const parsedPrice = BigNumber.from(auctionData.startingPrice);
 		const parsedHighestBid = parseToken(biddings?.[0]?.tokenAmount || '0', payTokenAddress, null);
 
 		console.log(parsedValue, parsedPrice, parsedHighestBid);
