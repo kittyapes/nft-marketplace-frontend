@@ -105,6 +105,10 @@ export function existsInstanceOfPopup(component: any) {
 	return get(popupStack).some((item) => item.component === component);
 }
 
+export function existsInstanceOfId(id: string) {
+	return get(popupStack).some((item) => item.id === id);
+}
+
 /**
  * Closes the popup with the given ID or the popup at the top of the stack.
  */
