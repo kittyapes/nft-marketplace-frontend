@@ -7,7 +7,7 @@ import { ensureAmountApproved } from '$utils/contracts/token';
 import { getContract } from '$utils/misc/getContract';
 import { formatToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
-import type { BigNumber } from 'ethers';
+import { ethers, type BigNumber, type BigNumberish } from 'ethers';
 import { solidityKeccak256 } from 'ethers/lib/utils';
 import { get } from 'svelte/store';
 
@@ -29,6 +29,12 @@ async function placeBidNormal(listing: Listing, amount: BigNumber) {
 	}
 }
 
+async function getBidSignature(bidder: ethers.Signer, bidAmount: BigNumberish, nonce: BigNumberish) {
+	const message = ethers.utils.solidityKeccak256(['address', 'uint256', 'uint256'], [await bidder.getAddress(), bidAmount, nonce]);
+
+	return await bidder.signMessage(ethers.utils.arrayify(message));
+}
+
 async function placeBidGasless(listing: Listing, amount: BigNumber) {
 	const contract = getContract('marketplace-v2');
 
@@ -36,15 +42,11 @@ async function placeBidGasless(listing: Listing, amount: BigNumber) {
 
 	await ensureAmountApproved(contract.address, amount.toString(), listing.paymentTokenAddress);
 
-	const callArgs = [listing.listingId, get(currentUserAddress), amount];
-
-	const message = solidityKeccak256(PLACE_BID_SOL_TYPES, callArgs);
-
 	let signature: string;
 
 	// Get signature from user
 	try {
-		signature = await get(appSigner).signMessage(message);
+		signature = await getBidSignature(get(appSigner), amount, 0);
 	} catch (err) {
 		if (err.code === 'ACTION_REJECTED') {
 			notifyError('Could not place your bid. Message signature was rejected.');
