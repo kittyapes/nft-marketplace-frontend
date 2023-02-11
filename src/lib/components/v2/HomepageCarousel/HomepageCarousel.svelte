@@ -35,9 +35,12 @@
 		reset_animation();
 	}
 
-	$: if (animatedImage && animatedBar) {
-		animatedBar.style.animationPlayState = 'running';
+	$: if (animatedImage) {
 		animatedImage.style.animationPlayState = 'running';
+	}
+
+	$: if (animatedBar) {
+		animatedBar.style.animationPlayState = 'running';
 	}
 
 	async function timerPing() {
@@ -62,7 +65,7 @@
 	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-[5]" />
 	<div class="overflow-hidden h-full w-full bg-dark-gradient relative">
 		<div class="w-full h-full flex items-start justify-center overflow-hidden relative">
-			<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="absolute h-full object-cover object-top w-full animated-image" />
+			<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="Carousel Hero graphic." class="absolute h-full object-cover object-top w-full animated-image" />
 		</div>
 
 		<div class="flex gap-3 absolute bottom-0 left-0 px-3 w-full items-center z-[6]">
@@ -105,11 +108,11 @@
 			opacity: 0;
 		}
 
-		5% {
+		10% {
 			opacity: 1;
 		}
 
-		95% {
+		90% {
 			opacity: 1;
 		}
 
