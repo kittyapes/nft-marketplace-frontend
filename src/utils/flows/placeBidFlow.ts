@@ -1,4 +1,4 @@
-import { appSigner, currentUserAddress } from '$stores/wallet';
+import { appSigner } from '$stores/wallet';
 import { api, getApiUrl, type ApiCallResult } from '$utils/api';
 import type { Listing } from '$utils/api/listing';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
@@ -8,10 +8,7 @@ import { getContract } from '$utils/misc/getContract';
 import { formatToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
 import { ethers, type BigNumber, type BigNumberish } from 'ethers';
-import { solidityKeccak256 } from 'ethers/lib/utils';
 import { get } from 'svelte/store';
-
-const PLACE_BID_SOL_TYPES = ['uint256', 'address', 'uint256'];
 
 async function placeBidNormal(listing: Listing, amount: BigNumber) {
 	const contract = getContract('marketplace');
@@ -44,9 +41,11 @@ async function placeBidGasless(listing: Listing, amount: BigNumber) {
 
 	let signature: string;
 
+	const nonce = parseInt(prompt('nonce'));
+
 	// Get signature from user
 	try {
-		signature = await getBidSignature(get(appSigner), amount, 0);
+		signature = await getBidSignature(get(appSigner), amount, nonce);
 	} catch (err) {
 		if (err.code === 'ACTION_REJECTED') {
 			notifyError('Could not place your bid. Message signature was rejected.');
@@ -60,6 +59,7 @@ async function placeBidGasless(listing: Listing, amount: BigNumber) {
 		listingId: listing.listingId,
 		bidPrice: amount.toString(),
 		formatBidPrice: formatToken(amount, listing.paymentTokenAddress),
+		nonce,
 		signature,
 	};
 

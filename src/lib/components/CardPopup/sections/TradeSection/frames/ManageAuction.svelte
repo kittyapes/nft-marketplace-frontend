@@ -5,19 +5,19 @@
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { contractCompleteAuction } from '$utils/contracts/auction';
 	import type { BidRow } from '$utils/flows/getBiddingsFlow';
 	import { parseToken } from '$utils/misc/priceUtils';
 	import { createToggle } from '$utils/misc/toggle';
-	import { notifyError } from '$utils/toast';
+	import { notifyError, notifySuccess } from '$utils/toast';
 	import { createEventDispatcher } from 'svelte';
 	import Success from './Success.svelte';
 	import dayjs from 'dayjs';
 	import GhostButton from '$lib/components/v2/GhostButton.svelte';
 	import EthV2 from '$icons/eth-v2.svelte';
-	import { isListingValid, listingExistsOnChain } from '$utils/listings';
+	import { isListingValid } from '$utils/listings';
 	import { cancelListingFlow } from '$utils/flows/cancelListingFlow';
 	import type { AuctionDataModel } from '$interfaces/index';
+	import { completeAuctionFlow } from '$utils/flows/completeAuctionFlow';
 
 	const dispatch = createEventDispatcher();
 
@@ -30,24 +30,22 @@
 	let biddings: BidRow[] = [];
 
 	async function acceptHighest() {
-		if (!(await listingExistsOnChain(options.rawListingData.listingId))) {
-			notifyError('Failed to Accept Highest Bid: Listing is no longer valid (not on chain)');
+		isAccepting = true;
+
+		try {
+			await completeAuctionFlow(options.rawListingData);
+		} catch (err) {
+			console.error(err);
+			isAccepting = false;
 			return;
 		}
 
-		isAccepting = true;
+		notifySuccess('Sucessfully completed your auction.');
 
-		const { err, res } = await contractCompleteAuction(options.listingData.onChainId);
-
-		if (err) {
-			console.error(err);
-			notifyError('Failed to complete auction.');
-		} else {
-			options.staleResource.set({ reason: 'bid-accepted' });
-			dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Auction completed successfully.' } });
-			dispatch('force-expire');
-			dispatch('set-frame', { component: Success });
-		}
+		options.staleResource.set({ reason: 'bid-accepted' });
+		dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Auction completed successfully.' } });
+		dispatch('force-expire');
+		dispatch('set-frame', { component: Success });
 
 		isAccepting = false;
 	}

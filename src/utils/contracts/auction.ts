@@ -21,14 +21,3 @@ export async function contractGetAuctionBid(listingId: OnChainId) {
 
 	return { err: err as ContractError, res };
 }
-
-export async function contractCompleteAuction(listingId: OnChainId) {
-	const contract = getContract('marketplace');
-	const [err, res]: [any, ContractTransaction] = await noTryAsync(() => contract.completeAuction(listingId));
-
-	if (res) {
-		await res.wait(1);
-	}
-
-	return { err: err as ContractError, res };
-}
