@@ -10,5 +10,5 @@ export function addUrlParam(key: string, value: string) {
 
 export function addUrlParamGoto(key: string, value: string) {
 	get(page).url.searchParams.set(key, value);
-	goto('?' + get(page).url.searchParams, { noscroll: true, keepfocus: true, replaceState: true });
+	goto('?' + get(page).url.searchParams, { noscroll: true, keepfocus: true, replaceState: false });
 }
