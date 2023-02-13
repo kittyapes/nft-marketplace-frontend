@@ -14,7 +14,7 @@
 	import { fetchCurrentUserData, fetchProfileData } from '$utils/api/profile';
 	import { isAuthTokenExpired } from '$utils/auth/token';
 	import { userRoles } from '$utils/auth/userRoles';
-	import { setPopup } from '$utils/popup';
+	import { closePopup, existsInstanceOfId, setPopup, type PopupHandler } from '$utils/popup';
 	import { findEthAddress } from '$utils/validator/isEthAddress';
 	import { walletConnected, walletDisconnected } from '$utils/wallet';
 
@@ -156,21 +156,30 @@
 		}
 
 		// open unipop if url has nft or listing id param
-		if ($page.url.searchParams.has('nftId')) {
-			const id = $page.url.searchParams.get('nftId');
-			const nft = await getNft(id);
-			const options = await nftToCardOptions(nft);
+		if (to.url.searchParams.has('nftId')) {
+			const id = to.url.searchParams.get('nftId');
 
-			openCardPopupFromOptions(options);
-		} else if ($page.url.searchParams.has('listingId')) {
-			const id = $page.url.searchParams.get('listingId');
-			const listing = await getListing(id);
-			const options = await listingToCardOptions(listing);
+			if (!existsInstanceOfId(id)) {
+				const nft = await getNft(id);
+				const options = await nftToCardOptions(nft);
+				openCardPopupFromOptions(options);
+			}
+		} else if (to.url.searchParams.has('listingId')) {
+			const id = to.url.searchParams.get('listingId');
 
-			const invalidStatuses: ListingStatus[] = ['SIGNATURE_EXPIRED', 'SIGNATURE_OR_DATA_INVALID', 'SIGNATURE_USED'];
-			const showInvalidListingMessage = invalidStatuses.includes(options.rawListingData.listingStatus);
+			if (!existsInstanceOfId(id)) {
+				const listing = await getListing(id);
+				const options = await listingToCardOptions(listing);
 
-			openCardPopupFromOptions(options, { showInvalidListingMessage });
+				const invalidStatuses: ListingStatus[] = ['SIGNATURE_EXPIRED', 'SIGNATURE_OR_DATA_INVALID', 'SIGNATURE_USED'];
+				const showInvalidListingMessage = invalidStatuses.includes(options.rawListingData.listingStatus);
+
+				openCardPopupFromOptions(options, { showInvalidListingMessage });
+			}
+		} else if (from?.url.searchParams.has('nftId') && !to.url.searchParams.has('nftId')) {
+			closePopup(from?.url.searchParams.get('nftId'));
+		} else if (from?.url.searchParams.has('listingId') && !to.url.searchParams.has('listingId')) {
+			closePopup(from?.url.searchParams.get('listingId'));
 		}
 	});
 

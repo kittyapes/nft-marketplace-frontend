@@ -152,8 +152,6 @@
 			disabledTabs.push('trade');
 		}
 	}
-
-	$: console.log({ showInvalidListingMessage });
 </script>
 
 <div class="p-4 h-full w-full overflow-hidden">
