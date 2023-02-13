@@ -7,6 +7,8 @@
 	import { closePopup } from '$utils/popup';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import 'simplebar';
+	import 'simplebar/dist/simplebar.css';
 
 	export let options: CardOptions;
 
@@ -66,7 +68,7 @@
 	}
 </script>
 
-<div class="flex-grow h-full pr-4 overflow-y-auto blue-scrollbar text-white">
+<div class="flex-grow aspect-1 pr-4 text-white overflow-x-hidden max-h-full" data-simplebar>
 	<!-- Properties -->
 	<div class="gap-16 grid grid-cols-4">
 		<div class="overflow-hidden">
@@ -96,7 +98,7 @@
 	</div>
 
 	<div class="text-gradient text-lg font-medium mt-16">Description</div>
-	<div>{singleNft.metadata.description}</div>
+	<div class="w-full overflow-hidden break-words">{singleNft.metadata.description}</div>
 
 	<!-- NFT attributes -->
 	{#if singleNft.metadata?.attributes}
