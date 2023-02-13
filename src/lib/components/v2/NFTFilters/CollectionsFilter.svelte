@@ -10,6 +10,7 @@
 	import Input from '../Input/Input.svelte';
 
 	const dispatch = createEventDispatcher();
+
 	let limit = 0;
 	let pageNumber = 0;
 	let collections: Collection[] = [];
@@ -56,7 +57,7 @@
 			<button
 				on:click={() => {
 					console.log(collection);
-					$page.url.searchParams.set('collections', collection?.slug);
+					$page.url.searchParams.set('collections', collection?.collectionAddress);
 					goto(`?${$page.url.searchParams}`);
 					dispatch('request-refresh');
 				}}
