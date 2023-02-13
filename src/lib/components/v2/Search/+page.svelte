@@ -92,7 +92,7 @@
 >
 	<div class="absolute inset-0 gradient-border animate-gradient-border-spin border-div" />
 
-	<Input bind:value={$query} class="rounded-none bg-card-gradient hover:text-white w-full h-10 relative " placeholder="Search" gradientCaret>
+	<Input bind:value={$query} class="rounded-none bg-card-gradient hover:text-white w-full h-10 relative" placeholder="Search" gradientCaret>
 		<Search class="w-7 h-7 text-transparent min-w-full ml-4" />
 
 		<div

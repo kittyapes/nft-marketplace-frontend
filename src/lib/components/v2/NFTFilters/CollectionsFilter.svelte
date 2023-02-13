@@ -16,9 +16,11 @@
 
 	let fetchingCollections = false;
 	let searchPhrase = '';
+
 	onMount(async () => {
 		await loadCollections();
 	});
+
 	const loadCollections = async () => {
 		fetchingCollections = true;
 		limit += 10;
@@ -27,6 +29,7 @@
 		collections = [...collections, ...loadedCollections];
 		fetchingCollections = false;
 	};
+
 	$: if (searchPhrase) {
 		fetchingCollections = true;
 		setTimeout(async () => {
@@ -34,6 +37,7 @@
 			fetchingCollections = false;
 		}, 500);
 	}
+
 	$: if (!searchPhrase) {
 		collections = [];
 		loadCollections();
@@ -41,7 +45,7 @@
 </script>
 
 <Input bind:value={searchPhrase} class="relative rounded-none border-2 bg-gradient-a border-gradient hover:text-white w-full h-12" placeholder="Search by collections">
-	<div class="absolute left-4 top-0 bottom-0 grid place-items-center">
+	<div class="ml-4 grid place-items-center">
 		<Search class="w-5 h-6" />
 	</div>
 </Input>
@@ -51,8 +55,9 @@
 		{#each collections as collection}
 			<button
 				on:click={() => {
-					$page?.url?.searchParams?.set('collections', collection?.id);
-					goto(`?${$page?.url?.searchParams}`);
+					console.log(collection);
+					$page.url.searchParams.set('collections', collection?.slug);
+					goto(`?${$page.url.searchParams}`);
 					dispatch('request-refresh');
 				}}
 				class="flex flex-row items-center gap-x-4 2xl:gap-x-6 font-bold text-white text-xs 2xl:text-sm"
