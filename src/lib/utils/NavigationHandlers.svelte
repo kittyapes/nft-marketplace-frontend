@@ -136,7 +136,12 @@
 			let accessingProfileData = await fetchProfileData(findEthAddress(to.url.pathname));
 
 			profileData.subscribe((profile) => {
-				if (accessingProfileData && accessingProfileData.roles?.includes('inactivated_user') && (!profile || (!profile.roles?.includes('admin') && !profile.roles?.includes('superadmin')))) {
+				if (
+					accessingProfileData &&
+					accessingProfileData.roles?.includes('inactivated_user') &&
+					findEthAddress(to.url.pathname).toLowerCase() !== profile.address.toLowerCase() &&
+					(!profile || (!profile.roles?.includes('admin') && !profile.roles?.includes('superadmin')))
+				) {
 					errorCode = 403;
 				} else if (profile && (profile.roles?.includes('admin') || profile.roles?.includes('superadmin'))) {
 					// reset the error to ensure displayed error is updated on UI
