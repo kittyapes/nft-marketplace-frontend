@@ -1,7 +1,7 @@
 import type { CardOptions } from '$interfaces/ui';
 import { apiGetCollectionBySlug } from '$utils/api/collection';
 import { addUrlParam, addUrlParamGoto } from '$utils/misc/addUrlParam';
-import { removeUrlParam } from '$utils/misc/removeUrlParam';
+import { removeUrlParam, removeUrlParamGoto } from '$utils/misc/removeUrlParam';
 import { setPopup, updatePopupProps, type PopupHandler } from '$utils/popup';
 import CardPopup from './CardPopup.svelte';
 
@@ -22,10 +22,10 @@ export async function openCardPopupFromOptions(options: CardOptions, props?: Par
 	let popupHandler: PopupHandler;
 
 	if (options.resourceType === 'nft') {
-		popupHandler = setPopup(CardPopup, { props: { options, ...props }, onClose: () => removeUrlParam('nftId'), id: options.nfts[0].fullId });
+		popupHandler = setPopup(CardPopup, { props: { options, ...props }, onClose: () => removeUrlParamGoto('nftId'), id: options.nfts[0].fullId });
 		addUrlParamGoto('nftId', options.nfts[0].fullId);
 	} else if (options.listingData.onChainId) {
-		popupHandler = setPopup(CardPopup, { props: { options, ...props }, onClose: () => removeUrlParam('listingId'), id: options.listingData.onChainId });
+		popupHandler = setPopup(CardPopup, { props: { options, ...props }, onClose: () => removeUrlParamGoto('listingId'), id: options.listingData.onChainId });
 		addUrlParamGoto('listingId', options.listingData.onChainId);
 	}
 
