@@ -494,14 +494,14 @@
 </script>
 
 <div class="flex flex-col w-full h-full max-w-screen-2xl mx-auto pt-24 p-8">
-	<div class="flex gap-x-14 gap-y-4 flex-wrap relative max-w-max">
+	<div class="flex gap-x-14 gap-y-4 flex-wrap relative max-w-max z-[1]">
 		<div class="tab btn" class:selected-tab={tab === 'USER'} on:click={() => (tab = 'USER')}>User Management</div>
 		<div class="tab btn" class:selected-tab={tab === 'COLLECTION'} on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
 		<div class="tab btn" class:selected-tab={tab === 'NOTIFICATIONS'} on:click={() => (tab = 'NOTIFICATIONS')}>Notifications</div>
 		<div class="tab btn" class:selected-tab={tab === 'TOS'} on:click={() => (tab = 'TOS')}>Terms of service</div>
 
 		<!-- Line under tabs -->
-		<div class="absolute h-[2px] left-0 right-0 bg-white bg-opacity-10 -bottom-2 z-10" />
+		<div class="absolute h-[2px] left-0 right-0 bg-white bg-opacity-10 -bottom-2 " />
 	</div>
 
 	{#if ['USER', 'COLLECTION'].includes(tab)}

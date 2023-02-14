@@ -93,7 +93,7 @@
 		const params = $page.url.searchParams;
 		fetchOptions.type = params.get('types')?.split('+') as ListingType[];
 		fetchOptions.sortBy = params.get('sortBy') as any;
-		fetchOptions.collectionId = params.get('collections');
+		fetchOptions.collectionAddress = params.get('collections');
 		fetchOptions.priceMin = params.get('minPrice');
 		fetchOptions.priceMax = params.get('maxPrice');
 
@@ -130,7 +130,7 @@
 			</Accordion>
 
 			<Accordion accordionLabel="Price">
-				<PriceFilter />
+				<PriceFilter on:request-refresh={refreshWithFilters} />
 			</Accordion>
 
 			<!-- <Accordion accordionLabel="Type">

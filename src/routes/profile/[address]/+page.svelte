@@ -49,7 +49,7 @@
 	$: address = $page.params.address;
 	let isFollowing = false;
 
-	$: if (browser && address && $currentUserAddress) {
+	$: if (browser && address && $currentUserAddress && address !== $currentUserAddress) {
 		browser && fetchFollowing();
 	}
 
@@ -343,7 +343,9 @@
 						{/if}
 
 						{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED' || $localProfileData?.roles?.includes('verified_user') || $localProfileData?.roles?.includes('inactivated_user')}
-							<div class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || ($appProvider && !storage.hasRole('minter', address))}>
+							<div
+								class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || ($appProvider && !storage.hasRole('minter', address)) || $localProfileData?.roles?.includes('inactivated_user')}
+							>
 								<VerifiedBadge class="w-6 h-6" />
 							</div>
 						{/if}

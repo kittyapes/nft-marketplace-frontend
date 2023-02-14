@@ -1,24 +1,23 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import Tabs from '$lib/components/v2/Tabs/+page.svelte';
 
 	let tabs: { title: string; route: string }[] = [
 		{
 			title: 'Collections',
-			route: `/search/collections?${$page.url?.searchParams}`,
+			route: `/search/collections`,
 		},
 		{
 			title: 'NFTs',
-			route: `/search/nfts?${$page.url?.searchParams}`,
+			route: `/search/nfts`,
 		},
 		{
-			title: 'Verified Creators',
-			route: `/search/creators?${$page.url?.searchParams}`,
+			title: 'Creators',
+			route: `/search/creators`,
 		},
 	];
 </script>
 
-<main class="mx-auto w-full text-white pt-32 px-40">
+<main class="mx-auto w-full text-white pt-32 px-40 z-[5]">
 	<Tabs bind:tabs extWrapperClass={'w-full text-left'} />
 	<slot />
 </main>

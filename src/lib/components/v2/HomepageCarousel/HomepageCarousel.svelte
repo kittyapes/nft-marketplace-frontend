@@ -2,9 +2,9 @@
 	import { onDestroy, onMount } from 'svelte';
 
 	export let data: { imageUrl: string; imageAlt?: string; title: string; subtitle: string }[] = [
-		{ imageUrl: 'img/placeholder/carousel_image.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
-		{ imageUrl: 'img/png/airdrop-banner.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
-		{ imageUrl: 'img/placeholder/latest-drop.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
+		{ imageUrl: 'img/graphics/carousel-image-1.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
+		{ imageUrl: 'img/graphics/carousel-image-2.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
+		{ imageUrl: 'img/graphics/carousel-image-3.png', title: 'Hinata Marketplace', subtitle: 'Platform where you can create, buy and sell nfts' },
 	];
 
 	let currentBlob = data[0];
@@ -35,8 +35,13 @@
 		reset_animation();
 	}
 
-	$: if (animatedImage) animatedImage.style.animationPlayState = 'running';
-	$: if (animatedBar) animatedBar.style.animationPlayState = 'running';
+	$: if (animatedImage) {
+		animatedImage.style.animationPlayState = 'running';
+	}
+
+	$: if (animatedBar) {
+		animatedBar.style.animationPlayState = 'running';
+	}
 
 	async function timerPing() {
 		if (currentIndex === data.length - 1) {
@@ -60,7 +65,7 @@
 	<div class="absolute inset-0 gradient-border animate-gradient-border-spin z-[5]" />
 	<div class="overflow-hidden h-full w-full bg-dark-gradient relative">
 		<div class="w-full h-full flex items-start justify-center overflow-hidden relative">
-			<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="" class="absolute h-full object-cover object-top w-full animated-image" />
+			<img src={currentBlob.imageUrl} bind:this={animatedImage} alt="Carousel Hero graphic." class="absolute h-full object-cover object-top w-full animated-image" />
 		</div>
 
 		<div class="flex gap-3 absolute bottom-0 left-0 px-3 w-full items-center z-[6]">
@@ -103,11 +108,11 @@
 			opacity: 0;
 		}
 
-		5% {
+		10% {
 			opacity: 1;
 		}
 
-		95% {
+		90% {
 			opacity: 1;
 		}
 

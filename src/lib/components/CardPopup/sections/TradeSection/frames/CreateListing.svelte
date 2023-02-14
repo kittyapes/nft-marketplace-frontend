@@ -11,9 +11,11 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
-	import { getContractData } from '$utils/misc/getContract';
+	import { getContract, getContractData } from '$utils/misc/getContract';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { notifyError } from '$utils/toast';
+	import type { BigNumber } from 'ethers';
+	import { add } from 'lodash-es';
 	import { createEventDispatcher } from 'svelte';
 	import { onMount } from 'svelte';
 	import Error from './Error.svelte';
@@ -108,6 +110,23 @@
 
 	let _listingProperties: ListingProperties;
 
+	// Dynamically load hinata fees from the contract
+	let hinataFees: number;
+
+	async function refreshHinataFees() {
+		const contract = getContract('marketplace');
+
+		const hinataFeesBigNumber = (await contract.marketFee()) as BigNumber;
+
+		hinataFees = hinataFeesBigNumber.toNumber() / 100;
+	}
+
+	currentUserAddress.subscribe((addr) => {
+		if (addr) {
+			refreshHinataFees();
+		}
+	});
+
 	onMount(() => {
 		_listingProperties?.setValues({ durationSeconds: 60 * 60 * 24 });
 	});
@@ -146,7 +165,7 @@
 
 			<div class="gradient-text">Hinata Fees:</div>
 			<div class="flex justify-end space-x-3">
-				<div class="gradient-text">0%</div>
+				<div class="gradient-text">{hinataFees ?? 'N/A'} %</div>
 				<div class="w-6">
 					<Info />
 				</div>
