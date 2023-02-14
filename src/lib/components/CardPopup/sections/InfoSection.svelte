@@ -82,10 +82,17 @@
 			</div>
 		</div>
 
-		<div class="overflow-hidden">
-			<div class="--property-name text-gradient">Owner</div>
-			<div class="--property-value">Unknown</div>
-		</div>
+		{#if options.resourceType === 'listing'}
+			<div class="overflow-hidden">
+				<div class="--property-name text-gradient">Seller</div>
+				<div class="--property-value">{options.rawListingData.seller}</div>
+			</div>
+		{:else}
+			<div class="overflow-hidden">
+				<div class="--property-name text-gradient">Owner</div>
+				<div class="--property-value">{options.rawResourceData.owner}</div>
+			</div>
+		{/if}
 
 		<div class="overflow-hidden col-span-2">
 			<div class="--property-name text-gradient">Collection Name</div>
