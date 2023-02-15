@@ -30,19 +30,19 @@
 		},
 		{
 			value: 'superadmin',
-			label: 'Superadmin',
+			label: 'Superadmins',
 		},
 		{
 			value: 'admin',
-			label: 'Admin',
+			label: 'Admins',
 		},
 		{
 			value: 'verified_user',
-			label: 'Verified',
+			label: 'Verified users',
 		},
 		{
 			value: 'inactivated_user',
-			label: 'Inactivated',
+			label: 'Inactivated users',
 		},
 		{
 			value: 'user',
