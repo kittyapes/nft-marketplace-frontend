@@ -39,19 +39,29 @@ export function toShortDisplayPrice(floatingPrice: string): string | null {
 	}
 
 	const maxCharsOnDisplay = 10;
-	const thresholdStr = '0.0001';
-	const threshold = ethers.utils.parseEther(thresholdStr);
+	const lowerThresholdStr = '0.0001';
+	const lowerThreshold = ethers.utils.parseEther(lowerThresholdStr);
 
-	if (bigNumber.lt(threshold)) {
-		return '< ' + thresholdStr;
-	} else {
-		return floatingPrice.length > maxCharsOnDisplay
-			? `~ ${(+floatingPrice)
-					.toFixed(maxCharsOnDisplay)
-					.toString()
-					.replace(/(\.?0+$)/, '')}`
-			: floatingPrice;
+	if (bigNumber.lt(lowerThreshold)) {
+		return '< ' + lowerThresholdStr;
 	}
+
+	const floatPrice = parseFloat(floatingPrice);
+
+	if (floatPrice > 999_999) {
+		return ~~(floatPrice / 100_000) / 10 + ' M';
+	}
+
+	if (floatPrice > 9999) {
+		return ~~(floatPrice / 100) / 10 + ' K';
+	}
+
+	return floatingPrice.length > maxCharsOnDisplay
+		? `~ ${(+floatingPrice)
+				.toFixed(maxCharsOnDisplay)
+				.toString()
+				.replace(/(\.?0+$)/, '')}`
+		: floatingPrice;
 }
 
 export async function sanitizeNftData(data: ApiNftData) {

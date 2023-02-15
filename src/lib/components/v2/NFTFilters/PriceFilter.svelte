@@ -3,20 +3,23 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { createEventDispatcher } from 'svelte';
+
 	const dispatch = createEventDispatcher();
-	let minPrice: number = Number($page?.url?.searchParams.get('minPrice'));
-	let maxPrice: number = Number($page?.url?.searchParams.get('maxPrice'));
+
+	let minPrice: number = Number($page.url.searchParams.get('minPrice'));
+	let maxPrice: number = Number($page.url.searchParams.get('maxPrice'));
+
 	const applyPriceFilter = () => {
-		if (minPrice > 0 || maxPrice > 0) $page?.url?.searchParams?.set('token', 'WETH');
-		else $page?.url?.searchParams?.delete('token');
+		if (minPrice > 0 || maxPrice > 0) $page.url.searchParams.set('token', 'WETH');
+		else $page.url.searchParams.delete('token');
 
 		if (minPrice > 0) $page?.url?.searchParams?.set('minPrice', minPrice.toString());
-		else $page?.url?.searchParams?.delete('minPrice');
+		else $page.url.searchParams.delete('minPrice');
 
-		if (minPrice > 0) $page?.url?.searchParams?.set('maxPrice', maxPrice.toString());
-		else $page?.url?.searchParams?.delete('maxPrice');
+		if (minPrice > 0) $page.url.searchParams.set('maxPrice', maxPrice.toString());
+		else $page.url.searchParams.delete('maxPrice');
 
-		goto(`?${$page?.url?.searchParams}`);
+		goto(`?${$page.url.searchParams}`);
 		dispatch('request-refresh');
 	};
 </script>

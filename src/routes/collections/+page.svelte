@@ -29,12 +29,13 @@
 			return;
 		}
 
-		if (res.length === 0) {
+		if (res.length < limit) {
 			reachedEnd = true;
 		} else {
 			page++;
 			collections = [...collections, ...res];
 		}
+
 		isLoading = false;
 	}
 

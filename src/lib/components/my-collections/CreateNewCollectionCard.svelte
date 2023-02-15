@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 </script>
 
-<div class="grid place-items-center custom-dashed-border border-white w-full h-full clickable hover:scale-105 transition-all" on:click={() => goto('/collections/new/edit')}>
+<div class="w-[17rem] h-60 grid place-items-center custom-dashed-border border-white clickable hover:scale-105 transition-all" on:click={() => goto('/collections/new/edit')}>
 	<button class="btn relative square bg-card-gradient w-20 h-20 grid place-items-center">
 		<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 		<div class="text-5xl font-thin z-10 bg-transparent">+</div>

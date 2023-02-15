@@ -19,7 +19,8 @@
 	import { slide } from 'svelte/transition';
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import { cubicInOut } from 'svelte/easing';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 
@@ -93,7 +94,7 @@
 		const params = $page.url.searchParams;
 		fetchOptions.type = params.get('types')?.split('+') as ListingType[];
 		fetchOptions.sortBy = params.get('sortBy') as any;
-		fetchOptions.collectionId = params.get('collections');
+		fetchOptions.collectionAddress = params.get('collections');
 		fetchOptions.priceMin = params.get('minPrice');
 		fetchOptions.priceMax = params.get('maxPrice');
 
@@ -102,6 +103,16 @@
 
 	onMount(() => {
 		refreshWithFilters();
+	});
+
+	onDestroy(() => {
+		$page.url.searchParams.delete('types');
+		$page.url.searchParams.delete('sortBy');
+		$page.url.searchParams.delete('collections');
+		$page.url.searchParams.delete('minPrice');
+		$page.url.searchParams.delete('maxPrice');
+
+		goto($page.url.pathname);
 	});
 </script>
 
@@ -130,7 +141,7 @@
 			</Accordion>
 
 			<Accordion accordionLabel="Price">
-				<PriceFilter />
+				<PriceFilter on:request-refresh={refreshWithFilters} />
 			</Accordion>
 
 			<!-- <Accordion accordionLabel="Type">
