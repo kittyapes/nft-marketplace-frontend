@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import type { UserRole } from '$interfaces/userData';
 	import Datepicker from '$lib/components/Datepicker.svelte';
+	import Dropdown from '$lib/components/Dropdown.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { deleteNotification, getNotifications, publishNotification, updateNotificationAsAdmin, type UpdateNotificationAsAdminOptions, type UserNotification } from '$utils/api/notifications';
@@ -13,6 +15,40 @@
 	let notificationTitle = '';
 	let publishDate: Dayjs;
 	let expireDate: Dayjs;
+
+	type TargetOptions = {
+		value: 'GLOBAL' | UserRole;
+		label: string;
+	};
+
+	let target: TargetOptions;
+
+	const targetDropdownOptions: TargetOptions[] = [
+		{
+			value: 'GLOBAL',
+			label: 'Global',
+		},
+		{
+			value: 'superadmin',
+			label: 'Superadmin',
+		},
+		{
+			value: 'admin',
+			label: 'Admin',
+		},
+		{
+			value: 'verified_user',
+			label: 'Verified',
+		},
+		{
+			value: 'inactivated_user',
+			label: 'Inactivated',
+		},
+		{
+			value: 'user',
+			label: 'Authenticated users',
+		},
+	];
 
 	type LocalUserNotification = UserNotification & {
 		editMode?: boolean;
@@ -40,7 +76,7 @@
 		const res = await publishNotification({
 			title: notificationTitle,
 			content: notificationMessage,
-			targets: ['GLOBAL'],
+			targets: [target.value],
 			publishAt: publishDate ? publishDate.format() : dayjs().format(),
 			expireAt: expireDate?.format() || undefined,
 		});
@@ -108,6 +144,11 @@
 			<div class="flex flex-col gap-2">
 				<h2 class="text-lg">Expire date</h2>
 				<Datepicker bind:value={expireDate} placeholder="Pick expire date & time" />
+			</div>
+
+			<div class="flex flex-col gap-2">
+				<h2 class="text-lg">Target audience</h2>
+				<Dropdown bind:selected={target} options={targetDropdownOptions} class="h-12" />
 			</div>
 		</div>
 		<div class="flex-col flex-grow w-1/3">
