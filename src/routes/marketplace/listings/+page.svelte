@@ -19,7 +19,8 @@
 	import { slide } from 'svelte/transition';
 	import ChevronLeft from '$icons/chevron-left.svelte';
 	import { cubicInOut } from 'svelte/easing';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 
@@ -102,6 +103,16 @@
 
 	onMount(() => {
 		refreshWithFilters();
+	});
+
+	onDestroy(() => {
+		$page.url.searchParams.delete('types');
+		$page.url.searchParams.delete('sortBy');
+		$page.url.searchParams.delete('collections');
+		$page.url.searchParams.delete('minPrice');
+		$page.url.searchParams.delete('maxPrice');
+
+		goto($page.url.pathname);
 	});
 </script>
 
