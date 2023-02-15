@@ -103,7 +103,7 @@
 				address: user.address,
 				coverImg: user.coverUrl,
 				profileImg: user.thumbnailUrl,
-				created: 0,
+				created: user.totalMinted,
 			}}
 		/>
 	{/each}

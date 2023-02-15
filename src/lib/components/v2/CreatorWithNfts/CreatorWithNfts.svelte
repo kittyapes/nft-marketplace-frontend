@@ -6,7 +6,7 @@
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
 	import type { Listing } from '$utils/api/listing';
 
-	export let creator: PublicProfileData;
+	export let creator: PublicProfileData & { totalMinted: number };
 	export let listings: Listing[];
 </script>
 
@@ -19,7 +19,7 @@
 				address: creator.address,
 				coverImg: creator.coverUrl,
 				profileImg: creator.thumbnailUrl,
-				created: null,
+				created: creator.totalMinted,
 			}}
 		/>
 	</div>
