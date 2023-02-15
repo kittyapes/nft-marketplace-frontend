@@ -9,6 +9,7 @@
 	import { fade } from 'svelte/transition';
 	import 'simplebar';
 	import 'simplebar/dist/simplebar.css';
+	import AddressLink from '$lib/components/v2/AddressLink/AddressLink.svelte';
 
 	export let options: CardOptions;
 
@@ -74,23 +75,19 @@
 		<div class="overflow-hidden">
 			<div class="--property-name text-gradient">Creator</div>
 			<div class="--property-value">
-				{#if creatorAddress}
-					<a href={'/profile/' + creatorAddress} on:click={() => closePopup()}>{creatorAddress || 'N/A'}</a>
-				{:else}
-					{'N/A'}
-				{/if}
+				<AddressLink address={creatorAddress} />
 			</div>
 		</div>
 
 		{#if options.resourceType === 'listing'}
 			<div class="overflow-hidden">
 				<div class="--property-name text-gradient">Seller</div>
-				<div class="--property-value">{options.rawListingData.seller}</div>
+				<div class="--property-value"><AddressLink address={options.rawListingData.seller} /></div>
 			</div>
 		{:else}
 			<div class="overflow-hidden">
 				<div class="--property-name text-gradient">Owner</div>
-				<div class="--property-value">{options.rawResourceData.owner}</div>
+				<div class="--property-value"><AddressLink address={options.rawResourceData.owner} /></div>
 			</div>
 		{/if}
 
