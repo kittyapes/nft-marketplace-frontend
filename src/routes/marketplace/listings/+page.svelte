@@ -111,8 +111,6 @@
 		$page.url.searchParams.delete('collections');
 		$page.url.searchParams.delete('minPrice');
 		$page.url.searchParams.delete('maxPrice');
-
-		goto($page.url.pathname);
 	});
 </script>
 
