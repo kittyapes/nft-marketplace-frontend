@@ -37,6 +37,8 @@
 	on:outroend={checkDisconnect}
 >
 	<div class="flex flex-col gap-y-5 2xl:gap-y-6 text-white">
+		<h1 class="text-2xl">Notifications</h1>
+
 		<PrimaryButton on:click={() => goto(`/profile/${$currentUserAddress}`)}>My Profile</PrimaryButton>
 
 		{#if showDashboard}
