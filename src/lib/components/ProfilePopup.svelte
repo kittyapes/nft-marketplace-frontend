@@ -89,7 +89,7 @@
 	on:outroend={checkDisconnect}
 >
 	<div class="flex flex-col gap-y-5 2xl:gap-y-6 text-white">
-		{#if $loadedUserNotifications && $userNotifications.length}
+		{#if $loadedUserNotifications && $userNotifications?.length}
 			<div class="">
 				<h1 class="text-2xl">Notifications</h1>
 				<div class="flex flex-col gap-4 mt-4 max-h-80 overflow-y-auto blue-scrollbar">
@@ -97,7 +97,7 @@
 						<div class="flex flex-col gap-2 p-2 notification-item">
 							<p>{notification.content}</p>
 							<div class="flex justify-between">
-								<p class:text-gradient-green={!notification.readAt}>{dayjs(notification.readAt).fromNow()}</p>
+								<p class:text-gradient-green={!notification.readAt}>{dayjs(notification.publishAt).fromNow()}</p>
 								<button on:click={() => clearNotification(notification._id)}>
 									<ThemedCross />
 								</button>
