@@ -165,7 +165,7 @@
 						<div class="grid grid-cols-1 lg:grid-cols-2 h-full gap-8 px-8">
 							<!-- Left part with image and buttons -->
 							<div class="pb-8">
-								<Tabs bind:selectedTab {disabledTabs} />
+								<Tabs bind:selectedTab {disabledTabs} defaultTabIndex={options.resourceType === 'listing' ? 1 : 0} />
 
 								<AssetContainer
 									assetUrl={makeHttps(options.nfts[0].assetUrl)}
