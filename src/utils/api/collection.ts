@@ -3,7 +3,6 @@ import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
 import { get } from 'svelte/store';
 import { getApiUrl } from '.';
-import qs from 'qs';
 
 export interface Collection {
 	mintedFrom: string;
