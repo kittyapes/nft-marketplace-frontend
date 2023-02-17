@@ -39,7 +39,7 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goe
 	// Eth
 	{ name: 'marketplace', network: 'eth', address: '0x9A986d8B2cB50e827393Ec329cb0003535b5Ff75', abi: marketplaceAbi },
 	{ name: 'marketplace-v2', network: 'eth', address: '0x464CF8880524f70b8f956f5042A7F712d759c516', abi: marketplaceV2Abi },
-	{ name: 'storage', network: 'eth', address: '0x88129f1931ecc44678b68c4c25393059b4bcfca7', abi: storageAbi },
+	{ name: 'storage', network: 'eth', address: '0x199297eb990BC25DD9A1C1c0D828a7e9DF1d132E', abi: storageAbi },
 	{ name: 'factory', network: 'eth', address: '0x41a508E15F391b2AA3129c9fE054f9A48226AC4F', abi: factoryAbi },
 	{ name: 'token', network: 'eth', address: '0x91a09acc7a76624f593990c4456fc318d705c761', abi: tokenAbi },
 	{ name: 'weth', network: 'eth', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', abi: erc20Abi },
@@ -47,7 +47,7 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goe
 	// Staging Genache
 	{ name: 'marketplace', network: 'staging-genache', address: '0x9A986d8B2cB50e827393Ec329cb0003535b5Ff75', abi: marketplaceAbi },
 	// Marketplace v2 contract is missing
-	{ name: 'storage', network: 'staging-genache', address: '0x88129f1931ecc44678b68c4c25393059b4bcfca7', abi: storageAbi },
+	{ name: 'storage', network: 'staging-genache', address: '0x199297eb990BC25DD9A1C1c0D828a7e9DF1d132E', abi: storageAbi },
 	{ name: 'factory', network: 'staging-genache', address: '0x41a508E15F391b2AA3129c9fE054f9A48226AC4F', abi: factoryAbi },
 	{ name: 'token', network: 'staging-genache', address: '0x91a09acc7a76624f593990c4456fc318d705c761', abi: tokenAbi },
 	{ name: 'weth', network: 'staging-genache', address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', abi: erc20Abi },
