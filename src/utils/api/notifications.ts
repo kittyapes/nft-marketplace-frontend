@@ -61,6 +61,8 @@ export type UserNotification = Notification & {
 	readAt: null | string;
 	publishAt: string;
 	expireAt: string;
+	targets?: string[];
+	location?: string;
 };
 
 export type GetNotificationsRes = {
@@ -139,8 +141,6 @@ export async function updateNotificationAsAdmin(options: UpdateNotificationAsAdm
 		...(options.publishAt ? { publishAt: dayjs(options.publishAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
 		...(options.expireAt ? { expireAt: dayjs(options.expireAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
 	};
-
-	console.log(params);
 
 	const res = await api.put(getApiUrl(null, '/notifications/' + options.id), params, await getAxiosConfig());
 

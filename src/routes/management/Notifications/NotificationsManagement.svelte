@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import type { UserRole } from '$interfaces/userData';
 	import Datepicker from '$lib/components/Datepicker.svelte';
+	import Dropdown from '$lib/components/Dropdown.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import { currentUserAddress } from '$stores/wallet';
 	import { deleteNotification, getNotifications, publishNotification, updateNotificationAsAdmin, type UpdateNotificationAsAdminOptions, type UserNotification } from '$utils/api/notifications';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import type { Dayjs } from 'dayjs';
@@ -14,6 +17,40 @@
 	let publishDate: Dayjs;
 	let expireDate: Dayjs;
 
+	type TargetOptions = {
+		value: 'GLOBAL' | UserRole;
+		label: string;
+	};
+
+	let target: TargetOptions;
+
+	const targetDropdownOptions: TargetOptions[] = [
+		{
+			value: 'GLOBAL',
+			label: 'Global',
+		},
+		{
+			value: 'superadmin',
+			label: 'Superadmins',
+		},
+		{
+			value: 'admin',
+			label: 'Admins',
+		},
+		{
+			value: 'verified_user',
+			label: 'Verified users',
+		},
+		{
+			value: 'inactivated_user',
+			label: 'Inactivated users',
+		},
+		{
+			value: 'user',
+			label: 'Authenticated users',
+		},
+	];
+
 	type LocalUserNotification = UserNotification & {
 		editMode?: boolean;
 		editExpireDate?: Dayjs;
@@ -22,7 +59,7 @@
 
 	let createdNotifications: LocalUserNotification[];
 
-	$: browser && fetchNotifications();
+	$: browser && $currentUserAddress && fetchNotifications();
 
 	async function fetchNotifications() {
 		const res = await getNotifications();
@@ -40,7 +77,8 @@
 		const res = await publishNotification({
 			title: notificationTitle,
 			content: notificationMessage,
-			targets: ['GLOBAL'],
+			targets: [target.value],
+			location: target.value === 'GLOBAL' ? 'GLOBAL' : 'NOTIFICATION_AREA',
 			publishAt: publishDate ? publishDate.format() : dayjs().format(),
 			expireAt: expireDate?.format() || undefined,
 		});
@@ -109,6 +147,11 @@
 				<h2 class="text-lg">Expire date</h2>
 				<Datepicker bind:value={expireDate} placeholder="Pick expire date & time" />
 			</div>
+
+			<div class="flex flex-col gap-2">
+				<h2 class="text-lg">Target audience</h2>
+				<Dropdown bind:selected={target} options={targetDropdownOptions} class="h-12" />
+			</div>
 		</div>
 		<div class="flex-col flex-grow w-1/3">
 			<TextArea bind:value={notificationMessage} maxChars={100} containerClass={'text-white'} textAreaClass={'placeholder:text-white'} placeholder={'Enter your message for a notification'} />
@@ -164,6 +207,14 @@
 										</PrimaryButton>
 
 										<PrimaryButton variant="red" on:click={() => handleDelete(notification.notificationId)}>Delete</PrimaryButton>
+									</div>
+									<div class="flex justify-between">
+										{#if notification.targets}
+											<div class="flex flex-col">
+												<span>Targets:</span>
+												<span>{notification.targets[0]}</span>
+											</div>
+										{/if}
 									</div>
 									<div class="flex justify-between">
 										<div class="flex flex-col">
