@@ -22,14 +22,15 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import Spinner from '$lib/components/v2/Spinner/Spinner.svelte';
+	import Info from '$icons/info.v2.svelte';
+	import { browser } from '$app/environment';
+	import { getMarketFee } from '$utils/contracts/listing';
 
 	// URL params
 	const nftId = $page.params.bundleId; // nftId is correct, bundleId is deprecated
 	const isGasless = $page.url.searchParams.get('gasless') === '1';
 
 	let listingType = $page.url.searchParams.get('type') as ListingType;
-
-	console.info('Listing as gasless:', isGasless);
 
 	const fetchedNftData = writable<ApiNftData>(null);
 
@@ -172,6 +173,25 @@
 
 		<div class="pr-8 mt-8">
 			<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} compact />
+		</div>
+
+		<!-- Fee grid -->
+		<div class="grid grid-cols-2 pr-8 mt-8 gap-10">
+			<div />
+
+			<div class="flex space-x-3 items-center">
+				<div class="font-light text-lg">
+					{#if browser}
+						{#await getMarketFee() then marketFee}
+							Marketplace Fees: {marketFee ?? 'N/A'} %
+						{/await}
+					{/if}
+				</div>
+
+				<div class="w-6">
+					<Info />
+				</div>
+			</div>
 		</div>
 
 		<div class="pr-8 mt-8">
