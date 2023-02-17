@@ -71,7 +71,13 @@ export type GetNotificationsRes = {
 };
 
 export async function getNotifications(options?: GetNotificationOptions): Promise<ApiCallResult<GetNotificationsRes>> {
-	const res = await api.get(getApiUrl(null, '/notifications'), { params: options, ...(await getAxiosConfig()) });
+	let res;
+
+	try {
+		res = await api.get(getApiUrl(null, '/notifications'), { params: options, ...(await getAxiosConfig()) });
+	} catch (err) {
+		res = await api.get(getApiUrl(null, '/notifications'), { params: options });
+	}
 
 	return res;
 }
