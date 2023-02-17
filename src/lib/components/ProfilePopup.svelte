@@ -97,7 +97,7 @@
 						<div class="flex flex-col gap-2 p-2 notification-item">
 							<p>{notification.content}</p>
 							<div class="flex justify-between">
-								<p class:text-gradient-green={!notification.readAt}>{dayjs(notification.publishAt).fromNow()}</p>
+								<p class:text-gradient-green={!notification.readAt} class={notification.readAt ? 'text-color-gray-base' : ''}>{dayjs(notification.publishAt).fromNow()}</p>
 								<button on:click={() => clearNotification(notification._id)}>
 									<ThemedCross />
 								</button>
