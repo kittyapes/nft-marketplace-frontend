@@ -179,7 +179,7 @@
 		<div class="grid grid-cols-2 pr-8 mt-8 gap-10">
 			<div />
 
-			<div class="flex space-x-3">
+			<div class="flex space-x-3 items-center">
 				<div class="font-light text-lg">
 					{#if browser}
 						{#await getMarketFee() then marketFee}
