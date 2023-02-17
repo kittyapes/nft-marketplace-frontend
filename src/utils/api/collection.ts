@@ -3,6 +3,7 @@ import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
 import { get } from 'svelte/store';
 import { getApiUrl } from '.';
+import qs from 'qs';
 
 export interface Collection {
 	mintedFrom: string;
@@ -214,7 +215,7 @@ export async function apiSearchCollections(options?: CollectionSearchOptions) {
 	}
 
 	if (!options.status) options.status = 'ACTIVE';
-	else if (options.status === 'ALL') options.status = null;
+	else if (options.status === 'ALL') (options as any).status = ['ACTIVE', 'INACTIVE'];
 
 	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: options });
 	if (res.status !== 200) {
