@@ -38,7 +38,7 @@ export type PublishNotificationRes = {
 };
 
 export async function publishNotification(options: PublishNotificationOptions): Promise<ApiCallResult<PublishNotificationRes>> {
-	options.publishAt = dayjs(options.publishAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS');
+	options.publishAt = dayjs(options.publishAt).format('YYYY-MM-DDTHH:mm:ss.SSS');
 	options.expireAt = options.expireAt ? dayjs(options.expireAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') : undefined;
 
 	const res = await api.post(getApiUrl(null, '/notifications'), options, await getAxiosConfig());
@@ -61,6 +61,8 @@ export type UserNotification = Notification & {
 	readAt: null | string;
 	publishAt: string;
 	expireAt: string;
+	targets?: string[];
+	location?: string;
 };
 
 export type GetNotificationsRes = {
@@ -136,7 +138,7 @@ export async function updateNotificationAsAdmin(options: UpdateNotificationAsAdm
 		title: options.title || undefined,
 		location: options.location || undefined,
 		targets: options.targets || undefined,
-		...(options.publishAt ? { publishAt: dayjs(options.publishAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
+		...(options.publishAt ? { publishAt: dayjs(options.publishAt).format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
 		...(options.expireAt ? { expireAt: dayjs(options.expireAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
 	};
 

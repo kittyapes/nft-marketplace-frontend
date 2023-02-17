@@ -5,6 +5,7 @@
 	import Dropdown from '$lib/components/Dropdown.svelte';
 	import TextArea from '$lib/components/TextArea.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import { currentUserAddress } from '$stores/wallet';
 	import { deleteNotification, getNotifications, publishNotification, updateNotificationAsAdmin, type UpdateNotificationAsAdminOptions, type UserNotification } from '$utils/api/notifications';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import type { Dayjs } from 'dayjs';
@@ -58,7 +59,7 @@
 
 	let createdNotifications: LocalUserNotification[];
 
-	$: browser && fetchNotifications();
+	$: browser && $currentUserAddress && fetchNotifications();
 
 	async function fetchNotifications() {
 		const res = await getNotifications();
@@ -77,6 +78,7 @@
 			title: notificationTitle,
 			content: notificationMessage,
 			targets: [target.value],
+			location: target.value === 'GLOBAL' ? 'GLOBAL' : 'NOTIFICATION_AREA',
 			publishAt: publishDate ? publishDate.format() : dayjs().format(),
 			expireAt: expireDate?.format() || undefined,
 		});
@@ -205,6 +207,14 @@
 										</PrimaryButton>
 
 										<PrimaryButton variant="red" on:click={() => handleDelete(notification.notificationId)}>Delete</PrimaryButton>
+									</div>
+									<div class="flex justify-between">
+										{#if notification.targets}
+											<div class="flex flex-col">
+												<span>Targets:</span>
+												<span>{notification.targets[0]}</span>
+											</div>
+										{/if}
 									</div>
 									<div class="flex justify-between">
 										<div class="flex flex-col">
