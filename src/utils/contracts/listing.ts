@@ -136,13 +136,13 @@ export async function contractUpdateListing(listingId: string, payTokenAddress: 
 	await contractCaller(contract, 'updateListing', 150, 1, listingId, parsedPrice, props.startDateTs, props.durationSeconds, props.quantity);
 }
 
-export async function getMarketFee() {
+export async function getMarketFee(): Promise<number | null> {
 	try {
 		const marketplaceContract = getContract('marketplace', true);
 		const fee = await marketplaceContract.marketFee();
 
 		return +ethers.utils.formatUnits(fee, 2);
 	} catch (error) {
-		return 0;
+		return null;
 	}
 }
