@@ -57,6 +57,8 @@ async function completeAuctionGasless(listing: Listing): Promise<void> {
 	} catch (err) {
 		if (err.message.includes('USED_SIGNATURE')) {
 			notifyError('Sorry, could not complete your auction. One of the signatures we tried to use was already used.');
+		} else if (err.message.includes('ERC20: transfer amount exceeds balance')) {
+			notifyError('Sorry, the highest bidder no longer has the required token balance in their wallet.');
 		} else if (err.code === 'ACTION_REJECTED') {
 			notifyError('Auction completion transaction rejected.');
 		} else {
