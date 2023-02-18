@@ -18,6 +18,7 @@
 	import { cancelListingFlow } from '$utils/flows/cancelListingFlow';
 	import type { AuctionDataModel } from '$interfaces/index';
 	import { completeAuctionFlow } from '$utils/flows/completeAuctionFlow';
+	import { HandledError } from '$utils';
 
 	const dispatch = createEventDispatcher();
 
@@ -35,9 +36,16 @@
 		try {
 			await completeAuctionFlow(options.rawListingData);
 		} catch (err) {
+			if (err instanceof HandledError) {
+				return;
+			}
+
+			notifyError('An unexpected error has occured. Failed to complete your auction.');
 			console.error(err);
-			isAccepting = false;
+
 			return;
+		} finally {
+			isAccepting = false;
 		}
 
 		notifySuccess('Sucessfully completed your auction.');
@@ -46,8 +54,6 @@
 		dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Auction completed successfully.' } });
 		dispatch('force-expire');
 		dispatch('set-frame', { component: Success });
-
-		isAccepting = false;
 	}
 
 	let cancelButtonContainer: HTMLElement;

@@ -1,4 +1,5 @@
 import type { AuctionDataModel } from '$interfaces';
+import { ErrNotificationError, HandledError, handleErrActionRejected } from '$utils';
 import { type Listing, getListingBids, type GetBidsRes } from '$utils/api/listing';
 import contractCaller from '$utils/contracts/contractCaller';
 import { listingExistsOnChain, stringListingTypeToEnum } from '$utils/listings';
@@ -7,8 +8,6 @@ import { notifyError } from '$utils/toast';
 import type { AxiosResponse } from 'axios';
 import dayjs from 'dayjs';
 import { BigNumber } from 'ethers';
-
-const UNKNOWN_ERR_MSG = 'Sorry, failed to complete your auction. An unexpected error occured.';
 
 async function completeAuctionGasless(listing: Listing): Promise<void> {
 	// Get highest bid
@@ -56,13 +55,11 @@ async function completeAuctionGasless(listing: Listing): Promise<void> {
 		await contractCaller(marketplaceV2, 'completeAuction', 150, 1, ...callArgs);
 	} catch (err) {
 		if (err.message.includes('USED_SIGNATURE')) {
-			notifyError('Sorry, could not complete your auction. One of the signatures we tried to use was already used.');
+			throw new ErrNotificationError('Sorry, could not complete your auction. One of the signatures we tried to use was already used.', err);
 		} else if (err.message.includes('ERC20: transfer amount exceeds balance')) {
-			notifyError('Sorry, the highest bidder no longer has the required token balance in their wallet.');
+			throw new ErrNotificationError('Sorry, the highest bidder no longer has the required token balance in their wallet.', err);
 		} else if (err.code === 'ACTION_REJECTED') {
-			notifyError('Auction completion transaction rejected.');
-		} else {
-			notifyError(UNKNOWN_ERR_MSG);
+			throw new ErrNotificationError('Auction completion transaction rejected.', err);
 		}
 
 		throw err;
@@ -81,11 +78,7 @@ async function completeAuctionNormal(listing: Listing) {
 	try {
 		await contractCaller(marketplace, 'completeAuction', 150, 1, listing.listingId);
 	} catch (err) {
-		if (err.code === 'ACTION_REJECTED') {
-			notifyError('Auction completion transaction rejected.');
-		} else {
-			notifyError(UNKNOWN_ERR_MSG);
-		}
+		handleErrActionRejected(err, 'Auction completion transaction rejected.');
 
 		throw err;
 	}

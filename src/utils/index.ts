@@ -11,6 +11,14 @@ export class HandledError extends Error {
 	}
 }
 
+export class ErrNotificationError extends HandledError {
+	constructor(message: string, cause: Error) {
+		super(message, cause);
+
+		notifyError(message);
+	}
+}
+
 export function handleErrActionRejected(err: Error & { code?: string }, message = 'Action was rejected by user.') {
 	if (err.code === 'ACTION_REJECTED') {
 		notifyError(message);

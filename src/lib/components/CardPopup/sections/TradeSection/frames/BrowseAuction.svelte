@@ -48,11 +48,12 @@
 		} catch (err) {
 			if (err instanceof HandledError) {
 				return;
-			} else {
-				console.error(err);
-				notifyError('An unexpected error has occured. Failed to place your bid.');
-				return;
 			}
+
+			console.error(err);
+			notifyError('An unexpected error has occured. Failed to place your bid.');
+
+			return;
 		} finally {
 			isPlacingBid = false;
 		}
