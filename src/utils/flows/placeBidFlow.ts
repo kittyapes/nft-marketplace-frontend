@@ -1,3 +1,4 @@
+import { profileData, refreshProfileData } from '$stores/user';
 import { appSigner } from '$stores/wallet';
 import { api, getApiUrl, type ApiCallResult } from '$utils/api';
 import type { Listing } from '$utils/api/listing';
@@ -20,7 +21,7 @@ async function placeBidNormal(listing: Listing, amount: BigNumber) {
 	try {
 		await contractCaller(contract, 'bid', 150, 1, ...callArgs);
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		notifyError(err.message);
 		return;
 	}
@@ -35,15 +36,16 @@ async function getBidSignature(bidder: ethers.Signer, bidAmount: BigNumberish, n
 async function placeBidGasless(listing: Listing, amount: BigNumber) {
 	const contract = getContract('marketplace-v2');
 
-	console.log(listing);
-
 	await ensureAmountApproved(contract.address, amount.toString(), listing.paymentTokenAddress);
 
-	let signature: string;
+	await refreshProfileData();
 
-	const nonce = parseInt(prompt('nonce'));
+	const bidderData = get(profileData);
+	const nonce = bidderData.lastUsedBidNonce + 1;
 
 	// Get signature from user
+	let signature: string;
+
 	try {
 		signature = await getBidSignature(get(appSigner), amount, nonce);
 	} catch (err) {
