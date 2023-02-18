@@ -124,7 +124,7 @@
 
 	<div class="grid grid-cols-2 gap-3">
 		<div bind:this={cancelButtonContainer} class="w-full" on:pointerenter={cancelHovered.toggle} on:pointerleave={cancelHovered.toggle}>
-			<GhostButton class="h-12" disabled={isCancelling || isAccepting || isRefreshingBids || !canCancel} on:click={cancelListing}>
+			<GhostButton class="h-12 relative" disabled={isCancelling || isAccepting || isRefreshingBids || !canCancel} on:click={cancelListing}>
 				{#if isCancelling}
 					<ButtonSpinner secondary />
 				{/if}
