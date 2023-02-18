@@ -12,11 +12,12 @@
 	import { dateToTimestamp, isListingValid } from '$utils/listings';
 	import { parseToken } from '$utils/misc/priceUtils';
 	import { isFuture } from '$utils/misc/time';
-	import { notifyError } from '$utils/toast';
+	import { notifyError, notifySuccess } from '$utils/toast';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { BigNumber } from 'ethers';
 	import { onMount } from 'svelte';
 	import type { AuctionDataModel } from '$interfaces/index';
+	import { HandledError } from '$utils';
 
 	export let options: CardOptions;
 
@@ -42,29 +43,23 @@
 			isPlacingBid = false;
 		}
 
-		let bidSuccess: boolean;
-
 		try {
-			const res = await placeBidFlow(options.rawListingData, bidBigNumber);
-
-			if (res && res.error) {
-				bidSuccess = false;
-			} else {
-				bidSuccess = true;
-			}
+			await placeBidFlow(options.rawListingData, bidBigNumber);
 		} catch (err) {
-			bidSuccess = false;
-
-			console.error(err);
-			notifyError('An unexpected error has occured. Failed to place your bid.');
+			if (err instanceof HandledError) {
+				return;
+			} else {
+				console.error(err);
+				notifyError('An unexpected error has occured. Failed to place your bid.');
+				return;
+			}
+		} finally {
+			isPlacingBid = false;
 		}
 
-		if (bidSuccess) {
-			setTimeout(async () => await refreshBids(), 10000);
-			bidAmount = '';
-		}
-
-		isPlacingBid = false;
+		notifySuccess(`Successfully placed your bid of ${bidAmount} WETH.`);
+		setTimeout(async () => await refreshBids(), 10000);
+		bidAmount = '';
 	}
 
 	let biddings: BidRow[] = [];

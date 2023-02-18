@@ -1,6 +1,7 @@
 import { profileData, refreshProfileData } from '$stores/user';
 import { appSigner } from '$stores/wallet';
-import { api, getApiUrl, type ApiCallResult } from '$utils/api';
+import { handleAxiosNetworkError, HandledError, handleErrActionRejected } from '$utils';
+import { getApiUrl } from '$utils/api';
 import type { Listing } from '$utils/api/listing';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import contractCaller from '$utils/contracts/contractCaller';
@@ -8,10 +9,11 @@ import { ensureAmountApproved } from '$utils/contracts/token';
 import { getContract } from '$utils/misc/getContract';
 import { formatToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
+import axios from 'axios';
 import { ethers, type BigNumber, type BigNumberish } from 'ethers';
 import { get } from 'svelte/store';
 
-async function placeBidNormal(listing: Listing, amount: BigNumber) {
+async function placeBidNormal(listing: Listing, amount: BigNumber): Promise<void> {
 	const contract = getContract('marketplace');
 
 	await ensureAmountApproved(contract.address, amount.toString(), listing.paymentTokenAddress);
@@ -23,22 +25,25 @@ async function placeBidNormal(listing: Listing, amount: BigNumber) {
 	} catch (err) {
 		console.error(err);
 		notifyError(err.message);
-		return;
 	}
 }
 
-async function getBidSignature(bidder: ethers.Signer, bidAmount: BigNumberish, nonce: BigNumberish) {
+async function getBidSignature(bidder: ethers.Signer, bidAmount: BigNumberish, nonce: BigNumberish): Promise<string> {
 	const message = ethers.utils.solidityKeccak256(['address', 'uint256', 'uint256'], [await bidder.getAddress(), bidAmount, nonce]);
 
 	return await bidder.signMessage(ethers.utils.arrayify(message));
 }
 
-async function placeBidGasless(listing: Listing, amount: BigNumber) {
+async function placeBidGasless(listing: Listing, amount: BigNumber): Promise<void> {
 	const contract = getContract('marketplace-v2');
 
 	await ensureAmountApproved(contract.address, amount.toString(), listing.paymentTokenAddress);
 
-	await refreshProfileData();
+	try {
+		await refreshProfileData();
+	} catch (err) {
+		throw new HandledError('Failed to refresh profile data.', err);
+	}
 
 	const bidderData = get(profileData);
 	const nonce = bidderData.lastUsedBidNonce + 1;
@@ -49,11 +54,9 @@ async function placeBidGasless(listing: Listing, amount: BigNumber) {
 	try {
 		signature = await getBidSignature(get(appSigner), amount, nonce);
 	} catch (err) {
-		if (err.code === 'ACTION_REJECTED') {
-			notifyError('Could not place your bid. Message signature was rejected.');
+		handleErrActionRejected(err, 'Request to sign gasless bid message was rejected.');
 
-			return { error: err };
-		}
+		throw err;
 	}
 
 	// Call API with bid data
@@ -72,17 +75,19 @@ async function placeBidGasless(listing: Listing, amount: BigNumber) {
 		formData.append(key, params[key]);
 	}
 
-	const res: ApiCallResult<{}> = await api.post(getApiUrl(null, 'gasless-listings/bid'), formData, await getAxiosConfig());
+	try {
+		await axios.post(getApiUrl(null, 'gasless-listings/bid'), formData, await getAxiosConfig());
+	} catch (err) {
+		handleAxiosNetworkError(err);
 
-	if (res.err) {
-		notifyError('Sorry, failed to place your bid.');
+		throw err;
 	}
 }
 
-export async function placeBidFlow(listing: Listing, amount: BigNumber): Promise<{ error: Error } | void> {
+export async function placeBidFlow(listing: Listing, amount: BigNumber): Promise<void> {
 	if (listing.chainStatus === 'GASLESS') {
-		placeBidGasless(listing, amount);
+		await placeBidGasless(listing, amount);
 	} else {
-		placeBidNormal(listing, amount);
+		await placeBidNormal(listing, amount);
 	}
 }
