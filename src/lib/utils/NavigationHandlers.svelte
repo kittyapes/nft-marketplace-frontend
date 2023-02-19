@@ -33,7 +33,7 @@
 	}
 
 	function getWalletRequiredRoutes() {
-		return [RegExp('create.*')];
+		return [RegExp('create.*'), RegExp('profile/edit'), RegExp('management.*'), RegExp('admin.*'), RegExp('collections/new/edit')];
 	}
 
 	// Check if the path needs a wallet connected. If yes, check if the user is connected.
