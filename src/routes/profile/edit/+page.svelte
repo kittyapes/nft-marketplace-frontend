@@ -214,6 +214,7 @@
 	$: $currentAddress = $currentUserAddress;
 
 	$: browser && $currentAddress && $previousAddress && $currentAddress !== $previousAddress && goto('/profile');
+	$: browser && !$currentAddress && goto('/');
 
 	appSigner.subscribe((signer) => browser && checkIfWalletConnected(signer, $page.url.pathname));
 
