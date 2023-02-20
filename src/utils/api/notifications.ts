@@ -48,11 +48,6 @@ export async function publishNotification(options: PublishNotificationOptions): 
 
 // GET NOTIFICATIONS
 
-export type GetNotificationOptions = {
-	from?: string;
-	to?: string;
-};
-
 export type UserNotification = Notification & {
 	content: string;
 	title?: string;
@@ -70,13 +65,13 @@ export type GetNotificationsRes = {
 	data: UserNotification[];
 };
 
-export async function getNotifications(options?: GetNotificationOptions): Promise<ApiCallResult<GetNotificationsRes>> {
+export async function getNotifications(isUserAuthenticated = true): Promise<ApiCallResult<GetNotificationsRes>> {
 	let res;
 
-	try {
-		res = await api.get(getApiUrl(null, '/notifications'), { params: options, ...(await getAxiosConfig()) });
-	} catch (err) {
-		res = await api.get(getApiUrl(null, '/notifications'), { params: options });
+	if (isUserAuthenticated) {
+		res = await api.get(getApiUrl(null, '/notifications'), { ...(await getAxiosConfig()) });
+	} else {
+		res = await api.get(getApiUrl(null, '/notifications'));
 	}
 
 	return res;
