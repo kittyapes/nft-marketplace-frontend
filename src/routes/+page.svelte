@@ -86,14 +86,9 @@
 	onMount(async () => {
 		// getHottestCreatorsData();
 		getTrendingListingsData();
-<<<<<<< HEAD
 	});
 
 	$: if (isWalletDataLoaded) getUserNotification();
-=======
-		getUserNotification();
-	});
->>>>>>> fix-unconnected-users-notifications
 </script>
 
 <MetaTags
