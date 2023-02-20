@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import Info from '$icons/info.v2.svelte';
 	import type { ConfigurableListingProps } from '$interfaces/listing';
 	import type { CardOptions } from '$interfaces/ui';
@@ -10,12 +11,11 @@
 	import { userCreatedListing } from '$stores/user';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { ListingType } from '$utils/api/listing';
+	import { getMarketFee } from '$utils/contracts/listing';
 	import { createListingFlow, type CreateListingFlowOptions } from '$utils/flows/createListingFlow';
-	import { getContract, getContractData } from '$utils/misc/getContract';
+	import { getContractData } from '$utils/misc/getContract';
 	import getUserNftBalance from '$utils/nfts/getUserNftBalance';
 	import { notifyError } from '$utils/toast';
-	import type { BigNumber } from 'ethers';
-	import { add } from 'lodash-es';
 	import { createEventDispatcher } from 'svelte';
 	import { onMount } from 'svelte';
 	import Error from './Error.svelte';
@@ -110,23 +110,6 @@
 
 	let _listingProperties: ListingProperties;
 
-	// Dynamically load hinata fees from the contract
-	let hinataFees: number;
-
-	async function refreshHinataFees() {
-		const contract = getContract('marketplace');
-
-		const hinataFeesBigNumber = (await contract.marketFee()) as BigNumber;
-
-		hinataFees = hinataFeesBigNumber.toNumber() / 100;
-	}
-
-	currentUserAddress.subscribe((addr) => {
-		if (addr) {
-			refreshHinataFees();
-		}
-	});
-
 	onMount(() => {
 		_listingProperties?.setValues({ durationSeconds: 60 * 60 * 24 });
 	});
@@ -165,7 +148,13 @@
 
 			<div class="gradient-text">Hinata Fees:</div>
 			<div class="flex justify-end space-x-3">
-				<div class="gradient-text">{hinataFees ?? 'N/A'} %</div>
+				<div class="gradient-text">
+					{#if browser}
+						{#await getMarketFee() then marketFee}
+							{marketFee ?? 'N/A'} %
+						{/await}
+					{/if}
+				</div>
 				<div class="w-6">
 					<Info />
 				</div>

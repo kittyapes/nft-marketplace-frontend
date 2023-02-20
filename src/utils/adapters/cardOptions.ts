@@ -49,11 +49,11 @@ export function toShortDisplayPrice(floatingPrice: string): string | null {
 	const floatPrice = parseFloat(floatingPrice);
 
 	if (floatPrice > 999_999) {
-		return ~~(floatPrice / 100_000) / 10 + ' M';
+		return Math.floor(floatPrice / 100_000) / 10 + ' M';
 	}
 
 	if (floatPrice > 9999) {
-		return ~~(floatPrice / 100) / 10 + ' K';
+		return Math.floor(floatPrice / 100) / 10 + ' K';
 	}
 
 	return floatingPrice.length > maxCharsOnDisplay

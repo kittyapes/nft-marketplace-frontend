@@ -35,7 +35,7 @@
 		{ name: 'Token Standard', value: singleNft.contractType },
 		{
 			name: 'Fees and Royalties',
-			value: marketFee + ' % Fee | ' + royaltyPercentage,
+			value: marketFee ?? 'N/A' + ' % Fee | ' + royaltyPercentage,
 		},
 		{ name: 'Token ID', value: singleNft.onChainId },
 		{ name: 'Blockchain', value: options.listingData?.paymentTokenTicker || options.rawResourceData.chain },
