@@ -50,6 +50,7 @@
 	const getUserNotification = async () => {
 		if (!$userNotification) loadedUserNotification.set(false);
 		const res = (await getNotifications())?.data?.data;
+		if (!res) return;
 
 		const notification = res.find((n) => !n.hasCleared && n.location === 'GLOBAL' && dayjs().isAfter(dayjs(n.publishAt)) && (!n.expireAt || dayjs().isBefore(dayjs(n.expireAt))));
 		userNotificationCleared.set(false);
