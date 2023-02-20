@@ -37,7 +37,7 @@ export async function apiGetUserNfts(address: string, type: 'MINTED', page: numb
 		}),
 	);
 
-	return { err, res: res.data.data as { nfts: ApiNftData[]; page: number; limit: number } };
+	return { err, res: res.data.data as { nfts: ApiNftData[]; page: number; limit: number; totalCount: number } };
 }
 
 export async function apiHideNft(id: string): Promise<ApiCallResult<{ success: boolean }>> {
