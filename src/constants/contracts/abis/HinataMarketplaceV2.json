@@ -237,6 +237,26 @@
 	},
 	{
 		"inputs": [
+			{ "internalType": "address[]", "name": "accounts", "type": "address[]" },
+			{ "internalType": "uint256[]", "name": "nonces", "type": "uint256[]" }
+		],
+		"name": "queryNonces",
+		"outputs": [
+			{ "internalType": "bool[]", "name": "res", "type": "bool[]" },
+			{ "internalType": "bool[]", "name": "resForBid", "type": "bool[]" }
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [{ "internalType": "bytes[]", "name": "signatures", "type": "bytes[]" }],
+		"name": "querySignatureStatus",
+		"outputs": [{ "internalType": "bool[]", "name": "res", "type": "bool[]" }],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
 			{ "internalType": "bytes32", "name": "role", "type": "bytes32" },
 			{ "internalType": "address", "name": "account", "type": "address" }
 		],
