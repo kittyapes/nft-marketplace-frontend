@@ -15,7 +15,10 @@
 	import NotificationBar from '$lib/components/NotificationBar.svelte';
 	import { getNotifications, updateNotificationAsUser, type UserNotification } from '$utils/api/notifications';
 	import dayjs from 'dayjs';
+	import { WalletState, walletState } from '$utils/wallet';
 	import { currentUserAddress } from '$stores/wallet';
+
+	$: isWalletDataLoaded = $walletState === WalletState.DISCONNECTED || ($currentUserAddress && $walletState === WalletState.CONNECTED);
 
 	let trendingListings = writable<Listing[]>([]);
 	let loadedTrendingListings = writable(false);
@@ -49,7 +52,9 @@
 
 	const getUserNotification = async () => {
 		if (!$userNotification) loadedUserNotification.set(false);
-		const res = (await getNotifications())?.data?.data;
+
+		const res = (await getNotifications(!!$currentUserAddress))?.data?.data;
+		if (!res) return;
 
 		const notification = res.find((n) => !n.hasCleared && n.location === 'GLOBAL' && dayjs().isAfter(dayjs(n.publishAt)) && (!n.expireAt || dayjs().isBefore(dayjs(n.expireAt))));
 		userNotificationCleared.set(false);
@@ -81,8 +86,9 @@
 	onMount(async () => {
 		// getHottestCreatorsData();
 		getTrendingListingsData();
-		getUserNotification();
 	});
+
+	$: if (isWalletDataLoaded) getUserNotification();
 </script>
 
 <MetaTags
