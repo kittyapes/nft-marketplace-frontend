@@ -22,7 +22,7 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goe
 
 	// Goerli Testing Environment
 	{ name: 'marketplace', network: 'testing-goerli', address: '0x48441F157Eb382C8FEC1f9b40f34aa9a04209028', abi: marketplaceAbi },
-	{ name: 'marketplace-v2', network: 'testing-goerli', address: '0x7419a5dfd3F40aaAd7cF791BC5994E7DaA5c0532', abi: marketplaceV2Abi },
+	{ name: 'marketplace-v2', network: 'testing-goerli', address: '0xF472c5e341d192B6CCe028bC9B554038c5f03a43', abi: marketplaceV2Abi },
 	{ name: 'storage', network: 'testing-goerli', address: '0x5c7db52089565A5c3F701135d9015Bc4Df339B1b', abi: storageAbi },
 	{ name: 'factory', network: 'testing-goerli', address: '0xa0B39FCC5FdeB3D839288c3Ec7210AAaf6fB972D', abi: factoryAbi },
 	{ name: 'token', network: 'testing-goerli', address: '0x15733Ab0E019B8Ff529EceB3FA2F33BcdCc4c3a7', abi: tokenAbi },

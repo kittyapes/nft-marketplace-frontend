@@ -10,7 +10,7 @@ import { getContract } from '$utils/misc/getContract';
 import { formatToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
 import axios from 'axios';
-import { ethers, type BigNumber, type BigNumberish } from 'ethers';
+import type { ethers, BigNumber, BigNumberish } from 'ethers';
 import { get } from 'svelte/store';
 
 async function placeBidNormal(listing: Listing, amount: BigNumber): Promise<void> {
@@ -28,10 +28,26 @@ async function placeBidNormal(listing: Listing, amount: BigNumber): Promise<void
 	}
 }
 
-async function getBidSignature(bidder: ethers.Signer, bidAmount: BigNumberish, nonce: BigNumberish): Promise<string> {
-	const message = ethers.utils.solidityKeccak256(['address', 'uint256', 'uint256'], [await bidder.getAddress(), bidAmount, nonce]);
+const GASLESS_BID_TYPES = {
+	Bid: [
+		{ name: 'seller', type: 'address' },
+		{ name: 'listingNonce', type: 'uint256' },
+		{ name: 'bidder', type: 'address' },
+		{ name: 'bidAmount', type: 'uint256' },
+		{ name: 'bidNonce', type: 'uint256' },
+	],
+};
 
-	return await bidder.signMessage(ethers.utils.arrayify(message));
+async function getBidSignature(sellerAddress: string, listingNonce: BigNumberish, bidder: ethers.Signer, bidAmount: BigNumberish, bidNonce: BigNumberish): Promise<string> {
+	const value = {
+		seller: sellerAddress,
+		listingNonce,
+		bidder: await bidder.getAddress(),
+		bidAmount,
+		bidNonce,
+	};
+
+	return await (bidder as any)._signTypedData({}, GASLESS_BID_TYPES, value);
 }
 
 async function placeBidGasless(listing: Listing, amount: BigNumber): Promise<void> {
@@ -52,7 +68,7 @@ async function placeBidGasless(listing: Listing, amount: BigNumber): Promise<voi
 	let signature: string;
 
 	try {
-		signature = await getBidSignature(get(appSigner), amount, nonce);
+		signature = await getBidSignature(listing.seller, listing.nonce, get(appSigner), amount, nonce);
 	} catch (err) {
 		handleErrActionRejected(err, 'Request to sign gasless bid message was rejected.');
 
