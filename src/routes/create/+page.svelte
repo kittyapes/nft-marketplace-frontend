@@ -211,7 +211,7 @@
 			<div>
 				<DragDropImage class="h-56" max_file_size={50_000_000} bind:blob={nftData.assetBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos}>
 					<div slot="lower_text">
-						MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
+						PNG, JPEG, JPG, GIF, WEBP, WEBM, MP4 | <span class="text-gradient">MAX 50MB</span>
 					</div>
 
 					<div slot="placeholder">
@@ -225,9 +225,9 @@
 			<div>Upload Thumbnail (Optional)</div>
 			<!-- Thumbnail upload -->
 			<div>
-				<DragDropImage class="h-56" max_file_size={3_000_000} bind:blob={nftData.thumbnailBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages}>
+				<DragDropImage class="h-56" max_file_size={10_000_000} bind:blob={nftData.thumbnailBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages}>
 					<div slot="lower_text">
-						MAX 50MB PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
+						PNG, JPEG, JPG, GIF, WEBP | <span class="text-gradient">MAX 50MB</span>
 					</div>
 
 					<div slot="placeholder">
