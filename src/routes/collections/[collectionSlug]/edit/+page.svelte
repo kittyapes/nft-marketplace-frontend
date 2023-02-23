@@ -408,7 +408,7 @@
 					<SocialLinkInput placeholder="Instagram link" bind:value={$collectionData.instagramUrl} iconComponent={Instagram} bind:valid={$formValidity.instagramUrl} />
 					<SocialLinkInput placeholder="Discord link" bind:value={$collectionData.discordUrl} iconComponent={Discord} bind:valid={$formValidity.discordUrl} />
 					<SocialLinkInput placeholder="Twitter link" bind:value={$collectionData.twitterUrl} iconComponent={Twitter} bind:valid={$formValidity.twitterUrl} />
-					<SocialLinkInput placeholder="Personal/Business Email" bind:value={$collectionData.otherUrl} iconComponent={Web} bind:valid={$formValidity.otherUrl} />
+					<SocialLinkInput placeholder="Website link" bind:value={$collectionData.otherUrl} iconComponent={Web} bind:valid={$formValidity.otherUrl} />
 					<SocialLinkInput placeholder="Pixiv link" bind:value={$collectionData.pixivUrl} iconComponent={Pixiv} bind:valid={$formValidity.pixivUrl} />
 					<SocialLinkInput placeholder="Deviantart link" bind:value={$collectionData.deviantartUrl} iconComponent={Deviantart} bind:valid={$formValidity.deviantartUrl} />
 					<SocialLinkInput placeholder="Artstation link" bind:value={$collectionData.artstationUrl} iconComponent={Artstation} bind:valid={$formValidity.artstationUrl} />
