@@ -345,7 +345,7 @@
 					<p class="section-subtext mt-2.5">Upload image</p>
 				</div>
 				<div class="w-1/2">
-					<DragDropImage max_file_size={10_000_000} class="h-48" on:new-blob={newCoverBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.backgroundImageUrl}>
+					<DragDropImage max_file_size={50_000_000} class="h-48" on:new-blob={newCoverBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.backgroundImageUrl}>
 						<p slot="placeholder" class="section-subtext font-medium">
 							Drag and drop an image <br />
 							or
@@ -437,7 +437,7 @@
 					<div class="section-title">Explicit & Sensitive Content</div>
 					<p class="my-3 section-subtext">Set this collection as explicit and sensitive content.</p>
 				</div>
-				<Toggle style={{ button: 'bg-[#747474]', pill: '!w-14 bg-gradient-a' }} onInsideLabel="" offInsideLabel="" bind:state={$collectionData.isExplicitSenstive} />
+				<Toggle bind:state={$collectionData.isExplicitSenstive} />
 			</div>
 
 			{#if !formValid}
