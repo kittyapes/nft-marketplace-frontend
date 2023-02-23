@@ -24,7 +24,6 @@ export interface Collection {
 	facebookUrl?: string;
 	twitterUrl?: string;
 	websiteUrl?: string;
-	otherUrl?: string;
 	telegramUrl?: string;
 	pixivUrl?: string;
 	blockchain?: string;
