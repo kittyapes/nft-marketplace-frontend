@@ -352,7 +352,7 @@
 							<span class="text-gradient">click to browse</span>
 						</p>
 						<p slot="lower_text" class="section-subtext mt-2.5">
-							PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
+							PNG, JPEG, JPG, GIF, WEBP, WEBM, MP4 | <span class="text-gradient">MAX 50MB</span>
 						</p>
 					</DragDropImage>
 				</div>
