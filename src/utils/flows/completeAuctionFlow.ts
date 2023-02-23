@@ -40,13 +40,13 @@ async function completeAuctionGasless(listing: Listing): Promise<void> {
 			collections: listing.nfts.map((nft) => nft.contractAddress),
 			tokenIds: listing.nfts.map((nft) => nft.nftId),
 			tokenAmounts: listing.nfts.map((nft) => nft.amount),
+			nonce: listing.nonce,
 		},
 		{
 			bidder: highestBid.bidder,
 			bidAmount: BigNumber.from(highestBid.bidPrice),
+			nonce: highestBid.nonce,
 		},
-		listing.nonce,
-		highestBid.nonce,
 		listing.signature,
 		highestBid.signature,
 	];
