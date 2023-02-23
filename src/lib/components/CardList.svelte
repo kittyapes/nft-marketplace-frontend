@@ -25,27 +25,25 @@
 		</button>
 		<h1 class="mt-12 mb-4 text-5xl font-light">{title}</h1>
 
-		{#if commonComponentProps.length}
-			<div class="py-12 cardGrid" in:slide|local>
-				{#if showFirstComponent}
-					<svelte:component this={firstRenderComponent} on:click={() => dispatch('first-component-click')} />
-				{/if}
-				{#each commonComponentProps as props}
-					<svelte:component this={commonRenderComponent} {...props} on:click={() => dispatch('component-click', props)} />
-				{/each}
-				{#if !showFirstComponent && loaded && !commonComponentProps.length}
-					<div class="p-20 text-lg font-semibold text-center opacity-60 min-w-max">Nothing to see here, move along.</div>
-				{:else if !loaded}
-					<DiamondsLoader />
-				{/if}
-			</div>
-		{/if}
+		<div class="py-12 cardGrid" in:slide|local>
+			{#if showFirstComponent}
+				<svelte:component this={firstRenderComponent} on:click={() => dispatch('first-component-click')} />
+			{/if}
+			{#each commonComponentProps as props}
+				<svelte:component this={commonRenderComponent} {...props} on:click={() => dispatch('component-click', props)} />
+			{/each}
+			{#if !showFirstComponent && loaded && !commonComponentProps.length}
+				<div class="p-20 text-lg font-semibold text-center opacity-60 min-w-max">Nothing to see here, move along.</div>
+			{:else if !loaded}
+				<DiamondsLoader />
+			{/if}
+		</div>
 	</div>
 </div>
 
 <style lang="postcss">
 	.cardGrid {
-		@apply grid min-w-full gap-4 place-items-center justify-center;
-		grid-template-columns: repeat(auto-fit, 18rem);
+		@apply grid min-w-full min-h-full gap-4 place-items-center justify-center;
+		grid-template-columns: repeat(auto-fill, 18rem);
 	}
 </style>

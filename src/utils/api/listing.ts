@@ -135,8 +135,6 @@ export async function getTrendingListings(count?: number) {
 	const res = await axios.get(getApiUrl('latest', 'listings/trending'), { params }).catch((e) => console.log(e.response));
 	if (!res) return [];
 
-	console.log(res);
-
 	return res.data.data as Listing[];
 }
 

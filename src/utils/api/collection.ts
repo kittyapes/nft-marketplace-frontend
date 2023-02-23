@@ -214,7 +214,7 @@ export async function apiSearchCollections(options?: CollectionSearchOptions) {
 	}
 
 	if (!options.status) options.status = 'ACTIVE';
-	else if (options.status === 'ALL') options.status = null;
+	else if (options.status === 'ALL') (options as any).status = ['ACTIVE', 'INACTIVE'];
 
 	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: options });
 	if (res.status !== 200) {

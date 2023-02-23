@@ -48,11 +48,6 @@ export async function publishNotification(options: PublishNotificationOptions): 
 
 // GET NOTIFICATIONS
 
-export type GetNotificationOptions = {
-	from?: string;
-	to?: string;
-};
-
 export type UserNotification = Notification & {
 	content: string;
 	title?: string;
@@ -61,6 +56,8 @@ export type UserNotification = Notification & {
 	readAt: null | string;
 	publishAt: string;
 	expireAt: string;
+	targets?: string[];
+	location?: string;
 };
 
 export type GetNotificationsRes = {
@@ -68,8 +65,14 @@ export type GetNotificationsRes = {
 	data: UserNotification[];
 };
 
-export async function getNotifications(options?: GetNotificationOptions): Promise<ApiCallResult<GetNotificationsRes>> {
-	const res = await api.get(getApiUrl(null, '/notifications'), { params: options, ...(await getAxiosConfig()) });
+export async function getNotifications(isUserAuthenticated = true): Promise<ApiCallResult<GetNotificationsRes>> {
+	let res;
+
+	if (isUserAuthenticated) {
+		res = await api.get(getApiUrl(null, '/notifications'), { ...(await getAxiosConfig()) });
+	} else {
+		res = await api.get(getApiUrl(null, '/notifications'));
+	}
 
 	return res;
 }
@@ -139,8 +142,6 @@ export async function updateNotificationAsAdmin(options: UpdateNotificationAsAdm
 		...(options.publishAt ? { publishAt: dayjs(options.publishAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
 		...(options.expireAt ? { expireAt: dayjs(options.expireAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
 	};
-
-	console.log(params);
 
 	const res = await api.put(getApiUrl(null, '/notifications/' + options.id), params, await getAxiosConfig());
 

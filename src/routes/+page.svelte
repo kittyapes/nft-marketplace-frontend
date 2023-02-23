@@ -15,10 +15,10 @@
 	import NotificationBar from '$lib/components/NotificationBar.svelte';
 	import { getNotifications, updateNotificationAsUser, type UserNotification } from '$utils/api/notifications';
 	import dayjs from 'dayjs';
-	import { notifyError } from '$utils/toast';
+	import { WalletState, walletState } from '$utils/wallet';
 	import { currentUserAddress } from '$stores/wallet';
-	import CreatorWithNfts from '$lib/components/v2/CreatorWithNfts/CreatorWithNfts.svelte';
-	import { goto } from '$app/navigation';
+
+	$: isWalletDataLoaded = $walletState === WalletState.DISCONNECTED || ($currentUserAddress && $walletState === WalletState.CONNECTED);
 
 	let trendingListings = writable<Listing[]>([]);
 	let loadedTrendingListings = writable(false);
@@ -52,9 +52,11 @@
 
 	const getUserNotification = async () => {
 		if (!$userNotification) loadedUserNotification.set(false);
-		const res = (await getNotifications()).data.data;
 
-		const notification = res.find((n) => !n.hasCleared && dayjs().isAfter(dayjs(n.publishAt)) && (!n.expireAt || dayjs().isBefore(dayjs(n.expireAt))));
+		const res = (await getNotifications(!!$currentUserAddress))?.data?.data;
+		if (!res) return;
+
+		const notification = res.find((n) => !n.hasCleared && n.location === 'GLOBAL' && dayjs().isAfter(dayjs(n.publishAt)) && (!n.expireAt || dayjs().isBefore(dayjs(n.expireAt))));
 		userNotificationCleared.set(false);
 
 		if (!notification) {
@@ -86,9 +88,7 @@
 		getTrendingListingsData();
 	});
 
-	$: if ($currentUserAddress) {
-		getUserNotification();
-	}
+	$: if (isWalletDataLoaded) getUserNotification();
 </script>
 
 <MetaTags

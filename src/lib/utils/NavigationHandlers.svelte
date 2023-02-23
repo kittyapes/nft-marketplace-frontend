@@ -33,7 +33,7 @@
 	}
 
 	function getWalletRequiredRoutes() {
-		return [RegExp('create.*')];
+		return [RegExp('create.*'), RegExp('profile/edit'), RegExp('management.*'), RegExp('admin.*'), RegExp('collections/new/edit')];
 	}
 
 	// Check if the path needs a wallet connected. If yes, check if the user is connected.
@@ -105,8 +105,8 @@
 	// Handler for when the app is first loaded on a auth protected route
 	afterNavigate(async ({ from, to }) => {
 		// Restrict routes to verified creators
-		if (to.url.pathname.match(/create*/) || to.url.pathname === '/collections/new/edit' || to.url.pathname.match(/management*/)) {
-			if (to.url.pathname.match(/create*/) || to.url.pathname === '/collections/new/edit') {
+		if (to.url.pathname.match(/create\/*/) || to.url.pathname === '/collections/new/edit' || to.url.pathname.match(/management*/)) {
+			if (to.url.pathname.match(/create\/*/) || to.url.pathname === '/collections/new/edit') {
 				profileData.subscribe((profile) => {
 					if (profile && (profile.roles.includes('inactivated_user') || !profile.roles.includes('verified_user'))) {
 						if (!profile.roles.includes('superadmin')) {

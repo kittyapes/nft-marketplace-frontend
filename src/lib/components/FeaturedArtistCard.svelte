@@ -13,8 +13,7 @@
 		created?: number;
 	};
 
-	export let includeCreatedNumber = false;
-
+	export let includeCreatedNumber = true;
 	export let followed = false;
 
 	async function handleFollow() {
@@ -57,7 +56,7 @@
 				</button>
 
 				{#if includeCreatedNumber}
-					<div class="pr-2 font-medium">Created {creatorData.created || 'N/A'}</div>
+					<div class="pr-2 font-medium">Created {creatorData.created}</div>
 				{/if}
 			</div>
 		</div>

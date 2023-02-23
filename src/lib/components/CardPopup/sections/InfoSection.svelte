@@ -9,6 +9,7 @@
 	import { fade } from 'svelte/transition';
 	import 'simplebar';
 	import 'simplebar/dist/simplebar.css';
+	import AddressLink from '$lib/components/v2/AddressLink/AddressLink.svelte';
 
 	export let options: CardOptions;
 
@@ -34,7 +35,7 @@
 		{ name: 'Token Standard', value: singleNft.contractType },
 		{
 			name: 'Fees and Royalties',
-			value: marketFee + ' % Fee | ' + royaltyPercentage,
+			value: marketFee ?? 'N/A' + ' % Fee | ' + royaltyPercentage,
 		},
 		{ name: 'Token ID', value: singleNft.onChainId },
 		{ name: 'Blockchain', value: options.listingData?.paymentTokenTicker || options.rawResourceData.chain },
@@ -74,18 +75,21 @@
 		<div class="overflow-hidden">
 			<div class="--property-name text-gradient">Creator</div>
 			<div class="--property-value">
-				{#if creatorAddress}
-					<a href={'/profile/' + creatorAddress} on:click={() => closePopup()}>{creatorAddress || 'N/A'}</a>
-				{:else}
-					{'N/A'}
-				{/if}
+				<AddressLink address={creatorAddress} />
 			</div>
 		</div>
 
-		<div class="overflow-hidden">
-			<div class="--property-name text-gradient">Owner</div>
-			<div class="--property-value">Unknown</div>
-		</div>
+		{#if options.resourceType === 'listing'}
+			<div class="overflow-hidden">
+				<div class="--property-name text-gradient">Seller</div>
+				<div class="--property-value"><AddressLink address={options.rawListingData.seller} /></div>
+			</div>
+		{:else}
+			<div class="overflow-hidden">
+				<div class="--property-name text-gradient">Owner</div>
+				<div class="--property-value"><AddressLink address={options.rawResourceData.owner} /></div>
+			</div>
+		{/if}
 
 		<div class="overflow-hidden col-span-2">
 			<div class="--property-name text-gradient">Collection Name</div>
