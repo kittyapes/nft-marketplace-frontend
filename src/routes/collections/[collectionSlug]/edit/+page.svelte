@@ -292,16 +292,18 @@
 
 		return {
 			description: d.description,
-			discordUrl: d.discordUrl,
 			displayTheme: d.displayTheme,
 			instagramUrl: d.instagramUrl,
 			// senstive === hotfix for a backend typo...
 			isExplicitSenstive: d.isExplicitSenstive || false,
 			name: d.name,
 			slug: d.slug.toLowerCase(),
-			telegramUrl: d.telegramUrl,
+			discordUrl: d.discordUrl,
 			twitterUrl: d.twitterUrl,
 			websiteUrl: d.websiteUrl,
+			artstationUrl: d.artstationUrl,
+			deviantartUrl: d.deviantartUrl,
+			pixivUrl: d.pixivUrl,
 			logoImage: collectionData.image,
 			backgroundImage: collectionData.cover,
 			id: d.id,

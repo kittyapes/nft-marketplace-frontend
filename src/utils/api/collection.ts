@@ -126,7 +126,9 @@ export interface UpdateCollectionOptions {
 	discordUrl: string;
 	twitterUrl: string;
 	websiteUrl: string;
-	telegramUrl: string;
+	pixivUrl: string;
+	artstationUrl: string;
+	deviantartUrl: string;
 	isExplicitSenstive: boolean;
 	logoImage?: Blob;
 	backgroundImage?: Blob;
