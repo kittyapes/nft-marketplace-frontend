@@ -7,7 +7,6 @@
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import EthV2 from '$icons/eth-v2.svelte';
 	import type { UserData } from '$interfaces/userData';
-	import { includes } from 'lodash-es';
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 
 	export let collectionData: Collection;
@@ -15,7 +14,7 @@
 
 	let showCollectionMenu = false;
 
-	$: address = creatorData?.address;
+	$: address = collectionData?.collectionAddress;
 
 	const reportCollection = async () => {
 		// TODO logic to report a collection
