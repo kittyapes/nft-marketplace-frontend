@@ -192,7 +192,6 @@
 	}
 
 	async function _createCollection() {
-		console.log($collectionData);
 		const [contractError, contractRes] = await noTryAsync(() =>
 			contractCreateCollection({
 				name: $collectionData.name,
@@ -293,16 +292,18 @@
 
 		return {
 			description: d.description,
-			discordUrl: d.discordUrl,
 			displayTheme: d.displayTheme,
 			instagramUrl: d.instagramUrl,
 			// senstive === hotfix for a backend typo...
 			isExplicitSenstive: d.isExplicitSenstive || false,
 			name: d.name,
 			slug: d.slug.toLowerCase(),
-			telegramUrl: d.telegramUrl,
+			discordUrl: d.discordUrl,
 			twitterUrl: d.twitterUrl,
-			websiteUrl: d.otherUrl,
+			websiteUrl: d.websiteUrl,
+			artstationUrl: d.artstationUrl,
+			deviantartUrl: d.deviantartUrl,
+			pixivUrl: d.pixivUrl,
 			logoImage: collectionData.image,
 			backgroundImage: collectionData.cover,
 			id: d.id,
@@ -408,7 +409,7 @@
 					<SocialLinkInput placeholder="Instagram link" bind:value={$collectionData.instagramUrl} iconComponent={Instagram} bind:valid={$formValidity.instagramUrl} />
 					<SocialLinkInput placeholder="Discord link" bind:value={$collectionData.discordUrl} iconComponent={Discord} bind:valid={$formValidity.discordUrl} />
 					<SocialLinkInput placeholder="Twitter link" bind:value={$collectionData.twitterUrl} iconComponent={Twitter} bind:valid={$formValidity.twitterUrl} />
-					<SocialLinkInput placeholder="Website link" bind:value={$collectionData.otherUrl} iconComponent={Web} bind:valid={$formValidity.otherUrl} />
+					<SocialLinkInput placeholder="Website link" bind:value={$collectionData.websiteUrl} iconComponent={Web} bind:valid={$formValidity.websiteUrl} />
 					<SocialLinkInput placeholder="Pixiv link" bind:value={$collectionData.pixivUrl} iconComponent={Pixiv} bind:valid={$formValidity.pixivUrl} />
 					<SocialLinkInput placeholder="Deviantart link" bind:value={$collectionData.deviantartUrl} iconComponent={Deviantart} bind:valid={$formValidity.deviantartUrl} />
 					<SocialLinkInput placeholder="Artstation link" bind:value={$collectionData.artstationUrl} iconComponent={Artstation} bind:valid={$formValidity.artstationUrl} />
