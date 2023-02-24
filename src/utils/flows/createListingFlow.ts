@@ -35,6 +35,24 @@ interface CreateNormalArgs {
 	tokenAmounts: BigNumber[];
 }
 
+const GASLESS_CREATE_LISTING_TYPES = {
+	Listing: [
+		{ name: 'seller', type: 'address' },
+		{ name: 'payToken', type: 'address' },
+		{ name: 'price', type: 'uint128' },
+		{ name: 'reservePrice', type: 'uint128' },
+		{ name: 'startTime', type: 'uint64' },
+		{ name: 'duration', type: 'uint64' },
+		{ name: 'expireTime', type: 'uint64' },
+		{ name: 'quantity', type: 'uint64' },
+		{ name: 'listingType', type: 'uint8' },
+		{ name: 'collections', type: 'address[]' },
+		{ name: 'tokenIds', type: 'uint256[]' },
+		{ name: 'tokenAmounts', type: 'uint256[]' },
+		{ name: 'nonce', type: 'uint256' },
+	],
+};
+
 async function getGaslessListingSignature(
 	seller: ethers.Signer,
 	payTokenAddress: string,
@@ -50,29 +68,23 @@ async function getGaslessListingSignature(
 	tokenAmounts: BigNumber[],
 	nonce: BigNumber,
 ) {
-	const message = ethers.utils.solidityKeccak256(
-		['address', 'address', 'uint128', 'uint128', 'uint64', 'uint64', 'uint64', 'uint64', 'uint8', 'address[]', 'uint256[]', 'uint256[]', 'uint256'],
-		[await seller.getAddress(), payTokenAddress, price, reservePrice, startTime, duration, expireTime, quantity, listingType, collections, tokenIds, tokenAmounts, nonce],
-	);
+	const value = {
+		seller: await seller.getAddress(),
+		payToken: payTokenAddress,
+		price,
+		reservePrice,
+		startTime,
+		duration,
+		expireTime,
+		quantity,
+		listingType,
+		collections,
+		tokenIds,
+		tokenAmounts,
+		nonce,
+	};
 
-	console.debug('Using followin parameters for gasless listing signature generation.');
-	console.debug([
-		await seller.getAddress(),
-		payTokenAddress,
-		price.toString(),
-		reservePrice.toString(),
-		startTime.toString(),
-		duration.toString(),
-		expireTime.toString(),
-		quantity.toString(),
-		listingType.toString(),
-		collections.map((v) => v.toString()),
-		tokenIds.map((v) => v.toString()),
-		tokenAmounts.map((v) => v.toString()),
-		nonce.toString(),
-	]);
-
-	return await seller.signMessage(ethers.utils.arrayify(message));
+	return await (seller as any)._signTypedData({}, GASLESS_CREATE_LISTING_TYPES, value);
 }
 
 export interface CreateListingFlowOptions extends Partial<ConfigurableListingProps> {

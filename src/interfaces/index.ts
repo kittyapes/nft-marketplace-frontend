@@ -43,7 +43,7 @@ export interface SaleDataModel {
 	quantity: {
 		nftFullId: string;
 		amount: number;
-	};
+	}[];
 }
 
 export interface AuctionDataModel {

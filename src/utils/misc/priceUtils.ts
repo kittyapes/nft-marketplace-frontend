@@ -1,5 +1,5 @@
 import { connectionDetails } from '$stores/wallet';
-import { ethers } from 'ethers';
+import { ethers, type BigNumberish } from 'ethers';
 import { get } from 'svelte/store';
 
 const knownTokens: { ticker: string; address: string; network: string; decimals: number }[] = [
@@ -102,7 +102,7 @@ export function parseToken(amount: string, tokenAddress: string, fallback?: ethe
 	}
 }
 
-export function formatToken(amount: string, tokenAddress: string) {
+export function formatToken(amount: BigNumberish, tokenAddress: string) {
 	const tokenDetails = getKnownTokenDetails({ tokenAddress: tokenAddress });
 
 	return ethers.utils.formatUnits(amount, tokenDetails.decimals);
