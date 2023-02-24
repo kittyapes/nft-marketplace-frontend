@@ -345,14 +345,14 @@
 					<p class="section-subtext mt-2.5">Upload image</p>
 				</div>
 				<div class="w-1/2">
-					<DragDropImage max_file_size={10_000_000} class="h-48" on:new-blob={newCoverBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.backgroundImageUrl}>
+					<DragDropImage max_file_size={50_000_000} class="h-48" on:new-blob={newCoverBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.backgroundImageUrl}>
 						<p slot="placeholder" class="section-subtext font-medium">
 							Drag and drop an image <br />
 							or
 							<span class="text-gradient">click to browse</span>
 						</p>
 						<p slot="lower_text" class="section-subtext mt-2.5">
-							PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
+							PNG, JPEG, JPG, GIF, WEBP, WEBM, MP4 | <span class="text-gradient">MAX 50MB</span>
 						</p>
 					</DragDropImage>
 				</div>
@@ -408,7 +408,7 @@
 					<SocialLinkInput placeholder="Instagram link" bind:value={$collectionData.instagramUrl} iconComponent={Instagram} bind:valid={$formValidity.instagramUrl} />
 					<SocialLinkInput placeholder="Discord link" bind:value={$collectionData.discordUrl} iconComponent={Discord} bind:valid={$formValidity.discordUrl} />
 					<SocialLinkInput placeholder="Twitter link" bind:value={$collectionData.twitterUrl} iconComponent={Twitter} bind:valid={$formValidity.twitterUrl} />
-					<SocialLinkInput placeholder="Personal/Business Email" bind:value={$collectionData.otherUrl} iconComponent={Web} bind:valid={$formValidity.otherUrl} />
+					<SocialLinkInput placeholder="Website link" bind:value={$collectionData.otherUrl} iconComponent={Web} bind:valid={$formValidity.otherUrl} />
 					<SocialLinkInput placeholder="Pixiv link" bind:value={$collectionData.pixivUrl} iconComponent={Pixiv} bind:valid={$formValidity.pixivUrl} />
 					<SocialLinkInput placeholder="Deviantart link" bind:value={$collectionData.deviantartUrl} iconComponent={Deviantart} bind:valid={$formValidity.deviantartUrl} />
 					<SocialLinkInput placeholder="Artstation link" bind:value={$collectionData.artstationUrl} iconComponent={Artstation} bind:valid={$formValidity.artstationUrl} />
@@ -437,7 +437,7 @@
 					<div class="section-title">Explicit & Sensitive Content</div>
 					<p class="my-3 section-subtext">Set this collection as explicit and sensitive content.</p>
 				</div>
-				<Toggle style={{ button: 'bg-[#747474]', pill: '!w-14 bg-gradient-a' }} onInsideLabel="" offInsideLabel="" bind:state={$collectionData.isExplicitSenstive} />
+				<Toggle bind:state={$collectionData.isExplicitSenstive} />
 			</div>
 
 			{#if !formValid}
