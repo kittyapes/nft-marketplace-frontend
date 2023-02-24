@@ -51,10 +51,10 @@
 	{/if}
 </div>
 
-<div class="flex mt-4">
+<!-- <div class="flex mt-4">
 	<div class="flex-grow text-lg">Gasless Listing</div>
 	<Toggle bind:state={gasless} />
-</div>
+</div> -->
 
 <div class="flex flex-wrap justify-center gap-4 mt-24 mb-64">
 	<ListingTypeButton
@@ -65,6 +65,7 @@
 		}}
 		iconComponent={AuctionListingTypeOption}
 		title="Auction"
+		disabled={gasless}
 	/>
 
 	<ListingTypeButton

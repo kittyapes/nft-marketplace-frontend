@@ -118,10 +118,10 @@
 		<div class="mt-2"><ListingTypeSwitch bind:selectedType={listingType} disabled={isListing} /></div>
 
 		<!-- Gasless switch -->
-		<div class="flex mt-8">
+		<!-- <div class="flex mt-8">
 			<div class="flex-grow text-lg">Gasless Listing</div>
 			<Toggle bind:state={isGasless} disabled={isListing} />
-		</div>
+		</div> -->
 
 		<div class="mt-6">
 			<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} bind:this={_listingProperties} disabled={isListing} />
