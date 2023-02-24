@@ -1,4 +1,12 @@
-<button on:click class="w-full bg-gradient border-2 border-white border-opacity-70 text-white text-opacity-70 font-semibold text-lg leading-7 transition-btn {$$props.class}">
+<script lang="ts">
+	export let disabled = false;
+</script>
+
+<button
+	on:click
+	{disabled}
+	class="w-full bg-gradient border-2 border-white border-opacity-70 text-white text-opacity-70 font-semibold text-lg leading-7 transition-btn disabled:brightness-50 transition {$$props.class}"
+>
 	<slot />
 </button>
 

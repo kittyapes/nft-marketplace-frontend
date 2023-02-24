@@ -25,7 +25,8 @@
 					{ "internalType": "enum HinataMarketV2.ListingType", "name": "listingType", "type": "uint8" },
 					{ "internalType": "address[]", "name": "collections", "type": "address[]" },
 					{ "internalType": "uint256[]", "name": "tokenIds", "type": "uint256[]" },
-					{ "internalType": "uint256[]", "name": "tokenAmounts", "type": "uint256[]" }
+					{ "internalType": "uint256[]", "name": "tokenAmounts", "type": "uint256[]" },
+					{ "internalType": "uint256", "name": "nonce", "type": "uint256" }
 				],
 				"indexed": false,
 				"internalType": "struct HinataMarketV2.Listing",
@@ -77,7 +78,6 @@
 		"type": "function"
 	},
 	{ "inputs": [], "name": "beneficiary", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" },
-	{ "inputs": [{ "internalType": "bytes", "name": "signature", "type": "bytes" }], "name": "cancelSignature", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
 	{
 		"inputs": [
 			{
@@ -93,7 +93,8 @@
 					{ "internalType": "enum HinataMarketV2.ListingType", "name": "listingType", "type": "uint8" },
 					{ "internalType": "address[]", "name": "collections", "type": "address[]" },
 					{ "internalType": "uint256[]", "name": "tokenIds", "type": "uint256[]" },
-					{ "internalType": "uint256[]", "name": "tokenAmounts", "type": "uint256[]" }
+					{ "internalType": "uint256[]", "name": "tokenAmounts", "type": "uint256[]" },
+					{ "internalType": "uint256", "name": "nonce", "type": "uint256" }
 				],
 				"internalType": "struct HinataMarketV2.Listing",
 				"name": "listing",
@@ -102,14 +103,13 @@
 			{
 				"components": [
 					{ "internalType": "address", "name": "bidder", "type": "address" },
-					{ "internalType": "uint256", "name": "bidAmount", "type": "uint256" }
+					{ "internalType": "uint256", "name": "bidAmount", "type": "uint256" },
+					{ "internalType": "uint256", "name": "nonce", "type": "uint256" }
 				],
 				"internalType": "struct HinataMarketV2.Bidding",
 				"name": "bidding",
 				"type": "tuple"
 			},
-			{ "internalType": "uint256", "name": "nonce", "type": "uint256" },
-			{ "internalType": "uint256", "name": "nonceForBid", "type": "uint256" },
 			{ "internalType": "bytes", "name": "signature", "type": "bytes" },
 			{ "internalType": "bytes", "name": "signatureForBid", "type": "bytes" }
 		],
@@ -156,13 +156,6 @@
 		"name": "initialize",
 		"outputs": [],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [{ "internalType": "bytes", "name": "", "type": "bytes" }],
-		"name": "invalidSignatures",
-		"outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{ "inputs": [], "name": "limitCount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
@@ -221,18 +214,28 @@
 					{ "internalType": "enum HinataMarketV2.ListingType", "name": "listingType", "type": "uint8" },
 					{ "internalType": "address[]", "name": "collections", "type": "address[]" },
 					{ "internalType": "uint256[]", "name": "tokenIds", "type": "uint256[]" },
-					{ "internalType": "uint256[]", "name": "tokenAmounts", "type": "uint256[]" }
+					{ "internalType": "uint256[]", "name": "tokenAmounts", "type": "uint256[]" },
+					{ "internalType": "uint256", "name": "nonce", "type": "uint256" }
 				],
 				"internalType": "struct HinataMarketV2.Listing",
 				"name": "listing",
 				"type": "tuple"
 			},
-			{ "internalType": "uint256", "name": "nonce", "type": "uint256" },
 			{ "internalType": "bytes", "name": "signature", "type": "bytes" }
 		],
 		"name": "purchaseListing",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{ "internalType": "address[]", "name": "accounts", "type": "address[]" },
+			{ "internalType": "uint256[]", "name": "nonces", "type": "uint256[]" }
+		],
+		"name": "queryNonces",
+		"outputs": [{ "internalType": "bool[]", "name": "res", "type": "bool[]" }],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -286,22 +289,13 @@
 		"stateMutability": "payable",
 		"type": "function"
 	},
+	{ "inputs": [{ "internalType": "uint256", "name": "nonce", "type": "uint256" }], "name": "useNonce", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
 	{
 		"inputs": [
 			{ "internalType": "address", "name": "", "type": "address" },
 			{ "internalType": "uint256", "name": "", "type": "uint256" }
 		],
 		"name": "usedNonces",
-		"outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{ "internalType": "address", "name": "", "type": "address" },
-			{ "internalType": "uint256", "name": "", "type": "uint256" }
-		],
-		"name": "usedNoncesForBid",
 		"outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
 		"stateMutability": "view",
 		"type": "function"

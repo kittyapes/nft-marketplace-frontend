@@ -19,7 +19,7 @@
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
 	import { capitalize } from 'lodash-es';
-	import { onMount } from 'svelte';
+	import { onMount, SvelteComponent } from 'svelte';
 	import { writable } from 'svelte/store';
 	import Spinner from '$lib/components/v2/Spinner/Spinner.svelte';
 	import Info from '$icons/info.v2.svelte';
@@ -31,6 +31,7 @@
 	const isGasless = $page.url.searchParams.get('gasless') === '1';
 
 	let listingType = $page.url.searchParams.get('type') as ListingType;
+	let listingPropsComponent: SvelteComponent;
 
 	const fetchedNftData = writable<ApiNftData>(null);
 
@@ -38,6 +39,9 @@
 
 	// Fetch NFT data on mount to show a preview
 	onMount(async () => {
+		// Set default listing duration
+		listingPropsComponent?.setValues({ durationSeconds: 60 * 60 * 24 });
+
 		// Go back to listing type selection if the listing type is not set
 		if (!['sale', 'auction'].includes(listingType)) {
 			goto('/create/choose-listing-format/' + nftId);
@@ -172,7 +176,7 @@
 		</h1>
 
 		<div class="pr-8 mt-8">
-			<ListingProperties {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} compact />
+			<ListingProperties bind:this={listingPropsComponent} {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} compact />
 		</div>
 
 		<!-- Fee grid -->

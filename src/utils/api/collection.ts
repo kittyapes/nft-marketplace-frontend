@@ -24,7 +24,6 @@ export interface Collection {
 	facebookUrl?: string;
 	twitterUrl?: string;
 	websiteUrl?: string;
-	otherUrl?: string;
 	telegramUrl?: string;
 	pixivUrl?: string;
 	blockchain?: string;
@@ -127,7 +126,9 @@ export interface UpdateCollectionOptions {
 	discordUrl: string;
 	twitterUrl: string;
 	websiteUrl: string;
-	telegramUrl: string;
+	pixivUrl: string;
+	artstationUrl: string;
+	deviantartUrl: string;
 	isExplicitSenstive: boolean;
 	logoImage?: Blob;
 	backgroundImage?: Blob;

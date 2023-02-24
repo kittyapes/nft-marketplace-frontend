@@ -70,8 +70,8 @@ async function purchaseGasless(listing: Listing) {
 			collections: listing.nfts.map((nft) => nft.contractAddress),
 			tokenIds: listing.nfts.map((nft) => nft.nftId),
 			tokenAmounts: listing.nfts.map((nft) => nft.amount),
+			nonce: listing.nonce,
 		},
-		listing.nonce,
 		listing.signature,
 	];
 

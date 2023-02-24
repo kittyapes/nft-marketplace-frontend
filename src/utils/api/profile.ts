@@ -71,6 +71,7 @@ export async function fetchCurrentUserData(): Promise<{
 	queueDate: number;
 	updatedAt: string;
 	username: string;
+	lastUsedBidNonce: number;
 }> {
 	try {
 		const res = await axios.get(getApiUrl('latest', 'users'), await getAxiosConfig());
