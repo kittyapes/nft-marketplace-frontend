@@ -2,14 +2,14 @@
 	import { goto } from '$app/navigation';
 	import { nftDraft } from '$stores/create';
 
-	export let collectionId: string;
+	export let collectionAddress: string;
 </script>
 
 <div
 	class="custom-dashed-border clickable hover:scale-105 transition-all min-h-[15rem] min-w-[260px] inline-block"
 	on:click={() => {
 		$nftDraft = {};
-		$nftDraft.collectionId = collectionId;
+		$nftDraft.collectionAddress = collectionAddress;
 		goto('/create');
 	}}
 >

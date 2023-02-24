@@ -33,7 +33,7 @@
 	let index = 1;
 	const limit = 12;
 
-	$: createNewNftBtn = $currentUserAddress === collectionData?.creator ? `${collectionData?.id}` : '';
+	$: createNewNftBtn = $currentUserAddress === collectionData?.creator ? `${collectionData?.collectionAddress}` : '';
 
 	$: if (nfts.length > 0) {
 		displayedNfts = nfts;
