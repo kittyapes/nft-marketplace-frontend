@@ -1,67 +1,109 @@
-import type { ContractError } from '$interfaces/contractError';
-import { appSigner, currentUserAddress } from '$stores/wallet';
+import { profileData, refreshProfileData } from '$stores/user';
+import { appSigner } from '$stores/wallet';
+import { handleAxiosNetworkError, HandledError, handleErrActionRejected } from '$utils';
 import { getApiUrl } from '$utils/api';
 import type { Listing } from '$utils/api/listing';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import contractCaller from '$utils/contracts/contractCaller';
-import { getOnChainListing } from '$utils/contracts/listing';
-import { ensureAmountApproved, getTokenDetails } from '$utils/contracts/token';
+import { ensureAmountApproved } from '$utils/contracts/token';
 import { getContract } from '$utils/misc/getContract';
+import { formatToken } from '$utils/misc/priceUtils';
 import { notifyError } from '$utils/toast';
 import axios from 'axios';
-import { ethers } from 'ethers';
-import { solidityKeccak256 } from 'ethers/lib/utils';
+import type { ethers, BigNumber, BigNumberish } from 'ethers';
 import { get } from 'svelte/store';
 
-const PLACE_BID_SOL_TYPES = ['uint256', 'address', 'uint256'];
-
-export async function placeBidFlow(listingId: string, amount: string, txType: Listing['transactionType']): Promise<{ error: Error } | void> {
-	const listing = await getOnChainListing(listingId);
-
-	if (!listing?.isValidOnChainListing) {
-		notifyError('Failed to Place Bid: Listing is no longer valid');
-		return;
-	}
-
+async function placeBidNormal(listing: Listing, amount: BigNumber): Promise<void> {
 	const contract = getContract('marketplace');
 
-	await ensureAmountApproved(contract.address, amount, listing.payToken);
+	await ensureAmountApproved(contract.address, amount.toString(), listing.paymentTokenAddress);
 
-	const token = await getTokenDetails(listing.payToken);
+	const callArgs = [listing.listingId, amount];
 
-	// Gasless listing
-	if (txType === 'GASLESS') {
-		const callArgs = [listingId, get(currentUserAddress), ethers.utils.parseUnits(amount, token.decimals)];
+	try {
+		await contractCaller(contract, 'bid', 150, 1, ...callArgs);
+	} catch (err) {
+		console.error(err);
+		notifyError(err.message);
+	}
+}
 
-		const message = solidityKeccak256(PLACE_BID_SOL_TYPES, callArgs);
+const GASLESS_BID_TYPES = {
+	Bid: [
+		{ name: 'seller', type: 'address' },
+		{ name: 'listingNonce', type: 'uint256' },
+		{ name: 'bidder', type: 'address' },
+		{ name: 'bidAmount', type: 'uint256' },
+		{ name: 'bidNonce', type: 'uint256' },
+	],
+};
 
-		let signature: string;
+async function getBidSignature(sellerAddress: string, listingNonce: BigNumberish, bidder: ethers.Signer, bidAmount: BigNumberish, bidNonce: BigNumberish): Promise<string> {
+	const value = {
+		seller: sellerAddress,
+		listingNonce,
+		bidder: await bidder.getAddress(),
+		bidAmount,
+		bidNonce,
+	};
 
-		// Get signature from user
-		try {
-			signature = await get(appSigner).signMessage(message);
-		} catch (err) {
-			if (err.code === 'ACTION_REJECTED') {
-				notifyError('Could not place your bid. Message signature was rejected.');
+	return await (bidder as any)._signTypedData({}, GASLESS_BID_TYPES, value);
+}
 
-				return { error: err };
-			}
-		}
+async function placeBidGasless(listing: Listing, amount: BigNumber): Promise<void> {
+	const contract = getContract('marketplace-v2');
 
-		// Post signature to API
-		axios.post(getApiUrl(null, 'gasless-listings/bid'), {}, await getAxiosConfig());
+	await ensureAmountApproved(contract.address, amount.toString(), listing.paymentTokenAddress);
+
+	try {
+		await refreshProfileData();
+	} catch (err) {
+		throw new HandledError('Failed to refresh profile data.', err);
 	}
 
-	// Normal listing
-	else {
-		const callArgs = [listingId, ethers.utils.parseUnits(amount, token.decimals)];
+	const bidderData = get(profileData);
+	const nonce = bidderData.lastUsedBidNonce + 1;
 
-		try {
-			await contractCaller(contract, 'bid', 150, 1, ...callArgs);
-		} catch (err) {
-			console.log(err);
-			notifyError(err.message);
-			return;
-		}
+	// Get signature from user
+	let signature: string;
+
+	try {
+		signature = await getBidSignature(listing.seller, listing.nonce, get(appSigner), amount, nonce);
+	} catch (err) {
+		handleErrActionRejected(err, 'Request to sign gasless bid message was rejected.');
+
+		throw err;
+	}
+
+	// Call API with bid data
+	const params = {
+		listingId: listing.listingId,
+		bidPrice: amount.toString(),
+		formatBidPrice: formatToken(amount, listing.paymentTokenAddress),
+		nonce,
+		signature,
+	};
+
+	// Build form data
+	const formData = new FormData();
+
+	for (const key in params) {
+		formData.append(key, params[key]);
+	}
+
+	try {
+		await axios.post(getApiUrl(null, 'gasless-listings/bid'), formData, await getAxiosConfig());
+	} catch (err) {
+		handleAxiosNetworkError(err);
+
+		throw err;
+	}
+}
+
+export async function placeBidFlow(listing: Listing, amount: BigNumber): Promise<void> {
+	if (listing.chainStatus === 'GASLESS') {
+		await placeBidGasless(listing, amount);
+	} else {
+		await placeBidNormal(listing, amount);
 	}
 }

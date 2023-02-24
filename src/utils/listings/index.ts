@@ -1,6 +1,8 @@
+import type { AuctionDataModel, SaleDataModel } from '$interfaces';
 import type { Listing, ListingType } from '$utils/api/listing';
 import { LISTING_TYPE } from '$utils/contracts/listing';
 import { getContract } from '$utils/misc/getContract';
+import { formatToken } from '$utils/misc/priceUtils';
 import dayjs from 'dayjs';
 import { BigNumber, ethers } from 'ethers';
 import { cloneDeep } from 'lodash-es';
@@ -65,19 +67,45 @@ export async function getListingUpdatedWithChainData(apiListingData: Listing): P
 		return listing;
 	}
 
+	const listingType = enumListingTypeToString(onChainListing.listingType);
+
+	// Each listing type has different type properties shape saved into the 'listing' field,
+	// generate that
+	let listingData: SaleDataModel | AuctionDataModel;
+
+	// Sale
+	if (listingType === 'sale') {
+		listingData = {
+			price: onChainListing.price.toString(),
+			formatPrice: Number.parseFloat(formatToken(onChainListing.price, onChainListing.payToken)),
+			quantity: [], // is populated later
+		} as SaleDataModel;
+	}
+
+	// Auction
+	else if (listingType === 'auction') {
+		listingData = {
+			startingPrice: onChainListing.price.toString(),
+			formatStartingPrice: Number.parseFloat(formatToken(onChainListing.price, onChainListing.payToken)),
+		} as AuctionDataModel;
+	}
+
+	// Other
+	else {
+		throw new Error('Unsupported listing type read from chain.');
+	}
+
 	const updatedListing: Listing = {
 		...listing,
 		seller: onChainListing.seller,
 		// This is temporary, should be changed to a timestamp on the API
 		startTime: new Date(onChainListing.startTime.toNumber() * 1000).toISOString(),
 		duration: onChainListing.duration.toNumber(),
-		listingType: enumListingTypeToString(onChainListing.listingType),
+		listingType: listingType,
 		paymentTokenAddress: onChainListing.payToken,
 		listing: {
 			...listing.listing,
-			price: onChainListing.price.toString(),
-			reservePrice: onChainListing.reservePrice.toString(),
-			quantity: parseInt(onChainListing.quantity.toString()),
+			...listingData,
 		},
 		nfts: [],
 		foundOnChain: true,
@@ -96,6 +124,11 @@ export async function getListingUpdatedWithChainData(apiListingData: Listing): P
 			...originalNftData,
 			amount: tokenAmount,
 		});
+
+		// Update sale detail quantity field
+		if (listingType === 'sale') {
+			(updatedListing.listing as SaleDataModel).quantity.push({ nftFullId: fullId, amount: tokenAmount });
+		}
 	}
 
 	return updatedListing;

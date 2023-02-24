@@ -12,13 +12,18 @@
 	import { dateToTimestamp, isListingValid } from '$utils/listings';
 	import { parseToken } from '$utils/misc/priceUtils';
 	import { isFuture } from '$utils/misc/time';
-	import { notifyError } from '$utils/toast';
+	import { notifyError, notifySuccess } from '$utils/toast';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
 	import { BigNumber } from 'ethers';
 	import { onMount } from 'svelte';
+	import type { AuctionDataModel } from '$interfaces/index';
+	import { HandledError } from '$utils';
 
 	export let options: CardOptions;
 
+	$: auctionData = options.rawListingData.listing as AuctionDataModel;
+
+	// User input in ETH
 	let bidAmount: string;
 	let bidAmountValid: boolean;
 
@@ -27,29 +32,35 @@
 	async function placeBid() {
 		isPlacingBid = true;
 
-		let bidSuccess: boolean;
+		// Parse bid amount
+		let bidBigNumber: BigNumber;
 
 		try {
-			const res = await placeBidFlow(options.listingData.onChainId, bidAmount, null);
+			bidBigNumber = parseToken(bidAmount, options.rawListingData.paymentTokenAddress);
+		} catch {
+			notifyError('Failed to convert bid amount.');
 
-			if (res && res.error) {
-				bidSuccess = false;
-			} else {
-				bidSuccess = true;
-			}
+			isPlacingBid = false;
+		}
+
+		try {
+			await placeBidFlow(options.rawListingData, bidBigNumber);
 		} catch (err) {
-			bidSuccess = false;
+			if (err instanceof HandledError) {
+				return;
+			}
 
 			console.error(err);
 			notifyError('An unexpected error has occured. Failed to place your bid.');
+
+			return;
+		} finally {
+			isPlacingBid = false;
 		}
 
-		if (bidSuccess) {
-			setTimeout(async () => await refreshBids(), 10000);
-			bidAmount = '';
-		}
-
-		isPlacingBid = false;
+		notifySuccess(`Successfully placed your bid of ${bidAmount} WETH.`);
+		setTimeout(async () => await refreshBids(), 10000);
+		bidAmount = '';
 	}
 
 	let biddings: BidRow[] = [];
@@ -58,26 +69,21 @@
 		const payTokenAddress = options.rawListingData.paymentTokenAddress;
 
 		const parsedValue = parseToken(v, payTokenAddress, null);
-		const parsedPrice = BigNumber.from(options.rawListingData.listing.price);
+		const parsedPrice = BigNumber.from(auctionData.startingPrice);
 		const parsedHighestBid = parseToken(biddings?.[0]?.tokenAmount || '0', payTokenAddress, null);
 
-		console.log(parsedValue, parsedPrice, parsedHighestBid);
-		console.log(1);
 		if ([parsedValue, parsedPrice, parsedHighestBid].some((v) => !v)) {
 			return false;
 		}
 
-		console.log(1);
 		if (parsedValue.lt(parsedPrice)) {
 			return false;
 		}
 
-		console.log(1);
 		if (parsedHighestBid && parsedValue.lte(parsedHighestBid)) {
 			return false;
 		}
 
-		console.log(1);
 		if ($currentUserAddress && $currentUserAddress.toLowerCase() === biddings[0]?.bidderAddress) {
 			bidError = 'You are already the top bidder.';
 			return false;

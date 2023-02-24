@@ -5,18 +5,20 @@
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { contractCompleteAuction } from '$utils/contracts/auction';
 	import type { BidRow } from '$utils/flows/getBiddingsFlow';
 	import { parseToken } from '$utils/misc/priceUtils';
 	import { createToggle } from '$utils/misc/toggle';
-	import { notifyError } from '$utils/toast';
+	import { notifyError, notifySuccess } from '$utils/toast';
 	import { createEventDispatcher } from 'svelte';
 	import Success from './Success.svelte';
 	import dayjs from 'dayjs';
 	import GhostButton from '$lib/components/v2/GhostButton.svelte';
 	import EthV2 from '$icons/eth-v2.svelte';
-	import { listingExistsOnChain } from '$utils/listings';
+	import { isListingValid } from '$utils/listings';
 	import { cancelListingFlow } from '$utils/flows/cancelListingFlow';
+	import type { AuctionDataModel } from '$interfaces/index';
+	import { completeAuctionFlow } from '$utils/flows/completeAuctionFlow';
+	import { HandledError } from '$utils';
 
 	const dispatch = createEventDispatcher();
 
@@ -29,33 +31,36 @@
 	let biddings: BidRow[] = [];
 
 	async function acceptHighest() {
-		if (!(await listingExistsOnChain(options.rawListingData.listingId))) {
-			notifyError('Failed to Accept Highest Bid: Listing is no longer valid (not on chain)');
-			return;
-		}
-
 		isAccepting = true;
 
-		const { err, res } = await contractCompleteAuction(options.listingData.onChainId);
+		try {
+			await completeAuctionFlow(options.rawListingData);
+		} catch (err) {
+			if (err instanceof HandledError) {
+				return;
+			}
 
-		if (err) {
+			notifyError('An unexpected error has occured. Failed to complete your auction.');
 			console.error(err);
-			notifyError('Failed to complete auction.');
-		} else {
-			options.staleResource.set({ reason: 'bid-accepted' });
-			dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Auction completed successfully.' } });
-			dispatch('force-expire');
-			dispatch('set-frame', { component: Success });
+
+			return;
+		} finally {
+			isAccepting = false;
 		}
 
-		isAccepting = false;
+		notifySuccess('Sucessfully completed your auction.');
+
+		options.staleResource.set({ reason: 'bid-accepted' });
+		dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Auction completed successfully.' } });
+		dispatch('force-expire');
+		dispatch('set-frame', { component: Success });
 	}
 
 	let cancelButtonContainer: HTMLElement;
 
 	async function cancelListing() {
-		if (!(await listingExistsOnChain(options.rawListingData.listingId))) {
-			notifyError('Failed to Cancel Listing: Listing is no longer valid (not on chain)');
+		if (!isListingValid(options.rawListingData)) {
+			notifyError('Failed to Cancel Listing: Listing is no longer valid.');
 			return;
 		}
 
@@ -79,9 +84,11 @@
 	let isAccepting = false;
 	let isCancelling = false;
 
+	$: auctionData = options.rawListingData.listing as AuctionDataModel;
+
 	$: payTokenAddress = options.rawListingData.paymentTokenAddress;
-	$: price = options.rawListingData.listing.reservePrice;
-	$: reservePrice = options.rawListingData.listing.reservePrice;
+	$: price = auctionData.reservePrice;
+	$: reservePrice = auctionData.reservePrice;
 
 	$: highestAmount = biddings[0] && parseToken(biddings[0].tokenAmount, payTokenAddress);
 
@@ -123,7 +130,7 @@
 
 	<div class="grid grid-cols-2 gap-3">
 		<div bind:this={cancelButtonContainer} class="w-full" on:pointerenter={cancelHovered.toggle} on:pointerleave={cancelHovered.toggle}>
-			<GhostButton class="h-12" disabled={isCancelling || isAccepting || isRefreshingBids || !canCancel} on:click={cancelListing}>
+			<GhostButton class="h-12 relative" disabled={isCancelling || isAccepting || isRefreshingBids || !canCancel} on:click={cancelListing}>
 				{#if isCancelling}
 					<ButtonSpinner secondary />
 				{/if}
