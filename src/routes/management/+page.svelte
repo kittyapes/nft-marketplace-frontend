@@ -88,8 +88,6 @@
 			validating = true;
 			const validation_result = await isCollectionAddress(address);
 
-			console.log(validation_result);
-
 			$formValidity.isContract = validation_result.isContract ? true : 'Invalid Contract Address Detected';
 			$formValidity.isErc1155OrErc721 = validation_result.isErc1155 || validation_result.isErc721 ? true : 'Please Add a Contract That Supports ERC721 or ERC1155 NFTs';
 			validating = false;
@@ -539,7 +537,7 @@
 					on:event={handleTableEvent}
 					tableData={userTableData}
 					rows={users.length}
-					tableFooterElement={{ element: PaginationFooter, props: { pages: Math.ceil(totalUserEntries / fetchLimit) } }}
+					tableFooterElement={{ element: PaginationFooter, props: { pages: Math.ceil(totalUserEntries / fetchLimit), items: totalUserEntries } }}
 				/>
 			</LoadedContent>
 		{:else if tab === 'COLLECTION'}
@@ -550,7 +548,7 @@
 					rows={collections.length}
 					tableFooterElement={{
 						element: PaginationFooter,
-						props: { pages: Math.ceil(totalCollectionEntries / fetchLimit) },
+						props: { pages: Math.ceil(totalCollectionEntries / fetchLimit), items: totalCollectionEntries },
 					}}
 				/>
 			</LoadedContent>

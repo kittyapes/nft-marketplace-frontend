@@ -1,6 +1,7 @@
 import { currentUserAddress } from '$stores/wallet';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import axios from 'axios';
+import qs from 'qs';
 import { get } from 'svelte/store';
 import { getApiUrl } from '.';
 
@@ -213,10 +214,15 @@ export async function apiSearchCollections(options?: CollectionSearchOptions) {
 		};
 	}
 
-	if (!options.status) options.status = 'ACTIVE';
-	else if (options.status === 'ALL') (options as any).status = ['ACTIVE', 'INACTIVE'];
+	if (!options.status || options.status === 'ALL') (options as any).status = ['ACTIVE', 'INACTIVE'];
 
-	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: options });
+	const res = await axios.get(getApiUrl('v2', 'collections/search'), {
+		params: options,
+		paramsSerializer: (params) => {
+			return qs.stringify(params, { arrayFormat: 'repeat', skipNulls: true });
+		},
+	});
+
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
 	}
