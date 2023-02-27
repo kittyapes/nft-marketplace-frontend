@@ -38,11 +38,11 @@
 	}
 
 	$: if (collectionData?.discordUrl) {
-		socials.push({ name: 'Artstation', url: collectionData?.discordUrl, component: Discord });
+		socials.push({ name: 'Discord', url: collectionData?.discordUrl, component: Discord });
 	}
 
 	$: if (collectionData?.pixivUrl) {
-		socials.push({ name: 'Artstation', url: collectionData?.pixivUrl, component: Pixiv });
+		socials.push({ name: 'Pixiv', url: collectionData?.pixivUrl, component: Pixiv });
 	}
 </script>
 
@@ -71,7 +71,7 @@
 					{#if socials?.length > 0}
 						{#each socials as social}
 							<div class="relative flex flex-col items-center ">
-								<p class:hidden={hoveredSocial !== social.name} class="absolute -top-4">{social.name}</p>
+								<p class:hidden={hoveredSocial !== social.name} class="absolute -top-5">{social.name}</p>
 								<a
 									href={social.url}
 									target="_blank"
