@@ -1,7 +1,7 @@
 <script lang="ts">
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import HiContentStakeUnstake from './HiContentStakeUnstake.svelte';
-	import LpContentStakeUnstake from './LpContentStakeUnstake.svelte';
+	import Hinata from './Hinata/Hinata.svelte';
+	import HinataLp from './HinataLp/HinataLp.svelte';
 
 	let selectedToken: 'hinata' | 'hinata-lp' = 'hinata-lp';
 </script>
@@ -30,8 +30,8 @@
 
 	<!-- Content -->
 	{#if selectedToken === 'hinata'}
-		<HiContentStakeUnstake />
+		<Hinata />
 	{:else}
-		<LpContentStakeUnstake />
+		<HinataLp />
 	{/if}
 </div>
