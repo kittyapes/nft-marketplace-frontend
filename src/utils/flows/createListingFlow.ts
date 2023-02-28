@@ -84,7 +84,16 @@ async function getGaslessListingSignature(
 		nonce,
 	};
 
-	return await (seller as any)._signTypedData({}, GASLESS_CREATE_LISTING_TYPES, value);
+	return await (seller as any)._signTypedData(
+		{
+			name: 'HinataMarketV2',
+			version: '1.0',
+			chainId: (await seller.provider.getNetwork()).chainId,
+			verifyingContract: getContract('marketplace-v2').address,
+		},
+		GASLESS_CREATE_LISTING_TYPES,
+		value,
+	);
 }
 
 export interface CreateListingFlowOptions extends Partial<ConfigurableListingProps> {

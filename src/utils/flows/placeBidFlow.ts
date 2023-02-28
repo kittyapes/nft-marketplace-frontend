@@ -29,12 +29,12 @@ async function placeBidNormal(listing: Listing, amount: BigNumber): Promise<void
 }
 
 const GASLESS_BID_TYPES = {
-	Bid: [
+	Bidding: [
 		{ name: 'seller', type: 'address' },
 		{ name: 'listingNonce', type: 'uint256' },
 		{ name: 'bidder', type: 'address' },
-		{ name: 'bidAmount', type: 'uint256' },
-		{ name: 'bidNonce', type: 'uint256' },
+		{ name: 'amount', type: 'uint256' },
+		{ name: 'nonce', type: 'uint256' },
 	],
 };
 
@@ -43,11 +43,20 @@ async function getBidSignature(sellerAddress: string, listingNonce: BigNumberish
 		seller: sellerAddress,
 		listingNonce,
 		bidder: await bidder.getAddress(),
-		bidAmount,
-		bidNonce,
+		amount: bidAmount,
+		nonce: bidNonce,
 	};
 
-	return await (bidder as any)._signTypedData({}, GASLESS_BID_TYPES, value);
+	return await (bidder as any)._signTypedData(
+		{
+			name: 'HinataMarketV2',
+			version: '1.0',
+			chainId: (await bidder.provider.getNetwork()).chainId,
+			verifyingContract: getContract('marketplace-v2').address,
+		},
+		GASLESS_BID_TYPES,
+		value,
+	);
 }
 
 async function placeBidGasless(listing: Listing, amount: BigNumber): Promise<void> {
