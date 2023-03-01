@@ -33,7 +33,7 @@
 <!-- Stake amount input field -->
 <div class="flex gap-x-4 mt-4">
 	<div class="flex-grow">
-		<TextInput placeholder="Max" />
+		<TextInput placeholder="Enter Amount" />
 	</div>
 
 	<div>
