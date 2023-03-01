@@ -1,5 +1,6 @@
 <script>
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
+	import Graph from './Graph.svelte';
 	import GraphDurationSelect from './GraphDurationSelect.svelte';
 	import IconEth from './IconEth.svelte';
 	import IconHinataLogo from './IconHinataLogo.svelte';
@@ -30,15 +31,7 @@
 
 	<!-- Graph -->
 	<div class="grid">
-		<div class="text-gradient">
-			<span class="text-lg">${0}k</span>
-			•
-			<span class="text-sm">${0} Earned</span>
-		</div>
-
-		<div>{'20 Feb 2023 12:00'}</div>
-
-		<div class="bg-gradient-a h-72 mt-4" />
+		<Graph />
 
 		<div class="bg-gradient-a place-items-center flex px-4 py-2 mt-4">
 			<div>Liquidity</div>
