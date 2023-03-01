@@ -7,10 +7,11 @@ import factoryAbi from '$constants/contracts/abis/HinataCollectionFactory.json';
 import marketplaceAbi from '$constants/contracts/abis/HinataMarketplace.json';
 import marketplaceV2Abi from '$constants/contracts/abis/HinataMarketplaceV2.json';
 import storageAbi from '$constants/contracts/abis/HinataMarketplaceStorage.json';
+import hinataStakingAbi from '$constants/contracts/abis/HinataStaking.json';
 import tokenAbi from '$constants/contracts/abis/hinataToken.json';
 import defaultProvider from '$utils/contracts/defaultProvider';
 
-type ContractName = 'marketplace' | 'marketplace-v2' | 'storage' | 'factory' | 'token' | 'weth';
+type ContractName = 'marketplace' | 'marketplace-v2' | 'storage' | 'factory' | 'token' | 'weth' | 'staking' | 'hinata-token';
 
 const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goerli' | 'development-goerli' | 'staging-genache' | 'staging-goerli'; address: string; abi: any }[] = [
 	// Rinkeby
@@ -27,6 +28,9 @@ const contracts: { name: ContractName; network: 'eth' | 'rinkeby' | 'testing-goe
 	{ name: 'factory', network: 'testing-goerli', address: '0xa0B39FCC5FdeB3D839288c3Ec7210AAaf6fB972D', abi: factoryAbi },
 	{ name: 'token', network: 'testing-goerli', address: '0x15733Ab0E019B8Ff529EceB3FA2F33BcdCc4c3a7', abi: tokenAbi },
 	{ name: 'weth', network: 'testing-goerli', address: '0xbA5029aAF14672ef662aD8eB38CDB4E4C16AdF6D', abi: erc20Abi },
+	{ name: 'staking', network: 'testing-goerli', address: '0x0a539ef9b30b360d92bfcdee6836898cdbb6f240', abi: hinataStakingAbi },
+	// todo: update this token address and abi
+	{ name: 'hinata-token', network: 'testing-goerli', address: '0x0a539ef9b30b360d92bfcdee6836898cdbb6f240', abi: hinataStakingAbi },
 
 	// Goerli Development Environment
 	{ name: 'marketplace', network: 'development-goerli', address: '0x1F2C31095e8D9947e7FEb3202e9fd20C1eC0FF4B', abi: marketplaceAbi },

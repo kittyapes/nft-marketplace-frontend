@@ -5549,7 +5549,6 @@ packages:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
-    dev: false
 
   /ethjs-unit/0.1.6:
     resolution: { integrity: sha1-xmWSHkduh7ziqdWIpv4EBbLEFpk= }
