@@ -1,17 +1,11 @@
 <script lang="ts">
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import TextInput from '$lib/components/v2/TextInput/TextInput.svelte';
-	import { userStakes } from '$stores/wallet';
+	import { claimableHinataStakingRewards, userStakes } from '$stores/wallet';
 	import { withdrawUnlockedTokensByStakeId } from '$utils/contracts/staking';
 	import { createEventDispatcher } from 'svelte';
 	import PositionsTable from './PositionsTable.svelte';
 	import RewardsTable from './RewardsTable.svelte';
-
-	const mockRewards = [
-		{ token: '25 days', amount: '2', APY: '129.12%' },
-		{ token: '25 days', amount: '2', APY: '129.12%' },
-		{ token: '25 days', amount: '2', APY: '129.12%' },
-	];
 
 	const dispatch = createEventDispatcher();
 
@@ -65,4 +59,4 @@
 
 <div class="text-lg mt-4">Rewards</div>
 
-<RewardsTable rewards={mockRewards} />
+<RewardsTable rewards={$claimableHinataStakingRewards} />

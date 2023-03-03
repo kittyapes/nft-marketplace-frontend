@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 import type { ethers } from 'ethers';
 import type Web3Modal from 'web3modal';
-import type { Position } from 'src/routes/staking-new/Hinata/types';
+import type { Position, Reward } from 'src/routes/staking-new/Hinata/types';
 
 export const web3ModalInstance = writable<Web3Modal>(null);
 export const appProvider = writable<ethers.providers.Web3Provider>(null);
@@ -52,7 +52,7 @@ export const welcomeNftClaimedOnServer = writable(true);
 export const welcomeNftMessage = writable('');
 
 // STAKING v2 and Vesting V2
-export const stakedHinataAmount = writable(0);
-export const walletHinataBalance = writable(0);
-export const claimableHinataRewards = writable(0);
+export const stakedHinataAmount = writable('0');
+export const walletHinataBalance = writable('0');
+export const claimableHinataStakingRewards = writable<Reward[]>([]);
 export const userStakes = writable<Position[]>([]);

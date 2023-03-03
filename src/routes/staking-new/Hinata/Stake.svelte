@@ -5,7 +5,7 @@
 	import PositionsTable from './PositionsTable.svelte';
 	import RewardsTable from './RewardsTable.svelte';
 	import WalletBalance from './WalletBalance.svelte';
-	import { userStakes, walletHinataBalance } from '$stores/wallet';
+	import { claimableHinataStakingRewards, userStakes, walletHinataBalance } from '$stores/wallet';
 	import { stakeDurations, stakeTokens } from '$utils/contracts/staking';
 	import { createEventDispatcher } from 'svelte';
 	// import Info from '$icons/info.v2.svelte';
@@ -27,7 +27,7 @@
 	}
 
 	function validateStakeAmount(amount: string) {
-		return parseFloat(amount) < $walletHinataBalance;
+		return parseFloat(amount) < +$walletHinataBalance;
 	}
 
 	function triggerUnstakeUI(event: { detail: { stakeId: number; amount: string } }) {
@@ -58,7 +58,7 @@
 	<div>
 		<PrimaryButton
 			disabled={parseFloat(selectedStakeAmount) === 0 ||
-				parseFloat(selectedStakeAmount) > $walletHinataBalance}
+				parseFloat(selectedStakeAmount) > +$walletHinataBalance}
 			on:click={triggerStakeTokens}
 		>
 			Stake
@@ -77,5 +77,5 @@
 <div class="mt-4 text-lg">Rewards</div>
 
 <div class="mt-4">
-	<RewardsTable rewards={mockRewards} />
+	<RewardsTable rewards={$claimableHinataStakingRewards} />
 </div>

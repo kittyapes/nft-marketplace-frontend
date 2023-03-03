@@ -11,5 +11,4 @@ export interface Position {
 export interface Reward {
 	token: string;
 	amount: string;
-	APY: string;
 }

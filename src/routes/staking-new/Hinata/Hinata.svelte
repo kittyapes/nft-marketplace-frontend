@@ -1,7 +1,14 @@
 <script lang="ts">
-	import { currentUserAddress, userStakes, walletHinataBalance } from '$stores/wallet';
+	import {
+		claimableHinataStakingRewards,
+		currentUserAddress,
+		userStakes,
+		walletHinataBalance,
+	} from '$stores/wallet';
 	import {
 		calculateApr,
+		claimStakingRewards,
+		getClaimableTokens,
 		getUserStakes,
 		lastTimeRewardWouldBeApplied,
 	} from '$utils/contracts/staking';
@@ -20,7 +27,7 @@
 
 	async function loadUp() {
 		walletHinataBalance.set(
-			+ethers.utils.formatEther(
+			ethers.utils.formatEther(
 				await getTokenBalance(getContract('hinata-token').address, $currentUserAddress, 18),
 			),
 		);
@@ -45,6 +52,10 @@
 		});
 
 		userStakes.set(userCachedStakes);
+
+		const stakingRewards = await getClaimableTokens($currentUserAddress);
+
+		claimableHinataStakingRewards.set([{ token: 'Hinata', amount: stakingRewards }]);
 	}
 
 	function triggerUnstakeUI(event: { detail: { stakeId: number; amount: string } }) {
