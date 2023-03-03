@@ -1,5 +1,5 @@
 import { getContract } from '$utils/misc/getContract';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import contractCaller from '$utils/contracts/contractCaller';
 
 enum StakeDurationsEnum {
@@ -24,14 +24,14 @@ export async function iterativelyFindUserStakeIds(userAddress: string) {
 	let hasGottenAll = false;
 	let firstIndex = 0;
 
-	const stakeIds: { id: number; rewards: number }[] = [];
+	const stakeIds: { id: number; rewards: string }[] = [];
 
 	do {
 		try {
 			const stakeId = await stakingContract.stakeIds(userAddress, firstIndex);
 
 			const id = +ethers.utils.formatUnits(stakeId, 0);
-			const rewards = +ethers.utils.formatEther(await stakingContract.earnedById(id));
+			const rewards = ethers.utils.formatEther(await stakingContract.earnedById(id));
 
 			stakeIds.push({
 				rewards,
@@ -40,7 +40,7 @@ export async function iterativelyFindUserStakeIds(userAddress: string) {
 
 			firstIndex += 1;
 
-			console.log('Stake IDS and Rewards: ', stakeIds);
+			// console.log('Stake IDS and Rewards: ', stakeIds);
 		} catch (error) {
 			hasGottenAll = true;
 		}
@@ -51,12 +51,12 @@ export async function iterativelyFindUserStakeIds(userAddress: string) {
 
 export async function getUserStakes(userAddress: string): Promise<
 	{
-		amount: number;
+		amount: string;
 		lockedAt: number;
 		lockPeriod: number;
-		reward: number;
-		rewardPerTokenPaid: number;
-		id: number;
+		reward: string;
+		rewardPerTokenPaid: BigNumber;
+		stakeId: number;
 	}[]
 > {
 	const stakingContract = getContract('staking');
@@ -67,22 +67,25 @@ export async function getUserStakes(userAddress: string): Promise<
 	const stakeIdsAndRewards = await iterativelyFindUserStakeIds(userAddress);
 
 	// TODO: Not sure if the conversion is correct here (seemed correct in my local testing)
-	return userStakes.map((item, index) => ({
-		amount: +ethers.utils.formatEther(item.amount),
-		lockedAt: +ethers.utils.formatUnits(item.lockedAt, 0),
-		lockPeriod: +ethers.utils.formatUnits(item.lockPeriod, 0),
-		// not sure if this is the case, but testing should prove or disapprove this
-		reward: stakeIdsAndRewards[index].rewards + +ethers.utils.formatEther(item.reward),
-		rewardPerTokenPaid: +ethers.utils.formatEther(item.rewardPerTokenPaid),
-		stakeId: stakeIdsAndRewards[index].id,
-	}));
+	return userStakes.map((item, index) => {
+		return {
+			amount: ethers.utils.formatEther(item.amount),
+			lockedAt: +ethers.utils.formatUnits(item.lockedAt, 0),
+			lockPeriod: +ethers.utils.formatUnits(item.lockPeriod, 0),
+			reward: stakeIdsAndRewards[index].rewards || ethers.utils.formatEther(item.reward),
+			rewardPerTokenPaid: ethers.utils
+				.parseEther(ethers.utils.formatEther(item.amount))
+				.div(ethers.utils.parseEther(stakeIdsAndRewards[index].rewards)),
+			stakeId: stakeIdsAndRewards[index].id,
+		};
+	});
 }
 
 export async function getTotalAmountUserStaked(userAddress: string) {
 	const stakingContract = getContract('staking');
 	const amountStaked = await stakingContract.getStakeAmountByAccount(userAddress);
 
-	return +ethers.utils.formatEther(amountStaked);
+	return ethers.utils.formatEther(amountStaked);
 }
 
 export async function getClaimableTokens(userAddress: string) {
@@ -90,14 +93,14 @@ export async function getClaimableTokens(userAddress: string) {
 
 	const earnedRewards = await stakingContract.earned(userAddress);
 
-	return +ethers.utils.formatEther(earnedRewards);
+	return ethers.utils.formatEther(earnedRewards);
 }
 
 export async function getRewardPerTokenStaked() {
 	const stakingContract = getContract('staking');
 	const rewardPerToken = await stakingContract.rewardPerToken();
 
-	return +ethers.utils.formatUnits(rewardPerToken, 0);
+	return ethers.utils.formatUnits(rewardPerToken, 0);
 }
 
 export async function lastTimeRewardWouldBeApplied() {
@@ -108,19 +111,19 @@ export async function lastTimeRewardWouldBeApplied() {
 }
 
 export function calculateApr(
-	earnedTokens: number,
+	earnedTokens: string,
 	fees: number,
-	principal: number,
+	principal: string,
 	durationInDays: number,
 ) {
-	return ((fees + earnedTokens) / principal / durationInDays) * 365 * 100;
+	return ((fees + +earnedTokens) / +principal / durationInDays) * 365 * 100;
 }
 
 export async function getVestingsByAccount(userAddress: string): Promise<
 	{
 		beneficiary: string;
 		unlockTime: number;
-		amount: number;
+		amount: string;
 		claimed: boolean;
 	}[]
 > {
@@ -131,7 +134,7 @@ export async function getVestingsByAccount(userAddress: string): Promise<
 	return userVestings.map((vesting) => ({
 		beneficiary: vesting.beneficiary,
 		unlockTime: +ethers.utils.formatUnits(vesting.unlockTime, 0),
-		amount: +ethers.utils.formatEther(vesting.amount),
+		amount: ethers.utils.formatEther(vesting.amount),
 		claimed: vesting.claimed,
 	}));
 }
@@ -175,15 +178,7 @@ export async function stakeTokens(amount: number, duration: StakeDurationsEnum) 
 export async function withdrawUnlockedTokensByStakeId(stakeId: number, amount: number) {
 	const stakingContract = getContract('staking');
 
-	await contractCaller(
-		stakingContract,
-		'deposit',
-		150,
-		1,
-		ethers.utils.parseEther(amount.toString()),
-		stakeId,
-		amount,
-	);
+	await contractCaller(stakingContract, 'deposit', 150, 1, stakeId, amount);
 
 	return true;
 }

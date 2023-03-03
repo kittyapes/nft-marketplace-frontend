@@ -3,8 +3,15 @@
 	import Table from './Table.svelte';
 	import type { Position } from './types';
 	import dayjs from 'dayjs';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let positions: Position[] = [];
+
+	function unstake(stakeId: number, amount: string) {
+		dispatch('unstake-tokens', { amount: amount, stakeId: stakeId });
+	}
 </script>
 
 <div class="mt-4">
@@ -19,7 +26,7 @@
 			{#each positions as pos}
 				<div>
 					{#if pos.unstakeAvailable}
-						<ActionButton>Unstake</ActionButton>
+						<ActionButton on:click={() => unstake(pos.stakeId, pos.amount)}>Unstake</ActionButton>
 					{:else}
 						{dayjs(pos.endTime).fromNow(true)}
 					{/if}
