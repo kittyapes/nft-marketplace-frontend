@@ -1,7 +1,8 @@
 export interface Position {
-	timeLeft: string;
-	amount: string;
-	APY: string;
+	endTime: number;
+	amount: number;
+	aprOrApy: number;
+	interestType: 'apy' | 'apr';
 	unstakeAvailable: boolean;
 }
 

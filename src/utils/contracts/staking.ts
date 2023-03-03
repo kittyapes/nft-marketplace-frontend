@@ -1,6 +1,6 @@
 import { getContract } from '$utils/misc/getContract';
 import { ethers } from 'ethers';
-import contractCaller from '$contracts/contractCaller';
+import contractCaller from '$utils/contracts/contractCaller';
 
 enum StakeDurationsEnum {
 	THREE_MONTHS,
@@ -8,22 +8,73 @@ enum StakeDurationsEnum {
 	TWELVE_MONTHS,
 }
 
+export const stakeDurations = [
+	{ id: '3m', label: '3 Months', value: StakeDurationsEnum.THREE_MONTHS },
+	{ id: '6m', label: '6 Months', value: StakeDurationsEnum.SIX_MONTHS },
+	{ id: '1y', label: '1 Year', value: StakeDurationsEnum.TWELVE_MONTHS },
+];
+
 /*
  * Read Functions
  * */
 
-export async function getUserStakes(userAddress: string) {
+export async function iterativelyFindUserStakeIds(userAddress: string) {
+	const stakingContract = getContract('staking');
+
+	let hasGottenAll = false;
+	let firstIndex = 0;
+
+	const stakeIds: { id: number; rewards: number }[] = [];
+
+	do {
+		try {
+			const stakeId = await stakingContract.stakeIds(userAddress, firstIndex);
+
+			const id = +ethers.utils.formatUnits(stakeId, 0);
+			const rewards = +ethers.utils.formatEther(await stakingContract.earnedById(id));
+
+			stakeIds.push({
+				rewards,
+				id,
+			});
+
+			firstIndex += 1;
+
+			console.log('Stake IDS and Rewards: ', stakeIds);
+		} catch (error) {
+			hasGottenAll = true;
+		}
+	} while (!hasGottenAll);
+
+	return stakeIds;
+}
+
+export async function getUserStakes(userAddress: string): Promise<
+	{
+		amount: number;
+		lockedAt: number;
+		lockPeriod: number;
+		reward: number;
+		rewardPerTokenPaid: number;
+		id: number;
+	}[]
+> {
 	const stakingContract = getContract('staking');
 	const userStakes = await stakingContract.getStakesByAccount(userAddress);
 	// need to test which format of the values is returned
 
+	// Find the user stake IDs and assign them accordingly - also add rewards at this point
+	const stakeIdsAndRewards = await iterativelyFindUserStakeIds(userAddress);
+
 	// TODO: Not sure if the conversion is correct here (seemed correct in my local testing)
-	return userStakes.map((item) => ({
+	return userStakes.map((item, index) => ({
 		amount: +ethers.utils.formatEther(item.amount),
 		lockedAt: +ethers.utils.formatUnits(item.lockedAt, 0),
 		lockPeriod: +ethers.utils.formatUnits(item.lockPeriod, 0),
-		reward: +ethers.utils.formatEther(item.reward),
+		// not sure if this is the case, but testing should prove or disapprove this
+		reward: stakeIdsAndRewards[index].rewards + +ethers.utils.formatEther(item.reward),
 		rewardPerTokenPaid: +ethers.utils.formatEther(item.rewardPerTokenPaid),
+		stakeId: stakeIdsAndRewards[index].id,
 	}));
 }
 
@@ -49,15 +100,40 @@ export async function getRewardPerTokenStaked() {
 	return +ethers.utils.formatUnits(rewardPerToken, 0);
 }
 
-export async function lastTimeRewardWasApplied() {
+export async function lastTimeRewardWouldBeApplied() {
 	const stakingContract = getContract('staking');
 	const lastTimestamp = await stakingContract.lastTimeRewardAppliable();
 
 	return +ethers.utils.formatUnits(lastTimestamp, 0);
 }
 
-export async function calculateApr() {
-	return 0;
+export function calculateApr(
+	earnedTokens: number,
+	fees: number,
+	principal: number,
+	durationInDays: number,
+) {
+	return ((fees + earnedTokens) / principal / durationInDays) * 365 * 100;
+}
+
+export async function getVestingsByAccount(userAddress: string): Promise<
+	{
+		beneficiary: string;
+		unlockTime: number;
+		amount: number;
+		claimed: boolean;
+	}[]
+> {
+	const vestingContract = getContract('vesting');
+
+	const userVestings = await vestingContract.getVestingsByAccount(userAddress);
+
+	return userVestings.map((vesting) => ({
+		beneficiary: vesting.beneficiary,
+		unlockTime: +ethers.utils.formatUnits(vesting.unlockTime, 0),
+		amount: +ethers.utils.formatEther(vesting.amount),
+		claimed: vesting.claimed,
+	}));
 }
 
 /*
@@ -72,10 +148,26 @@ export async function claimStakingRewards() {
 	return true;
 }
 
+// Claim the vested rewards for investor from vesting contract
+export async function claimVestedRewards() {
+	const vestingContract = getContract('vesting');
+
+	await contractCaller(vestingContract, 'claim', 150, 1);
+
+	return true;
+}
+
 export async function stakeTokens(amount: number, duration: StakeDurationsEnum) {
 	const stakingContract = getContract('staking');
 
-	await contractCaller(stakingContract, 'deposit', 150, 1, ethers.utils.parseEther(amount.toString()), duration);
+	await contractCaller(
+		stakingContract,
+		'deposit',
+		150,
+		1,
+		ethers.utils.parseEther(amount.toString()),
+		duration,
+	);
 
 	return true;
 }
@@ -83,7 +175,15 @@ export async function stakeTokens(amount: number, duration: StakeDurationsEnum) 
 export async function withdrawUnlockedTokensByStakeId(stakeId: number, amount: number) {
 	const stakingContract = getContract('staking');
 
-	await contractCaller(stakingContract, 'deposit', 150, 1, ethers.utils.parseEther(amount.toString()), stakeId, amount);
+	await contractCaller(
+		stakingContract,
+		'deposit',
+		150,
+		1,
+		ethers.utils.parseEther(amount.toString()),
+		stakeId,
+		amount,
+	);
 
 	return true;
 }
