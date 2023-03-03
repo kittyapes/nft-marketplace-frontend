@@ -1,6 +1,8 @@
 import { getContract } from '$utils/misc/getContract';
 import { BigNumber, ethers } from 'ethers';
 import contractCaller from '$utils/contracts/contractCaller';
+import { ensureAmountApproved } from './token';
+import { notifyError } from '$utils/toast';
 
 enum StakeDurationsEnum {
 	THREE_MONTHS,
@@ -160,15 +162,27 @@ export async function claimVestedRewards() {
 	return true;
 }
 
-export async function stakeTokens(amount: number, duration: StakeDurationsEnum) {
+export async function stakeTokens(amount: string, duration: StakeDurationsEnum) {
 	const stakingContract = getContract('staking');
+
+	const contractApproved = await ensureAmountApproved(
+		stakingContract.address,
+		amount,
+		getContract('hinata-token').address,
+	);
+
+	if (!contractApproved) {
+		notifyError('Insufficient Allowance to Execute Transaction.');
+		// No need to proceed if there's no allowance
+		return;
+	}
 
 	await contractCaller(
 		stakingContract,
 		'deposit',
 		150,
 		1,
-		ethers.utils.parseEther(amount.toString()),
+		ethers.utils.parseEther(amount),
 		duration,
 	);
 

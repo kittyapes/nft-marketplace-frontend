@@ -8,6 +8,7 @@
 	const dispatch = createEventDispatcher();
 
 	export let positions: Position[] = [];
+	$: console.log(positions);
 
 	function unstake(stakeId: number, amount: string) {
 		dispatch('unstake-tokens', { amount: amount, stakeId: stakeId });
@@ -32,7 +33,7 @@
 					{/if}
 				</div>
 				<div>{pos.amount}</div>
-				<div>{pos.aprOrApy}%</div>
+				<div>{isFinite(pos.aprOrApy) ? pos.aprOrApy : 0}%</div>
 			{/each}
 		</div>
 	</Table>

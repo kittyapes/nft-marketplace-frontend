@@ -10,19 +10,13 @@
 	import { createEventDispatcher } from 'svelte';
 	// import Info from '$icons/info.v2.svelte';
 
-	const mockRewards = [
-		{ token: 'Hinata', amount: '2', APY: '129.12%' },
-		{ token: 'Hinata', amount: '2', APY: '129.12%' },
-		{ token: 'Hinata', amount: '2', APY: '129.12%' },
-	];
-
 	$: selectedStakeDuration = stakeDurations[0];
 	$: selectedStakeAmount = '0';
 
 	const dispatch = createEventDispatcher();
 
 	async function triggerStakeTokens() {
-		await stakeTokens(parseFloat(selectedStakeAmount), selectedStakeDuration.value);
+		await stakeTokens(selectedStakeAmount, selectedStakeDuration.value);
 		dispatch('reload-stake-data');
 	}
 
