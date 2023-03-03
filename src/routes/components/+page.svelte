@@ -43,7 +43,7 @@
 	</pre>
 
 	<div class="flex gap-2 mt-2">
-		<button on:click={acceptHighest}>Accept Highest Bid</button>
+		<button>Accept Highest Bid</button>
 		<button on:click={cancelListing}>Cancel Auction</button>
 	</div>
 

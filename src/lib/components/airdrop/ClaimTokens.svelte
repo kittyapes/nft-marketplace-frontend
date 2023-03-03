@@ -17,7 +17,7 @@
 	import HorizontailOptionSwitcher from '../HorizontailOptionSwitcher.svelte';
 	import ThemedCross from '$icons/themed-cross.svelte';
 	import daysFromNow from '$utils/daysFromNow';
-	import { claimWaifuRewards, stakeTokens } from '$utils/contracts/staking';
+	import { claimWaifuRewards, stakeTokens } from '$contracts/staking_v1';
 	import { setPopup } from '$utils/popup';
 	import ProceedStakePopup from './ProceedStakePopup.svelte';
 	import { hinataTokensBalance, increaseHinataAllowance } from '$utils/contracts/tokenBalances';
