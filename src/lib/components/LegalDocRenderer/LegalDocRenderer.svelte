@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { goto } from '$app/navigation';
 	import DropdownArrow from '$icons/dropdown-arrow.svelte';
 	import { tick } from 'svelte';
 	import { fade } from 'svelte/transition';
@@ -29,7 +30,7 @@
 		currentHash = hash;
 
 		if (!isContained) {
-			window.location.hash = hash;
+			goto(`${hash}-section-title`, { replaceState: true });
 		}
 	}
 
@@ -116,9 +117,9 @@
 			<ul id="section-links-container">
 				{#each docData as section}
 					<li class="section-link" class:highlight={currentHash === titleToHash(section.title)}>
-						<a href={titleToHash(section.title)} on:click={(ev) => handleMenuSectionClick(ev, titleToHash(section.title))}>
+						<button on:click={(ev) => handleMenuSectionClick(ev, titleToHash(section.title))}>
 							{section.title}
-						</a>
+						</button>
 					</li>
 				{/each}
 			</ul>
