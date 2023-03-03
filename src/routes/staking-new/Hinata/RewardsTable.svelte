@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { claimStakingRewards } from '$utils/contracts/staking';
 	import ActionButton from './ActionButton.svelte';
 	import Table from './Table.svelte';
 	import type { Reward } from './types';
@@ -21,7 +22,7 @@
 				</div>
 				<div>{reward.amount}</div>
 				<div>
-					<ActionButton>Claim</ActionButton>
+					<ActionButton on:click={claimStakingRewards}>Claim</ActionButton>
 				</div>
 			{/each}
 		</div>
