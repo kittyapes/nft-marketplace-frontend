@@ -54,5 +54,7 @@ export const welcomeNftMessage = writable('');
 // STAKING v2 and Vesting V2
 export const stakedHinataAmount = writable('0');
 export const walletHinataBalance = writable('0');
+export const claimableVestingRewards = writable('0');
+export const escrowedVestingRewards = writable('0');
 export const claimableHinataStakingRewards = writable<Reward[]>([]);
 export const userStakes = writable<Position[]>([]);

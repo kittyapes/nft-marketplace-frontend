@@ -141,6 +141,14 @@ export async function getVestingsByAccount(userAddress: string): Promise<
 	}));
 }
 
+export async function getRemainingVestingsByAccount(userAddress: string) {
+	const vestingContract = getContract('vesting');
+
+	const remainingToClaim = await vestingContract.getPendingAmount(userAddress);
+
+	return ethers.utils.formatEther(remainingToClaim);
+}
+
 /*
  * Write Functions
  * */
