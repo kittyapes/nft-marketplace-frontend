@@ -8,7 +8,6 @@
 	const dispatch = createEventDispatcher();
 
 	export let positions: Position[] = [];
-	$: console.log(positions);
 
 	function unstake(stakeId: number, amount: string) {
 		dispatch('unstake-tokens', { amount: amount, stakeId: stakeId });

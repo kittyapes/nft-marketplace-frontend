@@ -14,12 +14,12 @@
 
 	$: selectedUnStakeAmount = '0';
 
-	function validateStakeAmount(amount: string) {
-		return parseFloat(amount) < +maxUnstakeAmount;
+	function validateUnstakeAmount(amount: string) {
+		return +amount <= +maxUnstakeAmount;
 	}
 
 	async function triggerUnstakeTokens() {
-		await withdrawUnlockedTokensByStakeId(unstakeId, parseFloat(selectedUnStakeAmount));
+		await withdrawUnlockedTokensByStakeId(unstakeId, selectedUnStakeAmount);
 		dispatch('reload-stake-data');
 	}
 
@@ -34,14 +34,13 @@
 		<TextInput
 			placeholder="Enter Amount to Unstake"
 			bind:value={selectedUnStakeAmount}
-			validator={validateStakeAmount}
+			validator={validateUnstakeAmount}
 		/>
 	</div>
 
 	<div>
 		<PrimaryButton
-			disabled={parseFloat(selectedUnStakeAmount) === 0 ||
-				parseFloat(selectedUnStakeAmount) > +maxUnstakeAmount}
+			disabled={+selectedUnStakeAmount === 0 || +selectedUnStakeAmount > +maxUnstakeAmount}
 			on:click={triggerUnstakeTokens}
 		>
 			Unstake

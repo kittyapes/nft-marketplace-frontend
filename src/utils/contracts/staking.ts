@@ -189,10 +189,17 @@ export async function stakeTokens(amount: string, duration: StakeDurationsEnum) 
 	return true;
 }
 
-export async function withdrawUnlockedTokensByStakeId(stakeId: number, amount: number) {
+export async function withdrawUnlockedTokensByStakeId(stakeId: number, amount: string) {
 	const stakingContract = getContract('staking');
 
-	await contractCaller(stakingContract, 'deposit', 150, 1, stakeId, amount);
+	await contractCaller(
+		stakingContract,
+		'withdraw',
+		150,
+		1,
+		stakeId,
+		ethers.utils.parseEther(amount),
+	);
 
 	return true;
 }
