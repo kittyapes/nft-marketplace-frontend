@@ -11,7 +11,6 @@
 	import LoadedContent from '$lib/components/LoadedContent.svelte';
 	import {
 		appSigner,
-		communityClaimsArray,
 		currentUserAddress,
 		hinataStakingAllowance,
 		idoClaimsArray,
@@ -28,7 +27,6 @@
 		userHinataBalance,
 	} from '$stores/wallet';
 	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
-	import { claimWaifuRewards, stakeTokens } from '$contracts/staking_v1';
 	import { hinataTokensBalance, increaseHinataAllowance } from '$utils/contracts/tokenBalances';
 	import daysFromNow from '$utils/daysFromNow';
 	import { makeBold, makeLink } from '$utils/html';
@@ -84,7 +82,9 @@
 	let privateHasLoaded = false;
 	const updatePrivateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
-			privateHasClaimed = $privateClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length === $privateClaimsArray?.length;
+			privateHasClaimed =
+				$privateClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
+				$privateClaimsArray?.length;
 			if (privateHasClaimed) {
 				privateClaimAmt = 0;
 				privateEscrowed = 0;
@@ -114,7 +114,9 @@
 	let seedHasLoaded = false;
 	const seedUpdateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
-			seedHasClaimed = $seedClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length === $seedClaimsArray?.length;
+			seedHasClaimed =
+				$seedClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
+				$seedClaimsArray?.length;
 			if (seedHasClaimed) {
 				seedClaimAmt = 0;
 				seedEscrowed = 0;
@@ -144,7 +146,9 @@
 	let idoHasLoaded = false;
 	const idoUpdateValues = (claims: ClaimsObject[]) => {
 		if (claims) {
-			idoPublicHasClaimed = $idoClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length === $idoClaimsArray?.length;
+			idoPublicHasClaimed =
+				$idoClaimsArray?.filter((claimsObj) => claimsObj.user.hasClaimed).length ===
+				$idoClaimsArray?.length;
 
 			if (idoPublicHasClaimed) {
 				idoClaimAmount = 0;
@@ -167,15 +171,30 @@
 	};
 	$: idoUpdateValues($idoClaimsArray);
 
-	$: parsedIdoEscrowUnlockDate = ((dateObj: { days: number; hours: number; minutes: number; seconds: number }) => {
+	$: parsedIdoEscrowUnlockDate = ((dateObj: {
+		days: number;
+		hours: number;
+		minutes: number;
+		seconds: number;
+	}) => {
 		return dateObj ? `${dateObj.days}D ${dateObj.hours}H ${dateObj.minutes}M` : 'N/A';
 	})(daysFromNow($idoEscrowUnlock));
 
-	$: parsedSeedEscrowUnlockDate = ((dateObj: { days: number; hours: number; minutes: number; seconds: number }) => {
+	$: parsedSeedEscrowUnlockDate = ((dateObj: {
+		days: number;
+		hours: number;
+		minutes: number;
+		seconds: number;
+	}) => {
 		return dateObj ? `${dateObj.days}D ${dateObj.hours}H ${dateObj.minutes}M` : 'N/A';
 	})(daysFromNow($seedEscrowUnlock));
 
-	$: parsedPrivateEscrowUnlockDate = ((dateObj: { days: number; hours: number; minutes: number; seconds: number }) => {
+	$: parsedPrivateEscrowUnlockDate = ((dateObj: {
+		days: number;
+		hours: number;
+		minutes: number;
+		seconds: number;
+	}) => {
 		return dateObj ? `${dateObj.days}D ${dateObj.hours}H ${dateObj.minutes}M` : 'N/A';
 	})(daysFromNow($privateEscrowUnlock));
 
@@ -224,15 +243,15 @@
 
 	$: (async (address) => address && fetchAll(address))($currentUserAddress);
 
-	const stakeAllTokens = () => {
-		setPopup(ProceedStakePopup, {
-			props: {
-				numberOfHinata: $userHinataBalance,
-				duration: selectedDuration.duration,
-				onContinue: async () => stakeTokens(await hinataTokensBalance($currentUserAddress), selectedDuration.duration),
-			},
-		});
-	};
+	// const stakeAllTokens = () => {
+	// 	setPopup(ProceedStakePopup, {
+	// 		props: {
+	// 			numberOfHinata: $userHinataBalance,
+	// 			duration: selectedDuration.duration,
+	// 			onContinue: async () => stakeTokens(await hinataTokensBalance($currentUserAddress), selectedDuration.duration),
+	// 		},
+	// 	});
+	// };
 
 	// use this for mainnet
 	/*
@@ -256,7 +275,14 @@
 	$userHinataBalance = 100;
 </script>
 
-<LoadedContent loaded={(accessAllowed !== null && $userHinataBalance !== null && privateHasLoaded && seedHasLoaded && idoHasLoaded) || true}>
+<LoadedContent
+	loaded={(accessAllowed !== null &&
+		$userHinataBalance !== null &&
+		privateHasLoaded &&
+		seedHasLoaded &&
+		idoHasLoaded) ||
+		true}
+>
 	{#if accessAllowed}
 		<div class="w-full px-6 min-h-screen">
 			<div class="w-full flex justify-center mt-24">
@@ -264,23 +290,38 @@
 			</div>
 
 			<div class="w-full text-center mt-9 ">
-				<div class="text-7xl uppercase font-bold text-transparent bg-clip-text bg-gradient-to-r from-color-purple to-color-blue">Investor portal</div>
+				<div
+					class="text-7xl uppercase font-bold text-transparent bg-clip-text bg-gradient-to-r from-color-purple to-color-blue"
+				>
+					Investor portal
+				</div>
 
 				<div class="font-bold text-5xl mt-8">Private and public rounds</div>
 
-				<div class="mt-16">If your wallet has a balance for the private or public HiNATA rounds you will be able to interact with this page</div>
+				<div class="mt-16">
+					If your wallet has a balance for the private or public HiNATA rounds you will be able to
+					interact with this page
+				</div>
 			</div>
 
-			<div class="w-full max-w-5xl mx-auto mt-16 mb-24 bg-color-black bg-opacity-5 border-2 rounded-2xl border-color-black border-opacity-10 overflow-hidden">
+			<div
+				class="w-full max-w-5xl mx-auto mt-16 mb-24 bg-color-black bg-opacity-5 border-2 rounded-2xl border-color-black border-opacity-10 overflow-hidden"
+			>
 				<!-- Table header -->
 				<div class="flex border-b-2 border-color-black border-opacity-10 items-stretch">
-					<div class="w-2/5 opacity-80 font-bold text-[#807070] border-r-2 border-color-black border-opacity-10 items-center flex pl-14 flex-wrap">
+					<div
+						class="w-2/5 opacity-80 font-bold text-[#807070] border-r-2 border-color-black border-opacity-10 items-center flex pl-14 flex-wrap"
+					>
 						<div class="mr-8">
 							<span class="text-2xl">Balances</span>
 						</div>
 						<CopyAddressButton address={$currentUserAddress} />
 					</div>
-					<div class="flex-grow opacity-80 text-black text-4xl text-center font-semibold pt-12 pb-8">Claim your tokens</div>
+					<div
+						class="flex-grow opacity-80 text-black text-4xl text-center font-semibold pt-12 pb-8"
+					>
+						Claim your tokens
+					</div>
 				</div>
 
 				{#each splitOptions as option}
@@ -288,12 +329,15 @@
 				{/each}
 
 				<!-- Wallet staking section -->
-				<GridOptionContainer title="Wallet" hinataValue={parseFloat($userHinataBalance.toFixed(2)).toString()}>
+				<GridOptionContainer
+					title="Wallet"
+					hinataValue={parseFloat($userHinataBalance.toFixed(2)).toString()}
+				>
 					<div class="grid grid-cols-2 place-items-center gap-x-14">
 						<div style="font-weight: 450;" class="w-full pl-4">
 							{parseFloat($userHinataBalance.toFixed(2))} HINATA TOKENS
 						</div>
-						<Button gradient rounded on:click={() => ($hinataStakingAllowance > 0 ? stakeAllTokens() : increaseHinataAllowance())} disabled={$userHinataBalance <= 0}>
+						<Button gradient rounded disabled={$userHinataBalance <= 0}>
 							{$hinataStakingAllowance > 0 ? 'Stake' : 'Approve'}
 						</Button>
 					</div>
@@ -302,32 +346,48 @@
 						<div class="uppercase font-bold">Lockup period</div>
 						<div
 							use:hoverHint={{
-								text: `Lock your HiNATA for longer for better rewards! ${makeBold(makeLink('READ MORE', 'https://www.hinata.io/'))}`,
+								text: `Lock your HiNATA for longer for better rewards! ${makeBold(
+									makeLink('READ MORE', 'https://www.hinata.io/'),
+								)}`,
 								targetId: 'hint-target',
 							}}
 						>
 							<div id="hint-target" />
-							<HorizontailOptionSwitcher on:StakeDurationUpdated={(e) => (selectedDuration = e.detail)} selected={selectedDuration} options={stakeDurationOptions} defaultOptionIndex={1} />
+							<HorizontailOptionSwitcher
+								on:StakeDurationUpdated={(e) => (selectedDuration = e.detail)}
+								selected={selectedDuration}
+								options={stakeDurationOptions}
+								defaultOptionIndex={1}
+							/>
 						</div>
 					</div>
 
-					<p class="mt-8">Deposit your tokens to the vault to earn governance rewards and become a DAO member</p>
+					<p class="mt-8">
+						Deposit your tokens to the vault to earn governance rewards and become a DAO member
+					</p>
 				</GridOptionContainer>
 
 				<!-- Vault claim section -->
-				<GridOptionContainer title="Vault" hinataValue={parseFloat($stakedHinataBalance.toFixed(2)).toString()}>
+				<GridOptionContainer
+					title="Vault"
+					hinataValue={parseFloat($stakedHinataBalance.toFixed(2)).toString()}
+				>
 					<div class="grid grid-cols-2 place-items-center gap-x-14">
 						<div style="font-weight: 450;" class="w-full pl-4">
 							{parseFloat($stakingWaifuRewards.toFixed(2))} WAIFU
 						</div>
-						<Button gradient rounded on:click={claimWaifuRewards} disabled={$stakingWaifuRewards <= 0}>Claim</Button>
+						<Button gradient rounded disabled={$stakingWaifuRewards <= 0}>Claim</Button>
 					</div>
 
 					<p class="mt-8">
 						Use your governance rewards to create proposals and vote at
-						<a href="https://snapshot.org/#/hinatadao.eth" class="font-semibold">https://snapshot.org/#/hinatadao.eth</a>
+						<a href="https://snapshot.org/#/hinatadao.eth" class="font-semibold">
+							https://snapshot.org/#/hinatadao.eth
+						</a>
 						as well as claim exclusive NFTs on
-						<a href="https://www.hinata.io/drops" class="font-semibold">https://www.hinata.io/drops</a>
+						<a href="https://www.hinata.io/drops" class="font-semibold">
+							https://www.hinata.io/drops
+						</a>
 						.
 						<a href="/private" class="font-bold">READ MORE</a>
 					</p>
