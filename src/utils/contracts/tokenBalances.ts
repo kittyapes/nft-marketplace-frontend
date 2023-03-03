@@ -4,7 +4,7 @@ import { getContract } from '$utils/misc/getContract';
 import { notifyError, notifySuccess } from '$utils/toast';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
-import { getTotalStakedRewardsBalance, getTotalStakedTokens } from './staking';
+import { getTotalStakedRewardsBalance, getTotalStakedTokens } from './staking_v1';
 
 export const hinataTokensBalance = async (userAddress: string) => {
 	try {

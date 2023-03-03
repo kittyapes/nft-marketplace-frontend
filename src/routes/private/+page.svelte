@@ -28,7 +28,7 @@
 		userHinataBalance,
 	} from '$stores/wallet';
 	import { checkClaimEligibility } from '$utils/contracts/airdropDistribution';
-	import { claimWaifuRewards, stakeTokens } from '$utils/contracts/staking';
+	import { claimWaifuRewards, stakeTokens } from '$contracts/staking_v1';
 	import { hinataTokensBalance, increaseHinataAllowance } from '$utils/contracts/tokenBalances';
 	import daysFromNow from '$utils/daysFromNow';
 	import { makeBold, makeLink } from '$utils/html';
