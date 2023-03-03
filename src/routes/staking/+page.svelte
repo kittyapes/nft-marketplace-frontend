@@ -42,7 +42,7 @@
 				<ContentClaimVesting />
 			</Section>
 
-			<Section title="Claim Trading Rewards" disabled comingSoon>test</Section>
+			<Section title="Claim Trading Rewards [Coming Soon]" disabled>test</Section>
 
 			<Section title="Stake & Unstake">
 				<ContentStakeUnstake />

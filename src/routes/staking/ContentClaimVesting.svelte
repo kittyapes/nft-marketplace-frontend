@@ -75,7 +75,7 @@
 
 <div class="grid grid-cols-2">
 	<div>
-		<h2 class="text-lg">Claim Your Rewards</h2>
+		<h2 class="text-lg">Claim Vesting Rewards</h2>
 		<p class="mt-4">
 			Your Wallet Address is eligible for this airdrop. Please claim your tokens below by submitting
 			a transaction which will pull them to your wallet.
