@@ -21,7 +21,7 @@
 	}
 
 	function validateStakeAmount(amount: string) {
-		return parseFloat(amount) < +$walletHinataBalance;
+		return amount === '0' || +amount < +$walletHinataBalance;
 	}
 
 	function triggerUnstakeUI(event: { detail: { stakeId: number; amount: string } }) {

@@ -15,7 +15,7 @@
 	$: selectedUnStakeAmount = '0';
 
 	function validateUnstakeAmount(amount: string) {
-		return +amount <= +maxUnstakeAmount;
+		return amount === '0' || +amount <= +maxUnstakeAmount;
 	}
 
 	async function triggerUnstakeTokens() {

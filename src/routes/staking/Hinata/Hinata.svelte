@@ -7,7 +7,6 @@
 	} from '$stores/wallet';
 	import {
 		calculateApr,
-		claimStakingRewards,
 		getClaimableTokens,
 		getUserStakes,
 		lastTimeRewardWouldBeApplied,
