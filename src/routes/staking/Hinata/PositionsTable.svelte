@@ -3,7 +3,7 @@
 	import Table from './Table.svelte';
 	import type { Position } from './types';
 	import dayjs from 'dayjs';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 

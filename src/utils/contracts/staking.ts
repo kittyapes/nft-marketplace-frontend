@@ -121,6 +121,23 @@ export function calculateApr(
 	return ((fees + +earnedTokens) / +principal / durationInDays) * 365 * 100;
 }
 
+export async function calculateGeneralApr(stakeAmount: string) {
+	const fees = 0;
+	const durationInDays =
+		(((await lastTimeRewardWouldBeApplied()) || Date.now() / 1000) / 3600) * 24;
+
+	const rewardPerToken = await getRewardPerTokenStaked();
+
+	const earnedTokens = ethers.utils.formatEther(
+		ethers.utils
+			.parseEther(stakeAmount)
+			.mul(ethers.utils.parseEther(rewardPerToken))
+			.div(ethers.utils.parseEther('1')),
+	);
+
+	return calculateApr(earnedTokens, fees, stakeAmount, durationInDays);
+}
+
 export async function getVestingsByAccount(userAddress: string): Promise<
 	{
 		beneficiary: string;

@@ -7,6 +7,7 @@
 	} from '$stores/wallet';
 	import {
 		calculateApr,
+		calculateGeneralApr,
 		getClaimableTokens,
 		getUserStakes,
 		lastTimeRewardWouldBeApplied,
@@ -36,19 +37,24 @@
 		const lastTimeRewardApplied = await lastTimeRewardWouldBeApplied();
 
 		const userCachedStakes: Position[] = [];
-		addressStakes.map((item) => {
-			const dateDifference = (lastTimeRewardApplied - item.lockedAt) / (3600 * 24);
+		await Promise.all(
+			addressStakes.map(async (item) => {
+				const dateDifference = (lastTimeRewardApplied - item.lockedAt) / (3600 * 24);
 
-			userCachedStakes.push({
-				amount: item.amount,
-				endTime: 1000 * (item.lockedAt + item.lockPeriod),
-				interestType: 'apr',
-				aprOrApy: calculateApr(item.reward, 0, item.amount, dateDifference),
-				unstakeAvailable: Date.now() > 1000 * (item.lockedAt + item.lockPeriod),
-				stakeId: item.stakeId,
-				stakeTime: item.lockedAt * 1000,
-			});
-		});
+				const generalApr = await calculateGeneralApr(item.amount);
+				const actualApr = calculateApr(item.reward, 0, item.amount, dateDifference);
+
+				userCachedStakes.push({
+					amount: item.amount,
+					endTime: 1000 * (item.lockedAt + item.lockPeriod),
+					interestType: 'apr',
+					aprOrApy: +item.reward <= 0 ? generalApr : actualApr,
+					unstakeAvailable: Date.now() > 1000 * (item.lockedAt + item.lockPeriod),
+					stakeId: item.stakeId,
+					stakeTime: item.lockedAt * 1000,
+				});
+			}),
+		);
 
 		userStakes.set(userCachedStakes);
 
