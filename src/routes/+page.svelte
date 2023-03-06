@@ -4,7 +4,12 @@
 	import { blogPosts } from '$stores/blog';
 	import BlogPostPreview from '$lib/components/blog/BlogPostPreview.svelte';
 	import { writable } from 'svelte/store';
-	import { getListingCreators, getTrendingListings, type Listing, type ListingCreatorsData } from '$utils/api/listing';
+	import {
+		getListingCreators,
+		getTrendingListings,
+		type Listing,
+		type ListingCreatorsData,
+	} from '$utils/api/listing';
 	import NftList from '$lib/components/NftList.svelte';
 	import { MetaTags } from 'svelte-meta-tags';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
@@ -13,12 +18,18 @@
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import NotificationBar from '$lib/components/NotificationBar.svelte';
-	import { getNotifications, updateNotificationAsUser, type UserNotification } from '$utils/api/notifications';
+	import {
+		getNotifications,
+		updateNotificationAsUser,
+		type UserNotification,
+	} from '$utils/api/notifications';
 	import dayjs from 'dayjs';
 	import { WalletState, walletState } from '$utils/wallet';
 	import { currentUserAddress } from '$stores/wallet';
 
-	$: isWalletDataLoaded = $walletState === WalletState.DISCONNECTED || ($currentUserAddress && $walletState === WalletState.CONNECTED);
+	$: isWalletDataLoaded =
+		$walletState === WalletState.DISCONNECTED ||
+		($currentUserAddress && $walletState === WalletState.CONNECTED);
 
 	let trendingListings = writable<Listing[]>([]);
 	let loadedTrendingListings = writable(false);
@@ -33,7 +44,9 @@
 	const getTrendingListingsData = async () => {
 		loadedTrendingListings.set(false);
 		trendingListings.set(await getTrendingListings(12));
-		trendingListingsData = (await Promise.all($trendingListings.map(listingToCardOptions))).filter((e) => e);
+		trendingListingsData = (await Promise.all($trendingListings.map(listingToCardOptions))).filter(
+			(e) => e,
+		);
 		loadedTrendingListings.set(true);
 	};
 
@@ -56,7 +69,13 @@
 		const res = (await getNotifications(!!$currentUserAddress))?.data?.data;
 		if (!res) return;
 
-		const notification = res.find((n) => !n.hasCleared && n.location === 'GLOBAL' && dayjs().isAfter(dayjs(n.publishAt)) && (!n.expireAt || dayjs().isBefore(dayjs(n.expireAt))));
+		const notification = res.find(
+			(n) =>
+				!n.hasCleared &&
+				n.location === 'GLOBAL' &&
+				dayjs().isAfter(dayjs(n.publishAt)) &&
+				(!n.expireAt || dayjs().isBefore(dayjs(n.expireAt))),
+		);
 		userNotificationCleared.set(false);
 
 		if (!notification) {
@@ -69,7 +88,12 @@
 
 		loadedUserNotification.set(true);
 
-		if (!notification.readAt) await updateNotificationAsUser({ id: $userNotification._id, readAt: dayjs().format(), hasCleared: false });
+		if (!notification.readAt && $currentUserAddress)
+			await updateNotificationAsUser({
+				id: $userNotification._id,
+				readAt: dayjs().format(),
+				hasCleared: false,
+			});
 	};
 
 	const clearNotification = async () => {
@@ -99,7 +123,8 @@
 		type: 'website',
 		url: 'https://hinata.io/',
 		title: 'Hinata - Anime NFT Marketplace',
-		description: 'The anime and metaverse NFT platform for browsing and creating web3 artwork that you can auction, raffle or sell for cryptocurrency using your Ethereum wallet.',
+		description:
+			'The anime and metaverse NFT platform for browsing and creating web3 artwork that you can auction, raffle or sell for cryptocurrency using your Ethereum wallet.',
 		images: [
 			{
 				url: 'https://hinata-prod.mypinata.cloud/ipfs/QmSL6bqojDfspYKai2jmFY19ZHng8X3XmHZZEAmmGum6TE',
@@ -115,11 +140,18 @@
 <!-- Notifications -->
 {#if $loadedUserNotification && $userNotification && !$userNotificationCleared}
 	<div class="w-full text-white mt-20" in:fly={{ x: -2000, duration: 1000 }}>
-		<NotificationBar notification={$userNotification} wrapperClass={'h-16'} on:click={() => clearNotification()} />
+		<NotificationBar
+			notification={$userNotification}
+			wrapperClass={'h-16'}
+			on:click={() => clearNotification()}
+		/>
 	</div>
 {/if}
 
-<div class="px-36 pt-32 w-full text-white" class:pt-0={$loadedUserNotification && $userNotification && !$userNotificationCleared}>
+<div
+	class="px-36 pt-32 w-full text-white"
+	class:pt-0={$loadedUserNotification && $userNotification && !$userNotificationCleared}
+>
 	<div class="overflow-hidden">
 		<!-- Hero section -->
 		<!-- TODO fix this properly -->
@@ -158,7 +190,9 @@
 		<div class="mt-12 mb-16">
 			<div class="flex items-end mb-12">
 				<h2 class="text-2xl leading-none text-white flex-grow">Latest Blog Posts</h2>
-				<a href="/blog" class=" text-white gradient-underline text-lg relative">View latest posts</a>
+				<a href="/blog" class=" text-white gradient-underline text-lg relative">
+					View latest posts
+				</a>
 			</div>
 
 			{#if $blogPosts.length}
@@ -181,7 +215,9 @@
 					<NftList options={trendingListingsData} />
 				</div>
 
-				<a href="/marketplace/listings" class="w-full"><PrimaryButton extButtonClass="w-full">Explore Marketplace</PrimaryButton></a>
+				<a href="/marketplace/listings" class="w-full">
+					<PrimaryButton extButtonClass="w-full">Explore Marketplace</PrimaryButton>
+				</a>
 			</div>
 		{/if}
 	</div>
