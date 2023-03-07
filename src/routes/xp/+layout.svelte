@@ -3,7 +3,7 @@
 	import HorizontalSeparator from './lib/HorizontalSeparator.svelte';
 </script>
 
-<div class="max-w-screen-xl mx-auto w-full">
+<div class="max-w-screen-xl mx-auto w-full px-8">
 	<div class="relative">
 		<div class="w-full absolute bottom-0">
 			<HorizontalSeparator />
@@ -13,9 +13,11 @@
 			<a href="./exp-program" class:selected={$page.url.pathname.includes('/exp-program')}>
 				EXP Program
 			</a>
+
 			<a href="./leaderboard" class:selected={$page.url.pathname.includes('/leaderboard')}>
 				Leaderboard
 			</a>
+
 			<a href="./claim-and-stake" class:selected={$page.url.pathname.includes('/claim-and-stake')}>
 				Claim & Stake
 			</a>

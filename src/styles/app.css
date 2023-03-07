@@ -376,3 +376,25 @@ body {
 	/* Text Glow - Blue */
 	text-shadow: 0px 0px 3px #299bff;
 }
+
+.text-effect-purple {
+	background: linear-gradient(90deg, #9e00ff 0%, #bd6cfd 51.68%, #c059ff 101.25%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	text-fill-color: transparent;
+
+	/* Text Glow - Purple */
+	text-shadow: 0px 0px 3px #b02eff;
+}
+
+.text-effect-green {
+	background: linear-gradient(90deg, #adff00 0%, #4cef00 51.68%, #59ff9c 101.25%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	text-fill-color: transparent;
+
+	/* Text Glow - Green */
+	text-shadow: 0px 0px 3px #5df201;
+}
