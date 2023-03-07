@@ -22,14 +22,16 @@ export interface ListingDurationOption {
  * When a non-zero value is given, each shorter duration than `currentDuration` is filtered out
  * from the list of returned durations.
  */
-export function buildListingDurationOptions(isAdmin: boolean, currentDuration?: number): ListingDurationOption[] {
+export function buildListingDurationOptions(
+	isAdmin: boolean,
+	currentDuration?: number,
+): ListingDurationOption[] {
 	let options: { label: string; value: number; style?: string }[] = [
 		{ label: '1 day', value: 1 * 24 * 3600 },
 		{ label: '3 days', value: 3 * 24 * 3600 },
 		{ label: '7 days', value: 7 * 24 * 3600 },
 		{ label: '1 month', value: 30 * 24 * 3600 },
 		{ label: '3 months', value: 90 * 24 * 3600 },
-		{ label: '6 months', value: 180 * 24 * 3600 },
 	];
 
 	if (isAdmin) {
