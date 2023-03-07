@@ -11,7 +11,7 @@
 	</div>
 </div>
 
-<style>
+<style lang="postcss">
 	:global(.--slot-headers > div > div) {
 		@apply text-lg h-12 px-4 flex items-center;
 	}
@@ -47,19 +47,19 @@
 			rgba(0, 0, 0, 0.1);
 	}
 
-	:global(.--slot-data > div) {
-		@apply grid grid-cols-3;
+	:global(.--slot-data .table_item) {
+		@apply grid grid-cols-3 w-full;
 	}
 
-	:global(.--slot-data > div > div) {
+	:global(.--slot-data .table_item > div) {
 		@apply h-12 flex items-center px-4;
 	}
 
-	:global(.--slot-data > div > div:nth-child(3n)) {
+	:global(.--slot-data .table_item > div:nth-child(3n)) {
 		@apply pl-24;
 	}
 
-	:global(.--slot-data > div > div:nth-child(6n + 4)),
+	/* :global(.--slot-data > div > div:nth-child(6n + 4)),
 	:global(.--slot-data > div > div:nth-child(6n + 5)),
 	:global(.--slot-data > div > div:nth-child(6n + 6)) {
 		background: radial-gradient(
@@ -84,5 +84,5 @@
 				rgba(133, 141, 247, 0.1) 100%
 			),
 			rgba(0, 0, 0, 0.1);
-	}
+	} */
 </style>

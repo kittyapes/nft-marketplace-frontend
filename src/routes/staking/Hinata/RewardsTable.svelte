@@ -17,12 +17,14 @@
 
 		<div slot="data">
 			{#each rewards as reward}
-				<div>
-					{reward.token}
-				</div>
-				<div>{reward.amount}</div>
-				<div>
-					<ActionButton on:click={claimStakingRewards}>Claim</ActionButton>
+				<div class="table_item">
+					<div>
+						{reward.token}
+					</div>
+					<div>{reward.amount}</div>
+					<div>
+						<ActionButton on:click={claimStakingRewards}>Claim</ActionButton>
+					</div>
 				</div>
 			{/each}
 		</div>
