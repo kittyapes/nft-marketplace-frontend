@@ -8,10 +8,12 @@
 	import { claimableHinataStakingRewards, userStakes, walletHinataBalance } from '$stores/wallet';
 	import { stakeDurations, stakeTokens } from '$utils/contracts/staking';
 	import { createEventDispatcher } from 'svelte';
+	import Input from '$lib/components/v2/Input/Input.svelte';
+	import { ethers } from 'ethers';
 	// import Info from '$icons/info.v2.svelte';
 
 	$: selectedStakeDuration = stakeDurations[0];
-	$: selectedStakeAmount = '0';
+	$: selectedStakeAmount = '';
 
 	const dispatch = createEventDispatcher();
 
@@ -21,7 +23,11 @@
 	}
 
 	function validateStakeAmount(amount: string) {
-		return amount === '0' || +amount < +$walletHinataBalance;
+		// using ethers to perform the comparison since there are rounding errors
+		return (
+			ethers.utils.parseEther(amount || '0').eq(ethers.utils.parseEther('0')) ||
+			ethers.utils.parseEther(amount || '0').lte(ethers.utils.parseEther($walletHinataBalance))
+		);
 	}
 
 	function triggerUnstakeUI(event: { detail: { stakeId: number; amount: string } }) {
@@ -42,16 +48,32 @@
 <!-- Stake amount input field -->
 <div class="flex mt-4 gap-x-4">
 	<div class="flex-grow">
-		<TextInput
+		<Input
 			bind:value={selectedStakeAmount}
 			validator={validateStakeAmount}
 			placeholder="Enter Amount"
-		/>
+			inputMode="numeric"
+			class={`border-2 border-white rounded-none h-12 section-subtext hover:border-color-purple ${
+				(ethers.utils.parseEther(selectedStakeAmount || '0').eq(ethers.utils.parseEther('0')) ||
+					!validateStakeAmount(selectedStakeAmount)) &&
+				'border-white hover:border-white opacity-50'
+			}`}
+		>
+			<PrimaryButton
+				slot="end-icon"
+				extButtonClass="h-[60%] w-14 mr-2"
+				on:click={() => (selectedStakeAmount = $walletHinataBalance)}
+			>
+				MAX
+			</PrimaryButton>
+		</Input>
 	</div>
 
 	<div>
 		<PrimaryButton
-			disabled={parseFloat(selectedStakeAmount) === 0 ||
+			disabled={ethers.utils
+				.parseEther(selectedStakeAmount || '0')
+				.eq(ethers.utils.parseEther('0')) ||
 				parseFloat(selectedStakeAmount) > +$walletHinataBalance}
 			on:click={triggerStakeTokens}
 		>
