@@ -3,7 +3,7 @@
 	import EthV2 from '$icons/eth-v2.svelte';
 	import HinataGlow from '$icons/HinataGlow.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { tier_1 } from '..';
+	import { tier_1, tier_2, tier_3 } from '..';
 	import CollectionList from '../lib/CollectionList.svelte';
 	import HorizontalSeparator from '../lib/HorizontalSeparator.svelte';
 </script>
@@ -66,11 +66,11 @@
 		</div>
 
 		<div class="table-border border-r-2">
-			<CollectionList collections={tier_1} />
+			<CollectionList collections={tier_2} />
 		</div>
 
 		<div>
-			<CollectionList collections={tier_1} />
+			<CollectionList collections={tier_3} />
 		</div>
 	</div>
 
