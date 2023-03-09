@@ -1,6 +1,6 @@
 <script lang="ts">
 	import HomepageCollections from '$lib/components/collections/HomepageCollections.svelte';
-	import { apiSearchCollections, type Collection, type CollectionTableRow } from '$utils/api/collection';
+	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { notifyError } from '$utils/toast';
 	import { onMount } from 'svelte';
 
@@ -29,7 +29,7 @@
 			return;
 		}
 
-		if (res.length < limit) {
+		if (res.length === 0) {
 			reachedEnd = true;
 		} else {
 			page++;
