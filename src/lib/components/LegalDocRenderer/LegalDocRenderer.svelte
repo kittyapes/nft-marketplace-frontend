@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { goto } from '$app/navigation';
 	import DropdownArrow from '$icons/dropdown-arrow.svelte';
 	import { tick } from 'svelte';
 	import { fade } from 'svelte/transition';
@@ -29,7 +30,7 @@
 		currentHash = hash;
 
 		if (!isContained) {
-			window.location.hash = hash;
+			goto(`${hash}-section-title`, { replaceState: true });
 		}
 	}
 
@@ -64,7 +65,11 @@
 		}
 
 		const visibleHash =
-			(titles[visibleTitleIndex] && titleToHash(titles[visibleTitleIndex].querySelector('div').querySelector('span')?.innerText)) || titleToHash(titles[visibleTitleIndex]?.innerText);
+			(titles[visibleTitleIndex] &&
+				titleToHash(
+					titles[visibleTitleIndex].querySelector('div').querySelector('span')?.innerText,
+				)) ||
+			titleToHash(titles[visibleTitleIndex]?.innerText);
 
 		if (visibleHash) {
 			currentHash = visibleHash;
@@ -110,15 +115,23 @@
 		class:overflow-x-auto={isContained}
 	>
 		<!-- Desktop menu section -->
-		<div id="menu-container" class="hidden lg:block" style="top: {desktopMenuOffsetTop / 4}rem" in:fade>
+		<div
+			id="menu-container"
+			class="hidden lg:block"
+			style="top: {desktopMenuOffsetTop / 4}rem"
+			in:fade
+		>
 			<h1 class="uppercase">{menuTitle}</h1>
 
 			<ul id="section-links-container">
 				{#each docData as section}
 					<li class="section-link" class:highlight={currentHash === titleToHash(section.title)}>
-						<a href={titleToHash(section.title)} on:click={(ev) => handleMenuSectionClick(ev, titleToHash(section.title))}>
+						<button
+							class="text-left"
+							on:click={(ev) => handleMenuSectionClick(ev, titleToHash(section.title))}
+						>
 							{section.title}
-						</a>
+						</button>
 					</li>
 				{/each}
 			</ul>
@@ -137,7 +150,11 @@
 			<div class="max-w-4xl px-4 lg:px-0 lg:pr-16 mb-32" in:fade>
 				{#each docData as section, index}
 					<!-- Desktop section title -->
-					<h2 id="{titleToHash(section.title, true)}-section-title" class="section-title hidden lg:block" bind:this={titles[index]}>
+					<h2
+						id="{titleToHash(section.title, true)}-section-title"
+						class="section-title hidden lg:block"
+						bind:this={titles[index]}
+					>
 						<div>
 							{index + 1}.&emsp;
 							<span>{section.title}</span>
@@ -145,8 +162,15 @@
 					</h2>
 
 					<!-- Mobile section title and dropdown -->
-					<input type="checkbox" id="{titleToHash(section.title, true)}-section-title-mobile" class="mobile-section" />
-					<label for="{titleToHash(section.title, true)}-section-title-mobile" class="mobile-section lg:!hidden">
+					<input
+						type="checkbox"
+						id="{titleToHash(section.title, true)}-section-title-mobile"
+						class="mobile-section"
+					/>
+					<label
+						for="{titleToHash(section.title, true)}-section-title-mobile"
+						class="mobile-section lg:!hidden"
+					>
 						{section.title}
 
 						<div class="dropdown-arrow">
