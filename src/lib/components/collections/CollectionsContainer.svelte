@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Collection, CollectionTableRow } from '$utils/api/collection';
+	import type { Collection } from '$utils/api/collection';
 	import CollectionsTable from './CollectionsTable.svelte';
 
 	export let collections: Collection[];

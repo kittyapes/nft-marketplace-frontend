@@ -85,7 +85,11 @@ export function getInitialCollectionData(): Partial<Collection> {
 }
 
 export async function addNftsToCollection(nftIds: string[], collectionId: string) {
-	const res = await axios.post(getApiUrl('v2', 'collections/' + collectionId + '/add-nfts'), { nfts: nftIds }, await getAxiosConfig());
+	const res = await axios.post(
+		getApiUrl('v2', 'collections/' + collectionId + '/add-nfts'),
+		{ nfts: nftIds },
+		await getAxiosConfig(),
+	);
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -108,7 +112,9 @@ export async function apiCreateCollection(options: Collection) {
 	const formData = new FormData();
 	Object.entries(options).forEach(([k, v]) => formData.append(k, v));
 
-	const res = await axios.post(getApiUrl('v2', 'collections'), formData, await getAxiosConfig()).catch((e) => e.response);
+	const res = await axios
+		.post(getApiUrl('v2', 'collections'), formData, await getAxiosConfig())
+		.catch((e) => e.response);
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -139,7 +145,9 @@ export async function apiUpdateCollection(options: UpdateCollectionOptions) {
 	const formData = new FormData();
 	Object.entries(options).forEach(([k, v]) => v && formData.append(k, v));
 
-	const res = await axios.put(getApiUrl('latest', 'collections/' + options.id), formData, await getAxiosConfig()).catch((e) => e.response);
+	const res = await axios
+		.put(getApiUrl('latest', 'collections/' + options.id), formData, await getAxiosConfig())
+		.catch((e) => e.response);
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -149,7 +157,9 @@ export async function apiUpdateCollection(options: UpdateCollectionOptions) {
 }
 
 export async function apiGetCollectionBySlug(slug: string, limit?: number, page?: number) {
-	const res = await axios.get(getApiUrl('latest', 'collections/' + slug), { params: { limit, page } });
+	const res = await axios.get(getApiUrl('latest', 'collections/' + slug), {
+		params: { limit, page },
+	});
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -180,10 +190,18 @@ export interface CollectionTableRow {
 }
 
 export async function apiGetMostActiveCollections(
-	sort: 'ALPHABETICAL' | 'CREATED_AT' | 'ONE_DAY_VOLUME' | 'SEVEN_DAYS_VOLUME' | 'THIRTY_DAYS_VOLUME' | 'TOTAL_VOLUME' = 'TOTAL_VOLUME',
+	sort:
+		| 'ALPHABETICAL'
+		| 'CREATED_AT'
+		| 'ONE_DAY_VOLUME'
+		| 'SEVEN_DAYS_VOLUME'
+		| 'THIRTY_DAYS_VOLUME'
+		| 'TOTAL_VOLUME' = 'TOTAL_VOLUME',
 ): Promise<{ collections: Collection[]; totalCount: number }> {
 	const limit = 12;
-	const res = await axios.get(getApiUrl('v2', 'collections/search'), { params: { limit, status: 'ACTIVE', sortBy: sort } });
+	const res = await axios.get(getApiUrl('v2', 'collections/search'), {
+		params: { limit, status: 'ACTIVE', sortBy: sort },
+	});
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
@@ -198,7 +216,13 @@ export interface CollectionSearchOptions {
 	name?: string;
 	limit?: number;
 	page?: number;
-	sortBy?: 'ALPHABETICAL' | 'CREATED_AT' | 'ONE_DAY_VOLUME' | 'SEVEN_DAYS_VOLUME' | 'THIRTY_DAYS_VOLUME' | 'TOTAL_VOLUME';
+	sortBy?:
+		| 'ALPHABETICAL'
+		| 'CREATED_AT'
+		| 'ONE_DAY_VOLUME'
+		| 'SEVEN_DAYS_VOLUME'
+		| 'THIRTY_DAYS_VOLUME'
+		| 'TOTAL_VOLUME';
 	sortReversed?: boolean;
 	collectionAddress?: string;
 	status?: 'ACTIVE' | 'INACTIVE' | 'ALL';
@@ -226,7 +250,8 @@ export async function apiSearchCollections(options?: CollectionSearchOptions) {
 		res.data.data.collections.map((collection: Collection) => {
 			if (collection?.stats) {
 				const total24Vol = collection?.stats?.local24Vol + collection?.stats?.external24Vol;
-				const prevTotal24Vol = collection?.stats?.previousLocal24Vol + collection?.stats?.previousExternal24Vol;
+				const prevTotal24Vol =
+					collection?.stats?.previousLocal24Vol + collection?.stats?.previousExternal24Vol;
 				const vol24HrChange = (total24Vol - prevTotal24Vol) / prevTotal24Vol;
 
 				collection.stats.total24Vol = total24Vol;
@@ -241,7 +266,10 @@ export async function apiSearchCollections(options?: CollectionSearchOptions) {
 	return res.data.data;
 }
 
-export async function apiValidateCollectionNameAndSlug(name: string | null = null, slug: string | null = null) {
+export async function apiValidateCollectionNameAndSlug(
+	name: string | null = null,
+	slug: string | null = null,
+) {
 	if (name || slug) {
 		const params = {};
 		const result = {
@@ -276,7 +304,11 @@ export async function apiValidateCollectionNameAndSlug(name: string | null = nul
 }
 
 export async function changeCollectionStatus(slug: string, status: string) {
-	const res = await axios.post(getApiUrl('latest', `collections/${slug}/set-status`), { status }, await getAxiosConfig());
+	const res = await axios.post(
+		getApiUrl('latest', `collections/${slug}/set-status`),
+		{ status },
+		await getAxiosConfig(),
+	);
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);

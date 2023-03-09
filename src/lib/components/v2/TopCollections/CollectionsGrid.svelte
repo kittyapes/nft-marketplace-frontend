@@ -19,19 +19,27 @@
 		}
 	}
 
-	const gridTemplateRows = collections?.length >= 4 ? 'grid-rows-4' : `grid-rows-${collections?.length}`;
+	const gridTemplateRows =
+		collections?.length >= 4 ? 'grid-rows-4' : `grid-rows-${collections?.length}`;
 
 	let parsedStats = [];
 
 	$: collections.map((collection, i) => {
-		const dailyVol = collection.stats.external24Vol + collection.stats.local24Vol;
-		const prevDailyVol = collection.stats.previousExternal24Vol + collection.stats.previousLocal24Vol;
+		const dailyVol = +(collection.stats.external24Vol + collection.stats.local24Vol).toFixed(2);
+		const prevDailyVol = +(
+			collection.stats.previousExternal24Vol + collection.stats.previousLocal24Vol
+		).toFixed(2);
 
 		parsedStats[i] = {
-			totalVol: collection.stats.externalTotalVol + collection.stats.localTotalVol,
-			floorPrice: collection.stats.localFloorPrice,
+			totalVol: +(collection.stats.externalTotalVol + collection.stats.localTotalVol).toFixed(2),
+			floorPrice: +collection.stats.localFloorPrice.toFixed(2),
 			vol24Hr: dailyVol,
-			percent24Hr: dailyVol / prevDailyVol || 0,
+			percent24Hr:
+				prevDailyVol === 0 && dailyVol === 0
+					? 0
+					: prevDailyVol === 0
+					? 100
+					: +(dailyVol / prevDailyVol).toFixed(4) * 100 || 0,
 		};
 
 		return collection;
@@ -41,9 +49,15 @@
 {#if collections?.length > 0}
 	<div class="grid {gridTemplateRows} grid-cols-3 gap-x-20 gap-y-10 justify-between">
 		{#each collections as collection, i}
-			<a href="/collections/{collection.slug}" class="flex flex-row items-center gap-x-6 font-bold text-white text-sm leading-7">
+			<a
+				href="/collections/{collection.slug}"
+				class="flex flex-row items-center text-sm font-bold leading-7 text-white gap-x-6"
+			>
 				<p>{i + 1}</p>
-				<div class="relative flex items-center justify-center w-14 2xl:w-[70px] h-14 2xl:h-[70px] border-gradient thumbnail bg-cover bg-center" style="--url: url({collection?.logoImageUrl ?? ``})">
+				<div
+					class="relative flex items-center justify-center w-14 2xl:w-[70px] h-14 2xl:h-[70px] border-gradient thumbnail bg-cover bg-center"
+					style="--url: url({collection?.logoImageUrl ?? ``})"
+				>
 					{#if !collection?.logoImageUrl}
 						<PlaceholderImageV2 class="w-8 h-auto" />
 					{/if}
@@ -57,7 +71,9 @@
 						<h2>{collection?.name}</h2>
 						<h2>{parsedStats[i]?.totalVol} ETH</h2>
 					</div>
-					<div class="flex flex-row items-center justify-between font-semibold text-sm leading-9 text-[#CECECE]">
+					<div
+						class="flex flex-row items-center justify-between font-semibold text-sm leading-9 text-[#CECECE]"
+					>
 						<h3 class="">Floor: {parsedStats[i]?.floorPrice} ETH</h3>
 
 						<h3 class="">
