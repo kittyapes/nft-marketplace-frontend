@@ -98,7 +98,7 @@
 	<div class="text-lg mt-5 grid grid-cols-3">
 		<div class="title">Positions</div>
 		{#if highlightUnstakeItems}
-			<div class="text-sm">Please Select a Position</div>
+			<div class="text-xs flex items-center justify-center pt-1">Please Select a Position</div>
 		{/if}
 	</div>
 
