@@ -37,7 +37,11 @@
 	}
 
 	function highlightUnstake() {
-		if (parseEther(maxUnstakeAmount || '0').eq(parseEther('0')) && !userClickedOnInput) {
+		if (
+			$userStakes.length > 0 &&
+			parseEther(maxUnstakeAmount || '0').eq(parseEther('0')) &&
+			!userClickedOnInput
+		) {
 			highlightUnstakeItems = true;
 			userClickedOnInput = true;
 		}
@@ -90,18 +94,20 @@
 	Max Unstake: {maxUnstakeAmount}
 </div> -->
 
-<div class="text-lg mt-5 grid grid-cols-3">
-	<div class="title">Positions</div>
-	{#if highlightUnstakeItems}
-		<div class="text-sm">Please Select a Position</div>
-	{/if}
-</div>
+{#if $userStakes.length > 0}
+	<div class="text-lg mt-5 grid grid-cols-3">
+		<div class="title">Positions</div>
+		{#if highlightUnstakeItems}
+			<div class="text-sm">Please Select a Position</div>
+		{/if}
+	</div>
 
-<PositionsTable
-	positions={$userStakes}
-	on:unstake-tokens={triggerUnstakeUI}
-	highlightItems={highlightUnstakeItems}
-/>
+	<PositionsTable
+		positions={$userStakes}
+		on:unstake-tokens={triggerUnstakeUI}
+		highlightItems={highlightUnstakeItems}
+	/>
+{/if}
 
 <div class="text-lg mt-4">Rewards</div>
 

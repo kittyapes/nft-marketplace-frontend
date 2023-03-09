@@ -56,5 +56,10 @@ export const stakedHinataAmount = writable('0');
 export const walletHinataBalance = writable('0');
 export const claimableVestingRewards = writable('0');
 export const escrowedVestingRewards = writable('0');
-export const claimableHinataStakingRewards = writable<Reward[]>([]);
+export const claimableHinataStakingRewards = writable<Reward[]>([
+	{
+		token: 'Hinata',
+		amount: '0.0',
+	},
+]);
 export const userStakes = writable<Position[]>([]);
