@@ -82,7 +82,7 @@
 		</p>
 	</div>
 
-	<div class="grid grid-cols-2 place-items-center gap-4">
+	<div class="grid grid-cols-2 place-items-start pl-8 gap-4">
 		<h2 class="text-lg">You Will Receive:</h2>
 
 		<div />
@@ -98,7 +98,7 @@
 
 		<div>
 			<span class="text-gradient">{$escrowedVestingRewards}</span>
-			Hinata tokens:
+			Amount Unlocking:
 		</div>
 
 		<PrimaryButton>Escrowed</PrimaryButton>

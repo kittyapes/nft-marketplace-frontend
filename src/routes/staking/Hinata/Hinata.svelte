@@ -23,6 +23,7 @@
 
 	let stateStakeUnstake: 'stake' | 'unstake' = 'stake';
 	let unstakeId = 0;
+	let selectedUnStakeAmount = '0';
 	let maxUnstakeAmount = '0';
 
 	async function loadUp() {
@@ -67,6 +68,7 @@
 		stateStakeUnstake = 'unstake';
 		unstakeId = event.detail.stakeId;
 		maxUnstakeAmount = event.detail.amount;
+		selectedUnStakeAmount = event.detail.amount;
 	}
 
 	onMount(async () => {
@@ -91,6 +93,7 @@
 			on:reload-stake-data={loadUp}
 			{maxUnstakeAmount}
 			{unstakeId}
+			{selectedUnStakeAmount}
 		/>
 	{/if}
 </div>

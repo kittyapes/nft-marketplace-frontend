@@ -16,7 +16,13 @@
 	import { nftDraft } from '$stores/create';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { Collection, UpdateCollectionOptions } from '$utils/api/collection';
-	import { apiCreateCollection, apiGetCollectionBySlug, apiUpdateCollection, apiValidateCollectionNameAndSlug, getInitialCollectionData } from '$utils/api/collection';
+	import {
+		apiCreateCollection,
+		apiGetCollectionBySlug,
+		apiUpdateCollection,
+		apiValidateCollectionNameAndSlug,
+		getInitialCollectionData,
+	} from '$utils/api/collection';
 	import { contractCreateCollection } from '$utils/contracts/collection';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { debounce } from 'lodash-es';
@@ -48,7 +54,9 @@
 
 	// Data collected from the form or fetched from the server
 	let originalCollectionData = null; // Used to check whether data was changed during editing
-	const [collectionData, prevCollectionData] = withPrevious<Collection>(getInitialCollectionData() as Collection);
+	const [collectionData, prevCollectionData] = withPrevious<Collection>(
+		getInitialCollectionData() as Collection,
+	);
 	const serverCollectionToUpdate = writable<Collection | null>(null);
 
 	// An object with collection property keys and bool as values representing their validity
@@ -71,12 +79,14 @@
 		const slugRegex = new RegExp(/^\w[\w+_-]+\w$/, 'gm');
 
 		$formValidity.name = !!data.name
-			? (!nameRegex.test(data.name) && 'Collection name can only contain alphanumeric characters, -, or _') ||
+			? (!nameRegex.test(data.name) &&
+					'Collection name can only contain alphanumeric characters, -, or _') ||
 			  (data.name.length > 25 && 'Collection name Cannot Contain More Than 25 Characters') ||
 			  !!data.name
 			: 'Missing collection name';
 		$formValidity.slug = !!data.slug
-			? (!slugRegex.test(data.slug) && 'Collection url can only contain alphanumeric characters, -, or _') ||
+			? (!slugRegex.test(data.slug) &&
+					'Collection url can only contain alphanumeric characters, -, or _') ||
 			  (data.slug.length > 25 && 'Collection url Cannot Contain More Than 25 Characters') ||
 			  !!data.slug
 			: 'Collection URL is invalid';
@@ -113,7 +123,8 @@
 		}
 		const res = await apiValidateCollectionNameAndSlug(collectionName, null);
 		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.name !== collectionName;
-		$formValidity.name = res?.nameIsDuplicate && editCheck ? 'Collection Name Is Not Unique' : $formValidity.name;
+		$formValidity.name =
+			res?.nameIsDuplicate && editCheck ? 'Collection Name Is Not Unique' : $formValidity.name;
 	}
 
 	async function validateCollectionSlug(collectionSlugEdited: string) {
@@ -122,8 +133,11 @@
 			return;
 		}
 		const res = await apiValidateCollectionNameAndSlug(null, collectionSlugEdited);
-		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.slug !== collectionSlugEdited;
-		$formValidity.slug = res?.slugIsDuplicate && editCheck ? 'Collection Slug Is Not Unique' : $formValidity.slug;
+		const editCheck = isNewCollection
+			? true
+			: $serverCollectionToUpdate.slug !== collectionSlugEdited;
+		$formValidity.slug =
+			res?.slugIsDuplicate && editCheck ? 'Collection Slug Is Not Unique' : $formValidity.slug;
 	}
 
 	collectionUrl.subscribe(async () => {
@@ -229,7 +243,9 @@
 	}
 
 	async function _updateCollection() {
-		const [error, res] = await noTryAsync(() => apiUpdateCollection(collectionToUpdateOptions($collectionData)));
+		const [error, res] = await noTryAsync(() =>
+			apiUpdateCollection(collectionToUpdateOptions($collectionData)),
+		);
 
 		if (error) {
 			notifyError(error.message);
@@ -346,7 +362,13 @@
 					<p class="section-subtext mt-2.5">Upload image</p>
 				</div>
 				<div class="w-1/2">
-					<DragDropImage max_file_size={50_000_000} class="h-48" on:new-blob={newCoverBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.backgroundImageUrl}>
+					<DragDropImage
+						max_file_size={50_000_000}
+						class="h-48"
+						on:new-blob={newCoverBlobHandler}
+						acceptedFormats={acceptedImages}
+						currentImgUrl={$collectionData.backgroundImageUrl}
+					>
 						<p slot="placeholder" class="section-subtext font-medium">
 							Drag and drop an image <br />
 							or
@@ -358,7 +380,7 @@
 					</DragDropImage>
 				</div>
 			</div>
-			<!-- Theme selector -->
+			<!-- Theme selector 
 			<div class="section">
 				<div class="w-1/2">
 					<h3 class="section-title">Choose display theme</h3>
@@ -367,12 +389,17 @@
 				<div class="w-1/2">
 					<CollectionDisplayStyleSwitcher bind:displayStyle={$collectionData.displayTheme} />
 				</div>
-			</div>
+			</div> -->
 			<!-- Name, URL and Descriptions -->
 			<div class="section items-stretch">
 				<div class="w-1/2 pr-6">
 					<h3 class="section-title">Display name</h3>
-					<Input fixedHeight={false} bind:value={$collectionData.name} placeholder="The Kitty Collection" class="border border-white rounded-none mt-3 h-8 2xl:h-10 section-subtext" />
+					<Input
+						fixedHeight={false}
+						bind:value={$collectionData.name}
+						placeholder="The Kitty Collection"
+						class="border border-white rounded-none mt-3 h-8 2xl:h-10 section-subtext"
+					/>
 					<h3 class="section-title mt-11 2xl:mt-14">URL</h3>
 					<Input
 						fixedHeight={false}
@@ -398,7 +425,11 @@
 			</div>
 
 			<div class="w-1/2">
-				<Royalties bind:values={$collectionData.royalties} bind:error={$formValidity.royalties} disabled={!isNewCollection} />
+				<Royalties
+					bind:values={$collectionData.royalties}
+					bind:error={$formValidity.royalties}
+					disabled={!isNewCollection}
+				/>
 			</div>
 
 			<!-- Social Links -->
@@ -406,20 +437,57 @@
 				<div class="w-1/2 flex flex-col gap-y-4">
 					<h3 class="section-title">Links</h3>
 
-					<SocialLinkInput placeholder="Instagram link" bind:value={$collectionData.instagramUrl} iconComponent={Instagram} bind:valid={$formValidity.instagramUrl} />
-					<SocialLinkInput placeholder="Discord link" bind:value={$collectionData.discordUrl} iconComponent={Discord} bind:valid={$formValidity.discordUrl} />
-					<SocialLinkInput placeholder="Twitter link" bind:value={$collectionData.twitterUrl} iconComponent={Twitter} bind:valid={$formValidity.twitterUrl} />
-					<SocialLinkInput placeholder="Website link" bind:value={$collectionData.websiteUrl} iconComponent={Web} bind:valid={$formValidity.websiteUrl} />
-					<SocialLinkInput placeholder="Pixiv link" bind:value={$collectionData.pixivUrl} iconComponent={Pixiv} bind:valid={$formValidity.pixivUrl} />
-					<SocialLinkInput placeholder="Deviantart link" bind:value={$collectionData.deviantartUrl} iconComponent={Deviantart} bind:valid={$formValidity.deviantartUrl} />
-					<SocialLinkInput placeholder="Artstation link" bind:value={$collectionData.artstationUrl} iconComponent={Artstation} bind:valid={$formValidity.artstationUrl} />
+					<SocialLinkInput
+						placeholder="Instagram link"
+						bind:value={$collectionData.instagramUrl}
+						iconComponent={Instagram}
+						bind:valid={$formValidity.instagramUrl}
+					/>
+					<SocialLinkInput
+						placeholder="Discord link"
+						bind:value={$collectionData.discordUrl}
+						iconComponent={Discord}
+						bind:valid={$formValidity.discordUrl}
+					/>
+					<SocialLinkInput
+						placeholder="Twitter link"
+						bind:value={$collectionData.twitterUrl}
+						iconComponent={Twitter}
+						bind:valid={$formValidity.twitterUrl}
+					/>
+					<SocialLinkInput
+						placeholder="Website link"
+						bind:value={$collectionData.websiteUrl}
+						iconComponent={Web}
+						bind:valid={$formValidity.websiteUrl}
+					/>
+					<SocialLinkInput
+						placeholder="Pixiv link"
+						bind:value={$collectionData.pixivUrl}
+						iconComponent={Pixiv}
+						bind:valid={$formValidity.pixivUrl}
+					/>
+					<SocialLinkInput
+						placeholder="Deviantart link"
+						bind:value={$collectionData.deviantartUrl}
+						iconComponent={Deviantart}
+						bind:valid={$formValidity.deviantartUrl}
+					/>
+					<SocialLinkInput
+						placeholder="Artstation link"
+						bind:value={$collectionData.artstationUrl}
+						iconComponent={Artstation}
+						bind:valid={$formValidity.artstationUrl}
+					/>
 				</div>
 			</div>
 
 			{#if isNewCollection}
 				<div class="flex flex-col w-1/2 pr-6">
 					<h3 class="section-title">Blockchain</h3>
-					<p class="my-3 section-subtext">Your Collection will be created on the following Blockchain:</p>
+					<p class="my-3 section-subtext">
+						Your Collection will be created on the following Blockchain:
+					</p>
 					<Dropdown options={blockchainOptions} disabled class="h-10" />
 				</div>
 			{/if}

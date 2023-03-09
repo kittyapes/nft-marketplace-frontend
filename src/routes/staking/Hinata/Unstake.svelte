@@ -1,6 +1,5 @@
 <script lang="ts">
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import TextInput from '$lib/components/v2/TextInput/TextInput.svelte';
 	import { claimableHinataStakingRewards, userStakes } from '$stores/wallet';
 	import { withdrawUnlockedTokensByStakeId } from '$utils/contracts/staking';
 	import { createEventDispatcher } from 'svelte';
@@ -9,18 +8,22 @@
 	import Input from '$lib/components/v2/Input/Input.svelte';
 	import { ethers } from 'ethers';
 
+	const { parseEther } = ethers.utils;
+
 	const dispatch = createEventDispatcher();
 
 	export let maxUnstakeAmount = '0';
 	export let unstakeId = 1;
+	export let selectedUnStakeAmount = '0';
 
-	$: selectedUnStakeAmount = '0';
 	$: highlightUnstakeItems = false;
+	$: userClickedOnInput = false;
 
 	function validateUnstakeAmount(amount: string) {
+		userClickedOnInput = false;
 		return (
-			ethers.utils.parseEther(selectedUnStakeAmount || '0').eq(ethers.utils.parseEther('0')) ||
-			ethers.utils.parseEther(amount).lte(ethers.utils.parseEther(maxUnstakeAmount))
+			parseEther(selectedUnStakeAmount || '0').eq(parseEther('0')) ||
+			parseEther(amount).lte(parseEther(maxUnstakeAmount))
 		);
 	}
 
@@ -34,10 +37,19 @@
 	}
 
 	function highlightUnstake() {
-		if (ethers.utils.parseEther(maxUnstakeAmount || '0').eq(ethers.utils.parseEther('0'))) {
+		if (
+			$userStakes.length > 0 &&
+			parseEther(maxUnstakeAmount || '0').eq(parseEther('0')) &&
+			!userClickedOnInput
+		) {
 			highlightUnstakeItems = true;
-			setTimeout(() => (highlightUnstakeItems = false), 800);
+			userClickedOnInput = true;
 		}
+	}
+
+	$: if (!parseEther(maxUnstakeAmount || '0').eq(parseEther('0')) && userClickedOnInput) {
+		highlightUnstakeItems = false;
+		userClickedOnInput = false;
 	}
 </script>
 
@@ -50,7 +62,7 @@
 			placeholder="Enter Amount"
 			inputMode="numeric"
 			class={`border-2 border-white rounded-none h-12 section-subtext hover:border-color-purple ${
-				(ethers.utils.parseEther(selectedUnStakeAmount || '0').eq(ethers.utils.parseEther('0')) ||
+				(parseEther(selectedUnStakeAmount || '0').eq(parseEther('0')) ||
 					!validateUnstakeAmount(selectedUnStakeAmount)) &&
 				'border-white hover:border-white opacity-50'
 			}`}
@@ -60,7 +72,7 @@
 				slot="end-icon"
 				extButtonClass="h-[60%] w-14 mr-2"
 				on:click={() => (selectedUnStakeAmount = maxUnstakeAmount)}
-				disabled={ethers.utils.parseEther(maxUnstakeAmount || '0').eq(ethers.utils.parseEther('0'))}
+				disabled={parseEther(maxUnstakeAmount || '0').eq(parseEther('0'))}
 			>
 				MAX
 			</PrimaryButton>
@@ -69,27 +81,33 @@
 
 	<div>
 		<PrimaryButton
-			disabled={ethers.utils
-				.parseEther(selectedUnStakeAmount || '0')
-				.eq(ethers.utils.parseEther('0')) || +selectedUnStakeAmount > +maxUnstakeAmount}
+			disabled={ethers.utils.parseEther(selectedUnStakeAmount || '0').eq(parseEther('0')) ||
+				+selectedUnStakeAmount > +maxUnstakeAmount}
 			on:click={triggerUnstakeTokens}
 		>
 			Unstake
 		</PrimaryButton>
 	</div>
 </div>
-
+<!-- 
 <div class="flex-grow mt-4">
 	Max Unstake: {maxUnstakeAmount}
-</div>
+</div> -->
 
-<div class="text-lg mt-4">Positions</div>
+{#if $userStakes.length > 0}
+	<div class="text-lg mt-5 grid grid-cols-3">
+		<div class="title">Positions</div>
+		{#if highlightUnstakeItems}
+			<div class="text-xs flex items-center justify-center pt-1">Please Select a Position</div>
+		{/if}
+	</div>
 
-<PositionsTable
-	positions={$userStakes}
-	on:unstake-tokens={triggerUnstakeUI}
-	highlightItems={highlightUnstakeItems}
-/>
+	<PositionsTable
+		positions={$userStakes}
+		on:unstake-tokens={triggerUnstakeUI}
+		highlightItems={highlightUnstakeItems}
+	/>
+{/if}
 
 <div class="text-lg mt-4">Rewards</div>
 

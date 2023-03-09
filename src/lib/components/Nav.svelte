@@ -46,7 +46,7 @@
 	// $: useTestnets = $connectionDetails ? $connectionDetails?.chainId !== 1 : import.meta.env.VITE_DEFAULT_NETWORK !== '1';
 </script>
 
-<div class="fixed z-10 flex w-full">
+<div class="fixed z-20 flex w-full">
 	<div
 		class="{scrollY
 			? 'backdrop-blur-xl'

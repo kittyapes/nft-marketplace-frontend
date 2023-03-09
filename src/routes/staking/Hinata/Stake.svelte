@@ -84,11 +84,13 @@
 
 <WalletBalance walletBalance={$walletHinataBalance.toString()} />
 
-<div class="mt-4 text-lg">Positions</div>
+{#if $userStakes.length > 0}
+	<div class="mt-4 text-lg">Positions</div>
 
-<div class="mt-4">
-	<PositionsTable positions={$userStakes} on:unstake-tokens={triggerUnstakeUI} />
-</div>
+	<div class="mt-4">
+		<PositionsTable positions={$userStakes} on:unstake-tokens={triggerUnstakeUI} />
+	</div>
+{/if}
 
 <div class="mt-4 text-lg">Rewards</div>
 

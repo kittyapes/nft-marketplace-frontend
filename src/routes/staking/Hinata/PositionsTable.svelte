@@ -24,12 +24,13 @@
 		</div>
 
 		<div slot="data">
-			{#each positions as pos}
+			{#each positions as pos, index}
 				{#if !ethers.utils.parseEther(pos.amount).eq(ethers.utils.parseEther('0'))}
 					<div
 						class="table_item"
 						on:click={() => unstake(pos.stakeId, pos.amount)}
 						class:highlight={highlightItems}
+						style="animation-delay: {index * 100}ms"
 					>
 						<div>
 							{#if pos.unstakeAvailable}
@@ -48,19 +49,34 @@
 	</Table>
 </div>
 
-<style>
+<style lang="postcss">
 	div.highlight {
-		background: linear-gradient(
-				56.67deg,
-				rgba(167, 148, 255, 0) 11.15%,
-				rgba(167, 148, 255, 0.5115) 57.47%,
-				rgba(142, 119, 247, 0) 127.41%,
-				rgba(142, 119, 247, 0) 127.41%,
-				rgba(167, 148, 255, 0) 127.41%
-			),
-			rgba(103, 212, 248, 0.55);
-		/* Text Glow - Blue */
-		box-shadow: 0px 0px 3px #299bff;
-		/* animation: flash 300ms 3 ease-in-out; */
+		animation: flash 1500ms infinite ease-in;
+	}
+
+	@keyframes flash {
+		0% {
+			background: transparent;
+			box-shadow: none;
+		}
+
+		50% {
+			background: linear-gradient(
+					56.67deg,
+					rgba(167, 148, 255, 0) 11.15%,
+					rgba(167, 148, 255, 0.5115) 57.47%,
+					rgba(142, 119, 247, 0) 127.41%,
+					rgba(142, 119, 247, 0) 127.41%,
+					rgba(167, 148, 255, 0) 127.41%
+				),
+				rgba(103, 212, 248, 0.55);
+			/* Text Glow - Blue */
+			box-shadow: 0px 0px 3px #299bff;
+		}
+
+		100% {
+			background: transparent;
+			box-shadow: none;
+		}
 	}
 </style>
