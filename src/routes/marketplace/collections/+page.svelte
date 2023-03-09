@@ -29,7 +29,7 @@
 			return;
 		}
 
-		if (res.length < limit) {
+		if (res.length === 0) {
 			reachedEnd = true;
 		} else {
 			page++;
