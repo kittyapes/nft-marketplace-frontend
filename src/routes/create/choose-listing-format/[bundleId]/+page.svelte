@@ -8,6 +8,7 @@
 	import SaleListingTypeOption from '$icons/sale-listing-type-option.svelte';
 	import AuctionListingTypeOption from '$icons/auction-listing-type-option.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
+	import Info from '$icons/info.v2.svelte';
 
 	const listingTypes = [
 		{
@@ -51,9 +52,12 @@
 	{/if}
 </div>
 
-<div class="flex mt-4">
-	<div class="flex-grow text-lg">Gasless Listing</div>
-	<Toggle bind:state={gasless} />
+<div class="flex mt-4 text-neutral-500 gap-x-4 items-center">
+	<div class="flex-grow text-lg">Gasless Listing (Temporarily Disabled)</div>
+	<Toggle bind:state={gasless} disabled />
+
+	<!-- WARNING: This should be a hover, add a hover when we make this enabled -->
+	<Info />
 </div>
 
 <div class="flex flex-wrap justify-center gap-4 mt-24 mb-64">

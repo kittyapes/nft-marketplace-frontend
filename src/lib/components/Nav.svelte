@@ -17,7 +17,11 @@
 
 	const closeModalIfNotInElement = (e) => {
 		// Click is not on the profile button or popup element
-		if (!e.target.closest('#profile-button') && !e.target.closest('#profile-popup-parent') && !e.target.closest('#profile-popup-container')) {
+		if (
+			!e.target.closest('#profile-button') &&
+			!e.target.closest('#profile-popup-parent') &&
+			!e.target.closest('#profile-popup-container')
+		) {
 			displayProfilePopup = false;
 		}
 		if (e.target.closest('.profile-btn-item')) {
@@ -42,8 +46,12 @@
 	// $: useTestnets = $connectionDetails ? $connectionDetails?.chainId !== 1 : import.meta.env.VITE_DEFAULT_NETWORK !== '1';
 </script>
 
-<div class="fixed z-10 flex w-full">
-	<div class="{scrollY ? 'backdrop-blur-xl' : ''} fixed z-10 flex items-center w-full h-20 px-36 text-white bg max-w-screen-fhd left-1/2 -translate-x-1/2 ">
+<div class="fixed z-20 flex w-full">
+	<div
+		class="{scrollY
+			? 'backdrop-blur-xl'
+			: ''} fixed z-10 flex items-center w-full h-20 px-36 text-white bg max-w-screen-fhd left-1/2 -translate-x-1/2 "
+	>
 		<!-- Logo -->
 		<a href="/" class="snap-center min-w-max">
 			<img src="/svg/logo/logo.v2.svg" alt="Hinata logo." />
@@ -61,10 +69,10 @@
 		</a>
 
 		<!-- Staking - HIDDEN FOR V1 -->
-		<!-- <a href="/staking" class="nav-button bg-card-gradient">
+		<a href="/staking" class="nav-button bg-card-gradient">
 			Staking
 			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
-		</a> -->
+		</a>
 
 		<!-- Airdrop HIDDEN FOR NOW -->
 		<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
@@ -88,7 +96,9 @@
 						title={profileButtonTitle}
 					>
 						<!-- Profile image or guest user icon -->
-						<div class="w-10 h-10 gradient-border !border-2 flex items-center justify-center relative">
+						<div
+							class="w-10 h-10 gradient-border !border-2 flex items-center justify-center relative"
+						>
 							{#if $publicProfileData?.thumbnailUrl}
 								<img
 									on:error={() => "this.onerror=null;this.src='/img/png/placeholder-avatar.png';"}

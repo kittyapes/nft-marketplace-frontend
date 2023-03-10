@@ -41,7 +41,7 @@
 					<Button gradient rounded>Claim</Button>
 				{:else}
 					<Button gradient rounded class="whitespace-nowrap w-44" on:click={connectWallet}>
-						Connect To Wallet
+						Connect Wallet
 					</Button>
 				{/if}
 			</div>

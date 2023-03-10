@@ -1,5 +1,4 @@
-import type { AuctionDataModel, EthAddress, IsoTime, NftInListingModel, SaleDataModel, TokenStandard } from '$interfaces';
-import type { ApiNftData } from '$interfaces/apiNftData';
+import type { AuctionDataModel, EthAddress, NftInListingModel, SaleDataModel } from '$interfaces';
 import axios from 'axios';
 import { getApiUrl, type ApiCallResult, api } from '.';
 import type { UserData } from '$interfaces/userData';
@@ -165,4 +164,33 @@ export async function viewedListing(listingId: string): Promise<ApiCallResult<an
 	const res = await axios.post(getApiUrl(null, 'listings/view'), { listingId }, await getAxiosConfig());
 
 	return res;
+}
+
+export interface GetBidsRes {
+	error: boolean;
+	data: [
+		{
+			_id: string;
+			type: string;
+			txHash: string | null;
+			listingId: string;
+			bidPrice: string;
+			formatBidPrice: number;
+			bidder: string;
+			bidAt: string;
+			signature: string;
+			createdAt: string;
+			updatedAt: string;
+			lcbidder: string;
+			user: {
+				_id: string;
+				address: string;
+			};
+			nonce: string;
+		},
+	];
+}
+
+export async function getListingBids(listingId: string) {
+	return await axios.get<GetBidsRes>(getApiUrl(null, '/listings/' + listingId + '/bids'));
 }

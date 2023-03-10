@@ -10,17 +10,13 @@
 		stakedHinataBalance,
 		stakingWaifuRewards,
 		hinataStakingAllowance,
-		currentUserAddress
+		currentUserAddress,
 	} from '$stores/wallet';
 	import { ethers } from 'ethers';
 	import { claimAirdropTokens } from '$utils/contracts/airdropDistribution';
 	import HorizontailOptionSwitcher from '../HorizontailOptionSwitcher.svelte';
 	import ThemedCross from '$icons/themed-cross.svelte';
 	import daysFromNow from '$utils/daysFromNow';
-	import { claimWaifuRewards, stakeTokens } from '$utils/contracts/staking';
-	import { setPopup } from '$utils/popup';
-	import ProceedStakePopup from './ProceedStakePopup.svelte';
-	import { hinataTokensBalance, increaseHinataAllowance } from '$utils/contracts/tokenBalances';
 	import { hoverHint } from '$actions/hoverHint';
 
 	let communityClaimAmount = 0;
@@ -58,16 +54,16 @@
 		return dateObj ? `${dateObj.days}D ${dateObj.hours}H ${dateObj.minutes}M` : 'N/A';
 	})(daysFromNow($communityEscrowUnlock));
 
-	const stakeAllTokens = () => {
-		setPopup(ProceedStakePopup, {
-			props: {
-				numberOfHinata: $userHinataBalance,
-				duration: selectedDuration.duration,
-				onContinue: async () =>
-					stakeTokens(await hinataTokensBalance($currentUserAddress), selectedDuration.duration)
-			}
-		});
-	};
+	// const stakeAllTokens = () => {
+	// 	setPopup(ProceedStakePopup, {
+	// 		props: {
+	// 			numberOfHinata: $userHinataBalance,
+	// 			duration: selectedDuration.duration,
+	// 			onContinue: async () =>
+	// 				stakeTokens(await hinataTokensBalance($currentUserAddress), selectedDuration.duration)
+	// 		}
+	// 	});
+	// };
 
 	// use this for mainnet
 	/*
@@ -81,7 +77,7 @@
 	const stakeDurationOptions = [
 		{ label: '1H', duration: 3600 },
 		{ label: '2H', duration: 7200 },
-		{ label: '3H', duration: 10800 }
+		{ label: '3H', duration: 10800 },
 	];
 
 	let selectedDuration = stakeDurationOptions[1];
@@ -114,9 +110,9 @@
 
 			<div class="w-full flex flex-col gap-4 mt-5">
 				<div class="w-96 flex justify-between items-center mx-auto">
-					<span class="font-bold tracking-wider w-3/5"
-						>{parseFloat(communityClaimAmount.toFixed(2))} HiNATA TOKENS</span
-					>
+					<span class="font-bold tracking-wider w-3/5">
+						{parseFloat(communityClaimAmount.toFixed(2))} HiNATA TOKENS
+					</span>
 					<div class="w-36">
 						<Button
 							gradient
@@ -148,9 +144,9 @@
 				</div>
 
 				<div class="w-96 flex justify-between items-center mx-auto">
-					<span class="font-bold tracking-wider w-3/5"
-						>{parseFloat(communityEscrowed.toFixed(2))} HiNATA TOKENS</span
-					>
+					<span class="font-bold tracking-wider w-3/5">
+						{parseFloat(communityEscrowed.toFixed(2))} HiNATA TOKENS
+					</span>
 					<div class="w-36">
 						<Button
 							rounded
@@ -180,12 +176,9 @@
 				<div class="font-semibold w-full pl-8">
 					{parseFloat($userHinataBalance.toFixed(2))} HiNATA TOKENS
 				</div>
-				<Button
-					rounded
-					gradient
-					on:click={() => (stakingAllowance > 0 ? stakeAllTokens() : increaseHinataAllowance())}
-					disabled={$userHinataBalance <= 0}>{stakingAllowance > 0 ? 'Stake' : 'Approve'}</Button
-				>
+				<Button rounded gradient disabled={$userHinataBalance <= 0}>
+					{stakingAllowance > 0 ? 'Stake' : 'Approve'}
+				</Button>
 			</div>
 
 			<div class="grid grid-cols-2 place-items-center mt-16">
@@ -193,7 +186,7 @@
 				<div
 					use:hoverHint={{
 						text: 'Lock your HiNATA for longer for better rewards!',
-						targetId: 'hint-target'
+						targetId: 'hint-target',
 					}}
 				>
 					<div id="hint-target" />
@@ -225,7 +218,6 @@
 					rounded
 					gradient
 					class="bg-gradient-to-r from-gray-300 to-transparent font-semibold text-[#777575]"
-					on:click={claimWaifuRewards}
 					disabled={$stakingWaifuRewards <= 0}
 				>
 					Claim
@@ -243,9 +235,10 @@
 					https://snapshot.org/#/hinatadao.eth
 				</a>
 				as well as claim exclusive NFTs on
-				<a href="https://www.hinata.io/drops" target="_blank" class="font-semibold"
-					>https://www.hinata.io/drops</a
-				>.
+				<a href="https://www.hinata.io/drops" target="_blank" class="font-semibold">
+					https://www.hinata.io/drops
+				</a>
+				.
 				<a href="/airdrop" class="font-bold">READ MORE</a>
 			</p>
 		</div>

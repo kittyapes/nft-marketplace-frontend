@@ -4,10 +4,7 @@
 	import { inview } from 'svelte-inview';
 	import { createEventDispatcher } from 'svelte';
 	import type { CardOptions } from '$interfaces/ui';
-	import { nftDraft } from '$stores/create';
-	import AddCircle from '$icons/add-circle.svelte';
-	import { goto } from '$app/navigation';
-	import CreateNftBtn from './CreateNftBtn.svelte';
+	import CreateNewNftBtn from './v2/NFTGrid/CreateNewNftBtn.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -15,7 +12,7 @@
 	export let cardPropsMapper: (v: CardOptions) => { options: CardOptions } = (v) => ({ options: v });
 	export let isLoading = false;
 	export let reachedEnd = false;
-	export let createNewNftBtn = { include: false, collectionId: '' };
+	export let createNewNftBtn = { include: false, collectionAddress: '' };
 
 	const inviewOptions = {};
 
@@ -56,7 +53,7 @@
 	{#if options?.length || options?.length === 0}
 		<div class="nftGrid">
 			{#if createNewNftBtn.include}
-				<CreateNftBtn collectionId={createNewNftBtn.collectionId} />
+				<CreateNewNftBtn collectionAddress={createNewNftBtn.collectionAddress} />
 			{/if}
 			{#each options as cardOptions, index (cardOptions.localId)}
 				{#if !hidden.get(cardOptions)}

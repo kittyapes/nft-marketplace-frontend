@@ -10,6 +10,15 @@
 	export let disabled = false;
 	export let noLeftPadding = false;
 	export let gradientCaret = false;
+	export let inputMode:
+		| 'text'
+		| 'none'
+		| 'tel'
+		| 'url'
+		| 'email'
+		| 'numeric'
+		| 'decimal'
+		| 'search' = 'text';
 
 	function validate() {
 		if (regex) {
@@ -22,10 +31,18 @@
 	$: inputHeight = `h-[${height}]`;
 </script>
 
-<div class="w-full flex flex-row items-center outline-color-purple {$$props.class} {fixedHeight ? inputHeight : ''}" class:outline-red-400={!valid}>
+<div
+	class="w-full flex flex-row items-center outline-color-purple {$$props.class} {fixedHeight
+		? inputHeight
+		: ''}"
+	class:outline-red-400={!valid}
+	style={$$props.style}
+	on:click
+>
 	<div class="bg-inherit  h-full grid place-items-center"><slot /></div>
 	<input
 		type="text"
+		inputmode={inputMode}
 		{pattern}
 		bind:value
 		{placeholder}

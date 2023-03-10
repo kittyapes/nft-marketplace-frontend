@@ -296,11 +296,10 @@
 					</div>
 					<div class="flex flex-col w-full">
 						<DragDropImage
-							max_file_size={5_000_000}
+							max_file_size={10_000_000}
 							bind:blob={$localDataStore.profileImage}
 							currentImgUrl={$fetchedDataStore?.thumbnailUrl}
 							acceptedFormats={acceptedImages}
-							dimensions="200 X 200 PX Max 5MB"
 							class="!w-48 !h-44 mx-auto"
 						>
 							<div class="flex flex-col gap-2 items-center" slot="placeholder">
@@ -313,7 +312,7 @@
 										We recommend an image of atleast <span class="text-gradient">200 x 200 PX</span>
 										| GIFs work too.
 									</span>
-									<span class="text-gradient">Max 5MB</span>
+									<span class="text-gradient">Max 10MB</span>
 								</span>
 							</div>
 						</DragDropImage>
@@ -327,14 +326,7 @@
 						</div>
 					</div>
 					<div class="flex flex-col w-full">
-						<DragDropImage
-							max_file_size={10_000_000}
-							bind:blob={$localDataStore.coverImage}
-							currentImgUrl={$fetchedDataStore?.coverUrl}
-							acceptedFormats={acceptedImages}
-							dimensions="2550 x 290 px"
-							class="!h-24 !px-12"
-						>
+						<DragDropImage max_file_size={50_000_000} bind:blob={$localDataStore.coverImage} currentImgUrl={$fetchedDataStore?.coverUrl} acceptedFormats={acceptedImages} class="!h-24 !px-12">
 							<div class="flex flex-col gap-2 items-center" slot="placeholder">
 								<span>Drag and drop an image here or click to browse</span>
 								<div class="text-gradient">GIF, PNG, JPEG</div>

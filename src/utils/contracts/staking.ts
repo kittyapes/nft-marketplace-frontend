@@ -1,94 +1,217 @@
-import {
-	appProvider,
-	appSigner,
-	currentUserAddress,
-	stakedHinataBalance,
-	stakingWaifuRewards
-} from '$stores/wallet';
-import daysFromNow from '$utils/daysFromNow';
-import { setPopup } from '$utils/popup';
-import { notifyError, notifySuccess } from '$utils/toast';
-import { ethers } from 'ethers';
-import { get } from 'svelte/store';
-import { getStakingContract } from './generalContractCalls';
-import { getAllTokenBalances } from './tokenBalances';
+import { getContract } from '$utils/misc/getContract';
+import { BigNumber, ethers } from 'ethers';
+import contractCaller from '$utils/contracts/contractCaller';
+import { ensureAmountApproved } from './token';
+import { notifyError } from '$utils/toast';
 
-export const stakeTokens = async (tokensToStake: string, durationLockUp: number) => {
-	try {
-		const stakingContract = getStakingContract(get(appSigner));
+const { parseEther, formatEther, formatUnits } = ethers.utils;
 
-		const txt = await stakingContract.stake(ethers.utils.parseEther(tokensToStake), durationLockUp);
+enum StakeDurationsEnum {
+	THREE_MONTHS,
+	SIX_MONTHS,
+	TWELVE_MONTHS,
+}
 
-		await txt.wait(1);
+export const stakeDurations = [
+	{ id: '3m', label: '3 Months', value: StakeDurationsEnum.THREE_MONTHS },
+	{ id: '6m', label: '6 Months', value: StakeDurationsEnum.SIX_MONTHS },
+	{ id: '1y', label: '1 Year', value: StakeDurationsEnum.TWELVE_MONTHS },
+];
 
-		// Notify User
-		notifySuccess(
-			`Successfully staked ${tokensToStake} for ${daysFromNow(durationLockUp * 1000).days} days`
-		);
+/*
+ * Read Functions
+ * */
 
-		setPopup(null);
+export async function iterativelyFindUserStakeIds(userAddress: string) {
+	const stakingContract = getContract('staking');
 
-		await getAllTokenBalances(get(currentUserAddress));
+	let hasGottenAll = false;
+	let firstIndex = 0;
 
-		return true;
-	} catch (error) {
-		console.log(error);
-		notifyError(error.message || JSON.stringify(error));
-		return false;
+	const stakeIds: { id: number; rewards: string }[] = [];
+
+	do {
+		try {
+			const stakeId = await stakingContract.stakeIds(userAddress, firstIndex);
+
+			const id = +formatUnits(stakeId, 0);
+			const rewards = formatEther(await stakingContract.earnedById(id));
+
+			stakeIds.push({
+				rewards,
+				id,
+			});
+
+			firstIndex += 1;
+
+			// console.log('Stake IDS and Rewards: ', stakeIds);
+		} catch (error) {
+			hasGottenAll = true;
+		}
+	} while (!hasGottenAll);
+
+	return stakeIds;
+}
+
+export async function getUserStakes(userAddress: string): Promise<
+	{
+		amount: string;
+		lockedAt: number;
+		lockPeriod: number;
+		reward: string;
+		rewardPerTokenPaid: BigNumber;
+		stakeId: number;
+	}[]
+> {
+	const stakingContract = getContract('staking');
+	const userStakes = await stakingContract.getStakesByAccount(userAddress);
+	// need to test which format of the values is returned
+
+	// Find the user stake IDs and assign them accordingly - also add rewards at this point
+	const stakeIdsAndRewards = await iterativelyFindUserStakeIds(userAddress);
+
+	// TODO: Not sure if the conversion is correct here (seemed correct in my local testing)
+	return userStakes.map((item, index) => {
+		return {
+			amount: formatEther(item.amount),
+			lockedAt: +formatUnits(item.lockedAt, 0),
+			lockPeriod: +formatUnits(item.lockPeriod, 0),
+			reward: stakeIdsAndRewards[index].rewards || formatEther(item.reward),
+			rewardPerTokenPaid: parseEther(formatEther(item.amount)).div(
+				parseEther(stakeIdsAndRewards[index].rewards).eq(parseEther('0'))
+					? parseEther('1')
+					: parseEther(stakeIdsAndRewards[index].rewards),
+			),
+			stakeId: stakeIdsAndRewards[index].id,
+		};
+	});
+}
+
+export async function getTotalAmountUserStaked(userAddress: string) {
+	const stakingContract = getContract('staking');
+	const amountStaked = await stakingContract.getStakeAmountByAccount(userAddress);
+
+	return formatEther(amountStaked);
+}
+
+export async function getClaimableTokens(userAddress: string) {
+	const stakingContract = getContract('staking');
+
+	const earnedRewards = await stakingContract.earned(userAddress);
+
+	return formatEther(earnedRewards);
+}
+
+export async function getRewardPerTokenStaked() {
+	const stakingContract = getContract('staking');
+	const rewardPerToken = await stakingContract.rewardPerToken();
+
+	return formatUnits(rewardPerToken, 0);
+}
+
+export async function lastTimeRewardWouldBeApplied() {
+	const stakingContract = getContract('staking');
+	const lastTimestamp = await stakingContract.lastTimeRewardAppliable();
+
+	return +formatUnits(lastTimestamp, 0);
+}
+
+export function calculateApr(
+	earnedTokens: string,
+	fees: number,
+	principal: string,
+	durationInDays: number,
+) {
+	return ((fees + +earnedTokens) / +principal / durationInDays) * 365 * 100;
+}
+
+export async function calculateGeneralApr(stakeAmount: string) {
+	const fees = 0;
+	const durationInDays =
+		(((await lastTimeRewardWouldBeApplied()) || Date.now() / 1000) / 3600) * 24;
+
+	const rewardPerToken = await getRewardPerTokenStaked();
+
+	const earnedTokens = formatEther(
+		ethers.utils.parseEther(stakeAmount).mul(parseEther(rewardPerToken)).div(parseEther('1')),
+	);
+
+	return calculateApr(earnedTokens, fees, stakeAmount, durationInDays);
+}
+
+export async function getVestingsByAccount(userAddress: string): Promise<
+	{
+		beneficiary: string;
+		unlockTime: number;
+		amount: string;
+		claimed: boolean;
+	}[]
+> {
+	const vestingContract = getContract('vesting');
+
+	const userVestings = await vestingContract.getVestingsByAccount(userAddress);
+
+	return userVestings.map((vesting) => ({
+		beneficiary: vesting.beneficiary,
+		unlockTime: +formatUnits(vesting.unlockTime, 0),
+		amount: formatEther(vesting.amount),
+		claimed: vesting.claimed,
+	}));
+}
+
+export async function getRemainingVestingsByAccount(userAddress: string) {
+	const vestingContract = getContract('vesting');
+
+	const remainingToClaim = await vestingContract.getPendingAmount(userAddress);
+
+	return formatEther(remainingToClaim);
+}
+
+/*
+ * Write Functions
+ * */
+
+export async function claimStakingRewards() {
+	const stakingContract = getContract('staking');
+
+	await contractCaller(stakingContract, 'claim', 150, 1);
+
+	return true;
+}
+
+// Claim the vested rewards for investor from vesting contract
+export async function claimVestedRewards() {
+	const vestingContract = getContract('vesting');
+
+	await contractCaller(vestingContract, 'claim', 150, 1);
+
+	return true;
+}
+
+export async function stakeTokens(amount: string, duration: StakeDurationsEnum) {
+	const stakingContract = getContract('staking');
+
+	const contractApproved = await ensureAmountApproved(
+		stakingContract.address,
+		amount,
+		getContract('hinata-token').address,
+	);
+
+	if (!contractApproved) {
+		notifyError('Insufficient Allowance to Execute Transaction.');
+		// No need to proceed if there's no allowance
+		return;
 	}
-};
 
-export const getTotalStakedTokens = async (userAddress: string) => {
-	try {
-		const stakingContract = getStakingContract(get(appProvider));
+	await contractCaller(stakingContract, 'deposit', 150, 1, parseEther(amount), duration);
 
-		const stakedHinataInEth = await stakingContract.getUsersTotalStaked(userAddress);
-		const stakedAmt = +ethers.utils.formatEther(stakedHinataInEth);
+	return true;
+}
 
-		// Set to store
-		stakedHinataBalance.set(stakedAmt);
+export async function withdrawUnlockedTokensByStakeId(stakeId: number, amount: string) {
+	const stakingContract = getContract('staking');
 
-		return stakedAmt;
-	} catch (error) {
-		// console.log(error);
-		stakedHinataBalance.set(0);
-		return false;
-	}
-};
+	await contractCaller(stakingContract, 'withdraw', 150, 1, stakeId, parseEther(amount));
 
-export const getTotalStakedRewardsBalance = async (userAddress: string) => {
-	try {
-		const stakingContract = getStakingContract(get(appProvider));
-
-		const waifuRewardsBigNumber = await stakingContract.calculateRewards(userAddress);
-		const waifuRewardsAmt = +ethers.utils.formatEther(waifuRewardsBigNumber);
-		// Set to store
-		stakingWaifuRewards.set(waifuRewardsAmt);
-
-		return waifuRewardsAmt;
-	} catch (error) {
-		// console.log(error);
-		stakingWaifuRewards.set(0);
-		return false;
-	}
-};
-
-// claim rewards
-export const claimWaifuRewards = async () => {
-	try {
-		const stakingContract = getStakingContract(get(appSigner));
-
-		const txt = await stakingContract.claimRewards();
-
-		// Wait for confirmation
-		txt.wait(1);
-
-		// Refresh balances
-		await getAllTokenBalances(get(currentUserAddress));
-
-		return true;
-	} catch (error) {
-		console.log(error);
-		return false;
-	}
-};
+	return true;
+}

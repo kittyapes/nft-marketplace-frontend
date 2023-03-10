@@ -3,8 +3,9 @@
 	import ShareV2 from '$icons/share-v2.svelte';
 	import Artstation from '$icons/socials/artstation.svelte';
 	import Deviantart from '$icons/socials/deviantart.svelte';
-	import Facebook from '$icons/socials/facebook.svelte';
+	import Discord from '$icons/socials/discord.svelte';
 	import Instagram from '$icons/socials/instagram.svelte';
+	import Pixiv from '$icons/socials/pixiv.svelte';
 	import Twitter from '$icons/socials/twitter.svelte';
 	import Web from '$icons/socials/web.svelte';
 	import type { Collection } from '$utils/api/collection';
@@ -15,10 +16,6 @@
 	let showSocials = false;
 	let hoveredSocial = '';
 	let socials: { name?: string; url?: string; component?: any }[] = [];
-
-	$: if (collectionData?.facebookUrl) {
-		socials.push({ name: 'Facebook', url: collectionData?.facebookUrl, component: Facebook });
-	}
 
 	$: if (collectionData?.twitterUrl) {
 		socials.push({ name: 'Twitter', url: collectionData?.twitterUrl, component: Twitter });
@@ -38,6 +35,14 @@
 
 	$: if (collectionData?.artstationUrl) {
 		socials.push({ name: 'Artstation', url: collectionData?.artstationUrl, component: Artstation });
+	}
+
+	$: if (collectionData?.discordUrl) {
+		socials.push({ name: 'Discord', url: collectionData?.discordUrl, component: Discord });
+	}
+
+	$: if (collectionData?.pixivUrl) {
+		socials.push({ name: 'Pixiv', url: collectionData?.pixivUrl, component: Pixiv });
 	}
 </script>
 
@@ -66,7 +71,7 @@
 					{#if socials?.length > 0}
 						{#each socials as social}
 							<div class="relative flex flex-col items-center ">
-								<p class:hidden={hoveredSocial !== social.name} class="absolute -top-4">{social.name}</p>
+								<p class:hidden={hoveredSocial !== social.name} class="absolute -top-5">{social.name}</p>
 								<a
 									href={social.url}
 									target="_blank"

@@ -32,10 +32,16 @@
 		const success = await salePurchase(options.rawListingData);
 
 		if (success) {
-			dispatch('set-frame', { component: Success, props: { message: 'Successfully purchased listing!' } });
+			dispatch('set-frame', {
+				component: Success,
+				props: { message: 'Successfully purchased listing!' },
+			});
 			dispatch('force-expire');
 		} else {
-			dispatch('set-frame', { component: Error, props: { message: 'Failed to purchase listing!' } });
+			dispatch('set-frame', {
+				component: Error,
+				props: { message: 'Failed to purchase listing!' },
+			});
 		}
 
 		purchasing = false;
@@ -44,14 +50,20 @@
 	const hasEnoughTokens = derived(
 		currentUserAddress,
 		(address, set) => {
-			hasEnoughBalance(options.rawListingData.paymentTokenAddress, address, options.saleData.formatPrice).then(set);
+			hasEnoughBalance(
+				options.rawListingData.paymentTokenAddress,
+				address,
+				options.saleData.formatPrice,
+			).then(set);
 		},
 		null,
 	);
 
 	$: purchaseError =
-		(isFuture(dateToTimestamp(options.rawListingData.startTime)) && "This listing isn't for sale yet.") ||
-		(!$hasEnoughTokens && `You do not have enough ${options.listingData.paymentTokenTicker} to purchase this item.`);
+		(isFuture(dateToTimestamp(options.rawListingData.startTime)) &&
+			"This listing isn't for sale yet.") ||
+		(!$hasEnoughTokens &&
+			`You do not have enough ${options.listingData.paymentTokenTicker} to purchase this item.`);
 
 	onMount(async () => {
 		if (!isGasless) {
@@ -73,7 +85,12 @@
 			<div class="text-gradient mt-4">Price</div>
 			<div class="flex gap-2 items-center">
 				<EthV2 />
-				<div class={(options.saleData?.formatPrice || options.saleData?.price || 'N/A').toString().length > 12 ? 'text-xl' : 'text-3xl'}>
+				<div
+					class={(options.saleData?.formatPrice || options.saleData?.price || 'N/A').toString()
+						.length > 12
+						? 'text-xl'
+						: 'text-3xl'}
+				>
 					{options.saleData?.formatPrice || options.saleData?.price || 'N/A'}
 				</div>
 				<span>wETH</span>
@@ -115,7 +132,7 @@
 				{/if}
 			</div>
 		{:else}
-			<PrimaryButton on:click={connectToWallet}>Connect To Wallet</PrimaryButton>
+			<PrimaryButton on:click={connectToWallet}>Connect Wallet</PrimaryButton>
 		{/if}
 	</div>
 </div>

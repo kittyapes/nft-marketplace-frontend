@@ -1,10 +1,9 @@
 import { stakingContract } from '$constants/contractAddresses';
-import { currentUserAddress, hinataStakingAllowance, stakedHinataBalance, userHinataBalance } from '$stores/wallet';
+import { currentUserAddress, hinataStakingAllowance, userHinataBalance } from '$stores/wallet';
 import { getContract } from '$utils/misc/getContract';
 import { notifyError, notifySuccess } from '$utils/toast';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
-import { getTotalStakedRewardsBalance, getTotalStakedTokens } from './staking';
 
 export const hinataTokensBalance = async (userAddress: string) => {
 	try {
@@ -38,7 +37,10 @@ export const increaseHinataAllowance = async () => {
 	try {
 		const hinataContract = getContract('token');
 
-		const txt = await hinataContract.approve(stakingContract, ethers.utils.parseEther('999999999999999999999999999999999999000000000000000000'));
+		const txt = await hinataContract.approve(
+			stakingContract,
+			ethers.utils.parseEther('999999999999999999999999999999999999000000000000000000'),
+		);
 
 		await txt.wait(1);
 
@@ -50,15 +52,5 @@ export const increaseHinataAllowance = async () => {
 		notifyError(error.message || JSON.stringify(error));
 
 		return false;
-	}
-};
-
-export const getAllTokenBalances = async (userAddress: string) => {
-	await hinataTokensBalance(userAddress);
-	await getTotalStakedTokens(userAddress);
-	await checkHinataAllowance(userAddress);
-
-	if (get(stakedHinataBalance) > 0) {
-		await getTotalStakedRewardsBalance(userAddress);
 	}
 };

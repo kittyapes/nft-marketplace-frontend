@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Countdown from '$lib/components/v2/Countdown/Countdown.svelte';
 	import type { Listing } from '$utils/api/listing';
-	import { contractCompleteAuction } from '$utils/contracts/auction';
+	// import { contractCompleteAuction } from '$utils/contracts/auction';
 	import { cancelListingFlow } from '$utils/flows/cancelListingFlow';
 	import { refreshConnection } from '$utils/wallet/connectWallet';
 	import { onMount } from 'svelte';
@@ -14,10 +14,10 @@
 	let listingId: string;
 	let auctionErr;
 
-	async function acceptHighest() {
-		const { err } = await contractCompleteAuction(listingId);
-		auctionErr = err;
-	}
+	// async function acceptHighest() {
+	// 	const { err } = await contractCompleteAuction(listingId);
+	// 	auctionErr = err;
+	// }
 
 	async function cancelListing() {
 		await cancelListingFlow({ listingId, chainStatus: 'ON_CHAIN' } as Listing);
@@ -43,7 +43,7 @@
 	</pre>
 
 	<div class="flex gap-2 mt-2">
-		<button on:click={acceptHighest}>Accept Highest Bid</button>
+		<button>Accept Highest Bid</button>
 		<button on:click={cancelListing}>Cancel Auction</button>
 	</div>
 

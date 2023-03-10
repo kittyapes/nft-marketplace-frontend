@@ -16,7 +16,13 @@
 	import { nftDraft } from '$stores/create';
 	import { currentUserAddress } from '$stores/wallet';
 	import type { Collection, UpdateCollectionOptions } from '$utils/api/collection';
-	import { apiCreateCollection, apiGetCollectionBySlug, apiUpdateCollection, apiValidateCollectionNameAndSlug, getInitialCollectionData } from '$utils/api/collection';
+	import {
+		apiCreateCollection,
+		apiGetCollectionBySlug,
+		apiUpdateCollection,
+		apiValidateCollectionNameAndSlug,
+		getInitialCollectionData,
+	} from '$utils/api/collection';
 	import { contractCreateCollection } from '$utils/contracts/collection';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { debounce } from 'lodash-es';
@@ -48,7 +54,9 @@
 
 	// Data collected from the form or fetched from the server
 	let originalCollectionData = null; // Used to check whether data was changed during editing
-	const [collectionData, prevCollectionData] = withPrevious<Collection>(getInitialCollectionData() as Collection);
+	const [collectionData, prevCollectionData] = withPrevious<Collection>(
+		getInitialCollectionData() as Collection,
+	);
 	const serverCollectionToUpdate = writable<Collection | null>(null);
 
 	// An object with collection property keys and bool as values representing their validity
@@ -71,12 +79,14 @@
 		const slugRegex = new RegExp(/^\w[\w+_-]+\w$/, 'gm');
 
 		$formValidity.name = !!data.name
-			? (!nameRegex.test(data.name) && 'Collection name can only contain alphanumeric characters, -, or _') ||
+			? (!nameRegex.test(data.name) &&
+					'Collection name can only contain alphanumeric characters, -, or _') ||
 			  (data.name.length > 25 && 'Collection name Cannot Contain More Than 25 Characters') ||
 			  !!data.name
 			: 'Missing collection name';
 		$formValidity.slug = !!data.slug
-			? (!slugRegex.test(data.slug) && 'Collection url can only contain alphanumeric characters, -, or _') ||
+			? (!slugRegex.test(data.slug) &&
+					'Collection url can only contain alphanumeric characters, -, or _') ||
 			  (data.slug.length > 25 && 'Collection url Cannot Contain More Than 25 Characters') ||
 			  !!data.slug
 			: 'Collection URL is invalid';
@@ -113,7 +123,8 @@
 		}
 		const res = await apiValidateCollectionNameAndSlug(collectionName, null);
 		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.name !== collectionName;
-		$formValidity.name = res?.nameIsDuplicate && editCheck ? 'Collection Name Is Not Unique' : $formValidity.name;
+		$formValidity.name =
+			res?.nameIsDuplicate && editCheck ? 'Collection Name Is Not Unique' : $formValidity.name;
 	}
 
 	async function validateCollectionSlug(collectionSlugEdited: string) {
@@ -122,8 +133,11 @@
 			return;
 		}
 		const res = await apiValidateCollectionNameAndSlug(null, collectionSlugEdited);
-		const editCheck = isNewCollection ? true : $serverCollectionToUpdate.slug !== collectionSlugEdited;
-		$formValidity.slug = res?.slugIsDuplicate && editCheck ? 'Collection Slug Is Not Unique' : $formValidity.slug;
+		const editCheck = isNewCollection
+			? true
+			: $serverCollectionToUpdate.slug !== collectionSlugEdited;
+		$formValidity.slug =
+			res?.slugIsDuplicate && editCheck ? 'Collection Slug Is Not Unique' : $formValidity.slug;
 	}
 
 	collectionUrl.subscribe(async () => {
@@ -192,7 +206,6 @@
 	}
 
 	async function _createCollection() {
-		console.log($collectionData);
 		const [contractError, contractRes] = await noTryAsync(() =>
 			contractCreateCollection({
 				name: $collectionData.name,
@@ -224,13 +237,15 @@
 
 		// where to go next based on URL params
 		if ($page.url.searchParams.has('to')) {
-			$nftDraft.collectionId = $collectionData.id;
+			$nftDraft.collectionAddress = $collectionData.collectionAddress;
 			goto('/' + $page.url.searchParams.get('to'));
 		} else goto('/collections/' + apiRes.data.data.slug);
 	}
 
 	async function _updateCollection() {
-		const [error, res] = await noTryAsync(() => apiUpdateCollection(collectionToUpdateOptions($collectionData)));
+		const [error, res] = await noTryAsync(() =>
+			apiUpdateCollection(collectionToUpdateOptions($collectionData)),
+		);
 
 		if (error) {
 			notifyError(error.message);
@@ -244,7 +259,7 @@
 
 		// where to go next based on URL params
 		if ($page.url.searchParams.has('to')) {
-			$nftDraft.collectionId = $collectionData.id;
+			$nftDraft.collectionAddress = $collectionData.collectionAddress;
 			goto('/' + $page.url.searchParams.get('to'));
 		} else goto('/collections/' + $collectionData.slug);
 	}
@@ -293,16 +308,18 @@
 
 		return {
 			description: d.description,
-			discordUrl: d.discordUrl,
 			displayTheme: d.displayTheme,
 			instagramUrl: d.instagramUrl,
 			// senstive === hotfix for a backend typo...
 			isExplicitSenstive: d.isExplicitSenstive || false,
 			name: d.name,
 			slug: d.slug.toLowerCase(),
-			telegramUrl: d.telegramUrl,
+			discordUrl: d.discordUrl,
 			twitterUrl: d.twitterUrl,
-			websiteUrl: d.otherUrl,
+			websiteUrl: d.websiteUrl,
+			artstationUrl: d.artstationUrl,
+			deviantartUrl: d.deviantartUrl,
+			pixivUrl: d.pixivUrl,
 			logoImage: collectionData.image,
 			backgroundImage: collectionData.cover,
 			id: d.id,
@@ -345,19 +362,25 @@
 					<p class="section-subtext mt-2.5">Upload image</p>
 				</div>
 				<div class="w-1/2">
-					<DragDropImage max_file_size={10_000_000} class="h-48" on:new-blob={newCoverBlobHandler} acceptedFormats={acceptedImages} currentImgUrl={$collectionData.backgroundImageUrl}>
+					<DragDropImage
+						max_file_size={50_000_000}
+						class="h-48"
+						on:new-blob={newCoverBlobHandler}
+						acceptedFormats={acceptedImages}
+						currentImgUrl={$collectionData.backgroundImageUrl}
+					>
 						<p slot="placeholder" class="section-subtext font-medium">
 							Drag and drop an image <br />
 							or
 							<span class="text-gradient">click to browse</span>
 						</p>
 						<p slot="lower_text" class="section-subtext mt-2.5">
-							PNG, JPEG, GIF, WEBP, WEBM, MP4, MP3 | <span class="text-gradient">MAX 50MB</span>
+							PNG, JPEG, JPG, GIF, WEBP, WEBM, MP4 | <span class="text-gradient">MAX 50MB</span>
 						</p>
 					</DragDropImage>
 				</div>
 			</div>
-			<!-- Theme selector -->
+			<!-- Theme selector 
 			<div class="section">
 				<div class="w-1/2">
 					<h3 class="section-title">Choose display theme</h3>
@@ -366,12 +389,17 @@
 				<div class="w-1/2">
 					<CollectionDisplayStyleSwitcher bind:displayStyle={$collectionData.displayTheme} />
 				</div>
-			</div>
+			</div> -->
 			<!-- Name, URL and Descriptions -->
 			<div class="section items-stretch">
 				<div class="w-1/2 pr-6">
 					<h3 class="section-title">Display name</h3>
-					<Input fixedHeight={false} bind:value={$collectionData.name} placeholder="The Kitty Collection" class="border border-white rounded-none mt-3 h-8 2xl:h-10 section-subtext" />
+					<Input
+						fixedHeight={false}
+						bind:value={$collectionData.name}
+						placeholder="The Kitty Collection"
+						class="border border-white rounded-none mt-3 h-8 2xl:h-10 section-subtext"
+					/>
 					<h3 class="section-title mt-11 2xl:mt-14">URL</h3>
 					<Input
 						fixedHeight={false}
@@ -397,7 +425,11 @@
 			</div>
 
 			<div class="w-1/2">
-				<Royalties bind:values={$collectionData.royalties} bind:error={$formValidity.royalties} disabled={!isNewCollection} />
+				<Royalties
+					bind:values={$collectionData.royalties}
+					bind:error={$formValidity.royalties}
+					disabled={!isNewCollection}
+				/>
 			</div>
 
 			<!-- Social Links -->
@@ -405,20 +437,57 @@
 				<div class="w-1/2 flex flex-col gap-y-4">
 					<h3 class="section-title">Links</h3>
 
-					<SocialLinkInput placeholder="Instagram link" bind:value={$collectionData.instagramUrl} iconComponent={Instagram} bind:valid={$formValidity.instagramUrl} />
-					<SocialLinkInput placeholder="Discord link" bind:value={$collectionData.discordUrl} iconComponent={Discord} bind:valid={$formValidity.discordUrl} />
-					<SocialLinkInput placeholder="Twitter link" bind:value={$collectionData.twitterUrl} iconComponent={Twitter} bind:valid={$formValidity.twitterUrl} />
-					<SocialLinkInput placeholder="Personal/Business Email" bind:value={$collectionData.otherUrl} iconComponent={Web} bind:valid={$formValidity.otherUrl} />
-					<SocialLinkInput placeholder="Pixiv link" bind:value={$collectionData.pixivUrl} iconComponent={Pixiv} bind:valid={$formValidity.pixivUrl} />
-					<SocialLinkInput placeholder="Deviantart link" bind:value={$collectionData.deviantartUrl} iconComponent={Deviantart} bind:valid={$formValidity.deviantartUrl} />
-					<SocialLinkInput placeholder="Artstation link" bind:value={$collectionData.artstationUrl} iconComponent={Artstation} bind:valid={$formValidity.artstationUrl} />
+					<SocialLinkInput
+						placeholder="Instagram link"
+						bind:value={$collectionData.instagramUrl}
+						iconComponent={Instagram}
+						bind:valid={$formValidity.instagramUrl}
+					/>
+					<SocialLinkInput
+						placeholder="Discord link"
+						bind:value={$collectionData.discordUrl}
+						iconComponent={Discord}
+						bind:valid={$formValidity.discordUrl}
+					/>
+					<SocialLinkInput
+						placeholder="Twitter link"
+						bind:value={$collectionData.twitterUrl}
+						iconComponent={Twitter}
+						bind:valid={$formValidity.twitterUrl}
+					/>
+					<SocialLinkInput
+						placeholder="Website link"
+						bind:value={$collectionData.websiteUrl}
+						iconComponent={Web}
+						bind:valid={$formValidity.websiteUrl}
+					/>
+					<SocialLinkInput
+						placeholder="Pixiv link"
+						bind:value={$collectionData.pixivUrl}
+						iconComponent={Pixiv}
+						bind:valid={$formValidity.pixivUrl}
+					/>
+					<SocialLinkInput
+						placeholder="Deviantart link"
+						bind:value={$collectionData.deviantartUrl}
+						iconComponent={Deviantart}
+						bind:valid={$formValidity.deviantartUrl}
+					/>
+					<SocialLinkInput
+						placeholder="Artstation link"
+						bind:value={$collectionData.artstationUrl}
+						iconComponent={Artstation}
+						bind:valid={$formValidity.artstationUrl}
+					/>
 				</div>
 			</div>
 
 			{#if isNewCollection}
 				<div class="flex flex-col w-1/2 pr-6">
 					<h3 class="section-title">Blockchain</h3>
-					<p class="my-3 section-subtext">Your Collection will be created on the following Blockchain:</p>
+					<p class="my-3 section-subtext">
+						Your Collection will be created on the following Blockchain:
+					</p>
 					<Dropdown options={blockchainOptions} disabled class="h-10" />
 				</div>
 			{/if}
@@ -437,7 +506,7 @@
 					<div class="section-title">Explicit & Sensitive Content</div>
 					<p class="my-3 section-subtext">Set this collection as explicit and sensitive content.</p>
 				</div>
-				<Toggle style={{ button: 'bg-[#747474]', pill: '!w-14 bg-gradient-a' }} onInsideLabel="" offInsideLabel="" bind:state={$collectionData.isExplicitSenstive} />
+				<Toggle bind:state={$collectionData.isExplicitSenstive} />
 			</div>
 
 			{#if !formValid}

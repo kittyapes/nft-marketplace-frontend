@@ -18,6 +18,7 @@
 	
 	**Properties:**
 	 - `disabled`
+	 - `selected` - forces rendering of the button as if it was hovered
 	 - `variant` - `default` (blue/purple), `red`, `green`
 	 - `options` - a `PrimaryButtonOptions` object.
 	Has the following styling properties: `strokeBackground`, `innerOverlayBackground`,
@@ -26,9 +27,14 @@
  -->
 <script lang="ts">
 	import { buttonBaseClasses } from '../ButtonBase/buttonBase';
-	import { primaryButtonVariants, type PrimaryButtonOptions, type PrimaryButtonVariant } from './PrimaryButton';
+	import {
+		primaryButtonVariants,
+		type PrimaryButtonOptions,
+		type PrimaryButtonVariant,
+	} from './PrimaryButton';
 
 	export let disabled: boolean = false;
+	export let selected: boolean = false;
 	export let variant: PrimaryButtonVariant = 'default';
 	export let options: Partial<PrimaryButtonOptions> = {};
 	export let extButtonClass = '';
@@ -43,18 +49,26 @@
 <button
 	class="text-white h-12 flex-shrink-0 p-[2px] outer-shadow group outline-none relative block whitespace-nowrap {buttonBaseClasses} {extButtonClass}"
 	style="background: {_options.strokeBackground};"
+	data-perma-hover={selected}
 	{disabled}
 	on:click
 >
-	<div class="group-focus-visible:bg-transparent h-full" style="background: {_options.innerBackground}">
-		<div class="flex items-center justify-center inner-shadow px-6 h-full" style="background: {_options.innerOverlayBackground}; box-shadow: {_options.innerOverlayBoxShadow};">
+	<div
+		class="group-focus-visible:bg-transparent h-full"
+		style="background: {_options.innerBackground}"
+	>
+		<div
+			class="flex items-center justify-center inner-shadow px-6 h-full"
+			style="background: {_options.innerOverlayBackground}; box-shadow: {_options.innerOverlayBoxShadow};"
+		>
 			<slot />
 		</div>
 	</div>
 </button>
 
 <style type="postcss">
-	button:not(:disabled) > div:hover {
+	button:not(:disabled) > div:hover,
+	button[data-perma-hover='true'] > div {
 		@apply !bg-transparent;
 	}
 </style>

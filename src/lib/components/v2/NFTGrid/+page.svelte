@@ -45,7 +45,7 @@
 	{#if options?.length || options?.length === 0}
 		<div class={gridStyle}>
 			{#if createNewNftBtn}
-				<CreateNewNftBtn collectionId={createNewNftBtn} />
+				<CreateNewNftBtn collectionAddress={createNewNftBtn} />
 			{/if}
 
 			{#each options as cardOptions, index (cardOptions.rawResourceData._id)}
