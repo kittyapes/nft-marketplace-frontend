@@ -157,7 +157,7 @@
 				{/if}
 			</div>
 		{:else}
-			<PrimaryButton on:click={connectToWallet}>Connect To Wallet</PrimaryButton>
+			<PrimaryButton on:click={connectToWallet}>Connect Wallet</PrimaryButton>
 		{/if}
 	</div>
 </div>
