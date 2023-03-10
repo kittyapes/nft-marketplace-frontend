@@ -101,10 +101,12 @@
 			Amount Unlocking:
 		</div>
 
-		<PrimaryButton>Escrowed</PrimaryButton>
+		<div class="grid place-items-center w-full bg-gradient-a h-12">Escrowed</div>
 
 		<div>Next Unlock in:</div>
 
-		<PrimaryButton>{unlockText}</PrimaryButton>
+		<div class="grid place-items-center w-full bg-gradient-a h-12">
+			<span class="text-gradient">{unlockText}</span>
+		</div>
 	</div>
 </div>
