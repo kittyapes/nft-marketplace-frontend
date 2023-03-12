@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Countdown from '$lib/components/v2/Countdown/Countdown.svelte';
 	import type { Listing } from '$utils/api/listing';
 	// import { contractCompleteAuction } from '$utils/contracts/auction';
 	import { cancelListingFlow } from '$utils/flows/cancelListingFlow';
@@ -30,7 +29,7 @@
 	<h1 class="text-xl font-semibold">Welcome to the components route!</h1>
 
 	<div class="p-8 mt-4 bg-white rounded-xl">
-		<Countdown startTime={new Date().toISOString()} duration={3600} />
+		<!-- <Countdown startTime={new Date().toISOString()} duration={3600} /> -->
 	</div>
 
 	<h2 class="mt-4 text-lg font-medium">Auction contract testing!</h2>
