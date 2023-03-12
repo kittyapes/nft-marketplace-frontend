@@ -80,6 +80,8 @@
 	function getTimerLabel(startTs: number, duration: number) {
 		const now = Date.now() / 1000; // BE stores timestmps in seconds
 
+		console.log({ now, startTs });
+
 		if (now <= startTs) {
 			return 'starting in:';
 		}
@@ -88,12 +90,13 @@
 			return 'ending in:';
 		}
 
-		return 'ended:';
+		return 'ended';
 	}
 
 	let timerLabel: string;
 
-	const updateTimerLabel = () => (timerLabel = getTimerLabel(countdown?.startTime, countdown?.duration));
+	const updateTimerLabel = () =>
+		(timerLabel = getTimerLabel(countdown?.startTime, countdown?.duration));
 
 	$: countdown, updateTimerLabel();
 	$: browser && setInterval(updateTimerLabel, 1000);
@@ -102,26 +105,53 @@
 <!-- NFT Image side-->
 <div class="flex flex-col w-full h-full overflow-hidden scrollbar-hide">
 	<!-- Asset render container -->
-	<div class="flex items-center self-center justify-center flex-shrink-0 object-contain w-full overflow-hidden bg-gray-800 bg-opacity-50 aspect-1">
+	<div
+		class="flex items-center self-center justify-center flex-shrink-0 object-contain w-full overflow-hidden bg-gray-800 bg-opacity-50 aspect-1"
+	>
 		{#await preload(assetUrl)}
 			<Loader />
 		{:then}
 			{#if fileType === 'video'}
-				<video crossorigin="anonymous" class="max-w-full max-h-full shadow-xl" autoplay loop bind:this={videoAsset}>
+				<video
+					crossorigin="anonymous"
+					class="max-w-full max-h-full shadow-xl"
+					autoplay
+					loop
+					bind:this={videoAsset}
+				>
 					<source src={assetUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
 			{:else if fileType === 'image'}
-				<img src={assetUrl} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
+				<img
+					src={assetUrl}
+					crossorigin="anonymous"
+					class="object-cover w-full h-full shadow-xl"
+					alt="Card asset."
+					use:fadeImageOnLoad
+				/>
 			{/if}
 		{:catch _err}
 			{#if fileType === 'video'}
-				<video crossorigin="anonymous" class="max-w-full max-h-full shadow-xl" poster={thumbnailUrl} autoplay loop bind:this={videoAsset}>
+				<video
+					crossorigin="anonymous"
+					class="max-w-full max-h-full shadow-xl"
+					poster={thumbnailUrl}
+					autoplay
+					loop
+					bind:this={videoAsset}
+				>
 					<source src={assetUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
 			{:else}
-				<img src={fileType === 'image' ? assetUrl : thumbnailUrl} crossorigin="anonymous" class="object-cover w-full h-full shadow-xl" alt="Card asset." use:fadeImageOnLoad />
+				<img
+					src={fileType === 'image' ? assetUrl : thumbnailUrl}
+					crossorigin="anonymous"
+					class="object-cover w-full h-full shadow-xl"
+					alt="Card asset."
+					use:fadeImageOnLoad
+				/>
 			{/if}
 		{/await}
 	</div>
@@ -135,8 +165,15 @@
 
 			<!-- Buttons -->
 			<div class="flex mt-4 mb-6 gap-x-12">
-				<button class="w-5 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}><img src={getIconUrl('share')} alt="Share." /></button>
-				<button class="w-5 btn disabled:opacity-50 text-transparent" class:text-white={favorited} on:click={handleLike} disabled={!$walletConnected || isFavoriting}>
+				<button class="w-5 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}>
+					<img src={getIconUrl('share')} alt="Share." />
+				</button>
+				<button
+					class="w-5 btn disabled:opacity-50 text-transparent"
+					class:text-white={favorited}
+					on:click={handleLike}
+					disabled={!$walletConnected || isFavoriting}
+				>
 					<Heart />
 				</button>
 				<button class="w-5 btn" disabled={!videoAsset && !assetUrl} on:click={handleFullscreen}>
@@ -150,12 +187,7 @@
 			{#if countdown}
 				<div class="pb-4 text-white text-lg mt-4">
 					{capitalize(options.listingData?.listingType)}
-
-					{#if countdown.expired}
-						ended
-					{:else}
-						ending in:
-					{/if}
+					{timerLabel}
 				</div>
 
 				<Countdown {...countdown} />
