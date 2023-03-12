@@ -80,8 +80,6 @@
 	function getTimerLabel(startTs: number, duration: number) {
 		const now = Date.now() / 1000; // BE stores timestmps in seconds
 
-		console.log({ now, startTs });
-
 		if (now <= startTs) {
 			return 'starting in:';
 		}
