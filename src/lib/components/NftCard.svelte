@@ -26,6 +26,7 @@
 	import Copy from '$icons/copy.svelte';
 	import Hide from '$icons/hide.svelte';
 	import Sell from '$icons/sell.svelte';
+	import { handleGenerativeName } from '$utils';
 
 	const dispatch = createEventDispatcher();
 
@@ -290,7 +291,7 @@
 						? 'text-base 2xl:text-xl leading-6 2xl:leading-7 h-7'
 						: 'text-xs 2xl:text-sm leading-3 2xl:leading-4 h-4'}"
 				>
-					{options?.nfts?.[0]?.name}
+					{handleGenerativeName(options?.nfts?.[0]?.name, options.nfts[0].collectionData.name)}
 				</h3>
 			</div>
 
