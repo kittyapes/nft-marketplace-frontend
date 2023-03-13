@@ -1,5 +1,4 @@
 <script lang="ts">
-	import TextInput from '$lib/components/v2/TextInput/TextInput.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import StakeDurationSwitch from './StakeDurationSwitch.svelte';
 	import PositionsTable from './PositionsTable.svelte';
@@ -8,27 +7,34 @@
 	import { claimableHinataStakingRewards, userStakes, walletHinataBalance } from '$stores/wallet';
 	import { stakeDurations, stakeTokens } from '$utils/contracts/staking';
 	import { createEventDispatcher } from 'svelte';
-	import Input from '$lib/components/v2/Input/Input.svelte';
 	import { ethers } from 'ethers';
-	// import Info from '$icons/info.v2.svelte';
+	import { ethAmountRegex, regexFilter } from '$actions/regexFilter';
 
-	$: selectedStakeDuration = stakeDurations[0];
-	$: selectedStakeAmount = '';
+	let selectedStakeDuration = stakeDurations[0];
+	let selectedStakeAmount: number = null;
+
+	$: stringStakeAmount = selectedStakeAmount?.toString() || '';
 
 	const dispatch = createEventDispatcher();
 
 	async function triggerStakeTokens() {
-		await stakeTokens(selectedStakeAmount, selectedStakeDuration.value);
+		await stakeTokens(stringStakeAmount, selectedStakeDuration.value);
 		dispatch('reload-stake-data');
 	}
 
 	function validateStakeAmount(amount: string) {
+		if (!amount) {
+			return false;
+		}
+
 		// using ethers to perform the comparison since there are rounding errors
 		return (
 			ethers.utils.parseEther(amount || '0').eq(ethers.utils.parseEther('0')) ||
 			ethers.utils.parseEther(amount || '0').lte(ethers.utils.parseEther($walletHinataBalance))
 		);
 	}
+
+	$: isBalanceSufficient = validateStakeAmount(stringStakeAmount);
 
 	function triggerUnstakeUI(event: { detail: { stakeId: number; amount: string } }) {
 		dispatch('unstake-tokens', event.detail);
@@ -48,33 +54,35 @@
 <!-- Stake amount input field -->
 <div class="flex mt-4 gap-x-4">
 	<div class="flex-grow">
-		<Input
-			bind:value={selectedStakeAmount}
-			validator={validateStakeAmount}
-			placeholder="Enter Amount"
-			inputMode="numeric"
-			class={`border-2 border-white rounded-none h-12 section-subtext hover:border-color-purple ${
-				(ethers.utils.parseEther(selectedStakeAmount || '0').eq(ethers.utils.parseEther('0')) ||
-					!validateStakeAmount(selectedStakeAmount)) &&
-				'border-white hover:border-white opacity-50'
-			}`}
+		<!-- Stake amount input -->
+		<div
+			class="border-2 border-white relative h-12"
+			class:border-red-400={!isBalanceSufficient && stringStakeAmount}
 		>
-			<PrimaryButton
-				slot="end-icon"
-				extButtonClass="h-[60%] w-14 mr-2"
-				on:click={() => (selectedStakeAmount = $walletHinataBalance)}
-			>
-				MAX
-			</PrimaryButton>
-		</Input>
+			<input
+				bind:value={selectedStakeAmount}
+				use:regexFilter={{ regex: ethAmountRegex }}
+				type="number"
+				placeholder="Enter Amount"
+				class="bg-transparent w-full h-full p-4 outline-none"
+			/>
+
+			<div class="absolute right-0 top-0 bottom-0 grid place-items-center">
+				<PrimaryButton
+					extButtonClass="h-[60%] w-14 mr-2"
+					on:click={() => (stringStakeAmount = $walletHinataBalance)}
+				>
+					MAX
+				</PrimaryButton>
+			</div>
+		</div>
 	</div>
 
 	<div>
 		<PrimaryButton
 			disabled={ethers.utils
-				.parseEther(selectedStakeAmount || '0')
-				.eq(ethers.utils.parseEther('0')) ||
-				parseFloat(selectedStakeAmount) > +$walletHinataBalance}
+				.parseEther(stringStakeAmount || '0')
+				.eq(ethers.utils.parseEther('0')) || parseFloat(stringStakeAmount) > +$walletHinataBalance}
 			on:click={triggerStakeTokens}
 		>
 			Stake
