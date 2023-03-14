@@ -6,16 +6,50 @@
 	import TextArea from '$lib/components/TextArea.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { currentUserAddress } from '$stores/wallet';
-	import { deleteNotification, getNotifications, publishNotification, updateNotificationAsAdmin, type UpdateNotificationAsAdminOptions, type UserNotification } from '$utils/api/notifications';
+	import {
+		deleteNotification,
+		getNotifications,
+		publishNotification,
+		updateNotificationAsAdmin,
+		type UpdateNotificationAsAdminOptions,
+		type UserNotification,
+	} from '$utils/api/notifications';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import type { Dayjs } from 'dayjs';
 	import dayjs from 'dayjs';
+	import { writable } from 'svelte/store';
 	import { slide } from 'svelte/transition';
+	import FormErrorList from '$lib/components/FormErrorList.svelte';
 
 	let notificationMessage = '';
 	let notificationTitle = '';
 	let publishDate: Dayjs;
 	let expireDate: Dayjs;
+
+	const formValidity = writable<Partial<{ [key: string]: boolean | string }>>({
+		publishDate: true,
+		expireDate: true,
+		notificationMessage: true,
+		dateIntersection: true,
+	});
+
+	$: {
+		if (!notificationMessage) {
+			$formValidity.notificationMessage = 'A message is required';
+		} else $formValidity.notificationMessage = true;
+
+		if (publishDate && publishDate.isBefore(dayjs())) {
+			$formValidity.publishDate = "Publish date can't be set in the past";
+		} else $formValidity.publishDate = true;
+
+		if (expireDate && expireDate.isBefore(dayjs())) {
+			$formValidity.expireDate = "Expire date can't be set in the past";
+		} else $formValidity.expireDate = true;
+
+		if (publishDate && expireDate && expireDate.isBefore(publishDate)) {
+			$formValidity.dateIntersection = "Expire date can't be set before publish date";
+		} else $formValidity.dateIntersection = true;
+	}
 
 	type TargetOptions = {
 		value: 'GLOBAL' | UserRole;
@@ -105,7 +139,9 @@
 			return;
 		}
 
-		const removedNotification = createdNotifications.find((n) => n.notificationId === notificationId);
+		const removedNotification = createdNotifications.find(
+			(n) => n.notificationId === notificationId,
+		);
 
 		createdNotifications.splice(createdNotifications.indexOf(removedNotification), 1);
 
@@ -116,8 +152,12 @@
 		const options: UpdateNotificationAsAdminOptions = {
 			id: notification.notificationId,
 			content: notification.content || undefined,
-			...(notification.editPublishDate ? { publishAt: dayjs(notification.editPublishDate).format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
-			...(notification.editExpireDate ? { expireAt: dayjs(notification.editExpireDate).format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
+			...(notification.editPublishDate
+				? { publishAt: dayjs(notification.editPublishDate).format('YYYY-MM-DDTHH:mm:ss.SSS') }
+				: {}),
+			...(notification.editExpireDate
+				? { expireAt: dayjs(notification.editExpireDate).format('YYYY-MM-DDTHH:mm:ss.SSS') }
+				: {}),
 		};
 
 		const res = await updateNotificationAsAdmin(options);
@@ -153,11 +193,30 @@
 				<Dropdown bind:selected={target} options={targetDropdownOptions} class="h-12" />
 			</div>
 		</div>
-		<div class="flex-col flex-grow w-1/3">
-			<TextArea bind:value={notificationMessage} maxChars={100} containerClass={'text-white'} textAreaClass={'placeholder:text-white'} placeholder={'Enter your message for a notification'} />
+		<div class="flex flex-col flex-grow w-1/3">
+			<TextArea
+				bind:value={notificationMessage}
+				maxChars={100}
+				containerClass={'text-white'}
+				textAreaClass={'placeholder:text-white'}
+				placeholder={'Enter your message for a notification'}
+			/>
 		</div>
 
-		<PrimaryButton disabled={!notificationMessage} on:click={handlePublish} extButtonClass="w-80 mt-8 max-w-full">Publish</PrimaryButton>
+		<div class="flex flex-col">
+			<FormErrorList validity={$formValidity} />
+
+			<PrimaryButton
+				disabled={!notificationMessage ||
+					(publishDate && publishDate.isBefore(dayjs())) ||
+					(expireDate && publishDate.isBefore(dayjs())) ||
+					(publishDate && expireDate && expireDate.isBefore(publishDate))}
+				on:click={handlePublish}
+				extButtonClass="w-80 mt-8 max-w-full"
+			>
+				Publish
+			</PrimaryButton>
+		</div>
 	</section>
 
 	{#if createdNotifications?.length > 0}
@@ -173,7 +232,13 @@
 							<div class="w-[50%] flex flex-col justify-between flex-wrap">
 								{#if notification.editMode}
 									<div class="flex gap-8 flex-wrap">
-										<PrimaryButton variant="green" disabled={!notification.content} on:click={() => handleEdit(notification)}>Confirm</PrimaryButton>
+										<PrimaryButton
+											variant="green"
+											disabled={!notification.content}
+											on:click={() => handleEdit(notification)}
+										>
+											Confirm
+										</PrimaryButton>
 
 										<PrimaryButton
 											variant="red"
@@ -189,11 +254,17 @@
 									<div class="flex justify-between flex-wrap gap-2">
 										<div class="flex flex-col">
 											<span class="text-lg">Publish date:</span>
-											<Datepicker bind:value={notification.editPublishDate} placeholder="Edit publish date & time" />
+											<Datepicker
+												bind:value={notification.editPublishDate}
+												placeholder="Edit publish date & time"
+											/>
 										</div>
 										<div class="flex flex-col">
 											<span class="text-lg">Expire date:</span>
-											<Datepicker bind:value={notification.editExpireDate} placeholder="Edit expire date & time" />
+											<Datepicker
+												bind:value={notification.editExpireDate}
+												placeholder="Edit expire date & time"
+											/>
 										</div>
 									</div>
 								{:else}
@@ -206,7 +277,12 @@
 											Edit
 										</PrimaryButton>
 
-										<PrimaryButton variant="red" on:click={() => handleDelete(notification.notificationId)}>Delete</PrimaryButton>
+										<PrimaryButton
+											variant="red"
+											on:click={() => handleDelete(notification.notificationId)}
+										>
+											Delete
+										</PrimaryButton>
 									</div>
 									<div class="flex justify-between">
 										{#if notification.targets}

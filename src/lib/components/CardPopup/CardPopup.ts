@@ -9,6 +9,7 @@ export interface CardPopupProps {
 	options: CardOptions;
 	handler: PopupHandler;
 	showInvalidListingMessage?: boolean;
+	defaultTab: 'info' | 'trade' | 'history' | 'default';
 }
 
 /**
@@ -16,16 +17,27 @@ export interface CardPopupProps {
  * to the URL param `id`. This param will also be removed when the popup is closed. Complete
  * collection data will be fetched and will replace partial collection data. This fetch is asynchronous.
  */
-export async function openCardPopupFromOptions(options: CardOptions, props?: Partial<CardPopupProps>) {
+export async function openCardPopupFromOptions(
+	options: CardOptions,
+	props?: Partial<CardPopupProps>,
+) {
 	props = props || {};
 
 	let popupHandler: PopupHandler;
 
 	if (options.resourceType === 'nft') {
-		popupHandler = setPopup(CardPopup, { props: { options, ...props }, onClose: () => removeUrlParamGoto('nftId'), id: options.nfts[0].fullId });
+		popupHandler = setPopup(CardPopup, {
+			props: { options, ...props },
+			onClose: () => removeUrlParamGoto('nftId'),
+			id: options.nfts[0].fullId,
+		});
 		addUrlParamGoto('nftId', options.nfts[0].fullId);
 	} else if (options.listingData.onChainId) {
-		popupHandler = setPopup(CardPopup, { props: { options, ...props }, onClose: () => removeUrlParamGoto('listingId'), id: options.listingData.onChainId });
+		popupHandler = setPopup(CardPopup, {
+			props: { options, ...props },
+			onClose: () => removeUrlParamGoto('listingId'),
+			id: options.listingData.onChainId,
+		});
 		addUrlParamGoto('listingId', options.listingData.onChainId);
 	}
 

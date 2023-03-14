@@ -9,8 +9,8 @@
 </script>
 
 <main class="text-white">
-	<div class="grid place-items-center mt-12">
-		<h1 class="text-gradient text-3xl font-medium text-center">Hinata Reward Season 1</h1>
+	<div class="grid place-items-center mt-16">
+		<h1 class="text-gradient text-5xl font-semibold text-center">Hinata Reward Season 1</h1>
 	</div>
 
 	<h2 class="mt-12 text-xl uppercase text-center">Take Action - Earn EXP Points - Get Rewards</h2>
