@@ -14,6 +14,11 @@
 	import { walletConnected } from '$utils/wallet';
 	import Heart from '$icons/heart.svelte';
 	import { browser } from '$app/environment';
+	import { onDestroy } from 'svelte';
+	import {
+		getValuesForEndingTs,
+		getValuesForStartingTs,
+	} from '$lib/components/v2/Countdown/Countdown';
 
 	export let title: string;
 	export let assetUrl: string;
@@ -77,27 +82,41 @@
 	};
 
 	// Timer label
-	function getTimerLabel(startTs: number, duration: number) {
+	function updateTimer() {
+		const startTs = countdown?.startTime;
+		const duration = countdown?.duration;
+
 		const now = Date.now() / 1000; // BE stores timestmps in seconds
 
 		if (now <= startTs) {
-			return 'starting in:';
+			countdownLabel = 'starting in:';
+			countdownValues = getValuesForStartingTs(startTs);
+			return;
 		}
 
 		if (now <= startTs + duration) {
-			return 'ending in:';
+			countdownLabel = 'ending in:';
+			countdownValues = getValuesForEndingTs(startTs, duration);
+			return;
 		}
 
-		return 'ended';
+		countdownLabel = 'ended';
 	}
 
-	let timerLabel: string;
+	let countdownLabel: string;
+	let countdownValues = [];
 
-	const updateTimerLabel = () =>
-		(timerLabel = getTimerLabel(countdown?.startTime, countdown?.duration));
+	$: countdown, updateTimer();
 
-	$: countdown, updateTimerLabel();
-	$: browser && setInterval(updateTimerLabel, 1000);
+	let interval: any;
+
+	$: if (browser) {
+		interval = setInterval(updateTimer, 1000);
+	}
+
+	onDestroy(() => {
+		clearInterval(interval);
+	});
 </script>
 
 <!-- NFT Image side-->
@@ -185,10 +204,10 @@
 			{#if countdown}
 				<div class="pb-4 text-white text-lg mt-4">
 					{capitalize(options.listingData?.listingType)}
-					{timerLabel}
+					{countdownLabel}
 				</div>
 
-				<Countdown {...countdown} />
+				<Countdown values={countdownValues} />
 			{/if}
 		</div>
 	</div>
