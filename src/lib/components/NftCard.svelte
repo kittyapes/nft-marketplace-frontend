@@ -25,6 +25,7 @@
 	import SocialCopy from '$icons/socials/social-copy.svelte';
 	import Copy from '$icons/copy.svelte';
 	import Hide from '$icons/hide.svelte';
+	import Sell from '$icons/sell.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -116,13 +117,24 @@
 		}
 	}
 
+	function handleMenuSellClick() {
+		openCardPopupFromOptions(options, { defaultTab: 'trade' });
+	}
+
 	// Listing timer
 	let timerHtml: string = '';
 	let timerInterval;
 	let fileType;
 
 	function updateTimerHtml() {
-		timerHtml = sanitizeHtmlInternal(getListingCardTimerHtml(options.listingData?.startTime, options.listingData?.duration, options.listingData?.endTime, gridStyle));
+		timerHtml = sanitizeHtmlInternal(
+			getListingCardTimerHtml(
+				options.listingData?.startTime,
+				options.listingData?.duration,
+				options.listingData?.endTime,
+				gridStyle,
+			),
+		);
 	}
 
 	const preload = async (src: string) => {
@@ -174,13 +186,23 @@
 	<div
 		class:dense-nft-media={gridStyle === 'dense'}
 		class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}
-		class="w-full mx-auto transition bg-card-gradient select-none flex-shrink flex-grow overflow-hidden {gridStyle !== 'masonry' ? 'aspect-1' : ''} "
+		class="w-full mx-auto transition bg-card-gradient select-none flex-shrink flex-grow overflow-hidden {gridStyle !==
+		'masonry'
+			? 'aspect-1'
+			: ''} "
 	>
 		{#if isHovered && !disabled}
-			<div class="absolute w-full h-12 bg-black bg-opacity-60 top-0 left-0 right-0" transition:fade={{ duration: 200 }} />
+			<div
+				class="absolute w-full h-12 bg-black bg-opacity-60 top-0 left-0 right-0"
+				transition:fade={{ duration: 200 }}
+			/>
 
 			{#if options.resourceType === 'listing'}
-				<button class="p-3 clickable h-12 w-40 truncate z-[9] absolute left-0 text-white" on:click|stopPropagation|preventDefault={() => goto('/profile/' + options.listingData?.sellerAddress)}>
+				<button
+					class="p-3 clickable h-12 w-40 truncate z-[9] absolute left-0 text-white"
+					on:click|stopPropagation|preventDefault={() =>
+						goto('/profile/' + options.listingData?.sellerAddress)}
+				>
 					{options.listingData?.sellerAddress}
 				</button>
 			{/if}
@@ -203,21 +225,42 @@
 			</div>
 		{:then}
 			{#if fileType === 'video'}
-				<video crossorigin="anonymous" class="max-w-full max-h-full object-cover object-top w-full h-full transition" autoplay loop class:opacity-0={!imgLoaded}>
+				<video
+					crossorigin="anonymous"
+					class="max-w-full max-h-full object-cover object-top w-full h-full transition"
+					autoplay
+					loop
+					class:opacity-0={!imgLoaded}
+				>
 					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
 			{:else if fileType === 'image'}
-				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" class:opacity-0={!imgLoaded} />
+				<img
+					alt=""
+					src={options.nfts[0].thumbnailUrl}
+					class="object-cover object-top w-full h-full transition"
+					class:opacity-0={!imgLoaded}
+				/>
 			{/if}
 		{:catch _err}
 			{#if fileType === 'video'}
-				<video crossorigin="anonymous" class="max-w-full max-h-full object-cover object-top w-full h-full transition" autoplay loop poster={options.nfts[0].thumbnailUrl}>
+				<video
+					crossorigin="anonymous"
+					class="max-w-full max-h-full object-cover object-top w-full h-full transition"
+					autoplay
+					loop
+					poster={options.nfts[0].thumbnailUrl}
+				>
 					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
 					<track kind="captions" />
 				</video>
 			{:else if fileType === 'image'}
-				<img alt="" src={options.nfts[0].thumbnailUrl} class="object-cover object-top w-full h-full transition" />
+				<img
+					alt=""
+					src={options.nfts[0].thumbnailUrl}
+					class="object-cover object-top w-full h-full transition"
+				/>
 			{:else}
 				<div class="bg-card-gradient w-full h-full transition" />
 			{/if}
@@ -234,11 +277,19 @@
 	>
 		<div class="flex justify-between items-center">
 			<div class="">
-				<h4 class="text-gradient font-bold truncate  {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
+				<h4
+					class="text-gradient font-bold truncate  {gridStyle === 'normal'
+						? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7'
+						: 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}"
+				>
 					{options.nfts[0].collectionData.name || 'N/A'}
 				</h4>
 
-				<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7 h-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4 h-4'}">
+				<h3
+					class="text-white font-semibold {gridStyle === 'normal'
+						? 'text-base 2xl:text-xl leading-6 2xl:leading-7 h-7'
+						: 'text-xs 2xl:text-sm leading-3 2xl:leading-4 h-4'}"
+				>
 					{options?.nfts?.[0]?.name}
 				</h3>
 			</div>
@@ -246,7 +297,11 @@
 			<!-- && options.rawResourceData.owner?.toLowerCase() === $currentUserAddress.toLowerCase() -->
 			{#if options.resourceType === 'nft' && menuItems?.length}
 				<div class="relative z-[8]">
-					<button on:click|stopPropagation={toggleDots} class="w-8 h-8 self-start p-1 clickable" transition:fade|local={{ duration: 150 }}>
+					<button
+						on:click|stopPropagation={toggleDots}
+						class="w-8 h-8 self-start p-1 clickable"
+						transition:fade|local={{ duration: 150 }}
+					>
 						<ThreeDots gradient={dotsOpened} />
 					</button>
 
@@ -254,36 +309,37 @@
 						<div class="absolute w-32 font-bold bg-dark-gradient left-10 top-0">
 							<div class="relative z-10 flex flex-col">
 								{#if menuItems.includes('sell')}
-									<button class="transition-all p-2 text-left menu-item relative" disabled on:click|stopPropagation={() => {}}>Sell</button>
+									<button class="menu-item" on:click|stopPropagation={handleMenuSellClick}>
+										<Sell />
+										<div class="gradient-border" />
+										<span>Sell</span>
+									</button>
 								{/if}
 
 								{#if menuItems.includes('copy')}
-									<button class="transition-all p-2 text-left flex items-center gap-2 menu-item relative" on:click|stopPropagation={copyUrlToClipboard}>
+									<button class="menu-item" on:click|stopPropagation={copyUrlToClipboard}>
 										<Copy />
-										<div class="absolute inset-0 gradient-border animate-gradient-border-spin -z-[1]" />
-
+										<div class="gradient-border" />
 										<span>Copy Link</span>
 									</button>
 								{/if}
 
 								{#if menuItems.includes('transfer')}
-									<button class="transition-all p-2 text-left menu-item relative" disabled>Transfer</button>
+									<button class="menu-item" disabled>Transfer</button>
 								{/if}
 
 								{#if menuItems.includes('hide')}
-									<button class="transition-all p-2 text-left flex items-center gap-2 menu-item relative" on:click|stopPropagation={hideNft}>
+									<button class="menu-item" on:click|stopPropagation={hideNft}>
 										<Hide />
-										<div class="absolute inset-0 gradient-border animate-gradient-border-spin -z-[1]" />
-
+										<div class="gradient-border" />
 										<span>Hide</span>
 									</button>
 								{/if}
 
 								{#if menuItems.includes('reveal')}
-									<button class="transition-all p-2 text-left flex items-center gap-2 menu-item relative" on:click|stopPropagation={revealNft}>
+									<button class="menu-item" on:click|stopPropagation={revealNft}>
 										<Hide />
-										<div class="absolute inset-0 gradient-border animate-gradient-border-spin -z-[1]" />
-
+										<div class="gradient-border" />
 										<span>Reveal</span>
 									</button>
 								{/if}
@@ -299,7 +355,11 @@
 				{@html timerHtml}
 			{:else if timerHtml?.includes('Ends in') || (timerHtml?.includes('Expired') && options.resourceType === 'listing')}
 				<div class="flex flex-col items-start">
-					<h4 class="text-gradient font-bold whitespace-nowrap {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
+					<h4
+						class="text-gradient font-bold whitespace-nowrap {gridStyle === 'normal'
+							? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7'
+							: 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}"
+					>
 						{#if options.listingData?.listingType === 'auction'}
 							{#if options.auctionData.highestBid !== '0'}
 								Highest bid
@@ -312,7 +372,11 @@
 					</h4>
 					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-2' : 'gap-x-1'}">
 						<span><EthV2 class={gridStyle === 'normal' ? 'w-3 h-4' : 'w-2 h-3'} /></span>
-						<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
+						<h3
+							class="text-white font-semibold {gridStyle === 'normal'
+								? 'text-base 2xl:text-xl leading-6 2xl:leading-7'
+								: 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}"
+						>
 							{options?.listingData.shortDisplayPrice || 'N/A'}
 						</h3>
 					</div>
@@ -321,23 +385,49 @@
 				{@html timerHtml}
 			{:else}
 				<div class="flex flex-col items-start">
-					<h4 class="text-gradient font-bold {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">Price</h4>
+					<h4
+						class="text-gradient font-bold {gridStyle === 'normal'
+							? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7'
+							: 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}"
+					>
+						Price
+					</h4>
 
-					<div class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-1' : 'gap-x-0.5'}">
-						<span><EthV2 class={gridStyle === 'normal' ? 'w-2.5 2xl:w-3 h-3.5 2xl:h-4' : 'w-1.5 2xl:w-2 h-2.5 2xl:h-3'} /></span>
-						<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
+					<div
+						class="flex flex-row items-center {gridStyle === 'normal' ? 'gap-x-1' : 'gap-x-0.5'}"
+					>
+						<span>
+							<EthV2
+								class={gridStyle === 'normal'
+									? 'w-2.5 2xl:w-3 h-3.5 2xl:h-4'
+									: 'w-1.5 2xl:w-2 h-2.5 2xl:h-3'}
+							/>
+						</span>
+						<h3
+							class="text-white font-semibold {gridStyle === 'normal'
+								? 'text-base 2xl:text-xl leading-6 2xl:leading-7'
+								: 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}"
+						>
 							{options?.listingData?.shortDisplayPrice || 'N/A'}
 						</h3>
 					</div>
 				</div>
 
 				<div class="flex flex-col items-end">
-					<h4 class="text-gradient font-bold whitespace-nowrap {gridStyle === 'normal' ? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7' : 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}">
+					<h4
+						class="text-gradient font-bold whitespace-nowrap {gridStyle === 'normal'
+							? 'text-[10px] 2xl:text-sm leading-6 2xl:leading-7'
+							: 'text-[8px] 2xl:text-[10px] leading-3 2xl:leading-4'}"
+					>
 						Highest offer
 					</h4>
 
 					<!-- TODO clarify highest offer -->
-					<h3 class="text-white font-semibold {gridStyle === 'normal' ? 'text-base 2xl:text-xl leading-6 2xl:leading-7' : 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}">
+					<h3
+						class="text-white font-semibold {gridStyle === 'normal'
+							? 'text-base 2xl:text-xl leading-6 2xl:leading-7'
+							: 'text-xs 2xl:text-sm leading-3 2xl:leading-4'}"
+					>
 						{options?.auctionData?.highestOffer || 'N/A'}
 					</h3>
 				</div>
@@ -362,6 +452,14 @@
 
 	.wrapper:not(:hover) > .gradient-border {
 		display: none;
+	}
+
+	.menu-item {
+		@apply transition-all p-2 text-left relative flex items-center gap-2;
+	}
+
+	.menu-item > div {
+		@apply absolute inset-0 animate-gradient-border-spin -z-[1];
 	}
 
 	.menu-item:not(:hover) > .gradient-border {
