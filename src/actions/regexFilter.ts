@@ -1,4 +1,4 @@
-export const ethAmountRegex = /^(0|[0-9]+)\.?\d{0,18}$/gm;
+export const ethAmountRegex = /^([0-9]+)\.?\d{0,18}$/gm;
 
 export function regexFilter(node: HTMLInputElement, options: { regex: RegExp }) {
 	node.addEventListener('keypress', (ev) => {
