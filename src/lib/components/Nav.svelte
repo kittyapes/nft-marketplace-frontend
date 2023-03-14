@@ -69,7 +69,7 @@
 		</a>
 
 		<!-- Staking - HIDDEN FOR V1 -->
-		<a href="/staking" class="nav-button bg-card-gradient">
+		<a href="/xp/claim-and-stake" class="nav-button bg-card-gradient">
 			Staking
 			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 		</a>
