@@ -1,4 +1,5 @@
 <script>
+	import { xpPointsToColor } from '..';
 	import RewardsHeader from '../lib/RewardsHeader.svelte';
 
 	const currentUser = {
@@ -6,7 +7,7 @@
 		position: null,
 	};
 
-	const users = [
+	const apiBoardData = [
 		{
 			exp: 3690,
 			username: 'Darlene Robertson',
@@ -22,67 +23,122 @@
 			username: 'toe',
 			address: null,
 		},
+		{
+			exp: 1000,
+			username: 'Darlene Robertson',
+			address: null,
+		},
+		{
+			exp: 750,
+			username: 'ScadjJSm',
+			address: null,
+		},
+		{
+			exp: 500,
+			username: 'toe',
+			address: null,
+		},
+		{
+			exp: 250,
+			username: 'ScadjJSm',
+			address: null,
+		},
+		{
+			exp: 76,
+			username: 'toe',
+			address: null,
+		},
+		{
+			exp: 23,
+			username: 'ScadjJSm',
+			address: null,
+		},
 	];
+
+	$: users = apiBoardData.map((u) => {
+		u.class = xpPointsToColor(u.exp);
+		return u;
+	});
 </script>
 
 <main class="text-white">
 	<RewardsHeader />
 
-	<div class="grid grid-cols-[3fr_14fr_4fr] gradient-border mt-16 mb-10 table-wrapper">
-		<!-- Table header -->
-		<div
-			class="font-semibold text-xl uppercase text-center py-4 border-color-blue border-b-2 border-r-2"
-		>
-			Position
-		</div>
-		<div class="font-semibold text-xl uppercase px-8 py-4 border-color-blue border-b-2">
-			User Name
-		</div>
-		<div
-			class="font-semibold text-xl uppercase text-center py-4 border-color-blue border-l-2 border-b-2"
-		>
-			Total Exp
-		</div>
-
-		<!-- Current user record -->
-		<div class="font-semibold text-xl uppercase text-center py-4">
-			<p class="text-gradient min-w-full text-center">{currentUser.position || 'Unranked'}</p>
-		</div>
-
-		<div class="font-semibold text-xl uppercase px-8 py-4">
-			<p class="text-gradient">You</p>
-		</div>
-
-		<div class="font-semibold text-xl uppercase text-center py-4 grid place-items-center">
-			<p class="text-gradient">{currentUser.exp || '-'}</p>
-		</div>
-
-		{#each users as user, i}
-			<div class="font-semibold text-xl py-4 grid place-items-center">
-				<p class="">{i}</p>
+	<div class="grid grid-cols-[3fr_14fr_4fr] mt-16 mb-32">
+		<!-- First column - positions -->
+		<div class="flex-col gradient-border !border column-wrap">
+			<!-- Header -->
+			<div
+				class="font-semibold text-xl uppercase text-center py-4 gradient-border !border-x-0 !border-t-0 !border-b"
+			>
+				Position
 			</div>
 
-			<div class="font-semibold text-xl px-8 py-4">
-				<p class="">{user.username}</p>
+			<!-- Current user -->
+			<div class="font-semibold text-xl uppercase text-center py-4 bg-card-gradient">
+				<p class="text-gradient min-w-full text-center">{currentUser.position || 'Unranked'}</p>
 			</div>
 
-			<div class="font-semibold text-xl text-center py-4 grid place-items-center">
-				<p class="">{user.exp}</p>
+			<!-- Rest of the leaderboard positions -->
+			{#each users as _, i}
+				<div class="font-semibold text-xl py-4 grid place-items-center column-item">
+					<p class="">{i + 1}</p>
+				</div>
+			{/each}
+		</div>
+
+		<!-- Second Column - usernames -->
+		<div class="flex-col gradient-border !border !border-x-0 column-wrap">
+			<!-- Header -->
+			<div
+				class="font-semibold text-xl uppercase px-8 py-4 gradient-border !border-x-0 !border-t-0 !border-b"
+			>
+				User Name
 			</div>
-		{/each}
+
+			<!-- Current user -->
+			<div class="font-semibold text-xl uppercase px-8 py-4 bg-card-gradient">
+				<p class="text-gradient">You</p>
+			</div>
+
+			<!-- Rest of the leaderboard usernames -->
+			{#each users as user}
+				<div class="font-semibold text-xl px-8 py-4 column-item">
+					<p class="">{user.username}</p>
+				</div>
+			{/each}
+		</div>
+
+		<!-- Third column - XP -->
+		<div class="flex-col gradient-border !border column-wrap">
+			<!-- Header -->
+			<div
+				class="font-semibold text-xl uppercase text-center py-4 gradient-border !border-x-0 !border-t-0 !border-b"
+			>
+				Total Exp
+			</div>
+
+			<!-- Current user -->
+			<div
+				class="font-semibold text-xl uppercase text-center py-4 grid place-items-center bg-card-gradient"
+			>
+				<p class="text-gradient">{currentUser.exp || '-'}</p>
+			</div>
+
+			<!-- Rest of the leaderboard xp -->
+			{#each users as user}
+				<div
+					class="font-semibold text-xl text-center py-4 grid place-items-center column-item {user.class}"
+				>
+					<p class="">{user.exp}</p>
+				</div>
+			{/each}
+		</div>
 	</div>
 </main>
 
 <style type="postcss">
-	.table-wrapper:nth-child(3n + 1) {
-		@apply border-color-blue border-opacity-50 border-r border-b;
-	}
-
-	.table-wrapper:nth-child(3n + 2) {
-		@apply border-color-blue border-opacity-50 border-b;
-	}
-
-	.table-wrapper:nth-child(3n + 3) {
-		@apply border-color-blue border-opacity-50 border-l border-b;
+	.column-wrap > div.column-item {
+		@apply border-t border-color-blue border-opacity-20;
 	}
 </style>

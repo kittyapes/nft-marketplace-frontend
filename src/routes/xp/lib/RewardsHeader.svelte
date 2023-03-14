@@ -13,7 +13,7 @@
 </h2>
 
 <div class="mt-16 max-w-screen-sm mx-auto">
-	<PrimaryButton on:click={() => goto('/collections')}>View Collections</PrimaryButton>
+	<PrimaryButton on:click={() => goto('/marketplace/collections')}>View Collections</PrimaryButton>
 </div>
 
 <div class="mt-16">
