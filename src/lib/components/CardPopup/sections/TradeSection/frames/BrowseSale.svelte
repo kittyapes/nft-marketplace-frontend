@@ -60,10 +60,8 @@
 	);
 
 	$: purchaseError =
-		(isFuture(dateToTimestamp(options.rawListingData.startTime)) &&
-			"This listing isn't for sale yet.") ||
-		(!$hasEnoughTokens &&
-			`You do not have enough ${options.listingData.paymentTokenTicker} to purchase this item.`);
+		isFuture(dateToTimestamp(options.rawListingData.startTime)) &&
+		"This listing isn't for sale yet.";
 
 	onMount(async () => {
 		if (!isGasless) {
