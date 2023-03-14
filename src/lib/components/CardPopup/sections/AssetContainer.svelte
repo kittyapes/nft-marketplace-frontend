@@ -19,6 +19,7 @@
 		getValuesForEndingTs,
 		getValuesForStartingTs,
 	} from '$lib/components/v2/Countdown/Countdown';
+	import { handleGenerativeName } from '$utils';
 
 	export let title: string;
 	export let assetUrl: string;
@@ -176,8 +177,8 @@
 	<div class="flex gap-8 flex-wrap mt-8">
 		<div class="w-full">
 			<!-- NFT Name -->
-			<div class="text-4xl font-medium text-white whitespace-nowrap">
-				{title || 'No title'}
+			<div class="text-4xl font-medium text-white">
+				{handleGenerativeName(title, options.nfts[0].collectionData.name) || 'No title'}
 			</div>
 
 			<!-- Buttons -->
@@ -185,6 +186,7 @@
 				<button class="w-5 btn" on:click={handleShare} disabled={!videoAsset && !assetUrl}>
 					<img src={getIconUrl('share')} alt="Share." />
 				</button>
+
 				<button
 					class="w-5 btn disabled:opacity-50 text-transparent"
 					class:text-white={favorited}
@@ -193,6 +195,7 @@
 				>
 					<Heart />
 				</button>
+
 				<button class="w-5 btn" disabled={!videoAsset && !assetUrl} on:click={handleFullscreen}>
 					<img src={getIconUrl('fullscreen')} alt="Fullscreen." />
 				</button>

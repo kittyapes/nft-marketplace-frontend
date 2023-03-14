@@ -22,7 +22,11 @@ async function purchaseNormal(listing: Listing) {
 	}
 
 	const marketplaceAddress = getContractData('marketplace').address;
-	const contractApproved = await ensureAmountApproved(marketplaceAddress, onChainListingData.price.toString(), listing.paymentTokenAddress);
+	const contractApproved = await ensureAmountApproved(
+		marketplaceAddress,
+		onChainListingData.price.toString(),
+		listing.paymentTokenAddress,
+	);
 
 	if (!contractApproved) {
 		notifyError('Insufficient Allowance to Execute Transaction.');
@@ -49,10 +53,16 @@ async function purchaseGasless(listing: Listing) {
 
 	// Make sure amount of tokens equal or greater than the price of the sale listing
 	// is approved to be used by the marketpace contract
-	const approvalSuccessful = await ensureAmountApproved(marketplaceContract.address, saleData.price, listing.paymentTokenAddress);
+	const approvalSuccessful = await ensureAmountApproved(
+		marketplaceContract.address,
+		saleData.price,
+		listing.paymentTokenAddress,
+	);
 
 	if (!approvalSuccessful) {
-		notifyError("Failed to purchase a gasless listing. Could't approve amount of tokens required for the purchase.");
+		notifyError(
+			"Failed to purchase a gasless listing. Could't approve amount of tokens required for the purchase.",
+		);
 		return false;
 	}
 
@@ -113,6 +123,11 @@ export async function salePurchase(listing: Listing): Promise<boolean> {
 	} catch (err) {
 		if (err.code === 'ACTION_REJECTED') {
 			notifyError('You have rejected the transaction. Could not purchase the listing.');
+			return false;
+		}
+
+		if (err.message.includes('ERC20: transfer amount exceeds balance')) {
+			notifyError('Insufficient balance to make purchase.');
 			return false;
 		}
 
