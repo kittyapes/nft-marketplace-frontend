@@ -25,8 +25,14 @@
 	import { notifyError } from '$utils/toast';
 	import { writable } from 'svelte/store';
 
-	const dragDropText = 'Drag and drop an image <br> or <span class="text-gradient">click to browse</span>';
-	const generalCollection = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }>(null);
+	const dragDropText =
+		'Drag and drop an image <br> or <span class="text-gradient">click to browse</span>';
+	const generalCollection = writable<{
+		label: string;
+		value: string;
+		iconUrl: string;
+		collectionAddress: string;
+	}>(null);
 
 	let dumpDraft = false;
 
@@ -46,7 +52,9 @@
 
 	const formValidity = writable<Partial<{ [K in keyof NftDraft]: any }>>({});
 
-	const availableCollections = writable<{ label: string; value: string; iconUrl: string; collectionAddress: string }[]>([]);
+	const availableCollections = writable<
+		{ label: string; value: string; iconUrl: string; collectionAddress: string }[]
+	>([]);
 
 	beforeNavigate(() => {
 		dumpDraft ? nftDraft.set(null) : nftDraft.set(nftData);
@@ -62,7 +70,9 @@
 		await refreshProfileData();
 
 		// Fetch general collection
-		let genColl = (await apiSearchCollections({ collectionAddress: getContract('storage', true).address })).collections;
+		let genColl = (
+			await apiSearchCollections({ collectionAddress: getContract('storage', true).address })
+		).collections;
 		genColl = genColl.map(adaptCollectionToMintingDropdown);
 		generalCollection.set(genColl[0]);
 
@@ -72,7 +82,10 @@
 		while (true) {
 			const beforeLength = collections.length;
 
-			const collectionsResponse = await apiSearchCollections({ creator: $currentUserAddress, page }).catch(() => ({ collections: [] }));
+			const collectionsResponse = await apiSearchCollections({
+				creator: $currentUserAddress,
+				page,
+			}).catch(() => ({ collections: [] }));
 			collections.push(...collectionsResponse.collections);
 
 			if (beforeLength === collections.length) break;
@@ -93,7 +106,9 @@
 
 		if ($nftDraft?.collectionAddress) {
 			// User could have previously selected a collection which is now saved in a draft
-			collectionToSelect = available.find((i) => i.collectionAddress === $nftDraft.collectionAddress);
+			collectionToSelect = available.find(
+				(i) => i.collectionAddress === $nftDraft.collectionAddress,
+			);
 		} else if (available.length) {
 			// If no collection is saved in draft, select the first available collection
 			collectionToSelect = available[0];
@@ -111,7 +126,10 @@
 	async function mintAndContinue() {
 		newBundleData.set({} as NewBundleData);
 		const progress = writable(0);
-		const popupHandler = setPopup(NftMintProgressPopup, { props: { progress }, closeByOutsideClick: false });
+		const popupHandler = setPopup(NftMintProgressPopup, {
+			props: { progress },
+			closeByOutsideClick: false,
+		});
 
 		// Create NFT on the server
 		const createNftRes = await createNFTOnAPI({
@@ -155,7 +173,9 @@
 		dumpDraft = true;
 	}
 
-	const handleCollectionSelection = (event: { detail: ReturnType<typeof adaptCollectionToMintingDropdown> }) => {
+	const handleCollectionSelection = (event: {
+		detail: ReturnType<typeof adaptCollectionToMintingDropdown>;
+	}) => {
 		if (event.detail?.label === 'Create new collection') {
 			goto(event.detail?.value);
 		} else if ($availableCollections.length < 1) {
@@ -168,15 +188,33 @@
 	};
 
 	$: quantityValid = nftData.quantity > 0;
-	$: inputValid = nftData.name && nftData.name.length <= 25 && selectedCollectionRow && nftData.assetPreview && nftData.thumbnailPreview && quantityValid;
+	$: inputValid =
+		nftData.name &&
+		nftData.name.trim() &&
+		nftData.name.length <= 25 &&
+		selectedCollectionRow &&
+		nftData.assetPreview &&
+		nftData.thumbnailPreview &&
+		quantityValid;
 
 	$: if (nftData) {
-		$formValidity.name = !!nftData.name ? (nftData.name.length > 25 ? 'Name Cannot be more than 25 characters' : true) : !nftData.name ? 'Name is Required' : true;
+		if (!nftData.name) $formValidity.name = 'Name is Required';
+		else if (!nftData.name.trim())
+			$formValidity.name = 'Name must have at least one non-whitespace character';
+		else if (nftData.name.length > 25)
+			$formValidity.name = 'Name Cannot be more than 25 characters';
+		else $formValidity.name = true;
+
 		// Always makesure item is integer
 		if (nftData.quantity) {
 			nftData.quantity = parseInt(nftData.quantity.toString());
 		}
-		$formValidity.quantity = !!nftData.quantity && nftData.quantity > 0 ? true : !nftData.quantity ? 'NFT quantity must be a minimum of 1' : true;
+		$formValidity.quantity =
+			!!nftData.quantity && nftData.quantity > 0
+				? true
+				: !nftData.quantity
+				? 'NFT quantity must be a minimum of 1'
+				: true;
 	}
 
 	// Preview
@@ -194,7 +232,10 @@
 </script>
 
 <!-- Back button -->
-<button class="flex items-center my-8 space-x-2 text-sm font-semibold btn text-white" on:click={goBack}>
+<button
+	class="flex items-center my-8 space-x-2 text-sm font-semibold btn text-white"
+	on:click={goBack}
+>
 	<Back />
 	<div>Go Back</div>
 </button>
@@ -209,7 +250,14 @@
 			<!-- File upload -->
 			<div>Upload file*</div>
 			<div>
-				<DragDropImage class="h-56" max_file_size={50_000_000} bind:blob={nftData.assetBlob} text={dragDropText} bind:previewSrc={nftData.assetPreview} acceptedFormats={acceptedVideos}>
+				<DragDropImage
+					class="h-56"
+					max_file_size={50_000_000}
+					bind:blob={nftData.assetBlob}
+					text={dragDropText}
+					bind:previewSrc={nftData.assetPreview}
+					acceptedFormats={acceptedVideos}
+				>
 					<div slot="lower_text">
 						PNG, JPEG, JPG, GIF, WEBP, WEBM, MP4 | <span class="text-gradient">MAX 50MB</span>
 					</div>
@@ -225,7 +273,14 @@
 			<div>Upload Thumbnail (Optional)</div>
 			<!-- Thumbnail upload -->
 			<div>
-				<DragDropImage class="h-56" max_file_size={10_000_000} bind:blob={nftData.thumbnailBlob} text={dragDropText} bind:previewSrc={nftData.thumbnailPreview} acceptedFormats={acceptedImages}>
+				<DragDropImage
+					class="h-56"
+					max_file_size={10_000_000}
+					bind:blob={nftData.thumbnailBlob}
+					text={dragDropText}
+					bind:previewSrc={nftData.thumbnailPreview}
+					acceptedFormats={acceptedImages}
+				>
 					<div slot="lower_text">
 						PNG, JPEG, JPG, GIF, WEBP | <span class="text-gradient">MAX 50MB</span>
 					</div>
@@ -243,15 +298,31 @@
 		<div class="grid  grid-cols-2 mt-8 border-b border-white pb-12">
 			<div class="mr-32">
 				<div>Create name</div>
-				<input type="text" placeholder="Your NFT name" class="w-full mt-2 font-semibold input" bind:value={nftData.name} />
+				<input
+					type="text"
+					placeholder="Your NFT name"
+					class="w-full mt-2 font-semibold input"
+					bind:value={nftData.name}
+				/>
 
 				<div class="mt-8">NFT Quantity</div>
-				<input type="number" class="w-full mt-2 font-semibold input input-hide-controls" step={1} bind:value={nftData.quantity} min={1} />
+				<input
+					type="number"
+					class="w-full mt-2 font-semibold input input-hide-controls"
+					step={1}
+					bind:value={nftData.quantity}
+					min={1}
+				/>
 			</div>
 
 			<div class="mr-8">
 				<div>Description</div>
-				<TextArea containerClass="mt-2" maxChars={200} placeholder="Enter description..." bind:value={nftData.description} />
+				<TextArea
+					containerClass="mt-2"
+					maxChars={200}
+					placeholder="Enter description..."
+					bind:value={nftData.description}
+				/>
 
 				<!-- Collection dropdown -->
 				{#if isLoadingCollections}
@@ -266,7 +337,10 @@
 						selected={selectedCollectionRow}
 						on:select={handleCollectionSelection}
 						dispatchOnMount={false}
-						options={[...$availableCollections, { label: 'Create new collection', value: 'collections/new/edit?to=create' }]}
+						options={[
+							...$availableCollections,
+							{ label: 'Create new collection', value: 'collections/new/edit?to=create' },
+						]}
 						class="mt-2 h-12"
 						btnClass="font-semibold"
 					/>

@@ -1,3 +1,4 @@
+import { browser } from '$app/environment';
 import DOMPurify from 'dompurify';
 
 export function makeLink(text: string, url: string) {
@@ -9,5 +10,8 @@ export function makeBold(text: string) {
 }
 
 export function sanitizeHtmlInternal(text: string) {
-	return DOMPurify.sanitize(text);
+	if (!browser) return;
+
+	const domPurify = DOMPurify(window);
+	return domPurify.sanitize(text);
 }
