@@ -8,7 +8,6 @@
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { contractUpdateListing } from '$utils/contracts/listing';
-	import { cancelListingFlow } from '$utils/flows/cancelListingFlow';
 	import { dateToTimestamp } from '$utils/listings';
 	import { isListingExpired } from '$utils/misc';
 	import { formatToken } from '$utils/misc/priceUtils';
@@ -21,6 +20,9 @@
 	import { createEventDispatcher } from 'svelte';
 	import Success from './Success.svelte';
 	import type { SaleDataModel } from '$interfaces/index';
+	import 'simplebar';
+	import 'simplebar/dist/simplebar.css';
+	import ManageSale from './ManageSale.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -29,7 +31,10 @@
 	let allowEdit = true;
 
 	const allowEditUnsubscribe = getInterval(1000).subscribe(() => {
-		allowEdit = !isListingExpired(dateToTimestamp(options.rawListingData.startTime), options.rawListingData.duration);
+		allowEdit = !isListingExpired(
+			dateToTimestamp(options.rawListingData.startTime),
+			options.rawListingData.duration,
+		);
 	});
 
 	onDestroy(allowEditUnsubscribe);
@@ -51,7 +56,11 @@
 		updatingListing = true;
 
 		try {
-			await contractUpdateListing(options.listingData.onChainId, options.rawListingData.paymentTokenAddress, listingProps);
+			await contractUpdateListing(
+				options.listingData.onChainId,
+				options.rawListingData.paymentTokenAddress,
+				listingProps,
+			);
 			dispatch('set-frame', { component: Success });
 			// options.staleResource.set({ reason: 'cancelled' });
 		} catch (err) {
@@ -61,20 +70,6 @@
 
 		dispatch('refresh-chain-data');
 		updatingListing = false;
-	}
-
-	let cancellingListing = false;
-
-	async function cancelListing() {
-		cancellingListing = true;
-
-		const cancelSuccess = await cancelListingFlow(options.rawListingData);
-
-		if (cancelSuccess) {
-			options.staleResource.set({ reason: 'cancelled' });
-		}
-
-		cancellingListing = false;
 	}
 
 	let listingProps: Partial<ConfigurableListingProps> = {};
@@ -93,7 +88,10 @@
 	});
 </script>
 
-<div class="flex flex-col overscroll-contain text-white aspect-1 overflow-hidden">
+<div
+	class="flex flex-col overscroll-contain text-white aspect-1 overflow-hidden overflow-y-auto"
+	data-simplebar
+>
 	<div class="mt-2">
 		<!-- TODO maxQuantity needs to be checked on chain -->
 		<ListingProperties
@@ -102,7 +100,7 @@
 			{disableStartDate}
 			maxPrice={priceString}
 			minDuration={options.rawListingData.duration}
-			disabled={updatingListing || cancellingListing}
+			disabled={updatingListing}
 			bind:formErrors
 			bind:props={listingProps}
 			bind:this={_listingProperties}
@@ -113,7 +111,7 @@
 
 	<!-- Fees -->
 	<div class="mt-4 ml-2 font-semibold">Fees</div>
-	<div class="grid gap-2 mt-2 ml-2 font-semibold" style:grid-template-columns="auto 6rem">
+	<div class="grid gap-2 mt-2 ml-2 font-semibold pr-1" style:grid-template-columns="auto 6rem">
 		<div>Creator Royalties:</div>
 		<div class="flex items-center justify-end space-x-3">
 			<div class="">{totalColRoyalties(options)}%</div>
@@ -132,15 +130,25 @@
 	</div>
 
 	<div class="flex gap-2 mt-4">
-		<PrimaryButton disabled={updatingListing || cancellingListing} on:click={cancelListing}>
-			{#if cancellingListing}
-				<ButtonSpinner secondary />
-			{/if}
-			Cancel Listing
-		</PrimaryButton>
+		<div class="w-full">
+			<PrimaryButton
+				disabled={updatingListing}
+				on:click={() => dispatch('set-frame', { component: ManageSale })}
+			>
+				Go Back
+			</PrimaryButton>
+		</div>
 
-		<div bind:this={updatebuttonContainer} class="w-full" on:pointerenter={isUpdateHovered.toggle} on:pointerleave={isUpdateHovered.toggle}>
-			<PrimaryButton on:click={updateListing} disabled={!!formErrors.length || updatingListing || cancellingListing || !allowEdit}>
+		<div
+			bind:this={updatebuttonContainer}
+			class="w-full"
+			on:pointerenter={isUpdateHovered.toggle}
+			on:pointerleave={isUpdateHovered.toggle}
+		>
+			<PrimaryButton
+				on:click={updateListing}
+				disabled={!!formErrors.length || updatingListing || !allowEdit}
+			>
 				{#if updatingListing}
 					<ButtonSpinner />
 				{/if}
