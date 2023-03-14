@@ -5,23 +5,11 @@
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { tier_1, tier_2, tier_3 } from '..';
 	import CollectionList from '../lib/CollectionList.svelte';
-	import HorizontalSeparator from '../lib/HorizontalSeparator.svelte';
+	import RewardsHeader from '../lib/RewardsHeader.svelte';
 </script>
 
 <main class="text-white">
-	<div class="grid place-items-center mt-16">
-		<h1 class="text-gradient text-5xl font-semibold text-center">Hinata Reward Season 1</h1>
-	</div>
-
-	<h2 class="mt-12 text-xl uppercase text-center">Take Action - Earn EXP Points - Get Rewards</h2>
-
-	<div class="mt-16 max-w-screen-sm mx-auto">
-		<PrimaryButton on:click={() => goto('/collections')}>View Collections</PrimaryButton>
-	</div>
-
-	<div class="mt-16">
-		<HorizontalSeparator />
-	</div>
+	<RewardsHeader />
 
 	<h3 class="underline text-2xl font-mediu text-center mt-8 font-bold">Trading Volume</h3>
 
@@ -120,7 +108,7 @@
 	</div>
 </main>
 
-<style>
+<style type="postcss">
 	.table-border {
 		@apply border-color-blue border-opacity-50;
 	}
