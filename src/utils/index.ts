@@ -19,7 +19,10 @@ export class ErrNotificationError extends HandledError {
 	}
 }
 
-export function handleErrActionRejected(err: Error & { code?: string }, message = 'Action was rejected by user.') {
+export function handleErrActionRejected(
+	err: Error & { code?: string },
+	message = 'Action was rejected by user.',
+) {
 	if (err.code === 'ACTION_REJECTED') {
 		notifyError(message);
 
@@ -37,4 +40,14 @@ export function handleAxiosNetworkError(err: Error) {
 
 		throw new HandledError('Network error.', err);
 	}
+}
+
+export function handleGenerativeName(nftName: string, collectionName: string) {
+	const re = /^#\d+$/;
+
+	if (nftName.match(re)) {
+		return collectionName + ': ' + nftName;
+	}
+
+	return nftName;
 }
