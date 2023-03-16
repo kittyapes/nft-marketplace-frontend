@@ -70,7 +70,7 @@
 			<div class="absolute right-0 top-0 bottom-0 grid place-items-center">
 				<PrimaryButton
 					extButtonClass="h-[60%] w-14 mr-2"
-					on:click={() => (stringStakeAmount = $walletHinataBalance)}
+					on:click={() => (selectedStakeAmount = parseFloat($walletHinataBalance))}
 				>
 					MAX
 				</PrimaryButton>
@@ -82,7 +82,7 @@
 		<PrimaryButton
 			disabled={ethers.utils
 				.parseEther(stringStakeAmount || '0')
-				.eq(ethers.utils.parseEther('0')) || parseFloat(stringStakeAmount) > +$walletHinataBalance}
+				.eq(ethers.utils.parseEther('0')) || selectedStakeAmount > +$walletHinataBalance}
 			on:click={triggerStakeTokens}
 		>
 			Stake

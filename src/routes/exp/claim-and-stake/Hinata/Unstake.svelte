@@ -5,8 +5,8 @@
 	import { createEventDispatcher } from 'svelte';
 	import PositionsTable from './PositionsTable.svelte';
 	import RewardsTable from './RewardsTable.svelte';
-	import Input from '$lib/components/v2/Input/Input.svelte';
 	import { ethers } from 'ethers';
+	import { ethAmountRegex, regexFilter } from '$actions/regexFilter';
 
 	const { parseEther } = ethers.utils;
 
@@ -14,7 +14,9 @@
 
 	export let maxUnstakeAmount = '0';
 	export let unstakeId = 1;
-	export let selectedUnStakeAmount = '0';
+	export let selectedUnstakeAmount: number = null;
+
+	$: stringUnstakeAmount = selectedUnstakeAmount?.toString() || '0';
 
 	$: highlightUnstakeItems = false;
 	$: userClickedOnInput = false;
@@ -22,13 +24,13 @@
 	function validateUnstakeAmount(amount: string) {
 		userClickedOnInput = false;
 		return (
-			parseEther(selectedUnStakeAmount || '0').eq(parseEther('0')) ||
+			parseEther(stringUnstakeAmount || '0').eq(parseEther('0')) ||
 			parseEther(amount).lte(parseEther(maxUnstakeAmount))
 		);
 	}
 
 	async function triggerUnstakeTokens() {
-		await withdrawUnlockedTokensByStakeId(unstakeId, selectedUnStakeAmount);
+		await withdrawUnlockedTokensByStakeId(unstakeId, stringUnstakeAmount);
 		dispatch('reload-stake-data');
 	}
 
@@ -51,38 +53,43 @@
 		highlightUnstakeItems = false;
 		userClickedOnInput = false;
 	}
+
+	$: isUnstakeAmountValid = validateUnstakeAmount(stringUnstakeAmount);
 </script>
 
 <!-- Unstake amount input field -->
 <div class="flex gap-x-4 mt-5">
 	<div class="flex-grow">
-		<Input
-			bind:value={selectedUnStakeAmount}
-			validator={validateUnstakeAmount}
-			placeholder="Enter Amount"
-			inputMode="numeric"
-			class={`border-2 border-white rounded-none h-12 section-subtext hover:border-color-purple ${
-				(parseEther(selectedUnStakeAmount || '0').eq(parseEther('0')) ||
-					!validateUnstakeAmount(selectedUnStakeAmount)) &&
-				'border-white hover:border-white opacity-50'
-			}`}
-			on:click={highlightUnstake}
+		<!-- Unstake amount input -->
+		<div
+			class="border-2 border-white relative h-12"
+			class:border-red-400={!isUnstakeAmountValid && stringUnstakeAmount}
 		>
-			<PrimaryButton
-				slot="end-icon"
-				extButtonClass="h-[60%] w-14 mr-2"
-				on:click={() => (selectedUnStakeAmount = maxUnstakeAmount)}
-				disabled={parseEther(maxUnstakeAmount || '0').eq(parseEther('0'))}
-			>
-				MAX
-			</PrimaryButton>
-		</Input>
+			<input
+				bind:value={selectedUnstakeAmount}
+				use:regexFilter={{ regex: ethAmountRegex }}
+				type="number"
+				placeholder="Enter Amount"
+				class="bg-transparent w-full h-full p-4 outline-none"
+				on:click={highlightUnstake}
+			/>
+
+			<div class="absolute right-0 top-0 bottom-0 grid place-items-center">
+				<PrimaryButton
+					extButtonClass="h-[60%] w-14 mr-2"
+					on:click={() => (selectedUnstakeAmount = parseFloat(maxUnstakeAmount))}
+					disabled={parseEther(maxUnstakeAmount || '0').eq(parseEther('0'))}
+				>
+					MAX
+				</PrimaryButton>
+			</div>
+		</div>
 	</div>
 
 	<div>
 		<PrimaryButton
-			disabled={ethers.utils.parseEther(selectedUnStakeAmount || '0').eq(parseEther('0')) ||
-				+selectedUnStakeAmount > +maxUnstakeAmount}
+			disabled={ethers.utils.parseEther(stringUnstakeAmount || '0').eq(parseEther('0')) ||
+				selectedUnstakeAmount > +maxUnstakeAmount}
 			on:click={triggerUnstakeTokens}
 		>
 			Unstake
