@@ -65,12 +65,12 @@
 		<!-- Marketplace -->
 		<a id="marketplace-link" href="/marketplace/listings" class="nav-button bg-card-gradient">
 			Marketplace
-			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
+			<div class="absolute inset-0 gradient-border l" />
 		</a>
 
-		<!-- Staking - HIDDEN FOR V1 -->
-		<a href="/xp/claim-and-stake" class="nav-button bg-card-gradient">
-			Staking
+		<!-- Rewards -->
+		<a href="/exp/claim-and-stake" class="nav-button bg-card-gradient">
+			Rewards
 			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 		</a>
 

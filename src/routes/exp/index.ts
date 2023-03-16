@@ -205,3 +205,23 @@ export const tier_3: CollectionRecord[] = [
 		slug: 'auroracapsules',
 	},
 ];
+
+export function expPointsToColor(exp: number) {
+	if (exp > 3000) {
+		return 'text-effect-orange';
+	}
+
+	if (exp > 2000) {
+		return 'text-effect-purple';
+	}
+
+	if (exp > 1000) {
+		return 'text-effect-blue';
+	}
+
+	if (exp > 500) {
+		return 'text-effect-green';
+	}
+
+	return 'text-glow';
+}
