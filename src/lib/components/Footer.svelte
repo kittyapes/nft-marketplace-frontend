@@ -46,10 +46,6 @@
 		<div class="flex flex-col">
 			<div class="text-lg uppercase pb-4">Company</div>
 			<div class="flex flex-col gap-4">
-				<a href={socials.careers} target="_blank" class="flex gap-2 items-center clickable">
-					<div class="ml-4 lg:ml-0">Careers</div>
-					<ArrowLinkGradient />
-				</a>
 				<a href={'terms-and-conditions'} target="_blank" class="flex gap-2 items-center clickable">
 					<div class="ml-4 lg:ml-0">Terms of service</div>
 					<ArrowLinkGradient />
