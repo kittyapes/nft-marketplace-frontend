@@ -258,11 +258,11 @@
 					bind:previewSrc={nftData.assetPreview}
 					acceptedFormats={acceptedVideos}
 				>
-					<div slot="lower_text">
+					<div slot="lower_text" class="text-center">
 						PNG, JPEG, JPG, GIF, WEBP, WEBM, MP4 | <span class="text-gradient">MAX 50MB</span>
 					</div>
 
-					<div slot="placeholder">
+					<div slot="placeholder" class="text-center">
 						Drag and drop an image <br />
 						or
 						<span class="text-gradient">click to browse</span>
@@ -282,7 +282,7 @@
 					acceptedFormats={acceptedImages}
 				>
 					<div slot="lower_text">
-						PNG, JPEG, JPG, GIF, WEBP | <span class="text-gradient">MAX 50MB</span>
+						PNG, JPEG, JPG, GIF, WEBP | <span class="text-gradient">MAX 10MB</span>
 					</div>
 
 					<div slot="placeholder">
