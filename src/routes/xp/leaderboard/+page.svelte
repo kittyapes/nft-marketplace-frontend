@@ -91,7 +91,9 @@
 			<div
 				class="font-semibold text-xl uppercase text-center py-4 grid place-items-center bg-card-gradient"
 			>
-				<p class="text-gradient">{$currentUser.exp ? $currentUser.exp + ' EXP' : '-'}</p>
+				<p class="text-gradient">
+					{$currentUser.exp ? +$currentUser.exp.toFixed(3) + ' EXP' : '-'}
+				</p>
 			</div>
 
 			<!-- Rest of the leaderboard xp 
