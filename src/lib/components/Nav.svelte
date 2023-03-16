@@ -69,7 +69,7 @@
 		</a>
 
 		<!-- Rewards -->
-		<a href="/xp/claim-and-stake" class="nav-button bg-card-gradient">
+		<a href="/exp/claim-and-stake" class="nav-button bg-card-gradient">
 			Rewards
 			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
 		</a>
