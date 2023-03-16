@@ -206,7 +206,7 @@ export const tier_3: CollectionRecord[] = [
 	},
 ];
 
-export function xpPointsToColor(exp: number) {
+export function expPointsToColor(exp: number) {
 	if (exp > 3000) {
 		return 'text-effect-orange';
 	}

@@ -22,7 +22,7 @@
 
 <div class="mt-8">
 	<p class="text-center text font-bold text-lg">
-		Actions you take will reward you with EXP points those XP points will be extremely important at
-		a later date.
+		Actions you take will reward you with EXP points. Those EXP points will be extremely important
+		at a later date.
 	</p>
 </div>

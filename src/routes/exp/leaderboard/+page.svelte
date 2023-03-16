@@ -1,64 +1,30 @@
 <script>
-	import { xpPointsToColor } from '..';
+	import { browser } from '$app/environment';
+	import { currentUserAddress } from '$stores/wallet';
+	import { getExpPoints } from '$utils/api/exp';
+	import { writable } from 'svelte/store';
+	import { expPointsToColor } from '..';
 	import RewardsHeader from '../lib/RewardsHeader.svelte';
 
-	const currentUser = {
+	let currentUser = writable({
 		exp: 0,
-		position: null,
-	};
-
-	const apiBoardData = [
-		{
-			exp: 3690,
-			username: 'Darlene Robertson',
-			address: null,
-		},
-		{
-			exp: 2400,
-			username: 'ScadjJSm',
-			address: null,
-		},
-		{
-			exp: 2120,
-			username: 'toe',
-			address: null,
-		},
-		{
-			exp: 1000,
-			username: 'Darlene Robertson',
-			address: null,
-		},
-		{
-			exp: 750,
-			username: 'ScadjJSm',
-			address: null,
-		},
-		{
-			exp: 500,
-			username: 'toe',
-			address: null,
-		},
-		{
-			exp: 250,
-			username: 'ScadjJSm',
-			address: null,
-		},
-		{
-			exp: 76,
-			username: 'toe',
-			address: null,
-		},
-		{
-			exp: 23,
-			username: 'ScadjJSm',
-			address: null,
-		},
-	];
-
-	$: users = apiBoardData.map((u) => {
-		u.class = xpPointsToColor(u.exp);
-		return u;
+		userAddress: '',
 	});
+
+	async function fetchUserExp() {
+		const res = await getExpPoints();
+		$currentUser = res.data.data;
+		console.log($currentUser);
+	}
+
+	$: if (browser && $currentUserAddress) {
+		fetchUserExp();
+	}
+
+	// $: users = apiBoardData.map((u) => {
+	// 	u.class = expPointsToColor(u.exp);
+	// 	return u;
+	// });
 </script>
 
 <main class="text-white">
@@ -76,44 +42,47 @@
 
 			<!-- Current user -->
 			<div class="font-semibold text-xl uppercase text-center py-4 bg-card-gradient">
-				<p class="text-gradient min-w-full text-center">{currentUser.position || 'Unranked'}</p>
+				<p class="text-gradient min-w-full text-center whitespace-nowrap">Coming soon</p>
 			</div>
 
-			<!-- Rest of the leaderboard positions -->
+			<!-- Rest of the leaderboard positions 
 			{#each users as _, i}
 				<div class="font-semibold text-xl py-4 grid place-items-center column-item">
 					<p class="">{i + 1}</p>
 				</div>
-			{/each}
+			{/each} -->
 		</div>
 
 		<!-- Second Column - usernames -->
 		<div class="flex-col gradient-border !border !border-x-0 column-wrap">
 			<!-- Header -->
 			<div
-				class="font-semibold text-xl uppercase px-8 py-4 gradient-border !border-x-0 !border-t-0 !border-b"
+				class="font-semibold text-xl uppercase px-8 py-4 gradient-border !border-x-0 !border-t-0 !border-b whitespace-nowrap"
 			>
 				User Name
 			</div>
 
 			<!-- Current user -->
-			<div class="font-semibold text-xl uppercase px-8 py-4 bg-card-gradient">
+			<a
+				href="/profile/{$currentUser.userAddress}"
+				class="font-semibold text-xl uppercase px-8 py-4 bg-card-gradient block"
+			>
 				<p class="text-gradient">You</p>
-			</div>
+			</a>
 
-			<!-- Rest of the leaderboard usernames -->
+			<!-- Rest of the leaderboard usernames 
 			{#each users as user}
 				<div class="font-semibold text-xl px-8 py-4 column-item">
 					<p class="">{user.username}</p>
 				</div>
-			{/each}
+			{/each} -->
 		</div>
 
 		<!-- Third column - XP -->
 		<div class="flex-col gradient-border !border column-wrap">
 			<!-- Header -->
 			<div
-				class="font-semibold text-xl uppercase text-center py-4 gradient-border !border-x-0 !border-t-0 !border-b"
+				class="font-semibold text-xl uppercase text-center py-4 gradient-border !border-x-0 !border-t-0 !border-b whitespace-nowrap"
 			>
 				Total Exp
 			</div>
@@ -122,17 +91,19 @@
 			<div
 				class="font-semibold text-xl uppercase text-center py-4 grid place-items-center bg-card-gradient"
 			>
-				<p class="text-gradient">{currentUser.exp || '-'}</p>
+				<p class="text-gradient">
+					{$currentUser.exp ? +$currentUser.exp.toFixed(3) + ' EXP' : '-'}
+				</p>
 			</div>
 
-			<!-- Rest of the leaderboard xp -->
+			<!-- Rest of the leaderboard xp 
 			{#each users as user}
 				<div
 					class="font-semibold text-xl text-center py-4 grid place-items-center column-item {user.class}"
 				>
 					<p class="">{user.exp}</p>
 				</div>
-			{/each}
+			{/each} -->
 		</div>
 	</div>
 </main>
