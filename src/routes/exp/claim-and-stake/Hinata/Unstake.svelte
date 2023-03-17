@@ -14,9 +14,7 @@
 
 	export let maxUnstakeAmount = '0';
 	export let unstakeId = 1;
-	export let selectedUnstakeAmount: number = null;
-
-	$: stringUnstakeAmount = selectedUnstakeAmount?.toString() || '0';
+	export let selectedUnstakeAmount: string = null;
 
 	$: highlightUnstakeItems = false;
 	$: userClickedOnInput = false;
@@ -24,13 +22,13 @@
 	function validateUnstakeAmount(amount: string) {
 		userClickedOnInput = false;
 		return (
-			parseEther(stringUnstakeAmount || '0').eq(parseEther('0')) ||
+			parseEther(selectedUnstakeAmount || '0').eq(parseEther('0')) ||
 			parseEther(amount).lte(parseEther(maxUnstakeAmount))
 		);
 	}
 
 	async function triggerUnstakeTokens() {
-		await withdrawUnlockedTokensByStakeId(unstakeId, stringUnstakeAmount);
+		await withdrawUnlockedTokensByStakeId(unstakeId, selectedUnstakeAmount);
 		dispatch('reload-stake-data');
 	}
 
@@ -54,7 +52,7 @@
 		userClickedOnInput = false;
 	}
 
-	$: isUnstakeAmountValid = validateUnstakeAmount(stringUnstakeAmount);
+	$: isUnstakeAmountValid = validateUnstakeAmount(selectedUnstakeAmount);
 </script>
 
 <!-- Unstake amount input field -->
@@ -63,12 +61,12 @@
 		<!-- Unstake amount input -->
 		<div
 			class="border-2 border-white relative h-12"
-			class:border-red-400={!isUnstakeAmountValid && stringUnstakeAmount}
+			class:border-red-400={!isUnstakeAmountValid && selectedUnstakeAmount}
 		>
 			<input
 				bind:value={selectedUnstakeAmount}
 				use:regexFilter={{ regex: ethAmountRegex }}
-				type="number"
+				inputmode="numeric"
 				placeholder="Enter Amount"
 				class="bg-transparent w-full h-full p-4 outline-none"
 				on:click={highlightUnstake}
@@ -77,7 +75,7 @@
 			<div class="absolute right-0 top-0 bottom-0 grid place-items-center">
 				<PrimaryButton
 					extButtonClass="h-[60%] w-14 mr-2"
-					on:click={() => (selectedUnstakeAmount = parseFloat(maxUnstakeAmount))}
+					on:click={() => (selectedUnstakeAmount = maxUnstakeAmount)}
 					disabled={parseEther(maxUnstakeAmount || '0').eq(parseEther('0'))}
 				>
 					MAX
@@ -88,8 +86,8 @@
 
 	<div>
 		<PrimaryButton
-			disabled={ethers.utils.parseEther(stringUnstakeAmount || '0').eq(parseEther('0')) ||
-				selectedUnstakeAmount > +maxUnstakeAmount}
+			disabled={ethers.utils.parseEther(selectedUnstakeAmount || '0').eq(parseEther('0')) ||
+				+selectedUnstakeAmount > +maxUnstakeAmount}
 			on:click={triggerUnstakeTokens}
 		>
 			Unstake
