@@ -15,7 +15,11 @@
 	import Filters from '$icons/filters-v2.svelte';
 	import EntryRole from '$lib/components/management/render-components/EntryRole.svelte';
 	import { debounce } from 'lodash-es';
-	import { apiSearchCollections, type Collection, type CollectionSearchOptions } from '$utils/api/collection';
+	import {
+		apiSearchCollections,
+		type Collection,
+		type CollectionSearchOptions,
+	} from '$utils/api/collection';
 	import CollectionName from '$lib/components/management/render-components/CollectionName.svelte';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { whitelistCollection } from '$utils/api/management/whitelistCollection';
@@ -88,10 +92,13 @@
 			validating = true;
 			const validation_result = await isCollectionAddress(address);
 
-			console.log(validation_result);
-
-			$formValidity.isContract = validation_result.isContract ? true : 'Invalid Contract Address Detected';
-			$formValidity.isErc1155OrErc721 = validation_result.isErc1155 || validation_result.isErc721 ? true : 'Please Add a Contract That Supports ERC721 or ERC1155 NFTs';
+			$formValidity.isContract = validation_result.isContract
+				? true
+				: 'Invalid Contract Address Detected';
+			$formValidity.isErc1155OrErc721 =
+				validation_result.isErc1155 || validation_result.isErc721
+					? true
+					: 'Please Add a Contract That Supports ERC721 or ERC1155 NFTs';
 			validating = false;
 		} else {
 			$formValidity.isContract = true;
@@ -127,7 +134,13 @@
 			isClaimed: boolean;
 		}>;
 		sort: Partial<{
-			sortBy: 'ALPHABETICAL' | 'CREATED_AT' | 'ONE_DAY_VOLUME' | 'SEVEN_DAYS_VOLUME' | 'THIRTY_DAYS_VOLUME' | 'TOTAL_VOLUME';
+			sortBy:
+				| 'ALPHABETICAL'
+				| 'CREATED_AT'
+				| 'ONE_DAY_VOLUME'
+				| 'SEVEN_DAYS_VOLUME'
+				| 'THIRTY_DAYS_VOLUME'
+				| 'TOTAL_VOLUME';
 			sortReversed: boolean;
 		}>;
 		name: string;
@@ -211,7 +224,9 @@
 	const handleFilter = async (event: CustomEvent) => {
 		if (tab === 'USER') {
 			userFetchingOptions.filter = {
-				createdAfter: event.detail.createdAfter ? event.detail.createdAfter * 1000 : userFetchingOptions.filter.createdAfter,
+				createdAfter: event.detail.createdAfter
+					? event.detail.createdAfter * 1000
+					: userFetchingOptions.filter.createdAfter,
 				role: event.detail.role ? event.detail.role : userFetchingOptions.filter.role,
 			};
 
@@ -226,7 +241,10 @@
 		} else {
 			collectionFetchingOptions.filter = {
 				status: event.detail.status ? event.detail.status : collectionFetchingOptions.filter.status,
-				isClaimed: typeof event.detail.value === 'boolean' ? event.detail.value : collectionFetchingOptions.filter.isClaimed,
+				isClaimed:
+					typeof event.detail.value === 'boolean'
+						? event.detail.value
+						: collectionFetchingOptions.filter.isClaimed,
 			};
 
 			if (event.detail.value === 'all') collectionFetchingOptions.filter.isClaimed = undefined;
@@ -256,7 +274,9 @@
 			return str;
 		});
 
-		await whitelistCollection($whitelistingCollectionAddress, $whitelistingCollectionSlug).catch((e) => console.log(e));
+		await whitelistCollection($whitelistingCollectionAddress, $whitelistingCollectionSlug).catch(
+			(e) => console.log(e),
+		);
 
 		whitelisting = false;
 	};
@@ -308,7 +328,12 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETICAL', active: false },
 				renderComponent: CollectionName,
-				renderComponentProps: collections.map((c) => ({ name: c.name || '', imageUrl: c.logoImageUrl, slug: c.slug, badge: c.mintedFrom === 'Hinata' })),
+				renderComponentProps: collections.map((c) => ({
+					name: c.name || '',
+					imageUrl: c.logoImageUrl,
+					slug: c.slug,
+					badge: c.mintedFrom === 'Hinata',
+				})),
 			},
 			{
 				gridSize: '2fr',
@@ -331,7 +356,12 @@
 					arrowGradient: getGradientColors(c.status),
 					options: [
 						{ label: 'Listed', checked: c.status === 'ACTIVE', value: 'ACTIVE', disabled: false },
-						{ label: 'Inactive', checked: c.status === 'INACTIVE', value: 'INACTIVE', disabled: false },
+						{
+							label: 'Inactive',
+							checked: c.status === 'INACTIVE',
+							value: 'INACTIVE',
+							disabled: false,
+						},
 					],
 				})),
 			},
@@ -408,7 +438,13 @@
 	// USER section
 
 	let getUsersFetchingOptions = () => {
-		return { ...userFetchingOptions.filter, query: userFetchingOptions.query, ...userFetchingOptions.sort, limit: usersPerPage, page: userPage };
+		return {
+			...userFetchingOptions.filter,
+			query: userFetchingOptions.query,
+			...userFetchingOptions.sort,
+			limit: usersPerPage,
+			page: userPage,
+		};
 	};
 
 	const debouncedSearch = debounce(async () => {
@@ -422,7 +458,14 @@
 		totalUserEntries = res.totalCount;
 	};
 
-	$: if (browser && tab && (userFetchingOptions.query || userFetchingOptions.query?.length === 0 || collectionFetchingOptions.name || collectionFetchingOptions.name?.length === 0)) {
+	$: if (
+		browser &&
+		tab &&
+		(userFetchingOptions.query ||
+			userFetchingOptions.query?.length === 0 ||
+			collectionFetchingOptions.name ||
+			collectionFetchingOptions.name?.length === 0)
+	) {
 		debouncedSearch();
 	}
 
@@ -433,7 +476,11 @@
 				titleRenderComponent: TableTitle,
 				titleRenderComponentProps: { title: 'Name', sortBy: 'ALPHABETICAL', active: false },
 				renderComponent: EntryName,
-				renderComponentProps: users?.map((u) => ({ name: u.username || '', imageUrl: u.thumbnailUrl, address: u.address })),
+				renderComponentProps: users?.map((u) => ({
+					name: u.username || '',
+					imageUrl: u.thumbnailUrl,
+					address: u.address,
+				})),
 			},
 			{
 				gridSize: '3fr',
@@ -455,9 +502,27 @@
 					color: getRoleColor(getHighestRole(u.roles)),
 					arrowGradient: getGradientColors(getHighestRole(u.roles)),
 					options: [
-						{ label: 'admin', checked: u.roles?.includes('admin'), cb: (e) => e.roles?.includes('admin'), value: 'admin', disabled: false },
-						{ label: 'verified', checked: u.roles?.includes('verified_user'), cb: (e) => e.roles?.includes('verified_user'), value: 'verified_user', disabled: false },
-						{ label: 'inactive', checked: u.roles?.includes('inactivated_user'), cb: (e) => e.roles?.includes('inactivated_user'), value: 'inactivated_user', disabled: false },
+						{
+							label: 'admin',
+							checked: u.roles?.includes('admin'),
+							cb: (e) => e.roles?.includes('admin'),
+							value: 'admin',
+							disabled: false,
+						},
+						{
+							label: 'verified',
+							checked: u.roles?.includes('verified_user'),
+							cb: (e) => e.roles?.includes('verified_user'),
+							value: 'verified_user',
+							disabled: false,
+						},
+						{
+							label: 'inactive',
+							checked: u.roles?.includes('inactivated_user'),
+							cb: (e) => e.roles?.includes('inactivated_user'),
+							value: 'inactivated_user',
+							disabled: false,
+						},
 					],
 				})),
 			},
@@ -495,10 +560,26 @@
 
 <div class="flex flex-col w-full h-full max-w-screen-2xl mx-auto pt-24 p-8">
 	<div class="flex gap-x-14 gap-y-4 flex-wrap relative max-w-max z-[1]">
-		<div class="tab btn" class:selected-tab={tab === 'USER'} on:click={() => (tab = 'USER')}>User Management</div>
-		<div class="tab btn" class:selected-tab={tab === 'COLLECTION'} on:click={() => (tab = 'COLLECTION')}>Collection Management</div>
-		<div class="tab btn" class:selected-tab={tab === 'NOTIFICATIONS'} on:click={() => (tab = 'NOTIFICATIONS')}>Notifications</div>
-		<div class="tab btn" class:selected-tab={tab === 'TOS'} on:click={() => (tab = 'TOS')}>Terms of service</div>
+		<div class="tab btn" class:selected-tab={tab === 'USER'} on:click={() => (tab = 'USER')}>
+			User Management
+		</div>
+		<div
+			class="tab btn"
+			class:selected-tab={tab === 'COLLECTION'}
+			on:click={() => (tab = 'COLLECTION')}
+		>
+			Collection Management
+		</div>
+		<div
+			class="tab btn"
+			class:selected-tab={tab === 'NOTIFICATIONS'}
+			on:click={() => (tab = 'NOTIFICATIONS')}
+		>
+			Notifications
+		</div>
+		<div class="tab btn" class:selected-tab={tab === 'TOS'} on:click={() => (tab = 'TOS')}>
+			Terms of service
+		</div>
 
 		<!-- Line under tabs -->
 		<div class="absolute h-[2px] left-0 right-0 bg-white bg-opacity-10 -bottom-2 " />
@@ -514,7 +595,12 @@
 						<Filter on:filter={handleFilter} options={roleFilterOptions} icon={UserManage} />
 					</div>
 					<div class="">
-						<Filter on:filter={handleFilter} options={userFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', createdAfter: 'all' }} />
+						<Filter
+							on:filter={handleFilter}
+							options={userFilterOptions}
+							icon={Filters}
+							defaultOption={{ label: 'Filter', createdAfter: 'all' }}
+						/>
 					</div>
 				</div>
 			{:else}
@@ -525,7 +611,12 @@
 						<Filter on:filter={handleFilter} options={statusFilterOptions} icon={UserManage} />
 					</div>
 					<div class="">
-						<Filter on:filter={handleFilter} options={collectionFilterOptions} icon={Filters} defaultOption={{ label: 'Filter', value: 'ALL' }} />
+						<Filter
+							on:filter={handleFilter}
+							options={collectionFilterOptions}
+							icon={Filters}
+							defaultOption={{ label: 'Filter', value: 'ALL' }}
+						/>
 					</div>
 				</div>
 			{/if}
@@ -539,7 +630,10 @@
 					on:event={handleTableEvent}
 					tableData={userTableData}
 					rows={users.length}
-					tableFooterElement={{ element: PaginationFooter, props: { pages: Math.ceil(totalUserEntries / fetchLimit) } }}
+					tableFooterElement={{
+						element: PaginationFooter,
+						props: { pages: Math.ceil(totalUserEntries / fetchLimit), items: totalUserEntries },
+					}}
 				/>
 			</LoadedContent>
 		{:else if tab === 'COLLECTION'}
@@ -550,7 +644,11 @@
 					rows={collections.length}
 					tableFooterElement={{
 						element: PaginationFooter,
-						props: { pages: Math.ceil(totalCollectionEntries / fetchLimit) },
+						props: {
+							pages: Math.ceil(100 / fetchLimit),
+							// 🔥🛠 for BE not returning total collections
+							items: 100,
+						},
 					}}
 				/>
 			</LoadedContent>
@@ -574,16 +672,32 @@
 				<div class="flex flex-col gap-5 text-white">
 					<div class="font-semibold">Opensea collection URL part</div>
 					<div class="flex gap-10">
-						<input type="text" class="input max-w-xl w-[36rem] py-4" placeholder="Please input opensea route, e.g. azuki" bind:value={$whitelistingCollectionSlug} />
+						<input
+							type="text"
+							class="input max-w-xl w-[36rem] py-4"
+							placeholder="Please input opensea route, e.g. azuki"
+							bind:value={$whitelistingCollectionSlug}
+						/>
 					</div>
 				</div>
 				<div class="flex flex-col gap-5">
 					<div class="font-medium text-white">Add address to Whitelisted Collections</div>
 					<div class="flex justify-between">
-						<input type="text" class="input text-white max-w-xl w-[36rem]" placeholder="Please input contract address" bind:value={$whitelistingCollectionAddress} />
+						<input
+							type="text"
+							class="input text-white max-w-xl w-[36rem]"
+							placeholder="Please input contract address"
+							bind:value={$whitelistingCollectionAddress}
+						/>
 
 						<div class="p-[2px]">
-							<PrimaryButton extButtonClass="w-80" disabled={!$whitelistingCollectionAddress || validating || !formValid} on:click={handleVerify}>Add</PrimaryButton>
+							<PrimaryButton
+								extButtonClass="w-80"
+								disabled={!$whitelistingCollectionAddress || validating || !formValid}
+								on:click={handleVerify}
+							>
+								Add
+							</PrimaryButton>
 						</div>
 					</div>
 				</div>
