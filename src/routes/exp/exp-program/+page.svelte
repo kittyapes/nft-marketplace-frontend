@@ -45,7 +45,7 @@
 
 		<div class="pl-2 md:pl-8 lg:pl-20 py-4 table-border border-b-2">
 			<div>
-				Tier 1 <span class="text-effect-green ml-1">( 10 EXP )</span>
+				Tier 3 <span class="text-effect-green ml-1">( 10 EXP )</span>
 			</div>
 		</div>
 
