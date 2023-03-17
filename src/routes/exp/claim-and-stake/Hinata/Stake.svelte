@@ -78,9 +78,9 @@
 
 	<div>
 		<PrimaryButton
-			disabled={(false &&
-				ethers.utils.parseEther(selectedStakeAmount || '0').eq(ethers.utils.parseEther('0'))) ||
-				+selectedStakeAmount > +$walletHinataBalance}
+			disabled={ethers.utils
+				.parseEther(selectedStakeAmount || '0')
+				.eq(ethers.utils.parseEther('0')) || +selectedStakeAmount > +$walletHinataBalance}
 			on:click={triggerStakeTokens}
 		>
 			Stake
