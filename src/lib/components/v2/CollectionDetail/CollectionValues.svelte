@@ -4,35 +4,56 @@
 
 	export let collectionData: Collection;
 
-	const collectionStats = {
+	$: dailyVol = +(collectionData?.stats.external24Vol + collectionData?.stats.local24Vol).toFixed(
+		2,
+	);
+	$: prevDailyVol = +(
+		collectionData?.stats.previousExternal24Vol + collectionData?.stats.previousLocal24Vol
+	).toFixed(2);
+
+	$: parsedStats = {
+		totalVol: +(
+			collectionData?.stats.externalTotalVol + collectionData?.stats.localTotalVol
+		).toFixed(2),
+		floorPrice: +collectionData?.stats.localFloorPrice.toFixed(2),
+		vol24Hr: dailyVol,
+		percent24Hr:
+			prevDailyVol === 0 && dailyVol === 0
+				? 0
+				: prevDailyVol === 0
+				? 100
+				: +(dailyVol / prevDailyVol).toFixed(4) * 100 || 0,
+	};
+
+	$: collectionStats = {
 		highestSale: {
 			stat: 'Highest Sale',
-			value: 0,
+			value: collectionData?.stats.localHighestSale,
 			symbol: 'WETH',
 		},
 		floorPrice: {
 			stat: 'Floor Price',
-			value: 0,
+			value: collectionData?.stats.localFloorPrice,
 			symbol: 'WETH',
 		},
 		totalVol: {
 			stat: 'Total Volume',
-			value: 0,
+			value: parsedStats.totalVol,
 			symbol: 'WETH',
 		},
 		items: {
 			stat: 'Items',
-			value: 0,
+			value: collectionData?.stats.numOfItems,
 			symbol: '',
 		},
 		owners: {
 			stat: 'Owners',
-			value: 0,
+			value: collectionData?.stats.numOfOwners,
 			symbol: '',
 		},
 		total24hours: {
 			stat: '24Hr Volume',
-			value: 0,
+			value: dailyVol,
 			symbol: 'WETH',
 		},
 	};
@@ -49,7 +70,9 @@
 
 <div class="flex flex-row items-center text-base leading-6 stat-wrapper">
 	{#each Object.keys(collectionStats) as statKey}
-		<div class="hover:bg-main-gradient flex flex-col items-center justify-center border-gradient border-r-0 w-24 h-16">
+		<div
+			class="hover:bg-main-gradient hover:cursor-pointer flex flex-col items-center justify-center border-gradient border-r-0 w-24 h-16"
+		>
 			<p class="text-sm leading-6">{collectionStats[statKey].stat}</p>
 			<h2 class="flex items-center gap-x-2">
 				{#if collectionStats[statKey].symbol}
