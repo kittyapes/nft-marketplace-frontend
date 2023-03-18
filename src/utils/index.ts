@@ -42,10 +42,17 @@ export function handleAxiosNetworkError(err: Error) {
 	}
 }
 
+/**
+ * @param nftName
+ * @param collectionName
+ * @returns `"<collectionName>: <nftName>"` if `nftName` is a sequence of digits or a sequence of digits starting with a #,
+ * otherwise returns `nftName`.
+ */
 export function handleGenerativeName(nftName: string, collectionName: string) {
-	const re = /^#\d+$/;
+	const reHash = /^#\d+$/;
+	const reNumber = /^\d+$/;
 
-	if (nftName.match(re)) {
+	if (nftName.match(reHash) || nftName.match(reNumber)) {
 		return collectionName + ': ' + nftName;
 	}
 
