@@ -11,14 +11,12 @@
 	import { ethAmountRegex, regexFilter } from '$actions/regexFilter';
 
 	let selectedStakeDuration = stakeDurations[0];
-	let selectedStakeAmount: number = null;
-
-	$: stringStakeAmount = selectedStakeAmount?.toString() || '';
+	let selectedStakeAmount: string = null;
 
 	const dispatch = createEventDispatcher();
 
 	async function triggerStakeTokens() {
-		await stakeTokens(stringStakeAmount, selectedStakeDuration.value);
+		await stakeTokens(selectedStakeAmount, selectedStakeDuration.value);
 		dispatch('reload-stake-data');
 	}
 
@@ -34,7 +32,7 @@
 		);
 	}
 
-	$: isBalanceSufficient = validateStakeAmount(stringStakeAmount);
+	$: isBalanceSufficient = validateStakeAmount(selectedStakeAmount);
 
 	function triggerUnstakeUI(event: { detail: { stakeId: number; amount: string } }) {
 		dispatch('unstake-tokens', event.detail);
@@ -57,12 +55,12 @@
 		<!-- Stake amount input -->
 		<div
 			class="border-2 border-white relative h-12"
-			class:border-red-400={!isBalanceSufficient && stringStakeAmount}
+			class:border-red-400={!isBalanceSufficient && selectedStakeAmount}
 		>
 			<input
 				bind:value={selectedStakeAmount}
 				use:regexFilter={{ regex: ethAmountRegex }}
-				type="number"
+				inputmode="numeric"
 				placeholder="Enter Amount"
 				class="bg-transparent w-full h-full p-4 outline-none"
 			/>
@@ -70,7 +68,7 @@
 			<div class="absolute right-0 top-0 bottom-0 grid place-items-center">
 				<PrimaryButton
 					extButtonClass="h-[60%] w-14 mr-2"
-					on:click={() => (stringStakeAmount = $walletHinataBalance)}
+					on:click={() => (selectedStakeAmount = $walletHinataBalance)}
 				>
 					MAX
 				</PrimaryButton>
@@ -81,8 +79,8 @@
 	<div>
 		<PrimaryButton
 			disabled={ethers.utils
-				.parseEther(stringStakeAmount || '0')
-				.eq(ethers.utils.parseEther('0')) || parseFloat(stringStakeAmount) > +$walletHinataBalance}
+				.parseEther(selectedStakeAmount || '0')
+				.eq(ethers.utils.parseEther('0')) || +selectedStakeAmount > +$walletHinataBalance}
 			on:click={triggerStakeTokens}
 		>
 			Stake
