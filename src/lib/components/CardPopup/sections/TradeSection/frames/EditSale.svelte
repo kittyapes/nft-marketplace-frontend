@@ -7,7 +7,7 @@
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import InfoBubble from '$lib/components/v2/InfoBubble/InfoBubble.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { contractUpdateListing } from '$utils/contracts/listing';
+	import { contractUpdateListing, getMarketFee } from '$utils/contracts/listing';
 	import { dateToTimestamp } from '$utils/listings';
 	import { isListingExpired } from '$utils/misc';
 	import { formatToken } from '$utils/misc/priceUtils';
@@ -23,6 +23,7 @@
 	import 'simplebar';
 	import 'simplebar/dist/simplebar.css';
 	import ManageSale from './ManageSale.svelte';
+	import { browser } from '$app/environment';
 
 	const dispatch = createEventDispatcher();
 
@@ -120,9 +121,16 @@
 			</div>
 		</div>
 
-		<div class="text-gradient">Hinata Fees:</div>
+		<div>Hinata Fees:</div>
 		<div class="flex items-center justify-end space-x-3">
-			<div class="text-gradient">0%</div>
+			<div>
+				{#if browser}
+					{#await getMarketFee() then marketFee}
+						{marketFee ?? 'N/A'} %
+					{/await}
+				{/if}
+			</div>
+
 			<div class="w-5">
 				<Info />
 			</div>
