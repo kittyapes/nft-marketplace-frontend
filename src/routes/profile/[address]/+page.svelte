@@ -55,11 +55,11 @@
 	let isFollowing = false;
 
 	$: if (browser && address && $currentUserAddress && address !== $currentUserAddress) {
-		browser && fetchFollowing();
+		fetchFollowing();
 	}
 
 	const fetchFollowing = async () => {
-		isFollowing = await fetchIsFollowing(address, $currentUserAddress);
+		isFollowing = await fetchIsFollowing(address);
 	};
 
 	onMount(async () => {
