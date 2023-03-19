@@ -37,9 +37,13 @@ export type PublishNotificationRes = {
 	data: PublishNotificationResObject;
 };
 
-export async function publishNotification(options: PublishNotificationOptions): Promise<ApiCallResult<PublishNotificationRes>> {
+export async function publishNotification(
+	options: PublishNotificationOptions,
+): Promise<ApiCallResult<PublishNotificationRes>> {
 	options.publishAt = dayjs(options.publishAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS');
-	options.expireAt = options.expireAt ? dayjs(options.expireAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') : undefined;
+	options.expireAt = options.expireAt
+		? dayjs(options.expireAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS')
+		: undefined;
 
 	const res = await api.post(getApiUrl(null, '/notifications'), options, await getAxiosConfig());
 
@@ -65,7 +69,9 @@ export type GetNotificationsRes = {
 	data: UserNotification[];
 };
 
-export async function getNotifications(isUserAuthenticated = true): Promise<ApiCallResult<GetNotificationsRes>> {
+export async function getNotifications(
+	isUserAuthenticated = true,
+): Promise<ApiCallResult<GetNotificationsRes>> {
 	let res;
 
 	if (isUserAuthenticated) {
@@ -95,14 +101,22 @@ export type UpdateNotificationAsUserRes = {
 	data: null;
 };
 
-export async function updateNotificationAsUser(options: UpdateNotificationAsUserOptions): Promise<ApiCallResult<UpdateNotificationAsUserRes>> {
+export async function updateNotificationAsUser(
+	options: UpdateNotificationAsUserOptions,
+): Promise<ApiCallResult<UpdateNotificationAsUserRes>> {
 	const params: UpdateNotificationAsUserReqParams = {
 		// conditionally adding properties to params object
 		...(options.hasCleared ? { hasCleared: options.hasCleared } : {}),
-		...(options.readAt ? { readAt: dayjs(options.readAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
+		...(options.readAt
+			? { readAt: dayjs(options.readAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') }
+			: {}),
 	};
 
-	const res = await api.put(getApiUrl(null, '/notifications/user/' + options.id), params, await getAxiosConfig());
+	const res = await api.put(
+		getApiUrl(null, '/notifications/user/' + options.id),
+		params,
+		await getAxiosConfig(),
+	);
 
 	return res;
 }
@@ -133,17 +147,27 @@ export type UpdateNotificationAsAdminRes = {
 	data: null;
 };
 
-export async function updateNotificationAsAdmin(options: UpdateNotificationAsAdminOptions): Promise<ApiCallResult<UpdateNotificationAsAdminRes>> {
+export async function updateNotificationAsAdmin(
+	options: UpdateNotificationAsAdminOptions,
+): Promise<ApiCallResult<UpdateNotificationAsAdminRes>> {
 	const params: UpdateNotificationAsAdminReqParams = {
 		content: options.content || undefined,
 		title: options.title || undefined,
 		location: options.location || undefined,
 		targets: options.targets || undefined,
-		...(options.publishAt ? { publishAt: dayjs(options.publishAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
-		...(options.expireAt ? { expireAt: dayjs(options.expireAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') } : {}),
+		...(options.publishAt
+			? { publishAt: dayjs(options.publishAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') }
+			: {}),
+		...(options.expireAt
+			? { expireAt: dayjs(options.expireAt).utc().format('YYYY-MM-DDTHH:mm:ss.SSS') }
+			: {}),
 	};
 
-	const res = await api.put(getApiUrl(null, '/notifications/' + options.id), params, await getAxiosConfig());
+	const res = await api.put(
+		getApiUrl(null, '/notifications/' + options.id),
+		params,
+		await getAxiosConfig(),
+	);
 
 	return res;
 }
@@ -158,7 +182,9 @@ export type DeleteNotificationRes = {
 	};
 };
 
-export async function deleteNotification(id: string): Promise<ApiCallResult<DeleteNotificationRes>> {
+export async function deleteNotification(
+	id: string,
+): Promise<ApiCallResult<DeleteNotificationRes>> {
 	const res = await api.delete(getApiUrl(null, '/notifications/' + id), await getAxiosConfig());
 
 	return res;
