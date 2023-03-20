@@ -29,6 +29,7 @@
 		{
 			title: 'Recently created',
 			id: 'RECENTLY_CREATED',
+			disabled: true,
 		},
 		{
 			title: 'Recently listed',
