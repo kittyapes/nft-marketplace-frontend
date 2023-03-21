@@ -82,7 +82,7 @@
 		<div class="text-lg uppercase font-semibold text-center">
 			<div>Verified Creator Mints</div>
 			<div class="text-sm font-semibold opacity-0 select-none">Consistent padding :)</div>
-			<div class="text-effect-orange lg:mt-6">500 EXP</div>
+			<div class="text-effect-blue lg:mt-6">100 EXP</div>
 		</div>
 
 		<div class="flex flex-col items-center">
@@ -90,12 +90,12 @@
 			<div class="text-sm font-semibold">(For NFT's created on Hinata)</div>
 
 			<div class="font-semibold text-xl flex items-center justify-center mt-4 lg:mt-6">
-				every .005
+				every .001
 				<div class="mx-2">
 					<EthV2 />
 				</div>
 				traded =
-				<span class="text-effect-orange ml-2">1 EXP point</span>
+				<span class="text-effect-orange ml-2">1 EXP</span>
 			</div>
 		</div>
 
@@ -103,7 +103,7 @@
 			<div class="uppercase text-lg font-semibold">Verified Creator Listing</div>
 			<div class="text-sm font-semibold">(For NFT's created on Hinata)</div>
 
-			<div class="text-effect-blue mt-4 lg:mt-6">50 EXP</div>
+			<div class="text-effect-blue font-semibold text-lg mt-4 lg:mt-6">50 EXP</div>
 		</div>
 	</div>
 </main>
