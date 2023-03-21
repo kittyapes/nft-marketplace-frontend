@@ -6,6 +6,12 @@ export interface CollectionRecord {
 
 export const tier_1: CollectionRecord[] = [
 	{
+		label: 'The WAIFU Genesis Card Collection',
+		imageUrl:
+			'https://i.seadn.io/gae/15Lwa3F6MMc4eEiZ6irD2Pp1PCxwLt4PlqgIYoRqFq44lvrAK--NhaI-5EQUUjwm19LzrAhxMLDLRwsU93QdYhzAuA?w=500&auto=format',
+		slug: 'waifugenesis',
+	},
+	{
 		label: 'Azuki',
 		imageUrl:
 			'https://i.seadn.io/gae/H8jOCJuQokNqGBpkBN5wk1oZwO7LM8bNnrHCaekV2nKjnCqw6UB5oaH8XyNeBDj6bA_n1mjejzhFQUP3O1NfjFLHr3FOaeHcTOOT?w=500&auto=format',
@@ -171,12 +177,6 @@ export const tier_3: CollectionRecord[] = [
 		imageUrl:
 			'https://i.seadn.io/gae/iLOyoP7XSIO6rAa3lfm9NkA0j0DbM0hQ_-dkhOIRMAYXAgYLYjOM57dtBHGI-UKQi_MjYIO5dHSLFSFEt7VOOmNlrCdW62N55zAJ4w?w=500&auto=format',
 		slug: 'wrapped-waifus',
-	},
-	{
-		label: 'The WAIFU Genesis Card Collection',
-		imageUrl:
-			'https://i.seadn.io/gae/15Lwa3F6MMc4eEiZ6irD2Pp1PCxwLt4PlqgIYoRqFq44lvrAK--NhaI-5EQUUjwm19LzrAhxMLDLRwsU93QdYhzAuA?w=500&auto=format',
-		slug: 'waifugenesis',
 	},
 	{
 		label: 'META KAWAII',
