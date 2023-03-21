@@ -17,7 +17,8 @@
 	let balance = null;
 	let supply = null;
 
-	$: ownedOrListedNfts = options.resourceType === 'listing' ? options.rawListingData.nfts[0].amount : balance;
+	$: ownedOrListedNfts =
+		options.resourceType === 'listing' ? options.rawListingData.nfts[0].amount : balance;
 
 	// The Hinata General collection should always have a 1.5 % royalties,
 	// you know we cannot rely on the backend :)
@@ -35,10 +36,13 @@
 		{ name: 'Token Standard', value: singleNft.contractType },
 		{
 			name: 'Fees and Royalties',
-			value: marketFee ?? 'N/A' + ' % Fee | ' + royaltyPercentage,
+			value: (marketFee ?? 'N/A') + ' % Fee | ' + royaltyPercentage,
 		},
 		{ name: 'Token ID', value: singleNft.onChainId },
-		{ name: 'Blockchain', value: options.listingData?.paymentTokenTicker || options.rawResourceData.chain },
+		{
+			name: 'Blockchain',
+			value: options.listingData?.paymentTokenTicker || options.rawResourceData.chain,
+		},
 		{
 			name: options.resourceType === 'listing' ? 'NFTs in Listing' : 'You Own',
 			value: balance !== null ? `${ownedOrListedNfts} of ${supply}` : null,
@@ -53,7 +57,8 @@
 		const res = await getUserNftBalance(singleNft.contractAddress, singleNft.onChainId);
 
 		supply = res.supply;
-		balance = options.resourceType === 'listing' ? options.rawListingData.nfts[0].amount ?? 0 : res.balance;
+		balance =
+			options.resourceType === 'listing' ? options.rawListingData.nfts[0].amount ?? 0 : res.balance;
 	});
 
 	function parseAttributes(attributes) {
@@ -110,7 +115,9 @@
 			{#each parseAttributes(singleNft.metadata.attributes) as attr}
 				<div>
 					<div class="text-lg">{attr.trait_type}</div>
-					<div class="py-2 mt-2 text-center text-white uppercase bg-black attr-block-bg">{attr.value || 'N/A'}</div>
+					<div class="py-2 mt-2 text-center text-white uppercase bg-black attr-block-bg">
+						{attr.value || 'N/A'}
+					</div>
 				</div>
 			{/each}
 		</div>
@@ -143,9 +150,19 @@
 	}
 
 	.attr-block-bg {
-		background: linear-gradient(226.41deg, rgba(103, 212, 248, 0.05) 40.04%, rgba(142, 119, 247, 0.05) 92.94%),
-			linear-gradient(190.19deg, rgba(103, 212, 248, 0.05) 2.45%, rgba(142, 119, 247, 0.05) 102.25%), linear-gradient(188.04deg, rgba(103, 212, 248, 0.05) 5.57%, rgba(142, 119, 247, 0.05) 92.06%),
-			linear-gradient(180deg, rgba(136, 234, 255, 0.1) 0%, rgba(133, 141, 247, 0.056) 100%, rgba(133, 141, 247, 0.1) 100%);
+		background: linear-gradient(
+				226.41deg,
+				rgba(103, 212, 248, 0.05) 40.04%,
+				rgba(142, 119, 247, 0.05) 92.94%
+			),
+			linear-gradient(190.19deg, rgba(103, 212, 248, 0.05) 2.45%, rgba(142, 119, 247, 0.05) 102.25%),
+			linear-gradient(188.04deg, rgba(103, 212, 248, 0.05) 5.57%, rgba(142, 119, 247, 0.05) 92.06%),
+			linear-gradient(
+				180deg,
+				rgba(136, 234, 255, 0.1) 0%,
+				rgba(133, 141, 247, 0.056) 100%,
+				rgba(133, 141, 247, 0.1) 100%
+			);
 		box-shadow: inset -2px 2px 4px #88eaff, inset 2px -1px 5px #a794ff;
 	}
 </style>

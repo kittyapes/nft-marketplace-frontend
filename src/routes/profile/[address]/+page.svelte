@@ -16,7 +16,12 @@
 	import ProfileProgressPopup from '$lib/components/profile/ProfileProgressPopup.svelte';
 	import TabButton from '$lib/components/TabButton.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
-	import { profileCompletionProgress, profileData, userCreatedListing, userLikedNfts } from '$stores/user';
+	import {
+		profileCompletionProgress,
+		profileData,
+		userCreatedListing,
+		userLikedNfts,
+	} from '$stores/user';
 	import { listingToCardOptions, nftToCardOptions } from '$utils/adapters/cardOptions';
 	import { getListing, getListings } from '$utils/api/listing';
 	import { apiGetUserNfts, apiGetUserOwnedNftsAlchemy, getNft } from '$utils/api/nft';
@@ -50,11 +55,11 @@
 	let isFollowing = false;
 
 	$: if (browser && address && $currentUserAddress && address !== $currentUserAddress) {
-		browser && fetchFollowing();
+		fetchFollowing();
 	}
 
 	const fetchFollowing = async () => {
-		isFollowing = await fetchIsFollowing(address, $currentUserAddress);
+		isFollowing = await fetchIsFollowing(address);
 	};
 
 	onMount(async () => {
@@ -83,7 +88,15 @@
 		selectTab($tabParam);
 	}
 
-	$: socialLinks = $localProfileData?.social || { instagram: '', discord: '', twitter: '', website: '', pixiv: '', deviantart: '', artstation: '' };
+	$: socialLinks = $localProfileData?.social || {
+		instagram: '',
+		discord: '',
+		twitter: '',
+		website: '',
+		pixiv: '',
+		deviantart: '',
+		artstation: '',
+	};
 
 	$: areSocialLinks = Object.values(socialLinks).some((link) => !!link);
 	$: firstTimeUser = $profileData?.createdAt === $profileData?.updatedAt;
@@ -91,7 +104,10 @@
 	$: console.log($localProfileData);
 
 	// Display profile completion popup when profile not completed
-	$: $profileCompletionProgress !== null && $profileCompletionProgress < 100 && address === $currentUserAddress && setPopup(ProfileProgressPopup);
+	$: $profileCompletionProgress !== null &&
+		$profileCompletionProgress < 100 &&
+		address === $currentUserAddress &&
+		setPopup(ProfileProgressPopup);
 
 	let totalNfts: number | null = null;
 	$: totalNfts;
@@ -101,7 +117,11 @@
 	let elemOpenBtn: HTMLDivElement;
 
 	const tabs: {
-		fetchFunction: (tab: any, page: number, limit: number) => Promise<{ res: any; adapted: []; err: Error }>;
+		fetchFunction: (
+			tab: any,
+			page: number,
+			limit: number,
+		) => Promise<{ res: any; adapted: []; err: Error }>;
 		label: string;
 		name: string;
 		index?: number;
@@ -231,7 +251,13 @@
 	}
 
 	function fetch() {
-		if (browser && address && !selectedTab.data.length && !selectedTab.isFetching && !selectedTab.reachedEnd) {
+		if (
+			browser &&
+			address &&
+			!selectedTab.data.length &&
+			!selectedTab.isFetching &&
+			!selectedTab.reachedEnd
+		) {
 			fetchMore();
 		}
 	}
@@ -294,9 +320,15 @@
 
 	$: {
 		if (selectedTab.name === 'created' || selectedTab.name === 'collected') {
-			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: address === $currentUserAddress ? ['hide', 'copy'] : [] });
+			cardPropsMapper = (v: CardOptions) => ({
+				options: v,
+				menuItems: address === $currentUserAddress ? ['hide', 'copy', 'sell'] : [],
+			});
 		} else if (selectedTab.name === 'hidden') {
-			cardPropsMapper = (v: CardOptions) => ({ options: v, menuItems: address === $currentUserAddress ? ['reveal', 'copy'] : [] });
+			cardPropsMapper = (v: CardOptions) => ({
+				options: v,
+				menuItems: address === $currentUserAddress ? ['reveal', 'copy'] : [],
+			});
 		} else {
 			cardPropsMapper = (v) => ({ options: v });
 		}
@@ -314,11 +346,14 @@
 	});
 </script>
 
-<div class="">
+<div>
 	<div class="pt-24  px-36">
 		<div class="h-96 gradient-border !border-t-0 !border-x-0 !border-b-4 w-full">
 			{#if $localProfileData?.coverUrl}
-				<div style="background-image: url({$localProfileData?.coverUrl})" class="w-full h-full bg-center bg-no-repeat bg-cover" />
+				<div
+					style="background-image: url({$localProfileData?.coverUrl})"
+					class="w-full h-full bg-center bg-no-repeat bg-cover"
+				/>
 			{/if}
 		</div>
 
@@ -327,7 +362,11 @@
 				<!-- Profile image -->
 				<div class="grid w-28 h-28 overflow-hidden place-items-center">
 					{#if $localProfileData?.thumbnailUrl}
-						<img src={$localProfileData?.thumbnailUrl} class="h-full object-cover" alt="User avatar." />
+						<img
+							src={$localProfileData?.thumbnailUrl}
+							class="h-full object-cover"
+							alt="User avatar."
+						/>
 					{:else}
 						<GuestUserAvatar />
 					{/if}
@@ -344,7 +383,9 @@
 
 						{#if $localProfileData?.status === 'AWAITING_VERIFIED' || $localProfileData?.status === 'VERIFIED' || $localProfileData?.roles?.includes('verified_user') || $localProfileData?.roles?.includes('inactivated_user')}
 							<div
-								class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' || ($appProvider && !storage.hasRole('minter', address)) || $localProfileData?.roles?.includes('inactivated_user')}
+								class:grayscale={$localProfileData?.status === 'AWAITING_VERIFIED' ||
+									($appProvider && !storage.hasRole('minter', address)) ||
+									$localProfileData?.roles?.includes('inactivated_user')}
 							>
 								<VerifiedBadge class="w-6 h-6" />
 							</div>
@@ -355,7 +396,9 @@
 					<div class="flex gap-4">
 						{#if address === $currentUserAddress}
 							<div class="w-32" transition:fade|local>
-								<PrimaryButton on:click={() => goto('/profile/edit')}>{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}</PrimaryButton>
+								<PrimaryButton on:click={() => goto('/profile/edit')}>
+									{firstTimeUser ? 'Setup Profile' : 'Edit Profile'}
+								</PrimaryButton>
 							</div>
 						{:else if $currentUserAddress}
 							{#if isFollowing}
@@ -379,7 +422,11 @@
 							{/if}
 						{/if}
 						<div class="relative">
-							<div class="bg-transparent" on:click|stopPropagation={() => (shareButtonOpen = !shareButtonOpen)} bind:this={elemOpenBtn}>
+							<div
+								class="bg-transparent"
+								on:click|stopPropagation={() => (shareButtonOpen = !shareButtonOpen)}
+								bind:this={elemOpenBtn}
+							>
 								<PrimaryButton extButtonClass="w-20">
 									<ShareV2 />
 								</PrimaryButton>
@@ -391,7 +438,10 @@
 									transition:slide|local
 									use:outsideClickCallback={{
 										cb: (e) => {
-											if (!e.composedPath().includes(elemOpen) && !e.composedPath().includes(elemOpenBtn)) {
+											if (
+												!e.composedPath().includes(elemOpen) &&
+												!e.composedPath().includes(elemOpenBtn)
+											) {
 												shareButtonOpen = false;
 											}
 										},
@@ -401,39 +451,60 @@
 										<div class="gradient-border !border-2 ">
 											<div class="share-dropdown-inner p-5 flex gap-4">
 												{#if $localProfileData.social.instagram}
-													<div class="clickable" on:click={() => window.open($localProfileData.social.instagram)}>
+													<div
+														class="clickable"
+														on:click={() => window.open($localProfileData.social.instagram)}
+													>
 														<Instagram class="w-10 h-10" />
 													</div>
 												{/if}
 												{#if $localProfileData.social.discord}
-													<div class="clickable" on:click={() => window.open($localProfileData.social.discord)}>
+													<div
+														class="clickable"
+														on:click={() => window.open($localProfileData.social.discord)}
+													>
 														<Discord class="w-10 h-10" />
 													</div>
 												{/if}
 
 												{#if $localProfileData.social.twitter}
-													<div class="clickable" on:click={() => window.open($localProfileData.social.twitter)}>
+													<div
+														class="clickable"
+														on:click={() => window.open($localProfileData.social.twitter)}
+													>
 														<Twitter class="w-10 h-10" />
 													</div>
 												{/if}
 
 												{#if $localProfileData.social.website}
-													<div class="clickable" on:click={() => window.open($localProfileData.social.website)}>
+													<div
+														class="clickable"
+														on:click={() => window.open($localProfileData.social.website)}
+													>
 														<Web class="w-10 h-10" />
 													</div>
 												{/if}
 												{#if $localProfileData.social.pixiv}
-													<div class="clickable" on:click={() => window.open($localProfileData.social.pixiv)}>
+													<div
+														class="clickable"
+														on:click={() => window.open($localProfileData.social.pixiv)}
+													>
 														<Pixiv class="w-10 h-10" />
 													</div>
 												{/if}
 												{#if $localProfileData.social.deviantart}
-													<div class="clickable" on:click={() => window.open($localProfileData.social.deviantart)}>
+													<div
+														class="clickable"
+														on:click={() => window.open($localProfileData.social.deviantart)}
+													>
 														<Deviantart class="w-10 h-10" />
 													</div>
 												{/if}
 												{#if $localProfileData.social.artstation}
-													<div class="clickable" on:click={() => window.open($localProfileData.social.artstation)}>
+													<div
+														class="clickable"
+														on:click={() => window.open($localProfileData.social.artstation)}
+													>
 														<Artstation class="w-10 h-10" />
 													</div>
 												{/if}
@@ -482,7 +553,11 @@
 		<div class="container flex max-w-screen-xl mt-16 space-x-10 text-white">
 			{#each tabs as tab}
 				{#if displayedTabs.includes(tab.name)}
-					<TabButton on:click={() => selectTab(tab.name)} selected={selectedTab.name === tab.name} uppercase>
+					<TabButton
+						on:click={() => selectTab(tab.name)}
+						selected={selectedTab.name === tab.name}
+						uppercase
+					>
 						{tab.label}
 					</TabButton>
 				{/if}
@@ -493,14 +568,27 @@
 		<div class="">
 			{#if $userHasRole('admin', 'superadmin') && selectedTab.data.some((i) => i.rawResourceData?.listingStatus === 'EXPIRED')}
 				<div class="m-2 -mb-4 ">
-					<InfoBox class="bg-dark-gradient">Expired listings of this user are displayed because you are viewing this profile as an admin.</InfoBox>
+					<InfoBox class="bg-dark-gradient">
+						Expired listings of this user are displayed because you are viewing this profile as an
+						admin.
+					</InfoBox>
 				</div>
 			{/if}
 
-			<NftList options={selectedTab.data} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} on:refresh-tabs={refreshNftTabs} reachedEnd={selectedTab.reachedEnd} {cardPropsMapper} />
+			<NftList
+				options={selectedTab.data}
+				isLoading={isFetchingNfts}
+				on:end-reached={handleReachedEnd}
+				on:refresh-tabs={refreshNftTabs}
+				reachedEnd={selectedTab.reachedEnd}
+				{cardPropsMapper}
+			/>
 
 			{#if $localProfileData && $userHasRole('admin', 'superadmin')}
-				<AdminTools profileData={$localProfileData} on:requestDataUpdate={() => fetchData(address)} />
+				<AdminTools
+					profileData={$localProfileData}
+					on:requestDataUpdate={() => fetchData(address)}
+				/>
 			{/if}
 		</div>
 	</div>

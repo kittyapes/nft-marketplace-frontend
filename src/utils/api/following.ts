@@ -8,19 +8,18 @@ import { getApiUrl } from '.';
  * @param target The address of the profile.
  * @returns Profile data or `null` in case of an error.
  */
-export async function fetchIsFollowing(target: string, currentUser: string) {
+export async function fetchIsFollowing(target: string) {
 	if (!target) return null;
 
 	let res;
-	const config = await getAxiosConfig(currentUser);
 
 	try {
-		res = await axios.get(getApiUrl('latest', `/users/isFollowing?target=${target}`), config);
+		res = await axios.get(getApiUrl('latest', `/users/isFollowing?target=${target}`), {
+			...(await getAxiosConfig()),
+		});
 	} catch (err) {
 		console.error('Failed To Check if you follow this User.');
 		console.error(err);
-
-		notifyError('Failed To Check if you follow this User.');
 
 		return false;
 	}

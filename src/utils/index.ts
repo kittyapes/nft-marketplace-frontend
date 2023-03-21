@@ -19,7 +19,10 @@ export class ErrNotificationError extends HandledError {
 	}
 }
 
-export function handleErrActionRejected(err: Error & { code?: string }, message = 'Action was rejected by user.') {
+export function handleErrActionRejected(
+	err: Error & { code?: string },
+	message = 'Action was rejected by user.',
+) {
 	if (err.code === 'ACTION_REJECTED') {
 		notifyError(message);
 
@@ -37,4 +40,21 @@ export function handleAxiosNetworkError(err: Error) {
 
 		throw new HandledError('Network error.', err);
 	}
+}
+
+/**
+ * @param nftName
+ * @param collectionName
+ * @returns `"<collectionName>: <nftName>"` if `nftName` is a sequence of digits or a sequence of digits starting with a #,
+ * otherwise returns `nftName`.
+ */
+export function handleGenerativeName(nftName: string, collectionName: string) {
+	const reHash = /^#\d+$/;
+	const reNumber = /^\d+$/;
+
+	if (nftName.match(reHash) || nftName.match(reNumber)) {
+		return collectionName + ': ' + nftName;
+	}
+
+	return nftName;
 }

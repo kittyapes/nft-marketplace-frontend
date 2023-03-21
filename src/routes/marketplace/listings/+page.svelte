@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SortButton from '$components/v2/SortButton/+page.svelte';
+	import SortButton, { type SortOption } from '$components/v2/SortButton/+page.svelte';
 	import FiltersV2 from '$icons/filters-v2.svelte';
 	import GridSelector from '$components/v2/GridSelector/+page.svelte';
 	import { browser } from '$app/environment';
@@ -9,7 +9,7 @@
 	import type { ListingFetchOptions } from '$utils/api/listing';
 	import { getListings, type ListingType } from '$utils/api/listing';
 	import { notifyError } from '$utils/toast';
-	import { debounce } from 'lodash-es';
+	import { debounce, sortBy } from 'lodash-es';
 	import NftGrid from '$components/v2/NFTGrid/+page.svelte';
 	import { inview } from 'svelte-inview';
 	import StatusFilter from '$components/v2/NFTFilters/StatusFilter.svelte';
@@ -25,26 +25,57 @@
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 
 	let showFilters = false;
-	let sortOptions: { title: string; action?: any }[] = [
+	let sortOptions: SortOption[] = [
+		{
+			title: 'Recently created',
+			id: 'RECENTLY_CREATED',
+			disabled: true,
+		},
+		{
+			title: 'Recently listed',
+			id: 'RECENTLY_LISTED',
+		},
+		{
+			title: 'Recently sold',
+			id: 'RECENTLY_SOLD',
+			disabled: true,
+		},
+		{
+			title: 'Recently received',
+			id: 'RECENTLY_RECEIVED',
+			disabled: true,
+		},
 		{
 			title: 'Ending soon',
-			action: () => {},
+			id: 'ENDING_SOON',
 		},
 		{
 			title: 'Price low to high',
-			action: () => {},
+			id: 'PRICE_LOW_TO_HIGH',
 		},
 		{
 			title: 'Price high to low',
-			action: () => {},
+			id: 'PRICE_HIGH_TO_LOW',
+		},
+		{
+			title: 'Highest last sale',
+			id: 'HIGHEST_LAST_SALE',
+			disabled: true,
+		},
+		{
+			title: 'Most viewed',
+			id: 'MOST_VIEWED',
 		},
 		{
 			title: 'Most favorited',
-			action: () => {},
+			id: 'MOST_FAVORITED',
 		},
 	];
 
 	let data = [];
+	let selectedSortOption: SortOption =
+		sortOptions.find((v) => v.id === $page.url.searchParams.get('sortBy')) || sortOptions[1];
+
 	let reachedEnd = false;
 	let isLoading = true;
 	let index = 1;
@@ -53,7 +84,11 @@
 
 	const fetchFunction = async () => {
 		const res = {} as FetchFunctionResult;
-		res.res = await getListings({ ...fetchOptions, listingStatus: ['UNLISTED', 'ACTIVE'] }, index, 20);
+		res.res = await getListings(
+			{ ...fetchOptions, listingStatus: ['UNLISTED', 'ACTIVE'] },
+			index,
+			20,
+		);
 		res.adapted = await Promise.all(res.res.map(listingToCardOptions));
 
 		return res;
@@ -101,6 +136,18 @@
 		debouncedFetchMore();
 	}
 
+	function handleSortRequestRefresh() {
+		if (selectedSortOption) {
+			$page.url.searchParams.set('sortBy', selectedSortOption.id);
+		} else {
+			$page.url.searchParams.delete('sortBy');
+		}
+
+		goto('?' + $page.url.searchParams);
+
+		refreshWithFilters();
+	}
+
 	onMount(() => {
 		refreshWithFilters();
 	});
@@ -115,7 +162,10 @@
 </script>
 
 <div class="w-full flex flex-row items-center justify-between gap-x-4 my-6 2xl:my-8">
-	<button on:click={() => (showFilters = !showFilters)} class="h-12 hover:bg-main-gradient rounded-none border-2 border-gradient flex items-center justify-center gap-x-3 w-60">
+	<button
+		on:click={() => (showFilters = !showFilters)}
+		class="h-12 hover:bg-main-gradient rounded-none border-2 border-gradient flex items-center justify-center gap-x-3 w-60"
+	>
 		{#if showFilters}
 			<ChevronLeft class="w-4 h-4" />
 		{:else}
@@ -126,7 +176,12 @@
 	</button>
 
 	<div class="flex flex-row items-center gap-x-4">
-		<!-- <SortButton bind:sortOptions class="h-12 w-36" /> -->
+		<SortButton
+			bind:sortOptions
+			bind:selectedOption={selectedSortOption}
+			on:request-refresh={handleSortRequestRefresh}
+			class="h-12 w-48"
+		/>
 		<GridSelector bind:gridStyle />
 	</div>
 </div>

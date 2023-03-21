@@ -18,10 +18,12 @@
 	import { browser } from '$app/environment';
 	import { notifyError } from '$utils/toast';
 	import { getListingUpdatedWithChainData } from '$utils/listings';
+	import type { CardPopupProps } from './CardPopup';
 
 	export let options: CardOptions;
 	export let handler: PopupHandler;
 	export let showInvalidListingMessage = false;
+	export let defaultTab: CardPopupProps['defaultTab'];
 
 	let isFetchingNfts = false;
 	let reachedEnd = false;
@@ -29,7 +31,14 @@
 
 	let similarCards: CardOptions[] = [];
 
-	const countdownData = options?.resourceType === 'listing' ? { startTime: options.listingData?.startTime, duration: options.listingData?.duration, expired: false } : null;
+	const countdownData =
+		options?.resourceType === 'listing'
+			? {
+					startTime: options.listingData?.startTime,
+					duration: options.listingData?.duration,
+					expired: false,
+			  }
+			: null;
 
 	// Log data that was used by the adapter to generate the CardPopup
 	$: console.debug('[Resource Data]:', options.rawResourceData);
@@ -52,7 +61,9 @@
 
 	async function refreshBalance() {
 		if ($currentUserAddress) {
-			nftBalance = (await getUserNftBalance(options.nfts[0].contractAddress, options.nfts[0].onChainId)).balance;
+			nftBalance = (
+				await getUserNftBalance(options.nfts[0].contractAddress, options.nfts[0].onChainId)
+			).balance;
 		} else {
 			nftBalance = 0;
 		}
@@ -115,7 +126,9 @@
 
 		res.res = await getListings({ collectionAddress }, page, 10);
 
-		const currentIndex = res.res.findIndex((nft) => nft.nfts[0].nftId === options.nfts[0].onChainId);
+		const currentIndex = res.res.findIndex(
+			(nft) => nft.nfts[0].nftId === options.nfts[0].onChainId,
+		);
 		if (currentIndex > -1) {
 			res.res.splice(currentIndex, 1);
 		}
@@ -152,20 +165,37 @@
 			disabledTabs.push('trade');
 		}
 	}
+
+	// Make sure to open default tab
+	let defaultTabIndex: number = null;
+
+	$: {
+		if (defaultTab === 'default') {
+			defaultTabIndex = { nft: 0, listing: 1 }[options.resourceType];
+		} else {
+			defaultTabIndex = { info: 0, trade: 1, history: 2 }[defaultTab];
+		}
+	}
 </script>
 
 <div class="p-4 h-full w-full overflow-hidden">
-	<Popup class="h-full rounded-none transition-all duration-200" closeButton on:close={handler.close}>
+	<Popup
+		class="h-full rounded-none transition-all duration-200"
+		closeButton
+		on:close={handler.close}
+	>
 		<div class="bg-gradient overflow-y-auto bg-repeat-y h-full blue-scrollbar overscroll-contain">
 			<div class="bg-black bg-opacity-40 min-h-full" class:h-full={showInvalidListingMessage}>
 				{#if showInvalidListingMessage}
-					<div class="text-white font-medium opacity-50 grid place-items-center h-full">This listing is not available.</div>
+					<div class="text-white font-medium opacity-50 grid place-items-center h-full">
+						This listing is not available.
+					</div>
 				{:else}
 					<div class="max-w-2xl lg:max-w-7xl mx-auto">
 						<div class="grid grid-cols-1 lg:grid-cols-2 h-full gap-8 px-8">
 							<!-- Left part with image and buttons -->
 							<div class="pb-8">
-								<Tabs bind:selectedTab {disabledTabs} defaultTabIndex={options.resourceType === 'listing' ? 1 : 0} />
+								<Tabs bind:selectedTab {disabledTabs} {defaultTabIndex} />
 
 								<AssetContainer
 									assetUrl={makeHttps(options.nfts[0].assetUrl)}
@@ -199,7 +229,11 @@
 			{#if similarCards.length > 0 && !showInvalidListingMessage}
 				<div class="pt-24 pb-32 grid place-items-center">
 					<div class="max-w-2xl lg:max-w-7xl w-full px-8 overflow-hidden">
-						<CardCarousel cards={similarCards} isLoading={isFetchingNfts} on:end-reached={handleReachedEnd} />
+						<CardCarousel
+							cards={similarCards}
+							isLoading={isFetchingNfts}
+							on:end-reached={handleReachedEnd}
+						/>
 					</div>
 				</div>
 			{/if}

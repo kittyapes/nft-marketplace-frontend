@@ -80,9 +80,9 @@
 							<!-- Commented out as it is an unclear -->
 							<!-- ${parsedStats[i]?.percent24Hr} -->
 							{#if parsedStats[i]?.percent24Hr >= 0}
-								<span class="text-[#6FCF97]">{parsedStats[i]?.percent24Hr}%</span>
+								<span class="text-[#6FCF97]">{Math.ceil(parsedStats[i]?.percent24Hr)}%</span>
 							{:else if parsedStats[i]?.percent24Hr < 0}
-								<span class="text-[#EB5757]">{parsedStats[i]?.percent24Hr}%</span>
+								<span class="text-[#EB5757]">{Math.ceil(parsedStats[i]?.percent24Hr)}%</span>
 							{/if}
 						</h3>
 					</div>

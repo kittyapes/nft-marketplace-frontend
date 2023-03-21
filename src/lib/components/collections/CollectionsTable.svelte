@@ -95,7 +95,7 @@
 						class="flex place-items-center text-sm text-color-green"
 						class:text-color-red={parsedStats[i]?.percent24Hr < 0}
 					>
-						{parsedStats[i]?.percent24Hr}%
+						{Math.ceil(parsedStats[i]?.percent24Hr)}%
 						<div class:rotate-180={parsedStats[i]?.percent24Hr >= 0}>
 							<ArrowDown />
 						</div>
