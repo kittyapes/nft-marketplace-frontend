@@ -72,7 +72,7 @@
 		<a href="/exp/claim-and-stake" class="nav-button bg-card-gradient">
 			Rewards
 			<div class="absolute inset-0 gradient-border animate-gradient-border-spin" />
-		</a>
+		</a> -->
 
 		<!-- Airdrop HIDDEN FOR NOW -->
 		<!-- <a href="/airdrop" class="relative font-semibold uppercase text-md">Airdrop</a> -->
