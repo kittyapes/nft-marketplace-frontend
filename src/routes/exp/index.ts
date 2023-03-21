@@ -39,9 +39,10 @@ export const tier_1: CollectionRecord[] = [
 
 export const tier_2: CollectionRecord[] = [
 	{
-		label: 'On 1 Force',
-		imageUrl: '',
-		slug: '',
+		label: '0n1 Force',
+		imageUrl:
+			'https://i.seadn.io/gae/7gOej3SUvqALR-qkqL_ApAt97SpUKQOZQe88p8jPjeiDDcqITesbAdsLcWlsIg8oh7SRrTpUPfPlm12lb4xDahgP2h32pQQYCsuOM_s?w=500&auto=format',
+		slug: '0n1-force',
 	},
 	{
 		label: 'Capsule House',
@@ -51,8 +52,8 @@ export const tier_2: CollectionRecord[] = [
 	},
 	{
 		label: 'Digi Daigaku',
-		imageUrl: '',
-		slug: '',
+		imageUrl: 'https://i.seadn.io/gcs/files/fe93ea8b5aed4dfcebd9feadc13a8574.png?w=500&auto=format',
+		slug: 'digidaigaku',
 	},
 	{
 		label: 'Killer GF',
@@ -79,8 +80,8 @@ export const tier_2: CollectionRecord[] = [
 	},
 	{
 		label: 'Cupcats',
-		imageUrl: '',
-		slug: 'cupcats',
+		imageUrl: 'https://i.seadn.io/gcs/files/f77581c67d8d52a44fd6ac5f0f37e8fb.png?w=500&auto=format',
+		slug: 'cupcatsofficial',
 	},
 	{
 		label: 'Anata',
@@ -90,8 +91,8 @@ export const tier_2: CollectionRecord[] = [
 	},
 	{
 		label: 'Isekai Meta',
-		imageUrl: '',
-		slug: '',
+		imageUrl: 'https://i.seadn.io/gcs/files/5b2189963c2cec9bb3949f2cc98fb8b9.jpg?w=500&auto=format',
+		slug: 'projectisekaimeta',
 	},
 	{
 		label: 'uwuCrew',
@@ -100,8 +101,9 @@ export const tier_2: CollectionRecord[] = [
 	},
 	{
 		label: 'HAKI',
-		imageUrl: '',
-		slug: 'haki',
+		imageUrl:
+			'https://i.seadn.io/gae/Cq1G1NVYtecZKoHdzDt9xkYliJPpkoDniUAEIodD_WFfhaykPpyxrMxggWcIdfqrSx8xajwxT5UYehZNwNPI5l8s5xeLC88xmhi8oQ?w=500&auto=format',
+		slug: 'hakinft-io',
 	},
 	{
 		label: 'Shonen Junk',
@@ -111,8 +113,8 @@ export const tier_2: CollectionRecord[] = [
 	},
 	{
 		label: 'MEGAMI',
-		imageUrl: '',
-		slug: '',
+		imageUrl: 'https://i.seadn.io/gcs/files/cd9eea1b2d6cfc8f8de4ab92fbd01e42.png?w=500&auto=format',
+		slug: 'megaminft',
 	},
 	{
 		label: 'XANA: GENESIS',
@@ -121,21 +123,24 @@ export const tier_2: CollectionRecord[] = [
 	},
 	{
 		label: 'Shinsei Galverse',
-		imageUrl: '',
-		slug: '',
+		imageUrl:
+			'https://i.seadn.io/gae/8-v8WDS6DOJPj3GUKcWmWlytTCP3i9QRE9K7YVayIBhhSJIlJGyMQhYx-haXZF543jwZG_EYAuXSxBfUxgLDbmbRtejsKB-P8C8Iaw?w=500&auto=format',
+		slug: 'galverse',
 	},
 ];
 
 export const tier_3: CollectionRecord[] = [
 	{
 		label: 'Shattered Eon',
-		imageUrl: '',
-		slug: '',
+		imageUrl:
+			'https://i.seadn.io/gae/hsiaWSziH32Ubme37tv47vog5ecrzHwPQnMWcsi2jNAMyImKXYZNL6ARWCIxq-i7RMmioM71bkXF9ziigmgaDomC-ZJU-w4qmZjq?w=500&auto=format',
+		slug: 'shatteredeon-colonist',
 	},
 	{
 		label: 'CyberRonin Haruka',
-		imageUrl: '',
-		slug: '',
+		imageUrl:
+			'https://i.seadn.io/gae/_1KlfBhAEh-iMxeFTQ8yffVYC2fSv84aBeY3YycCVc_mNkUfMw1f461CwPmX65B-TJ6q3xWuoB0Nh9Ky_7Xg9woR3tZxcIePfMop-w?w=500&auto=format',
+		slug: 'cyberronin-haruka',
 	},
 	{
 		label: 'Ririsu',
@@ -157,8 +162,9 @@ export const tier_3: CollectionRecord[] = [
 	},
 	{
 		label: 'ESION Club',
-		imageUrl: '',
-		slug: '',
+		imageUrl:
+			'https://i.seadn.io/gae/crFt9OWCGz8AMEDWrEdC8a3H3ROdmaT-cYaNngFaeNGSUEqsRoFbcJeLqG79JkunNMfvMtId9rJQIay1hav4PwHfMTR2ci8_5TAl?w=500&auto=format',
+		slug: 'the-esion-club',
 	},
 	{
 		label: 'WrappedEtherWaifu',
@@ -174,13 +180,13 @@ export const tier_3: CollectionRecord[] = [
 	},
 	{
 		label: 'META KAWAII',
-		imageUrl: '',
-		slug: '',
+		imageUrl: 'https://i.seadn.io/gcs/files/408295567616316f7aa2c56481899084.gif?w=500&auto=format',
+		slug: 'drops-metakawaii',
 	},
 	{
 		label: 'METAKAMI',
-		imageUrl: '',
-		slug: '',
+		imageUrl: 'https://i.seadn.io/gcs/files/cb0839ba30955d2a51ed363eeef5fcf9.jpg?w=500&auto=format',
+		slug: 'metakami-enter-the-void',
 	},
 	{
 		label: 'Mekabae (Bae Cafe S2)',
