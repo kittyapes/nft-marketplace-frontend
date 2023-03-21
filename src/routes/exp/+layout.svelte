@@ -18,9 +18,9 @@
 				Leaderboard
 			</a>
 
-			<a href="./claim-and-stake" class:selected={$page.url.pathname.includes('/claim-and-stake')}>
+			<!-- <a href="./claim-and-stake" class:selected={$page.url.pathname.includes('/claim-and-stake')}>
 				Claim & Stake
-			</a>
+			</a> -->
 		</div>
 	</div>
 
