@@ -14,7 +14,7 @@
 	<h3 class="underline text-2xl font-mediu text-center mt-8 font-bold">Trading Volume</h3>
 
 	<div class="font-semibold text-xl mt-1 flex items-center justify-center">
-		every .005
+		Every .005
 		<div class="mx-2">
 			<EthV2 />
 		</div>
@@ -33,19 +33,22 @@
 	<div class="grid grid-cols-3 gradient-border mt-12">
 		<div class="pl-2 md:pl-8 lg:pl-20 py-4 table-border border-b-2 table-border border-r-2">
 			<div>
-				Tier 1 <span class="text-effect-purple ml-1">( 50 EXP )</span>
+				<span class="text-shadow-purple font-medium">Tier 1</span>
+				<span class="text-effect-purple ml-1">( 50 EXP )</span>
 			</div>
 		</div>
 
 		<div class="pl-2 md:pl-8 lg:pl-20 py-4 table-border border-b-2 table-border border-r-2">
 			<div>
-				Tier 2 <span class="text-effect-blue ml-1">( 30 EXP )</span>
+				<span class="text-shadow-blue font-medium">Tier 2</span>
+				<span class="text-effect-blue ml-1">( 30 EXP )</span>
 			</div>
 		</div>
 
 		<div class="pl-2 md:pl-8 lg:pl-20 py-4 table-border border-b-2">
 			<div>
-				Tier 3 <span class="text-effect-green ml-1">( 10 EXP )</span>
+				<span class="text-shadow-green font-medium">Tier 3</span>
+				<span class="text-effect-green ml-1">( 10 EXP )</span>
 			</div>
 		</div>
 
@@ -87,10 +90,10 @@
 
 		<div class="flex flex-col items-center">
 			<div class="uppercase text-lg font-semibold">Verified Creator Sales</div>
-			<div class="text-sm font-semibold">(For NFT's created on Hinata)</div>
+			<div class="text-sm">(For NFT's created on Hinata)</div>
 
 			<div class="font-semibold text-xl flex items-center justify-center mt-4 lg:mt-6">
-				every .001
+				Every .001
 				<div class="mx-2">
 					<EthV2 />
 				</div>
@@ -101,7 +104,7 @@
 
 		<div class="flex flex-col items-center text-center">
 			<div class="uppercase text-lg font-semibold">Verified Creator Listing</div>
-			<div class="text-sm font-semibold">(For NFT's created on Hinata)</div>
+			<div class="text-sm">(For NFT's created on Hinata 1 Every 24 Hours)</div>
 
 			<div class="text-effect-blue font-semibold text-lg mt-4 lg:mt-6">50 EXP</div>
 		</div>
