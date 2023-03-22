@@ -399,6 +399,18 @@ body {
 	text-shadow: 0px 0px 3px #5df201;
 }
 
+.text-shadow-purple {
+	text-shadow: 0px 0px 3px #b02eff;
+}
+
+.text-shadow-blue {
+	text-shadow: 0px 0px 3px #299bff;
+}
+
+.text-shadow-green {
+	text-shadow: 0px 0px 3px #5df201;
+}
+
 .text-glow {
 	text-shadow: 0px 0px 3px currentColor;
 }

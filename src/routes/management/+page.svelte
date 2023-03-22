@@ -645,9 +645,8 @@
 					tableFooterElement={{
 						element: PaginationFooter,
 						props: {
-							pages: Math.ceil(100 / fetchLimit),
-							// 🔥🛠 for BE not returning total collections
-							items: 100,
+							pages: Math.ceil(totalCollectionEntries / fetchLimit),
+							items: totalCollectionEntries,
 						},
 					}}
 				/>
