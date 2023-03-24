@@ -21,8 +21,6 @@
 	import { goto } from '$app/navigation';
 	import { openCardPopupFromOptions } from './CardPopup/CardPopup';
 	import ThreeDots from '$icons/three-dots.svelte';
-	import { copyUrlToClipboard } from '$utils/misc/clipboard';
-	import SocialCopy from '$icons/socials/social-copy.svelte';
 	import Copy from '$icons/copy.svelte';
 	import Hide from '$icons/hide.svelte';
 	import Sell from '$icons/sell.svelte';
@@ -36,6 +34,8 @@
 	export let disabled = false;
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 	export let useLighterBackground = false;
+
+	$: console.log(options);
 
 	// Helpers
 	let imgLoaded = false;
@@ -115,6 +115,18 @@
 			notifyError('Failed to reveal NFT. \n' + res.err.message);
 		} else {
 			dispatch('hide-me');
+		}
+	}
+
+	// copy NFT link
+	function copyNftLink() {
+		try {
+			navigator.clipboard.writeText(
+				window.location.href + '&nftId=' + options.rawResourceData.fullId,
+			);
+			notifySuccess(`Successfully copied URL to clipboard`);
+		} catch (err) {
+			notifyError('Failed to copy URL to clipboard');
 		}
 	}
 
@@ -318,7 +330,7 @@
 								{/if}
 
 								{#if menuItems.includes('copy')}
-									<button class="menu-item" on:click|stopPropagation={copyUrlToClipboard}>
+									<button class="menu-item" on:click|stopPropagation={copyNftLink}>
 										<Copy />
 										<div class="gradient-border" />
 										<span>Copy Link</span>
