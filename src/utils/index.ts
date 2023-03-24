@@ -1,4 +1,6 @@
 import { AxiosError } from 'axios';
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { notifyError } from './toast';
 
 export class HandledError extends Error {
@@ -57,4 +59,8 @@ export function handleGenerativeName(nftName: string, collectionName: string) {
 	}
 
 	return nftName;
+}
+
+export function isMaxTwoWeeksInFuture(date: Dayjs) {
+	return date.isBefore(dayjs().add(14, 'days'));
 }
