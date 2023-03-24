@@ -83,7 +83,7 @@
 		<div class="text-lg uppercase font-semibold text-center">
 			<div>Verified Creator Mints</div>
 			<div class="text-sm font-semibold opacity-0 select-none">Consistent padding :)</div>
-			<div class="text-effect-blue lg:mt-6">100 EXP</div>
+			<div class="text-effect-blue lg:mt-6">(Coming Soon)</div>
 		</div>
 
 		<div class="flex flex-col items-center">
