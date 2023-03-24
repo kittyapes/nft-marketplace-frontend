@@ -218,7 +218,7 @@
 							{viewedDate.year()}
 						</div>
 						<div class="flex-grow" />
-						<div class="flex gap-4 text-white">
+						<div class="flex gap-4 text-white mr-2">
 							<button class="btn w-4" on:click={previousMonth}><ChevronLeft /></button>
 							<button class="btn w-4" on:click={nextMonth}><ChevronRight /></button>
 						</div>
