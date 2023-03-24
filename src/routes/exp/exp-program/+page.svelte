@@ -26,9 +26,7 @@
 		</div>
 	</div>
 
-	<h3 class="underline text-2xl font-mediu text-center mt-8 font-semibold">
-		EXP for Listing NFT's
-	</h3>
+	<h3 class="underline text-2xl font-mediu text-center mt-8 font-semibold">EXP for Listing NFTs</h3>
 
 	<div class="grid grid-cols-3 gradient-border mt-12">
 		<div class="pl-2 md:pl-8 lg:pl-20 py-4 table-border border-b-2 table-border border-r-2">
@@ -71,7 +69,7 @@
 
 	<p class="text-center max-w-prose mx-auto mt-4">
 		What is a verified creator? A verified creator is a user that applied to on the marketplace to
-		receive a verified creator role allowing them to create collections and NFT's on Hinata
+		receive a verified creator role allowing them to create collections and NFTs on Hinata
 		Marketplace.
 	</p>
 
@@ -85,12 +83,12 @@
 		<div class="text-lg uppercase font-semibold text-center">
 			<div>Verified Creator Mints</div>
 			<div class="text-sm font-semibold opacity-0 select-none">Consistent padding :)</div>
-			<div class="text-effect-blue lg:mt-6">100 EXP</div>
+			<div class="text-effect-blue lg:mt-6">(Coming Soon)</div>
 		</div>
 
 		<div class="flex flex-col items-center">
 			<div class="uppercase text-lg font-semibold">Verified Creator Sales</div>
-			<div class="text-sm">(For NFT's created on Hinata)</div>
+			<div class="text-sm">(For NFTs created on Hinata)</div>
 
 			<div class="font-semibold text-xl flex items-center justify-center mt-4 lg:mt-6">
 				Every .001
@@ -104,7 +102,7 @@
 
 		<div class="flex flex-col items-center text-center">
 			<div class="uppercase text-lg font-semibold">Verified Creator Listing</div>
-			<div class="text-sm">(For NFT's created on Hinata 1 Every 24 Hours)</div>
+			<div class="text-sm">(For NFTs created on Hinata 1 Every 24 Hours)</div>
 
 			<div class="text-effect-blue font-semibold text-lg mt-4 lg:mt-6">50 EXP</div>
 		</div>
