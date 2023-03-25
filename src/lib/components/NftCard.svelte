@@ -25,6 +25,7 @@
 	import Hide from '$icons/hide.svelte';
 	import Sell from '$icons/sell.svelte';
 	import { handleGenerativeName } from '$utils';
+	import { outsideClickCallback } from '$actions/outsideClickCallback';
 
 	const dispatch = createEventDispatcher();
 
@@ -132,6 +133,10 @@
 
 	function handleMenuSellClick() {
 		openCardPopupFromOptions(options, { defaultTab: 'trade' });
+	}
+
+	function handleThreeDotOutsideClick() {
+		dotsOpened = false;
 	}
 
 	// Listing timer
@@ -309,7 +314,7 @@
 
 			<!-- && options.rawResourceData.owner?.toLowerCase() === $currentUserAddress.toLowerCase() -->
 			{#if options.resourceType === 'nft' && menuItems?.length}
-				<div class="relative z-[8]">
+				<div class="relative z-[9]" use:outsideClickCallback={{ cb: handleThreeDotOutsideClick }}>
 					<button
 						on:click|stopPropagation={toggleDots}
 						class="w-8 h-8 self-start p-1 clickable"
@@ -319,7 +324,7 @@
 					</button>
 
 					{#if dotsOpened}
-						<div class="absolute w-32 font-bold bg-dark-gradient left-10 top-0">
+						<div class="absolute w-32 font-bold bg-dark-gradient right-10 top-0">
 							<div class="relative z-10 flex flex-col">
 								{#if menuItems.includes('sell')}
 									<button class="menu-item" on:click|stopPropagation={handleMenuSellClick}>
