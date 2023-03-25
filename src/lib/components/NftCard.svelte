@@ -27,6 +27,7 @@
 	import Hide from '$icons/hide.svelte';
 	import Sell from '$icons/sell.svelte';
 	import { handleGenerativeName } from '$utils';
+	import MediaDisplay from './v2/MediaDisplay/MediaDisplay.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -39,6 +40,7 @@
 
 	// Helpers
 	let imgLoaded = false;
+	let preloadSuccess = null;
 	let isHovered = false;
 	let isFavoriting = false;
 
@@ -138,25 +140,6 @@
 		);
 	}
 
-	const preload = async (src: string) => {
-		const resp = await fetch(makeHttps(src));
-		const blob = await resp.blob();
-		fileType = blob.type.split('/')[0];
-
-		return new Promise(function (resolve) {
-			let reader = new FileReader();
-			reader.readAsDataURL(blob);
-			reader.onload = () => {
-				imgLoaded = true;
-				resolve(reader.result);
-			};
-			reader.onerror = (error) => {
-				imgLoaded = false;
-				reject(`Error: ${error}`);
-			};
-		});
-	};
-
 	onMount(() => {
 		if (options.resourceType !== 'listing') return;
 
@@ -186,7 +169,7 @@
 
 	<div
 		class:dense-nft-media={gridStyle === 'dense'}
-		class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl}
+		class:animate-pulse={!imgLoaded && options.nfts[0].thumbnailUrl && preloadSuccess !== false}
 		class="w-full mx-auto transition bg-card-gradient select-none flex-shrink flex-grow overflow-hidden {gridStyle !==
 		'masonry'
 			? 'aspect-1'
@@ -220,7 +203,14 @@
 			{/if}
 		{/if}
 
-		{#await preload(options.nfts[0].thumbnailUrl)}
+		<MediaDisplay
+			assetUrl={options.nfts[0].thumbnailUrl}
+			fallbackAssetUrl={options.nfts[0].assetUrl}
+			bind:assetLoaded={imgLoaded}
+			bind:preloadSuccess
+		/>
+
+		<!-- {#await preload(options.nfts[0].thumbnailUrl)}
 			<div class="min-h-full w-full grid place-items-center">
 				<Loader />
 			</div>
@@ -265,7 +255,7 @@
 			{:else}
 				<div class="bg-card-gradient w-full h-full transition" />
 			{/if}
-		{/await}
+		{/await} -->
 	</div>
 
 	<div

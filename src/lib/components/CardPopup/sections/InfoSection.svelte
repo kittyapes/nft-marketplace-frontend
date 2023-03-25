@@ -107,21 +107,23 @@
 	</div>
 
 	<div class="text-gradient text-lg font-medium mt-16">Description</div>
-	<div class="w-full overflow-hidden break-words">{singleNft.metadata.description}</div>
+	<div class="w-full overflow-hidden break-words">{singleNft.metadata.description || 'N/A'}</div>
 
 	<!-- NFT attributes -->
-	{#if singleNft.metadata?.attributes}
-		<div class="grid grid-cols-2 gap-4 mt-16">
-			{#each parseAttributes(singleNft.metadata.attributes) as attr}
-				<div>
-					<div class="text-lg">{attr.trait_type}</div>
-					<div class="py-2 mt-2 text-center text-white uppercase bg-black attr-block-bg">
-						{attr.value || 'N/A'}
+	<div>
+		{#if singleNft.metadata?.attributes}
+			<div class="grid grid-cols-2 gap-4 mt-16">
+				{#each parseAttributes(singleNft.metadata.attributes) as attr (attr.trait_type)}
+					<div>
+						<div class="text-lg">{attr.trait_type}</div>
+						<div class="py-2 mt-2 text-center text-white uppercase bg-black attr-block-bg">
+							{attr.value || 'N/A'}
+						</div>
 					</div>
-				</div>
-			{/each}
-		</div>
-	{/if}
+				{/each}
+			</div>
+		{/if}
+	</div>
 
 	<!-- Technical properties -->
 	<div class="grid gap-16 mt-16 grid-cols-2">
