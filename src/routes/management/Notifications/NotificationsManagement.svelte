@@ -209,7 +209,7 @@
 			<PrimaryButton
 				disabled={!notificationMessage ||
 					(publishDate && publishDate.isBefore(dayjs())) ||
-					(expireDate && publishDate.isBefore(dayjs())) ||
+					(expireDate && expireDate.isBefore(dayjs())) ||
 					(publishDate && expireDate && expireDate.isBefore(publishDate))}
 				on:click={handlePublish}
 				extButtonClass="w-80 mt-8 max-w-full"

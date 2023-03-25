@@ -36,8 +36,6 @@
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 	export let useLighterBackground = false;
 
-	$: console.log(options);
-
 	// Helpers
 	let imgLoaded = false;
 	let isHovered = false;
