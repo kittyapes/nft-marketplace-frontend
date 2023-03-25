@@ -17,36 +17,27 @@
 		// TODO fix preloading, it seems like when you open the unipop, the preload works, but when you wanna go into fullscreen, it doesn't
 		let resp: Response;
 
-		try {
-			resp = await fetch(makeHttps(src));
-		} catch {
-			loading = false;
-			preloadSuccess = false;
-			return;
-		}
+		resp = await fetch(makeHttps(src));
 
 		const blob = await resp.blob();
 		fileType = blob.type.split('/')[0] as any;
 
 		return new Promise(function (resolve, reject) {
-			let reader = new FileReader();
+			const reader = new FileReader();
 
 			reader.readAsDataURL(blob);
 			reader.onload = () => {
 				resolve(reader.result as string);
-				assetLoaded = true;
-				loading = false;
-				preloadSuccess = true;
 			};
 
 			reader.onerror = (error) => {
-				loading = false;
-				preloadSuccess = false;
-				reject(`Error: ${error}`);
+				reject(error);
 			};
 		});
 	}
 
+	// Loading only if a URL containing the image data was not
+	// already provided
 	let loading = !srcUrl;
 
 	async function loadAssetOrFallback() {
@@ -54,8 +45,21 @@
 			srcUrl = await preload(assetUrl);
 		} catch (err) {
 			console.error(err);
-			srcUrl = await preload(fallbackAssetUrl);
+
+			try {
+				srcUrl = await preload(fallbackAssetUrl);
+			} catch {
+				loading = false;
+				assetLoaded = false;
+				preloadSuccess = false;
+
+				return;
+			}
 		}
+
+		loading = false;
+		assetLoaded = true;
+		preloadSuccess = true;
 	}
 
 	$: if (browser && !srcUrl) {
@@ -63,25 +67,18 @@
 	}
 </script>
 
-<div>
+<div class="w-full h-full grid place-items-center">
 	{#if loading}
 		<Loader />
 	{:else if preloadSuccess}
 		{#if fileType === 'video'}
-			<video
-				crossorigin="anonymous"
-				class="max-w-full max-h-full shadow-xl"
-				autoplay
-				loop
-				poster={fallbackAssetUrl}
-			>
+			<video class="max-w-full max-h-full shadow-xl" autoplay loop poster={fallbackAssetUrl}>
 				<source src={assetUrl} type="video/mp4" />
 				<track kind="captions" />
 			</video>
 		{:else}
 			<img
 				src={srcUrl}
-				crossorigin="anonymous"
 				class="{(objectContain && 'object-contain') || 'object-cover'} w-full h-full shadow-xl"
 				alt="Card asset."
 				use:fadeImageOnLoad
@@ -90,13 +87,7 @@
 	{:else if fileType === 'video'}
 		<!-- In case the preload function fails to load the data, for example because of a CORS error -->
 		<!-- Prettier formats these ifs in this way for some reason... -->
-		<video
-			crossorigin="anonymous"
-			class="max-w-full max-h-full shadow-xl"
-			poster={fallbackAssetUrl}
-			autoplay
-			loop
-		>
+		<video class="max-w-full max-h-full shadow-xl" poster={fallbackAssetUrl} autoplay loop>
 			<source src={fallbackAssetUrl} type="video/mp4" />
 			<track kind="captions" />
 		</video>
@@ -104,7 +95,6 @@
 		<!-- Also an error in preload function -->
 		<img
 			src={fallbackAssetUrl}
-			crossorigin="use-credentials"
 			class="object-cover w-full h-full shadow-xl"
 			alt="Card asset."
 			use:fadeImageOnLoad
