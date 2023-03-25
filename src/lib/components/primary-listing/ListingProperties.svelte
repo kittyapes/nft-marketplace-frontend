@@ -2,6 +2,7 @@
 	import Weth from '$icons/weth.svelte';
 
 	import type { ConfigurableListingProps } from '$interfaces/listing';
+	import { isMaxTwoWeeksInFuture } from '$utils';
 	import type { ListingType } from '$utils/api/listing';
 	import { userHasRole } from '$utils/auth/userRoles';
 	import { buildListingDurationOptions, type ListingDurationOption } from '$utils/misc';
@@ -27,7 +28,10 @@
 	$: sale = listingType === 'sale';
 	$: auction = listingType === 'auction';
 
-	$: durationOptions = buildListingDurationOptions($userHasRole('admin', 'superadmin'), minDuration);
+	$: durationOptions = buildListingDurationOptions(
+		$userHasRole('admin', 'superadmin'),
+		minDuration,
+	);
 
 	export let formErrors: string[] = [];
 
@@ -41,7 +45,8 @@
 		reservePriceError = null;
 
 		if (props.quantity > (maxQuantity || 1)) {
-			quantityError = 'Quantity field cannot contain a greater value than the number of ERC 1155 tokens you own.';
+			quantityError =
+				'Quantity field cannot contain a greater value than the number of ERC 1155 tokens you own.';
 			formErrors.push(quantityError);
 		} else if (props.quantity < 1) {
 			quantityError = 'You must list at least one token.';
@@ -70,7 +75,11 @@
 			formErrors.push(reservePriceError);
 		}
 
-		if (auction && props.reservePrice && parseFloat(props.reservePrice) <= parseFloat(props.startingPrice)) {
+		if (
+			auction &&
+			props.reservePrice &&
+			parseFloat(props.reservePrice) <= parseFloat(props.startingPrice)
+		) {
 			reservePriceError = 'Reserve price must be greater than starting price.';
 			formErrors.push(reservePriceError);
 		}
@@ -80,8 +89,16 @@
 
 	$: if (maxQuantity <= 1) props.quantity = 1;
 
-	export function setValues(options: Partial<{ startDateTs: number; quantity: number; durationSeconds: number; price: string }>) {
-		options.durationSeconds && _setDuration(durationOptions.find((v) => v.value === options.durationSeconds));
+	export function setValues(
+		options: Partial<{
+			startDateTs: number;
+			quantity: number;
+			durationSeconds: number;
+			price: string;
+		}>,
+	) {
+		options.durationSeconds &&
+			_setDuration(durationOptions.find((v) => v.value === options.durationSeconds));
 		options.startDateTs && _setStartDateTs(options.startDateTs);
 
 		if (options.quantity) {
@@ -106,20 +123,44 @@
 <div class="grid gap-x-8 gap-y-4" class:grid-cols-2={compact}>
 	{#if sale}
 		<InputSlot label="Price">
-			<PriceInput bind:value={props.price} placeholder="1.0" tokenIconClass={Weth} tokenLabel="wETH" {disabled} />
+			<PriceInput
+				bind:value={props.price}
+				placeholder="1.0"
+				tokenIconClass={Weth}
+				tokenLabel="wETH"
+				{disabled}
+			/>
 		</InputSlot>
 	{/if}
 
 	<InputSlot label="Start Date">
-		<Datepicker dateOnly on:new-value={(ev) => (props.startDateTs = ev.detail.unix())} bind:setWithTimestamp={_setStartDateTs} disabled={disableStartDate || disabled} />
+		<Datepicker
+			dateOnly
+			on:new-value={(ev) => (props.startDateTs = ev.detail.unix())}
+			bind:setWithTimestamp={_setStartDateTs}
+			disabled={disableStartDate || disabled}
+			dateEnabledPred={isMaxTwoWeeksInFuture}
+		/>
 	</InputSlot>
 
 	<InputSlot label="Duration">
-		<Dropdown options={durationOptions} on:select={handleDurationOptionsSelect} bind:setSelected={_setDuration} {disabled} class="h-12" />
+		<Dropdown
+			options={durationOptions}
+			on:select={handleDurationOptionsSelect}
+			bind:setSelected={_setDuration}
+			{disabled}
+			class="h-12"
+		/>
 	</InputSlot>
 
 	<InputSlot label="Quantity" hidden={hideQuantity}>
-		<div class="relative flex items-center gap-3 border {(quantityError && 'border-red-500 focus:border-red-500') || ''}" class:opacity-50={disabled} class:pr-4={!disableQuantity}>
+		<div
+			class="relative flex items-center gap-3 border {(quantityError &&
+				'border-red-500 focus:border-red-500') ||
+				''}"
+			class:opacity-50={disabled}
+			class:pr-4={!disableQuantity}
+		>
 			<input
 				type="number"
 				class="w-full h-12 border-none outline-none input-hide-controls pl-4 bg-transparent"
@@ -148,12 +189,25 @@
 
 	{#if auction}
 		<InputSlot label="Starting Price">
-			<PriceInput bind:value={props.startingPrice} placeholder="1.0" tokenIconClass={Weth} tokenLabel="wETH" {disabled} />
+			<PriceInput
+				bind:value={props.startingPrice}
+				placeholder="1.0"
+				tokenIconClass={Weth}
+				tokenLabel="wETH"
+				{disabled}
+			/>
 		</InputSlot>
 
 		<InputSlot label="Reserve Price (Optional)">
 			<div class="relative">
-				<PriceInput bind:value={props.reservePrice} placeholder="5.0" tokenIconClass={Weth} tokenLabel="wETH" validOverride={reservePriceError === null} {disabled} />
+				<PriceInput
+					bind:value={props.reservePrice}
+					placeholder="5.0"
+					tokenIconClass={Weth}
+					tokenLabel="wETH"
+					validOverride={reservePriceError === null}
+					{disabled}
+				/>
 
 				{#if reservePriceError}
 					<div class="absolute z-10 top-12">

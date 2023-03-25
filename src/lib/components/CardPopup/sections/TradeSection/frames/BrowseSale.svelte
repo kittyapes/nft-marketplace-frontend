@@ -8,6 +8,7 @@
 	import { hasEnoughBalance } from '$utils/contracts/token';
 	import { salePurchase } from '$utils/flows/salePurchaseFlow';
 	import { dateToTimestamp, listingExistsOnChain } from '$utils/listings';
+	import { isListingExpired } from '$utils/misc';
 	import { isFuture } from '$utils/misc/time';
 	import { notifyError } from '$utils/toast';
 	import { connectToWallet } from '$utils/wallet/connectWallet';
@@ -19,6 +20,11 @@
 	const dispatch = createEventDispatcher();
 
 	export let options: CardOptions;
+
+	$: isExpired = isListingExpired(
+		options.rawListingData.startTime,
+		options.rawListingData.duration,
+	);
 
 	let hoveringPurchase = false;
 	let purchasing = false;
@@ -109,9 +115,13 @@
 					on:pointerenter={() => (hoveringPurchase = true)}
 					on:pointerleave={() => (hoveringPurchase = false)}
 					on:click={handlePurchase}
-					disabled={purchasing || !!purchaseError || (!foundOnChain && !isGasless)}
+					disabled={purchasing ||
+						!!purchaseError ||
+						(!foundOnChain && !isGasless) ||
+						isExpired ||
+						($hasEnoughTokens === null && !isExpired)}
 				>
-					{#if purchasing || $hasEnoughTokens === null}
+					{#if purchasing || ($hasEnoughTokens === null && !isExpired)}
 						<ButtonSpinner />
 					{/if}
 					Buy Now

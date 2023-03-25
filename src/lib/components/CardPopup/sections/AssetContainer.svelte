@@ -14,6 +14,7 @@
 	import { onDestroy } from 'svelte';
 	import {
 		getValuesForEndingTs,
+		getValuesForExpired,
 		getValuesForStartingTs,
 	} from '$lib/components/v2/Countdown/Countdown';
 	import { handleGenerativeName } from '$utils';
@@ -83,6 +84,7 @@
 			return;
 		}
 
+		countdownValues = getValuesForExpired();
 		countdownLabel = 'ended';
 	}
 

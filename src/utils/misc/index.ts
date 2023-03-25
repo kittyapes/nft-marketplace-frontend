@@ -53,7 +53,11 @@ export function buildListingDurationOptions(
 /**
  * @returns `true` or `false` depending on whether the listing is expired or not.
  */
-export function isListingExpired(startTs: number, duration: number) {
+export function isListingExpired(startTs: number | string, duration: number) {
+	if (typeof startTs === 'string') {
+		startTs = Math.floor(new Date(startTs).getTime() / 1000);
+	}
+
 	return dayjs.unix(startTs + duration).isBefore(dayjs());
 }
 
