@@ -70,32 +70,15 @@
 <div class="w-full h-full grid place-items-center">
 	{#if loading}
 		<Loader />
-	{:else if preloadSuccess}
-		{#if fileType === 'video'}
-			<video class="max-w-full max-h-full shadow-xl" autoplay loop poster={fallbackAssetUrl}>
-				<source src={assetUrl} type="video/mp4" />
-				<track kind="captions" />
-			</video>
-		{:else}
-			<img
-				src={srcUrl}
-				class="{(objectContain && 'object-contain') || 'object-cover'} w-full h-full shadow-xl"
-				alt="Card asset."
-				use:fadeImageOnLoad
-			/>
-		{/if}
 	{:else if fileType === 'video'}
-		<!-- In case the preload function fails to load the data, for example because of a CORS error -->
-		<!-- Prettier formats these ifs in this way for some reason... -->
-		<video class="max-w-full max-h-full shadow-xl" poster={fallbackAssetUrl} autoplay loop>
-			<source src={fallbackAssetUrl} type="video/mp4" />
+		<video class="max-w-full max-h-full shadow-xl" autoplay loop poster={fallbackAssetUrl}>
+			<source src={(preloadSuccess && assetUrl) || fallbackAssetUrl} type="video/mp4" />
 			<track kind="captions" />
 		</video>
 	{:else}
-		<!-- Also an error in preload function -->
 		<img
-			src={fallbackAssetUrl}
-			class="object-cover w-full h-full shadow-xl"
+			src={(preloadSuccess && srcUrl) || fallbackAssetUrl}
+			class="{(objectContain && 'object-contain') || 'object-cover'} w-full h-full shadow-xl"
 			alt="Card asset."
 			use:fadeImageOnLoad
 		/>
