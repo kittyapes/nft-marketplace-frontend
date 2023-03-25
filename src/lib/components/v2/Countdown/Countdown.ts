@@ -28,3 +28,13 @@ export function getValuesForEndingTs(startTs: number, duration: number) {
 		// @ts-ignore
 	].map(([unit, value]) => [unit, Math.max(0, value)]);
 }
+
+export function getValuesForExpired() {
+	return [
+		['Days', 0],
+		['Hours', 0],
+		['Minutes', 0],
+		['Seconds', 0],
+		// @ts-ignore
+	].map(([unit, value]) => [unit, Math.max(0, value)]);
+}

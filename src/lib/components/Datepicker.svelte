@@ -11,6 +11,14 @@
 	import Toggle from './Toggle.svelte';
 	import PrimaryButton from './v2/PrimaryButton/PrimaryButton.svelte';
 
+	interface DayInTable {
+		day: number;
+		isSelected: boolean;
+		isToday: boolean;
+		isDisabled: boolean;
+		dayjs: Dayjs;
+	}
+
 	const dispatch = createEventDispatcher();
 
 	dayjs.extend(isoWeek);
@@ -21,6 +29,7 @@
 	export let dateOnly = false;
 	export let allowPastSelection = false;
 	export let disabled = false;
+	export let dateEnabledPred: (date: Dayjs) => boolean = null;
 
 	export function setWithTimestamp(ts: number) {
 		viewedDate = dayjs(ts * 1000);
@@ -36,7 +45,7 @@
 	let viewedDate: Dayjs = dayjs();
 	let hours = writable(6);
 	let minutes = writable(30);
-	let monthDays = [];
+	let monthDays: DayInTable[] = [];
 	let isPm = writable(false);
 
 	function resetToday() {
@@ -94,14 +103,6 @@
 
 	$: monthWeekdayOffset = viewedDate.date(1).isoWeekday() - 1;
 
-	interface DayInTable {
-		day: number;
-		isSelected: boolean;
-		isToday: boolean;
-		isDisabled: boolean;
-		dayjs: Dayjs;
-	}
-
 	$: {
 		const fillBeforeDays = Array(monthWeekdayOffset)
 			.fill(0)
@@ -128,7 +129,7 @@
 			.fill(0)
 			.map((_, i) => ({
 				day: i + 1,
-				isDisabled: true,
+				isDisabled: false,
 				dayjs: viewedDate
 					.add(1, 'month')
 					.date(i + 1)
@@ -139,14 +140,32 @@
 
 		const now = dayjs();
 
-		monthDays = monthDays.map((d) => ({ ...d, isDisabled: d.isDisabled || (d.dayjs.endOf('day').isBefore(now) && !allowPastSelection) }));
+		monthDays = monthDays.map((d) => ({
+			...d,
+			isDisabled:
+				d.isDisabled ||
+				(d.dayjs.endOf('day').isBefore(now) && !allowPastSelection) ||
+				(dateEnabledPred && !dateEnabledPred(d.dayjs)),
+		}));
 	}
 </script>
 
 <div class="relative min-w-[18rem]" class:opacity-50={disabled}>
-	<input {id} type="text" class="input w-full h-12 " {placeholder} class:font-semibold={inputText} bind:value={inputText} disabled />
+	<input
+		{id}
+		type="text"
+		class="input w-full h-12 "
+		{placeholder}
+		class:font-semibold={inputText}
+		bind:value={inputText}
+		disabled
+	/>
 
-	<button class="w-24 absolute top-0 right-0 h-full border-l bg-gradient-a" on:click={() => (open = !open)} {disabled}>
+	<button
+		class="w-24 absolute top-0 right-0 h-full border-l bg-gradient-a"
+		on:click={() => (open = !open)}
+		{disabled}
+	>
 		<div class="flex items-center justify-center gap-3">
 			<div>Date</div>
 
@@ -157,11 +176,16 @@
 	</button>
 
 	{#if open}
-		<div class="absolute top-0 right-0 w-full max-w-xs gradient-border-bg flex flex-col translate-y-14 p-[2px] z-30" style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);">
+		<div
+			class="absolute top-0 right-0 w-full max-w-xs gradient-border-bg flex flex-col translate-y-14 p-[2px] z-30"
+			style="box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.16);"
+		>
 			<div class="bg-dark-gradient p-4">
 				<!-- Date/Time switch -->
 				{#if !dateOnly}
-					<div class="border-color-white border rounded-xl grid grid-cols-2 overflow-hidden flex-shrink-0">
+					<div
+						class="border-color-white border rounded-xl grid grid-cols-2 overflow-hidden flex-shrink-0"
+					>
 						<button
 							class="uppercase font-semibold transition flex items-center justify-center py-2
                     {section === 'date' ? 'bg-card-gradient' : ''}"
@@ -194,7 +218,7 @@
 							{viewedDate.year()}
 						</div>
 						<div class="flex-grow" />
-						<div class="flex gap-4 text-white">
+						<div class="flex gap-4 text-white mr-2">
 							<button class="btn w-4" on:click={previousMonth}><ChevronLeft /></button>
 							<button class="btn w-4" on:click={nextMonth}><ChevronRight /></button>
 						</div>
@@ -209,8 +233,18 @@
 					<div class="grid grid-cols-7 gap-px bg-white border mt-3">
 						{#each monthDays as day}
 							{@const isSelected = value && day.dayjs.isSame(value, 'day')}
-							<button class="flex-grow text-center aspect-1 text-sm font-medium bg-dark-gradient" class:font-bold={day.isToday} on:click={() => selectDate(day.dayjs)} disabled={day.isDisabled}>
-								<div class="w-full h-full grid place-items-center" class:bg-dark-gradient={day.isDisabled} class:bg-gradient-a={!day.isDisabled && !isSelected} class:gradient-border-bg={isSelected}>
+							<button
+								class="flex-grow text-center aspect-1 text-sm font-medium bg-dark-gradient"
+								class:font-bold={day.isToday}
+								on:click={() => selectDate(day.dayjs)}
+								disabled={day.isDisabled}
+							>
+								<div
+									class="w-full h-full grid place-items-center"
+									class:bg-dark-gradient={day.isDisabled}
+									class:bg-gradient-a={!day.isDisabled && !isSelected}
+									class:gradient-border-bg={isSelected}
+								>
 									{day.day}
 								</div>
 							</button>
@@ -222,7 +256,13 @@
 							<PrimaryButton on:click={handleDone}>Confirm</PrimaryButton>
 						</div>
 					{:else}
-						<PrimaryButton disabled={!value} extButtonClass={'mt-4'} on:click={() => (section = 'time')}>Select Time</PrimaryButton>
+						<PrimaryButton
+							disabled={!value}
+							extButtonClass={'mt-4'}
+							on:click={() => (section = 'time')}
+						>
+							Select Time
+						</PrimaryButton>
 					{/if}
 				{/if}
 
