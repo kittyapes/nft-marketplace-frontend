@@ -21,12 +21,11 @@
 	import { goto } from '$app/navigation';
 	import { openCardPopupFromOptions } from './CardPopup/CardPopup';
 	import ThreeDots from '$icons/three-dots.svelte';
-	import { copyUrlToClipboard } from '$utils/misc/clipboard';
-	import SocialCopy from '$icons/socials/social-copy.svelte';
 	import Copy from '$icons/copy.svelte';
 	import Hide from '$icons/hide.svelte';
 	import Sell from '$icons/sell.svelte';
 	import { handleGenerativeName } from '$utils';
+	import { outsideClickCallback } from '$actions/outsideClickCallback';
 	import MediaDisplay from './v2/MediaDisplay/MediaDisplay.svelte';
 
 	const dispatch = createEventDispatcher();
@@ -37,6 +36,8 @@
 	export let disabled = false;
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 	export let useLighterBackground = false;
+
+	$: console.log(options);
 
 	// Helpers
 	let imgLoaded = false;
@@ -120,8 +121,24 @@
 		}
 	}
 
+	// copy NFT link
+	function copyNftLink() {
+		try {
+			navigator.clipboard.writeText(
+				window.location.href + '&nftId=' + options.rawResourceData.fullId,
+			);
+			notifySuccess(`Successfully copied URL to clipboard`);
+		} catch (err) {
+			notifyError('Failed to copy URL to clipboard');
+		}
+	}
+
 	function handleMenuSellClick() {
 		openCardPopupFromOptions(options, { defaultTab: 'trade' });
+	}
+
+	function handleThreeDotOutsideClick() {
+		dotsOpened = false;
 	}
 
 	// Listing timer
@@ -287,7 +304,7 @@
 
 			<!-- && options.rawResourceData.owner?.toLowerCase() === $currentUserAddress.toLowerCase() -->
 			{#if options.resourceType === 'nft' && menuItems?.length}
-				<div class="relative z-[8]">
+				<div class="relative z-[9]" use:outsideClickCallback={{ cb: handleThreeDotOutsideClick }}>
 					<button
 						on:click|stopPropagation={toggleDots}
 						class="w-8 h-8 self-start p-1 clickable"
@@ -297,7 +314,7 @@
 					</button>
 
 					{#if dotsOpened}
-						<div class="absolute w-32 font-bold bg-dark-gradient left-10 top-0">
+						<div class="absolute w-32 font-bold bg-dark-gradient right-10 top-0">
 							<div class="relative z-10 flex flex-col">
 								{#if menuItems.includes('sell')}
 									<button class="menu-item" on:click|stopPropagation={handleMenuSellClick}>
@@ -308,7 +325,7 @@
 								{/if}
 
 								{#if menuItems.includes('copy')}
-									<button class="menu-item" on:click|stopPropagation={copyUrlToClipboard}>
+									<button class="menu-item" on:click|stopPropagation={copyNftLink}>
 										<Copy />
 										<div class="gradient-border" />
 										<span>Copy Link</span>
