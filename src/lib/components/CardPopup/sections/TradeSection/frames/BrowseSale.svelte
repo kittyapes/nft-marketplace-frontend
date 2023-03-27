@@ -16,6 +16,8 @@
 	import { derived } from 'svelte/store';
 	import Error from './Error.svelte';
 	import Success from './Success.svelte';
+	import type { SaleDataModel } from '$interfaces/index';
+	import { formatToken } from '$utils/misc/priceUtils';
 
 	const dispatch = createEventDispatcher();
 
@@ -69,6 +71,12 @@
 		isFuture(dateToTimestamp(options.rawListingData.startTime)) &&
 		"This listing isn't for sale yet.";
 
+	$: saleData = options.rawListingData.listing as SaleDataModel;
+	$: priceString = formatToken(
+		saleData.price.toString(),
+		options.rawListingData.paymentTokenAddress,
+	);
+
 	onMount(async () => {
 		if (!isGasless) {
 			foundOnChain = await listingExistsOnChain(options.rawListingData.listingId);
@@ -89,13 +97,8 @@
 			<div class="text-gradient mt-4">Price</div>
 			<div class="flex gap-2 items-center">
 				<EthV2 />
-				<div
-					class={(options.saleData?.formatPrice || options.saleData?.price || 'N/A').toString()
-						.length > 12
-						? 'text-xl'
-						: 'text-3xl'}
-				>
-					{options.saleData?.formatPrice || options.saleData?.price || 'N/A'}
+				<div class={(priceString || 'N/A').toString().length > 12 ? 'text-xl' : 'text-3xl'}>
+					{priceString || 'N/A'}
 				</div>
 				<span>wETH</span>
 			</div>
