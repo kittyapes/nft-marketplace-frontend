@@ -43,6 +43,7 @@ export async function getAuthTokenAsync(address?: string) {
 
 	const handler = setPopup(AuthLoginPopup, {
 		unique: true,
+		resolveAllUnique: true,
 		returnPromise: true,
 		props: {
 			adapter: userAuthLoginPopupAdapter,
