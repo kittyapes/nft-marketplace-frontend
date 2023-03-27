@@ -68,7 +68,7 @@
 					goto(`?${$page.url.searchParams}`);
 					dispatch('request-refresh');
 				}}
-				class="flex flex-row items-center gap-x-4 2xl:gap-x-6 font-bold text-white text-xs 2xl:text-sm"
+				class="flex flex-row items-center gap-x-4 2xl:gap-x-6 font-bold text-white text-xs 2xl:text-sm "
 			>
 				<div
 					class="relative w-14 h-14 border-gradient thumbnail bg-cover bg-center flex-shrink-0"
@@ -81,8 +81,8 @@
 					/>
 				</div>
 
-				<div class="flex-grow whitespace-nowrap">
-					<div class="flex flex-row items-center justify-between">
+				<div class="flex-grow whitespace-nowrap truncate">
+					<div class="flex flex-row items-center justify-between gap-x-2 max-w-full">
 						<h2 class="truncate">{collection?.name}</h2>
 
 						<h2>{collection?.stats?.localTotalVol + collection?.stats?.externalTotalVol} ETH</h2>
