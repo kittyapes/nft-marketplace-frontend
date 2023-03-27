@@ -85,7 +85,11 @@
 					<div class="flex flex-row items-center justify-between gap-x-2 max-w-full">
 						<h2 class="truncate">{collection?.name}</h2>
 
-						<h2>{collection?.stats?.localTotalVol + collection?.stats?.externalTotalVol} ETH</h2>
+						<h2>
+							{toShortDisplayPrice(
+								`${collection?.stats?.localTotalVol + collection?.stats?.externalTotalVol}`,
+							)} ETH
+						</h2>
 					</div>
 
 					<div
