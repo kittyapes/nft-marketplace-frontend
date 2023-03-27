@@ -42,6 +42,10 @@ export function toShortDisplayPrice(floatingPrice: string): string | null {
 	const lowerThresholdStr = '0.0001';
 	const lowerThreshold = ethers.utils.parseEther(lowerThresholdStr);
 
+	if (bigNumber.eq(0)) {
+		return '0';
+	}
+
 	if (bigNumber.lt(lowerThreshold)) {
 		return '< ' + lowerThresholdStr;
 	}
@@ -88,7 +92,8 @@ export async function sanitizeNftData(data: ApiNftData) {
 		data.metadata = nftMetadata ?? (data.metadata || {});
 		// TODO: Add temporary image for nfts that did not load here
 		data.thumbnailUrl = nftMetadata?.image ?? data.thumbnailUrl ?? '';
-		data.assetUrl = nftMetadata?.animation_url ?? data.assetUrl ?? data.thumbnailUrl ?? nftMetadata?.image ?? '';
+		data.assetUrl =
+			nftMetadata?.animation_url ?? data.assetUrl ?? data.thumbnailUrl ?? nftMetadata?.image ?? '';
 	}
 
 	const ret = {
@@ -107,7 +112,8 @@ export async function sanitizeNftData(data: ApiNftData) {
 		},
 		likes: data?.favoriteCount,
 		thumbnailUrl: makeHttps(data.thumbnailUrl) ?? '',
-		assetUrl: makeHttps(data?.metadata?.animation_url || data?.assetUrl || data?.thumbnailUrl) ?? '',
+		assetUrl:
+			makeHttps(data?.metadata?.animation_url || data?.assetUrl || data?.thumbnailUrl) ?? '',
 		fullId: data?.fullId ?? `${data.contractAddress}:${data.nftId}`,
 	};
 
@@ -115,11 +121,21 @@ export async function sanitizeNftData(data: ApiNftData) {
 }
 
 function buildCommonObject() {
-	return { localId: getUniqueId(), allowPopup: true, allowTrade: true, staleResource: writable<{ reason: string }>() };
+	return {
+		localId: getUniqueId(),
+		allowPopup: true,
+		allowTrade: true,
+		staleResource: writable<{ reason: string }>(),
+	};
 }
 
 export async function nftToCardOptions(nft: ApiNftData): Promise<CardOptions> {
-	return { ...buildCommonObject(), resourceType: 'nft', rawResourceData: nft, nfts: [await sanitizeNftData(nft)] };
+	return {
+		...buildCommonObject(),
+		resourceType: 'nft',
+		rawResourceData: nft,
+		nfts: [await sanitizeNftData(nft)],
+	};
 }
 
 function getUniqueId() {
