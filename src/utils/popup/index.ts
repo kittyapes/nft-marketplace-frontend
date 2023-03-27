@@ -11,6 +11,7 @@ export interface PopupOptions {
 	onClose?: () => boolean | void;
 	// implicitly defaulted to false
 	returnPromise?: boolean;
+	resolveAllUnique?: boolean;
 }
 
 export interface PopupStackItem {
@@ -25,6 +26,7 @@ export interface PopupHandler {
 	closePromise: {
 		promise: Promise<any>;
 		fulfilled: boolean;
+		uniqueStack?: PopupHandler[];
 	};
 	close: () => void;
 }
@@ -56,11 +58,6 @@ export function setPopup(component: any, options: PopupOptions = defaultOptions)
 		...options,
 	};
 
-	// Ignore duplicate popups that should be unique
-	if (options.unique && existsInstanceOfPopup(component)) {
-		return;
-	}
-
 	// Generate a random ID if one was not provided, that will be used to identify the popup
 	// during various operations, like closing it, etc.
 	const id = options.id || Math.random().toString(36).substring(2, 9);
@@ -72,7 +69,29 @@ export function setPopup(component: any, options: PopupOptions = defaultOptions)
 			resolveClosePremise = resolve;
 		}),
 		fulfilled: null,
+		uniqueStack: [],
 	};
+
+	// Ignore duplicate popups that should be unique
+	if (options.unique && existsInstanceOfPopup(component)) {
+		// resolveAllUnique will save all unique popups, won't render them
+		// and then resolve them once the first one of the unique stack has been closed
+		if (!options.resolveAllUnique) return;
+
+		// A handler object that will be saved in the parent of the unique stack
+		const handler: PopupHandler = {
+			id,
+			closePromise: options.returnPromise ? closePromise : undefined,
+			close: () => {
+				resolveClosePremise();
+				closePromise.fulfilled = true;
+			},
+		};
+
+		const item = get(popupStack).find((e) => e.component === component);
+		item.handler.closePromise.uniqueStack.push(handler);
+		return handler;
+	}
 
 	// A handler object that will be returned to control the popup
 	const handler: PopupHandler = {
@@ -86,6 +105,8 @@ export function setPopup(component: any, options: PopupOptions = defaultOptions)
 					return stack.filter((item) => item.id !== id);
 				});
 			}
+
+			closePromise.uniqueStack.forEach((e) => e.close());
 
 			resolveClosePremise();
 			closePromise.fulfilled = true;

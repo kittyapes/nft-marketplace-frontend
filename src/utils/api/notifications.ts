@@ -75,7 +75,7 @@ export async function getNotifications(
 	let res;
 
 	if (isUserAuthenticated) {
-		res = await api.get(getApiUrl(null, '/notifications'), { ...(await getAxiosConfig()) });
+		res = await api.get(getApiUrl(null, '/notifications'), await getAxiosConfig());
 	} else {
 		res = await api.get(getApiUrl(null, '/notifications'));
 	}
