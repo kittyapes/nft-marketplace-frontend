@@ -25,6 +25,8 @@
 	export let disabled = false;
 	export let minDuration = 0;
 
+	export let disableQuantityCheck = false;
+
 	$: sale = listingType === 'sale';
 	$: auction = listingType === 'auction';
 
@@ -44,7 +46,7 @@
 		quantityError = null;
 		reservePriceError = null;
 
-		if (props.quantity > (maxQuantity || 1)) {
+		if (!disableQuantityCheck && props.quantity > (maxQuantity || 1)) {
 			quantityError =
 				'Quantity field cannot contain a greater value than the number of ERC 1155 tokens you own.';
 			formErrors.push(quantityError);
