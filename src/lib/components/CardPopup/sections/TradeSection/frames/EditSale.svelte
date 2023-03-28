@@ -102,6 +102,7 @@
 			maxPrice={priceString}
 			minDuration={options.rawListingData.duration}
 			disabled={updatingListing}
+			disableQuantityCheck={true}
 			bind:formErrors
 			bind:props={listingProps}
 			bind:this={_listingProperties}
