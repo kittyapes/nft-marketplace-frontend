@@ -53,7 +53,7 @@
 				href="/collections/{collection.slug}"
 				class="flex flex-row items-center text-sm font-bold leading-7 text-white gap-x-6"
 			>
-				<p>{i + 1}</p>
+				<p class="min-w-[1rem]">{i + 1}</p>
 				<div
 					class="relative flex items-center justify-center w-14 2xl:w-[70px] h-14 2xl:h-[70px] border-gradient thumbnail bg-cover bg-center"
 					style="--url: url({collection?.logoImageUrl ?? ``})"
