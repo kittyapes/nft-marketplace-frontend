@@ -70,7 +70,7 @@
 </button>
 
 {#if (hovered && !clickable) || opened}
-	<AttachToElement to={iconContainer} offsetY={40} centerX bind:recalcHelper>
+	<AttachToElement to={iconContainer} offsetY={40} centerX zIndex={20} bind:recalcHelper>
 		<span class="!font-normal text-left normal-case">
 			<InfoBubble gradientText={false} boldText={false} wedgePosition="center">
 				<slot />

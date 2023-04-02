@@ -8,6 +8,7 @@
 	export let offsetX = 0;
 	export let offsetY = 0;
 	export let recalcHelper = 0;
+	export let zIndex = 10;
 
 	export function recalc() {
 		recalcHelper++;
@@ -42,13 +43,14 @@
 </script>
 
 <div
-	class="fixed z-10 {centerX ? '-translate-x-1/2' : ''}"
+	class="fixed {centerX ? '-translate-x-1/2' : ''}"
 	style="
     top: {clientRect?.top + (bottom ? clientRect?.height : 0) + offsetY}px;
     left: {clientRect?.left +
 		(right ? clientRect?.width : 0) +
 		(centerX ? clientRect?.width * 0.5 : 0) +
 		offsetX}px;
+	z-index: {zIndex};
 	"
 >
 	<slot />
