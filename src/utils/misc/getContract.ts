@@ -35,38 +35,6 @@ const contracts: {
 	address: string;
 	abi: any;
 }[] = [
-	// Rinkeby
-	{
-		name: 'marketplace',
-		network: 'rinkeby',
-		address: '0x81A8685ADAfAE90aC3224598E0b3623bF24584c6',
-		abi: marketplaceAbi,
-	},
-	{
-		name: 'storage',
-		network: 'rinkeby',
-		address: '0xDaf3f945857f8Ea58f2bc4cF598a491c30868A72',
-		abi: storageAbi,
-	},
-	{
-		name: 'factory',
-		network: 'rinkeby',
-		address: '0xD0776DB18B7878cBD2D56C468208Cda5B9263715',
-		abi: factoryAbi,
-	},
-	{
-		name: 'token',
-		network: 'rinkeby',
-		address: '0x04013fA3b72E82489d434FD64E3f4142647413cA',
-		abi: tokenAbi,
-	},
-	{
-		name: 'weth',
-		network: 'rinkeby',
-		address: '0xf2155859d31C5EA79F45a55C6ad9A44e7f257700',
-		abi: erc20Abi,
-	},
-
 	// Goerli Testing Environment
 	{
 		name: 'marketplace',

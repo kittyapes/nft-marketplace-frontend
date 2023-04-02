@@ -6,8 +6,7 @@
 	export let bottom = false;
 	export let offsetX = 0;
 	export let offsetY = 0;
-
-	let recalcHelper = 0;
+	export let recalcHelper = 0;
 
 	export function recalc() {
 		recalcHelper++;
@@ -26,7 +25,14 @@
 		};
 	}
 
-	let clientRect: { top: number; right: number; bottom: number; left: number; height: number; width: number };
+	let clientRect: {
+		top: number;
+		right: number;
+		bottom: number;
+		left: number;
+		height: number;
+		width: number;
+	};
 
 	$: {
 		recalcHelper;
