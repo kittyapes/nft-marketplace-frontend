@@ -1,4 +1,5 @@
 <script lang="ts">
+	import DiamondsLoader from '$lib/components/DiamondsLoader.svelte';
 	import CreatorWithNfts from '$lib/components/v2/CreatorWithNfts/CreatorWithNfts.svelte';
 	import ErrorBox from '$lib/components/v2/ErrorBox/ErrorBox.svelte';
 	import { getListingCreators, type ListingCreatorsData } from '$utils/api/listing';
@@ -46,9 +47,15 @@
 
 <div class="mt-8 flex flex-col gap-4 mb-24">
 	{#each creators as creator}
-		<CreatorWithNfts {creator} listings={creator.createdListings.slice(0, 2)} />
+		<CreatorWithNfts {creator} listings={creator.creatorListings} />
 	{/each}
 </div>
+
+{#if isFetching}
+	<DiamondsLoader />
+{:else if isEndReached}
+	<div class="text-center placeholder ">You have reached the end of this list.</div>
+{/if}
 
 {#if !isFetching && !isEndReached && !fetchFailed}
 	<div use:inview on:enter={fetch} />

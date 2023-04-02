@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { PublicProfileData } from '$interfaces/userData';
+	import type { PublicProfileData, UserData } from '$interfaces/userData';
 	import FeaturedArtistCard from '$lib/components/FeaturedArtistCard.svelte';
 	import NftCard from '$lib/components/NftCard.svelte';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
 	import type { Listing } from '$utils/api/listing';
 
-	export let creator: PublicProfileData & { totalMinted: number };
+	export let creator: UserData & { creatorListings: Listing[] };
 	export let listings: Listing[];
 </script>
 

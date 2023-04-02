@@ -7,7 +7,15 @@ export interface LoginHistoryEntry {
 	upload_time: number;
 }
 
-type SocialData = { instagram: string; discord: string; twitter: string; website: string; pixiv: string; deviantart: string; artstation: string };
+type SocialData = {
+	instagram: string;
+	discord: string;
+	twitter: string;
+	website: string;
+	pixiv: string;
+	deviantart: string;
+	artstation: string;
+};
 
 export interface UserData {
 	_id: string;
@@ -23,6 +31,9 @@ export interface UserData {
 	roles: UserRole[];
 	// Not Sure who removed this before
 	status: string; // more to be added later (enum)
+
+	totalMinted: number;
+	exp: number;
 }
 
 export interface PublicProfileData {

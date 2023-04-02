@@ -45,7 +45,11 @@ interface RaffleParticipants {
 	tickets: number[];
 }
 
-export type ListingStatus = 'ACTIVE' | 'SIGNATURE_EXPIRED' | 'SIGNATURE_OR_DATA_INVALID' | 'SIGNATURE_USED';
+export type ListingStatus =
+	| 'ACTIVE'
+	| 'SIGNATURE_EXPIRED'
+	| 'SIGNATURE_OR_DATA_INVALID'
+	| 'SIGNATURE_USED';
 export type ListingChainStatus = 'ON_CHAIN' | 'NOT_ON_CHAIN' | 'GASLESS';
 
 export interface Listing {
@@ -109,7 +113,9 @@ export async function getListings(filters?: ListingFetchOptions, page = 1, limit
 
 	const res = await axios.get(getApiUrl('latest', 'listings'), { params });
 
-	return res.data.data?.filter((listing: Listing) => typeof listing.listing !== 'string') as Listing[];
+	return res.data.data?.filter(
+		(listing: Listing) => typeof listing.listing !== 'string',
+	) as Listing[];
 }
 
 export async function getRandomListings(limit = 10) {
@@ -121,7 +127,9 @@ export async function getRandomListings(limit = 10) {
 }
 
 export async function getListing(id: string) {
-	const res = await axios.get(getApiUrl('latest', 'listings/' + id)).catch((e) => console.log(e.response));
+	const res = await axios
+		.get(getApiUrl('latest', 'listings/' + id))
+		.catch((e) => console.log(e.response));
 	if (!res) return null;
 	return res.data.data as Listing;
 }
@@ -131,14 +139,16 @@ export async function getTrendingListings(count?: number) {
 		count,
 	};
 
-	const res = await axios.get(getApiUrl('latest', 'listings/trending'), { params }).catch((e) => console.log(e.response));
+	const res = await axios
+		.get(getApiUrl('latest', 'listings/trending'), { params })
+		.catch((e) => console.log(e.response));
 	if (!res) return [];
 
 	return res.data.data as Listing[];
 }
 
 export interface ListingCreatorsData {
-	users: (UserData & { createdListings: Listing[] })[];
+	users: (UserData & { creatorListings: Listing[] })[];
 }
 
 export interface ListingCreatorsRes {
@@ -146,7 +156,10 @@ export interface ListingCreatorsRes {
 	data: ListingCreatorsData;
 }
 
-export async function getListingCreators(options: { limit?: number; page?: number }): Promise<ApiCallResult<ListingCreatorsRes>> {
+export async function getListingCreators(options: {
+	limit?: number;
+	page?: number;
+}): Promise<ApiCallResult<ListingCreatorsRes>> {
 	options = {
 		limit: 10,
 		page: 1,
@@ -161,7 +174,11 @@ export async function getListingCreators(options: { limit?: number; page?: numbe
 }
 
 export async function viewedListing(listingId: string): Promise<ApiCallResult<any>> {
-	const res = await axios.post(getApiUrl(null, 'listings/view'), { listingId }, await getAxiosConfig());
+	const res = await axios.post(
+		getApiUrl(null, 'listings/view'),
+		{ listingId },
+		await getAxiosConfig(),
+	);
 
 	return res;
 }

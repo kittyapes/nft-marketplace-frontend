@@ -9,10 +9,10 @@
 			title: 'Collections',
 			route: '/marketplace/collections',
 		},
-		// {
-		// 	title: 'Creators',
-		// 	route: '/marketplace/creators',
-		// },
+		{
+			title: 'Creators',
+			route: '/marketplace/creators',
+		},
 	];
 </script>
 
