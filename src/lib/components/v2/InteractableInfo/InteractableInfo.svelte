@@ -21,7 +21,8 @@
 		opened = true;
 		$openedInstanceId = instanceId;
 
-		document.addEventListener('scroll', handleScroll);
+		document.addEventListener('scroll', recalc);
+		addEventListener('resize', recalc);
 	}
 
 	function close() {
@@ -31,10 +32,11 @@
 			$openedInstanceId = null;
 		}
 
-		document.removeEventListener('scroll', handleScroll);
+		document.removeEventListener('scroll', recalc);
+		removeEventListener('resize', recalc);
 	}
 
-	function handleScroll() {
+	function recalc() {
 		recalcHelper++;
 	}
 
