@@ -3,6 +3,7 @@
 
 	export let to: HTMLElement;
 	export let right = false;
+	export let centerX = false;
 	export let bottom = false;
 	export let offsetX = 0;
 	export let offsetY = 0;
@@ -41,10 +42,14 @@
 </script>
 
 <div
-	class="fixed z-10"
+	class="fixed z-10 {centerX ? '-translate-x-1/2' : ''}"
 	style="
     top: {clientRect?.top + (bottom ? clientRect?.height : 0) + offsetY}px;
-    left: {clientRect?.left + (right ? clientRect?.width : 0) + offsetX}px"
+    left: {clientRect?.left +
+		(right ? clientRect?.width : 0) +
+		(centerX ? clientRect?.width * 0.5 : 0) +
+		offsetX}px;
+	"
 >
 	<slot />
 </div>

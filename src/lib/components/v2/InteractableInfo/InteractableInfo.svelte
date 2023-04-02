@@ -68,9 +68,9 @@
 </button>
 
 {#if (hovered && !clickable) || opened}
-	<AttachToElement to={iconContainer} offsetX={-20} offsetY={40} bind:recalcHelper>
+	<AttachToElement to={iconContainer} offsetY={40} centerX bind:recalcHelper>
 		<span class="!font-normal text-left normal-case">
-			<InfoBubble gradientText={false} boldText={false}>
+			<InfoBubble gradientText={false} boldText={false} wedgePosition="center">
 				<slot />
 
 				<div class="flex justify-end mt-4">
