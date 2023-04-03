@@ -94,11 +94,11 @@
 		Marketplace.
 	</p>
 
-	<div class="mt-12 max-w-screen-sm mx-auto">
+	<!-- <div class="mt-12 max-w-screen-sm mx-auto">
 		<PrimaryButton on:click={() => goto('/apply-for-verified-creator')}>
 			Apply to be a Verified Creator
 		</PrimaryButton>
-	</div>
+	</div> -->
 
 	<div class="grid grid-cols-1 lg:grid-cols-3 gap-y-16 mt-16 mb-32">
 		<div class="text-lg uppercase font-semibold text-center">
