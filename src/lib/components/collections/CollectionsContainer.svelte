@@ -2,7 +2,7 @@
 	import type { Collection } from '$utils/api/collection';
 	import CollectionsTable from './CollectionsTable.svelte';
 
-	export let collections: Collection[];
+	export let collections: (Collection & { ranking?: number })[];
 	export let isLoading: boolean;
 
 	$: displayCollections = collections;
@@ -78,5 +78,5 @@
 </script>
 
 <div class="w-full flex flex-col gap-10">
-	<CollectionsTable {isLoading} {collections} on:end-reached />
+	<CollectionsTable {isLoading} {collections} />
 </div>

@@ -37,8 +37,6 @@
 	export let gridStyle: 'normal' | 'dense' | 'masonry' = 'normal';
 	export let useLighterBackground = false;
 
-	$: console.log(options);
-
 	// Helpers
 	let imgLoaded = false;
 	let preloadSuccess = null;
@@ -124,9 +122,11 @@
 	// copy NFT link
 	function copyNftLink() {
 		try {
-			navigator.clipboard.writeText(
-				window.location.href + '&nftId=' + options.rawResourceData.fullId,
-			);
+			const url = new URL(window.location.href);
+			url.searchParams.append('nftId', options.rawResourceData.fullId);
+
+			navigator.clipboard.writeText(url.href);
+
 			notifySuccess(`Successfully copied URL to clipboard`);
 		} catch (err) {
 			notifyError('Failed to copy URL to clipboard');
@@ -221,58 +221,11 @@
 		{/if}
 
 		<MediaDisplay
-			assetUrl={options.nfts[0].thumbnailUrl}
-			fallbackAssetUrl={options.nfts[0].assetUrl}
+			assetUrl={null}
+			thumbnailUrl={options.nfts[0].thumbnailUrl || options.nfts[0].assetUrl}
 			bind:assetLoaded={imgLoaded}
 			bind:preloadSuccess
 		/>
-
-		<!-- {#await preload(options.nfts[0].thumbnailUrl)}
-			<div class="min-h-full w-full grid place-items-center">
-				<Loader />
-			</div>
-		{:then}
-			{#if fileType === 'video'}
-				<video
-					crossorigin="anonymous"
-					class="max-w-full max-h-full object-cover object-top w-full h-full transition"
-					autoplay
-					loop
-					class:opacity-0={!imgLoaded}
-				>
-					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
-					<track kind="captions" />
-				</video>
-			{:else if fileType === 'image'}
-				<img
-					alt=""
-					src={options.nfts[0].thumbnailUrl}
-					class="object-cover object-top w-full h-full transition"
-					class:opacity-0={!imgLoaded}
-				/>
-			{/if}
-		{:catch _err}
-			{#if fileType === 'video'}
-				<video
-					crossorigin="anonymous"
-					class="max-w-full max-h-full object-cover object-top w-full h-full transition"
-					autoplay
-					loop
-					poster={options.nfts[0].thumbnailUrl}
-				>
-					<source src={options.nfts[0].thumbnailUrl} type="video/mp4" />
-					<track kind="captions" />
-				</video>
-			{:else if fileType === 'image'}
-				<img
-					alt=""
-					src={options.nfts[0].thumbnailUrl}
-					class="object-cover object-top w-full h-full transition"
-				/>
-			{:else}
-				<div class="bg-card-gradient w-full h-full transition" />
-			{/if}
-		{/await} -->
 	</div>
 
 	<div

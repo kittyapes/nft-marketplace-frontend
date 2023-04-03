@@ -13,10 +13,10 @@
 
 <Modal>
 	<div class="w-full h-full relative max-h-screen bg-black">
-		<button on:click={handler.close} class="absolute top-4 right-4 w-12 h-12">
+		<button on:click={handler.close} class="absolute z-50 top-4 right-4 w-12 h-12">
 			<CloseButton />
 		</button>
 
-		<MediaDisplay {assetUrl} {fallbackAssetUrl} {srcUrl} {fileType} objectContain />
+		<MediaDisplay {assetUrl} thumbnailUrl={fallbackAssetUrl} {srcUrl} {fileType} />
 	</div>
 </Modal>

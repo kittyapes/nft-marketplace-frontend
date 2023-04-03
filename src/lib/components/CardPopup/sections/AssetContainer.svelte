@@ -113,13 +113,7 @@
 	<div
 		class="flex items-center self-center justify-center flex-shrink-0 object-contain w-full overflow-hidden bg-gray-800 bg-opacity-50 aspect-1"
 	>
-		<MediaDisplay
-			{assetUrl}
-			fallbackAssetUrl={thumbnailUrl}
-			bind:srcUrl
-			bind:fileType
-			bind:assetLoaded
-		/>
+		<MediaDisplay {assetUrl} {thumbnailUrl} bind:assetLoaded bind:fileType bind:srcUrl />
 	</div>
 
 	<div class="flex gap-8 flex-wrap mt-8">

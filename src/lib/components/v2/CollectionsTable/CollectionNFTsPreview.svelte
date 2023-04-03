@@ -56,7 +56,10 @@
 	const handleScroll = async (e) => {
 		if (e?.currentTarget?.scrollLeft < lastScrollLeft) return;
 		lastScrollLeft = e?.currentTarget?.scrollLeft <= 0 ? 0 : e?.currentTarget?.scrollLeft;
-		if (e?.currentTarget?.scrollLeft + e?.currentTarget?.offsetWidth >= e?.currentTarget?.scrollWidth) {
+		if (
+			e?.currentTarget?.scrollLeft + e?.currentTarget?.offsetWidth >=
+			e?.currentTarget?.scrollWidth
+		) {
 			await fetchMore();
 		}
 	};
@@ -93,9 +96,25 @@
 			</div>
 		{/each}
 	{/if}
+
 	{#if isLoading}
-		<div class="flex items-center max-h-[64px] 2xl:max-h-[80px]">
-			<DiamondsLoader />
-		</div>
+		<div
+			class="relative min-h-[64px] 2xl:min-h-[80px] min-w-[64px] 2xl:min-w-[80px] bg-card-gradient animate-pulse"
+		/>
+		<div
+			class="relative min-h-[64px] 2xl:min-h-[80px] min-w-[64px] 2xl:min-w-[80px] bg-card-gradient animate-pulse"
+		/>
+		<div
+			class="relative min-h-[64px] 2xl:min-h-[80px] min-w-[64px] 2xl:min-w-[80px] bg-card-gradient animate-pulse"
+		/>
+		<div
+			class="relative min-h-[64px] 2xl:min-h-[80px] min-w-[64px] 2xl:min-w-[80px] bg-card-gradient animate-pulse"
+		/>
+		<div
+			class="relative min-h-[64px] 2xl:min-h-[80px] min-w-[64px] 2xl:min-w-[80px] bg-card-gradient animate-pulse"
+		/>
+		<div
+			class="relative min-h-[64px] 2xl:min-h-[80px] min-w-[64px] 2xl:min-w-[80px] bg-card-gradient animate-pulse"
+		/>
 	{/if}
 </div>
