@@ -1,8 +1,12 @@
-<script>
+<script lang="ts">
 	import { fade } from 'svelte/transition';
 
 	export let gradientText = true;
 	export let boldText = true;
+	export let wedgePosition: 'left' | 'center' = 'left';
+
+	// Adding 2px, because border is ignored by calculations
+	$: wedgePosStyle = { left: 'left: 1.05rem', center: 'left: calc(50% + 2px)' }[wedgePosition];
 </script>
 
 <div
@@ -14,13 +18,14 @@
 >
 	<div class="relative text-white" class:text-gradient={gradientText}>
 		<!-- Wedge -->
-		<!-- <svg class="absolute -translate-y-5 translate-x-2" width="21" height="19" viewBox="0 0 21 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<path d="M6.89953 1.53553C8.85215 -0.417089 12.018 -0.417088 13.9706 1.53553L20.8701 8.435L10.4351 18.87L6.01399e-05 8.435L6.89953 1.53553Z" fill="white" />
-		</svg> -->
 		<div
-			class="absolute -translate-y-5 translate-x-2 rotate-45 w-5 h-5 bg-dark-gradient border-gradient"
+			class="absolute -translate-y-5 rotate-45 w-5 h-5 bg-dark-gradient border-gradient -translate-x-1/2"
+			style={wedgePosStyle}
 		/>
-		<div class="absolute -translate-y-3 w-10 h-5 bg-dark-gradient" />
+		<div
+			class="absolute -translate-y-3 w-10 h-5 bg-dark-gradient -translate-x-1/2"
+			style={wedgePosStyle}
+		/>
 
 		<span class="relative">
 			<slot />
