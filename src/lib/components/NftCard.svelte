@@ -122,9 +122,11 @@
 	// copy NFT link
 	function copyNftLink() {
 		try {
-			navigator.clipboard.writeText(
-				window.location.href + '&nftId=' + options.rawResourceData.fullId,
-			);
+			const url = new URL(window.location.href);
+			url.searchParams.append('nftId', options.rawResourceData.fullId);
+
+			navigator.clipboard.writeText(url.href);
+
 			notifySuccess(`Successfully copied URL to clipboard`);
 		} catch (err) {
 			notifyError('Failed to copy URL to clipboard');
