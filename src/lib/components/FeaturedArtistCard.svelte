@@ -26,20 +26,32 @@
 
 	<div class="w-full h-full flex-shrink flex-grow overflow-hidden bg-color-purple">
 		{#if creatorData.coverImg}
-			<img src={creatorData.coverImg} alt="Featured creator cover." class="w-full h-full object-cover" />
+			<img
+				src={creatorData.coverImg}
+				alt="Featured creator cover."
+				class="w-full h-full object-cover"
+			/>
 		{/if}
 	</div>
 
-	<div class="bg-card-gradient flex flex-col items-center justify-center flex-shrink-0 w-full p-4 h-36">
+	<div
+		class="bg-card-gradient flex flex-col items-center justify-center flex-shrink-0 w-full p-4 h-36"
+	>
 		<div class="max-w-full w-full flex justify-between">
 			<div class="flex gap-4 flex-shrink overflow-hidden">
 				<div class="w-24 h-24 flex-shrink-0">
-					<img src={creatorData.profileImg} alt="Featured crator profile." class="h-full object-cover object-top w-full" />
+					<img
+						src={creatorData.profileImg}
+						alt="Featured crator profile."
+						class="h-full object-cover object-top w-full"
+					/>
 				</div>
 
 				<div class="flex flex-col justify-between flex-shrink overflow-hidden">
 					<div class="flex gap-2 items-center ">
-						<div class="text-2xl 2xl:text-3xl text-white whitespace-nowrap truncate">{creatorData.name}</div>
+						<div class="text-2xl 2xl:text-3xl text-white whitespace-nowrap truncate">
+							{creatorData.name}
+						</div>
 						<VerifiedBadge />
 					</div>
 
@@ -55,7 +67,7 @@
 					<PrimaryButton extButtonClass="w-40">{followed ? 'Unfollow' : 'Follow'}</PrimaryButton>
 				</button>
 
-				{#if includeCreatedNumber}
+				{#if includeCreatedNumber && creatorData.created}
 					<div class="pr-2 font-medium">Created {creatorData.created}</div>
 				{/if}
 			</div>
