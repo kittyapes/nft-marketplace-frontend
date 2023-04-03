@@ -31,7 +31,6 @@
 	async function loadCollections() {
 		if ($selectedSortPeriod) {
 			collections = (await apiGetMostActiveCollections(sortMap[$selectedSortPeriod])).collections;
-			console.log(collections);
 		}
 	}
 

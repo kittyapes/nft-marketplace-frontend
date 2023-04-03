@@ -15,7 +15,7 @@
 	const fetchFunction = async (page: number) => {
 		isLoading = true;
 
-		const res = await apiSearchCollections({ limit, page });
+		const res = await apiSearchCollections({ limit, page, status: 'ACTIVE' });
 
 		if (res.err) {
 			console.error(res.err);
