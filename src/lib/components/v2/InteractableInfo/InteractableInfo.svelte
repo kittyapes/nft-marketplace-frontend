@@ -21,7 +21,8 @@
 		opened = true;
 		$openedInstanceId = instanceId;
 
-		document.addEventListener('scroll', handleScroll);
+		document.addEventListener('scroll', recalc);
+		addEventListener('resize', recalc);
 	}
 
 	function close() {
@@ -31,10 +32,11 @@
 			$openedInstanceId = null;
 		}
 
-		document.removeEventListener('scroll', handleScroll);
+		document.removeEventListener('scroll', recalc);
+		removeEventListener('resize', recalc);
 	}
 
-	function handleScroll() {
+	function recalc() {
 		recalcHelper++;
 	}
 
@@ -68,9 +70,9 @@
 </button>
 
 {#if (hovered && !clickable) || opened}
-	<AttachToElement to={iconContainer} offsetX={-20} offsetY={40} bind:recalcHelper>
+	<AttachToElement to={iconContainer} offsetY={40} centerX zIndex={20} bind:recalcHelper>
 		<span class="!font-normal text-left normal-case">
-			<InfoBubble gradientText={false} boldText={false}>
+			<InfoBubble gradientText={false} boldText={false} wedgePosition="center">
 				<slot />
 
 				<div class="flex justify-end mt-4">
