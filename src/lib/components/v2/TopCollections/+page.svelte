@@ -9,7 +9,7 @@
 	import { onMount } from 'svelte';
 
 	export let collections: Collection[] = [];
-	const selectedSortPeriod = writable<'24h' | '7d' | '30d' | 'All' | null>('All');
+	const selectedSortPeriod = writable<'24h' | '7d' | '30d' | 'All'>('All');
 
 	const sortMap: {
 		[key: string]:
@@ -30,7 +30,35 @@
 
 	async function loadCollections() {
 		if ($selectedSortPeriod) {
-			collections = (await apiGetMostActiveCollections(sortMap[$selectedSortPeriod])).collections;
+			collections = (await apiGetMostActiveCollections(sortMap[$selectedSortPeriod])).collections.map((collection) => {
+
+				let currentVol = 0;
+				let prevVol = 0;
+
+				switch($selectedSortPeriod) {
+					case '24h':
+						currentVol = (collection.stats.total24Vol || collection.stats.external24Vol + collection.stats.local24Vol || 0);
+						prevVol = (collection.stats.previousTotal24Vol || collection.stats.previousExternal24Vol + collection.stats.previousLocal24Vol || 0);
+						break;
+					case '7d':
+						currentVol = (collection.stats.total7DayVol || collection.stats.external7DayVol + collection.stats.local7DayVol || 0);
+						prevVol = (collection.stats.previousTotal7DayVol || collection.stats.previousExternal7DayVol + collection.stats.previousLocal7DayVol || 0);
+						break;
+					case '30d':
+						currentVol = (collection.stats.total30DayVol || collection.stats.external30DayVol + collection.stats.local30DayVol || 0);
+						prevVol = (collection.stats.previousTotal30DayVol || collection.stats.previousExternal30DayVol + collection.stats.previousLocal30DayVol || 0);
+						break;
+					default:
+						currentVol = (collection.stats.totalVol || collection.stats.externalTotalVol + collection.stats.localTotalVol || 0);
+						prevVol = (collection.stats.previousTotalVol || collection.stats.previousExternalTotalVol + collection.stats.previousLocalTotalVol || 0);
+						break;
+				}
+
+				collection.stats.volChangePercent = (currentVol - prevVol) / currentVol * 100;
+				collection.stats.volToDisplay = currentVol;
+
+				return collection;
+			});
 		}
 	}
 
@@ -44,12 +72,12 @@
 		<h1 class=" text-2xl leading-7">Top Collections</h1>
 		<!-- TODO implement top collections filter -->
 		<ButtonGroup
-			on:period={(e) => selectedSortPeriod.set(e?.detail?.period)}
+			on:period={(e) => selectedSortPeriod.set(e?.detail?.period || 'All')}
 			selectedPeriod={$selectedSortPeriod}
 		/>
 	</div>
 	{#if collections.length > 0}
-		<CollectionsGrid bind:collections selectedDuration={selectedSortPeriod} />
+		<CollectionsGrid bind:collections />
 	{:else}
 		<DiamondsLoader />
 	{/if}
