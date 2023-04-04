@@ -1,4 +1,7 @@
 import dayjs from 'dayjs';
+import durationExt from 'dayjs/plugin/duration.js';
+
+dayjs.extend(durationExt);
 
 export function matches(a: string, b: string) {
 	return a?.toLocaleLowerCase() === b?.toLocaleLowerCase();
@@ -45,6 +48,16 @@ export function buildListingDurationOptions(
 
 	if (currentDuration) {
 		options = options.filter((i) => i.value >= currentDuration);
+	}
+
+	// It can happen that when listing has a longer duration than all of the listed
+	// options, the remaining options will be empty. We fix it by appending a custom
+	// current duration option to the list
+	if (options.length === 0) {
+		options.push({
+			label: dayjs.duration(currentDuration, 'seconds').humanize(),
+			value: currentDuration,
+		});
 	}
 
 	return options;
