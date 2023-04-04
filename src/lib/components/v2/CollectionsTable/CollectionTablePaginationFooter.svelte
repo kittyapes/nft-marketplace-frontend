@@ -72,7 +72,7 @@
 	</div>
 {/if}
 
-<style type="postcss">
+<style lang="postcss">
 	.selected {
 		background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
 			linear-gradient(

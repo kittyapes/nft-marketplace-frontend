@@ -45,7 +45,7 @@
 	});
 </script>
 
-<div class="mt-8 flex flex-col gap-4 mb-24">
+<div class="mt-8 flex flex-col gap-4">
 	{#each creators as creator}
 		<CreatorWithNfts {creator} listings={creator.creatorListings} />
 	{/each}
@@ -54,7 +54,7 @@
 {#if isFetching}
 	<DiamondsLoader />
 {:else if isEndReached}
-	<div class="text-center placeholder ">You have reached the end of this list.</div>
+	<div class="text-center placeholder">You have reached the end of this list.</div>
 {/if}
 
 {#if !isFetching && !isEndReached && !fetchFailed}
@@ -68,3 +68,10 @@
 		</ErrorBox>
 	</div>
 {/if}
+
+
+<style lang="postcss">
+	.placeholder {
+		@apply p-36 font-semibold text-lg opacity-70;
+	}
+</style>

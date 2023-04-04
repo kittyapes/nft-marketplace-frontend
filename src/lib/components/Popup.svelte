@@ -37,7 +37,7 @@
 	</div>
 </div>
 
-<style type="postcss">
+<style lang="postcss">
 	.outer-div {
 		@apply p-[2px];
 		background: linear-gradient(

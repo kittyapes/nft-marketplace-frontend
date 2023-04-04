@@ -17,7 +17,7 @@
 		'Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullamco laboriosam, nisi ut aliquid ex ea commodi consequatur.';
 
 	let showShare = false;
-	let loaded: boolean = false;
+	let loaded = false;
 	let gradient = true;
 	let moveRight = false;
 
@@ -111,7 +111,7 @@
 	</CreatorFormScreen>
 </LoadedContent>
 
-<style type="postcss">
+<style lang="postcss">
 	.icon {
 		@apply w-8 h-8 cursor-pointer brightness-0 hover:brightness-100;
 	}

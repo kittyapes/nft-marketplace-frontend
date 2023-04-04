@@ -108,7 +108,7 @@
 	</div>
 </main>
 
-<style type="postcss">
+<style lang="postcss">
 	.column-wrap > div.column-item {
 		@apply border-t border-color-blue border-opacity-20;
 	}

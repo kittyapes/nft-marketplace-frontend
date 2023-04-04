@@ -33,8 +33,8 @@
 		type PrimaryButtonVariant,
 	} from './PrimaryButton';
 
-	export let disabled: boolean = false;
-	export let selected: boolean = false;
+	export let disabled = false;
+	export let selected = false;
 	export let variant: PrimaryButtonVariant = 'default';
 	export let options: Partial<PrimaryButtonOptions> = {};
 	export let extButtonClass = '';
@@ -66,7 +66,7 @@
 	</div>
 </button>
 
-<style type="postcss">
+<style lang="postcss">
 	button:not(:disabled) > div:hover,
 	button[data-perma-hover='true'] > div {
 		@apply !bg-transparent;

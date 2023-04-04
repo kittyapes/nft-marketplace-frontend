@@ -132,7 +132,7 @@
 	</div>
 </div>
 
-<style type="postcss">
+<style lang="postcss">
 	.nav-button {
 		@apply relative font-semibold h-1/2 grid place-items-center px-4 snap-center w-32;
 	}

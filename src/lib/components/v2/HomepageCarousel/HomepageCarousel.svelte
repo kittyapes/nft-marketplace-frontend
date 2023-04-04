@@ -89,7 +89,7 @@
 	</div>
 </div>
 
-<style type="postcss">
+<style lang="postcss">
 	.animated-image {
 		animation: zoom 5s infinite linear, crossfade 5s infinite linear;
 		animation-play-state: paused;

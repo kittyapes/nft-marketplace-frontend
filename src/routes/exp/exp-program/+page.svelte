@@ -147,7 +147,7 @@
 	</div>
 </main>
 
-<style type="postcss">
+<style lang="postcss">
 	.table-border {
 		@apply border-color-blue border-opacity-50;
 	}

@@ -113,7 +113,7 @@
 	{/if}
 </div>
 
-<style type="postcss">
+<style lang="postcss">
 	.wrapper:not(:hover) > .border-div {
 		display: none;
 	}
