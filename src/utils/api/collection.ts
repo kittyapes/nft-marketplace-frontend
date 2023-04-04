@@ -69,9 +69,18 @@ export interface Collection {
 		lastPreviousLocal7DayCount: Date;
 		lastPreviousLocal24HourCount: Date;
 		lastExternalStatsUpdatedAtBlock: number;
-		total24Vol?: number; // calculated on FE
-		prevTotal24Vol?: number; // calculated on FE
+		total24Vol?: number; // present on the collections/search endpoint
+		previousTotal24Vol?: number; // present on the collections/search endpoint
+		total7DayVol?: number; // present on the collections/search endpoint
+		previousTotal7DayVol?: number; // present on the collections/search endpoint
+		total30DayVol?: number; // present on the collections/search endpoint
+		previousTotal30DayVol?: number; // present on the collections/search endpoint
+		totalVol?: number; // present on the collections/search endpoint
+		previousTotalVol?: number; // present on the collections/search endpoint
+
 		vol24HrChange?: number; // calculated on FE
+		volChangePercent?: number; // Calculated on FE
+		volToDisplay?: number; // Calculated on FE
 	} | null;
 }
 
@@ -250,23 +259,6 @@ export async function apiSearchCollections(options?: CollectionSearchOptions) {
 
 	if (res.status !== 200) {
 		throw new Error(res.data.message);
-	}
-
-	if (res.data.data?.collections?.length > 0) {
-		res.data.data.collections.map((collection: Collection) => {
-			if (collection?.stats) {
-				const total24Vol = collection?.stats?.local24Vol + collection?.stats?.external24Vol;
-				const prevTotal24Vol =
-					collection?.stats?.previousLocal24Vol + collection?.stats?.previousExternal24Vol;
-				const vol24HrChange = (total24Vol - prevTotal24Vol) / prevTotal24Vol;
-
-				collection.stats.total24Vol = total24Vol;
-				collection.stats.prevTotal24Vol = prevTotal24Vol;
-				collection.stats.vol24HrChange = vol24HrChange;
-			}
-
-			return collection;
-		});
 	}
 
 	return res.data.data;
