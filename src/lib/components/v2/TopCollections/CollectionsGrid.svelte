@@ -8,6 +8,7 @@
 
 	export let collections: Collection[] = [];
 	export let isLoading = false;
+	export let selectedDuration: '24h' | '7d' | '30d' | 'All' = 'All';
 
 	const dispatch = createEventDispatcher();
 
@@ -25,21 +26,52 @@
 	let parsedStats = [];
 
 	$: collections.map((collection, i) => {
-		const dailyVol = +(collection.stats.external24Vol + collection.stats.local24Vol).toFixed(2);
-		const prevDailyVol = +(
-			collection.stats.previousExternal24Vol + collection.stats.previousLocal24Vol
-		).toFixed(2);
+		let currentVol = 0;
+		let prevVol = 0;
+
+		switch(selectedDuration) {
+			case "All":
+				currentVol = +(collection.stats.externalTotalVol + collection.stats.localTotalVol).toFixed(2);
+				prevVol = +(
+						collection.stats.previousExternalTotalVol + collection.stats.previousLocalTotalVol
+				).toFixed(2);
+				break;
+			case "30d":
+				currentVol = +(collection.stats.external30DayVol + collection.stats.local30DayVol).toFixed(2);
+				prevVol = +(
+						collection.stats.previousExternal30DayVol + collection.stats.previousLocal30DayVol
+				).toFixed(2);
+				break;
+			case "24h":
+				currentVol = +(collection.stats.external24Vol + collection.stats.local24Vol).toFixed(2);
+				prevVol = +(
+						collection.stats.previousExternal24Vol + collection.stats.previousLocal24Vol
+				).toFixed(2);
+				break;
+			case "7d":
+				currentVol = +(collection.stats.external7DayVol + collection.stats.local7DayVol).toFixed(2);
+				prevVol = +(
+						collection.stats.previousExternal7DayVol + collection.stats.previousLocal7DayVol
+				).toFixed(2);
+				break;
+
+			default:
+				currentVol = +(collection.stats.external24Vol + collection.stats.local24Vol).toFixed(2);
+				prevVol = +(
+						collection.stats.previousExternal24Vol + collection.stats.previousLocal24Vol
+				).toFixed(2);
+				break;
+		}
 
 		parsedStats[i] = {
-			totalVol: +(collection.stats.externalTotalVol + collection.stats.localTotalVol).toFixed(2),
+			volToDisplay: +(collection.stats.externalTotalVol + collection.stats.localTotalVol).toFixed(2),
 			floorPrice: +collection.stats.localFloorPrice.toFixed(2),
-			vol24Hr: dailyVol,
-			percent24Hr:
-				prevDailyVol === 0 && dailyVol === 0
+			percentToDisplay:
+				prevVol === 0 && currentVol === 0
 					? 0
-					: prevDailyVol === 0
+					: prevVol === 0
 					? 100
-					: +(dailyVol / prevDailyVol).toFixed(4) * 100 || 0,
+					: +(currentVol / prevVol).toFixed(4) * 100 || 0,
 		};
 
 		return collection;
@@ -69,7 +101,7 @@
 				<div class="flex-grow">
 					<div class="flex flex-row items-center justify-between">
 						<h2>{collection?.name}</h2>
-						<h2>{parsedStats[i]?.totalVol} ETH</h2>
+						<h2>{parsedStats[i]?.volToDisplay} ETH</h2>
 					</div>
 					<div
 						class="flex flex-row items-center justify-between font-semibold text-sm leading-9 text-[#CECECE]"
@@ -79,10 +111,10 @@
 						<h3 class="">
 							<!-- Commented out as it is an unclear -->
 							<!-- ${parsedStats[i]?.percent24Hr} -->
-							{#if parsedStats[i]?.percent24Hr >= 0}
-								<span class="text-[#6FCF97]">{Math.ceil(parsedStats[i]?.percent24Hr)}%</span>
-							{:else if parsedStats[i]?.percent24Hr < 0}
-								<span class="text-[#EB5757]">{Math.ceil(parsedStats[i]?.percent24Hr)}%</span>
+							{#if parsedStats[i]?.percentToDisplay >= 0}
+								<span class="text-[#6FCF97]">{Math.ceil(parsedStats[i]?.percentToDisplay)}%</span>
+							{:else if parsedStats[i]?.percentToDisplay < 0}
+								<span class="text-[#EB5757]">{Math.ceil(parsedStats[i]?.percentToDisplay)}%</span>
 							{/if}
 						</h3>
 					</div>
