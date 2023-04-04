@@ -43,13 +43,13 @@
 	<div class="text-white w-full flex flex-row items-center justify-between mb-10">
 		<h1 class=" text-2xl leading-7">Top Collections</h1>
 		<!-- TODO implement top collections filter -->
-		<!-- <ButtonGroup
+		<ButtonGroup
 			on:period={(e) => selectedSortPeriod.set(e?.detail?.period)}
 			selectedPeriod={$selectedSortPeriod}
-		/> -->
+		/>
 	</div>
 	{#if collections.length > 0}
-		<CollectionsGrid bind:collections />
+		<CollectionsGrid bind:collections selectedDuration={selectedSortPeriod} />
 	{:else}
 		<DiamondsLoader />
 	{/if}
