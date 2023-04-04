@@ -10,6 +10,7 @@
 
 	export let collections: Collection[] = [];
 	const selectedSortPeriod = writable<'24h' | '7d' | '30d' | 'All'>('All');
+	let isRefreshing = false;
 
 	const sortMap: {
 		[key: string]:
@@ -30,6 +31,7 @@
 
 	async function loadCollections() {
 		if ($selectedSortPeriod) {
+			isRefreshing = true;
 			collections = (await apiGetMostActiveCollections(sortMap[$selectedSortPeriod])).collections.map((collection) => {
 
 				let currentVol = 0;
@@ -59,6 +61,8 @@
 
 				return collection;
 			});
+
+			isRefreshing = false;
 		}
 	}
 
@@ -77,7 +81,7 @@
 		/>
 	</div>
 	{#if collections.length > 0}
-		<CollectionsGrid bind:collections />
+		<CollectionsGrid bind:collections {isRefreshing} />
 	{:else}
 		<DiamondsLoader />
 	{/if}
