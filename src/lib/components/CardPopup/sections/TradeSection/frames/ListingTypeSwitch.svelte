@@ -12,7 +12,7 @@
 	</div>
 </div>
 
-<style type="postcss">
+<style lang="postcss">
 	button {
 		@apply w-1/2 font-bold transition relative;
 		background: radial-gradient(55.65% 55.65% at 51.68% 130.43%, rgba(103, 212, 248, 0.025) 0%, rgba(142, 119, 247, 0.025) 100%)

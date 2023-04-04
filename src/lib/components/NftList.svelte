@@ -74,7 +74,7 @@
 	{/if}
 </div>
 
-<style type="postcss">
+<style lang="postcss">
 	.placeholder {
 		@apply p-36 font-semibold text-lg opacity-70;
 	}

@@ -140,7 +140,7 @@
 	{/if}
 </Popup>
 
-<style type="postcss">
+<style lang="postcss">
 	.title {
 		@apply uppercase font-bold text-2xl text-center;
 	}

@@ -75,7 +75,7 @@
 	</div>
 </button>
 
-<style type="postcss">
+<style lang="postcss">
 	.wrapper:not(:hover) > .gradient-border {
 		display: none;
 	}

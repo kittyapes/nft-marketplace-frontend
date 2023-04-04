@@ -43,7 +43,7 @@
 	</main>
 </LoadedContent>
 
-<style type="postcss">
+<style lang="postcss">
 	#article-container :global(img) {
 		@apply my-8;
 	}

@@ -38,7 +38,7 @@
 	</div>
 </section>
 
-<style type="postcss">
+<style lang="postcss">
 	.wrapper {
 		background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), linear-gradient(180deg, rgba(136, 234, 255, 0.2) 0%, rgba(133, 141, 247, 0.112) 100%, rgba(133, 141, 247, 0.2) 100%),
 			radial-gradient(64.35% 166.74% at 8.56% -7.83%, rgba(103, 212, 248, 0.15) 0%, rgba(142, 119, 247, 0.15) 100%)

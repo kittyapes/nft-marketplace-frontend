@@ -232,7 +232,7 @@
 	</div>
 </div>
 
-<style type="postcss">
+<style lang="postcss">
 	.gradient-underline::after {
 		content: '';
 		@apply absolute w-full -bottom-1 left-0 h-[2px];
