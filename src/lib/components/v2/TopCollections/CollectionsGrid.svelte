@@ -64,7 +64,7 @@
 		}
 
 		parsedStats[i] = {
-			volToDisplay: +(collection.stats.externalTotalVol + collection.stats.localTotalVol).toFixed(2),
+			volToDisplay: currentVol,
 			floorPrice: +collection.stats.localFloorPrice.toFixed(2),
 			percentToDisplay:
 				prevVol === 0 && currentVol === 0
