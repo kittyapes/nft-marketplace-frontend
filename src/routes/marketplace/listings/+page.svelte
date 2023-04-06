@@ -74,7 +74,7 @@
 
 	let data = [];
 	let selectedSortOption: SortOption =
-		sortOptions.find((v) => v.id === $page.url.searchParams.get('sortBy')) || sortOptions[1];
+		sortOptions.find((v) => v.id === $page.url.searchParams.get('sortBy')) || sortOptions[0];
 
 	let reachedEnd = false;
 	let isLoading = true;
