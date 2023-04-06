@@ -26,25 +26,25 @@
 
 	let showFilters = false;
 	let sortOptions: SortOption[] = [
-		{
-			title: 'Recently created',
-			id: 'RECENTLY_CREATED',
-			disabled: true,
-		},
+		// {
+		// 	title: 'Recently created',
+		// 	id: 'RECENTLY_CREATED',
+		// 	disabled: true,
+		// },
 		{
 			title: 'Recently listed',
 			id: 'RECENTLY_LISTED',
 		},
-		{
-			title: 'Recently sold',
-			id: 'RECENTLY_SOLD',
-			disabled: true,
-		},
-		{
-			title: 'Recently received',
-			id: 'RECENTLY_RECEIVED',
-			disabled: true,
-		},
+		// {
+		// 	title: 'Recently sold',
+		// 	id: 'RECENTLY_SOLD',
+		// 	disabled: true,
+		// },
+		// {
+		// 	title: 'Recently received',
+		// 	id: 'RECENTLY_RECEIVED',
+		// 	disabled: true,
+		// },
 		{
 			title: 'Ending soon',
 			id: 'ENDING_SOON',
@@ -57,11 +57,11 @@
 			title: 'Price high to low',
 			id: 'PRICE_HIGH_TO_LOW',
 		},
-		{
-			title: 'Highest last sale',
-			id: 'HIGHEST_LAST_SALE',
-			disabled: true,
-		},
+		// {
+		// 	title: 'Highest last sale',
+		// 	id: 'HIGHEST_LAST_SALE',
+		// 	disabled: true,
+		// },
 		{
 			title: 'Most viewed',
 			id: 'MOST_VIEWED',
