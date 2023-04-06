@@ -62,3 +62,10 @@ export interface NftInListingModel {
 	nftId: string;
 	amount: number;
 }
+
+export interface OfferModel {
+	userProfileImageUrl: string;
+	username: string;
+	amount: string;
+	ts: number;
+}

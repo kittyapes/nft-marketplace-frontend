@@ -8,7 +8,7 @@
 	import { getNft } from '$utils/api/nft';
 	import { makeHttps } from '$utils/ipfs';
 	import type { PopupHandler } from '$utils/popup';
-	import { onMount, SvelteComponent } from 'svelte';
+	import { onMount } from 'svelte';
 	import Popup from '../Popup.svelte';
 	import AssetContainer from './sections/AssetContainer.svelte';
 	import Tabs from './Tabs.svelte';
@@ -42,12 +42,6 @@
 
 	// Log data that was used by the adapter to generate the CardPopup
 	$: console.debug('[Resource Data]:', options.rawResourceData);
-
-	function onForceExpire() {
-		if (countdownData) {
-			countdownData.expired = true;
-		}
-	}
 
 	async function fetchNftDetail() {
 		const detailedNftData = await getNft(options.nfts[0].databaseId);
@@ -95,7 +89,6 @@
 	});
 
 	let selectedTab;
-	let tabComponentInstance: SvelteComponent;
 
 	fetch();
 
@@ -156,16 +149,6 @@
 
 	let enableBack = false;
 
-	let disabledTabs: any[];
-
-	$: {
-		disabledTabs = [];
-
-		if (options.resourceType === 'nft' && nftBalance < 1) {
-			disabledTabs.push('trade');
-		}
-	}
-
 	// Make sure to open default tab
 	let defaultTabIndex: number = null;
 
@@ -195,7 +178,7 @@
 						<div class="grid grid-cols-1 lg:grid-cols-2 h-full gap-8 px-8">
 							<!-- Left part with image and buttons -->
 							<div class="pb-8">
-								<Tabs bind:selectedTab {disabledTabs} {defaultTabIndex} />
+								<Tabs bind:selectedTab {defaultTabIndex} />
 
 								<AssetContainer
 									assetUrl={makeHttps(options.nfts[0].assetUrl)}
@@ -214,10 +197,10 @@
 								<svelte:component
 									this={selectedTab?.sectionComponent}
 									{options}
+									{nftBalance}
 									on:close-popup={handleClosePopup}
 									on:force-expire
 									on:listing-created={refreshBalance}
-									bind:this={tabComponentInstance}
 									bind:enableBack
 								/>
 							</div>
