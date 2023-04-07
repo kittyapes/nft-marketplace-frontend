@@ -29,3 +29,7 @@ export async function apiMakeOffer(userAddress: string, offerAmount: BigNumber) 
 
 	return new Promise((resolve) => setTimeout(resolve, 3000));
 }
+
+export async function apiCancelOffer(userAddress: string) {
+	return new Promise((resolve) => setTimeout(resolve, 3000));
+}

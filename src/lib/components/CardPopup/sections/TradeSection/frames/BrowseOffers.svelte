@@ -6,7 +6,7 @@
 	import OfferList from '$lib/components/v2/OfferList/OfferList.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { currentUserAddress } from '$stores/wallet';
-	import { apiGetOffers, apiMakeOffer } from '$utils/api/offers';
+	import { apiCancelOffer, apiGetOffers, apiMakeOffer } from '$utils/api/offers';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { parseEther } from 'ethers/lib/utils';
 	import { onMount } from 'svelte';
@@ -67,6 +67,7 @@
 
 			// This is temporary
 			offerOfCurrentUser = newOffers[0];
+			hasUserPlacedOffer = true;
 		} else {
 			offersEndReached = true;
 		}
@@ -81,6 +82,28 @@
 	}
 
 	let hasUserPlacedOffer = false;
+	let isCancellingOffer = false;
+
+	async function handleCancelOffer() {
+		isCancellingOffer = true;
+
+		let res: Awaited<ReturnType<typeof apiCancelOffer>>;
+
+		try {
+			res = await apiCancelOffer($currentUserAddress);
+		} catch (ex) {
+			console.error(ex);
+			notifyError('Sorry, failed to cancel your offer!');
+
+			isMakingOffer = false;
+			return;
+		}
+
+		notifySuccess('Cancelled your offer.');
+
+		isCancellingOffer = false;
+		hasUserPlacedOffer = false;
+	}
 
 	onMount(() => {
 		loadOffers();
@@ -111,7 +134,13 @@
 	</div>
 
 	<div class="grid grid-cols-2 gap-2">
-		<PrimaryButton disabled={!hasUserPlacedOffer}>Cancel Offer</PrimaryButton>
+		<PrimaryButton on:click={handleCancelOffer} disabled={isCancellingOffer || !hasUserPlacedOffer}>
+			{#if isCancellingOffer}
+				<ButtonSpinner />
+			{/if}
+
+			Cancel Offer
+		</PrimaryButton>
 
 		<PrimaryButton on:click={handleMakeOffer} disabled={isMakingOffer || !offerAmountFloat}>
 			{#if isMakingOffer}
