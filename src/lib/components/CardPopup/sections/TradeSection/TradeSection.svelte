@@ -48,8 +48,6 @@
 				if (options.listingData.listingType === 'sale') setFrameWithoutProps(BrowseSale);
 			}
 		} else if (options.resourceType === 'nft') {
-			console.log({ nftBalance });
-
 			// User is owner
 			if (nftBalance) {
 				setFrameWithoutProps(CreateListing);
@@ -67,8 +65,6 @@
 	$: enableBack = [Success, Error, EditSale].includes(frameStack[0]?.component);
 
 	$: options, nftBalance, setBaseFrame();
-
-	$: console.log({ options });
 </script>
 
 <svelte:component

@@ -39,19 +39,48 @@
 	}
 
 	let isLoadingOffers = false;
+	let nextOffersPageIndex = 1;
+	let errLoadingOffers = false;
+	let offersEndReached = false;
+	let offerOfCurrentUser: OfferModel;
 
 	async function loadOffers() {
 		isLoadingOffers = true;
 
+		let newOffers: OfferModel[] = [];
+
 		try {
-			offers = await apiGetOffers();
+			newOffers = await apiGetOffers(nextOffersPageIndex, 10);
 		} catch (ex) {
+			errLoadingOffers = true;
+			isLoadingOffers = false;
+
 			console.error(ex);
 			notifyError('Failed to load offers.');
+
+			return;
+		}
+
+		if (newOffers.length) {
+			nextOffersPageIndex++;
+			offers = [...offers, ...newOffers];
+
+			// This is temporary
+			offerOfCurrentUser = newOffers[0];
+		} else {
+			offersEndReached = true;
 		}
 
 		isLoadingOffers = false;
 	}
+
+	async function handleEndOfScroll() {
+		if (!offersEndReached && !isLoadingOffers) {
+			await loadOffers();
+		}
+	}
+
+	let hasUserPlacedOffer = false;
 
 	onMount(() => {
 		loadOffers();
@@ -59,13 +88,20 @@
 </script>
 
 <div class="overflow-hidden aspect-1 flex flex-col">
-	<div class="text-white text-lg font-medium mb-2">Offers</div>
+	<div class="text-white text-lg font-medium mb-2 flex-shrink-0">Offers</div>
 
-	<div class="flex-grow">
-		<OfferList data={offers} isLoading={isLoadingOffers} />
+	<div class="flex-grow overflow-hidden">
+		<OfferList
+			{offerOfCurrentUser}
+			data={offers}
+			isLoading={isLoadingOffers}
+			endReached={offersEndReached}
+			errLoading={errLoadingOffers}
+			on:end-of-scroll={handleEndOfScroll}
+		/>
 	</div>
 
-	<div class="mt-4 mb-4">
+	<div class="mt-4 mb-4 flex-shrink-0">
 		<PriceInput
 			tokenLabel="wETH"
 			tokenIconClass={Eth}
@@ -74,11 +110,15 @@
 		/>
 	</div>
 
-	<PrimaryButton on:click={handleMakeOffer} disabled={isMakingOffer || !offerAmountFloat}>
-		{#if isMakingOffer}
-			<ButtonSpinner />
-		{/if}
+	<div class="grid grid-cols-2 gap-2">
+		<PrimaryButton disabled={!hasUserPlacedOffer}>Cancel Offer</PrimaryButton>
 
-		Make Offer
-	</PrimaryButton>
+		<PrimaryButton on:click={handleMakeOffer} disabled={isMakingOffer || !offerAmountFloat}>
+			{#if isMakingOffer}
+				<ButtonSpinner />
+			{/if}
+
+			Make Offer
+		</PrimaryButton>
+	</div>
 </div>
