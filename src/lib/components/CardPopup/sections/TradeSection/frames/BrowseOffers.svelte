@@ -2,14 +2,14 @@
 	import Eth from '$icons/eth.svelte';
 	import type { OfferModel } from '$interfaces';
 	import PriceInput from '$lib/components/PriceInput.svelte';
+	import OffersLoader from '$lib/components/functional/OffersLoader/OffersLoader.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
 	import OfferList from '$lib/components/v2/OfferList/OfferList.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { currentUserAddress } from '$stores/wallet';
-	import { apiCancelOffer, apiGetOffers, apiMakeOffer } from '$utils/api/offers';
+	import { apiCancelOffer, apiMakeOffer } from '$utils/api/offers';
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { parseEther } from 'ethers/lib/utils';
-	import { onMount } from 'svelte';
 
 	let offers: OfferModel[] = [];
 	let offerAmountFloat: string;
@@ -38,49 +38,6 @@
 		isMakingOffer = false;
 	}
 
-	let isLoadingOffers = false;
-	let nextOffersPageIndex = 1;
-	let errLoadingOffers = false;
-	let offersEndReached = false;
-	let offerOfCurrentUser: OfferModel;
-
-	async function loadOffers() {
-		isLoadingOffers = true;
-
-		let newOffers: OfferModel[] = [];
-
-		try {
-			newOffers = await apiGetOffers(nextOffersPageIndex, 10);
-		} catch (ex) {
-			errLoadingOffers = true;
-			isLoadingOffers = false;
-
-			console.error(ex);
-			notifyError('Failed to load offers.');
-
-			return;
-		}
-
-		if (newOffers.length) {
-			nextOffersPageIndex++;
-			offers = [...offers, ...newOffers];
-
-			// This is temporary
-			offerOfCurrentUser = newOffers[0];
-			hasUserPlacedOffer = true;
-		} else {
-			offersEndReached = true;
-		}
-
-		isLoadingOffers = false;
-	}
-
-	async function handleEndOfScroll() {
-		if (!offersEndReached && !isLoadingOffers) {
-			await loadOffers();
-		}
-	}
-
 	let hasUserPlacedOffer = false;
 	let isCancellingOffer = false;
 
@@ -104,24 +61,30 @@
 		isCancellingOffer = false;
 		hasUserPlacedOffer = false;
 	}
-
-	onMount(() => {
-		loadOffers();
-	});
 </script>
 
 <div class="overflow-hidden aspect-1 flex flex-col">
 	<div class="text-white text-lg font-medium mb-2 flex-shrink-0">Offers</div>
 
 	<div class="flex-grow overflow-hidden">
-		<OfferList
-			{offerOfCurrentUser}
-			data={offers}
-			isLoading={isLoadingOffers}
-			endReached={offersEndReached}
-			errLoading={errLoadingOffers}
-			on:end-of-scroll={handleEndOfScroll}
-		/>
+		<OffersLoader
+			let:isLoading
+			let:isError
+			let:isEndReached
+			let:offers
+			let:onEndReached
+			let:currentUserOffer
+		>
+			<OfferList
+				userIsOwner={false}
+				{currentUserOffer}
+				data={offers}
+				{isLoading}
+				endReached={isEndReached}
+				errLoading={isError}
+				on:end-of-scroll={onEndReached}
+			/>
+		</OffersLoader>
 	</div>
 
 	<div class="mt-4 mb-4 flex-shrink-0">

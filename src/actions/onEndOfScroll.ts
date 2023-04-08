@@ -1,4 +1,4 @@
-export function onEndOfScroll(node, callback) {
+export function onEndOfScroll(node: HTMLElement, callback: () => any) {
 	function handleScroll() {
 		const { scrollTop, scrollHeight, clientHeight } = node;
 		if (scrollTop + clientHeight >= scrollHeight) {

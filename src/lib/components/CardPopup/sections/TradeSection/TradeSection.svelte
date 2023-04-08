@@ -12,6 +12,7 @@
 	import Success from './frames/Success.svelte';
 	import Error from './frames/Error.svelte';
 	import BrowseOffers from './frames/BrowseOffers.svelte';
+	import BrowseOffersOwner from './frames/BrowseOffersOwner.svelte';
 
 	export let options: CardOptions;
 	export let listedNfts: number;
@@ -50,7 +51,7 @@
 		} else if (options.resourceType === 'nft') {
 			// User is owner
 			if (nftBalance) {
-				setFrameWithoutProps(CreateListing);
+				setFrameWithoutProps(BrowseOffersOwner);
 			} else {
 				setFrameWithoutProps(BrowseOffers);
 			}

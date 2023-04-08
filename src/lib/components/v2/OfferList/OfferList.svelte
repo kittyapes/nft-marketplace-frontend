@@ -10,7 +10,8 @@
 	const dispatch = createEventDispatcher();
 	const uniqClass = 'uniq-' + Math.random().toString().slice(2);
 
-	export let offerOfCurrentUser: OfferModel | null;
+	export let userIsOwner: boolean;
+	export let currentUserOffer: OfferModel | null;
 	export let data: OfferModel[] = [];
 	export let isLoading: boolean;
 	export let endReached: boolean;
@@ -33,12 +34,12 @@
 	>
 		<div class="p-4 pb-8">
 			<!-- Display offer of current user separately, at the top -->
-			{#if offerOfCurrentUser}
-				<OfferRow isFromCurrentUser data={offerOfCurrentUser} />
+			{#if currentUserOffer}
+				<OfferRow isFromCurrentUser data={currentUserOffer} enableHover={false} />
 			{/if}
 
 			{#each data as row}
-				<OfferRow data={row} />
+				<OfferRow data={row} enableHover={userIsOwner} />
 			{:else}
 				<div class="font-medium text-white text-center opacity-50">
 					{#if isLoading}
