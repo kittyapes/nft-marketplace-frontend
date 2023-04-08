@@ -55,7 +55,15 @@
 	<div class="text-white text-lg font-medium mb-2 flex-shrink-0">Offers</div>
 
 	<div class="flex-grow overflow-hidden">
-		<OffersLoader let:isLoading let:isError let:isEndReached let:offers let:onEndReached>
+		<OffersLoader
+			let:isLoading
+			let:isError
+			let:isEndReached
+			let:offers
+			let:onEndReached
+			nftFullId={options.rawListingData.nfts[0].nftId}
+		>
+			<!-- The above nftId is a hotfix, needs to be replaced with fullId -->
 			<OfferList
 				userIsOwner={true}
 				currentUserOffer={null}

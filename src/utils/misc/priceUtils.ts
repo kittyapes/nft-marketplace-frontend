@@ -47,7 +47,11 @@ const knownTokens: { ticker: string; address: string; network: string; decimals:
 	},
 ];
 
-export function isKnownToken(options: { ticker?: string; tokenAddress?: string; network?: 'eth' | 'rinkeby' | 'goerli' }) {
+export function isKnownToken(options: {
+	ticker?: string;
+	tokenAddress?: string;
+	network?: 'eth' | 'rinkeby' | 'goerli';
+}) {
 	try {
 		getKnownTokenDetails(options);
 	} catch {
@@ -57,7 +61,11 @@ export function isKnownToken(options: { ticker?: string; tokenAddress?: string; 
 	return true;
 }
 
-export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: string; network?: 'eth' | 'rinkeby' | 'goerli' }) {
+export function getKnownTokenDetails(options: {
+	ticker?: string;
+	tokenAddress?: string;
+	network?: 'eth' | 'rinkeby' | 'goerli';
+}) {
 	const { ticker, tokenAddress } = options;
 	let { network } = options;
 
@@ -82,7 +90,11 @@ export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: 
 		network = 'eth';
 	}
 
-	const token = knownTokens.find((t) => (t.ticker === ticker && t.network === network) || t.address.toLowerCase() === tokenAddress.toLowerCase());
+	const token = knownTokens.find(
+		(t) =>
+			(t.ticker === ticker && t.network === network) ||
+			t.address.toLowerCase() === tokenAddress?.toLowerCase(),
+	);
 
 	if (!token) {
 		throw new Error(`Couldn't find such token: ${JSON.stringify(options)}`);
@@ -91,7 +103,11 @@ export function getKnownTokenDetails(options: { ticker?: string; tokenAddress?: 
 	return token;
 }
 
-export function parseToken(amount: string, tokenAddress: string, fallback?: ethers.BigNumber): ethers.BigNumber {
+export function parseToken(
+	amount: string,
+	tokenAddress: string,
+	fallback?: ethers.BigNumber,
+): ethers.BigNumber {
 	const tokenDetails = getKnownTokenDetails({ tokenAddress: tokenAddress });
 
 	try {

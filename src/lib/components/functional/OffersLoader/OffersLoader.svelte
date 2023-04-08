@@ -4,6 +4,8 @@
 	import { notifyError } from '$utils/toast';
 	import type { OfferModel } from '$interfaces';
 
+	export let nftFullId: string;
+
 	let isLoading = false;
 	let pageIndex = 1;
 	let isError = false;
@@ -17,7 +19,7 @@
 		let newOffers: OfferModel[] = [];
 
 		try {
-			newOffers = await apiGetOffers(pageIndex, 10);
+			newOffers = await apiGetOffers(pageIndex, 10, nftFullId);
 		} catch (ex) {
 			isError = true;
 			isLoading = false;

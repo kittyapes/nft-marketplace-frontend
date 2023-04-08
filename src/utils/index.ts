@@ -3,6 +3,10 @@ import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { notifyError } from './toast';
 
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
+
 export class HandledError extends Error {
 	cause: Error;
 
@@ -63,4 +67,15 @@ export function handleGenerativeName(nftName: string, collectionName: string) {
 
 export function isMaxTwoWeeksInFuture(date: Dayjs) {
 	return date.isBefore(dayjs().add(14, 'days'));
+}
+
+/**
+ * Converts a date in ISO format to a human-readable string indicating how much time has passed since that timestamp.
+ * @param date A string representing the date to convert, in ISO format.
+ * @returns A string representing the amount of time that has passed since the provided timestamp, in human-readable format.
+ */
+export function timeSince(date: string): string {
+	const now = dayjs();
+	const timestamp = dayjs(date);
+	return timestamp.from(now);
 }

@@ -56,7 +56,7 @@
 				</div>
 			{/if}
 
-			{#if endReached}
+			{#if endReached && data.length}
 				<div class="font-medium text-white text-center opacity-50 mt-12 mb-4">
 					You have reached the end of the offer list.
 				</div>

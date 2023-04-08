@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Eth from '$icons/eth.svelte';
-	import type { OfferModel } from '$interfaces';
+	import type { CardOptions } from '$interfaces/ui';
 	import PriceInput from '$lib/components/PriceInput.svelte';
 	import OffersLoader from '$lib/components/functional/OffersLoader/OffersLoader.svelte';
 	import ButtonSpinner from '$lib/components/v2/ButtonSpinner/ButtonSpinner.svelte';
@@ -11,7 +11,8 @@
 	import { notifyError, notifySuccess } from '$utils/toast';
 	import { parseEther } from 'ethers/lib/utils';
 
-	let offers: OfferModel[] = [];
+	export let options: CardOptions;
+
 	let offerAmountFloat: string;
 
 	let isMakingOffer = false;
@@ -24,7 +25,11 @@
 		let res: Awaited<ReturnType<typeof apiMakeOffer>>;
 
 		try {
-			res = await apiMakeOffer($currentUserAddress, offerAmountBigNumber);
+			res = await apiMakeOffer(
+				$currentUserAddress,
+				options.nfts[0].onChainId, // TODO replace with .fullId, this is only a hotfix
+				offerAmountBigNumber,
+			);
 		} catch (ex) {
 			console.error(ex);
 			notifyError('Failed making offer!');
@@ -74,7 +79,9 @@
 			let:offers
 			let:onEndReached
 			let:currentUserOffer
+			nftFullId={options.nfts[0].onChainId}
 		>
+			<!-- The above onChainId is a hotfix, needs to be replaced with fullId -->
 			<OfferList
 				userIsOwner={false}
 				{currentUserOffer}
