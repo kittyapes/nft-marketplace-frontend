@@ -44,8 +44,6 @@
 		collections = [];
 		loadCollections();
 	}
-
-	$: console.log(collections);
 </script>
 
 <Input
@@ -68,7 +66,7 @@
 					goto(`?${$page.url.searchParams}`);
 					dispatch('request-refresh');
 				}}
-				class="flex flex-row items-center gap-x-4 2xl:gap-x-6 font-bold text-white text-xs 2xl:text-sm "
+				class="flex flex-row items-center gap-x-4 2xl:gap-x-6 font-bold text-white text-xs 2xl:text-sm"
 			>
 				<div
 					class="relative w-14 h-14 border-gradient thumbnail bg-cover bg-center flex-shrink-0"
@@ -98,7 +96,7 @@
 						<h3 class="">Floor: {collection?.stats?.localFloorPrice ?? 0} ETH</h3>
 
 						<h3>
-							${toShortDisplayPrice(`${collection?.stats?.total24Vol}`) ?? 0}
+							~${toShortDisplayPrice(`${collection?.stats?.localFloorPrice * 1850}`) ?? 0}
 						</h3>
 					</div>
 				</div>
