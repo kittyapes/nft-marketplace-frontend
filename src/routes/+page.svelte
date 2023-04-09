@@ -26,6 +26,8 @@
 	import dayjs from 'dayjs';
 	import { WalletState, walletState } from '$utils/wallet';
 	import { currentUserAddress } from '$stores/wallet';
+	import CreatorWithNfts from '$lib/components/v2/CreatorWithNfts/CreatorWithNfts.svelte';
+	import { goto } from '$app/navigation';
 
 	$: isWalletDataLoaded =
 		$walletState === WalletState.DISCONNECTED ||
@@ -50,18 +52,18 @@
 		loadedTrendingListings.set(true);
 	};
 
-	// let hottestCreators: ListingCreatorsData;
+	let hottestCreators: ListingCreatorsData;
 
-	// const getHottestCreatorsData = async () => {
-	// 	const listingCreatorsRes = await getListingCreators({ limit: 3 });
+	const getHottestCreatorsData = async () => {
+		const listingCreatorsRes = await getListingCreators({ limit: 3 });
 
-	// 	if (listingCreatorsRes.err) {
-	// 		notifyError('Failed to load hottest creators.');
-	// 		return;
-	// 	}
+		if (listingCreatorsRes.err) {
+			// notifyError('Failed to load hottest creators.');
+			return;
+		}
 
-	// 	hottestCreators = listingCreatorsRes.data.data;
-	// };
+		hottestCreators = listingCreatorsRes.data.data;
+	};
 
 	const getUserNotification = async () => {
 		if (!$userNotification) loadedUserNotification.set(false);
@@ -108,7 +110,7 @@
 	onDestroy(() => clearInterval(notificationFetchingInterval));
 
 	onMount(async () => {
-		// getHottestCreatorsData();
+		getHottestCreatorsData();
 		getTrendingListingsData();
 	});
 
@@ -173,18 +175,25 @@
 		</div>
 
 		<!-- Hottest creators section -->
-		<!-- <div class="pt-20 w-full" in:slide>
-			<div class="w-full flex justify-between">
-				<h2 class="text-2xl leading-7">Hottest Creators</h2>
-				<button class="gradient-underline text-lg clickable" on:click={() => goto('/marketplace/creators')}>View all</button>
-			</div>
+		{#if hottestCreators?.users.length}
+			<div class="pt-20 w-full" in:slide>
+				<div class="w-full flex justify-between">
+					<h2 class="text-2xl leading-7">Hottest Creators</h2>
+					<button
+						class="gradient-underline text-lg clickable"
+						on:click={() => goto('/marketplace/creators')}
+					>
+						View all
+					</button>
+				</div>
 
-			<div class="flex flex-col gap-4 mt-10 justify-center h-full">
-				{#each hottestCreators?.users || [] as user}
-					<CreatorWithNfts creator={user} listings={user.createdListings.slice(0, 2)} />
-				{/each}
+				<div class="flex flex-col gap-4 mt-10 justify-center h-full">
+					{#each hottestCreators?.users || [] as user}
+						<CreatorWithNfts creator={user} listings={user.creatorListings.slice(0, 2)} />
+					{/each}
+				</div>
 			</div>
-		</div> -->
+		{/if}
 
 		<!-- Latest blog posts -->
 		<div class="mt-12 mb-16">
@@ -223,7 +232,7 @@
 	</div>
 </div>
 
-<style type="postcss">
+<style lang="postcss">
 	.gradient-underline::after {
 		content: '';
 		@apply absolute w-full -bottom-1 left-0 h-[2px];

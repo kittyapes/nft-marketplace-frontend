@@ -142,7 +142,7 @@
 	}
 
 	// Listing timer
-	let timerHtml: string = '';
+	let timerHtml = '';
 	let timerInterval;
 	let fileType;
 
@@ -397,7 +397,7 @@
 	</div>
 </div>
 
-<style type="postcss">
+<style lang="postcss">
 	.normal-nft-details {
 		@apply py-2.5 2xl:py-3 px-4 2xl:px-5;
 		@apply h-32 2xl:h-36;

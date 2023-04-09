@@ -2,45 +2,35 @@
 	import CollectionsTable from '$components/v2/CollectionsTable/+page.svelte';
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { notifyError } from '$utils/toast';
+	import CollectionTablePaginationFooter from '$lib/components/v2/CollectionsTable/CollectionTablePaginationFooter.svelte';
 	import { onMount } from 'svelte';
-	import SortButton from '$components/v2/SortButton/+page.svelte';
 
 	let collections: Collection[] = [];
-	let query: string;
-	let reachedEnd = false;
 	let isLoading = true;
-	let page = 1;
-	const limit = 10;
 
-	const fetchFunction = async () => {
-		const res = await apiSearchCollections({ limit, page });
-		return res.collections;
-	};
+	const limit = 15;
+	const startAtPage = 1;
 
-	async function fetchMore() {
-		if (reachedEnd || query) return;
+	let totalNumberOfCollections = 0;
+
+	const fetchFunction = async (page: number) => {
 		isLoading = true;
 
-		const res = await fetchFunction();
+		const res = await apiSearchCollections({ limit, page });
 
 		if (res.err) {
 			console.error(res.err);
-			notifyError('Failed to fetch more collections.');
+			notifyError('Failed to fetch collections.');
 			return;
 		}
 
-		if (res.length === 0) {
-			reachedEnd = true;
-		} else {
-			page++;
-			collections = [...collections, ...res];
-		}
-		isLoading = false;
-	}
+		collections = res.collections;
+		totalNumberOfCollections = res.totalCount;
 
-	onMount(async () => {
-		await fetchMore();
-	});
+		isLoading = false;
+	};
+
+	onMount(() => fetchFunction(startAtPage));
 
 	// TODO implement sort options
 	let sortOptions: { title: string; action?: any }[] = [
@@ -68,5 +58,11 @@
 	</div> -->
 
 <div class="mt-16">
-	<CollectionsTable bind:collections bind:isLoading on:end-reached={fetchMore} />
+	<CollectionsTable bind:collections bind:isLoading />
+
+	<CollectionTablePaginationFooter
+		totalNumberOfItems={totalNumberOfCollections}
+		itemsPerPage={limit}
+		on:selected={(event) => fetchFunction(event.detail.page)}
+	/>
 </div>

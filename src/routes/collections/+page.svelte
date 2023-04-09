@@ -4,45 +4,39 @@
 	import { notifyError } from '$utils/toast';
 	import { onMount } from 'svelte';
 
-	let collections: Collection[] = [];
+	let collections: (Collection & { ranking?: number })[] = [];
 
-	let reachedEnd = false;
 	let isLoading = true;
-	let loaded = false;
-	let page = 1;
+	let startAtPage = 1;
 	const limit = 10;
 
-	let fetchFunction = async () => {
-		const res = await apiSearchCollections({ limit, page });
-		return res.collections;
-	};
+	let totalNumberOfItems = 0;
 
-	async function fetchMore() {
-		if (reachedEnd) return;
+	const fetchFunction = async (page: number) => {
 		isLoading = true;
 
-		const res = await fetchFunction();
+		const res = await apiSearchCollections({ limit, page, status: 'ACTIVE' });
 
 		if (res.err) {
 			console.error(res.err);
-			notifyError('Failed to fetch more collections.');
+			notifyError('Failed to fetch collections.');
 			return;
 		}
 
-		if (res.length === 0) {
-			reachedEnd = true;
-		} else {
-			page++;
-			collections = [...collections, ...res];
-		}
+		collections = res.collections;
+		collections.forEach((c, i) => (c.ranking = i + 1 + (page - 1) * limit));
+		totalNumberOfItems = res.totalCount;
 
 		isLoading = false;
-	}
+	};
 
-	onMount(async () => {
-		await fetchMore();
-		loaded = true;
-	});
+	onMount(() => fetchFunction(startAtPage));
 </script>
 
-<HomepageCollections {collections} {loaded} {isLoading} {reachedEnd} on:end-reached={fetchMore} />
+<HomepageCollections
+	on:selected={(event) => fetchFunction(event.detail.page)}
+	{collections}
+	{isLoading}
+	{totalNumberOfItems}
+	itemsPerPage={limit}
+/>

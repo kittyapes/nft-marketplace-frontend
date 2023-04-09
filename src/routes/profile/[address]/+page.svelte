@@ -594,7 +594,7 @@
 	</div>
 </div>
 
-<style type="postcss">
+<style lang="postcss">
 	.share-dropdown-outer {
 		background: linear-gradient(0deg, #67d4f8, #67d4f8);
 	}

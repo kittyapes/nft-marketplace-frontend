@@ -142,7 +142,7 @@
 	</div>
 </div>
 
-<style type="postcss">
+<style lang="postcss">
 	.dropdown-item:hover {
 		background: radial-gradient(
 				55.65% 55.65% at 51.68% 130.43%,

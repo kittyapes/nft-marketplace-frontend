@@ -199,7 +199,7 @@
 	</div>
 </div>
 
-<style type="postcss">
+<style lang="postcss">
 	.see-all {
 		@apply transition-all;
 	}

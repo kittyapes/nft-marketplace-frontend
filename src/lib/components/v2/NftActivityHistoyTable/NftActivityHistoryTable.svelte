@@ -95,7 +95,7 @@
 	{/if}
 </div>
 
-<style type="postcss">
+<style lang="postcss">
 	#grid-container > :nth-child(5n + 1) {
 		/* @apply px-6; */
 	}
