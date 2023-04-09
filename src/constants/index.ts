@@ -13,3 +13,4 @@ export const acceptedNftFileTypes = acceptedImages.concat(acceptedVideos);
 export const walletConnectionRequiredRoutes = ['/create'];
 
 export const defaultProfileImageUrl = '/svg/icons/guest-avatar.svg';
+export const defaultOfferDuration = 3600 * 24 * 7; // seconds (one week)

@@ -1,10 +1,13 @@
 import type { OfferModel } from '$interfaces';
 import axios from 'axios';
-import type { BigNumber } from 'ethers';
+import { BigNumber, type Signer } from 'ethers';
 import { getApiUrl } from '.';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { formatToken } from '$utils/misc/priceUtils';
 import { getKnownTokenDetails } from '$utils/misc/priceUtils';
+import { getOfferSignature } from '$utils/contracts/offers';
+import { generateRandomNonce, getSecondsSinceEpoch, parseFullId } from '$utils';
+import { defaultOfferDuration } from '$constants';
 
 interface GetOffers_ResponseData {
 	error: boolean;
@@ -42,19 +45,35 @@ export async function apiGetOffers(
 	return res.data.data;
 }
 
-export async function apiMakeOffer(userAddress: string, nftFullId: string, offerAmount: BigNumber) {
-	// TODO... call API
-
+export async function apiSubmitOffer(
+	buyer: Signer,
+	collectionAddress: string,
+	tokenId: BigNumber,
+	offerAmount: BigNumber,
+) {
 	const tokenTicker = 'WETH';
 	const tokenAddress = getKnownTokenDetails({ ticker: tokenTicker }).address;
+
+	// const { collectionAddress, tokenId } = parseFullId(nftFullId); // This can be restored later
+
+	const signature = await getOfferSignature(
+		buyer,
+		collectionAddress,
+		tokenId,
+		BigNumber.from(1),
+		tokenAddress,
+		offerAmount,
+		getSecondsSinceEpoch() + defaultOfferDuration,
+		generateRandomNonce(),
+	);
 
 	const res = await axios.post(
 		getApiUrl(null, '/nfts/offer'),
 		{
-			nftId: nftFullId,
+			nftId: tokenId.toString(),
 			offerPrice: offerAmount.toString(),
 			formatOfferPrice: formatToken(offerAmount, tokenAddress),
-			signature: 'adsasd',
+			signature,
 			paymentTokenTicker: 'ETH', // Temporary fix TODO set to tokenTicker
 			paymentTokenAddress: tokenAddress,
 		},
