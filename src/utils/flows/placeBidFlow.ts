@@ -1,6 +1,11 @@
 import { profileData, refreshProfileData } from '$stores/user';
 import { appSigner } from '$stores/wallet';
-import { handleAxiosNetworkError, HandledError, handleErrActionRejected } from '$utils';
+import {
+	ErrNotificationError,
+	handleAxiosNetworkError,
+	HandledError,
+	handleErrActionRejected,
+} from '$utils';
 import { getApiUrl } from '$utils/api';
 import type { Listing } from '$utils/api/listing';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
@@ -23,7 +28,10 @@ async function placeBidNormal(listing: Listing, amount: BigNumber): Promise<void
 	try {
 		await contractCaller(contract, 'bid', 150, 1, ...callArgs);
 	} catch (err) {
-		console.error(err);
+		if (err.message.includes('ALREADY_HIGHEST_BIDDER')) {
+			throw new ErrNotificationError('You are already the highest bidder', err);
+		}
+
 		notifyError(err.message);
 	}
 }
@@ -38,7 +46,13 @@ const GASLESS_BID_TYPES = {
 	],
 };
 
-async function getBidSignature(sellerAddress: string, listingNonce: BigNumberish, bidder: ethers.Signer, bidAmount: BigNumberish, bidNonce: BigNumberish): Promise<string> {
+async function getBidSignature(
+	sellerAddress: string,
+	listingNonce: BigNumberish,
+	bidder: ethers.Signer,
+	bidAmount: BigNumberish,
+	bidNonce: BigNumberish,
+): Promise<string> {
 	const value = {
 		seller: sellerAddress,
 		listingNonce,
