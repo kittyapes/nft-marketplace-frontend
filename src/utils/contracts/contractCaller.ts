@@ -10,8 +10,13 @@ import type { ethers } from 'ethers';
  * @returns ethers.ContractReceipt
  */
 
-export default async function (contract: ethers.Contract, methodName: string, gasMultiple = 110, confirmations = 1, ...params: any) {
-	console.log(params);
+export default async function (
+	contract: ethers.Contract,
+	methodName: string,
+	gasMultiple = 110,
+	confirmations = 1,
+	...params: any
+) {
 	// Estimate Gas First
 	const gasEst = await contract.estimateGas[methodName](...params).catch((err) => {
 		// Throw error if any is found

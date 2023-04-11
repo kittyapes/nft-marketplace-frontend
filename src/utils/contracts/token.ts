@@ -41,7 +41,11 @@ export async function getTokenDetails(tokenAddress: string) {
 	}
 }
 
-export async function getTokenBalance(tokenAddress: string, userAddress: string, decimals?: number): Promise<BigNumber> {
+export async function getTokenBalance(
+	tokenAddress: string,
+	userAddress: string,
+	decimals?: number,
+): Promise<BigNumber> {
 	if (isEther(tokenAddress)) {
 		return await get(appProvider).getBalance(userAddress);
 	}
@@ -56,7 +60,11 @@ export async function getTokenBalance(tokenAddress: string, userAddress: string,
 	return balance;
 }
 
-export async function hasEnoughBalance(tokenAddress: string, userAddress: string, requiredBalance: string) {
+export async function hasEnoughBalance(
+	tokenAddress: string,
+	userAddress: string,
+	requiredBalance: string,
+) {
 	const tokenDetails = await getTokenDetails(tokenAddress);
 	const balance = await getTokenBalance(tokenAddress, userAddress, tokenDetails.decimals);
 
@@ -65,30 +73,45 @@ export async function hasEnoughBalance(tokenAddress: string, userAddress: string
 	return balance.gte(parsedRequired);
 }
 
-export async function contractGetTokenAllowance(owner: string, spender: string, tokenAddress: string): Promise<BigNumber> {
+export async function contractGetTokenAllowance(
+	owner: string,
+	spender: string,
+	tokenAddress: string,
+): Promise<BigNumber> {
 	if (isEther(tokenAddress)) {
 		return ethers.utils.parseUnits('999999999999999999999999999999999999000000000000000000', 18);
 	}
 	const contract = getMockErc20TokenContract(get(appSigner), tokenAddress);
 
 	const allowance = await contract.allowance(owner, spender);
-	console.log(allowance);
 
 	return allowance;
 }
 
-export async function contractApproveToken(spender: string, amount: BigNumber, tokenAddress: string, tokenDecimals: number) {
+export async function contractApproveToken(
+	spender: string,
+	amount: BigNumber,
+	tokenAddress: string,
+	tokenDecimals: number,
+) {
 	if (isEther(tokenAddress)) {
 		return;
 	}
 	const contract = getMockErc20TokenContract(get(appSigner), tokenAddress);
 
 	// We can't assume the token is ethereum
-	const approveTx = await contract.approve(spender, ethers.utils.parseUnits(amount.toString(), tokenDecimals));
+	const approveTx = await contract.approve(
+		spender,
+		ethers.utils.parseUnits(amount.toString(), tokenDecimals),
+	);
 	await approveTx.wait(1);
 }
 
-export async function ensureAmountApproved(spender: string, amount: string, tokenAddress: string): Promise<boolean> {
+export async function ensureAmountApproved(
+	spender: string,
+	amount: string,
+	tokenAddress: string,
+): Promise<boolean> {
 	if (isEther(tokenAddress)) {
 		return true;
 	}
@@ -100,7 +123,10 @@ export async function ensureAmountApproved(spender: string, amount: string, toke
 	if (approved.lt(amountBigNumber)) {
 		notifyWarning('Token allowance is insufficient. Please approve the token first.');
 
-		const [err, res] = await noTryAsync(async () => await contractApproveToken(spender, amountBigNumber, tokenAddress, token.decimals));
+		const [err, res] = await noTryAsync(
+			async () =>
+				await contractApproveToken(spender, amountBigNumber, tokenAddress, token.decimals),
+		);
 
 		if (err) {
 			console.error(err);
