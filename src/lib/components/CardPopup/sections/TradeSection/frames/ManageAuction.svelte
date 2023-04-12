@@ -51,7 +51,14 @@
 		notifySuccess('Sucessfully completed your auction.');
 
 		options.staleResource.set({ reason: 'bid-accepted' });
-		dispatch('set-state', { name: 'success', props: { showProfileButton: false, showMarketplaceButton: false, successDescription: 'Auction completed successfully.' } });
+		dispatch('set-state', {
+			name: 'success',
+			props: {
+				showProfileButton: false,
+				showMarketplaceButton: false,
+				successDescription: 'Auction completed successfully.',
+			},
+		});
 		dispatch('force-expire');
 		dispatch('set-frame', { component: Success });
 	}
@@ -92,20 +99,28 @@
 
 	$: highestAmount = biddings[0] && parseToken(biddings[0].tokenAmount, payTokenAddress);
 
-	$: canCancel = biddings.length < 1 || (highestAmount && highestAmount.lt(parseToken(reservePrice, payTokenAddress)));
+	$: canCancel =
+		biddings.length < 1 ||
+		(highestAmount && highestAmount.lt(parseToken(reservePrice, payTokenAddress)));
 	let canAccept = false;
 	$: hasBids = biddings.length > 0;
 
 	$: if (reservePrice === price) {
 		canAccept = [biddings.length > 0].some((v) => v);
 	} else {
-		canAccept = listingExpired || (biddings.length && parseFloat(biddings[0].tokenAmount) >= parseFloat(reservePrice));
+		canAccept =
+			listingExpired ||
+			(biddings.length && parseFloat(biddings[0].tokenAmount) >= parseFloat(reservePrice));
 	}
 </script>
 
 <div class="flex flex-col flex-grow text-white aspect-1">
 	<div class="min-h-[300px] flex-grow">
-		<AuctionBidList listingId={options.rawResourceData.listingId} bind:biddings bind:isRefreshing={isRefreshingBids} />
+		<AuctionBidList
+			listingId={options.rawResourceData.listingId}
+			bind:biddings
+			bind:isRefreshing={isRefreshingBids}
+		/>
 	</div>
 
 	<div class="flex my-4 font-semibold">
@@ -129,8 +144,17 @@
 	</div>
 
 	<div class="grid grid-cols-2 gap-3">
-		<div bind:this={cancelButtonContainer} class="w-full" on:pointerenter={cancelHovered.toggle} on:pointerleave={cancelHovered.toggle}>
-			<GhostButton class="h-12 relative" disabled={isCancelling || isAccepting || isRefreshingBids || !canCancel} on:click={cancelListing}>
+		<div
+			bind:this={cancelButtonContainer}
+			class="w-full"
+			on:pointerenter={cancelHovered.toggle}
+			on:pointerleave={cancelHovered.toggle}
+		>
+			<GhostButton
+				class="h-12 relative"
+				disabled={isCancelling || isAccepting || isRefreshingBids || !canCancel}
+				on:click={cancelListing}
+			>
 				{#if isCancelling}
 					<ButtonSpinner secondary />
 				{/if}
@@ -138,7 +162,10 @@
 			</GhostButton>
 		</div>
 
-		<PrimaryButton disabled={!hasBids || isCancelling || isAccepting || isRefreshingBids || !canAccept} on:click={acceptHighest}>
+		<PrimaryButton
+			disabled={!hasBids || isCancelling || isAccepting || isRefreshingBids || !canAccept}
+			on:click={acceptHighest}
+		>
 			{#if isAccepting}
 				<ButtonSpinner />
 			{/if}

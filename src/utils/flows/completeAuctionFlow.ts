@@ -55,9 +55,15 @@ async function completeAuctionGasless(listing: Listing): Promise<void> {
 		await contractCaller(marketplaceV2, 'completeAuction', 150, 1, ...callArgs);
 	} catch (err) {
 		if (err.message.includes('USED_SIGNATURE')) {
-			throw new ErrNotificationError('Sorry, could not complete your auction. One of the signatures we tried to use was already used.', err);
+			throw new ErrNotificationError(
+				'Sorry, could not complete your auction. One of the signatures we tried to use was already used.',
+				err,
+			);
 		} else if (err.message.includes('ERC20: transfer amount exceeds balance')) {
-			throw new ErrNotificationError('Sorry, the highest bidder no longer has the required token balance in their wallet.', err);
+			throw new ErrNotificationError(
+				'Sorry, the highest bidder no longer has the required token balance in their wallet.',
+				err,
+			);
 		} else if (err.code === 'ACTION_REJECTED') {
 			throw new ErrNotificationError('Auction completion transaction rejected.', err);
 		}
