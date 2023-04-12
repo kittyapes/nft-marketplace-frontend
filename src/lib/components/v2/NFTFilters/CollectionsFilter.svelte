@@ -8,6 +8,7 @@
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { onMount } from 'svelte';
 	import Input from '../Input/Input.svelte';
+	import { toShortDisplayPrice } from '$utils/adapters/cardOptions';
 
 	const dispatch = createEventDispatcher();
 
@@ -45,7 +46,11 @@
 	}
 </script>
 
-<Input bind:value={searchPhrase} class="relative rounded-none border-2 bg-gradient-a border-gradient hover:text-white w-full h-12" placeholder="Search by collections">
+<Input
+	bind:value={searchPhrase}
+	class="relative rounded-none border-2 bg-gradient-a border-gradient hover:text-white w-full h-12"
+	placeholder="Search by collections"
+>
 	<div class="ml-4 grid place-items-center">
 		<Search class="w-5 h-6" />
 	</div>
@@ -63,31 +68,35 @@
 				}}
 				class="flex flex-row items-center gap-x-4 2xl:gap-x-6 font-bold text-white text-xs 2xl:text-sm"
 			>
-				<div class="relative w-14 h-14 border-gradient thumbnail bg-cover bg-center flex-shrink-0" style="--url: url({collection?.logoImageUrl ?? ''})">
-					<HinataBadge class="absolute -bottom-2.5 -right-2.5 z-10  w-5 h-5 {!collection?.verified ? 'hidden' : ''}" />
+				<div
+					class="relative w-14 h-14 border-gradient thumbnail bg-cover bg-center flex-shrink-0"
+					style="--url: url({collection?.logoImageUrl ?? ''})"
+				>
+					<HinataBadge
+						class="absolute -bottom-2.5 -right-2.5 z-10  w-5 h-5 {collection.mintedFrom !== 'HINATA'
+							? 'hidden'
+							: ''}"
+					/>
 				</div>
 
 				<div class="flex-grow whitespace-nowrap truncate">
-					<div class="flex flex-row items-center justify-between">
-						<h2>{collection?.name}</h2>
-						<h2>{collection?.stats?.localTotalVol + collection?.stats?.externalTotalVol} ETH</h2>
+					<div class="flex flex-row items-center justify-between gap-x-2 max-w-full">
+						<h2 class="truncate">{collection?.name}</h2>
+
+						<h2>
+							{toShortDisplayPrice(
+								`${collection?.stats?.localTotalVol + collection?.stats?.externalTotalVol}`,
+							)} ETH
+						</h2>
 					</div>
 
-					<div class="flex flex-row items-center justify-between font-semibold leading-7 2xl:leading-9 text-[#CECECE]">
+					<div
+						class="flex flex-row items-center justify-between font-semibold leading-7 2xl:leading-9 text-[#CECECE]"
+					>
 						<h3 class="">Floor: {collection?.stats?.localFloorPrice ?? 0} ETH</h3>
 
 						<h3>
-							${collection?.stats?.total24Vol / 1000 ?? 0}K
-
-							{#if collection?.stats?.vol24HrChange ?? 0 > 0}
-								<span class="text-[#6FCF97]">
-									{collection?.stats?.vol24HrChange * 100 ?? 0}%
-								</span>
-							{:else if collection?.stats?.vol24HrChange ?? 0 < 0}
-								<span class="text-[#EB5757]">
-									{collection?.stats?.vol24HrChange * 100 ?? 0}%
-								</span>
-							{/if}
+							~${toShortDisplayPrice(`${collection?.stats?.localFloorPrice * 1850}`) ?? 0}
 						</h3>
 					</div>
 				</div>
@@ -101,5 +110,10 @@
 {/if}
 
 {#if collections?.length > 0}
-	<button on:click={async () => await loadCollections()} class="w-full flex items-center justify-center bg-gradient-a border-gradient h-11 2xl:h-14 mt-7 2xl:mt-9">Load more</button>
+	<button
+		on:click={async () => await loadCollections()}
+		class="w-full flex items-center justify-center bg-gradient-a border-gradient h-11 2xl:h-14 mt-7 2xl:mt-9"
+	>
+		Load more
+	</button>
 {/if}
