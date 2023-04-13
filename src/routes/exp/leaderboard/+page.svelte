@@ -103,7 +103,7 @@
 			<!-- Rest of the leaderboard usernames -->
 			{#each users as user}
 				<div class="font-semibold text-xl px-8 py-4 column-item">
-					<a href="/profile/{user.address}" class=""><p>{user.username}</p></a>
+					<a href="/profile/{user.address}" class=""><p>{user.username || 'No Username'}</p></a>
 				</div>
 			{/each}
 		</div>
