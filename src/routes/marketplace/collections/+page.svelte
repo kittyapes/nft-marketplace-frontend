@@ -2,7 +2,7 @@
 	import CollectionsTable from '$components/v2/CollectionsTable/+page.svelte';
 	import { apiSearchCollections, type Collection } from '$utils/api/collection';
 	import { notifyError } from '$utils/toast';
-	import CollectionTablePaginationFooter from '$lib/components/v2/CollectionsTable/CollectionTablePaginationFooter.svelte';
+	import CollectionTablePaginationFooter from '$lib/components/v2/CollectionsTable/CommonTablePaginationFooter.svelte';
 	import { onMount } from 'svelte';
 
 	let collections: Collection[] = [];

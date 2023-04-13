@@ -6,6 +6,8 @@
 	import { notifyError } from '$utils/toast';
 	import { onMount, tick } from 'svelte';
 	import { inview } from 'svelte-inview';
+	import { fetchIsFollowing } from "$utils/api/following";
+	import { writable } from "svelte/store";
 
 	const limit = 10;
 
@@ -14,6 +16,11 @@
 	let isEndReached = false;
 	let fetchFailed = false;
 	let creators: ListingCreatorsData['users'] = [];
+	let creatorFollowStatuses = writable<{ [address: string]: boolean }>({});
+
+	async function checkFollowStatus(creatorAddresses) {
+		creatorAddresses.length && creatorFollowStatuses.set(await fetchIsFollowing(creatorAddresses));
+	}
 
 	async function fetch() {
 		isFetching = true;
@@ -43,11 +50,13 @@
 	onMount(() => {
 		fetch();
 	});
+
+	$: creators.length && checkFollowStatus(creators.map(creator => creator.address));
 </script>
 
 <div class="mt-8 flex flex-col gap-4">
 	{#each creators as creator}
-		<CreatorWithNfts {creator} listings={creator.creatorListings} />
+		<CreatorWithNfts {creator} listings={creator.creatorListings} creatorFollowStatuses={$creatorFollowStatuses} />
 	{/each}
 </div>
 

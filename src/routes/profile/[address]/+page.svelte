@@ -7,7 +7,6 @@
 	import VerifiedBadge from '$icons/verified-badge.svelte';
 	import type { FetchFunctionResult } from '$interfaces/fetchFunctionResult';
 	import type { CardOptions } from '$interfaces/ui';
-	import CardPopup from '$lib/components/CardPopup/CardPopup.svelte';
 	import EthAddress from '$lib/components/EthAddress.svelte';
 	import { slide } from 'svelte/transition';
 	import InfoBox from '$lib/components/InfoBox.svelte';
@@ -23,13 +22,12 @@
 		userLikedNfts,
 	} from '$stores/user';
 	import { listingToCardOptions, nftToCardOptions } from '$utils/adapters/cardOptions';
-	import { getListing, getListings } from '$utils/api/listing';
-	import { apiGetUserNfts, apiGetUserOwnedNftsAlchemy, getNft } from '$utils/api/nft';
+	import { getListings } from '$utils/api/listing';
+	import { apiGetUserNfts, apiGetUserOwnedNftsAlchemy } from '$utils/api/nft';
 	import { fetchProfileData } from '$utils/api/profile';
 	import { apiGetHiddenNfts } from '$utils/api/user';
 	import { userHasRole } from '$utils/auth/userRoles';
 	import { storage } from '$utils/contracts';
-	import { removeUrlParam } from '$utils/misc/removeUrlParam';
 	import { getUserFavoriteNfts } from '$utils/nfts/getUserFavoriteNfts';
 	import { setPopup } from '$utils/popup';
 	import { notifyError } from '$utils/toast';
@@ -59,7 +57,7 @@
 	}
 
 	const fetchFollowing = async () => {
-		isFollowing = await fetchIsFollowing(address);
+		isFollowing = (await fetchIsFollowing([address]))[address.toLowerCase()] || false;
 	};
 
 	onMount(async () => {
@@ -405,7 +403,8 @@
 								<PrimaryButton
 									extButtonClass="w-40"
 									on:click={async () => {
-										isFollowing = await followUnfollowUser(address, false);
+										const res = await followUnfollowUser(address, false);
+										isFollowing = res ? !isFollowing : isFollowing;
 									}}
 								>
 									<div class="text-lg">Unfollow</div>
@@ -414,7 +413,8 @@
 								<PrimaryButton
 									extButtonClass="w-40"
 									on:click={async () => {
-										isFollowing = await followUnfollowUser(address, true);
+										const res = await followUnfollowUser(address, true);
+										isFollowing = res ? !isFollowing : isFollowing;
 									}}
 								>
 									<div class="text-lg">Follow</div>

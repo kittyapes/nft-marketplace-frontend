@@ -5,8 +5,10 @@
 	import NftCard from '$lib/components/NftCard.svelte';
 	import { listingToCardOptions } from '$utils/adapters/cardOptions';
 	import type { Listing } from '$utils/api/listing';
+	import { currentUserAddress } from "$stores/wallet";
 
 	export let creator: UserData & { creatorListings: Listing[] };
+	export let creatorFollowStatuses: { [address: string]: boolean } = {};
 	export let listings: Listing[];
 </script>
 
@@ -20,6 +22,7 @@
 				coverImg: creator.coverUrl,
 				profileImg: creator.thumbnailUrl,
 				created: creator.totalMinted,
+				isFollowing: ($currentUserAddress && creatorFollowStatuses[creator.address.toLowerCase()]) || false
 			}}
 		/>
 	</div>
