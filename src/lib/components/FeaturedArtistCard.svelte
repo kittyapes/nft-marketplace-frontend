@@ -11,13 +11,17 @@
 		coverImg: string;
 		profileImg: string;
 		created?: number;
+		isFollowing: boolean;
 	};
+	$: creatorData;
 
 	export let includeCreatedNumber = true;
-	export let followed = false;
 
 	async function handleFollow() {
-		followed = await followUnfollowUser(creatorData.address, !followed);
+		const res = await followUnfollowUser(creatorData.address, creatorData.isFollowing);
+		if (res) {
+			creatorData.isFollowing = !creatorData.isFollowing;
+		}
 	}
 </script>
 
@@ -42,7 +46,7 @@
 				<div class="w-24 h-24 flex-shrink-0">
 					<img
 						src={creatorData.profileImg}
-						alt="Featured crator profile."
+						alt="Featured creator profile."
 						class="h-full object-cover object-top w-full"
 					/>
 				</div>
@@ -64,7 +68,7 @@
 
 			<div class="flex flex-col justify-between items-end flex-shrink-0">
 				<button on:click|stopPropagation={handleFollow} class="ml-2">
-					<PrimaryButton extButtonClass="w-40">{followed ? 'Unfollow' : 'Follow'}</PrimaryButton>
+					<PrimaryButton extButtonClass="w-40">{creatorData.isFollowing ? 'Unfollow' : 'Follow'}</PrimaryButton>
 				</button>
 
 				{#if includeCreatedNumber && creatorData.created}

@@ -3,6 +3,8 @@ import axios from 'axios';
 import { getApiUrl, type ApiCallResult, api } from '.';
 import type { UserData } from '$interfaces/userData';
 import { getAxiosConfig } from '$utils/auth/axiosConfig';
+import { get } from 'svelte/store';
+import { currentUserAddress } from '$stores/wallet';
 
 export type ListingType = 'sale' | 'auction' | 'raffle';
 

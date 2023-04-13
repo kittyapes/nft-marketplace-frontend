@@ -28,6 +28,7 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import CreatorWithNfts from '$lib/components/v2/CreatorWithNfts/CreatorWithNfts.svelte';
 	import { goto } from '$app/navigation';
+	import { fetchIsFollowing } from "$utils/api/following";
 
 	$: isWalletDataLoaded =
 		$walletState === WalletState.DISCONNECTED ||
@@ -64,6 +65,12 @@
 
 		hottestCreators = listingCreatorsRes.data.data;
 	};
+
+	let creatorFollowStatuses = writable<{ [address: string]: boolean }>({});
+
+	async function checkFollowStatus(creatorAddresses) {
+		creatorAddresses.length && creatorFollowStatuses.set(await fetchIsFollowing(creatorAddresses));
+	}
 
 	const getUserNotification = async () => {
 		if (!$userNotification) loadedUserNotification.set(false);
@@ -115,6 +122,7 @@
 	});
 
 	$: if (isWalletDataLoaded) getUserNotification();
+	$: hottestCreators?.users.length > 0 && checkFollowStatus(hottestCreators?.users?.map(creator => creator.address));
 </script>
 
 <MetaTags
@@ -189,7 +197,7 @@
 
 				<div class="flex flex-col gap-4 mt-10 justify-center h-full">
 					{#each hottestCreators?.users || [] as user}
-						<CreatorWithNfts creator={user} listings={user.creatorListings.slice(0, 2)} />
+						<CreatorWithNfts creator={user} listings={user.creatorListings.slice(0, 2)} creatorFollowStatuses={$creatorFollowStatuses} />
 					{/each}
 				</div>
 			</div>
