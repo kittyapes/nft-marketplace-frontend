@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Collection } from '$utils/api/collection';
-	import CollectionTablePaginationFooter from '../v2/CollectionsTable/CollectionTablePaginationFooter.svelte';
+	import CollectionTablePaginationFooter from '../v2/CollectionsTable/CommonTablePaginationFooter.svelte';
 	import CollectionsContainer from './CollectionsContainer.svelte';
 
 	export let collections: (Collection & { ranking?: number })[];

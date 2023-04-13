@@ -1,30 +1,60 @@
-<script>
+<script lang="ts">
 	import { browser } from '$app/environment';
 	import { currentUserAddress } from '$stores/wallet';
-	import { getExpPoints } from '$utils/api/exp';
+	import {
+		getExpLeaderboard,
+		getUserExpPoints,
+		type FetchExpLeaderboardOptions,
+		type ExpLeaderboardUserRecord,
+		type UserExpResponse,
+	} from '$utils/api/exp';
 	import { writable } from 'svelte/store';
 	import { expPointsToColor } from '..';
 	import RewardsHeader from '../lib/RewardsHeader.svelte';
+	import CollectionTablePaginationFooter from '$components/v2/CollectionsTable/CommonTablePaginationFooter.svelte';
 
-	let currentUser = writable({
+	let page = 1;
+	const limit = 50;
+	const totalNumberOfItems = 420;
+
+	const apiBoardData = writable<(ExpLeaderboardUserRecord & { class?: string })[]>([]);
+
+	const currentUser = writable<UserExpResponse>({
 		exp: 0,
 		userAddress: '',
 	});
 
 	async function fetchUserExp() {
-		const res = await getExpPoints();
-		$currentUser = res.data.data;
-		console.log($currentUser);
+		const res = await getUserExpPoints();
+		$currentUser = res.data;
+	}
+
+	async function fetchExpLeaderboard() {
+		const params: FetchExpLeaderboardOptions = {
+			limit,
+			page,
+		};
+
+		const res = await getExpLeaderboard(params);
+		$apiBoardData = res.data;
+	}
+
+	function handlePageSelect(event: CustomEvent) {
+		page = event.detail.page;
 	}
 
 	$: if (browser && $currentUserAddress) {
 		fetchUserExp();
 	}
 
-	// $: users = apiBoardData.map((u) => {
-	// 	u.class = expPointsToColor(u.exp);
-	// 	return u;
-	// });
+	$: if (browser && page) {
+		fetchExpLeaderboard();
+	}
+
+	$: users = $apiBoardData.map((u) => {
+		u.class = expPointsToColor(u.exp);
+		return u;
+	});
 </script>
 
 <main class="text-white">
@@ -42,15 +72,15 @@
 
 			<!-- Current user -->
 			<div class="font-semibold text-xl uppercase text-center py-4 bg-card-gradient">
-				<p class="text-gradient min-w-full text-center whitespace-nowrap">Coming soon</p>
+				<p class="text-gradient min-w-full text-center whitespace-nowrap">-</p>
 			</div>
 
-			<!-- Rest of the leaderboard positions 
-			{#each users as _, i}
+			<!-- Rest of the leaderboard positions -->
+			{#each users as u}
 				<div class="font-semibold text-xl py-4 grid place-items-center column-item">
-					<p class="">{i + 1}</p>
+					<p class="">{u.rank}</p>
 				</div>
-			{/each} -->
+			{/each}
 		</div>
 
 		<!-- Second Column - usernames -->
@@ -70,12 +100,12 @@
 				<p class="text-gradient">You</p>
 			</a>
 
-			<!-- Rest of the leaderboard usernames 
+			<!-- Rest of the leaderboard usernames -->
 			{#each users as user}
 				<div class="font-semibold text-xl px-8 py-4 column-item">
-					<p class="">{user.username}</p>
+					<a href="/profile/{user.address}" class=""><p>{user.username}</p></a>
 				</div>
-			{/each} -->
+			{/each}
 		</div>
 
 		<!-- Third column - XP -->
@@ -96,16 +126,22 @@
 				</p>
 			</div>
 
-			<!-- Rest of the leaderboard xp 
+			<!-- Rest of the leaderboard xp -->
 			{#each users as user}
 				<div
 					class="font-semibold text-xl text-center py-4 grid place-items-center column-item {user.class}"
 				>
 					<p class="">{user.exp}</p>
 				</div>
-			{/each} -->
+			{/each}
 		</div>
 	</div>
+
+	<CollectionTablePaginationFooter
+		{totalNumberOfItems}
+		itemsPerPage={limit}
+		on:selected={handlePageSelect}
+	/>
 </main>
 
 <style lang="postcss">
