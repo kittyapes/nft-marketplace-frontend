@@ -43,6 +43,7 @@
 		}
 
 		notifySuccess('Placed offer.');
+		offerAmountFloat = '';
 
 		isMakingOffer = false;
 	}
