@@ -72,7 +72,7 @@ export async function apiSubmitOffer(buyer: Signer, nftFullId: string, offerAmou
 			offerPrice: offerAmount.toString(),
 			formatOfferPrice: formatToken(offerAmount, tokenAddress),
 			signature,
-			paymentTokenTicker: 'ETH', // Temporary fix TODO set to tokenTicker
+			paymentTokenTicker: 'WETH',
 			paymentTokenAddress: tokenAddress,
 			expireTime,
 			nonce: nonce.toString(),
