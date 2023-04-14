@@ -40,6 +40,9 @@
 			isEndReached = true;
 		}
 
+		// Current implementaiton does not support pagination. The resource is exhausted already after one request.
+		isEndReached = true;
+
 		isLoading = false;
 	}
 
