@@ -61,9 +61,8 @@
 			let:isEndReached
 			let:offers
 			let:onEndReached
-			nftFullId={options.rawListingData.nfts[0].nftId}
+			nftFullId={options.rawListingData.nfts[0].fullId}
 		>
-			<!-- The above nftId is a hotfix, needs to be replaced with fullId -->
 			<OfferList
 				userIsOwner={true}
 				currentUserOffer={null}

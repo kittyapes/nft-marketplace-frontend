@@ -33,12 +33,7 @@
 		let res: Awaited<ReturnType<typeof apiSubmitOffer>>;
 
 		try {
-			res = await apiSubmitOffer(
-				get(appSigner),
-				options.nfts[0].contractAddress,
-				BigNumber.from(options.nfts[0].onChainId), // TODO replace with .fullId, this is only a hotfix
-				offerAmountBigNumber,
-			);
+			res = await apiSubmitOffer(get(appSigner), options.nfts[0].fullId, offerAmountBigNumber);
 		} catch (ex) {
 			console.error(ex);
 			notifyError('Failed making offer!');
@@ -88,9 +83,8 @@
 			let:offers
 			let:onEndReached
 			let:currentUserOffer
-			nftFullId={options.nfts[0].onChainId}
+			nftFullId={options.nfts[0].fullId}
 		>
-			<!-- The above onChainId is a hotfix, needs to be replaced with fullId -->
 			<OfferList
 				userIsOwner={false}
 				{currentUserOffer}

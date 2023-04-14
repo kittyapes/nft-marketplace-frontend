@@ -45,16 +45,13 @@ export async function apiGetOffers(
 	return res.data.data;
 }
 
-export async function apiSubmitOffer(
-	buyer: Signer,
-	collectionAddress: string,
-	tokenId: BigNumber,
-	offerAmount: BigNumber,
-) {
+export async function apiSubmitOffer(buyer: Signer, nftFullId: string, offerAmount: BigNumber) {
 	const tokenTicker = 'WETH';
 	const tokenAddress = getKnownTokenDetails({ ticker: tokenTicker }).address;
 
-	// const { collectionAddress, tokenId } = parseFullId(nftFullId); // This can be restored later
+	const { collectionAddress, tokenId } = parseFullId(nftFullId);
+	const expireTime = getSecondsSinceEpoch() + defaultOfferDuration;
+	const nonce = generateRandomNonce();
 
 	const signature = await getOfferSignature(
 		buyer,
@@ -63,19 +60,22 @@ export async function apiSubmitOffer(
 		BigNumber.from(1),
 		tokenAddress,
 		offerAmount,
-		getSecondsSinceEpoch() + defaultOfferDuration,
-		generateRandomNonce(),
+		expireTime,
+		nonce,
 	);
 
 	const res = await axios.post(
 		getApiUrl(null, '/nfts/offer'),
 		{
-			nftId: tokenId.toString(),
+			tokenId: tokenId.toString(),
+			collectionAddress,
 			offerPrice: offerAmount.toString(),
 			formatOfferPrice: formatToken(offerAmount, tokenAddress),
 			signature,
 			paymentTokenTicker: 'ETH', // Temporary fix TODO set to tokenTicker
 			paymentTokenAddress: tokenAddress,
+			expireTime,
+			nonce: nonce.toString(),
 		},
 		await getAxiosConfig(),
 	);
