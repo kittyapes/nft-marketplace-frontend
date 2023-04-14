@@ -67,15 +67,18 @@ export interface NftInListingModel {
 
 export interface OfferModel {
 	_id: string;
-	status: string;
+	tokenAmount: string;
+	nonce: string;
 	paymentTokenTicker: string;
-	nftId: string;
-	offerPrice: string;
+	nftFullId: string;
+	collectionAddress: string;
+	tokenId: string;
 	formatOfferPrice: number;
+	offerPrice: string;
 	from: string;
-	expiration: string;
+	expiration: string; // fix
 	paymentTokenAddress: string;
-	offerAt: string;
+	startTime: string;
 	signature: string;
 	createdAt: string;
 	updatedAt: string;

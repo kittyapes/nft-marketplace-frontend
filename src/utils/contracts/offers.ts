@@ -1,5 +1,8 @@
 import { getContract } from '$utils/misc/getContract';
-import type { BigNumber, ethers } from 'ethers';
+import type { BigNumber, BigNumberish, ethers } from 'ethers';
+import contractCaller from './contractCaller';
+import { notifyError } from '$utils/toast';
+import { ErrNotificationError, handleErrActionRejected } from '$utils';
 
 const OFFER_MESSAGE_TYPES = {
 	Offer: [
@@ -85,4 +88,81 @@ export async function getOfferSignature(
 	};
 
 	return await (buyer as any)._signTypedData(domain, OFFER_MESSAGE_TYPES, message);
+}
+
+export async function contractAcceptOffer(
+	collection: string,
+	tokenId: BigNumberish,
+	tokenAmount: BigNumberish,
+	buyer: string,
+	payToken: string,
+	offerPrice: BigNumberish,
+	expireTime: BigNumberish,
+	nonce: BigNumberish,
+	signature: string,
+) {
+	// 	{
+	// 		seller: listing.seller,
+	// 		payToken: listing.paymentTokenAddress,
+	// 		price: saleData.price,
+	// 		reservePrice: saleData.price,
+	// 		startTime: dayjs(listing.startTime).unix(),
+	// 		duration: listing.duration,
+	// 		expireTime: listing.signatureExpiryTimestamp,
+	// 		quantity: listing.nfts[0].amount,
+	// 		listingType: stringListingTypeToEnum(listing.listingType),
+	// 		collections: listing.nfts.map((nft) => nft.contractAddress),
+	// 		tokenIds: listing.nfts.map((nft) => nft.nftId),
+	// 		tokenAmounts: listing.nfts.map((nft) => nft.amount),
+	// 		nonce: listing.nonce,
+	// 	},
+	// 	listing.signature,
+	// ];
+
+	console.log({
+		collection,
+		tokenId,
+		tokenAmount,
+		buyer,
+		payToken,
+		offerPrice,
+		expireTime,
+		nonce,
+		signature,
+	});
+
+	const args = [
+		{
+			collection,
+			tokenId,
+			tokenAmount,
+			bidder: buyer,
+			payToken,
+			bidAmount: offerPrice,
+			expireTime,
+			nonce,
+		},
+		signature,
+	];
+
+	// Get marketplace contract
+	const marketplaceContract = getContract('marketplace-v2');
+
+	try {
+		await contractCaller(marketplaceContract, 'acceptOffer', 150, 1, ...args);
+	} catch (err) {
+		handleErrActionRejected(err);
+
+		if (
+			err.message.includes('invalid signature') ||
+			err.message.includes('INVALID_SIGNATURE_FOR_OFFER')
+		) {
+			throw new ErrNotificationError(
+				'Sorry, the offer does not contain a valid signature. Could not accept the offer.',
+				err,
+			);
+		}
+
+		throw err;
+	}
 }
