@@ -88,7 +88,7 @@ async function getGaslessListingSignature(
 		{
 			name: 'HinataMarketV2',
 			version: '1.0',
-			chainId: (await seller.provider.getNetwork()).chainId,
+			chainId: await seller.getChainId(),
 			verifyingContract: getContract('marketplace-v2').address,
 		},
 		GASLESS_CREATE_LISTING_TYPES,
@@ -111,7 +111,10 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	const seller = get(currentUserAddress);
 	const payTokenAddress = options.paymentTokenAddress;
 	const price = parseToken(options.price || options.startingPrice || '0', payTokenAddress);
-	const reservePrice = parseToken(options.reservePrice || options.startingPrice || options.price || '0', payTokenAddress);
+	const reservePrice = parseToken(
+		options.reservePrice || options.startingPrice || options.price || '0',
+		payTokenAddress,
+	);
 	const startTime = options.startDateTs || dayjs().unix();
 	const duration = ethers.BigNumber.from(options.durationSeconds);
 	const tokenIds = options.nfts.map((nft) => ethers.BigNumber.from(nft.nftId));
@@ -119,7 +122,11 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	const collectionAddresses = options.nfts.map((nft) => nft.collectionAddress);
 	const quantity = ethers.BigNumber.from(tokenAmounts[0]);
 	const signatureExpiryTimestamp = dayjs().unix() + 180 * 24 * 60 * 60; // 180 days from now
-	const nfts = options.nfts.map((nft) => ({ nftId: nft.nftId, amount: nft.amount, contractAddress: nft.collectionAddress }));
+	const nfts = options.nfts.map((nft) => ({
+		nftId: nft.nftId,
+		amount: nft.amount,
+		contractAddress: nft.collectionAddress,
+	}));
 
 	// Create listing on the server
 	const formData = new FormData();
@@ -164,18 +171,29 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 	// Approve v1 or v2 marketplace contract to manipulate NFTs from collection
 	const collectionContract = await getCollectionContract(options.nfts[0].collectionAddress);
 
-	const marketplaceContract = options.gasless ? getContract('marketplace-v2') : getContract('marketplace');
-	const isApproved = await collectionContract.isApprovedForAll(get(currentUserAddress), marketplaceContract.address);
+	const marketplaceContract = options.gasless
+		? getContract('marketplace-v2')
+		: getContract('marketplace');
+	const isApproved = await collectionContract.isApprovedForAll(
+		get(currentUserAddress),
+		marketplaceContract.address,
+	);
 
 	if (!isApproved) {
-		const approval: ethers.ContractTransaction = await collectionContract.setApprovalForAll(marketplaceContract.address, true);
+		const approval: ethers.ContractTransaction = await collectionContract.setApprovalForAll(
+			marketplaceContract.address,
+			true,
+		);
 		await approval.wait(1);
 	}
 
 	// Gasless listing
 	if (options.gasless) {
 		// Get unused nonce
-		const nonceRes = await axios.get(getApiUrl(null, '/gasless-listings/nonce'), await getAxiosConfig());
+		const nonceRes = await axios.get(
+			getApiUrl(null, '/gasless-listings/nonce'),
+			await getAxiosConfig(),
+		);
 
 		const nonceBigNumber = BigNumber.from(nonceRes.data.data);
 
@@ -239,7 +257,10 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 			tokenAmounts,
 		};
 
-		console.debug('[Info] Will call createListing on contract with the following parameters.', args);
+		console.debug(
+			'[Info] Will call createListing on contract with the following parameters.',
+			args,
+		);
 
 		try {
 			await contractCaller(marketplaceContract, 'createListing', 150, 1, args);
@@ -252,7 +273,9 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 
 			// Handle ERC1155 insufficient balance
 			if (err.message.includes('ERC1155: insufficient balance')) {
-				notifyError('Could not create listing. You do not own this NFT or the NFT has already been listed.');
+				notifyError(
+					'Could not create listing. You do not own this NFT or the NFT has already been listed.',
+				);
 				return { error: err, handled: true };
 			}
 
