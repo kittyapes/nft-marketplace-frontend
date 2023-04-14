@@ -17,6 +17,7 @@
 	<input
 		type="text"
 		class="input w-full h-12 outline-none {$$props.class} {!valid &&
+			value &&
 			'!border-red-300'} disabled:opacity-50 peer"
 		class:font-semibold={value}
 		{placeholder}
@@ -26,6 +27,7 @@
 	/>
 	<div
 		class="absolute right-0 top-0 bottom-0 flex items-center justify-center w-24 gap-2 bg-dark-gradient-lighter bg-gradient-a border-l border-inherit peer-focus:border-color-purple {!valid &&
+			value &&
 			'!border-red-300'}"
 	>
 		<div>{tokenLabel}</div>
