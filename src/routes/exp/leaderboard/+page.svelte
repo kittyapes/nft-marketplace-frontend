@@ -22,6 +22,7 @@
 	const currentUser = writable<UserExpResponse>({
 		exp: 0,
 		userAddress: '',
+		rank: '-',
 	});
 
 	async function fetchUserExp() {
@@ -72,13 +73,17 @@
 
 			<!-- Current user -->
 			<div class="font-semibold text-xl uppercase text-center py-4 bg-card-gradient">
-				<p class="text-gradient min-w-full text-center whitespace-nowrap">-</p>
+				<p class="text-gradient min-w-full text-center whitespace-nowrap">
+					{$currentUser.rank || '-'}
+				</p>
 			</div>
 
 			<!-- Rest of the leaderboard positions -->
 			{#each users as u}
 				<div class="font-semibold text-xl py-4 grid place-items-center column-item">
-					<p class="">{u.rank}</p>
+					<p class="">
+						{u.exp ? u.rank : '-'}
+					</p>
 				</div>
 			{/each}
 		</div>
@@ -131,7 +136,7 @@
 				<div
 					class="font-semibold text-xl text-center py-4 grid place-items-center column-item {user.class}"
 				>
-					<p class="">{user.exp}</p>
+					<p class="">{user.exp || '-'}</p>
 				</div>
 			{/each}
 		</div>
