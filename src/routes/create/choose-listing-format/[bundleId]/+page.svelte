@@ -15,7 +15,8 @@
 			listingType: 'auction',
 			title: 'Auction',
 			hoverText: 'Allow other users to make bids on your NFT.',
-			confirmDetail: 'Listing an NFT for Auction allows any user to bid with WETH. Select the duration and reserve price for your item. ',
+			confirmDetail:
+				'Listing an NFT for Auction allows any user to bid with WETH. Select the duration and reserve price for your item. ',
 			iconComponent: AuctionListingTypeOption,
 		},
 		{
@@ -52,9 +53,9 @@
 	{/if}
 </div>
 
-<div class="flex mt-4 text-neutral-500 gap-x-4 items-center">
-	<div class="flex-grow text-lg">Gasless Listing (Temporarily Disabled)</div>
-	<Toggle bind:state={gasless} disabled />
+<div class="flex mt-4 gap-x-4 items-center">
+	<div class="flex-grow text-lg">Gasless Listing</div>
+	<Toggle bind:state={gasless} />
 
 	<!-- WARNING: This should be a hover, add a hover when we make this enabled -->
 	<Info />

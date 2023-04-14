@@ -80,7 +80,14 @@
 			title: $fetchedNftData.name,
 			description: $fetchedNftData.metadata?.description,
 			// TODO, add support for addresses from external collections
-			nfts: [{ nftId: $fetchedNftData.nftId, amount: listingProps.quantity || 1, collectionAddress: $fetchedNftData.contractAddress ?? getContractData('storage').address, _id: $fetchedNftData._id }],
+			nfts: [
+				{
+					nftId: $fetchedNftData.nftId,
+					amount: listingProps.quantity || 1,
+					collectionAddress: $fetchedNftData.contractAddress ?? getContractData('storage').address,
+					_id: $fetchedNftData._id,
+				},
+			],
 			paymentTokenAddress: getContractData('weth').address,
 			paymentTokenTicker: 'WETH',
 			listingType: listingType,
@@ -114,7 +121,10 @@
 		}
 
 		if (listSuccess) {
-			setPopup(ListingSuccessPopup, { props: { viewCallback: goViewNft }, closeByOutsideClick: false });
+			setPopup(ListingSuccessPopup, {
+				props: { viewCallback: goViewNft },
+				closeByOutsideClick: false,
+			});
 		}
 
 		isListing = false;
@@ -158,7 +168,11 @@
 <!-- <div class="mt-8 font-semibold gap-4 flex mb-1">
 	{#each ['sale', 'auction'] as t}
 		{@const isSelected = t === listingType}
-		<button class="uppercase relative" class:text-gradient={isSelected} on:click={() => setListingType(t)}>
+		<button
+			class="uppercase relative"
+			class:text-gradient={isSelected}
+			on:click={() => setListingType(t)}
+		>
 			{capitalize(t)}
 
 			{#if isSelected}
@@ -176,7 +190,14 @@
 		</h1>
 
 		<div class="pr-8 mt-8">
-			<ListingProperties bind:this={listingPropsComponent} {listingType} {maxQuantity} bind:formErrors bind:props={listingProps} compact />
+			<ListingProperties
+				bind:this={listingPropsComponent}
+				{listingType}
+				{maxQuantity}
+				bind:formErrors
+				bind:props={listingProps}
+				compact
+			/>
 		</div>
 
 		<!-- Fee grid -->
