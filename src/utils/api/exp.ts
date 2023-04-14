@@ -5,6 +5,7 @@ import { api, getApiUrl, type ApiCallResult } from '.';
 export type UserExpResponse = {
 	exp: number;
 	userAddress: EthAddress;
+	rank: string;
 };
 
 export async function getUserExpPoints(): Promise<ApiCallResult<UserExpResponse>> {
