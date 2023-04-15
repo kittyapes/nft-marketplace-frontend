@@ -3,6 +3,8 @@
 	import { apiGetOffers } from '$utils/api/offers';
 	import { notifyError } from '$utils/toast';
 	import type { OfferModel } from '$interfaces';
+	import { currentUserAddress } from '$stores/wallet';
+	import { get } from 'svelte/store';
 
 	export let nftFullId: string;
 
@@ -40,7 +42,9 @@
 			offers = [...offers, ...newOffers];
 
 			// This is temporary
-			currentUserOffer = newOffers[0];
+			currentUserOffer = offers.find(
+				(offer: OfferModel) => offer.user.address === get(currentUserAddress),
+			);
 		} else {
 			isEndReached = true;
 		}

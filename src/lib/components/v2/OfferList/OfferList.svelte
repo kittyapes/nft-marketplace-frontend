@@ -16,6 +16,17 @@
 	export let isLoading: boolean;
 	export let endReached: boolean;
 	export let errLoading: boolean;
+	export let dedupeCurrentUserOffer: boolean = true;
+
+	function filterData(data: OfferModel[]): OfferModel[] {
+		if (dedupeCurrentUserOffer) {
+			data = data.filter((offer: OfferModel) => offer != currentUserOffer);
+		}
+
+		return data;
+	}
+
+	$: filteredData = filterData(data);
 
 	onMount(async () => {
 		await tick();
@@ -38,7 +49,7 @@
 				<OfferRow isFromCurrentUser data={currentUserOffer} enableHover={false} />
 			{/if}
 
-			{#each data as row}
+			{#each filteredData as row}
 				<OfferRow data={row} enableHover={userIsOwner} />
 			{:else}
 				<div class="font-medium text-white text-center opacity-50">
