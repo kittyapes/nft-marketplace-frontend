@@ -6,8 +6,16 @@ import { getAxiosConfig } from '$utils/auth/axiosConfig';
 import { formatToken } from '$utils/misc/priceUtils';
 import { getKnownTokenDetails } from '$utils/misc/priceUtils';
 import { getOfferSignature } from '$utils/contracts/offers';
-import { generateRandomNonce, getSecondsSinceEpoch, parseFullId } from '$utils';
+import {
+	ErrNotificationError,
+	HandledError,
+	generateRandomNonce,
+	getSecondsSinceEpoch,
+	parseFullId,
+} from '$utils';
 import { defaultOfferDuration } from '$constants';
+import { ensureAmountApproved, ensureAmountWeiApproved } from '$utils/contracts/token';
+import { getContract } from '$utils/misc/getContract';
 
 interface GetOffers_ResponseData {
 	error: boolean;
@@ -48,6 +56,22 @@ export async function apiGetOffers(
 export async function apiSubmitOffer(buyer: Signer, nftFullId: string, offerAmount: BigNumber) {
 	const tokenTicker = 'WETH';
 	const tokenAddress = getKnownTokenDetails({ ticker: tokenTicker }).address;
+
+	// Get marketplace V2 contract
+	const marketplaceContract_v2 = getContract('marketplace-v2');
+
+	// Set token allowance
+	const approvalSuccessful = await ensureAmountWeiApproved(
+		marketplaceContract_v2.address,
+		offerAmount,
+		tokenAddress,
+	);
+
+	if (!approvalSuccessful) {
+		throw new HandledError(
+			'Offer could not be created because user did not approve required token amount.',
+		);
+	}
 
 	const { collectionAddress, tokenId } = parseFullId(nftFullId);
 	const expireTime = getSecondsSinceEpoch() + defaultOfferDuration;
