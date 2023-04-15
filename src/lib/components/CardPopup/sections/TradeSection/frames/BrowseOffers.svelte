@@ -109,14 +109,14 @@
 		/>
 	</div>
 
-	<div class="grid grid-cols-2 gap-2">
-		<PrimaryButton on:click={handleCancelOffer} disabled={isCancellingOffer || !hasUserPlacedOffer}>
+	<div class="grid grid-cols-1 gap-2">
+		<!-- <PrimaryButton on:click={handleCancelOffer} disabled={isCancellingOffer || !hasUserPlacedOffer}>
 			{#if isCancellingOffer}
 				<ButtonSpinner />
 			{/if}
 
 			Cancel Offer
-		</PrimaryButton>
+		</PrimaryButton> -->
 
 		<PrimaryButton on:click={handleMakeOffer} disabled={isMakingOffer || !offerAmountFloat}>
 			{#if isMakingOffer}
