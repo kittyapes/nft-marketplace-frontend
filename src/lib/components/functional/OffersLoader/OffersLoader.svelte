@@ -13,6 +13,11 @@
 	let currentUserOffer: OfferModel = null;
 	let offers: OfferModel[] = [];
 
+	export async function reloadOffers() {
+		offers = [];
+		loadOffers();
+	}
+
 	async function loadOffers() {
 		isLoading = true;
 

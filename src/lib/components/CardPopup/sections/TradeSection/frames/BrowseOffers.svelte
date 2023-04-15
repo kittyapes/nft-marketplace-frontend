@@ -7,23 +7,18 @@
 	import OfferList from '$lib/components/v2/OfferList/OfferList.svelte';
 	import PrimaryButton from '$lib/components/v2/PrimaryButton/PrimaryButton.svelte';
 	import { appSigner, currentUserAddress } from '$stores/wallet';
+	import { HandledError } from '$utils';
 	import { apiCancelOffer, apiSubmitOffer } from '$utils/api/offers';
 	import { notifyError, notifySuccess } from '$utils/toast';
-	import { BigNumber } from 'ethers';
 	import { parseEther } from 'ethers/lib/utils';
 	import { get } from 'svelte/store';
 
 	export let options: CardOptions;
 
-	// In case someone is wondering why an offer doesn't work on an NFT that was once sold
-	// and not bought back by the creator, here you have your answer. Apparently we are not
-	// able to reliable get the current NFT's owner address.
-	$: ownerAddress =
-		options.resourceType === 'listing' ? options.rawListingData.seller : options.nfts[0].creator;
-
 	let offerAmountFloat: string;
 
 	let isMakingOffer = false;
+	let reloadOffers: () => any;
 
 	async function handleMakeOffer() {
 		isMakingOffer = true;
@@ -34,16 +29,22 @@
 
 		try {
 			res = await apiSubmitOffer(get(appSigner), options.nfts[0].fullId, offerAmountBigNumber);
-		} catch (ex) {
-			console.error(ex);
+		} catch (err) {
+			if (err instanceof HandledError) {
+				return;
+			}
+
+			console.error(err);
 			notifyError('Failed making offer!');
 
-			isMakingOffer = false;
 			return;
+		} finally {
+			isMakingOffer = false;
 		}
 
 		notifySuccess('Placed offer.');
 		offerAmountFloat = '';
+		reloadOffers();
 
 		isMakingOffer = false;
 	}
@@ -85,6 +86,7 @@
 			let:onEndReached
 			let:currentUserOffer
 			nftFullId={options.nfts[0].fullId}
+			bind:reloadOffers
 		>
 			<OfferList
 				userIsOwner={false}
