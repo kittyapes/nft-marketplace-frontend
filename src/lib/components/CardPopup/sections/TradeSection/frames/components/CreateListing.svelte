@@ -18,9 +18,9 @@
 	import { notifyError } from '$utils/toast';
 	import { createEventDispatcher } from 'svelte';
 	import { onMount } from 'svelte';
-	import Error from './Error.svelte';
-	import ListingTypeSwitch from './ListingTypeSwitch.svelte';
-	import Success from './Success.svelte';
+	import Error from '../Error.svelte';
+	import ListingTypeSwitch from '../ListingTypeSwitch.svelte';
+	import Success from '../Success.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -111,7 +111,7 @@
 	});
 </script>
 
-<div class="flex flex-col pb-8 pr-6 overflow-y-auto text-white aspect-1 blue-scrollbar">
+<div class="flex flex-col overflow-y-auto text-white">
 	{#if canCreateListing}
 		<!-- Listing Type -->
 		<div class="mt-2 font-semibold">Listing Type</div>

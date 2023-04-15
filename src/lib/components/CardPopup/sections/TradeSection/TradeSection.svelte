@@ -5,15 +5,13 @@
 	import { onMount } from 'svelte';
 	import BrowseAuction from './frames/BrowseAuction.svelte';
 	import BrowseSale from './frames/BrowseSale.svelte';
-	import CreateListing from './frames/CreateListing.svelte';
 	import EditSale from './frames/EditSale.svelte';
 	import ManageAuction from './frames/ManageAuction.svelte';
 	import ManageSale from './frames/ManageSale.svelte';
 	import Success from './frames/Success.svelte';
 	import Error from './frames/Error.svelte';
 	import BrowseOffers from './frames/BrowseOffers.svelte';
-	import BrowseOffersOwner from './frames/BrowseOffersOwner.svelte';
-
+	import ManageNft from './frames/ManageNft.svelte';
 	export let options: CardOptions;
 	export let listedNfts: number;
 	export let enableBack = false;
@@ -51,7 +49,7 @@
 		} else if (options.resourceType === 'nft') {
 			// User is owner
 			if (nftBalance) {
-				setFrameWithoutProps(BrowseOffersOwner);
+				setFrameWithoutProps(ManageNft);
 			} else {
 				setFrameWithoutProps(BrowseOffers);
 			}

@@ -6,7 +6,7 @@
 	export let options: CardOptions;
 </script>
 
-<div class="overflow-hidden aspect-1 flex flex-col">
+<div class="h-full overflow-hidden flex flex-col">
 	<div class="text-white text-lg font-medium mb-2 flex-shrink-0">Offers</div>
 
 	<div class="flex-grow overflow-hidden">
