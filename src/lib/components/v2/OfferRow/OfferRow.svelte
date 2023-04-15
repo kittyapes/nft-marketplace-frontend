@@ -22,17 +22,7 @@
 		isAcceptingOffer = true;
 
 		try {
-			await contractAcceptOffer(
-				data.collectionAddress,
-				data.tokenId,
-				data.tokenAmount,
-				data.user.address,
-				data.paymentTokenAddress,
-				data.tokenAmount,
-				data.expiration,
-				data.nonce,
-				data.signature,
-			);
+			await contractAcceptOffer(data);
 		} catch (err) {
 			if (err instanceof HandledError) {
 				return;

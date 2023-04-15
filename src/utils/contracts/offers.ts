@@ -1,8 +1,8 @@
 import { getContract } from '$utils/misc/getContract';
-import type { BigNumber, BigNumberish, ethers } from 'ethers';
+import type { BigNumber, ethers } from 'ethers';
 import contractCaller from './contractCaller';
-import { notifyError } from '$utils/toast';
 import { ErrNotificationError, handleErrActionRejected } from '$utils';
+import type { OfferModel } from '$interfaces';
 
 const OFFER_MESSAGE_TYPES = {
 	Offer: [
@@ -25,7 +25,7 @@ const OFFER_MESSAGE_TYPES = {
  * @param tokenId - The ID of the NFT being offered.
  * @param tokenAmount - The amount of the NFT being offered.
  * @param payToken - The address of the ERC-20 token being used to pay for the offer.
- * @param amount - The amount of ERC-20 tokens being offered for the NFT.
+ * @param offerPrice - The amount of ERC-20 tokens being offered for the NFT.
  * @param expireTime - The expiration time of the offer, in seconds since the Unix epoch.
  * @param nonce - A unique value to prevent replay attacks.
  * @returns The signature of the typed message as a hexadecimal string.
@@ -58,38 +58,28 @@ const OFFER_MESSAGE_TYPES = {
  * );
  * ```
  */
-
 export async function getOfferSignature(
 	buyer: ethers.Signer,
 	collection: string,
 	tokenId: BigNumber,
 	tokenAmount: BigNumber,
 	payToken: string,
-	amount: BigNumber,
+	offerPrice: BigNumber,
 	expireTime: number,
 	nonce: BigNumber,
 ) {
+	const buyerAddress = await buyer.getAddress();
+
 	const message = {
 		collection,
 		tokenId,
 		tokenAmount,
-		bidder: await buyer.getAddress(),
+		bidder: buyerAddress,
 		payToken,
-		amount,
+		amount: offerPrice,
 		expireTime,
 		nonce,
 	};
-
-	console.log({
-		collection,
-		tokenId: tokenId.toString(),
-		tokenAmount: tokenAmount.toString(),
-		bidder: await buyer.getAddress(),
-		payToken,
-		amount: amount.toString(),
-		expireTime: expireTime.toString(),
-		nonce: nonce.toString(),
-	});
 
 	const domain = {
 		name: 'HinataMarketV2',
@@ -98,48 +88,38 @@ export async function getOfferSignature(
 		verifyingContract: getContract('marketplace-v2').address,
 	};
 
+	let signature: string;
+
 	try {
-		return await (buyer as any)._signTypedData(domain, OFFER_MESSAGE_TYPES, message);
+		signature = await (buyer as any)._signTypedData(domain, OFFER_MESSAGE_TYPES, message);
 	} catch (err) {
 		handleErrActionRejected(err, 'User rejected offer message signature.');
 	}
+
+	return signature;
 }
 
-export async function contractAcceptOffer(
-	collection: string,
-	tokenId: BigNumberish,
-	tokenAmount: BigNumberish,
-	buyer: string,
-	payToken: string,
-	offerPrice: BigNumberish,
-	expireTime: BigNumberish,
-	nonce: BigNumberish,
-	signature: string,
-) {
-	console.log({
-		collection,
-		tokenId,
-		tokenAmount,
-		buyer,
-		payToken,
-		offerPrice,
-		expireTime,
-		nonce,
-		signature,
-	});
-
+/**
+ * Call the `acceptOffer` function of the MarketplaceV2 contract.
+ *
+ * @param offer - Data of the offer that come from the API.j=
+ *
+ * @throws {ErrNotificationError} - If the offer does not contain a valid signature. An error notification is created.
+ * @throws {Error} - If an error occurs while calling the 'acceptOffer' function on the marketplace contract.
+ */
+export async function contractAcceptOffer(offer: OfferModel) {
 	const args = [
 		{
-			collection,
-			tokenId,
-			tokenAmount,
-			bidder: buyer,
-			payToken,
-			bidAmount: offerPrice,
-			expireTime,
-			nonce,
+			collection: offer.collectionAddress,
+			tokenId: offer.tokenId,
+			tokenAmount: offer.tokenAmount,
+			bidder: offer.from,
+			payToken: offer.paymentTokenAddress,
+			bidAmount: offer.offerPrice,
+			expireTime: offer.expiration,
+			nonce: offer.nonce,
 		},
-		signature,
+		offer.signature,
 	];
 
 	// Get marketplace contract
@@ -148,7 +128,7 @@ export async function contractAcceptOffer(
 	try {
 		await contractCaller(marketplaceContract, 'acceptOffer', 150, 1, ...args);
 	} catch (err) {
-		handleErrActionRejected(err);
+		handleErrActionRejected(err, 'You have rejected the offer accept transaction.');
 
 		if (
 			err.message.includes('invalid signature') ||
