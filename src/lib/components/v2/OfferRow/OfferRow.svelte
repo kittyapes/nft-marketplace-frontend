@@ -9,6 +9,8 @@
 	import { HandledError, timeSince } from '$utils';
 	import { contractAcceptOffer } from '$utils/contracts/offers';
 	import { notifyError, notifySuccess } from '$utils/toast';
+	import ButtonSpinner from '../ButtonSpinner/ButtonSpinner.svelte';
+	import Spinner from '../Spinner/Spinner.svelte';
 
 	export let data: OfferModel;
 	export let isFromCurrentUser: boolean = false;
@@ -57,9 +59,17 @@
 		<EthV2 />
 	</div>
 
-	<div>
-		{#if $hovered && enableHover}
-			<ButtonSmallPrimary on:click={handleAcceptOffer}>Accept</ButtonSmallPrimary>
+	<div class="flex items-center">
+		{#if isAcceptingOffer}
+			<div class="w-8 mr-1">
+				<Spinner />
+			</div>
+		{/if}
+
+		{#if ($hovered && enableHover) || isAcceptingOffer}
+			<ButtonSmallPrimary on:click={handleAcceptOffer} disabled={isAcceptingOffer}>
+				Accept
+			</ButtonSmallPrimary>
 		{:else}
 			<div class="mr-2 text-sm opacity-50">{timeSince(data.createdAt)}</div>
 		{/if}
