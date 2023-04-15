@@ -11,15 +11,15 @@ dayjs.extend(relativeTime);
 export class HandledError extends Error {
 	cause: Error;
 
-	constructor(message: string, cause: Error) {
+	constructor(message: string, cause?: Error) {
 		super(message);
-		this.cause = cause;
+		this.cause = cause || new Error(message);
 		this.name = 'HandledError';
 	}
 }
 
 export class ErrNotificationError extends HandledError {
-	constructor(message: string, cause: Error) {
+	constructor(message: string, cause?: Error) {
 		super(message, cause);
 
 		notifyError(message);
