@@ -41,7 +41,6 @@
 			pageIndex++;
 			offers = [...offers, ...newOffers];
 
-			// This is temporary
 			currentUserOffer = offers.find(
 				(offer: OfferModel) => offer.user.address === get(currentUserAddress),
 			);
