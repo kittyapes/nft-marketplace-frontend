@@ -90,7 +90,7 @@
 </script>
 
 <div class="aspect-1 overflow-hidden flex flex-col">
-	<div class="flex flex-col overscroll-contain text-white overflow-y-auto" data-simplebar>
+	<div class="flex flex-col overscroll-contain text-white overflow-y-auto pr-6" data-simplebar>
 		<div class="mt-2">
 			<!-- TODO maxQuantity needs to be checked on chain -->
 			<ListingProperties
