@@ -43,14 +43,9 @@ export async function getTokenDetails(tokenAddress: string) {
 export async function getTokenBalance(
 	tokenAddress: string,
 	userAddress: string,
-	decimals?: number,
 ): Promise<BigNumber> {
 	if (isEther(tokenAddress)) {
 		return await get(appProvider).getBalance(userAddress);
-	}
-
-	if (!decimals) {
-		decimals = (await getTokenDetails(tokenAddress)).decimals;
 	}
 
 	const contract = getMockErc20TokenContract(get(appProvider), tokenAddress);
@@ -65,11 +60,21 @@ export async function hasEnoughBalance(
 	requiredBalance: string,
 ) {
 	const tokenDetails = await getTokenDetails(tokenAddress);
-	const balance = await getTokenBalance(tokenAddress, userAddress, tokenDetails.decimals);
+	const balance = await getTokenBalance(tokenAddress, userAddress);
 
 	const parsedRequired = ethers.utils.parseUnits(requiredBalance, tokenDetails.decimals);
 
 	return balance.gte(parsedRequired);
+}
+
+export async function hasEnoughWeiBalance(
+	tokenAddress: string,
+	userAddress: string,
+	requiredWeiBalance: BigNumberish,
+) {
+	const balance = await getTokenBalance(tokenAddress, userAddress);
+
+	return balance.gte(requiredWeiBalance);
 }
 
 export async function contractGetTokenAllowance(

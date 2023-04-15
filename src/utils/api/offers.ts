@@ -14,7 +14,11 @@ import {
 	parseFullId,
 } from '$utils';
 import { defaultOfferDuration } from '$constants';
-import { ensureAmountApproved, ensureAmountWeiApproved } from '$utils/contracts/token';
+import {
+	ensureAmountApproved,
+	ensureAmountWeiApproved,
+	hasEnoughWeiBalance,
+} from '$utils/contracts/token';
 import { getContract } from '$utils/misc/getContract';
 
 interface GetOffers_ResponseData {
@@ -30,20 +34,6 @@ export async function apiGetOffers(
 	if (page === 3) {
 		limit = 0;
 	}
-
-	// return new Promise((resolve, reject) =>
-	// 	setTimeout(() => {
-	// 		resolve(
-	// 			Array(limit).fill({
-	// 				userProfileImageUrl: get(profileData).thumbnailUrl,
-	// 				username: 'test',
-	// 				amount: '12345678.123123',
-	// 				ts: 123,
-	// 			}),
-	// 		);
-	// 	}, 1000),
-	// );
-
 	// TODO offer of current user has to be filtered somehow, so it can be displayed at the top
 
 	const res = await axios.get<GetOffers_ResponseData>(
@@ -56,6 +46,14 @@ export async function apiGetOffers(
 export async function apiSubmitOffer(buyer: Signer, nftFullId: string, offerAmount: BigNumber) {
 	const tokenTicker = 'WETH';
 	const tokenAddress = getKnownTokenDetails({ ticker: tokenTicker }).address;
+
+	const buyerAddress = await buyer.getAddress();
+
+	const hasEnoughBalance = await hasEnoughWeiBalance(tokenAddress, buyerAddress, offerAmount);
+
+	if (!hasEnoughBalance) {
+		throw new ErrNotificationError('Offer amount is higher that your current balance.');
+	}
 
 	// Get marketplace V2 contract
 	const marketplaceContract_v2 = getContract('marketplace-v2');
@@ -76,12 +74,13 @@ export async function apiSubmitOffer(buyer: Signer, nftFullId: string, offerAmou
 	const { collectionAddress, tokenId } = parseFullId(nftFullId);
 	const expireTime = getSecondsSinceEpoch() + defaultOfferDuration;
 	const nonce = generateRandomNonce();
+	const tokenAmount = BigNumber.from(1);
 
 	const signature = await getOfferSignature(
 		buyer,
 		collectionAddress,
 		tokenId,
-		BigNumber.from(1),
+		tokenAmount,
 		tokenAddress,
 		offerAmount,
 		expireTime,
@@ -100,6 +99,7 @@ export async function apiSubmitOffer(buyer: Signer, nftFullId: string, offerAmou
 			paymentTokenAddress: tokenAddress,
 			expireTime,
 			nonce: nonce.toString(),
+			tokenAmount: tokenAmount.toString(),
 		},
 		await getAxiosConfig(),
 	);
