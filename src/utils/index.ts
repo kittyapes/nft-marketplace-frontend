@@ -30,7 +30,7 @@ export function handleErrActionRejected(
 	err: Error & { code?: string },
 	message = 'Action was rejected by user.',
 ) {
-	if (err.code === 'ACTION_REJECTED') {
+	if (err.code === 'ACTION_REJECTED' || err.message.includes('User denied message signature')) {
 		notifyError(message);
 
 		throw new HandledError(message, err);

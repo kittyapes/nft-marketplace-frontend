@@ -80,6 +80,17 @@ export async function getOfferSignature(
 		nonce,
 	};
 
+	console.log({
+		collection,
+		tokenId: tokenId.toString(),
+		tokenAmount: tokenAmount.toString(),
+		bidder: await buyer.getAddress(),
+		payToken,
+		amount: amount.toString(),
+		expireTime: expireTime.toString(),
+		nonce: nonce.toString(),
+	});
+
 	const domain = {
 		name: 'HinataMarketV2',
 		version: '1.0',
@@ -87,7 +98,11 @@ export async function getOfferSignature(
 		verifyingContract: getContract('marketplace-v2').address,
 	};
 
-	return await (buyer as any)._signTypedData(domain, OFFER_MESSAGE_TYPES, message);
+	try {
+		return await (buyer as any)._signTypedData(domain, OFFER_MESSAGE_TYPES, message);
+	} catch (err) {
+		handleErrActionRejected(err, 'User rejected offer message signature.');
+	}
 }
 
 export async function contractAcceptOffer(
@@ -101,24 +116,6 @@ export async function contractAcceptOffer(
 	nonce: BigNumberish,
 	signature: string,
 ) {
-	// 	{
-	// 		seller: listing.seller,
-	// 		payToken: listing.paymentTokenAddress,
-	// 		price: saleData.price,
-	// 		reservePrice: saleData.price,
-	// 		startTime: dayjs(listing.startTime).unix(),
-	// 		duration: listing.duration,
-	// 		expireTime: listing.signatureExpiryTimestamp,
-	// 		quantity: listing.nfts[0].amount,
-	// 		listingType: stringListingTypeToEnum(listing.listingType),
-	// 		collections: listing.nfts.map((nft) => nft.contractAddress),
-	// 		tokenIds: listing.nfts.map((nft) => nft.nftId),
-	// 		tokenAmounts: listing.nfts.map((nft) => nft.amount),
-	// 		nonce: listing.nonce,
-	// 	},
-	// 	listing.signature,
-	// ];
-
 	console.log({
 		collection,
 		tokenId,
