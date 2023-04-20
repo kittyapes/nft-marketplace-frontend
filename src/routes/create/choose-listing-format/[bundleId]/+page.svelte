@@ -70,7 +70,6 @@
 		}}
 		iconComponent={AuctionListingTypeOption}
 		title="Auction"
-		disabled={gasless}
 	/>
 
 	<ListingTypeButton
