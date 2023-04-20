@@ -26,7 +26,7 @@
 
 	export let options: CardOptions;
 
-	let listingType: ListingType = 'auction';
+	let listingType: ListingType = 'sale';
 	let maxQuantity = 1;
 	let isGasless: boolean;
 
@@ -122,7 +122,7 @@
 		<!-- Gasless switch -->
 		<div class="flex mt-8">
 			<div class="flex-grow text-lg">Gasless Listing</div>
-			<Toggle bind:state={isGasless} disabled={isListing} />
+			<Toggle bind:state={isGasless} disabled={true} />
 		</div>
 
 		<div class="mt-6">
