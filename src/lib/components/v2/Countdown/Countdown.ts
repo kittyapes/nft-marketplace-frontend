@@ -8,7 +8,7 @@ export function getValuesForStartingTs(startTs: number) {
 	const remaining = dayjs.duration(startTime.diff(dayjs(), 'seconds'), 'seconds');
 
 	return [
-		['Days', remaining.days()],
+		['Days', remaining.days() + remaining.months() * 30],
 		['Hours', remaining.hours()],
 		['Minutes', remaining.minutes()],
 		['Seconds', remaining.seconds()],
@@ -21,7 +21,7 @@ export function getValuesForEndingTs(startTs: number, duration: number) {
 	const remaining = dayjs.duration(endTime.diff(dayjs(), 'seconds'), 'seconds');
 
 	return [
-		['Days', remaining.days()],
+		['Days', remaining.days() + remaining.months() * 30],
 		['Hours', remaining.hours()],
 		['Minutes', remaining.minutes()],
 		['Seconds', remaining.seconds()],
