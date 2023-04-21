@@ -14,11 +14,7 @@ import {
 	parseFullId,
 } from '$utils';
 import { defaultOfferDuration } from '$constants';
-import {
-	ensureAmountApproved,
-	ensureAmountWeiApproved,
-	hasEnoughWeiBalance,
-} from '$utils/contracts/token';
+import { ensureAmountWeiApproved, hasEnoughWeiBalance } from '$utils/contracts/token';
 import { getContract } from '$utils/misc/getContract';
 
 interface GetOffers_ResponseData {
@@ -38,6 +34,9 @@ export async function apiGetOffers(
 
 	const res = await axios.get<GetOffers_ResponseData>(
 		getApiUrl(null, '/nfts/' + nftFullId + '/offers'),
+		{
+			params: { page, limit },
+		},
 	);
 
 	return res.data.data;
@@ -87,7 +86,7 @@ export async function apiSubmitOffer(buyer: Signer, nftFullId: string, offerAmou
 		nonce,
 	);
 
-	const res = await axios.post(
+	await axios.post(
 		getApiUrl(null, '/nfts/offer'),
 		{
 			tokenId: tokenId.toString(),
