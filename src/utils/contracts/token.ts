@@ -116,12 +116,7 @@ export async function ensureAmountWeiApproved(
 		return true;
 	}
 
-	// Minimum approval amount
-	const minimum = BigNumber.from('999999999999999999999999999999999999');
-
-	if (BigNumber.from(amount).lt(minimum)) {
-		amount = minimum;
-	}
+	const recommendedValue = BigNumber.from('999999999999999999999999999999999999');
 
 	const owner = get(currentUserAddress);
 	const approved = await contractGetTokenAllowance(owner, spender, tokenAddress);
@@ -137,7 +132,7 @@ export async function ensureAmountWeiApproved(
 	const contract = getMockErc20TokenContract(get(appSigner), tokenAddress);
 
 	try {
-		const tx = await contract.approve(spender, amount);
+		const tx = await contract.approve(spender, recommendedValue);
 		await tx.wait(1);
 	} catch (err) {
 		console.error(err);
