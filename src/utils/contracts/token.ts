@@ -97,13 +97,26 @@ export async function contractApproveToken(
 	if (isEther(tokenAddress)) {
 		return;
 	}
+
 	const contract = getMockErc20TokenContract(get(appSigner), tokenAddress);
+
+	// if (
+	// 	ethers.utils
+	// 		.parseUnits('999999999999999999999999999999999999000000000000000000', tokenDecimals)
+	// 		.lt(amount)
+	// ) {
+	// 	amount = ethers.utils.parseUnits(
+	// 		'999999999999999999999999999999999999000000000000000000',
+	// 		tokenDecimals,
+	// 	);
+	// }
 
 	// We can't assume the token is ethereum
 	const approveTx = await contract.approve(
 		spender,
 		ethers.utils.parseUnits(amount.toString(), tokenDecimals),
 	);
+
 	await approveTx.wait(1);
 }
 

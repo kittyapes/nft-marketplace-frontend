@@ -17,6 +17,7 @@ import { notifyError } from '$utils/toast';
 import axios from 'axios';
 import { ethers, BigNumber, type BigNumberish } from 'ethers';
 import { get } from 'svelte/store';
+import { returnUnUsedNonce } from '$utils/flows/index';
 
 async function placeBidNormal(listing: Listing, amount: BigNumber): Promise<void> {
 	const contract = getContract('marketplace');
@@ -83,7 +84,13 @@ async function placeBidGasless(listing: Listing, amount: BigNumber): Promise<voi
 	}
 
 	const bidderData = get(profileData);
-	const nonce = bidderData.lastUsedBidNonce + 1;
+
+	// This loops until it finds the nonce to use on a bid
+	const nonce = await returnUnUsedNonce(
+		contract,
+		bidderData.address,
+		bidderData.lastUsedBidNonce + 1,
+	);
 
 	// Get signature from user
 	let signature: string;

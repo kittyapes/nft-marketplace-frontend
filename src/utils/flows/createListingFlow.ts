@@ -15,6 +15,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import { BigNumber, ethers } from 'ethers';
 import { get } from 'svelte/store';
+import { returnUnUsedNonce } from '$utils/flows/index';
 
 interface CreateNormalArgs {
 	id: ethers.BigNumber;
@@ -195,7 +196,10 @@ export async function createListingFlow(options: CreateListingFlowOptions) {
 			await getAxiosConfig(),
 		);
 
-		const nonceBigNumber = BigNumber.from(nonceRes.data.data);
+		// This loops until it finds the nonce to use on a bid
+		const nonce = await returnUnUsedNonce(marketplaceContract, seller, +nonceRes.data.data + 1);
+
+		const nonceBigNumber = BigNumber.from(nonce);
 
 		const signer = get(appSigner);
 
