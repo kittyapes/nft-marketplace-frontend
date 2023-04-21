@@ -23,7 +23,7 @@
 	export let options: CardOptions;
 	export let handler: PopupHandler;
 	export let showInvalidListingMessage = false;
-	export let defaultTab: CardPopupProps['defaultTab'];
+	export let defaultTab: CardPopupProps['defaultTab'] = 'default';
 
 	let isFetchingNfts = false;
 	let reachedEnd = false;

@@ -72,10 +72,19 @@
 		"This listing isn't for sale yet.";
 
 	$: saleData = options.rawListingData.listing as SaleDataModel;
-	$: priceString = formatToken(
-		saleData.price.toString(),
-		options.rawListingData.paymentTokenAddress,
-	);
+
+	let priceString = null;
+
+	$: {
+		if (saleData.price.match(/^\d+$/)) {
+			priceString = formatToken(
+				saleData.price.toString(),
+				options.rawListingData.paymentTokenAddress,
+			);
+		} else {
+			priceString = null;
+		}
+	}
 
 	onMount(async () => {
 		if (!isGasless) {
