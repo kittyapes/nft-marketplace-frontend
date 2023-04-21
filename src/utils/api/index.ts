@@ -5,6 +5,8 @@ import axios from 'axios';
 
 export type ApiVersion = 'latest' | `sprint-${number}` | 'v2';
 
+// This is deprecated and should be modified in all places at some point.
+// The apiVersion parameter is not used anymore.
 export function getApiUrl(apiVersion: ApiVersion, apiPath: string): string {
 	let apiUrl: string = null;
 

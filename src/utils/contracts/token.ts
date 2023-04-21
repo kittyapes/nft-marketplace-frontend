@@ -1,8 +1,7 @@
 import { appProvider, appSigner, currentUserAddress } from '$stores/wallet';
 import { notifyError, notifySuccess, notifyWarning } from '$utils/toast';
-import type { BigNumber } from 'ethers';
+import { BigNumber, type BigNumberish } from 'ethers';
 import { ethers } from 'ethers';
-import { noTryAsync } from 'no-try';
 import { get } from 'svelte/store';
 import { getMockErc20TokenContract } from './generalContractCalls';
 
@@ -44,14 +43,9 @@ export async function getTokenDetails(tokenAddress: string) {
 export async function getTokenBalance(
 	tokenAddress: string,
 	userAddress: string,
-	decimals?: number,
 ): Promise<BigNumber> {
 	if (isEther(tokenAddress)) {
 		return await get(appProvider).getBalance(userAddress);
-	}
-
-	if (!decimals) {
-		decimals = (await getTokenDetails(tokenAddress)).decimals;
 	}
 
 	const contract = getMockErc20TokenContract(get(appProvider), tokenAddress);
@@ -66,11 +60,21 @@ export async function hasEnoughBalance(
 	requiredBalance: string,
 ) {
 	const tokenDetails = await getTokenDetails(tokenAddress);
-	const balance = await getTokenBalance(tokenAddress, userAddress, tokenDetails.decimals);
+	const balance = await getTokenBalance(tokenAddress, userAddress);
 
 	const parsedRequired = ethers.utils.parseUnits(requiredBalance, tokenDetails.decimals);
 
 	return balance.gte(parsedRequired);
+}
+
+export async function hasEnoughWeiBalance(
+	tokenAddress: string,
+	userAddress: string,
+	requiredWeiBalance: BigNumberish,
+) {
+	const balance = await getTokenBalance(tokenAddress, userAddress);
+
+	return balance.gte(requiredWeiBalance);
 }
 
 export async function contractGetTokenAllowance(
@@ -88,38 +92,6 @@ export async function contractGetTokenAllowance(
 	return allowance;
 }
 
-export async function contractApproveToken(
-	spender: string,
-	amount: BigNumber,
-	tokenAddress: string,
-	tokenDecimals: number,
-) {
-	if (isEther(tokenAddress)) {
-		return;
-	}
-
-	const contract = getMockErc20TokenContract(get(appSigner), tokenAddress);
-
-	// if (
-	// 	ethers.utils
-	// 		.parseUnits('999999999999999999999999999999999999000000000000000000', tokenDecimals)
-	// 		.lt(amount)
-	// ) {
-	// 	amount = ethers.utils.parseUnits(
-	// 		'999999999999999999999999999999999999000000000000000000',
-	// 		tokenDecimals,
-	// 	);
-	// }
-
-	// We can't assume the token is ethereum
-	const approveTx = await contract.approve(
-		spender,
-		ethers.utils.parseUnits(amount.toString(), tokenDecimals),
-	);
-
-	await approveTx.wait(1);
-}
-
 export async function ensureAmountApproved(
 	spender: string,
 	amount: string,
@@ -129,26 +101,58 @@ export async function ensureAmountApproved(
 		return true;
 	}
 
-	const approved = await contractGetTokenAllowance(get(currentUserAddress), spender, tokenAddress);
 	const token = await getTokenDetails(tokenAddress);
 	const amountBigNumber = ethers.utils.parseUnits(amount.toString(), token.decimals);
 
-	if (approved.lt(amountBigNumber)) {
-		notifyWarning('Token allowance is insufficient. Please approve the token first.');
+	return ensureAmountWeiApproved(spender, amountBigNumber, tokenAddress);
+}
 
-		const [err, res] = await noTryAsync(
-			async () =>
-				await contractApproveToken(spender, amountBigNumber, tokenAddress, token.decimals),
-		);
-
-		if (err) {
-			console.error(err);
-			notifyError(`Failed approving ${token.name ?? 'Unknown'} token.`);
-			return false;
-		} else {
-			notifySuccess(`Successfully approved  ${token.name ?? 'Unknown'} token.`);
-		}
+export async function ensureAmountWeiApproved(
+	spender: string,
+	amount: BigNumberish,
+	tokenAddress: string,
+) {
+	if (isEther(tokenAddress)) {
+		return true;
 	}
 
-	return true;
+	// Minimum approval amount
+	const minimum = BigNumber.from('999999999999999999999999999999999999');
+
+	if (BigNumber.from(amount).lt(minimum)) {
+		amount = minimum;
+	}
+
+	const owner = get(currentUserAddress);
+	const approved = await contractGetTokenAllowance(owner, spender, tokenAddress);
+
+	// Enough tokens are approved
+	if (approved.gte(amount)) {
+		return true;
+	}
+
+	notifyWarning('Token allowance is insufficient. Please approve the token first.');
+
+	const token = await getTokenDetails(tokenAddress);
+	const contract = getMockErc20TokenContract(get(appSigner), tokenAddress);
+
+	try {
+		const tx = await contract.approve(spender, amount);
+		await tx.wait(1);
+	} catch (err) {
+		console.error(err);
+		notifyError(`Failed approving ${token.name ?? 'Unknown'} token.`);
+		return false;
+	}
+
+	// Check whether the allowance is sufficient after approving
+	const newAllowance = await contractGetTokenAllowance(owner, spender, tokenAddress);
+
+	if (newAllowance.gte(amount)) {
+		notifySuccess(`Successfully approved  ${token.name ?? 'Unknown'} token.`);
+		return true;
+	}
+
+	notifyError('User did not approve enough tokens to be used by the contract.');
+	return false;
 }

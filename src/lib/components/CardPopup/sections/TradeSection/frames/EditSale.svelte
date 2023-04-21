@@ -89,54 +89,55 @@
 	});
 </script>
 
-<div
-	class="flex flex-col overscroll-contain text-white aspect-1 overflow-hidden overflow-y-auto"
-	data-simplebar
->
-	<div class="mt-2">
-		<!-- TODO maxQuantity needs to be checked on chain -->
-		<ListingProperties
-			listingType={options.listingData.listingType}
-			disableQuantity
-			{disableStartDate}
-			maxPrice={priceString}
-			minDuration={options.rawListingData.duration}
-			disabled={updatingListing}
-			disableQuantityCheck={true}
-			bind:formErrors
-			bind:props={listingProps}
-			bind:this={_listingProperties}
-		/>
+<div class="aspect-1 overflow-hidden flex flex-col">
+	<div class="flex flex-col overscroll-contain text-white overflow-y-auto pr-6" data-simplebar>
+		<div class="mt-2">
+			<!-- TODO maxQuantity needs to be checked on chain -->
+			<ListingProperties
+				listingType={options.listingData.listingType}
+				disableQuantity
+				{disableStartDate}
+				maxPrice={priceString}
+				minDuration={options.rawListingData.duration}
+				disabled={updatingListing}
+				disableQuantityCheck={true}
+				bind:formErrors
+				bind:props={listingProps}
+				bind:this={_listingProperties}
+			/>
+		</div>
+
+		<div class="flex-grow h-full" />
+
+		<!-- Fees -->
+		<div class="mt-4 ml-2 font-semibold">Fees</div>
+		<div class="grid gap-2 mt-2 ml-2 font-semibold pr-1" style:grid-template-columns="auto 6rem">
+			<div>Creator Royalties:</div>
+			<div class="flex items-center justify-end space-x-3">
+				<div class="">{totalColRoyalties(options)}%</div>
+				<div class="w-5">
+					<Info />
+				</div>
+			</div>
+
+			<div>Hinata Fees:</div>
+			<div class="flex items-center justify-end space-x-3">
+				<div>
+					{#if browser}
+						{#await getMarketFee() then marketFee}
+							{marketFee ?? 'N/A'} %
+						{/await}
+					{/if}
+				</div>
+
+				<div class="w-5">
+					<Info />
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<div class="flex-grow" />
-
-	<!-- Fees -->
-	<div class="mt-4 ml-2 font-semibold">Fees</div>
-	<div class="grid gap-2 mt-2 ml-2 font-semibold pr-1" style:grid-template-columns="auto 6rem">
-		<div>Creator Royalties:</div>
-		<div class="flex items-center justify-end space-x-3">
-			<div class="">{totalColRoyalties(options)}%</div>
-			<div class="w-5">
-				<Info />
-			</div>
-		</div>
-
-		<div>Hinata Fees:</div>
-		<div class="flex items-center justify-end space-x-3">
-			<div>
-				{#if browser}
-					{#await getMarketFee() then marketFee}
-						{marketFee ?? 'N/A'} %
-					{/await}
-				{/if}
-			</div>
-
-			<div class="w-5">
-				<Info />
-			</div>
-		</div>
-	</div>
 
 	<div class="flex gap-2 mt-4">
 		<div class="w-full">

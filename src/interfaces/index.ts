@@ -1,3 +1,5 @@
+import type { PublicProfileData } from './userData';
+
 export type IsoTime = string;
 export type UnixTime = number;
 export type EthAddress = string;
@@ -61,4 +63,25 @@ export interface NftInListingModel {
 	contractAddress: string;
 	nftId: string;
 	amount: number;
+}
+
+export interface OfferModel {
+	_id: string;
+	tokenAmount: string;
+	nonce: string;
+	paymentTokenTicker: string;
+	nftFullId: string;
+	collectionAddress: string;
+	tokenId: string;
+	formatOfferPrice: number;
+	offerPrice: string;
+	from: string;
+	expiration: string; // fix
+	paymentTokenAddress: string;
+	startTime: string;
+	signature: string;
+	createdAt: string;
+	updatedAt: string;
+	lcfrom: string;
+	user: PublicProfileData;
 }
