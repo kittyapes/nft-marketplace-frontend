@@ -1,6 +1,6 @@
 import { appProvider, appSigner, currentUserAddress } from '$stores/wallet';
 import { notifyError, notifySuccess, notifyWarning } from '$utils/toast';
-import type { BigNumber, BigNumberish } from 'ethers';
+import { BigNumber, type BigNumberish } from 'ethers';
 import { ethers } from 'ethers';
 import { get } from 'svelte/store';
 import { getMockErc20TokenContract } from './generalContractCalls';
@@ -114,6 +114,13 @@ export async function ensureAmountWeiApproved(
 ) {
 	if (isEther(tokenAddress)) {
 		return true;
+	}
+
+	// Minimum approval amount
+	const minimum = BigNumber.from('999999999999999999999999999999999999');
+
+	if (BigNumber.from(amount).lt(minimum)) {
+		amount = minimum;
 	}
 
 	const owner = get(currentUserAddress);
