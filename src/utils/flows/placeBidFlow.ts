@@ -32,7 +32,7 @@ async function placeBidNormal(listing: Listing, amount: BigNumber): Promise<void
 		notifyError('Insufficient Allowance to Execute Transaction.');
 
 		// No need to proceed if there's no allowance
-		return;
+		throw new Error('Insufficient Allowance to Execute Transaction.');
 	}
 
 	const callArgs = [listing.listingId, amount];
@@ -96,7 +96,7 @@ async function placeBidGasless(listing: Listing, amount: BigNumber): Promise<voi
 		notifyError('Insufficient Allowance to Execute Transaction.');
 
 		// No need to proceed if there's no allowance
-		return;
+		throw new Error('Insufficient Allowance to Execute Transaction.');
 	}
 
 	try {
