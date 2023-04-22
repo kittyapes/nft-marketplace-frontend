@@ -22,7 +22,18 @@ import { returnUnUsedNonce } from '$utils/flows/index';
 async function placeBidNormal(listing: Listing, amount: BigNumber): Promise<void> {
 	const contract = getContract('marketplace');
 
-	await ensureAmountApproved(contract.address, amount.toString(), listing.paymentTokenAddress);
+	const contractApproved = await ensureAmountApproved(
+		contract.address,
+		amount.toString(),
+		listing.paymentTokenAddress,
+	);
+
+	if (!contractApproved) {
+		notifyError('Insufficient Allowance to Execute Transaction.');
+
+		// No need to proceed if there's no allowance
+		return;
+	}
 
 	const callArgs = [listing.listingId, amount];
 
@@ -75,7 +86,18 @@ async function getBidSignature(
 async function placeBidGasless(listing: Listing, amount: BigNumber): Promise<void> {
 	const contract = getContract('marketplace-v2');
 
-	await ensureAmountApproved(contract.address, amount.toString(), listing.paymentTokenAddress);
+	const contractApproved = await ensureAmountApproved(
+		contract.address,
+		amount.toString(),
+		listing.paymentTokenAddress,
+	);
+
+	if (!contractApproved) {
+		notifyError('Insufficient Allowance to Execute Transaction.');
+
+		// No need to proceed if there's no allowance
+		return;
+	}
 
 	try {
 		await refreshProfileData();
