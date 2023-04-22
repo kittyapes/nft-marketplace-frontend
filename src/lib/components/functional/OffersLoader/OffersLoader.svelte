@@ -6,6 +6,8 @@
 	import { currentUserAddress } from '$stores/wallet';
 	import { get } from 'svelte/store';
 
+	const limit = 10;
+
 	export let nftFullId: string;
 
 	let isLoading = false;
@@ -17,6 +19,8 @@
 
 	export async function reloadOffers() {
 		offers = [];
+		pageIndex = 1;
+
 		loadOffers();
 	}
 
@@ -26,7 +30,7 @@
 		let newOffers: OfferModel[] = [];
 
 		try {
-			newOffers = await apiGetOffers(pageIndex, 10, nftFullId);
+			newOffers = await apiGetOffers(pageIndex, limit, nftFullId);
 		} catch (ex) {
 			isError = true;
 			isLoading = false;
@@ -44,12 +48,13 @@
 			currentUserOffer = offers.find(
 				(offer: OfferModel) => offer.user.address === get(currentUserAddress),
 			);
+
+			if (newOffers.length < limit) {
+				isEndReached = true;
+			}
 		} else {
 			isEndReached = true;
 		}
-
-		// Current implementaiton does not support pagination. The resource is exhausted already after one request.
-		isEndReached = true;
 
 		isLoading = false;
 	}

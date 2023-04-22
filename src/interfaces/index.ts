@@ -84,4 +84,5 @@ export interface OfferModel {
 	updatedAt: string;
 	lcfrom: string;
 	user: PublicProfileData;
+	offerStatus: 'PENDING' | 'ACCEPTED';
 }

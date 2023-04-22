@@ -9,7 +9,6 @@
 	import { HandledError, timeSince } from '$utils';
 	import { contractAcceptOffer } from '$utils/contracts/offers';
 	import { notifyError, notifySuccess } from '$utils/toast';
-	import ButtonSpinner from '../ButtonSpinner/ButtonSpinner.svelte';
 	import Spinner from '../Spinner/Spinner.svelte';
 
 	export let data: OfferModel;
@@ -66,7 +65,7 @@
 			</div>
 		{/if}
 
-		{#if ($hovered && enableHover) || isAcceptingOffer}
+		{#if ($hovered && enableHover && data.offerStatus === 'PENDING') || isAcceptingOffer}
 			<ButtonSmallPrimary on:click={handleAcceptOffer} disabled={isAcceptingOffer}>
 				Accept
 			</ButtonSmallPrimary>

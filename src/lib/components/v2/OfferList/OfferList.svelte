@@ -28,13 +28,30 @@
 
 	$: filteredData = filterData(data);
 
+	// If data is updated and the content does not overflow the scroll element,
+	// simulate an overflow to load more data, that way it doesn't stop loading
+	// data because the page size is set to too low value
+	let scrollElement: HTMLElement;
+
+	async function mockEndOfScroll() {
+		await tick();
+
+		if (scrollElement.scrollHeight === scrollElement.clientHeight) {
+			dispatch('end-of-scroll');
+		}
+	}
+
+	$: data, scrollElement && mockEndOfScroll();
+
 	onMount(async () => {
 		await tick();
 
 		const selector = '.' + uniqClass + '[data-simplebar]';
 		const instance = SimpleBar.instances.get(document.querySelector(selector));
 
-		onEndOfScroll(instance.getScrollElement(), () => dispatch('end-of-scroll'));
+		scrollElement = instance.getScrollElement();
+
+		onEndOfScroll(scrollElement, () => dispatch('end-of-scroll'));
 	});
 </script>
 
