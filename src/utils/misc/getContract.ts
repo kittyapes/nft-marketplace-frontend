@@ -135,7 +135,7 @@ const contracts: {
 	{
 		name: 'marketplace-v2',
 		network: 'eth',
-		address: '0x464CF8880524f70b8f956f5042A7F712d759c516',
+		address: '0x3c3C307CD048fbFCDbfB1b12A6baBABc59544E2b',
 		abi: marketplaceV2Abi,
 	},
 	{
@@ -170,7 +170,12 @@ const contracts: {
 		address: '0x9A986d8B2cB50e827393Ec329cb0003535b5Ff75',
 		abi: marketplaceAbi,
 	},
-	// Marketplace v2 contract is missing
+	{
+		name: 'marketplace-v2',
+		network: 'staging-genache',
+		address: '0x3c3C307CD048fbFCDbfB1b12A6baBABc59544E2b',
+		abi: marketplaceV2Abi,
+	},
 	{
 		name: 'storage',
 		network: 'staging-genache',
