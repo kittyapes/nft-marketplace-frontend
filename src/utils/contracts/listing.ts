@@ -46,7 +46,12 @@ export async function contractPurchaseListing(listingId: string) {
 		return;
 	}
 
-	const contractApproved = await ensureAmountApproved(contract.address, listing.price, listing.payToken);
+	const bigNumberPrice = await parseToken(listing.price, listing.payToken);
+	const contractApproved = await ensureAmountApproved(
+		contract.address,
+		bigNumberPrice,
+		listing.payToken,
+	);
 
 	if (!contractApproved) {
 		notifyError('Insufficient Allowance to Execute Transaction.');
@@ -127,13 +132,27 @@ export async function getOnChainListing(listingId: string): Promise<ChainListing
 	return onChainObj;
 }
 
-export async function contractUpdateListing(listingId: string, payTokenAddress: string, props: Partial<ConfigurableListingProps>) {
+export async function contractUpdateListing(
+	listingId: string,
+	payTokenAddress: string,
+	props: Partial<ConfigurableListingProps>,
+) {
 	console.debug(`[Info] Will update listing with ID ${listingId} with the following props:`, props);
 
 	const parsedPrice = parseToken(props.price, payTokenAddress);
 
 	const contract = getContract('marketplace');
-	await contractCaller(contract, 'updateListing', 150, 1, listingId, parsedPrice, props.startDateTs, props.durationSeconds, props.quantity);
+	await contractCaller(
+		contract,
+		'updateListing',
+		150,
+		1,
+		listingId,
+		parsedPrice,
+		props.startDateTs,
+		props.durationSeconds,
+		props.quantity,
+	);
 }
 
 export async function getMarketFee(): Promise<number | null> {

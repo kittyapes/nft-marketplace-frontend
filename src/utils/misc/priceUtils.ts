@@ -103,15 +103,16 @@ export function getKnownTokenDetails(options: {
 	return token;
 }
 
+// Always send the formatted amount here, if not the formatted amount, please first format it accordingly
 export function parseToken(
-	amount: string,
+	formattedAmount: string,
 	tokenAddress: string,
 	fallback?: ethers.BigNumber,
 ): ethers.BigNumber {
 	const tokenDetails = getKnownTokenDetails({ tokenAddress: tokenAddress });
 
 	try {
-		return ethers.utils.parseUnits(amount, tokenDetails.decimals);
+		return ethers.utils.parseUnits(formattedAmount, tokenDetails.decimals);
 	} catch (err) {
 		if (fallback !== undefined) return fallback;
 		throw err;

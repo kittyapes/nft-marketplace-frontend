@@ -7,6 +7,8 @@ import { getChainListingData, stringListingTypeToEnum } from '$utils/listings';
 import { getContract, getContractData } from '$utils/misc/getContract';
 import { notifyError, notifySuccess } from '$utils/toast';
 import dayjs from 'dayjs';
+import { parseToken } from '$utils/misc/priceUtils';
+import { ethers } from 'ethers';
 
 /**
  * Purchase a gas based listing.
@@ -22,9 +24,14 @@ async function purchaseNormal(listing: Listing) {
 	}
 
 	const marketplaceAddress = getContractData('marketplace').address;
+
+	const bigNumberPrice = await parseToken(
+		onChainListingData.price.toString(),
+		listing.paymentTokenAddress,
+	);
 	const contractApproved = await ensureAmountApproved(
 		marketplaceAddress,
-		onChainListingData.price.toString(),
+		bigNumberPrice,
 		listing.paymentTokenAddress,
 	);
 
@@ -53,9 +60,14 @@ async function purchaseGasless(listing: Listing) {
 
 	// Make sure amount of tokens equal or greater than the price of the sale listing
 	// is approved to be used by the marketpace contract
+	const bigNumberPrice = await parseToken(
+		saleData.formatPrice.toString(),
+		listing.paymentTokenAddress,
+	);
+
 	const approvalSuccessful = await ensureAmountApproved(
 		marketplaceContract.address,
-		saleData.price,
+		bigNumberPrice,
 		listing.paymentTokenAddress,
 	);
 

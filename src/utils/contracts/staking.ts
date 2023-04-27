@@ -3,6 +3,7 @@ import { BigNumber, ethers } from 'ethers';
 import contractCaller from '$utils/contracts/contractCaller';
 import { ensureAmountApproved } from './token';
 import { notifyError } from '$utils/toast';
+import { parseToken } from '$utils/misc/priceUtils';
 
 const { parseEther, formatEther, formatUnits } = ethers.utils;
 
@@ -191,9 +192,10 @@ export async function claimVestedRewards() {
 export async function stakeTokens(amount: string, duration: StakeDurationsEnum) {
 	const stakingContract = getContract('staking');
 
+	const bigNumberAmount = await parseToken(amount, getContract('hinata-token').address);
 	const contractApproved = await ensureAmountApproved(
 		stakingContract.address,
-		amount,
+		bigNumberAmount,
 		getContract('hinata-token').address,
 	);
 

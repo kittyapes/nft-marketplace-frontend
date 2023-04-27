@@ -24,7 +24,7 @@ async function placeBidNormal(listing: Listing, amount: BigNumber): Promise<void
 
 	const contractApproved = await ensureAmountApproved(
 		contract.address,
-		amount.toString(),
+		amount,
 		listing.paymentTokenAddress,
 	);
 
@@ -88,7 +88,7 @@ async function placeBidGasless(listing: Listing, amount: BigNumber): Promise<voi
 
 	const contractApproved = await ensureAmountApproved(
 		contract.address,
-		amount.toString(),
+		amount,
 		listing.paymentTokenAddress,
 	);
 

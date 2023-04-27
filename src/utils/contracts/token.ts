@@ -94,17 +94,17 @@ export async function contractGetTokenAllowance(
 
 export async function ensureAmountApproved(
 	spender: string,
-	amount: string,
+	amount: BigNumberish,
 	tokenAddress: string,
 ): Promise<boolean> {
 	if (isEther(tokenAddress)) {
 		return true;
 	}
 
-	const token = await getTokenDetails(tokenAddress);
-	const amountBigNumber = ethers.utils.parseUnits(amount.toString(), token.decimals);
+	// const token = await getTokenDetails(tokenAddress);
+	// const amountBigNumber = ethers.utils.parseUnits(amount.toString(), token.decimals);
 
-	return ensureAmountWeiApproved(spender, amountBigNumber, tokenAddress);
+	return ensureAmountWeiApproved(spender, amount, tokenAddress);
 }
 
 export async function ensureAmountWeiApproved(
